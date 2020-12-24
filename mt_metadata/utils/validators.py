@@ -1,0 +1,385 @@
+# -*- coding: utf-8 -*-
+"""
+=======================
+schema
+=======================
+
+Convenience Classes and Functions to deal with the base metadata standards
+described by the csv file.
+
+The hope is that only the csv files will need to be changed as the standards
+are modified.  The attribute dictionaries are stored in ATTRICT
+
+Created on Wed Apr 29 11:11:31 2020
+
+@author: jpeacock
+"""
+# =============================================================================
+# Imports
+# =============================================================================
+import logging
+import sys
+import re
+
+from pathlib import Path
+from copy import deepcopy
+from collections import OrderedDict
+from collections.abc import MutableMapping
+from operator import itemgetter
+
+from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
+from mt_metadata.utils.exceptions import MTSchemaError
+
+
+logger = logging.getLogger(__name__)
+
+# =============================================================================
+# validator functions
+# =============================================================================
+def validate_header(header, attribute=False):
+    """
+    validate header to make sure it includes the required keys:
+        * 'attribute'
+        * 'type'
+        * 'required'
+        * 'style'
+        * 'units'
+
+    :param header: list of header names
+    :type header: list
+
+    :param attribute: include attribute in test or not
+    :type attribute: [ True | False ]
+
+    :return: validated header
+    :rtype: list
+
+    """
+    if not isinstance(header, list):
+        msg = "input header must be a list, not {0}".format(header)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    if attribute:
+        if sorted(header) != sorted(REQUIRED_KEYS):
+            msg = "CSV Header is not correct, must include {0}".format(
+                REQUIRED_KEYS
+            ) + ". Currently has {0}".format(header)
+            logger.error(msg)
+            raise MTSchemaError(msg)
+    else:
+        required_keys = [key for key in REQUIRED_KEYS if key != "attribute"]
+        if sorted(header) != sorted(required_keys):
+            msg = "CSV Header is not correct, must include {0}".format(
+                required_keys
+            ) + ". Currently has {0}".format(header)
+            logger.error(msg)
+            raise MTSchemaError(msg)
+    return header
+
+
+def validate_attribute(name):
+    """
+    validate the name to conform to the standards
+    name must be:
+        * all lower case {a-z; 1-9}
+        * must start with a letter
+        * categories are separated by '.'
+        * words separated by '_'
+
+    {object}.{name_name}
+
+    '/' will be replaced with '.'
+    converted to all lower case
+
+    :param name: name name
+    :type name: string
+    :return: valid name name
+    :rtype: string
+
+    """
+    if not isinstance(name, str):
+        msg = "attribute name must be a string, not {0}".format(type(name))
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    original = str(name)
+
+    if re.match("^[0-9]", name):
+        msg = "attribute name cannot start with a number, {0}".format(original)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    if "/" in name:
+        name = name.replace("/", ".")
+        logger.debug("replaced '/' with '.' in {0}".format(original))
+
+    if re.search("[A-Z].*?", name):
+        logger.debug("found capital letters in attribute {0}".format(original))
+        logger.debug("spliting {0} by capital letters".format(original))
+        name = "_".join(re.findall(".[^A-Z]*", name))
+        name = name.replace("._", ".")
+        name = name.lower()
+        logger.debug("converting {0} to lower case".format(original))
+
+    if original != name:
+        msg = "input name {0} converted to {1} following MTH5 standards"
+        logger.debug(msg.format(original, name))
+
+    return name
+
+
+def validate_required(value):
+    """
+
+    Validate required, must be True or False
+
+    :param value: required value
+    :type value: [ string | bool ]
+    :return: validated required value
+    :rtype: boolean
+
+    """
+    if isinstance(value, bool):
+        return value
+
+    if isinstance(value, str):
+        if value.lower() in ["false"]:
+            return False
+        elif value.lower() in ["true"]:
+            return True
+        else:
+            msg = "Required value must be True or False, " + "not {0}".format(value)
+            logger.error(msg)
+            raise MTSchemaError(msg)
+    else:
+        msg = "Required value must be True or False, " + "not {0}".format(value)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+
+def validate_type(value):
+    """
+
+    Validate required type. Must be:
+        * str
+        * float
+        * int
+        * bool
+
+    :param value: required type
+    :type value: [ type | string ]
+    :return: validated type
+    :rtype: string
+
+    """
+    if isinstance(value, type):
+        value = "{0}".format(value).replace("<class", "").replace(">", "")
+
+    if isinstance(value, str):
+        value = value.replace("<class", "").replace(">", "")
+        if "int" in value.lower():
+            return "integer"
+        elif "float" in value.lower():
+            return "float"
+        elif "str" in value.lower():
+            return "string"
+        elif "bool" in value.lower():
+            return "boolean"
+        elif "h5py_reference" in value.lower():
+            return value
+
+        else:
+            msg = (
+                "'type' must be type [ int | float "
+                + "| str | bool ].  Not {0}".format(value)
+            )
+            logger.error(msg)
+            raise MTSchemaError(msg)
+    else:
+        msg = (
+            "'type' must be type [ int | float "
+            + "| str | bool ] or string.  Not {0}".format(value)
+        )
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+
+def validate_units(value):
+    """
+    Validate units
+
+    ..todo:: make a list of acceptable unit names
+
+    :param value: unit value to be validated
+    :type value: string
+
+    :return: validated units
+    :rtype: string
+
+    """
+    if value is None:
+        return value
+    if isinstance(value, str):
+        if value.lower() in ["none", "empty", ""]:
+            return None
+        else:
+            return value.lower()
+    else:
+        msg = "'units' must be a string or None." + " Not {0}".format(value)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+
+def validate_style(value):
+    """
+    Validate string style
+
+    ..todo:: make list of accepted style formats
+
+    :param value: style to be validated
+    :type value: string
+    :return: validated style
+    :rtype: string
+
+    """
+    # if None then return the generic name style
+    if value is None:
+        return "name"
+
+    if not isinstance(value, str):
+        msg = "'value' must be a string. Not {0}".format(value)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    if value.lower() not in ACCEPTED_STYLES:
+        msg = "style {0} unknown, must be {1}".format(
+            value, ACCEPTED_STYLES
+        ) + ". Not {0}".format(value)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    return value.lower()
+
+
+def validate_description(description):
+    """
+    
+    make sure the description is a string
+    
+    :param description: detailed description of an attribute
+    :type description: str
+    :return: validated string of description
+    :rtype: string
+
+    """
+    if not isinstance(description, str):
+        msg = "description must be a string, not {0}".format(type(description))
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    return description
+
+
+def validate_options(options):
+    """
+    turn options into a list of strings
+    
+    :param options: DESCRIPTION
+    :type options: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    if isinstance(options, str):
+        options = options.replace("[", "").replace("]", "").strip().split("|")
+        names = []
+        for name in options:
+            if not name.lower() in ["none", ""]:
+                names.append(name.strip())
+        options = names
+
+    elif isinstance(options, (list, tuple)):
+        options = [str(option) for option in options]
+    elif isinstance(options, (float, int, bool)):
+        options = ["{0}".format(options)]
+
+    else:
+        msg = "option type not understood {0}".format(type(options))
+        logger.error(msg)
+        raise MTSchemaError(msg)
+    return options
+
+
+def validate_alias(alias):
+    """
+    validate alias names
+    :param alias: DESCRIPTION
+    :type alias: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+
+    if isinstance(alias, str):
+        alias = alias.replace("[", "").replace("]", "").strip().split("|")
+        names = []
+        for name in alias:
+            if not name.lower() in ["none", ""]:
+                names.append(name.strip())
+        alias = names
+
+    elif isinstance(alias, (list, tuple)):
+        alias = [str(option) for option in alias]
+    elif isinstance(alias, (float, int, bool)):
+        alias = ["{0}".format(alias)]
+
+    else:
+        msg = "alias type not understood {0}".format(type(alias))
+        logger.error(msg)
+        raise MTSchemaError(msg)
+    return alias
+
+
+def validate_example(example):
+    """
+    
+    :param example: DESCRIPTION
+    :type example: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    if not isinstance(example, str):
+        example = "{0}".format(example)
+    return example
+
+
+def validate_value_dict(value_dict):
+    """
+    Validate an input value dictionary
+
+    Must be of the form:
+        {'type': str, 'required': True, 'style': 'name', 'units': units}
+
+    :param value_dict: DESCRIPTION
+    :type value_dict: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    if not isinstance(value_dict, dict):
+        msg = "Input must be a dictionary," + " not {0}".format(value_dict)
+        logger.error(msg)
+        raise MTSchemaError(msg)
+
+    header = validate_header(list(value_dict.keys()))
+    # loop over validating functions in this module
+    for key in header:
+        value_dict[key] = getattr(sys.modules[__name__], "validate_{0}".format(key))(
+            value_dict[key]
+        )
+
+    return value_dict
+
+
