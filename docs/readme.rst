@@ -1,33 +1,16 @@
-.. image:: source/images/mth5_logo.png
-   :alt: MTH5 Logo
-   :align: center
-
-\
 
 Introduction
 -------------
-The goal of **MTH5** is to develop a standard format and tools for archiving 
-magnetotelluric (MT) time series data.
+The goal of **MT Metadata** is to develop a standard format and tools for archiving 
+magnetotelluric (MT) time series and transfer function data.
 
-The preferred format is HDF5 and has been adopted to conform to MT data,
-something that has been needed in the EM community for some time. The
-module mth5 contains reading/writing capabilities and will contain tools
-for retrieving data in useful ways to work with processing codes.
+Metadata standards for MT have been historically relaxed to user dependent.  The goal of this module is to formalize and provide tools for users of MT timeseries and metadata.  
 
-The metadata follows the standards proposed by the `IRIS-PASSCAL MT
+The metadata for time series follows the standards proposed by the `IRIS-PASSCAL MT
 Software working
-group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__ and
-documented in `MT Metadata
-Standards <https://github.com/kujaku11/MTarchive/blob/tables/docs/mt_metadata_guide.pdf>`__.
+group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__.
+
+The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__. 
 
 .. note:: This is a work in progress. Feel free to comment or send me a message at jpeacock@usgs.gov on the data format.
 
-MTH5 Format
------------
-
--  The basic format of MTH5 is illustrated below, where metadata is
-   attached at each level.
-
-.. figure:: source/images/example_mt_file_structure.png
-   :alt: MTH5 Format
-   :align: center
