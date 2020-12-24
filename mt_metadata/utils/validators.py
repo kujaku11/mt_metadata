@@ -19,6 +19,7 @@ Created on Wed Apr 29 11:11:31 2020
 # =============================================================================
 import sys
 import re
+import logging
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
 from mt_metadata.utils.exceptions import MTSchemaError
@@ -335,6 +336,8 @@ def validate_value_dict(value_dict):
 
     """
     if not isinstance(value_dict, dict):
+        if isinstance(value_dict, logging.Logger):
+            return value_dict
         msg = f"Input must be a dictionary, not {type(value_dict)}"
         raise MTSchemaError(msg)
 
