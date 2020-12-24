@@ -1,0 +1,32 @@
+{
+    "author": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "author of the software",
+        "options": [],
+        "alias": [],
+        "example": "nerd alert"
+    },
+    "version": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "software version",
+        "options": [],
+        "alias": [],
+        "example": "12.01a"
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "software name",
+        "options": [],
+        "alias": [],
+        "example": "mtrules"
+    }
+}

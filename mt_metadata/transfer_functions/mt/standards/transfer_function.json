@@ -1,0 +1,70 @@
+{
+    "sign_convention": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "sign of the transfer function estimates",
+        "options": [
+            "+",
+            "-",
+            "other"
+        ],
+        "alias": [],
+        "example": "+"
+    },
+    "units": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "units of the impedance tensor estimates",
+        "options": [
+            "millivolts_per_kilometer_per_nanotesla",
+            "ohms",
+            "other"
+        ],
+        "alias": [],
+        "example": "millivolts_per_kilometer_per_nanotesla"
+    },
+    "runs_processed": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "list of runs used in the processing",
+        "options": [],
+        "alias": [],
+        "example": "[ MT001a MT001c]"
+    },
+    "remote_references": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "list of remote references",
+        "options": [],
+        "alias": [],
+        "example": "[ MT002b MT002c ]"
+    },
+    "processed_date": {
+        "type": "string",
+        "required": false,
+        "style": "date time",
+        "units": null,
+        "description": "date the data were processed",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01T12:00:00"
+    },
+    "processing_parameters": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "list of processing parameters with structure name = value",
+        "options": [],
+        "alias": [],
+        "example": "[nfft=4096, n_windows=16]"
+    }
+}

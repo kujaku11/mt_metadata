@@ -1,0 +1,34 @@
+{
+    "author": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Author who made the comment",
+        "options": [],
+        "alias": [
+            "nome"
+        ],
+        "example": "M. Tee"
+    },
+    "date": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "Date the comment was made",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-21"
+    },
+    "comment": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Comment string",
+        "options": [],
+        "alias": [],
+        "example": "This is a comment"
+    }
+}

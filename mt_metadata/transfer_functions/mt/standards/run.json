@@ -1,0 +1,79 @@
+{
+    "channels_recorded_auxiliary": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of auxiliary channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "[T]"
+    },
+    "channels_recorded_electric": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of electric channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "\"[Ex | Ey]\""
+    },
+    "channels_recorded_magnetic": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of magnetic channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "\"[Hx | Hy | Hz]\""
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments on the run",
+        "options": [],
+        "alias": [],
+        "example": "cows chewed cables"
+    },
+    "data_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "type of data recoreded for this run",
+        "options": [
+            "RMT",
+            "AMT",
+            "BBMT",
+            "LPMT",
+            "ULPMT",
+            "other"
+        ],
+        "alias": [],
+        "example": "BBMT"
+    },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "run ID should be station name followed by an alphabet letter for the run",
+        "options": [],
+        "alias": [],
+        "example": "mt02b"
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "rate of sampling renureded for this run",
+        "options": [],
+        "alias": [],
+        "example": "100"
+    }
+}

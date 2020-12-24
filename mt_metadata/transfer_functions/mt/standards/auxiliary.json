@@ -1,0 +1,92 @@
+{
+    "channel_number": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "channel number on the data logger",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the channel",
+        "options": [],
+        "alias": [],
+        "example": "ambient air temperature"
+    },
+    "component": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "name of the component measured",
+        "options": [
+            "Ex",
+            "Ey",
+            "Hx",
+            "Hy",
+            "Hz",
+            "T",
+            "Battery",
+            "other"
+        ],
+        "alias": [],
+        "example": "T"
+    },
+    "measurement_azimuth": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "azimuth of channel in measurement coordinates",
+        "options": [],
+        "alias": [
+            "azimuth"
+        ],
+        "example": "0"
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "sample rate",
+        "options": [],
+        "alias": [
+            "sampling_rate"
+        ],
+        "example": "8"
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "data type for the channel",
+        "options": [],
+        "alias": [],
+        "example": "temperature"
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "units of the data",
+        "options": [
+            "metric",
+            "celsius",
+            "meters",
+            "degrees",
+            "kilograms",
+            "other"
+        ],
+        "alias": [],
+        "example": "celsius"
+    }
+}

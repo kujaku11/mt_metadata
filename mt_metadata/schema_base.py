@@ -25,61 +25,6 @@ from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.helpers import NumpyEncoder
 
-
-# =============================================================================
-# 
-# =============================================================================
-def get_schema_fn(element, paths):
-    """
-
-    Get the filename that corresponds to level of metadata
-
-    acceptable names are:
-        * 'auxiliary'
-        * 'battery'
-        * 'channel'
-        * 'citation'
-        * 'copyright'
-        * 'datalogger,
-        * 'data_quality'
-        * 'declination'
-        * 'diagnostic'
-        * 'electric'
-        * 'electrode'
-        * 'filter'
-        * 'instrument'
-        * 'location'
-        * 'magnetic'
-        * 'person'
-        * 'provenance'
-        * 'run'
-        * 'software'
-        * 'station'
-        * 'survey'
-        * 'timing_system'
-
-    :param level: name of level
-    :type level: string
-    :return: full path to file name
-    :rtype: pathlib.Path or None if not found
-
-    :Example: ::
-
-        >>> run_fn = get_level_fn('run')
-
-    """
-
-    for fn in paths:
-        if element in fn.stem:
-            if not fn.exists():
-                msg = "{0} does not exist for level={1}".format(fn, element)
-                #logger.error(msg)
-                raise MTSchemaError(msg)
-            #logger.debug("Found standards csv file {0} for level={1}".format(fn, level))
-            return fn
-    #logger.debug("Cound not find CSV file for {0}".format(level))
-    return None
-
 # =============================================================================
 # base dictionary
 # =============================================================================
@@ -402,6 +347,9 @@ class BaseDict(MutableMapping):
             
         with open(json_fn, "r") as fid:
             json_dict = json.load(fid)
-        
-        self.update(json_dict)
+            
+        valid_dict = {}
+        for k, v in json_dict.items():
+            valid_dict[k] = validators.validate_value_dict(v)
+        self.update(valid_dict)
 

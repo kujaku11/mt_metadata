@@ -1,0 +1,134 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "name of filter applied or to be applies. If more than one filter input as a comma separated list",
+        "options": [],
+        "alias": [],
+        "example": "\"[counts2mv, lowpass_magnetic]\""
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "type of filter",
+        "options": [
+            "table",
+            "zpk",
+            "conversion",
+            "gain",
+            "time_delay",
+            "other"
+        ],
+        "alias": [],
+        "example": "table"
+    },
+    "units_in": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "name of the input units to the filter. Should be all lowercase and separated with an underscore",
+        "options": [],
+        "alias": [],
+        "example": "count"
+    },
+    "units_out": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "name of the output units.  Should be alpha numeric.",
+        "options": [],
+        "alias": [],
+        "example": "millivolt"
+    },
+    "calibration_date": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "latest date of filter calibration",
+        "options": [],
+        "alias": [],
+        "example": "2/1/2020"
+    },
+    "normalization_factor": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "normalization factor for a poles and zeros filter",
+        "options": [],
+        "alias": [],
+        "example": "2.34"
+    },
+    "normalization_frequency": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "normalization frequency for a poles and zeros filter",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    },
+    "cutoff": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "cutoff frequency for filter",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    },
+    "operation": {
+        "type": "float",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "how the filter should be applied",
+        "options": [
+            "mulitply",
+            "divide",
+            "add",
+            "subtract"
+        ],
+        "alias": [],
+        "example": "multiply"
+    },
+    "n_poles": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "how many poles are in the filter",
+        "options": [],
+        "alias": [],
+        "example": "4"
+    },
+    "n_zeros": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "how many zeros are in the filter",
+        "options": [],
+        "alias": [],
+        "example": "2"
+    },
+    "conversion_factor": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "unit conversion factor",
+        "options": [],
+        "alias": [],
+        "example": "100"
+    }
+}

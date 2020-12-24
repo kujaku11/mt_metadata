@@ -1,0 +1,72 @@
+{
+    "dipole_length": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "length of the dipole",
+        "options": [],
+        "alias": [],
+        "example": "55.25"
+    },
+    "contact_resistance.start": {
+        "type": "float",
+        "required": false,
+        "style": "number list",
+        "units": "ohms",
+        "description": "starting contact resistance; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "\"[1.2, 1.4]\""
+    },
+    "contact_resistance.end": {
+        "type": "float",
+        "required": false,
+        "style": "number list",
+        "units": "ohms",
+        "description": "starting contact resistance; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "\"[1.5, 1.8]\""
+    },
+    "ac.start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "starting AC value; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "\"[52.1, 55.8]\""
+    },
+    "ac.end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "ending AC value; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "\"[45.3, 49.5]\""
+    },
+    "dc.start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "starting DC value; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "1.1"
+    },
+    "dc.end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "ending DC value; if more than one measurement input as a list of number [1 2 3 ...]",
+        "options": [],
+        "alias": [],
+        "example": "1.5"
+    }
+}

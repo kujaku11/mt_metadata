@@ -1,0 +1,110 @@
+{
+    "survey_id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Alphanumeric survey ID that will be specific to the archive",
+        "options": [],
+        "alias": [],
+        "example": "EMT20"
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the survey",
+        "options": [],
+        "alias": [],
+        "example": "long survey"
+    },
+    "country": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "country(s) countries survey located in. If multiple input as comma separated names",
+        "options": [],
+        "alias": [],
+        "example": "\"[USA, Canada]\""
+    },
+    "datum": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "datum of latitude and longitude coordinates. Should be a well-known datum [ WGS84 ] and will be the reference datum for all location",
+        "options": [
+            "WGS84",
+            "NAD27",
+            "NAD83",
+            "ETRS89",
+            "GDA94",
+            "PZ-90.11",
+            "other"
+        ],
+        "alias": [],
+        "example": "WGS84"
+    },
+    "geographic_name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "closest geographic reference to survey",
+        "options": [],
+        "alias": [],
+        "example": "Yukon"
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "descriptive name of the survey",
+        "options": [],
+        "alias": [],
+        "example": "MT Characterization of Yukon Terrane"
+    },
+    "project": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "alphanumeric name for the project e.g USGS-GEOMAG",
+        "options": [],
+        "alias": [],
+        "example": "YUTOO"
+    },
+    "summary": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled",
+        "options": [],
+        "alias": [],
+        "example": "long project of characterizing mineral resources in Yukon"
+    },
+    "time_period.end_date": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "end date of the survey in UTC",
+        "options": [],
+        "alias": [],
+        "example": "1/2/1995"
+    },
+    "time_period.start_date": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "start date of the survey in UTC",
+        "options": [],
+        "alias": [],
+        "example": "1/2/2020"
+    }
+}

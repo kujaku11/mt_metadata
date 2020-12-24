@@ -1,0 +1,39 @@
+{
+    "author": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "author of who rated the data",
+        "options": [],
+        "alias": [],
+        "example": "gradstudet ace"
+    },
+    "method": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "the method used to rate the data",
+        "options": [],
+        "alias": [],
+        "example": "standard deviation"
+    },
+    "value": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "a rating from 1-5 where 1 is bad and 5 is good and 0 if unrated",
+        "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        "alias": [],
+        "example": "4"
+    }
+}

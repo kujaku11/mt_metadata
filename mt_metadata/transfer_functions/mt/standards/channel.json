@@ -1,0 +1,138 @@
+{
+    "channel_number": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "channel number on the data logger",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    },
+    "channel_id": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "channel id given by the user or data logger",
+        "options": [],
+        "alias": [],
+        "example": "1001.11"
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the channel",
+        "options": [],
+        "alias": [],
+        "example": "ambient air temperature"
+    },
+    "component": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "name of the component measured",
+        "options": [
+            "Ex",
+            "Ey",
+            "Hx",
+            "Hy",
+            "Hz",
+            "T",
+            "Battery",
+            "other"
+        ],
+        "alias": [],
+        "example": "T"
+    },
+    "measurement_azimuth": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "azimuth of channel in measurement coordinate system",
+        "options": [],
+        "alias": [
+            "azimuth"
+        ],
+        "example": "0"
+    },
+    "measurement_tilt": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "tilt of channel in measurement coordinate system",
+        "options": [],
+        "alias": [
+            "dip"
+        ],
+        "example": "0"
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "sample rate",
+        "options": [],
+        "alias": [
+            "sampling_rate"
+        ],
+        "example": "8"
+    },
+    "translated_azimuth": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "azimuth of channel in translated coordinate system",
+        "options": [],
+        "alias": [
+            "azimuth"
+        ],
+        "example": "0"
+    },
+    "translated_tilt": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "tilt of channel in translated coordinate system",
+        "options": [],
+        "alias": [
+            "dip"
+        ],
+        "example": "0"
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "data type for the channel",
+        "options": [],
+        "alias": [],
+        "example": "temperature"
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "units of the data",
+        "options": [
+            "metric",
+            "celsius",
+            "meters",
+            "degrees",
+            "kilograms",
+            "other"
+        ],
+        "alias": [],
+        "example": "celsius"
+    }
+}
