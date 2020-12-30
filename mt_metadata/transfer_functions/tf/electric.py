@@ -23,7 +23,7 @@ attr_dict.add_dict(get_schema("data_quality", SCHEMA_FN_PATHS), "data_quality")
 attr_dict.add_dict(get_schema("filtered", SCHEMA_FN_PATHS), "filter")
 attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "positive")
 attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "negative")
-attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period") 
+attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 # =============================================================================
 class Electric(Channel):
     __doc__ = write_lines(attr_dict)
@@ -41,4 +41,3 @@ class Electric(Channel):
         self.type = "electric"
 
         self._attr_dict = attr_dict
-

@@ -59,5 +59,3 @@ class TimePeriod(Base):
     @end_date.setter
     def end_date(self, stop_date):
         self._end_dt.from_str(stop_date)
-
-

@@ -14,7 +14,16 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Person, Provenance, TimePeriod, Fdsn, DataLogger, Electric, Magnetic, Auxiliary
+from . import (
+    Person,
+    Provenance,
+    TimePeriod,
+    Fdsn,
+    DataLogger,
+    Electric,
+    Magnetic,
+    Auxiliary,
+)
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
@@ -277,8 +286,3 @@ class Run(Base):
             self.logger.error(ValueError)
             raise ValueError(msg)
         self._temperature.from_dict(value.to_dict())
-
-
-# =============================================================================
-# Base Channel
-# =============================================================================

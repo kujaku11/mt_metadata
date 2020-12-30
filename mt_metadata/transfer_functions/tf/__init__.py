@@ -82,9 +82,6 @@ from .run import Run
 from .station import Station
 
 
-
-
-
 __all__ = [
     "Base",
     "Standards",
@@ -95,8 +92,7 @@ __all__ = [
     "Rating",
     "DataQuality",
     "Citation",
-    "Comment"
-    "Copyright",
+    "Comment" "Copyright",
     "Provenance",
     "Person",
     "Diagnostic",

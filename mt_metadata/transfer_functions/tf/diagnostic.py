@@ -26,4 +26,3 @@ class Diagnostic(Base):
         self.start = None
         self.end = None
         super().__init__(attr_dict=attr_dict, **kwargs)
-

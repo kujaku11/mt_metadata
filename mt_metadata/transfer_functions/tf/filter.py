@@ -46,4 +46,3 @@ class Filter(Base):
     @calibration_date.setter
     def calibration_date(self, value):
         self._calibration_dt.from_str(value)
-

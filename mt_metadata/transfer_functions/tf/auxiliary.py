@@ -17,7 +17,7 @@ from .standards import SCHEMA_FN_PATHS
 from . import Channel
 
 # =============================================================================
-attr_dict = get_schema('channel', SCHEMA_FN_PATHS)
+attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
 # =============================================================================
 class Auxiliary(Channel):
     __doc__ = write_lines(attr_dict)

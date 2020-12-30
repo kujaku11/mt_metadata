@@ -30,5 +30,3 @@ class TimingSystem(Base):
         self.uncertainty_units = None
         self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-

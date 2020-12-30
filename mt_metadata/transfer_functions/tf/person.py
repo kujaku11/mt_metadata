@@ -28,4 +28,3 @@ class Person(Base):
         self.organization = None
         self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)
-

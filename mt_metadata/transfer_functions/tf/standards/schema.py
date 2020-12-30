@@ -41,7 +41,7 @@ class Standards:
 
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.logger.debug("Initiating Standards")
-                          
+
     def get_schema_fn(self, schema_element):
         """
         Get the correct file name for the given schema element from the provided
@@ -59,7 +59,7 @@ class Standards:
         msg = f"Could not find schema element {schema_element} file name."
         self.logger.error(msg)
         raise MTSchemaError(msg)
-        
+
     def get_schema(self, schema_element):
         """
         Get a :class:`mt_metadata.schema_base.BaseDict` object of the element
@@ -70,11 +70,11 @@ class Standards:
         :rtype: :class:`mt_metadata.schema_base.BaseDict`
 
         """
-        
+
         schema_fn = self.get_schema_fn(schema_element)
         element_dict = BaseDict()
         element_dict.from_json(schema_fn)
-        
+
         return element_dict
 
     @property

@@ -46,4 +46,3 @@ class Copyright(Base):
         self.release_license = None
         self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)
-

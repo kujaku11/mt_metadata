@@ -155,5 +155,3 @@ class Filtered(Base):
                         return False
         else:
             return False
-
-

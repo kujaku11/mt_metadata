@@ -26,4 +26,3 @@ class Orientation(Base):
         self.method = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-

@@ -14,7 +14,7 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema
 from mt_metadata.transfer_functions.tf.standards.schema import SCHEMA_FN_PATHS
-from . import Channel, Instrument, Diagnostic 
+from . import Channel, Instrument, Diagnostic
 
 # =============================================================================
 attr_dict = get_schema("magnetic", SCHEMA_FN_PATHS)

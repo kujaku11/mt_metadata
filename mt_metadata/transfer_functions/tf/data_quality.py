@@ -32,4 +32,3 @@ class DataQuality(Base):
         self.good_to_period = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        

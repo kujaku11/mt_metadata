@@ -61,4 +61,3 @@ class Channel(Base):
     def component(self, value):
         if value is not None:
             self._component = value.lower()
-
