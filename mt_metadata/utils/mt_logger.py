@@ -12,7 +12,7 @@ import logging.config
 from pathlib import Path
 import yaml
 
-FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
+FORMATTER = logging.Formatter("%(asctime)s [line %(lineno)d] %(name)s.%(funcName)s - %(levelname)s: %(message)s")
 CONF_PATH = Path(__file__).parent
 CONF_FILE = Path.joinpath(CONF_PATH, "logging_config.yaml")
 LOG_PATH = CONF_PATH.parent.parent.joinpath("logs")
@@ -36,12 +36,13 @@ class MTLogger:
     @staticmethod
     def get_logger(logger_name, fn=None, level="debug"):
         logger = logging.getLogger(logger_name)
-        logger.addHandler(logging.NullHandler())
         if fn is not None:
             fn = LOG_PATH.joinpath(fn)
-            fn_handler = logging.FileHandler(fn, mode="a")
+            fn_handler = logging.handlers.RotatingFileHandler(fn, mode="a", maxBytes=2485760, backupCont=2)
             fn_handler.setFormatter(FORMATTER)
             fn_handler.setLevel(LEVEL_DICT[level.lower()])
             logger.addHandler(fn_handler)
+        else:
+            logger.addHandler(logging.NullHandler())
 
         return logger

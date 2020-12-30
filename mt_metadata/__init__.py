@@ -31,10 +31,8 @@ you should only have to changes these dictionaries.
 
 
 """
-import logging
-import logging.config
-import yaml
 from pathlib import Path
+from mt_metadata.utils import mt_logger
 
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
@@ -70,18 +68,21 @@ REQUIRED_KEYS = [
 module_path = Path(__file__).parent 
 log_config_file = module_path.joinpath("utils", "logging_config.yaml")
 
-with open(log_config_file, "r") as fid:
-    config_dict = yaml.safe_load(fid)
-logging.config.dictConfig(config_dict)
+logger = mt_logger.MTLogger().get_logger("mt_metadata")
+logger.debug("Starting MT Metadata")
 
-# open root logger
-logger = logging.getLogger(__name__)
+# with open(log_config_file, "r") as fid:
+#     config_dict = yaml.safe_load(fid)
+# logging.config.dictConfig(config_dict)
 
-# make sure everything is working
-logger.info("Started mt_metadata")
-logger.debug("Beginning debug mode for mt_metadata")
-debug_fn = logger.root.handlers[1].baseFilename
-error_fn = logger.root.handlers[2].baseFilename
+# # open root logger
+# logger = logging.getLogger(__name__)
 
-logger.info("Debug Log file can be found at {0}".format(debug_fn))
-logger.info("Error Log file can be found at {0}".format(error_fn))
+# # make sure everything is working
+# logger.info("Started mt_metadata")
+# logger.debug("Beginning debug mode for mt_metadata")
+# debug_fn = logger.root.handlers[1].baseFilename
+# error_fn = logger.root.handlers[2].baseFilename
+
+# logger.info("Debug Log file can be found at {0}".format(debug_fn))
+# logger.info("Error Log file can be found at {0}".format(error_fn))
