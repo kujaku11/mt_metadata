@@ -21,7 +21,7 @@ from .standards import SCHEMA_FN_PATHS
 attr_dict = get_schema("instrument", SCHEMA_FN_PATHS)
 attr_dict.add_dict(
     get_schema("location", SCHEMA_FN_PATHS),
-    "northwest_corner",
+    None,
     keys=["latitude", "longitude", "elevation", "x", "x2", "y", "y2"],
 )
 
