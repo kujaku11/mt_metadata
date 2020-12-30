@@ -13,6 +13,7 @@ from copy import deepcopy
 from dateutil import parser as dtparser
 from dateutil.tz.tz import tzutc
 
+from .mt_logger import get_logger
 from .exceptions import MTTimeError
 
 # =============================================================================
@@ -127,7 +128,7 @@ class MTime:
 
     def __init__(self, time=None, gps_time=False):
 
-        self.logger = logging.getLogger(
+        self.logger = get_logger(
             "{0}.{1}".format(__name__, self.__class__.__name__)
         )
         self.logger.addHandler(logging.FileHandler("mttime.log"))

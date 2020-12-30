@@ -31,13 +31,22 @@ you should only have to changes these dictionaries.
 
 
 """
-from pathlib import Path
-from mt_metadata.utils import mt_logger
 
+# =============================================================================
+# Package details
+# =============================================================================
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
 __version__ = "0.1.0"
 
+# =============================================================================
+# Imports
+# =============================================================================
+from mt_metadata.utils.mt_logger import get_logger, load_logging_config
+
+# =============================================================================
+# Global Variables
+# =============================================================================
 ACCEPTED_STYLES = [
     "name",
     "url",
@@ -65,24 +74,13 @@ REQUIRED_KEYS = [
     "example",
 ]
 
-module_path = Path(__file__).parent 
-log_config_file = module_path.joinpath("utils", "logging_config.yaml")
+# =============================================================================
+# Initiate logger
+# =============================================================================
+load_logging_config()
+debug_logger = get_logger(__name__, fn="mt_metadata_debug", level="debug")
+debug_logger.debug("Starting MT Metadata Debug Log File")
 
-logger = mt_logger.MTLogger().get_logger("mt_metadata")
-logger.debug("Starting MT Metadata")
+error_logger = get_logger("error", fn="mt_metadata_error", level="error")
 
-# with open(log_config_file, "r") as fid:
-#     config_dict = yaml.safe_load(fid)
-# logging.config.dictConfig(config_dict)
 
-# # open root logger
-# logger = logging.getLogger(__name__)
-
-# # make sure everything is working
-# logger.info("Started mt_metadata")
-# logger.debug("Beginning debug mode for mt_metadata")
-# debug_fn = logger.root.handlers[1].baseFilename
-# error_fn = logger.root.handlers[2].baseFilename
-
-# logger.info("Debug Log file can be found at {0}".format(debug_fn))
-# logger.info("Error Log file can be found at {0}".format(error_fn))

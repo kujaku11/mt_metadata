@@ -23,6 +23,7 @@ from operator import itemgetter
 from mt_metadata.utils.validators import validate_attribute, validate_type
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
+from mt_metadata.utils.mt_logger import get_logger
 
 # =============================================================================
 #  Base class that everything else will inherit
@@ -48,7 +49,7 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = logging.getLogger(f"{__name__}.{self._class_name}")
+        self.logger = get_logger(f"{__name__}.{self._class_name}")
 
         for name, value in kwargs.items():
             self.set_attr_from_name(name, value)
