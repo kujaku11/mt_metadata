@@ -5,8 +5,6 @@ metadata
 ==================
 
 This module deals with metadata as defined by the MT metadata standards.
-`metadata documentation 
-<https://github.com/kujaku11/MTarchive/blob/tables/docs/mt_metadata_guide.pdf>`_.
 
 There are multiple containers for each type of metadata, named appropriately.
 
@@ -18,26 +16,12 @@ Each container will be able to read and write:
     * pandas.Series
     * anything else?
 
-Because a lot of the name words in the metadata are split by '.' there are some
-issues we need to deal with.  I wrote in get and set attribute functions
-to handle these types of names so the user shouldn't have to work about
-splitting the names themselves.
-
-These containers will be the building blocks for the metadata and how they are
-interchanged between the HDF5 file and the user.  A lot of the metadata you
-can get directly from the raw time series files, but the user will need to
-input a decent amount on their own.  Dictionaries are the most fundamental
-type we should be dealing with.
 
 Each container has an attribute called _attr_dict which dictates if the
 attribute is included in output objects, the data type, whether it is a
 required parameter, and the style of output.  This should help down the road
 with validation and keeping the data types consistent.  And if things change
 you should only have to changes these dictionaries.
-
-self._attr_dict = {'nameword':{'type': str, 'required': True, 'style': 'name'}}
-
-Created on Sun Apr 24 20:50:41 2020
 
 :copyright:
     Jared Peacock (jpeacock@usgs.gov)
@@ -47,6 +31,14 @@ Created on Sun Apr 24 20:50:41 2020
 
 
 """
+import logging
+import logging.config
+import yaml
+from pathlib import Path
+
+__author__ = """Jared Peacock"""
+__email__ = "jpeacock@usgs.gov"
+__version__ = "0.1.0"
 
 ACCEPTED_STYLES = [
     "name",
@@ -74,3 +66,22 @@ REQUIRED_KEYS = [
     "alias",
     "example",
 ]
+
+module_path = Path(__file__).parent 
+log_config_file = module_path.joinpath("utils", "logging_config.yaml")
+
+with open(log_config_file, "r") as fid:
+    config_dict = yaml.safe_load(fid)
+logging.config.dictConfig(config_dict)
+
+# open root logger
+logger = logging.getLogger(__name__)
+
+# make sure everything is working
+logger.info("Started mt_metadata")
+logger.debug("Beginning debug mode for mt_metadata")
+debug_fn = logger.root.handlers[1].baseFilename
+error_fn = logger.root.handlers[2].baseFilename
+
+logger.info("Debug Log file can be found at {0}".format(debug_fn))
+logger.info("Error Log file can be found at {0}".format(error_fn))

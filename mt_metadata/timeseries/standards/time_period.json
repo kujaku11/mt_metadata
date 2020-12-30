@@ -1,0 +1,22 @@
+{
+    "end": {
+        "type": "string",
+        "required": true,
+        "style": "time",
+        "units": null,
+        "description": "end date and time of collection in UTC",
+        "options": [],
+        "alias": [],
+        "example": "2020-02-04T16:23:45.453670+00:00"
+    },
+    "start": {
+        "type": "string",
+        "required": true,
+        "style": "time",
+        "units": null,
+        "description": "start date and time of collection in UTC",
+        "options": [],
+        "alias": [],
+        "example": "2020-02-01T09:23:45.453670+00:00"
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comment on timing system",
+        "options": [],
+        "alias": [],
+        "example": "GPS locked with internal quartz clock"
+    },
+    "drift": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "seconds",
+        "description": "estimated drift of the timing system",
+        "options": [],
+        "alias": [],
+        "example": "0.001"
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "type of timing system",
+        "options": [],
+        "alias": [],
+        "example": "GPS"
+    },
+    "uncertainty": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "seconds",
+        "description": "estimated uncertainty of the timing system",
+        "options": [],
+        "alias": [],
+        "example": "0.0002"
+    }
+}

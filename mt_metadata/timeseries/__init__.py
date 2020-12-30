@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-==================
-metadata
-==================
+======================
+time series metadata
+======================
 
 This module deals with metadata as defined by the MT metadata standards.
 `metadata documentation 
@@ -47,9 +47,10 @@ Created on Sun Apr 24 20:50:41 2020
 
 
 """
+
+# package file
+
 ### !!! DO NOT CHANGE THE ORDER !!!
-from .standards.schema import Standards
-from .base import Base
 from .declination import Declination
 from .location import Location
 from .instrument import Instrument
@@ -57,6 +58,7 @@ from .fdsn import Fdsn
 from .rating import Rating
 from .data_quality import DataQuality
 from .citation import Citation
+from .comment import Comment
 from .copyright import Copyright
 from .person import Person
 from .software import Software
@@ -71,16 +73,15 @@ from .filtered import Filtered
 from .filter import Filter
 from .data_logger import DataLogger
 from .survey import Survey
-from .station import Station
-from .run import Run
 from .channel import Channel
 from .auxiliary import Auxiliary
 from .electric import Electric
 from .magnetic import Magnetic
+from .run import Run
+from .station import Station
 
 
 __all__ = [
-    "Base",
     "Standards",
     "Declination",
     "Location",
@@ -89,7 +90,7 @@ __all__ = [
     "Rating",
     "DataQuality",
     "Citation",
-    "Copyright",
+    "Comment" "Copyright",
     "Provenance",
     "Person",
     "Diagnostic",

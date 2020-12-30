@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:02:28 2020
+Created on Wed Dec 23 21:30:36 2020
 
 :copyright: 
     Jared Peacock (jpeacock@usgs.gov)
@@ -11,16 +11,15 @@ Created on Wed Dec 23 21:02:28 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mth5.metadata import Base
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 
-ATTR_DICT = Standards().ATTR_DICT
-# ==============================================================================
-# Citation
-# ==============================================================================
+# =============================================================================
+attr_dict = get_schema("citation", SCHEMA_FN_PATHS)
+# =============================================================================
 class Citation(Base):
-    __doc__ = write_lines(ATTR_DICT["citation"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         self.author = None
@@ -29,4 +28,5 @@ class Citation(Base):
         self.volume = None
         self.doi = None
         self.year = None
-        super().__init__(attr_dict=ATTR_DICT["citation"], **kwargs)
+        self.survey_doi = None
+        super().__init__(attr_dict=attr_dict, **kwargs)

@@ -20,9 +20,9 @@ from collections import OrderedDict
 from collections.abc import Iterable
 from operator import itemgetter
 
-from mth5.metadata.standards.schema import validate_attribute, validate_type
-from mth5.utils.exceptions import MTSchemaError
-from mth5.metadata import helpers
+from mt_metadata.utils.validators import validate_attribute, validate_type
+from mt_metadata.utils.exceptions import MTSchemaError
+from . import helpers
 
 # =============================================================================
 #  Base class that everything else will inherit

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:26:05 2020
+Created on Wed Dec 23 21:30:36 2020
 
 :copyright: 
     Jared Peacock (jpeacock@usgs.gov)
@@ -11,24 +11,46 @@ Created on Wed Dec 23 21:26:05 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mth5.metadata import (
-    Base,
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from . import (
     Fdsn,
     Orientation,
     Person,
     Provenance,
     Location,
     TimePeriod,
+    TransferFunction,
+    Run,
 )
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
 
-ATTR_DICT = Standards().ATTR_DICT
 # =============================================================================
-# Station Class
+attr_dict = get_schema("station", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+attr_dict.add_dict(get_schema("location", SCHEMA_FN_PATHS), "location")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+)
+attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
+attr_dict.add_dict(
+    get_schema("provenance", SCHEMA_FN_PATHS),
+    "provenance",
+    keys=["comments", "creation_time", "log"],
+)
+attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "provenance.software")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS),
+    "provenance.submitter",
+    keys=["author", "email", "organization"],
+)
+attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(
+    get_schema("transfer_function", SCHEMA_FN_PATHS), "transfer_function"
+)
 # =============================================================================
 class Station(Base):
-    __doc__ = write_lines(ATTR_DICT["station"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         self.id = None
@@ -37,6 +59,7 @@ class Station(Base):
         self.datum = None
         self.num_channels = None
         self.channels_recorded = []
+        self.run_list = []
         self.channel_layout = None
         self.comments = None
         self.data_type = None
@@ -45,5 +68,21 @@ class Station(Base):
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
+        self.transfer_function = TransferFunction()
 
-        super().__init__(attr_dict=ATTR_DICT["station"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
+    @property
+    def run_names(self):
+        runs = []
+        for rr in self.run_list:
+            if isinstance(rr, Run):
+                runs.append(rr.id)
+            else:
+                runs.append(rr)
+        return runs
+
+
+# =============================================================================
+# Run
+# =============================================================================

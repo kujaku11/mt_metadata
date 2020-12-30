@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:19:07 2020
+Created on Wed Dec 23 21:30:36 2020
 
 :copyright: 
     Jared Peacock (jpeacock@usgs.gov)
@@ -12,17 +12,17 @@ Created on Wed Dec 23 21:19:07 2020
 # Imports
 # =============================================================================
 import numpy as np
-from mth5.metadata import Base
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
-from mth5.utils.exceptions import MTSchemaError
 
-ATTR_DICT = Standards().ATTR_DICT
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.exceptions import MTSchemaError
+
 # =============================================================================
-# filter
+attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
 # =============================================================================
 class Filtered(Base):
-    __doc__ = write_lines(ATTR_DICT["filtered"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         self._name = []
@@ -30,7 +30,7 @@ class Filtered(Base):
         self.name = None
         self.applied = None
         self.comments = None
-        super().__init__(attr_dict=ATTR_DICT["filtered"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def name(self):
@@ -68,7 +68,7 @@ class Filtered(Base):
 
     @applied.setter
     def applied(self, applied):
-        if not isinstance(applied, (list, tuple, np.ndarray)):
+        if not isinstance(applied, (list, tuple)):
             if applied in [None, "none", "None", "NONE", "null", 0, "0"]:
                 self._applied = [False]
                 return
@@ -113,8 +113,6 @@ class Filtered(Base):
                     raise MTSchemaError(msg.format(app_bool))
             elif isinstance(app_bool, bool):
                 bool_list.append(app_bool)
-            elif isinstance(app_bool, np.bool_):
-                bool_list.append(bool(app_bool))
             else:
                 msg = "Filter.applied must be [True | False], not {0}"
                 self.logger.error(msg.format(app_bool))
@@ -140,7 +138,7 @@ class Filtered(Base):
                     return True
             elif len(self._name) > 1:
                 if len(self._applied) == 1:
-                    self.logger.debug(
+                    self.logger.info(
                         "Assuming all filters have been "
                         + "applied as {0}".format(self._applied[0])
                     )

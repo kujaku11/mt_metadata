@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:24:01 2020
+Created on Wed Dec 23 21:30:36 2020
 
 :copyright: 
     Jared Peacock (jpeacock@usgs.gov)
@@ -11,16 +11,38 @@ Created on Wed Dec 23 21:24:01 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mth5.metadata import Base, Person, Citation, Location, TimePeriod, Fdsn
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from . import Person, Citation, Location, TimePeriod, Fdsn
 
-ATTR_DICT = Standards().ATTR_DICT
-# ==============================================================================
-# Site details
-# ==============================================================================
+# =============================================================================
+attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+)
+attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
+attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
+attr_dict.add_dict(
+    get_schema("location", SCHEMA_FN_PATHS),
+    "northwest_corner",
+    keys=["latitude", "longitude"],
+)
+attr_dict.add_dict(
+    get_schema("location", SCHEMA_FN_PATHS),
+    "southeast_corner",
+    keys=["latitude", "longitude"],
+)
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS),
+    "project_lead",
+    keys=["author", "email", "organization"],
+)
+attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
+# =============================================================================
 class Survey(Base):
-    __doc__ = write_lines(ATTR_DICT["survey"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
@@ -42,4 +64,9 @@ class Survey(Base):
         self.survey_id = None
         self.time_period = TimePeriod()
 
-        super().__init__(attr_dict=ATTR_DICT["survey"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
+
+# =============================================================================
+# Station Class
+# =============================================================================

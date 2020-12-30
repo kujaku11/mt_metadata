@@ -130,6 +130,8 @@ class MTime:
         self.logger = logging.getLogger(
             "{0}.{1}".format(__name__, self.__class__.__name__)
         )
+        self.logger.addHandler(logging.FileHandler("mttime.log"))
+        self.logger.setLevel(logging.DEBUG)
         self.dt_object = self.now()
 
         if time is not None:

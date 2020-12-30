@@ -1,0 +1,42 @@
+{
+    "id": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Given FDSN archive ID name",
+        "options": [],
+        "alias": [],
+        "example": "MT001"
+    },
+    "network": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Given two character FDSN archive network code",
+        "options": [],
+        "alias": [],
+        "example": "EM"
+    },
+    "channel_code": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Three character FDSN channel code",
+        "options": [],
+        "alias": [],
+        "example": "LQN"
+    },
+    "new_epoch": {
+        "type": "boolean",
+        "required": false,
+        "style": "name",
+        "units": null,
+        "description": "Boolean telling if a new epoch needs to be created or not",
+        "options": [],
+        "alias": [],
+        "example": "False"
+    }
+}

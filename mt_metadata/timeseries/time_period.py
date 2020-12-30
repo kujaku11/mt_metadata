@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:14:57 2020
+Created on Wed Dec 23 21:30:36 2020
 
 :copyright: 
     Jared Peacock (jpeacock@usgs.gov)
@@ -11,23 +11,22 @@ Created on Wed Dec 23 21:14:57 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mth5.metadata import Base
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
-from mth5.utils.mttime import MTime
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.mttime import MTime
 
-ATTR_DICT = Standards().ATTR_DICT
 # =============================================================================
-# Time Period
+attr_dict = get_schema("time_period", SCHEMA_FN_PATHS)
 # =============================================================================
 class TimePeriod(Base):
-    __doc__ = write_lines(ATTR_DICT["time_period"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
         self._start_dt = MTime()
         self._end_dt = MTime()
-        super().__init__(attr_dict=ATTR_DICT["time_period"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def start(self):

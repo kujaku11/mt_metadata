@@ -1,0 +1,52 @@
+{
+    "type": {
+        "type": "string",
+        "required": false,
+        "style": "name",
+        "units": null,
+        "description": "battery type",
+        "options": [],
+        "alias": [],
+        "example": "pb-acid gel cell"
+    },
+    "id": {
+        "type": "string",
+        "required": false,
+        "style": "name",
+        "units": null,
+        "description": "battery id",
+        "options": [],
+        "alias": [],
+        "example": "battery01"
+    },
+    "voltage.start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "starting voltage",
+        "options": [],
+        "alias": [],
+        "example": "14.3"
+    },
+    "voltage.end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "volts",
+        "description": "end voltage",
+        "options": [],
+        "alias": [],
+        "example": "12.1"
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "name",
+        "units": null,
+        "description": "any comment about the battery",
+        "options": [],
+        "alias": [],
+        "example": "this is a comment"
+    }
+}

@@ -11,16 +11,21 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mth5.metadata import Channel
-from mth5.metadata.helpers import write_lines
-from mth5.metadata.standards.schema import Standards
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema
+from .standards import SCHEMA_FN_PATHS
+from . import Channel
 
-ATTR_DICT = Standards().ATTR_DICT
 # =============================================================================
-# auxiliary channel
+attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
 # =============================================================================
 class Auxiliary(Channel):
-    __doc__ = write_lines(ATTR_DICT["channel"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+# =============================================================================
+# Electric Channel
+# =============================================================================

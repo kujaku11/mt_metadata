@@ -83,7 +83,6 @@ from .station import Station
 
 
 __all__ = [
-    "Base",
     "Standards",
     "Declination",
     "Location",
@@ -92,7 +91,8 @@ __all__ = [
     "Rating",
     "DataQuality",
     "Citation",
-    "Comment" "Copyright",
+    "Comment",
+    "Copyright",
     "Provenance",
     "Person",
     "Diagnostic",

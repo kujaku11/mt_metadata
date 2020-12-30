@@ -1,0 +1,39 @@
+{
+    "latitude": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "latitude of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "lat"
+        ],
+        "example": "23.134"
+    },
+    "longitude": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "longitude of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "lon",
+            "long"
+        ],
+        "example": "14.23"
+    },
+    "elevation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "elevation of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "elev"
+        ],
+        "example": "123.4"
+    }
+}

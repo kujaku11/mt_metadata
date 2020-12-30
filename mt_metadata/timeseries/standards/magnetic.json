@@ -1,0 +1,42 @@
+{
+    "h_field_min.start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "nt",
+        "description": "minimum magnetic field strength at beginning of measurement",
+        "options": [],
+        "alias": [],
+        "example": "40345.1"
+    },
+    "h_field_min.end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "nt",
+        "description": "minimum magnetic field strength at end of measurement",
+        "options": [],
+        "alias": [],
+        "example": "50453.2"
+    },
+    "h_field_max.start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "nt",
+        "description": "maximum magnetic field strength at beginning of measurement",
+        "options": [],
+        "alias": [],
+        "example": "34565.2"
+    },
+    "h_field_max.end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "nt",
+        "description": "maximum magnetic field strength at end of measurement",
+        "options": [],
+        "alias": [],
+        "example": "34526.1"
+    }
+}

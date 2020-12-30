@@ -1,0 +1,42 @@
+{
+    "author": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "author name",
+        "options": [],
+        "alias": [],
+        "example": "person name"
+    },
+    "organization": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "organization name",
+        "options": [],
+        "alias": [],
+        "example": "mt gurus"
+    },
+    "email": {
+        "type": "string",
+        "required": true,
+        "style": "email",
+        "units": null,
+        "description": "email of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "mt.guru@em.org"
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "email",
+        "units": null,
+        "description": "email of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "expert digger"
+    }
+}
