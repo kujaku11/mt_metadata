@@ -47,30 +47,33 @@ Created on Sun Apr 24 20:50:41 2020
 
 
 """
+
+# package file
+
 ### !!! DO NOT CHANGE THE ORDER !!!
-# from mt_metadata.metadata_base import Base
-# from .standards.schema import Standards
-# from .declination import Declination
-# from .location import Location
-# from .instrument import Instrument
-# from .fdsn import Fdsn
-# from .rating import Rating
-# from .data_quality import DataQuality
-# from .citation import Citation
-# from .copyright import Copyright
-# from .person import Person
-# from .software import Software
-# from .provenance import Provenance
-# from .diagnostic import Diagnostic
-# from .battery import Battery
-# from .electrode import Electrode
-# from .timing_system import TimingSystem
-# from .time_period import TimePeriod
-# from .orientation import Orientation
-# from .filtered import Filtered
-# from .filter import Filter
-# from .data_logger import DataLogger
-# from .survey import Survey
+from .declination import Declination
+from .location import Location
+from .instrument import Instrument
+from .fdsn import Fdsn
+from .rating import Rating
+from .data_quality import DataQuality
+from .citation import Citation
+from .comment import Comment
+from .copyright import Copyright
+from .person import Person
+from .software import Software
+from .provenance import Provenance
+from .diagnostic import Diagnostic
+from .battery import Battery
+from .electrode import Electrode
+from .timing_system import TimingSystem
+from .time_period import TimePeriod
+from .orientation import Orientation
+from .filtered import Filtered
+from .filter import Filter
+from .data_logger import DataLogger
+from .transfer_function import TransferFunction
+from .survey import Survey
 # from .station import Station
 # from .run import Run
 # from .channel import Channel
@@ -79,34 +82,36 @@ Created on Sun Apr 24 20:50:41 2020
 # from .magnetic import Magnetic
 
 
-# __all__ = [
-#     "Base",
-#     "Standards",
-#     "Declination",
-#     "Location",
-#     "Instrument",
-#     "Fdsn",
-#     "Rating",
-#     "DataQuality",
-#     "Citation",
-#     "Copyright",
-#     "Provenance",
-#     "Person",
-#     "Diagnostic",
-#     "Battery",
-#     "Electrode",
-#     "TimingSystem",
-#     "TimePeriod",
-#     "Orientation",
-#     "Software",
-#     "Filtered",
-#     "Filter",
-#     "DataLogger",
-#     "Survey",
-#     "Station",
-#     "Run",
-#     "Channel",
-#     "Auxiliary",
-#     "Electric",
-#     "Magnetic",
-# ]
+__all__ = [
+    "Base",
+    "Standards",
+    "Declination",
+    "Location",
+    "Instrument",
+    "Fdsn",
+    "Rating",
+    "DataQuality",
+    "Citation",
+    "Comment"
+    "Copyright",
+    "Provenance",
+    "Person",
+    "Diagnostic",
+    "Battery",
+    "Electrode",
+    "TimingSystem",
+    "TimePeriod",
+    "Orientation",
+    "Software",
+    "Filtered",
+    "Filter",
+    "DataLogger",
+    "TransferFunction",
+    "Survey",
+    # "Station",
+    # "Run",
+    # "Channel",
+    # "Auxiliary",
+    # "Electric",
+    # "Magnetic",
+]

@@ -14,12 +14,16 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.mttime import MTime
+from . import Person, Software
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "processed_by")
+attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "software")
 # =============================================================================
 class TransferFunction(Base):
-    __doc__ = write_lines(ATTR_DICT["transfer_function"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
@@ -32,7 +36,7 @@ class TransferFunction(Base):
         self.processing_parameters = []
         self._processed_date = MTime()
 
-        super().__init__(attr_dict=ATTR_DICT["transfer_function"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def processed_date(self):

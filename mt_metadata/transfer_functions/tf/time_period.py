@@ -14,18 +14,19 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("time_period", SCHEMA_FN_PATHS)
 # =============================================================================
 class TimePeriod(Base):
-    __doc__ = write_lines(ATTR_DICT["time_period"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
         self._start_dt = MTime()
         self._end_dt = MTime()
-        super().__init__(attr_dict=ATTR_DICT["time_period"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def start(self):

@@ -16,7 +16,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("declination", SCHEMA_FN_PATHS)
 # =============================================================================
 # Location class, be sure to put locations in decimal degrees, and note datum
 # ============================================================================

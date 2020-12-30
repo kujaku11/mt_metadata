@@ -14,3 +14,6 @@ Created on Thu Dec 24 11:59:18 2020
 # =============================================================================
 class MTSchemaError(Exception):
     pass
+    
+class MTTimeError(Exception):
+    pass
