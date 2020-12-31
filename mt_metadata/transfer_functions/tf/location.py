@@ -11,12 +11,16 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from . import Declination
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("location", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
 # =============================================================================
 class Location(Base):
     __doc__ = write_lines(attr_dict)
@@ -30,12 +34,7 @@ class Location(Base):
         self._elevation = 0.0
         self._latitude = 0.0
         self._longitude = 0.0
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0
-        self.x2 = 0.0
-        self.y2 = 0.0
-        super(Location, self).__init__(attr_dict=attr_dict, **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def latitude(self):
@@ -235,8 +234,3 @@ class Location(Base):
             self.logger.warning(msg)
 
         return seconds
-
-
-# ==============================================================================
-# Instrument
-# ==============================================================================

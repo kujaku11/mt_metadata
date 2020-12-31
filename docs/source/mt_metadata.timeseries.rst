@@ -44,14 +44,6 @@ mt\_metadata.timeseries.citation module
    :undoc-members:
    :show-inheritance:
 
-mt\_metadata.timeseries.comment module
---------------------------------------
-
-.. automodule:: mt_metadata.timeseries.comment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 mt\_metadata.timeseries.copyright module
 ----------------------------------------
 

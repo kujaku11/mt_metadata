@@ -16,7 +16,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("declination", SCHEMA_FN_PATHS)
 # =============================================================================
 # Location class, be sure to put locations in decimal degrees, and note datum
 # ============================================================================
@@ -29,6 +29,5 @@ class Declination(Base):
         self.epoch = None
         self.model = None
         self.comments = None
-        super(Declination, self).__init__(attr_dict=attr_dict, **kwargs)
-
-
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        

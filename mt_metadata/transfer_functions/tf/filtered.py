@@ -11,12 +11,15 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.exceptions import MTSchemaError
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
 # =============================================================================
 class Filtered(Base):
     __doc__ = write_lines(attr_dict)
@@ -152,5 +155,3 @@ class Filtered(Base):
                         return False
         else:
             return False
-
-

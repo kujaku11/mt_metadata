@@ -28,26 +28,11 @@ mt\_metadata.utils.mttime module
    :undoc-members:
    :show-inheritance:
 
-mt\_metadata.utils.split\_metadata\_file module
------------------------------------------------
-
-.. automodule:: mt_metadata.utils.split_metadata_file
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 mt\_metadata.utils.validators module
 ------------------------------------
 
 .. automodule:: mt_metadata.utils.validators
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt\_metadata.utils.write\_json\_files module
---------------------------------------------
-
-.. automodule:: mt_metadata.utils.write_json_files
    :members:
    :undoc-members:
    :show-inheritance:

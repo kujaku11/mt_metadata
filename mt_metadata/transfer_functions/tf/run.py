@@ -14,9 +14,41 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from . import (
+    Person,
+    Provenance,
+    TimePeriod,
+    Fdsn,
+    DataLogger,
+    Electric,
+    Magnetic,
+    Auxiliary,
+)
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("run", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+dl_dict = get_schema("instrument", SCHEMA_FN_PATHS)
+dl_dict.add_dict(get_schema("timing_system", SCHEMA_FN_PATHS), "timing_system")
+dl_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "firmware")
+dl_dict.add_dict(get_schema("battery", SCHEMA_FN_PATHS), "power_source")
+attr_dict.add_dict(dl_dict, "data_logger")
+attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+)
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS), "metadata_by", keys=["author", "comments"]
+)
+attr_dict.add_dict(
+    get_schema("provenance", SCHEMA_FN_PATHS), "provenance", keys=["comments", "log"]
+)
+attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ex")
+attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ey")
+attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hx")
+attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hy")
+attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hz")
+attr_dict.add_dict(get_schema("auxiliary", SCHEMA_FN_PATHS), "temperature")
 # =============================================================================
 class Run(Base):
     __doc__ = write_lines(attr_dict)
@@ -24,9 +56,6 @@ class Run(Base):
     def __init__(self, **kwargs):
         self.id = None
         self.sample_rate = None
-        # self.channels_recorded_auxiliary = []
-        # self.channels_recorded_electric = []
-        # self.channels_recorded_magnetic = []
         self.comments = None
         self._n_chan = None
         self.data_type = None
@@ -41,8 +70,6 @@ class Run(Base):
         self._hx = Magnetic()
         self._hy = Magnetic()
         self._hz = Magnetic()
-        self._rrhx = Magnetic()
-        self._rrhy = Magnetic()
         self._temperature = Auxiliary()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
@@ -78,35 +105,63 @@ class Run(Base):
     @property
     def channels_recorded_electric(self):
         rchannels = []
-        for comp in ["ex", "ey"]:
-            obj = getattr(self, comp)
-            if obj.component is None:
-                continue
-            if obj.component.lower() in [comp]:
-                rchannels.append(comp)
+        for key, obj in self.__dict__.items():
+            if isinstance(obj, Electric):
+                if obj.component is None:
+                    continue
+                rchannels.append(obj.component)
         return rchannels
+    
+    @channels_recorded_electric.setter
+    def channels_recorded_electric(self, value):
+        if isinstance(value, str):
+            value = [value]
+        for comp in value:
+            if comp.lower() in ["ex", "ey"]:
+                setattr(self, comp, Electric(component=comp))
+            else:
+                msg = f"Input electric channel must be ex or ey, not {comp}"
+                self.logger.error(msg)
+                raise ValueError(msg)
 
     @property
     def channels_recorded_magnetic(self):
         rchannels = []
-        for comp in ["hx", "hy", "hz"]:
-            obj = getattr(self, comp)
-            if obj.component is None:
-                continue
-            if obj.component.lower() in [comp]:
-                rchannels.append(comp)
+        for key, obj in self.__dict__.items():
+            if isinstance(obj, Magnetic):
+                if obj.component is None:
+                    continue
+                rchannels.append(obj.component)
         return rchannels
+    
+    @channels_recorded_magnetic.setter
+    def channels_recorded_magnetic(self, value):
+        if isinstance(value, str):
+            value = [value]
+        for comp in value:
+            if comp.lower() in ["hx", "hy", "hz", "rrhx", "rrhy"]:
+                setattr(self, comp, Magnetic(component=comp))
+            else:
+                msg = f"Input magnetic channel must be in [hx, hy, hz, rrhx, rrhy], not {comp}"
+                self.logger.error(msg)
+                raise ValueError(msg)
 
     @property
     def channels_recorded_auxiliary(self):
         rchannels = []
-        for comp in ["temperature"]:
-            obj = getattr(self, comp)
-            if obj.component is None:
-                continue
-            if obj.component.lower() in [comp]:
-                rchannels.append(comp)
+        for key, obj in self.__dict__.items():
+            if isinstance(obj, Auxiliary):
+                if obj.component is None:
+                    continue
+                rchannels.append(obj.component)
         return rchannels
+    
+    @channels_recorded_auxiliary.setter
+    def channels_recorded_auxiliary(self, value):
+        if isinstance(value, str):
+            value = [value]
+        for comp in value:
+            setattr(self, comp, Auxiliary(component=comp))
 
     @property
     def ex(self):
@@ -204,44 +259,6 @@ class Run(Base):
         self._hz.from_dict(value.to_dict())
 
     @property
-    def rrhx(self):
-        return self._rrhx
-
-    @rrhx.setter
-    def rrhx(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["rrhx"]:
-            msg = f"Input Magnetic.component must be rrhx not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
-        self._rrhx.from_dict(value.to_dict())
-
-    @property
-    def rrhy(self):
-        return self._rrhy
-
-    @rrhy.setter
-    def rrhy(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["rrhy"]:
-            msg = f"Input Magnetic.component must be rrhy not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
-        self._rrhy.from_dict(value.to_dict())
-
-    @property
     def temperature(self):
         return self._temperature
 
@@ -256,8 +273,3 @@ class Run(Base):
             self.logger.error(ValueError)
             raise ValueError(msg)
         self._temperature.from_dict(value.to_dict())
-
-
-# =============================================================================
-# Base Channel
-# =============================================================================

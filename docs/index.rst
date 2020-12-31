@@ -34,15 +34,8 @@ Welcome to MT Metadata documentation!
     :maxdepth: 2
     :caption: Packages
 	
-	\source\mt_metadata
-	\source\mt_metadata.base
-	\source\mt_metadata.timeseries
-	\source\mt_metadata.timeseries.standards
-	\source\mt_metadata.transfer_functions
-	\source\mt_metadata.transfer_functions.emtf_xml
-	\source\mt_metadata.transfer_functions.tf
-	\source\mt_metadata.transfer_functions.tf.standards
-	\source\mt_metadata.utils
+    source/modules
+	
 
 Indices and tables
 ==================

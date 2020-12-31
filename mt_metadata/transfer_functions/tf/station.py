@@ -14,9 +14,38 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from . import (
+    Fdsn,
+    Orientation,
+    Person,
+    Provenance,
+    Location,
+    TimePeriod,
+    Run,
+)
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("station", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+location_dict = get_schema("location", SCHEMA_FN_PATHS)
+location_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
+attr_dict.add_dict(location_dict, "location")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+)
+attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
+attr_dict.add_dict(
+    get_schema("provenance", SCHEMA_FN_PATHS),
+    "provenance",
+    keys=["comments", "creation_time", "log"],
+)
+attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "provenance.software")
+attr_dict.add_dict(
+    get_schema("person", SCHEMA_FN_PATHS),
+    "provenance.submitter",
+    keys=["author", "email", "organization"],
+)
+attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -37,10 +66,9 @@ class Station(Base):
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
-        self.transfer_function = TransferFunction()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-
+        
     @property
     def run_names(self):
         runs = []
@@ -50,8 +78,3 @@ class Station(Base):
             else:
                 runs.append(rr)
         return runs
-
-
-# =============================================================================
-# Run
-# =============================================================================
