@@ -26,7 +26,7 @@ attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
     get_schema("location", SCHEMA_FN_PATHS),
     "location",
-    keys=["latitude", "longitude", "elevation", "x", "x2", "y", "y2"],
+    keys=["latitude", "longitude", "elevation"],
 )
 # =============================================================================
 class Channel(Base):

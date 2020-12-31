@@ -35,9 +35,10 @@ class Electric(Channel):
         self.contact_resistance = Diagnostic()
         self.ac = Diagnostic()
         self.dc = Diagnostic()
-        self.units_s = None
-
-        Channel.__init__(self, **kwargs)
+        self.units = None
         self.type = "electric"
 
+        # must go after setting attributes otherwise Base won't find attribute
+        # descriptions and throw an error
+        Channel.__init__(self, **kwargs)
         self._attr_dict = attr_dict

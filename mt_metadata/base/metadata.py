@@ -65,13 +65,17 @@ class Base:
         return self.to_json()
 
     def __eq__(self, other):
-        if isinstance(other, (Base, dict, str, pd.Series)):
+        if other in [None]: 
+            return False
+        elif isinstance(other, (Base, dict, str, pd.Series)):
             home_dict = self.to_dict()[self._class_name]
             if isinstance(other, Base):
                 other_dict = other.to_dict()[self._class_name]
             elif isinstance(other, dict):
                 other_dict = other
             elif isinstance(other, str):
+                if other.lower() in ["none", "null", "unknown"]:
+                    return False
                 other_dict = OrderedDict(
                     sorted(json.loads(other).items(), key=itemgetter(0))
                 )
@@ -170,6 +174,10 @@ class Base:
         validate type from standards
         
         """
+        # if the value is a metadata type skip cause the individual components
+        # will be validated separately
+        if "metadata" in str(type(value)):
+            return value
         # return if the value is None, this may need to change in the future
         # if an empty list or something else should be returned
         if not isinstance(value, (list, tuple, np.ndarray)):

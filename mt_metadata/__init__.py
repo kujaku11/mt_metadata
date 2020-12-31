@@ -75,7 +75,7 @@ REQUIRED_KEYS = [
 ]
 
 # =============================================================================
-# Initiate logger
+# Initiate loggers
 # =============================================================================
 load_logging_config()
 debug_logger = get_logger(__name__, fn="mt_metadata_debug", level="debug")

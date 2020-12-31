@@ -78,5 +78,20 @@
         "options": [],
         "alias": [],
         "example": "MT001"
+    },
+    "run_list": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of runs recorded by the station. Should be a summary of all runss recorded",
+        "options": [
+            "a",
+            "b",
+            "c",
+            "other"
+        ],
+        "alias": [],
+        "example": "\"[ mt001a, mt001b, mt001c ]\""
     }
 }
