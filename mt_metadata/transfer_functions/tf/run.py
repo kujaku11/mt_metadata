@@ -14,39 +14,9 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import (
-    Person,
-    Provenance,
-    TimePeriod,
-    Fdsn,
-    DataLogger,
-    Electric,
-    Magnetic,
-    Auxiliary,
-)
 
 # =============================================================================
-attr_dict = get_schema("run", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "data_logger")
-attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
-)
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "metadata_by", keys=["author", "comments"]
-)
-attr_dict.add_dict(
-    get_schema("provenance", SCHEMA_FN_PATHS), "provenance", keys=["comments", "log"]
-)
-attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ex")
-attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ey")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hx")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hy")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hz")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "rrhx")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "rrhy")
-attr_dict.add_dict(get_schema("auxiliary", SCHEMA_FN_PATHS), "temperature")
+attr_dict = get_schema(name, SCHEMA_FN_PATHS)
 # =============================================================================
 class Run(Base):
     __doc__ = write_lines(attr_dict)
@@ -286,3 +256,8 @@ class Run(Base):
             self.logger.error(ValueError)
             raise ValueError(msg)
         self._temperature.from_dict(value.to_dict())
+
+
+# =============================================================================
+# Base Channel
+# =============================================================================

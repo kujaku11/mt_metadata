@@ -16,7 +16,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("fdsn", SCHEMA_FN_PATHS)
+attr_dict = get_schema(name, SCHEMA_FN_PATHS)
 # =============================================================================
 class Fdsn(Base):
     __doc__ = write_lines(attr_dict)
@@ -28,3 +28,8 @@ class Fdsn(Base):
         self.new_epoch = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+
+# ==============================================================================
+# Data Quality
+# ==============================================================================

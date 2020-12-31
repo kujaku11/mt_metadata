@@ -46,6 +46,7 @@ class Base:
     def __init__(self, attr_dict={}, **kwargs):
 
         self._attr_dict = attr_dict
+        self._changed = False
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
@@ -104,6 +105,14 @@ class Base:
 
     def __len__(self):
         return len(self.get_attribute_list())
+    
+    @property
+    def changed(self):
+        return self._changed
+    
+    @changed.setter
+    def changed(self, value):
+        self._changed = value
 
     def get_attribute_list(self):
         """
@@ -349,6 +358,7 @@ class Base:
             "name",
             "applied",
             "logger",
+            "changed",
         ]
 
         if hasattr(self, "_attr_dict"):
@@ -369,6 +379,7 @@ class Base:
                             self.logger.warning(msg.format(value, options, name))
 
         super().__setattr__(name, value)
+        
 
     def _get_standard_type(self, name):
         """

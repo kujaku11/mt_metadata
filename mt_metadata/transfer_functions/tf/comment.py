@@ -14,10 +14,9 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
-attr_dict = get_schema("comment", SCHEMA_FN_PATHS)
+attr_dict = get_schema(name, SCHEMA_FN_PATHS)
 # =============================================================================
 class Comment(Base):
     __doc__ = write_lines(attr_dict)
@@ -26,7 +25,6 @@ class Comment(Base):
         self.comment = None
         self.author = None
         self._dt = MTime()
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def date(self):
@@ -35,3 +33,8 @@ class Comment(Base):
     @date.setter
     def date(self, dt_str):
         self._dt.from_str(dt_str)
+
+
+# ==============================================================================
+# Copyright
+# ==============================================================================
