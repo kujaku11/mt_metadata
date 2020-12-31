@@ -27,7 +27,9 @@ from . import (
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-attr_dict.add_dict(get_schema("location", SCHEMA_FN_PATHS), "location")
+location_dict = get_schema("location", SCHEMA_FN_PATHS)
+location_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
+attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
 )

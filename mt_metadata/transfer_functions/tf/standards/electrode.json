@@ -1,0 +1,64 @@
+{
+   "x": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station in the east direction",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0"
+    },
+    "x2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station in the east direction",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0"
+    },
+    "y": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station in the north direction",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0"
+    },
+    "y2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station in the north direction",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0"
+    },
+	    "z": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0"
+    }
+}

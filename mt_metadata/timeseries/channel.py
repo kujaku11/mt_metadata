@@ -18,7 +18,9 @@ from . import DataQuality, Filtered, Location, TimePeriod, Instrument, Fdsn
 
 # =============================================================================
 attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("data_quality", SCHEMA_FN_PATHS), "data_quality")
+dq_dict = get_schema("data_quality", SCHEMA_FN_PATHS)
+dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
+attr_dict.add_dict(dq_dict, "data_quality")
 attr_dict.add_dict(get_schema("filtered", SCHEMA_FN_PATHS), "filter")
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "sensor")

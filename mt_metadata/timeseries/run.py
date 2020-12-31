@@ -28,7 +28,11 @@ from . import (
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "data_logger")
+dl_dict = get_schema("instrument", SCHEMA_FN_PATHS)
+dl_dict.add_dict(get_schema("timing_system", SCHEMA_FN_PATHS), "timing_system")
+dl_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "firmware")
+dl_dict.add_dict(get_schema("battery", SCHEMA_FN_PATHS), "power_source")
+attr_dict.add_dict(dl_dict, "data_logger")
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
@@ -113,7 +117,7 @@ class Run(Base):
         if isinstance(value, str):
             value = [value]
         for comp in value:
-            if comp in ["ex", "ey"]:
+            if comp.lower() in ["ex", "ey"]:
                 setattr(self, comp, Electric(component=comp))
             else:
                 msg = f"Input electric channel must be ex or ey, not {comp}"
@@ -135,7 +139,7 @@ class Run(Base):
         if isinstance(value, str):
             value = [value]
         for comp in value:
-            if comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
+            if comp.lower() in ["hx", "hy", "hz", "rrhx", "rrhy"]:
                 setattr(self, comp, Magnetic(component=comp))
             else:
                 msg = f"Input magnetic channel must be in [hx, hy, hz, rrhx, rrhy], not {comp}"
