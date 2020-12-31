@@ -55,6 +55,9 @@ def get_logger(logger_name, fn=None, level="debug"):
     logger = logging.getLogger(logger_name)
     if fn is not None:
         fn = LOG_PATH.joinpath(fn)
+        exists = False
+        if fn.exists():
+            exists = True
         if fn.suffix not in [".log"]:
             fn = Path(fn.parent, f"{fn.stem}.log")
         fn_handler = logging.handlers.RotatingFileHandler(fn,
@@ -64,7 +67,8 @@ def get_logger(logger_name, fn=None, level="debug"):
         fn_handler.setFormatter(FORMATTER)
         fn_handler.setLevel(LEVEL_DICT[level.lower()])
         logger.addHandler(fn_handler)
-        logger.info(f"Logging file can be found {logger.handlers[-1].baseFilename}")
+        if not exists:
+            logger.info(f"Logging file can be found {logger.handlers[-1].baseFilename}")
     else:
         logger.addHandler(logging.NullHandler())
 

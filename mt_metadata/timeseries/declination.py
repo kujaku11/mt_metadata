@@ -29,4 +29,5 @@ class Declination(Base):
         self.epoch = None
         self.model = None
         self.comments = None
-        super(Declination, self).__init__(attr_dict=attr_dict, **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        

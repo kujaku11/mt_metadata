@@ -14,7 +14,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "geomagnetic reference model used to calculate declination",
+        "description": "geomagnetic reference model used to calculate declination plus the year estimated.",
         "options": [
             "EMAG2",
             "EMM",

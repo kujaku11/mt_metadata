@@ -48,8 +48,6 @@ Created on Sun Apr 24 20:50:41 2020
 
 """
 
-# package file
-
 ### !!! DO NOT CHANGE THE ORDER !!!
 from .declination import Declination
 from .location import Location
@@ -58,7 +56,6 @@ from .fdsn import Fdsn
 from .rating import Rating
 from .data_quality import DataQuality
 from .citation import Citation
-from .comment import Comment
 from .copyright import Copyright
 from .person import Person
 from .software import Software
@@ -90,7 +87,7 @@ __all__ = [
     "Rating",
     "DataQuality",
     "Citation",
-    "Comment" "Copyright",
+    "Copyright",
     "Provenance",
     "Person",
     "Diagnostic",
@@ -111,3 +108,4 @@ __all__ = [
     "Electric",
     "Magnetic",
 ]
+
