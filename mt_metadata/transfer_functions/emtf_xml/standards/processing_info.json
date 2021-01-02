@@ -1,0 +1,35 @@
+{
+    "sign_convention": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Sign convention of the processing software output",
+        "options": [
+            "exp(+ i\\omega t)",
+            "exp(- i\\omega t)"
+        ],
+        "alias": [],
+        "example": "exp(+ i\\omega t)"
+    },
+    "processed_by": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Names of people who processed the data",
+        "options": [],
+        "alias": [],
+        "example": "MT Guru"
+    },
+    "processing_tag": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "List of remote references",
+        "options": [],
+        "alias": [],
+        "example": "mt001-mt002"
+    }
+}

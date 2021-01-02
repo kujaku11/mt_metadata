@@ -1,0 +1,28 @@
+{
+    "location": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Direction of electrode",
+        "options": [
+            "N",
+            "S",
+            "E",
+            "W",
+            "other"
+        ],
+        "alias": [],
+        "example": "N"
+    },
+    "number": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Electrode ID number",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    }
+}

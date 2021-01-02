@@ -1,0 +1,22 @@
+{
+    "errors": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any field errors",
+        "options": [],
+        "alias": [],
+        "example": "moose ate cables"
+    },
+    "run": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Run name",
+        "options": [],
+        "alias": [],
+        "example": "mt001a"
+    }
+}

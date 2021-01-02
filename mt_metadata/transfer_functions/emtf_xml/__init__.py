@@ -1,27 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+==================
+EMTF XML metadata
+==================
+
+The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__. 
+
+:copyright:
+    Jared Peacock (jpeacock@usgs.gov)
+    
+:license: 
+    MIT
+
+
+"""
+
 # package file
-import os
-from pathlib import Path
 
-CSV_PATH = Path(__file__).parent
+### !!! DO NOT CHANGE THE ORDER !!!
+from .external_url import ExternalUrl
+from .primary_data import PrimaryData
+from .attachment import Attachment
+from .person import Person
+from .citation import Citation
+from .comment import Comment
+from .provenance import Provenance
+from .copyright import Copyright
+from .data_quality_notes import DataQualityNotes
+from .data_quality_warnings import DataQualityWarnings
+from .site import Site
 
-CSV_LIST = [
-    "xml_external_url.csv",
-    "xml_primary_data.csv",
-    "xml_attachment.csv",
-    "xml_person.csv",
-    "xml_provenance.csv",
-    "xml_copyright.csv",
-    "xml_data_quality_notes.csv",
-    "xml_data_quality_warnings.csv",
-    "xml_emtf.csv",
-    "xml_site.csv",
-    "xml_electrode.csv",
-    "xml_dipole.csv",
-    "xml_field_notes.csv",
-    "xml_software.csv",
-    "xml_processing_info.csv",
-    "xml_statistical_estimates.csv",
-    "xml_estimate.csv",
+
+__all__ = [
+    "ExternalUrl",
+    "PrimaryData",
+    "Attachment",
+    "Person",
+    "Provenance",
+    "Citation",
+    "Copyright",
+    "DataQualityNotes",
+    "DataQualityWarnings",
+    "Site",
 ]
-
-XML_CSV_FN_PATHS = [CSV_PATH.joinpath(fn) for fn in CSV_LIST]

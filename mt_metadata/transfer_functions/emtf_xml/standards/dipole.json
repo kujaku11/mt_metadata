@@ -1,0 +1,32 @@
+{
+    "manfacturer": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the manufacturer of the instrument",
+        "options": [],
+        "alias": [],
+        "example": "MT Gurus"
+    },
+    "length": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "Dipole length",
+        "options": [],
+        "alias": [],
+        "example": "10"
+    },
+    "azimuth": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Azimuth of the dipole relative to coordinate system",
+        "options": [],
+        "alias": [],
+        "example": "90"
+    }
+}

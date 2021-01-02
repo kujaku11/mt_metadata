@@ -1,0 +1,25 @@
+{
+    "conditions_of_use": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Any notes on conditions of use",
+        "options": [],
+        "alias": [],
+        "example": "Cite data upon usage."
+    },
+    "release_status": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "the release status of the data",
+        "options": [
+            "unrestricted release",
+            "restricted release"
+        ],
+        "alias": [],
+        "example": "unrestricted release"
+    }
+}
