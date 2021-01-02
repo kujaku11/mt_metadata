@@ -29,6 +29,8 @@ from .copyright import Copyright
 from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
 from .site import Site
+from .electrode import Electrode
+from .dipole import Dipole
 
 
 __all__ = [
@@ -42,4 +44,6 @@ __all__ = [
     "DataQualityNotes",
     "DataQualityWarnings",
     "Site",
+    "Electrode",
+    "Dipole",
 ]

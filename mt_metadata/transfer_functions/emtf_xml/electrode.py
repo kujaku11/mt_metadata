@@ -16,8 +16,10 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("electrode", SCHEMA_FN_PATHS)
 # =============================================================================
+
+
 class Electrode(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -26,5 +28,3 @@ class Electrode(Base):
         self.number = 0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-
