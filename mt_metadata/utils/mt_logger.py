@@ -22,8 +22,9 @@ LEVEL_DICT = {"debug": logging.DEBUG,
               "error": logging.ERROR,
               "critical": logging.CRITICAL}
 
-if not CONF_PATH.exists():
-    CONF_PATH.mkdir()
+
+if not LOG_PATH.exists():
+    LOG_PATH.mkdir()
 
 if not CONF_FILE.exists():
     CONF_FILE = None
