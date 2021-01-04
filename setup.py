@@ -41,7 +41,7 @@ setup(
     long_description=readme + "\n\n" + history,
     include_package_data=True,
     keywords="mt_metadata",
-    name="mth5",
+    name="mt_metadata",
     packages=find_packages(include=["mt_metadata", "mt_metadata.*"]),
     setup_requires=setup_requirements,
     test_suite="tests",
