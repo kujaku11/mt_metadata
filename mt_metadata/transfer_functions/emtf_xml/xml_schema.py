@@ -87,7 +87,8 @@ class XMLStandards:
 
     @property
     def xml_emtf_dict(self):
-        emtf_dict = schema.from_csv(schema.get_level_fn("xml_emtf", XML_CSV_FN_PATHS))
+        emtf_dict = schema.from_csv(
+            schema.get_level_fn("xml_emtf", XML_CSV_FN_PATHS))
         emtf_dict.add_dict(self.xml_external_url_dict, "external_url")
         emtf_dict.add_dict(self.xml_primary_data_dict, "primary_data")
         emtf_dict.add_dict(self.xml_attachment_dict, "attachment")
@@ -114,7 +115,8 @@ class XMLStandards:
 
     @property
     def xml_site_dict(self):
-        site_dict = schema.from_csv(schema.get_level_fn("xml_site", XML_CSV_FN_PATHS))
+        site_dict = schema.from_csv(
+            schema.get_level_fn("xml_site", XML_CSV_FN_PATHS))
         site_dict.add_dict(self.mt_standards.location_dict.copy(), "location")
         site_dict.add_dict(
             self.xml_data_quality_notes_dict.copy(), "data_quality_notes"
@@ -180,16 +182,18 @@ class XMLStandards:
     def ATTR_DICT(self):
         keys = [fn.stem for fn in XML_CSV_FN_PATHS]
         return dict(
-            [(key, deepcopy(getattr(self, "{0}_dict".format(key)))) for key in keys]
+            [(key, deepcopy(
+                getattr(self, "{0}_dict".format(key)))) for key in keys]
         )
         self.logger.debug("Successfully made ATTR_DICT")
 
     def summarize_standards(
-        self, levels=["survey", "station", "run", "auxiliary", "electric", "magnetic"]
+        self, levels=["survey", "station", "run",
+                      "auxiliary", "electric", "magnetic"]
     ):
         """
         Summarize the metadata definitions
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 

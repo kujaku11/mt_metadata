@@ -16,11 +16,11 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("estimate", SCHEMA_FN_PATHS)
+attr_dict = get_schema("data_type", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
-class Estimate(Base):
+class DataType(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -30,5 +30,8 @@ class Estimate(Base):
         self.tag = None
         self.external_url = None
         self.intention = None
+        self.input = None
+        self.output = None
+        self.units = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

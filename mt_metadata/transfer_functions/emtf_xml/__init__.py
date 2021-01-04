@@ -31,6 +31,13 @@ from .data_quality_warnings import DataQualityWarnings
 from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
+from .field_notes import FieldNotes
+from .software import Software
+from .processing_info import ProcessingInfo
+from .estimate import Estimate
+from .statistical_estimates import StatisticalEstimates
+from .data_type import DataType
+from .data_types import DataTypes
 
 
 __all__ = [
@@ -46,4 +53,13 @@ __all__ = [
     "Site",
     "Electrode",
     "Dipole",
+    "FieldNotes",
+    "Software",
+    "ProcessingInfo",
+    "Estimate",
+    "StatisticalEstimates",
+    "DataType",
+    "DataTypes",
+    
+    
 ]

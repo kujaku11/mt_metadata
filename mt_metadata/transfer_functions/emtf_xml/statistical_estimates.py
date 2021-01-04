@@ -16,19 +16,14 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("estimate", SCHEMA_FN_PATHS)
+attr_dict = get_schema("statistical_estimates", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
-class Estimate(Base):
+class StatisticalEstimates(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.name = None
-        self.type = None
-        self.description = None
-        self.tag = None
-        self.external_url = None
-        self.intention = None
 
+        self.estimates_list = []
         super().__init__(attr_dict=attr_dict, **kwargs)

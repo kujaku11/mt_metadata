@@ -1,0 +1,100 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "var"
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of number contained in the estimate",
+        "options": [
+            "real",
+            "complex"
+        ],
+        "alias": [],
+        "example": "real"
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Description of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "this is an estimate"
+    },
+    "external_url": {
+        "type": "string",
+        "required": true,
+        "style": "url",
+        "units": null,
+        "description": "Full path to external link that has additional information",
+        "options": [],
+        "alias": [],
+        "example": "http://www.iris.edu/dms/products/emtf/variance.html"
+    },
+    "intention": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "The intension of the statistical estimate",
+        "options": [
+            "error estimate",
+            "signal coherence",
+            "signal power estimate",
+            "primary data type"
+        ],
+        "alias": [],
+        "example": "error estimate"
+    },
+    "tag": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "A useful tag for the estimate",
+        "options": [],
+        "alias": [],
+        "example": "tipper"
+    },
+	"output": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of output channels in data type",
+        "options": ["E", "H"],
+        "alias": [],
+        "example": "E"
+    },
+	"input": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of input channels in data type",
+        "options": ["E", "H"],
+        "alias": [],
+        "example": "E"
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Units for the data type",
+        "options": [],
+        "alias": [],
+        "example": "[mV/km]/[nT]"
+    }
+}

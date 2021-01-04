@@ -14,12 +14,19 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-
+from . import Dipole
+from mt_metadata.utils.mttime import MTime
+from mt_metadata.transfer_functions.tf import Instrument
 # =============================================================================
-attr_dict = get_schema(name, SCHEMA_FN_PATHS)
+attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
+attr_dict.add_dict(Dipole()._attr_dict, "ex")
+attr_dict.add_dict(Dipole()._attr_dict, "ey")
+attr_dict.add_dict(Instrument()._attr_dict, "hx")
+attr_dict.add_dict(Instrument()._attr_dict, "hy")
+attr_dict.add_dict(Instrument()._attr_dict, "hz")
 # =============================================================================
 class FieldNotes(Base):
-    __doc__ = write_lines(ATTR_DICT["xml_field_notes"])
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         self.errors = None
@@ -30,10 +37,10 @@ class FieldNotes(Base):
         self.hx = Instrument()
         self.hy = Instrument()
         self.hz = Instrument()
-        self.dipole_01 = Dipole()
-        self.dipole_02 = Dipole()
+        self.ex = Dipole()
+        self.ey = Dipole()
 
-        super().__init__(attr_dict=ATTR_DICT["xml_field_notes"], **kwargs)
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def start(self):
