@@ -38,6 +38,10 @@ from .estimate import Estimate
 from .statistical_estimates import StatisticalEstimates
 from .data_type import DataType
 from .data_types import DataTypes
+from .magnetic import Magnetic
+from .electric import Electric
+from .channels import Channels
+from .site_layout import SiteLayout
 
 
 __all__ = [
@@ -60,6 +64,11 @@ __all__ = [
     "StatisticalEstimates",
     "DataType",
     "DataTypes",
+    "Magnetic",
+    "Electric",
+    "Channels",
+    "Layout",
+    
     
     
 ]
