@@ -50,6 +50,8 @@ attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hy")
 attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hz")
 attr_dict.add_dict(get_schema("auxiliary", SCHEMA_FN_PATHS), "temperature")
 # =============================================================================
+
+
 class Run(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -78,7 +80,8 @@ class Run(Base):
     def n_channels(self):
         number = 0
         for channel in ["auxiliary", "electric", "magnetic"]:
-            channel_list = getattr(self, "channels_recorded_{0}".format(channel))
+            channel_list = getattr(
+                self, "channels_recorded_{0}".format(channel))
             if channel_list is not None:
                 number += len(channel_list)
         return number
@@ -86,7 +89,7 @@ class Run(Base):
     @property
     def channels_recorded_all(self):
         """
-        
+
         :return: a list of all channels recorded
         :rtype: TYPE
 
@@ -111,9 +114,12 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_electric.setter
     def channels_recorded_electric(self, value):
+        if value is None:
+            self.logger.debug("Input channel name is None, skipping")
+            return
         if isinstance(value, str):
             value = [value]
         for comp in value:
@@ -133,9 +139,12 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_magnetic.setter
     def channels_recorded_magnetic(self, value):
+        if value is None:
+            self.logger.debug("Input channel name is None, skipping")
+            return
         if isinstance(value, str):
             value = [value]
         for comp in value:
@@ -155,9 +164,12 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_auxiliary.setter
     def channels_recorded_auxiliary(self, value):
+        if value is None:
+            self.logger.debug("Input channel name is None, skipping")
+            return
         if isinstance(value, str):
             value = [value]
         for comp in value:

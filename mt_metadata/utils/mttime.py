@@ -45,12 +45,12 @@ leap_second_dict = {
 def calculate_leap_seconds(year, month, day):
     """
     get the leap seconds for the given year to convert GPS time to UTC time
-    
+
     .. note:: GPS time started in 1980
-    
+
     .. note:: GPS time is leap seconds ahead of UTC time, therefore you
               should subtract leap seconds from GPS time to get UTC time.
-              
+
     =========================== ===============================================
     Date Range                  Leap Seconds
     =========================== ===============================================
@@ -73,7 +73,7 @@ def calculate_leap_seconds(year, month, day):
     2015-07-01 - 2017-01-01     17
     2017-01-01 - ????-??-??     18
     =========================== ===============================================
-    
+
     """
 
     # make the date a datetime object, easier to test
@@ -129,10 +129,12 @@ class MTime:
     def __init__(self, time=None, gps_time=False):
 
         self.logger = get_logger(
-            "{0}.{1}".format(__name__, self.__class__.__name__)
+            "{0}.{1}".format(__name__, self.__class__.__name__),
+            # fn="mt_time.log",
+            # level="debug",
         )
-        self.logger.addHandler(logging.FileHandler("mttime.log"))
-        self.logger.setLevel(logging.DEBUG)
+        # self.logger.addHandler(logging.FileHandler("mttime.log"))
+        # self.logger.setLevel(logging.DEBUG)
         self.dt_object = self.now()
 
         if time is not None:
@@ -171,7 +173,8 @@ class MTime:
             self.from_str("1980-01-01 00:00:00")
 
         if gps_time:
-            leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
+            leap_seconds = calculate_leap_seconds(
+                self.year, self.month, self.day)
             self.logger.debug(
                 f"Converting GPS time to UTC with {leap_seconds} leap seconds"
             )
@@ -270,7 +273,7 @@ class MTime:
         """
         add time only using datetime.timedelta, otherwise it does not make 
         sense to at 2 times together.  
-        
+
         """
         if isinstance(other, (int, float)):
             other = datetime.timedelta(seconds=other)
@@ -291,7 +294,7 @@ class MTime:
     def __sub__(self, other):
         """
         Get the time difference between to times in seconds.
-        
+
         :param other: other time value
         :type other: [ str | float | int | datetime.datetime | np.datetime64 ]
         :return: time difference in seconds
@@ -450,7 +453,7 @@ def get_now_utc():
     Get the current time in UTC format
     :return: ISO formatted string of current time in UTC
     :rtype: string
-    
+
     """
 
     m_obj = MTime()

@@ -35,6 +35,8 @@ you should only have to changes these dictionaries.
 # =============================================================================
 # Package details
 # =============================================================================
+
+
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
 __version__ = "0.1.0"
@@ -42,11 +44,15 @@ __version__ = "0.1.0"
 # =============================================================================
 # Imports
 # =============================================================================
+
+
 from mt_metadata.utils.mt_logger import get_logger, load_logging_config
 
 # =============================================================================
 # Global Variables
 # =============================================================================
+
+
 ACCEPTED_STYLES = [
     "name",
     "url",
@@ -77,6 +83,8 @@ REQUIRED_KEYS = [
 # =============================================================================
 # Initiate loggers
 # =============================================================================
+
+
 load_logging_config()
 debug_logger = get_logger(__name__, fn="mt_metadata_debug", level="debug")
 debug_logger.debug("Starting MT Metadata Debug Log File")
