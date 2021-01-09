@@ -13,7 +13,7 @@ from copy import deepcopy
 from dateutil import parser as dtparser
 from dateutil.tz.tz import tzutc
 
-from .mt_logger import get_logger
+from .mt_logger import get_logger, LOG_PATH, FORMATTER
 from .exceptions import MTTimeError
 
 # =============================================================================
@@ -129,22 +129,18 @@ class MTime:
     def __init__(self, time=None, gps_time=False):
 
         self.logger = get_logger(
-            "{0}.{1}".format(__name__, self.__class__.__name__),
-            # fn="mt_time.log",
-            # level="debug",
-        )
-        # self.logger.addHandler(logging.FileHandler("mttime.log"))
-        # self.logger.setLevel(logging.DEBUG)
+            "{0}.{1}".format(__name__, self.__class__.__name__), 
+            "mt_time.log")
         self.dt_object = self.now()
 
         if time is not None:
             if isinstance(time, str):
-                self.logger.debug("Input time is a string, will be parsed")
+                self.logger.debug(f"Parsing {time}")
                 self.from_str(time)
 
             elif isinstance(time, (int, float)):
                 self.logger.debug(
-                    "Input time is a number, assuming epoch " + "seconds in UTC"
+                    f"Input time {time}, assuming epoch seconds in UTC"
                 )
                 self.epoch_seconds = time
             elif isinstance(time, (np.datetime64)):
@@ -156,8 +152,7 @@ class MTime:
 
             elif isinstance(time, (datetime.datetime)):
                 self.logger.debug(
-                    "Input time is a np.datetime64 "
-                    + "dt_object set to datetime64.tolist()."
+                    "Input time is a datetime.datetime"
                 )
                 self.dt_object = self.validate_tzinfo(time)
 
@@ -166,10 +161,6 @@ class MTime:
                 self.logger.error(msg.format(type(time)))
 
         else:
-            self.logger.debug(
-                "Initiated with None, dt_object is set to "
-                + "default time 1980-01-01 00:00:00"
-            )
             self.from_str("1980-01-01 00:00:00")
 
         if gps_time:
