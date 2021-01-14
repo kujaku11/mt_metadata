@@ -46,7 +46,7 @@ __version__ = "0.1.0"
 # =============================================================================
 
 
-from mt_metadata.utils.mt_logger import get_logger, load_logging_config
+from mt_metadata.utils.mt_logger import setup_logger, load_logging_config
 
 # =============================================================================
 # Global Variables
@@ -86,9 +86,9 @@ REQUIRED_KEYS = [
 
 
 load_logging_config()
-debug_logger = get_logger(__name__, fn="mt_metadata_debug", level="debug")
+debug_logger = setup_logger(__name__, fn="mt_metadata_debug", level="debug")
 debug_logger.debug("Starting MT Metadata Debug Log File")
 
-error_logger = get_logger("error", fn="mt_metadata_error", level="error")
+error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
 
 

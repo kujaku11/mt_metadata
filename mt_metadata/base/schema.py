@@ -11,8 +11,6 @@ Created on Thu Dec 24 12:02:12 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import logging
-
 from pathlib import Path
 from copy import deepcopy
 from collections import OrderedDict
@@ -24,8 +22,9 @@ from mt_metadata.utils import validators
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.base.helpers import NumpyEncoder
+from mt_metadata.utils.mt_logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__, fn="metadata_schema")
 # =============================================================================
 # base dictionary
 # =============================================================================

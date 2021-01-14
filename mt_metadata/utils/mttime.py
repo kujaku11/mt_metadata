@@ -6,14 +6,13 @@ Created on Wed May 13 19:10:46 2020
 """
 
 import datetime
-import logging
 import numpy as np
 from copy import deepcopy
 
 from dateutil import parser as dtparser
 from dateutil.tz.tz import tzutc
 
-from .mt_logger import get_logger, LOG_PATH, FORMATTER
+from .mt_logger import setup_logger
 from .exceptions import MTTimeError
 
 # =============================================================================
@@ -128,7 +127,7 @@ class MTime:
 
     def __init__(self, time=None, gps_time=False):
 
-        self.logger = get_logger(
+        self.logger = setup_logger(
             "{0}.{1}".format(__name__, self.__class__.__name__), 
             "mt_time.log")
         self.dt_object = self.now()
