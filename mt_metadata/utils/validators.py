@@ -22,7 +22,7 @@ import re
 import logging
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
-from mt_metadata.utils.exceptions import MTSchemaError
+from mt_metadata.utils.exceptions import MTValidatorError
 
 # =============================================================================
 # validator functions
@@ -48,19 +48,19 @@ def validate_header(header, attribute=False):
     """
     if not isinstance(header, list):
         msg = "input header must be a list, not {type(header)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     if attribute:
         if sorted(header) != sorted(REQUIRED_KEYS):
             msg = (f"Keys is not correct, must include {REQUIRED_KEYS}" 
                    + f". Currently has {header}")
-            raise MTSchemaError(msg)
+            raise MTValidatorError(msg)
     else:
         required_keys = [key for key in REQUIRED_KEYS if key != "attribute"]
         if sorted(header) != sorted(required_keys):
             msg = (f"Keys is not correct, must include {required_keys}" 
                    + f". Currently has {header}")
-            raise MTSchemaError(msg)
+            raise MTValidatorError(msg)
     return header
 
 
@@ -86,13 +86,13 @@ def validate_attribute(name):
     """
     if not isinstance(name, str):
         msg = f"Attribute name must be a string, not {type(name)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     original = str(name)
 
     if re.match("^[0-9]", name):
         msg = f"Attribute name cannot start with a number, {original}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     if "/" in name:
         name = name.replace("/", ".")
@@ -129,10 +129,10 @@ def validate_required(value):
             return True
         else:
             msg = "Required value must be True or False, not {value}"
-            raise MTSchemaError(msg)
+            raise MTValidatorError(msg)
     else:
         msg = "Required value must be True or False, not {type(value)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
 
 def validate_type(value):
@@ -171,13 +171,13 @@ def validate_type(value):
                 "'type' must be type [ int | float "
                 + f"| str | bool ].  Not {value}"
             )
-            raise MTSchemaError(msg)
+            raise MTValidatorError(msg)
     else:
         msg = (
             "'type' must be type [ int | float "
             + f"| str | bool ] or string.  Not {value}"
         )
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
 
 def validate_units(value):
@@ -202,7 +202,7 @@ def validate_units(value):
             return value.lower()
     else:
         msg = f"'units' must be a string or None, not {type(value)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
 
 def validate_style(value):
@@ -223,11 +223,11 @@ def validate_style(value):
 
     if not isinstance(value, str):
         msg = f"'value' must be a string. Not {type(value)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     if value.lower() not in ACCEPTED_STYLES:
         msg = f"style {value} unknown, must be in {ACCEPTED_STYLES}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     return value.lower()
 
@@ -245,7 +245,7 @@ def validate_description(description):
     """
     if not isinstance(description, str):
         msg = f"Description must be a string, not {type(description)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     return description
 
@@ -275,7 +275,7 @@ def validate_options(options):
 
     else:
         msg = "Option type not understood {type(options)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
     return options
 
 
@@ -304,7 +304,7 @@ def validate_alias(alias):
 
     else:
         msg = f"Alias type not understood {alias}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
     return alias
 
 
@@ -339,7 +339,7 @@ def validate_value_dict(value_dict):
         if isinstance(value_dict, logging.Logger):
             return value_dict
         msg = f"Input must be a dictionary, not {type(value_dict)}"
-        raise MTSchemaError(msg)
+        raise MTValidatorError(msg)
 
     header = validate_header(list(value_dict.keys()))
     # loop over validating functions in this module

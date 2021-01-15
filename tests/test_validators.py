@@ -13,7 +13,7 @@ Created on Tue Apr 28 18:08:40 2020
 
 import unittest
 from mt_metadata.utils import validators
-from mt_metadata.utils.exceptions import MTSchemaError
+from mt_metadata.utils.exceptions import MTValidatorError
 
 # =============================================================================
 # Tests
@@ -78,14 +78,14 @@ class TestValidators(unittest.TestCase):
         )
 
     def test_validate_header_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_header, self.header_fail)
+        self.assertRaises(MTValidatorError, validators.validate_header, self.header_fail)
 
     def test_validate_required(self):
         self.assertEqual(self.required, validators.validate_required(self.required))
         self.assertEqual(self.required, validators.validate_required(str(self.required)))
 
     def test_validate_required_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_required, self.required_fail)
+        self.assertRaises(MTValidatorError, validators.validate_required, self.required_fail)
 
     def test_validate_type(self):
         self.assertEqual("string", validators.validate_type(str))
@@ -94,27 +94,27 @@ class TestValidators(unittest.TestCase):
         self.assertEqual("boolean", validators.validate_type(bool))
 
     def test_validate_type_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_type, self.type_fail)
+        self.assertRaises(MTValidatorError, validators.validate_type, self.type_fail)
 
     def test_validate_units(self):
         self.assertEqual(self.units, validators.validate_units(self.units))
         self.assertEqual(None, validators.validate_units(None))
 
     def test_validate_units_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_units, self.units_fail)
+        self.assertRaises(MTValidatorError, validators.validate_units, self.units_fail)
 
     def test_validate_style(self):
         self.assertEqual(self.style, validators.validate_style(self.style))
         self.assertEqual("name", validators.validate_style(None))
 
     def test_validate_style_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_style, self.style_fail)
+        self.assertRaises(MTValidatorError, validators.validate_style, self.style_fail)
 
     def test_validate_attribute(self):
         self.assertEqual("test.standard_end", validators.validate_attribute(self.name))
 
     def test_validate_attribue_fail(self):
-        self.assertRaises(MTSchemaError, validators.validate_attribute, self.name_fail)
+        self.assertRaises(MTValidatorError, validators.validate_attribute, self.name_fail)
 
     def test_validate_description(self):
         self.assertEqual(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Tests for Schema module
+Tests for validators module
 
 Created on Tue Apr 28 18:08:40 2020
 
@@ -12,8 +12,8 @@ Created on Tue Apr 28 18:08:40 2020
 # =============================================================================
 
 import unittest
-from mth5.metadata.standards import schema
-from mth5.utils.exceptions import MTSchemaError
+from mt_metadata.utils import validators
+from mt_metadata.utils.exceptions import MTValidatorError
 
 # =============================================================================
 # Tests
@@ -68,68 +68,68 @@ class TestValidators(unittest.TestCase):
     def test_validate_header_with_attribute(self):
         self.assertListEqual(
             sorted(self.header),
-            sorted(schema.validate_header(self.header, attribute=True)),
+            sorted(validators.validate_header(self.header, attribute=True)),
         )
 
     def test_validate_header_without_attribute(self):
         self.assertListEqual(
             sorted(self.header[1:]),
-            sorted(schema.validate_header(self.header[1:], attribute=False)),
+            sorted(validators.validate_header(self.header[1:], attribute=False)),
         )
 
     def test_validate_header_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_header, self.header_fail)
+        self.assertRaises(MTValidatorError, validators.validate_header, self.header_fail)
 
     def test_validate_required(self):
-        self.assertEqual(self.required, schema.validate_required(self.required))
-        self.assertEqual(self.required, schema.validate_required(str(self.required)))
+        self.assertEqual(self.required, validators.validate_required(self.required))
+        self.assertEqual(self.required, validators.validate_required(str(self.required)))
 
     def test_validate_required_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_required, self.required_fail)
+        self.assertRaises(MTValidatorError, validators.validate_required, self.required_fail)
 
     def test_validate_type(self):
-        self.assertEqual("string", schema.validate_type(str))
-        self.assertEqual("float", schema.validate_type(float))
-        self.assertEqual("integer", schema.validate_type(int))
-        self.assertEqual("boolean", schema.validate_type(bool))
+        self.assertEqual("string", validators.validate_type(str))
+        self.assertEqual("float", validators.validate_type(float))
+        self.assertEqual("integer", validators.validate_type(int))
+        self.assertEqual("boolean", validators.validate_type(bool))
 
     def test_validate_type_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_type, self.type_fail)
+        self.assertRaises(MTValidatorError, validators.validate_type, self.type_fail)
 
     def test_validate_units(self):
-        self.assertEqual(self.units, schema.validate_units(self.units))
-        self.assertEqual(None, schema.validate_units(None))
+        self.assertEqual(self.units, validators.validate_units(self.units))
+        self.assertEqual(None, validators.validate_units(None))
 
     def test_validate_units_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_units, self.units_fail)
+        self.assertRaises(MTValidatorError, validators.validate_units, self.units_fail)
 
     def test_validate_style(self):
-        self.assertEqual(self.style, schema.validate_style(self.style))
-        self.assertEqual("name", schema.validate_style(None))
+        self.assertEqual(self.style, validators.validate_style(self.style))
+        self.assertEqual("name", validators.validate_style(None))
 
     def test_validate_style_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_style, self.style_fail)
+        self.assertRaises(MTValidatorError, validators.validate_style, self.style_fail)
 
     def test_validate_attribute(self):
-        self.assertEqual("test.standard_end", schema.validate_attribute(self.name))
+        self.assertEqual("test.standard_end", validators.validate_attribute(self.name))
 
     def test_validate_attribue_fail(self):
-        self.assertRaises(MTSchemaError, schema.validate_attribute, self.name_fail)
+        self.assertRaises(MTValidatorError, validators.validate_attribute, self.name_fail)
 
     def test_validate_description(self):
         self.assertEqual(
-            self.description, schema.validate_description(self.description)
+            self.description, validators.validate_description(self.description)
         )
 
     def test_validated_options(self):
-        valid_list = schema.validate_options(self.options)
-        self.assertIsInstance(schema.validate_options(self.options), list)
+        valid_list = validators.validate_options(self.options)
+        self.assertIsInstance(validators.validate_options(self.options), list)
         self.assertListEqual(["option01", "option02", "..."], valid_list)
-        valid_list = schema.validate_options(["option01", "option02", "..."])
+        valid_list = validators.validate_options(["option01", "option02", "..."])
         self.assertListEqual(["option01", "option02", "..."], valid_list)
 
     def test_validate_alias(self):
-        valid_alias = schema.validate_alias(self.alias)
+        valid_alias = validators.validate_alias(self.alias)
         self.assertIsInstance(valid_alias, list)
         self.assertListEqual(valid_alias, ["other_name"])
 

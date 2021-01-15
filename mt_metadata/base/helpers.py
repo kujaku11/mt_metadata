@@ -13,7 +13,6 @@ Created on Wed Dec 23 20:37:52 2020
 # =============================================================================
 import textwrap
 import logging
-import h5py
 import json
 import numpy as np
 
@@ -358,7 +357,7 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
 
         # For now turn references into a generic string
-        elif isinstance(obj, h5py.h5r.Reference):
+        elif "h5" in str(type(obj)):
             return str(obj)
 
         return json.JSONEncoder.default(self, obj)

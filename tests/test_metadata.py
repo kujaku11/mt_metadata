@@ -17,7 +17,7 @@ Created on Tue Apr 28 18:08:40 2020
 
 import unittest
 from mt_metadata.base import Base
-from mt_metadata.utils.exceptions import MTSchemaError
+from mt_metadata.utils.exceptions import MTValidatorError
 
 # =============================================================================
 # Tests
@@ -45,7 +45,7 @@ class TestBase(unittest.TestCase):
         )
 
         self.assertRaises(
-            MTSchemaError, self.base_object._validate_name, "0Name/Test_case"
+            MTValidatorError, self.base_object._validate_name, "0Name/Test_case"
         )
 
     def test_add_attribute(self):

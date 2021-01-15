@@ -17,3 +17,6 @@ class MTSchemaError(Exception):
     
 class MTTimeError(Exception):
     pass
+
+class MTValidatorError(Exception):
+    pass
