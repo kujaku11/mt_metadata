@@ -44,4 +44,4 @@ jobs:
       shell: bash
       run: |
         source activate mtmetadata-test
-        pytest .
+        pytest -v .
