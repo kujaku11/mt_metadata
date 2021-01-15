@@ -10,7 +10,7 @@ import numpy as np
 from copy import deepcopy
 
 from dateutil import parser as dtparser
-from dateutil.tz.tz import tzutc
+from dateutil.tz.tz import tzutc, tzlocal
 
 from .mt_logger import setup_logger
 from .exceptions import MTTimeError
@@ -129,7 +129,7 @@ class MTime:
 
         self.logger = setup_logger(
             "{0}.{1}".format(__name__, self.__class__.__name__), 
-            "mt_time.log")
+            fn="mt_time.log")
         self.dt_object = self.now()
 
         if time is not None:
@@ -151,7 +151,7 @@ class MTime:
 
             elif isinstance(time, (datetime.datetime)):
                 self.logger.debug(
-                    "Input time is a datetime.datetime"
+                    "Input time is a datetime.datetime object"
                 )
                 self.dt_object = self.validate_tzinfo(time)
 
@@ -336,7 +336,7 @@ class MTime:
 
     def from_str(self, dt_str):
         try:
-            self.dt_object = self.validate_tzinfo(dtparser.parse(dt_str))
+            self.dt_object = self.validate_tzinfo(dtparser.parse(dt_str, ignoretz=False))
         except dtparser.ParserError as error:
             msg = (
                 "{0}".format(error)
@@ -350,7 +350,7 @@ class MTime:
         """
         make sure the timezone is UTC
         """
-
+        print(type(dt_object.tzinfo))
         if dt_object.tzinfo == datetime.timezone.utc:
             return dt_object
 
@@ -360,8 +360,14 @@ class MTime:
         elif dt_object.tzinfo is None:
             return dt_object.replace(tzinfo=datetime.timezone.utc)
 
+        # this seems to happen on linux systems
+        elif isinstance(dt_object.tzinfo, tzlocal):
+            self.logger.info("Local timezone identified setting to UTC")
+            return dt_object.replace(tzinfo=datetime.timezone.utc)
+        
         elif dt_object.tzinfo != datetime.timezone.utc:
             raise ValueError("Time zone must be UTC")
+        
 
     @property
     def date(self):

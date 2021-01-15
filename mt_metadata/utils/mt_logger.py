@@ -37,7 +37,7 @@ if not CONF_FILE.exists():
     print("No Logging configuration file found, using defaults.")
 
 
-def load_configure(config_fn=CONF_FILE):
+def load_logging_config(config_fn=CONF_FILE):
     # def load_configure(path2configfile='logging.yml'):
     """
     configure/setup the logging according to the input configfile
