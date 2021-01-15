@@ -350,7 +350,6 @@ class MTime:
         """
         make sure the timezone is UTC
         """
-        print(type(dt_object.tzinfo))
         if dt_object.tzinfo == datetime.timezone.utc:
             return dt_object
 

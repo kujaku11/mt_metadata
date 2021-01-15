@@ -174,19 +174,19 @@ class BaseDict(MutableMapping):
     
         """
         beginning = [
-            "\clearpage",
-            "\\newpage",
-            "\\begin{table}[h!]",
-            "\caption*{{Attributes for {0} Category}}".format(self.name),
-            "\\begin{tabular}{p{.305\\textwidth}p{.47\\textwidth}p{.2\\textwidth}}",
+            r"\clearpage",
+            r"\\newpage",
+            r"\\begin{table}[h!]",
+            r"\caption*{{Attributes for {0} Category}}".format(self.name),
+            r"\\begin{tabular}{p{.305\\textwidth}p{.47\\textwidth}p{.2\\textwidth}}",
         ]
     
-        end = ["\end{tabular}", "\label{tab:}", "\end{table}"]
+        end = [r"\end{tabular}", r"\label{tab:}", r"\end{table}"]
         header = [
             " & ".join(
-                ["\\textbf{Metadata Key}", "\\textbf{Description}", "\\textbf{Example}"]
+                [r"\textbf{Metadata Key}", r"\textbf{Description}", r"\textbf{Example}"]
             )
-            + " \\\\ \\toprule"
+            + " \\ \toprule"
         ]
     
         order = ["name", "required", "units", "type", "style", "description", "example"]
@@ -213,7 +213,7 @@ class BaseDict(MutableMapping):
             for kk in range(max_entries):
                 index = first_table_len + max_entries * ii + kk
                 try:
-                    stable.append(lines[index].replace("_", "\_"))
+                    stable.append(lines[index].replace("_", r"\_"))
                 except IndexError:
                     break
             stable += end
