@@ -16,6 +16,8 @@ from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
 from . import Channel
 
+### testing sring
+
 # =============================================================================
 attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
 # =============================================================================
