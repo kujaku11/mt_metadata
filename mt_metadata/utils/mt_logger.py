@@ -25,7 +25,7 @@ LOG_FORMAT = logging.Formatter(
 # Get the configuration file path, should be in same directory as this file
 CONF_PATH = Path(__file__).parent
 CONF_FILE = Path.joinpath(CONF_PATH, "logging_config.yaml")
-
+    
 # make a folder for the logs to go into.
 LOG_PATH = CONF_PATH.parent.parent.joinpath("logs")
 
@@ -46,10 +46,11 @@ def load_logging_config(config_fn=CONF_FILE):
     Its default is the logging.yml located in the same dir as this module.
     It can be modofied to use env variables to search for a log config file.
     """
-    config_file = Path(config_fn)
-    with open(config_file, "r") as fid:
-        config_dict = yaml.safe_load(fid)
-    logging.config.dictConfig(config_dict)
+    if config_fn is not None:
+        config_file = Path(config_fn)
+        with open(config_file, "r") as fid:
+            config_dict = yaml.safe_load(fid)
+        logging.config.dictConfig(config_dict)
 
 def setup_logger(logger_name, fn=None, level="debug"):
     """
