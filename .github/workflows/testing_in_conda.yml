@@ -46,7 +46,7 @@ jobs:
       shell: bash
       run: |
         source activate mtmetadata-test
-        pytest --cov=./ --cov-report=xml
+        pytest --cov=./ --cov-report=xml --cov=mt_metadata
         
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
