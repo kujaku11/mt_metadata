@@ -10,4 +10,6 @@ recursive-exclude * *.py[co]
 
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
 recursive-include mt_metadata/utils *.yaml
-recursive-include *.json
+recursive-include mt_metadata/timeseries/standards *.json
+recursive-include mt_metadata/transfer_functions/tf/standards *.json
+recursive-include mt_metadata/transfer_functions/emtf_xml/standards *.json

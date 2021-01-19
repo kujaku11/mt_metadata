@@ -366,7 +366,7 @@ def get_schema_fn(schema_element, paths):
     for fn in paths:
         if schema_element == fn.stem:
             return fn
-    msg = f"Could not find schema element {schema_element} file name."
+    msg = f"Could not find schema element {schema_element}.json in {paths[0].parent}."
     raise MTSchemaError(msg)
         
 def get_schema(schema_element, paths):
