@@ -7,6 +7,7 @@ Created on Wed May 13 19:10:46 2020
 
 import datetime
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 
 from dateutil import parser as dtparser
@@ -132,6 +133,7 @@ class MTime:
             fn="mt_time.log")
         self.dt_object = self.now()
 
+        self.logger.debug(f"Input type is {type(time)} {time}")
         if time is not None:
             if isinstance(time, str):
                 self.logger.debug(f"Parsing {time}")
@@ -154,6 +156,9 @@ class MTime:
                     "Input time is a datetime.datetime object"
                 )
                 self.dt_object = self.validate_tzinfo(time)
+                
+            elif isinstance(time, pd._libs.tslibs.timestamps.Timestamp):
+                self.from_str(time.isoformat())
 
             else:
                 msg = "input time must be a string, float, or int, not {0}"

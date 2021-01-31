@@ -359,6 +359,7 @@ class Base:
             "applied",
             "logger",
             "changed",
+            "hdf5_reference",
         ]
 
         if hasattr(self, "_attr_dict"):

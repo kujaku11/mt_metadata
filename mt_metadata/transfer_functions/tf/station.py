@@ -22,6 +22,7 @@ from . import (
     Location,
     TimePeriod,
     Run,
+    TransferFunction,
 )
 
 # =============================================================================
@@ -46,6 +47,7 @@ attr_dict.add_dict(
     keys=["author", "email", "organization"],
 )
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(get_schema("transfer_function", SCHEMA_FN_PATHS), "transfer_function")
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -66,6 +68,7 @@ class Station(Base):
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
+        self.transfer_function = TransferFunction()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
