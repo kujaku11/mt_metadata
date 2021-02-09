@@ -14,7 +14,7 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Person, Citation, Location, TimePeriod, Fdsn
+from . import Person, Citation, Location, TimePeriod, Fdsn, Station
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
@@ -63,5 +63,51 @@ class Survey(Base):
         self.summary = None
         self.survey_id = None
         self.time_period = TimePeriod()
+        self.station_list = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        
+    def __add__(self, other):
+        if isinstance(other, Survey): 
+            self.station_list.extend(other.station_list)
+
+            return self
+        else:
+            msg = f"Can only merge Survey objects, not {type(other)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    def __len__(self):
+        return len(self.station_list)
+            
+    @property
+    def station_list(self):
+        """ Return station list """
+        return self._station_list
+    
+    @station_list.setter
+    def station_list(self, value):
+        """ set the station list """
+        if not hasattr(value, "__iter__"):
+            msg = ("input survey_list must be an iterable, should be a list "
+                   f"not {type(value)}")
+            self.logger.error(msg)
+            raise TypeError(msg)
+        stations = []
+        fails = []
+        for ii, station in enumerate(value):
+            if not isinstance(station, Station):
+                msg = f"Item {ii} is not type(Station); type={type(station)}"
+                fails.append(msg)
+                self.logger.error(msg)
+            else:
+                stations.append(station)
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+            
+        self._station_list = stations
+        
+    @property
+    def station_names(self):
+        """ Return names of station in survey """
+        return [ss.id for ss in self.station_list]

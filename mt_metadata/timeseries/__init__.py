@@ -69,13 +69,16 @@ from .orientation import Orientation
 from .filtered import Filtered
 from .filter import Filter
 from .data_logger import DataLogger
-from .survey import Survey
 from .channel import Channel
 from .auxiliary import Auxiliary
 from .electric import Electric
 from .magnetic import Magnetic
 from .run import Run
 from .station import Station
+from .survey import Survey
+
+
+
 
 
 __all__ = [

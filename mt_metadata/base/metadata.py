@@ -360,6 +360,7 @@ class Base:
             "logger",
             "changed",
             "hdf5_reference",
+            "station_list",
         ]
 
         if hasattr(self, "_attr_dict"):
