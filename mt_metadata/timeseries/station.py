@@ -69,12 +69,48 @@ class Station(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
+    def __add__(self, other):
+        if isinstance(other, Station): 
+            self.run_list.extend(other.run_list)
+
+            return self
+        else:
+            msg = f"Can only merge Station objects, not {type(other)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    def __len__(self):
+        return len(self.run_list)
+    
+    @property
+    def run_list(self):
+        """ Return run list """
+        return self._run_list
+    
+    @run_list.setter
+    def run_list(self, value):
+        """ set the run list """
+        if not hasattr(value, "__iter__"):
+            msg = ("input survey_list must be an iterable, should be a list "
+                   f"not {type(value)}")
+            self.logger.error(msg)
+            raise TypeError(msg)
+        runs = []
+        fails = []
+        for ii, run in enumerate(value):
+            if not isinstance(run, Run):
+                msg = f"Item {ii} is not type(Run); type={type(run)}"
+                fails.append(msg)
+                self.logger.error(msg)
+            else:
+                runs.append(run)
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+            
+        self._run_list = runs
+        
     @property
     def run_names(self):
-        runs = []
-        for rr in self.run_list:
-            if isinstance(rr, Run):
-                runs.append(rr.id)
-            else:
-                runs.append(rr)
-        return runs
+        """ Return names of run in survey """
+        return [ss.id for ss in self.run_list]
+        

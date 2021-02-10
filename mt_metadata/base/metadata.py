@@ -361,6 +361,7 @@ class Base:
             "changed",
             "hdf5_reference",
             "station_list",
+            "run_list",
         ]
 
         if hasattr(self, "_attr_dict"):

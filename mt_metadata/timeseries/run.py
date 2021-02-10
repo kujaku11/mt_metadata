@@ -75,6 +75,10 @@ class Run(Base):
         self._temperature = Auxiliary()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+    
+            
+    def __len__(self):
+        return len(self.channel_list)
 
     @property
     def n_channels(self):
