@@ -91,7 +91,7 @@ class Station(Base):
     def run_list(self, value):
         """ set the run list """
         if not hasattr(value, "__iter__"):
-            msg = ("input survey_list must be an iterable, should be a list "
+            msg = ("input station_list must be an iterable, should be a list "
                    f"not {type(value)}")
             self.logger.error(msg)
             raise TypeError(msg)

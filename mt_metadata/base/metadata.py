@@ -362,6 +362,12 @@ class Base:
             "hdf5_reference",
             "station_list",
             "run_list",
+            "channel_list",
+            "channels_recorded_all",
+            "channels_recorded_electric"
+            "channels_recorded_magnetic"
+            "channels_recorded_auxiliary",
+            
         ]
 
         if hasattr(self, "_attr_dict"):
