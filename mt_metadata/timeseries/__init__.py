@@ -76,6 +76,7 @@ from .magnetic import Magnetic
 from .run import Run
 from .station import Station
 from .survey import Survey
+from .experiment import Experiment
 
 
 

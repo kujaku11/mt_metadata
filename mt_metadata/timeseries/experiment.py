@@ -40,8 +40,20 @@ class Experiment:
         lines = ["Experiment Contents", "-" * 20]
         if len(self.survey_list) > 0:
             lines.append(f"Number of Surveys: {len(self.survey_list)}")
-            lines.append("\tSurvey IDs: " + 
-                         ", ".join([ss.survey_id for ss in self.survey_list]))
+            for survey in self.survey_list:
+                lines.append(f"\tSurvey ID: {survey.survey_id}")
+                lines.append(f"\tNumber of Stations: {len(survey)}")
+                lines.append(f"\t{'-' * 20}")
+                for station in survey.station_list:
+                    lines.append(f"\t\tStation ID: {station.id}")
+                    lines.append(f"\t\tNumber of Runs: {len(station)}")
+                    lines.append(f"\t\t{'-' * 20}")
+                    for run in station.run_list:
+                        lines.append(f"\t\t\tRun ID: {run.id}")
+                        lines.append(f"\t\t\tNumber of Channels: {len(run)}")
+                        lines.append("\t\t\tRecorded Channels: " 
+                                     +", ".join(run.channels_recorded_all))
+                        lines.append(f"\t\t\t{'-' * 20}")
                 
         return "\n".join(lines)
     
