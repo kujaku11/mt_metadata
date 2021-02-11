@@ -66,12 +66,13 @@ class Station(Base):
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
+        self.runs = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
     def __add__(self, other):
         if isinstance(other, Station): 
-            self.run_list.extend(other.run_list)
+            self.runs.extend(other.runs)
 
             return self
         else:
@@ -80,15 +81,15 @@ class Station(Base):
             raise TypeError(msg)
             
     def __len__(self):
-        return len(self.run_list)
+        return len(self.runs)
     
     @property
-    def run_list(self):
+    def runs(self):
         """ Return run list """
-        return self._run_list
+        return self._runs
     
-    @run_list.setter
-    def run_list(self, value):
+    @runs.setter
+    def runs(self, value):
         """ set the run list """
         if not hasattr(value, "__iter__"):
             msg = ("input station_list must be an iterable, should be a list "
@@ -107,10 +108,29 @@ class Station(Base):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
             
-        self._run_list = runs
+        self._runs = runs
         
     @property
-    def run_names(self):
+    def run_list(self):
         """ Return names of run in survey """
-        return [ss.id for ss in self.run_list]
+        return [ss.id for ss in self.runs]
+    
+    @run_list.setter
+    def run_list(self, value):
+        """ Set list of run names """
+        if not hasattr(value, "__iter__"):
+            msg = ("input station_list must be an iterable, should be a list "
+                   f"not {type(value)}")
+            self.logger.error(msg)
+            raise TypeError(msg)
+        for run in enumerate(value):
+            try:
+                self.runs.append(Run(id=str(run)))
+            except (ValueError, TypeError):
+                msg = f"could not convert {run} to string"
+                self.logger.error(msg)
+                raise ValueError(msg)
+                
+        
+
         

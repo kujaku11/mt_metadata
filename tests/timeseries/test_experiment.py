@@ -22,20 +22,20 @@ class TestExperiment(unittest.TestCase):
     def setUp(self):
         self.experiment = Experiment()
         
-    def test_set_survey_list(self):
-        self.experiment.survey_list = [Survey()]
-        self.assertEqual(len(self.experiment.survey_list), 1)
+    def test_set_surveys(self):
+        self.experiment.surveys = [Survey()]
+        self.assertEqual(len(self.experiment.surveys), 1)
         
-    def test_set_survey_list_fail(self):
-        def set_survey_list(value):
-            self.experiment.survey_list = value
+    def test_set_surveys_fail(self):
+        def set_surveys(value):
+            self.experiment.surveys = value
             
-        self.assertRaises(TypeError, set_survey_list, 10)
-        self.assertRaises(TypeError, set_survey_list, [Survey(), Station()])
+        self.assertRaises(TypeError, set_surveys, 10)
+        self.assertRaises(TypeError, set_surveys, [Survey(), Station()])
         
     def test_add_experiments(self):
         ex2 = Experiment([Survey(survey_id="two")])
-        self.experiment.survey_list.append(Survey(survey_id="one"))
+        self.experiment.surveys.append(Survey(survey_id="one"))
         self.experiment += ex2
         self.assertEqual(len(self.experiment), 2)
         self.assertListEqual(["one", "two"], self.experiment.survey_names)

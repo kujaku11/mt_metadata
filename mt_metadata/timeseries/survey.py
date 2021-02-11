@@ -63,13 +63,13 @@ class Survey(Base):
         self.summary = None
         self.survey_id = None
         self.time_period = TimePeriod()
-        self.station_list = []
+        self.stations = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
     def __add__(self, other):
         if isinstance(other, Survey): 
-            self.station_list.extend(other.station_list)
+            self.stations.extend(other.stations)
 
             return self
         else:
@@ -78,15 +78,15 @@ class Survey(Base):
             raise TypeError(msg)
             
     def __len__(self):
-        return len(self.station_list)
+        return len(self.stations)
             
     @property
-    def station_list(self):
+    def stations(self):
         """ Return station list """
-        return self._station_list
+        return self._stations
     
-    @station_list.setter
-    def station_list(self, value):
+    @stations.setter
+    def stations(self, value):
         """ set the station list """
         if not hasattr(value, "__iter__"):
             msg = ("input survey_list must be an iterable, should be a list "
@@ -105,9 +105,9 @@ class Survey(Base):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
             
-        self._station_list = stations
+        self._stations = stations
         
     @property
     def station_names(self):
         """ Return names of station in survey """
-        return [ss.id for ss in self.station_list]
+        return [ss.id for ss in self.stations]

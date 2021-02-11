@@ -61,17 +61,17 @@ class Run(Base):
         self.data_logger = DataLogger()
         self.metadata_by = Person()
         self.fdsn = Fdsn()
-        self.channel_list = []
+        self.channels = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
     
             
     def __len__(self):
-        return len(self.channel_list)
+        return len(self.channels)
     
     def __add__(self, other):
         if isinstance(other, Run): 
-            self.channel_list.extend(other.channel_list)
+            self.channels.extend(other.channels)
 
             return self
         else:
@@ -80,15 +80,15 @@ class Run(Base):
             raise TypeError(msg)
             
     @property
-    def channel_list(self):
+    def channels(self):
         """ List of channels in the run """
-        return self._channel_list
+        return self._channels
     
-    @channel_list.setter
-    def channel_list(self, value):
+    @channels.setter
+    def channels(self, value):
         """ set the channel list """
         if not hasattr(value, "__iter__"):
-            msg = ("input channel_list must be an iterable, should be a list "
+            msg = ("input channels must be an iterable, should be a list "
                    f"not {type(value)}")
             self.logger.error(msg)
             raise TypeError(msg)
@@ -104,7 +104,7 @@ class Run(Base):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
             
-        self._channel_list = channels
+        self._channels = channels
 
     @property
     def n_channels(self):
@@ -118,11 +118,11 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        return sorted([ch.component for ch in self.channel_list])
+        return sorted([ch.component for ch in self.channels])
 
     @property
     def channels_recorded_electric(self):
-        return sorted([ch.component for ch in self.channel_list if isinstance(ch, Electric)])
+        return sorted([ch.component for ch in self.channels if isinstance(ch, Electric)])
 
     @channels_recorded_electric.setter
     def channels_recorded_electric(self, value):
@@ -134,9 +134,9 @@ class Run(Base):
             
         for entry in value:
             if isinstance(entry, str):
-                self.channel_list.append(Electric(component=entry))
+                self.channels.append(Electric(component=entry))
             elif isinstance(entry, Electric):
-                self.channel_list.append(entry)
+                self.channels.append(entry)
             else:
                 msg = f"entry must be a string or type Electric not {type(entry)}"
                 self.logger.error(msg)
@@ -144,7 +144,7 @@ class Run(Base):
         
     @property
     def channels_recorded_magnetic(self):
-        return sorted([ch.component for ch in self.channel_list if isinstance(ch, Magnetic)])
+        return sorted([ch.component for ch in self.channels if isinstance(ch, Magnetic)])
     
     @channels_recorded_magnetic.setter
     def channels_recorded_magnetic(self, value):
@@ -156,9 +156,9 @@ class Run(Base):
             
         for entry in value:
             if isinstance(entry, str):
-                self.channel_list.append(Magnetic(component=entry))
+                self.channels.append(Magnetic(component=entry))
             elif isinstance(entry, Magnetic):
-                self.channel_list.append(entry)
+                self.channels.append(entry)
             else:
                 msg = f"entry must be a string or type Magnetic not {type(entry)}"
                 self.logger.error(msg)
@@ -166,7 +166,7 @@ class Run(Base):
 
     @property
     def channels_recorded_auxiliary(self):
-        return sorted([ch.component for ch in self.channel_list if isinstance(ch, Auxiliary)])
+        return sorted([ch.component for ch in self.channels if isinstance(ch, Auxiliary)])
 
     @channels_recorded_auxiliary.setter
     def channels_recorded_auxiliary(self, value):
@@ -178,9 +178,9 @@ class Run(Base):
             
         for entry in value:
             if isinstance(entry, str):
-                self.channel_list.append(Auxiliary(component=entry))
+                self.channels.append(Auxiliary(component=entry))
             elif isinstance(entry, Auxiliary):
-                self.channel_list.append(entry)
+                self.channels.append(entry)
             else:
                 msg = f"entry must be a string or type Auxiliary not {type(entry)}"
                 self.logger.error(msg)

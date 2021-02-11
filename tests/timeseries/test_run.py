@@ -106,25 +106,25 @@ class TestRun(unittest.TestCase):
         self.assertEqual(self.run_object.n_channels, 6)
         self.assertEqual(len(self.run_object), 6)
         
-    def test_set_channel_list(self):
-        self.run_object.channel_list = [Electric(component="ez")]
+    def test_set_channels(self):
+        self.run_object.channels = [Electric(component="ez")]
         self.assertEqual(len(self.run_object), 1)
         self.assertListEqual(["ez"],
                              self.run_object.channels_recorded_all)
         
-    def test_set_channel_list_fail(self):
-        def set_channel_list(value):
-            self.run_object.channel_list = value
+    def test_set_channels_fail(self):
+        def set_channels(value):
+            self.run_object.channels = value
             
-        self.assertRaises(TypeError, set_channel_list, 10)
-        self.assertRaises(TypeError, set_channel_list, [Run(), Electric()])
+        self.assertRaises(TypeError, set_channels, 10)
+        self.assertRaises(TypeError, set_channels, [Run(), Electric()])
         
     def test_add_channels(self):
         station_02 = Run()
-        station_02.channel_list.append(Electric(component="ex"))
-        station_02.channel_list.append(Magnetic(component="hx"))
-        station_02.channel_list.append(Auxiliary(component="temperature"))
-        self.run_object.channel_list.append(Electric(component="ey"))
+        station_02.channels.append(Electric(component="ex"))
+        station_02.channels.append(Magnetic(component="hx"))
+        station_02.channels.append(Auxiliary(component="temperature"))
+        self.run_object.channels.append(Electric(component="ey"))
         self.run_object += station_02
         self.assertEqual(len(self.run_object), 4)
         self.assertListEqual(sorted(["ex", "ey", "hx", "temperature"]),

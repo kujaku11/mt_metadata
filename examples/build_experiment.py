@@ -22,15 +22,17 @@ for survey in ["One", "Two"]:
             run_obj = Run(id=run)
             for ch in ["ex", "ey"]:
                 ch_obj = Electric(component=ch)
-                run_obj.channel_list.append(ch_obj)
+                run_obj.channels.append(ch_obj)
             for ch in ["hx", "hy", "hz"]:
                 ch_obj = Magnetic(component=ch)
-                run_obj.channel_list.append(ch_obj)
+                run_obj.channels.append(ch_obj)
             for ch in ["temperature", "voltage"]:
                 ch_obj = Auxiliary(component=ch)
-                run_obj.channel_list.append(ch_obj)
+                run_obj.channels.append(ch_obj)
 
-            station_obj.run_list.append(run_obj)
-        survey_obj.station_list.append(station_obj)
+            station_obj.runs.append(run_obj)
+        survey_obj.stations.append(station_obj)
 
-    experiment.survey_list.append(survey_obj)
+    experiment.surveys.append(survey_obj)
+
+experiment_xml = experiment.to_xml(fn=r"c:\Users\jpeacock\test_experiment.xml")

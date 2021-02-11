@@ -23,24 +23,31 @@ Created on Mon Feb  8 21:25:40 2021
 :license: MIT
 
 """
+# =============================================================================
+# Imports
+# =============================================================================
+from xml.etree import cElementTree as et
+from xml.dom import minidom
+
 from .survey import Survey
 from mt_metadata.utils.mt_logger import setup_logger
-
+from mt_metadata.base import helpers
+# =============================================================================
 
 class Experiment:
     """
     Top level of the metadata
     """
 
-    def __init__(self, survey_list=[]):
+    def __init__(self, surveys=[]):
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
-        self.survey_list = survey_list
+        self.surveys = surveys
         
     def __str__(self):
         lines = ["Experiment Contents", "-" * 20]
-        if len(self.survey_list) > 0:
-            lines.append(f"Number of Surveys: {len(self.survey_list)}")
-            for survey in self.survey_list:
+        if len(self.surveys) > 0:
+            lines.append(f"Number of Surveys: {len(self.surveys)}")
+            for survey in self.surveys:
                 lines.append(f"\tSurvey ID: {survey.survey_id}")
                 lines.append(f"\tNumber of Stations: {len(survey)}")
                 lines.append(f"\t{'-' * 20}")
@@ -69,7 +76,7 @@ class Experiment:
         
     def __add__(self, other):
         if isinstance(other, Experiment): 
-            self.survey_list.extend(other.survey_list)
+            self.surveys.extend(other.surveys)
 
             return self
         else:
@@ -78,18 +85,18 @@ class Experiment:
             raise TypeError(msg)
             
     def __len__(self):
-        return len(self.survey_list)
+        return len(self.surveys)
             
     @property
-    def survey_list(self):
+    def surveys(self):
         """ Return survey list """
-        return self._survey_list
+        return self._surveys
     
-    @survey_list.setter
-    def survey_list(self, value):
+    @surveys.setter
+    def surveys(self, value):
         """ set the survey list """
         if not hasattr(value, "__iter__"):
-            msg = ("input survey_list must be an iterable, should be a list "
+            msg = ("input surveys must be an iterable, should be a list "
                    f"not {type(value)}")
             self.logger.error(msg)
             raise TypeError(msg)
@@ -105,14 +112,14 @@ class Experiment:
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
             
-        self._survey_list = surveys
+        self._surveys = surveys
         
     @property
     def survey_names(self):
         """ Return names of surveys in experiment """
-        return [ss.survey_id for ss in self.survey_list]
+        return [ss.survey_id for ss in self.surveys]
     
-    def to_xml(self, fn):
+    def to_xml(self, fn=None):
         """
         Write XML version of the experiment
         
@@ -122,7 +129,26 @@ class Experiment:
         :rtype: TYPE
 
         """
-        pass
+        
+        experiment_element = et.Element(self.__class__.__name__)
+        for survey in self.surveys:
+            survey_element = survey.to_xml()
+            for station in survey.stations:
+                station_element = station.to_xml()
+                for run in station.runs:
+                    run_element = run.to_xml()
+                    for channel in run.channels:
+                        run_element.append(channel.to_xml())
+                    station_element.append(run_element)
+                survey_element.append(station_element)
+            experiment_element.append(survey_element)
+            
+        if fn:
+            with open(fn, "w") as fid:
+                fid.write(helpers.element_to_string(experiment_element))
+        return experiment_element
+                
+                
     
     def to_json(self, fn):
         """

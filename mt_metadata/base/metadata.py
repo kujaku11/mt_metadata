@@ -360,9 +360,10 @@ class Base:
             "logger",
             "changed",
             "hdf5_reference",
-            "station_list",
-            "run_list",
-            "channel_list",
+            "surveys",
+            "stations",
+            "runs",
+            "channels",
             "channels_recorded_all",
             "channels_recorded_electric"
             "channels_recorded_magnetic"
