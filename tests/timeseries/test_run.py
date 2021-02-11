@@ -128,7 +128,7 @@ class TestRun(unittest.TestCase):
         self.run_object += station_02
         self.assertEqual(len(self.run_object), 4)
         self.assertListEqual(sorted(["ex", "ey", "hx", "temperature"]),
-                             self.run_object.channels_recorded_all)
+                             sorted(self.run_object.channels_recorded_all))
         self.assertListEqual(sorted(["ex", "ey"]),
                              self.run_object.channels_recorded_electric)
         self.assertListEqual(["hx"],
