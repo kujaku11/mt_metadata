@@ -82,6 +82,53 @@ class Station(Base):
     def __len__(self):
         return len(self.runs)
     
+    def has_run(self, run_id):
+        """
+        Check to see if the run id already exists
+        
+        :param run_id: DESCRIPTION
+        :type run_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if run_id in self.run_list:
+            return True
+        return False
+    
+    def run_index(self, run_id):
+        """
+        Get the index of the run_id
+        
+        :param run_id: DESCRIPTION
+        :type run_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        if self.has_run(run_id):
+            return self.run_list.index(run_id)
+        return None
+    
+    def add_run(self, run_obj):
+        """
+        Add a run, if one of the same name exists overwrite it.
+        
+        :param run_obj: DESCRIPTION
+        :type run_obj: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        index = self.run_index(run_obj.id)
+        if index is not None:
+            print(f"replacing {run_obj.id}")
+            self.runs[index] = run_obj
+        else:
+            print(f"appending {run_obj.id}")
+            self.runs.append(run_obj)
+    
     @property
     def runs(self):
         """ Return run list """

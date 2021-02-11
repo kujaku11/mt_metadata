@@ -79,6 +79,45 @@ class Run(Base):
             self.logger.error(msg)
             raise TypeError(msg)
             
+    def has_channel(self, component):
+        """
+        Check to see if the channel already exists
+        
+        :param component: DESCRIPTION
+        :type component: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        if component in self.channels_recorded_all:
+            return True
+        return False
+    
+    def channel_index(self, component):
+        """
+        get index of the channel in the channel list
+        """
+        if self.has_channel(component):
+            return self.channels_recorded_all.index(component)
+        return None
+        
+    def add_channel(self, channel_obj):
+        """
+        Add a channel to the list, check if one exists if it does overwrite it
+        
+        :param channel_obj: DESCRIPTION
+        :type channel_obj: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        index = self.channel_index(channel_obj.component)
+        if index is not None:
+            self.channels[index] = channel_obj
+        else:
+            self.channels.append(channel_obj)
+            
     @property
     def channels(self):
         """ List of channels in the run """
@@ -118,7 +157,7 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        return sorted([ch.component for ch in self.channels])
+        return [ch.component for ch in self.channels]
 
     @property
     def channels_recorded_electric(self):

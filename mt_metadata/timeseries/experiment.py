@@ -29,7 +29,7 @@ Created on Mon Feb  8 21:25:40 2021
 from xml.etree import cElementTree as et
 from xml.dom import minidom
 
-from .survey import Survey
+from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 # =============================================================================
@@ -51,11 +51,11 @@ class Experiment:
                 lines.append(f"\tSurvey ID: {survey.survey_id}")
                 lines.append(f"\tNumber of Stations: {len(survey)}")
                 lines.append(f"\t{'-' * 20}")
-                for station in survey.station_list:
+                for station in survey.stations:
                     lines.append(f"\t\tStation ID: {station.id}")
                     lines.append(f"\t\tNumber of Runs: {len(station)}")
                     lines.append(f"\t\t{'-' * 20}")
-                    for run in station.run_list:
+                    for run in station.runs:
                         lines.append(f"\t\t\tRun ID: {run.id}")
                         lines.append(f"\t\t\tNumber of Channels: {len(run)}")
                         lines.append("\t\t\tRecorded Channels: " 
@@ -119,7 +119,7 @@ class Experiment:
         """ Return names of surveys in experiment """
         return [ss.survey_id for ss in self.surveys]
     
-    def to_xml(self, fn=None):
+    def to_xml(self, fn=None, required=True):
         """
         Write XML version of the experiment
         
@@ -132,13 +132,13 @@ class Experiment:
         
         experiment_element = et.Element(self.__class__.__name__)
         for survey in self.surveys:
-            survey_element = survey.to_xml()
+            survey_element = survey.to_xml(required=required)
             for station in survey.stations:
-                station_element = station.to_xml()
+                station_element = station.to_xml(required=required)
                 for run in station.runs:
-                    run_element = run.to_xml()
+                    run_element = run.to_xml(required=required)
                     for channel in run.channels:
-                        run_element.append(channel.to_xml())
+                        run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
                 survey_element.append(station_element)
             experiment_element.append(survey_element)
@@ -184,7 +184,38 @@ class Experiment:
         :rtype: TYPE
 
         """
-        pass
+        experiment = et.parse(fn).getroot()
+        for survey in list(experiment):
+            survey_obj = Survey()
+            survey_obj.from_xml(survey)
+            for station in survey.findall("station"):
+                station_obj = Station()
+                station_obj.from_xml(station)
+                print(station_obj.run_list)
+                for run in station.findall("run"):
+                    run_obj = Run()
+                    run_obj.from_xml(run)
+                    print(run_obj.channels_recorded_all)
+                    for channel in run.findall("electric"):
+                        ch = Electric()
+                        ch.from_xml(channel)
+                        run_obj.add_channel(ch)
+                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
+                    for channel in run.findall("magnetic"):
+                        ch = Magnetic()
+                        ch.from_xml(channel)
+                        run_obj.add_channel(ch)
+                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
+                    for channel in run.findall("auxiliary"):
+                        ch = Auxiliary()
+                        ch.from_xml(channel)
+                        run_obj.add_channel(ch)
+                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
+                    print(run_obj.channels_recorded_all)
+                    station_obj.add_run(run_obj)
+                survey_obj.stations.append(station_obj)
+            self.surveys.append(survey_obj)
+      
     
     def from_json(self, fn):
         """
