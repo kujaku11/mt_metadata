@@ -27,7 +27,6 @@ Created on Mon Feb  8 21:25:40 2021
 # Imports
 # =============================================================================
 from xml.etree import cElementTree as et
-from xml.dom import minidom
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from mt_metadata.utils.mt_logger import setup_logger
@@ -174,44 +173,43 @@ class Experiment:
         """
         pass
     
-    def from_xml(self, fn):
+    def from_xml(self, fn=None, element=None):
         """
-        Read XML version of the experiment
         
-        :param fn: DESCRIPTION
-        :type fn: TYPE
+        :param fn: DESCRIPTION, defaults to None
+        :type fn: TYPE, optional
+        :param element: DESCRIPTION, defaults to None
+        :type element: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        experiment = et.parse(fn).getroot()
+        if fn:
+            experiment = et.parse(fn).getroot()
+        if element:
+            experiment = element
+            
         for survey in list(experiment):
             survey_obj = Survey()
             survey_obj.from_xml(survey)
             for station in survey.findall("station"):
                 station_obj = Station()
                 station_obj.from_xml(station)
-                print(station_obj.run_list)
                 for run in station.findall("run"):
                     run_obj = Run()
                     run_obj.from_xml(run)
-                    print(run_obj.channels_recorded_all)
                     for channel in run.findall("electric"):
                         ch = Electric()
                         ch.from_xml(channel)
                         run_obj.add_channel(ch)
-                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
                     for channel in run.findall("magnetic"):
                         ch = Magnetic()
                         ch.from_xml(channel)
                         run_obj.add_channel(ch)
-                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
                     for channel in run.findall("auxiliary"):
                         ch = Auxiliary()
                         ch.from_xml(channel)
                         run_obj.add_channel(ch)
-                        #print(survey_obj.survey_id, station_obj.id, run_obj.id, ch.component)
-                    print(run_obj.channels_recorded_all)
                     station_obj.add_run(run_obj)
                 survey_obj.stations.append(station_obj)
             self.surveys.append(survey_obj)
