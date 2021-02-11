@@ -73,7 +73,6 @@ class Station(Base):
     def __add__(self, other):
         if isinstance(other, Station): 
             self.runs.extend(other.runs)
-
             return self
         else:
             msg = f"Can only merge Station objects, not {type(other)}"
@@ -123,9 +122,9 @@ class Station(Base):
                    f"not {type(value)}")
             self.logger.error(msg)
             raise TypeError(msg)
-        for run in enumerate(value):
+        for run in value:
             try:
-                self.runs.append(Run(id=str(run)))
+                self.runs.append(Run(id=run))
             except (ValueError, TypeError):
                 msg = f"could not convert {run} to string"
                 self.logger.error(msg)
