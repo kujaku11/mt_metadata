@@ -136,8 +136,8 @@ class MTime:
         if time is not None:
             self.logger.debug(f"Input type is {type(time)} {time}")
             if isinstance(time, str):
-                self.logger.debug(f"Parsing {time}")
                 self.from_str(time)
+                self.logger.debug(f"Parsed {time} to {self.iso_str}")
 
             elif isinstance(time, (int, float)):
                 self.logger.debug(
