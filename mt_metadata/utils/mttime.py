@@ -132,9 +132,9 @@ class MTime:
             "{0}.{1}".format(__name__, self.__class__.__name__), 
             fn="mt_time.log")
         self.dt_object = self.now()
-
-        self.logger.debug(f"Input type is {type(time)} {time}")
+        
         if time is not None:
+            self.logger.debug(f"Input type is {type(time)} {time}")
             if isinstance(time, str):
                 self.logger.debug(f"Parsing {time}")
                 self.from_str(time)
