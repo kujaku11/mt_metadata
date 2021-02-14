@@ -85,12 +85,13 @@ def setup_logger(logger_name, fn=None, level="debug"):
         logger.addHandler(stream_handler)
 
         fn = LOG_PATH.joinpath(fn)
-        exists = False
-        if fn.exists():
-            exists = True
 
         if fn.suffix not in [".log"]:
             fn = Path(fn.parent, f"{fn.stem}.log")
+            
+        exists = False
+        if fn.exists():
+            exists = True
 
         # fn_handler = logging.FileHandler(fn)
         fn_handler = logging.handlers.RotatingFileHandler(

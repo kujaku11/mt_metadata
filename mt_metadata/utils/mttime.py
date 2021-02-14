@@ -458,6 +458,8 @@ class MTime:
 
         """
         self.dt_object = self.validate_tzinfo(datetime.datetime.utcnow())
+        
+        return self
 
     def copy(self):
         """ make a copy of the time """
