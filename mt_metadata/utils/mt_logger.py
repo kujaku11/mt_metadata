@@ -104,10 +104,11 @@ def setup_logger(logger_name, fn=None, level="debug"):
             logger.info(
                 f"Logging file can be found {logger.handlers[-1].baseFilename}")
     # else, give it a null handler, which will go to default logger.
-    else:
-        null_handler = logging.NullHandler()
-        null_handler.setFormatter(LOG_FORMAT)
-        null_handler.setLevel(LEVEL_DICT[level.lower()])
-        logger.addHandler(null_handler)
+    # else:
+    #     pass
+    #     # null_handler = logging.NullHandler()
+    #     # null_handler.setFormatter(LOG_FORMAT)
+    #     # null_handler.setLevel(LEVEL_DICT[level.lower()])
+    #     # logger.addHandler(null_handler)
 
     return logger
