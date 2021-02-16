@@ -63,4 +63,38 @@ class BaseTranslator:
                 flipped_dict[str(v)] = k
     
         return flipped_dict
+    
+    @staticmethod
+    def read_xml_comment(comment):
+        """
+        read stationxml comment
+        """
+
+        key = comment.subject.strip().replace(" ", "_").lower()
+
+        if ":" in comment.value:
+            value = {}
+            a_list = comment.value.split(",")
+            for aa in a_list:
+                k, v = [vv.strip() for vv in aa.split(":", 1)]
+                value[key][k] = v
+        else:
+            value = comment.value
+    
+        return key, value
+    
+    @staticmethod
+    def read_xml_identifier(identifiers):
+        """
+        Read stationxml idenfier, which is a list of doi numbers, make
+        it into a string without the doi
+        
+        :param doi: DESCRIPTION
+        :type doi: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        return ", ".join([ii.strip().split("DOI:")[1] for ii in identifiers])
+        
             
