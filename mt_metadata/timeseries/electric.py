@@ -43,7 +43,7 @@ class Electric(Channel):
 
         # must go after setting attributes otherwise Base won't find attribute
         # descriptions and throw an error
-        Channel.__init__(self, **kwargs)
+        Channel.__init__(self, _ch_pattern=r"e\w+", **kwargs)
         self.type = "electric"
         
         self._attr_dict = attr_dict

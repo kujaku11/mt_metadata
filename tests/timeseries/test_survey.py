@@ -17,7 +17,7 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Survey
+from mt_metadata.timeseries import Station, Survey
 # =============================================================================
 # 
 # =============================================================================
@@ -111,6 +111,26 @@ class TestSurvey(unittest.TestCase):
     def test_acuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
         self.assertEqual(self.survey_object.acquired_by.author, "MT")
+        
+    def test_set_stations(self):
+        self.survey_object.stations = [Station(id="one")]
+        self.assertEqual(len(self.survey_object.stations), 1)
+        self.assertListEqual(["one"], self.survey_object.station_names)
+        
+    def test_set_stations_fail(self):
+        def set_stations(value):
+            self.survey_object.stations = value
+            
+        self.assertRaises(TypeError, set_stations, 10)
+        self.assertRaises(TypeError, set_stations, [Station(), Survey()])
+        
+    def test_add_surveys(self):
+        survey_02 = Survey()
+        survey_02.stations.append(Station(id="two"))
+        self.survey_object.stations.append(Station(id="one"))
+        self.survey_object += survey_02
+        self.assertEqual(len(self.survey_object), 2)
+        self.assertListEqual(["one", "two"], self.survey_object.station_names)
         
 # =============================================================================
 # run

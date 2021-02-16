@@ -17,7 +17,7 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Run
+from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
 # =============================================================================
 # 
 # =============================================================================
@@ -49,20 +49,12 @@ class TestRun(unittest.TestCase):
                 "data_logger.timing_system.uncertainty": 0.000001,
                 "data_logger.type": "broadband",
                 "data_type": "mt",
-                "ex.dipole_length": 0.,
-                "ey.dipole_length": 0.,
                 "id": "mt01a",
                 "provenance.comments": "provenance comments",
                 "provenance.log": "provenance log",
                 "metadata_by.author": "MT guru",
                 "metadata_by.comments": "lazy",
                 "sample_rate": 256.0,
-                "temperature.channel_number": None,
-                "temperature.component": "temperature",
-                "temperature.measurement_azimuth": 0.0,
-                "temperature.sample_rate": 0.0,
-                "temperature.type": "auxiliary",
-                "temperature.units": None,
                 "time_period.end": "1980-01-01T00:00:00+00:00",
                 "time_period.start": "1980-01-01T00:00:00+00:00",
             }
@@ -83,12 +75,8 @@ class TestRun(unittest.TestCase):
         self.assertDictEqual(self.meta_dict, self.run_object.to_dict())
 
     def test_in_out_json(self):
-        survey_json = json.dumps(self.meta_dict)
-        self.run_object.from_json((survey_json))
-        self.assertDictEqual(self.meta_dict, self.run_object.to_dict())
-
-        survey_json = self.run_object.to_json(nested=True)
-        self.run_object.from_json(survey_json)
+        run_json = json.dumps(self.meta_dict)
+        self.run_object.from_json((run_json))
         self.assertDictEqual(self.meta_dict, self.run_object.to_dict())
 
     def test_start(self):
@@ -116,9 +104,37 @@ class TestRun(unittest.TestCase):
     def test_n_channels(self):
         self.run_object.from_dict(self.meta_dict)
         self.assertEqual(self.run_object.n_channels, 6)
-
-        self.run_object.channels_recorded_auxiliary = ["temperature", "battery"]
-        self.assertEqual(self.run_object.n_channels, 7)
+        self.assertEqual(len(self.run_object), 6)
+        
+    def test_set_channels(self):
+        self.run_object.channels = [Electric(component="ez")]
+        self.assertEqual(len(self.run_object), 1)
+        self.assertListEqual(["ez"],
+                             self.run_object.channels_recorded_all)
+        
+    def test_set_channels_fail(self):
+        def set_channels(value):
+            self.run_object.channels = value
+            
+        self.assertRaises(TypeError, set_channels, 10)
+        self.assertRaises(TypeError, set_channels, [Run(), Electric()])
+        
+    def test_add_channels(self):
+        station_02 = Run()
+        station_02.channels.append(Electric(component="ex"))
+        station_02.channels.append(Magnetic(component="hx"))
+        station_02.channels.append(Auxiliary(component="temperature"))
+        self.run_object.channels.append(Electric(component="ey"))
+        self.run_object += station_02
+        self.assertEqual(len(self.run_object), 4)
+        self.assertListEqual(sorted(["ex", "ey", "hx", "temperature"]),
+                             sorted(self.run_object.channels_recorded_all))
+        self.assertListEqual(sorted(["ex", "ey"]),
+                             self.run_object.channels_recorded_electric)
+        self.assertListEqual(["hx"],
+                             self.run_object.channels_recorded_magnetic)
+        self.assertListEqual(["temperature"], 
+                             self.run_object.channels_recorded_auxiliary)
 
 
 # =============================================================================
