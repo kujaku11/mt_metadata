@@ -38,6 +38,17 @@ class TestNetwork(unittest.TestCase):
         self.assertEqual(self.survey.project_lead.organization, 
                          "Oregon State University")
         
+    def test_time_period(self):
+        self.assertEqual(self.survey.time_period.start_date, "2020-06-01")
+        self.assertEqual(self.survey.time_period.end_date, "2023-12-31")
+    
+    def test_dataset_doi(self):
+        self.assertEqual(self.survey.citation_dataset.doi, 
+                         "10.17611/DP/EMTF/USMTARRAY/SOUTH")
+        
+    def test_journal_doi(self):
+        self.assertEqual(self.survey.citation_journal.doi, 
+                         "10.666/test.doi")
         
     
       

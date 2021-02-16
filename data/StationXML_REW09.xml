@@ -13,7 +13,7 @@
       <Description>USMTArray South Magnetotelluric Time Series</Description>
       <Identifier type="DOI">10.17611/DP/EMTF/USMTARRAY/SOUTH</Identifier>
       <Comment subject="mt.survey.citation_journal.doi">
-         <Value/>
+         <Value>10.666/test.doi</Value>
       </Comment>
       <Comment subject="mt.survey.survey_id">
          <Value>CONUS South-USGS</Value>

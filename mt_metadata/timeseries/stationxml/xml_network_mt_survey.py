@@ -95,9 +95,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 for comment in network.comments:
                     key, value = self.read_xml_comment(comment)
                     key = key.split('mt.survey.')[1]
-                    if "doi" in key:
-                        value = ', '.join([ii.strip() for ii in value])
-                    elif 'summary' in key:
+                    if 'summary' in key:
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:
                         if mt_survey.comments:
