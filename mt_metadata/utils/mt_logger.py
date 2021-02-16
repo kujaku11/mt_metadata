@@ -85,12 +85,13 @@ def setup_logger(logger_name, fn=None, level="debug"):
         logger.addHandler(stream_handler)
 
         fn = LOG_PATH.joinpath(fn)
-        exists = False
-        if fn.exists():
-            exists = True
 
         if fn.suffix not in [".log"]:
             fn = Path(fn.parent, f"{fn.stem}.log")
+            
+        exists = False
+        if fn.exists():
+            exists = True
 
         # fn_handler = logging.FileHandler(fn)
         fn_handler = logging.handlers.RotatingFileHandler(
@@ -102,6 +103,7 @@ def setup_logger(logger_name, fn=None, level="debug"):
         if not exists:
             logger.info(
                 f"Logging file can be found {logger.handlers[-1].baseFilename}")
+    # commented this out because it leads to a drastic reduction in processing
     # else, give it a null handler, which will go to default logger.
     # else:
     #     pass
