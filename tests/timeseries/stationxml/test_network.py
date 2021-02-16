@@ -13,9 +13,37 @@ import unittest
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import xml_network_mt_survey
-from tests import STATIONXML_02 
+from tests import STATIONXML_01, STATIONXML_02 
 
-class TestNetwork(unittest.TestCase):
+class TestNetwork01(unittest.TestCase):
+    """
+    Test reading network into MT Survey object
+    """
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_01.as_posix())
+        self.network = self.inventory.networks[0]
+        
+        self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
+        self.survey = self.converter.network_to_survey(self.network)
+        
+    def test_time_period(self):
+        self.assertEqual(self.survey.time_period.start_date, "2020-01-01")
+        self.assertEqual(self.survey.time_period.end_date, "2023-12-31")
+        self.assertEqual(self.survey.time_period.start, "2020-01-01T00:00:00+00:00")
+        self.assertEqual(self.survey.time_period.end, "2023-12-31T23:59:59+00:00")
+    
+    def test_dataset_doi(self):
+        self.assertEqual(self.survey.citation_dataset.doi, 
+                         "10.7914/SN/ZU_2020")
+        
+    def test_networkd_code(self):
+        self.assertEqual(self.survey.fdsn.network, "ZU")
+        
+    def test_description(self):
+        self.assertEqual(self.survey.summary,
+                         "USMTArray South Magnetotelluric Time Series (USMTArray CONUS South-USGS)")
+
+class TestNetwork02(unittest.TestCase):
     """
     Test reading network into MT Survey object
     """
@@ -26,13 +54,23 @@ class TestNetwork(unittest.TestCase):
         self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
         self.survey = self.converter.network_to_survey(self.network)
         
-    def test_comments(self):
+    def test_comments_acquired_by(self):
         self.assertEqual(self.survey.acquired_by.author, "Pellerin, L.")
+        
+    def test_comments_survey_id(self):
         self.assertEqual(self.survey.survey_id, "CONUS South-USGS")
+    
+    def test_comments_project(self):
         self.assertEqual(self.survey.project, "USMTArray")
+    
+    def test_comments_geographic_name(self):
         self.assertEqual(self.survey.geographic_name, "Southern USA")
+    
+    def test_comments_comments(self):
         self.assertEqual(self.survey.comments, 
                          "Long-period EarthScope-style coverage of southern United States")
+        
+    def test_comments_project_lead(self):
         self.assertEqual(self.survey.project_lead.author, "Schultz, A.")
         self.assertEqual(self.survey.project_lead.email, "Adam.Schultz@oregonstate.edu")
         self.assertEqual(self.survey.project_lead.organization, 
@@ -41,6 +79,9 @@ class TestNetwork(unittest.TestCase):
     def test_time_period(self):
         self.assertEqual(self.survey.time_period.start_date, "2020-06-01")
         self.assertEqual(self.survey.time_period.end_date, "2023-12-31")
+        self.assertEqual(self.survey.time_period.start, "2020-06-01T00:00:00+00:00")
+        self.assertEqual(self.survey.time_period.end, "2023-12-31T23:59:59+00:00")
+    
     
     def test_dataset_doi(self):
         self.assertEqual(self.survey.citation_dataset.doi, 
@@ -49,6 +90,12 @@ class TestNetwork(unittest.TestCase):
     def test_journal_doi(self):
         self.assertEqual(self.survey.citation_journal.doi, 
                          "10.666/test.doi")
+    def test_networkd_code(self):
+        self.assertEqual(self.survey.fdsn.network, "ZU")
+        
+    def test_description(self):
+        self.assertEqual(self.survey.summary,
+                         "USMTArray South Magnetotelluric Time Series")
         
     
       
