@@ -77,7 +77,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     for person in operator.contacts:
                         author.append(', '.join(person.names))
                         email.append(', '.join(person.emails))
-                        org.append(', '.join(person.agencies))
                 if author:
                     mt_survey.set_attr_from_name(
                         "project_lead.author", ', '.join(author))
@@ -95,10 +94,18 @@ class XMLNetworkMTSurvey(BaseTranslator):
             elif mt_key in ["comments"]:
                 for comment in network.comments:
                     key, value = self.read_xml_comment(comment)
+                    key = key.split('mt.survey.')[1]
                     if "doi" in key:
                         value = ', '.join([ii.strip() for ii in value])
-                    mt_survey.set_attr_from_name(key.split('mt.survey.')[1],
-                                                 value)
+                    elif 'summary' in key:
+                        key = key.replace("summary", "comments")
+                    if key in ["comments"]:
+                        if mt_survey.comments:
+                            mt_survey.comments += value
+                        else:
+                            mt_survey.comments = value
+                    else:
+                        mt_survey.set_attr_from_name(key, value)
 
             else:
                 value = getattr(network, sxml_key)
