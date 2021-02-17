@@ -41,15 +41,22 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 "restricted_status": "release_license",
                 "operators": "special",
                 "code": "fdsn.network",
-                "alternate_code": "project",
                 "identifiers": "citation_dataset.doi",
             }
         )
 
         # StationXML to MT Survey
         self.mt_translator = self.flip_dict(self.xml_translator)
-        self.mt_translator["project_lead"] = "operator"
+        self.mt_translator["project_lead"] = "operators"
         self.mt_translator["name"] = "alternate_code"
+        
+        self.mt_comments_list = ["country",
+                                 "geographic_name",
+                                 "citation_journal.doi",
+                                 "survey_id",
+                                 "project",
+                                 "acquired_by.author",
+                                 "acquired_by.comments"]
 
     def network_to_survey(self, network):
         """
@@ -119,6 +126,59 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         value = value.isoformat()
 
                 mt_survey.set_attr_from_name(mt_key, value)
-            
 
         return mt_survey
+    
+    def survey_to_network(self, survey, code="ZU"):
+        """
+        Convert MT Survey to Obspy Network
+        
+        .. note:: For now the default code is ZU which is an IRIS catch-all network
+        
+        """
+
+        if not isinstance(survey, metadata.Survey):
+            msg = f"Input must be mt_metadata.timeseries.Survey object not {type(survey)}"
+            self.logger.error(msg)
+            raise ValueError(msg)
+        
+
+
+        network = inventory.Network(code)
+        for inv_key, mt_key in self.xml_translator.items():
+            if mt_key is None:
+                msg = "cannot currently map Survey to network.{0}".format(inv_key)
+                self.logger.debug(msg)
+                continue
+            if inv_key == "operators":
+                operator = inventory.Operator(agency=survey.project_lead.organization)
+                person = inventory.Person(
+                    names=[survey.project_lead.author],
+                    emails=[survey.project_lead.email],
+                )
+                operator.contacts = [person]
+                network.operators = [operator]
+    
+            elif inv_key == "comments":
+                if survey.comments is not None:
+                    comment = inventory.Comment(survey.comments)
+                    network.comments.append(comment)
+            elif inv_key == "restricted_status":
+                network.restricted_status = release_dict[survey.release_license]
+            elif inv_key == "identifiers":
+                doi = survey.get_attr_from_name(mt_key)
+                network.identifiers.append(f"DOI: {doi}")
+    
+            else:
+                setattr(network, inv_key, survey.get_attr_from_name(mt_key))
+                
+        for key in sorted(self.mt_comments_list):
+            value = survey.get_attr_from_name(key)
+            if value:
+                comment = inventory.Comment(value, 
+                                            subject=f"mt.survey.{key}")
+                network.comments.append(comment)
+        
+        return network  
+        
+        

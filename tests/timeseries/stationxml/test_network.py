@@ -97,6 +97,47 @@ class TestNetwork02(unittest.TestCase):
         self.assertEqual(self.survey.summary,
                          "USMTArray South Magnetotelluric Time Series")
         
+class TestSurveyToNetwork(unittest.TestCase):
+    """
+    Test converting a network to a survey
+    """
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_02.as_posix())
+        self.original_network = self.inventory.networks[0]
+        
+        self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
+        self.survey = self.converter.network_to_survey(self.original_network)
+        self.test_network = self.converter.survey_to_network(self.survey)
+        
+    def test_time_period(self):
+        self.assertEqual(self.test_network.start_date, 
+                         self.original_network.start_date)
+        self.assertEqual(self.test_network.end_date, 
+                         self.original_network.end_date)
+    
+    def test_comment_survey_id(self):
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.survey_id").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.survey_id").value
+        self.assertEqual(c1, c2)
+        
+    def test_comment_project(self):
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.project").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.project").value
+        self.assertEqual(c1, c2)
+        
+    def test_comment_journal_doi(self):
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.citation_journal.doi").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.citation_journal.doi").value
+        self.assertEqual(c1, c2)
+        
+        
+        
     
       
 # =============================================================================

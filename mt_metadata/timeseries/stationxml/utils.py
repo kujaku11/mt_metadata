@@ -97,4 +97,24 @@ class BaseTranslator:
         """
         return ", ".join([ii.strip().split("DOI:")[1] for ii in identifiers])
         
+    def get_comment(self, comments, subject):
+        """
+        Get the correct comment from a list of comments
+        
+        :param comments: list of :class:`obspy.core.inventory.Comments`
+        :type comments: list
+        :param subject: subject heading to get
+        :type subject: string
+        :return: the corresponding comment
+        :rtype: :class:`obspy.core.inventory.Comments`
+
+        """
+        
+        for comment in comments:
+            if comment.subject == subject:
+                return comment
+            
+        self.logger.info(f"Could not find {subject} in the given list of comments.")
+        return None
+    
             
