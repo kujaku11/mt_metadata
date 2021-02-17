@@ -136,6 +136,19 @@ class TestSurveyToNetwork(unittest.TestCase):
                                         "mt.survey.citation_journal.doi").value
         self.assertEqual(c1, c2)
         
+    def test_comment_acquired_by(self):
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.acquired_by.author").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.acquired_by.author").value
+        self.assertEqual(c1, c2)
+        
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.acquired_by.comments").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.acquired_by.comments").value
+        self.assertEqual(c1, c2)
+        
         
         
     
