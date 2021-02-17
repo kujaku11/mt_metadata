@@ -149,6 +149,20 @@ class TestSurveyToNetwork(unittest.TestCase):
                                         "mt.survey.acquired_by.comments").value
         self.assertEqual(c1, c2)
         
+    def test_comment_geographic_name(self):
+        c1 = self.converter.get_comment(self.original_network.comments,
+                                        "mt.survey.geographic_name").value
+        c2 = self.converter.get_comment(self.test_network.comments,
+                                        "mt.survey.geographic_name").value
+        self.assertEqual(c1, c2)
+        
+    def test_description(self):
+        self.assertEqual(self.original_network.description,
+                         self.test_network.description)
+        
+    def test_restricted_access(self):
+        self.assertEqual(self.original_network.restricted_status,
+                         self.test_network.restricted_status)
         
         
     
