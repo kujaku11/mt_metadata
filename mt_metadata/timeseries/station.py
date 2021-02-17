@@ -69,19 +69,19 @@ class Station(Base):
         self.runs = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
+
     def __add__(self, other):
-        if isinstance(other, Station): 
+        if isinstance(other, Station):
             self.runs.extend(other.runs)
             return self
         else:
             msg = f"Can only merge Station objects, not {type(other)}"
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     def __len__(self):
         return len(self.runs)
-    
+
     def has_run(self, run_id):
         """
         Check to see if the run id already exists
@@ -95,7 +95,7 @@ class Station(Base):
         if run_id in self.run_list:
             return True
         return False
-    
+
     def run_index(self, run_id):
         """
         Get the index of the run_id
@@ -106,11 +106,11 @@ class Station(Base):
         :rtype: TYPE
 
         """
-        
+
         if self.has_run(run_id):
             return self.run_list.index(run_id)
         return None
-    
+
     def add_run(self, run_obj):
         """
         Add a run, if one of the same name exists overwrite it.
@@ -128,18 +128,20 @@ class Station(Base):
         else:
             print(f"appending {run_obj.id}")
             self.runs.append(run_obj)
-    
+
     @property
     def runs(self):
         """ Return run list """
         return self._runs
-    
+
     @runs.setter
     def runs(self, value):
         """ set the run list """
         if not hasattr(value, "__iter__"):
-            msg = ("input station_list must be an iterable, should be a list "
-                   f"not {type(value)}")
+            msg = (
+                "input station_list must be an iterable, should be a list "
+                f"not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
         runs = []
@@ -153,20 +155,22 @@ class Station(Base):
                 runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-            
+
         self._runs = runs
-        
+
     @property
     def run_list(self):
         """ Return names of run in survey """
         return [ss.id for ss in self.runs]
-    
+
     @run_list.setter
     def run_list(self, value):
         """ Set list of run names """
         if not hasattr(value, "__iter__"):
-            msg = ("input station_list must be an iterable, should be a list "
-                   f"not {type(value)}")
+            msg = (
+                "input station_list must be an iterable, should be a list "
+                f"not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
         for run in value:
@@ -176,7 +180,3 @@ class Station(Base):
                 msg = f"could not convert {run} to string"
                 self.logger.error(msg)
                 raise ValueError(msg)
-                
-        
-
-        

@@ -115,7 +115,7 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_electric.setter
     def channels_recorded_electric(self, value):
         if isinstance(value, str):
@@ -137,7 +137,7 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_magnetic.setter
     def channels_recorded_magnetic(self, value):
         if isinstance(value, str):
@@ -159,7 +159,7 @@ class Run(Base):
                     continue
                 rchannels.append(obj.component)
         return rchannels
-    
+
     @channels_recorded_auxiliary.setter
     def channels_recorded_auxiliary(self, value):
         if isinstance(value, str):
@@ -277,7 +277,7 @@ class Run(Base):
             self.logger.error(ValueError)
             raise ValueError(msg)
         self._temperature.from_dict(value.to_dict())
-        
+
     @property
     def rrhx(self):
         return self._rrhx
@@ -296,7 +296,7 @@ class Run(Base):
             self.logger.error(ValueError)
             raise ValueError(msg)
         self._rrhx.from_dict(value.to_dict())
-        
+
     @property
     def rrhy(self):
         return self._rrhy

@@ -29,5 +29,5 @@ class Channels(Base):
         self.units = None
         self.inputs = []
         self.outputs = []
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)

@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Magnetic
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestMagnetic(unittest.TestCase):
     def setUp(self):
@@ -83,7 +84,8 @@ class TestMagnetic(unittest.TestCase):
         survey_json = self.magnetic_object.to_json(nested=True)
         self.magnetic_object.from_json(survey_json)
         self.assertDictEqual(self.meta_dict, self.magnetic_object.to_dict())
-        
+
+
 # =============================================================================
 # run
 # =============================================================================

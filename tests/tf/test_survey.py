@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Survey
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestSurvey(unittest.TestCase):
     """
@@ -107,11 +108,12 @@ class TestSurvey(unittest.TestCase):
         self.assertAlmostEqual(
             self.survey_object.southeast_corner.longitude, -115.57361, places=5
         )
-        
+
     def test_acuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
         self.assertEqual(self.survey_object.acquired_by.author, "MT")
-        
+
+
 # =============================================================================
 # run
 # =============================================================================

@@ -10,7 +10,14 @@ Created on Wed Feb 10 12:47:21 2021
 """
 
 from mt_metadata.timeseries import (
-    Auxiliary, Electric, Magnetic, Run, Station, Survey, Experiment)
+    Auxiliary,
+    Electric,
+    Magnetic,
+    Run,
+    Station,
+    Survey,
+    Experiment,
+)
 
 experiment = Experiment()
 
@@ -35,6 +42,6 @@ for survey in ["One", "Two"]:
 
     experiment.surveys.append(survey_obj)
 
-experiment_xml = experiment.to_xml(fn=r"c:\Users\jpeacock\test_experiment.xml",
-                                   required=False)
-
+experiment_xml = experiment.to_xml(
+    fn=r"c:\Users\jpeacock\test_experiment.xml", required=False
+)

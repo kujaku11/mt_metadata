@@ -64,13 +64,12 @@ class Run(Base):
         self.channels = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-    
-            
+
     def __len__(self):
         return len(self.channels)
-    
+
     def __add__(self, other):
-        if isinstance(other, Run): 
+        if isinstance(other, Run):
             self.channels.extend(other.channels)
 
             return self
@@ -78,7 +77,7 @@ class Run(Base):
             msg = f"Can only merge Run objects, not {type(other)}"
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     def has_channel(self, component):
         """
         Check to see if the channel already exists
@@ -89,11 +88,11 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        
+
         if component in self.channels_recorded_all:
             return True
         return False
-    
+
     def channel_index(self, component):
         """
         get index of the channel in the channel list
@@ -101,7 +100,7 @@ class Run(Base):
         if self.has_channel(component):
             return self.channels_recorded_all.index(component)
         return None
-        
+
     def add_channel(self, channel_obj):
         """
         Add a channel to the list, check if one exists if it does overwrite it
@@ -117,18 +116,20 @@ class Run(Base):
             self.channels[index] = channel_obj
         else:
             self.channels.append(channel_obj)
-            
+
     @property
     def channels(self):
         """ List of channels in the run """
         return self._channels
-    
+
     @channels.setter
     def channels(self, value):
         """ set the channel list """
         if not hasattr(value, "__iter__"):
-            msg = ("input channels must be an iterable, should be a list "
-                   f"not {type(value)}")
+            msg = (
+                "input channels must be an iterable, should be a list "
+                f"not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
         channels = []
@@ -142,7 +143,7 @@ class Run(Base):
                 channels.append(channel)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-            
+
         self._channels = channels
 
     @property
@@ -161,7 +162,9 @@ class Run(Base):
 
     @property
     def channels_recorded_electric(self):
-        return sorted([ch.component for ch in self.channels if isinstance(ch, Electric)])
+        return sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Electric)]
+        )
 
     @channels_recorded_electric.setter
     def channels_recorded_electric(self, value):
@@ -170,7 +173,7 @@ class Run(Base):
             return
         if not hasattr(value, "__iter__"):
             value = [value]
-            
+
         for entry in value:
             if isinstance(entry, str):
                 self.channels.append(Electric(component=entry))
@@ -180,11 +183,13 @@ class Run(Base):
                 msg = f"entry must be a string or type Electric not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
-        
+
     @property
     def channels_recorded_magnetic(self):
-        return sorted([ch.component for ch in self.channels if isinstance(ch, Magnetic)])
-    
+        return sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Magnetic)]
+        )
+
     @channels_recorded_magnetic.setter
     def channels_recorded_magnetic(self, value):
         if value is None:
@@ -192,7 +197,7 @@ class Run(Base):
             return
         if not hasattr(value, "__iter__"):
             value = [value]
-            
+
         for entry in value:
             if isinstance(entry, str):
                 self.channels.append(Magnetic(component=entry))
@@ -205,7 +210,9 @@ class Run(Base):
 
     @property
     def channels_recorded_auxiliary(self):
-        return sorted([ch.component for ch in self.channels if isinstance(ch, Auxiliary)])
+        return sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Auxiliary)]
+        )
 
     @channels_recorded_auxiliary.setter
     def channels_recorded_auxiliary(self, value):
@@ -214,7 +221,7 @@ class Run(Base):
             return
         if not hasattr(value, "__iter__"):
             value = [value]
-            
+
         for entry in value:
             if isinstance(entry, str):
                 self.channels.append(Auxiliary(component=entry))

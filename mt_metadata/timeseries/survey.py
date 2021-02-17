@@ -66,9 +66,9 @@ class Survey(Base):
         self.stations = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
+
     def __add__(self, other):
-        if isinstance(other, Survey): 
+        if isinstance(other, Survey):
             self.stations.extend(other.stations)
 
             return self
@@ -76,21 +76,23 @@ class Survey(Base):
             msg = f"Can only merge Survey objects, not {type(other)}"
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     def __len__(self):
         return len(self.stations)
-            
+
     @property
     def stations(self):
         """ Return station list """
         return self._stations
-    
+
     @stations.setter
     def stations(self, value):
         """ set the station list """
         if not hasattr(value, "__iter__"):
-            msg = ("input survey_list must be an iterable, should be a list "
-                   f"not {type(value)}")
+            msg = (
+                "input survey_list must be an iterable, should be a list "
+                f"not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
         stations = []
@@ -104,9 +106,9 @@ class Survey(Base):
                 stations.append(station)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-            
+
         self._stations = stations
-        
+
     @property
     def station_names(self):
         """ Return names of station in survey """

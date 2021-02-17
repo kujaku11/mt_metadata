@@ -129,10 +129,10 @@ class MTime:
     def __init__(self, time=None, gps_time=False):
 
         self.logger = setup_logger(
-            "{0}.{1}".format(__name__, self.__class__.__name__), 
-            fn="mt_time.log")
+            "{0}.{1}".format(__name__, self.__class__.__name__), fn="mt_time.log"
+        )
         self.dt_object = self.now()
-        
+
         if time is not None:
             self.logger.debug(f"Input type is {type(time)} {time}")
             if isinstance(time, str):
@@ -140,9 +140,7 @@ class MTime:
                 self.logger.debug(f"Parsed {time} to {self.iso_str}")
 
             elif isinstance(time, (int, float)):
-                self.logger.debug(
-                    f"Input time {time}, assuming epoch seconds in UTC"
-                )
+                self.logger.debug(f"Input time {time}, assuming epoch seconds in UTC")
                 self.epoch_seconds = time
             elif isinstance(time, (np.datetime64)):
                 self.logger.debug(
@@ -152,11 +150,9 @@ class MTime:
                 self.dt_object = self.validate_tzinfo(time.tolist())
 
             elif isinstance(time, (datetime.datetime)):
-                self.logger.debug(
-                    "Input time is a datetime.datetime object"
-                )
+                self.logger.debug("Input time is a datetime.datetime object")
                 self.dt_object = self.validate_tzinfo(time)
-                
+
             elif isinstance(time, pd._libs.tslibs.timestamps.Timestamp):
                 self.from_str(time.isoformat())
 
@@ -168,8 +164,7 @@ class MTime:
             self.from_str("1980-01-01 00:00:00")
 
         if gps_time:
-            leap_seconds = calculate_leap_seconds(
-                self.year, self.month, self.day)
+            leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
             self.logger.debug(
                 f"Converting GPS time to UTC with {leap_seconds} leap seconds"
             )
@@ -364,7 +359,7 @@ class MTime:
                 )
                 self.logger.error(msg)
                 raise MTTimeError(msg)
-         
+
         self.dt_object = self.validate_tzinfo(parsed_str)
 
     def validate_tzinfo(self, dt_object):
@@ -384,10 +379,9 @@ class MTime:
         elif isinstance(dt_object.tzinfo, tzlocal):
             self.logger.info("Local timezone identified setting to UTC")
             return dt_object.replace(tzinfo=datetime.timezone.utc)
-        
+
         elif dt_object.tzinfo != datetime.timezone.utc:
             raise ValueError("Time zone must be UTC")
-        
 
     @property
     def date(self):
@@ -458,7 +452,7 @@ class MTime:
 
         """
         self.dt_object = self.validate_tzinfo(datetime.datetime.utcnow())
-        
+
         return self
 
     def copy(self):

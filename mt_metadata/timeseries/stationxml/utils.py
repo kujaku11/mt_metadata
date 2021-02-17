@@ -32,9 +32,9 @@ class BaseTranslator:
             "restricted_status": None,
             "source_id": None,
         }
-        
+
         self.mt_translator = self.flip_dict(self.xml_translator)
-     
+
     @staticmethod
     def flip_dict(original_dict):
         """
@@ -49,7 +49,7 @@ class BaseTranslator:
     
         """
         flipped_dict = {}
-    
+
         for k, v in original_dict.items():
             if v in [None, "special"]:
                 continue
@@ -61,9 +61,9 @@ class BaseTranslator:
                     flipped_dict[value] = k
             else:
                 flipped_dict[str(v)] = k
-    
+
         return flipped_dict
-    
+
     @staticmethod
     def read_xml_comment(comment):
         """
@@ -80,9 +80,9 @@ class BaseTranslator:
                 value[key][k] = v
         else:
             value = comment.value
-    
+
         return key, value
-    
+
     @staticmethod
     def read_xml_identifier(identifiers):
         """
@@ -96,7 +96,7 @@ class BaseTranslator:
 
         """
         return ", ".join([ii.strip().split("DOI:")[1] for ii in identifiers])
-        
+
     def get_comment(self, comments, subject):
         """
         Get the correct comment from a list of comments
@@ -109,12 +109,10 @@ class BaseTranslator:
         :rtype: :class:`obspy.core.inventory.Comments`
 
         """
-        
+
         for comment in comments:
             if comment.subject == subject:
                 return comment
-            
+
         self.logger.info(f"Could not find {subject} in the given list of comments.")
         return None
-    
-            

@@ -45,5 +45,5 @@ class Electric(Channel):
         # descriptions and throw an error
         Channel.__init__(self, _ch_pattern=r"e\w+", **kwargs)
         self.type = "electric"
-        
+
         self._attr_dict = attr_dict

@@ -11,16 +11,13 @@ Created on Tue Feb 16 10:18:29 2021
 # =============================================================================
 # Imports
 # =============================================================================
-from pathlib import Path
-from copy import deepcopy
-
-from mt_metadata.timeseries.stationxml.fdsn_tools import (
-    make_channel_code, get_location_code, release_dict)
+from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 
 from obspy.core import inventory
+
 # =============================================================================
 
 
@@ -49,14 +46,16 @@ class XMLNetworkMTSurvey(BaseTranslator):
         self.mt_translator = self.flip_dict(self.xml_translator)
         self.mt_translator["project_lead"] = "operators"
         self.mt_translator["name"] = "alternate_code"
-        
-        self.mt_comments_list = ["country",
-                                 "geographic_name",
-                                 "citation_journal.doi",
-                                 "survey_id",
-                                 "project",
-                                 "acquired_by.author",
-                                 "acquired_by.comments"]
+
+        self.mt_comments_list = [
+            "country",
+            "geographic_name",
+            "citation_journal.doi",
+            "survey_id",
+            "project",
+            "acquired_by.author",
+            "acquired_by.comments",
+        ]
 
     def network_to_survey(self, network):
         """
@@ -68,7 +67,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
         """
 
         if not isinstance(network, inventory.Network):
-            msg = f"Input must be obspy.core.inventory.Network object not {type(network)}"
+            msg = (
+                f"Input must be obspy.core.inventory.Network object not {type(network)}"
+            )
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -82,27 +83,28 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 for operator in network.operators:
                     org.append(operator.agency)
                     for person in operator.contacts:
-                        author.append(', '.join(person.names))
-                        email.append(', '.join(person.emails))
+                        author.append(", ".join(person.names))
+                        email.append(", ".join(person.emails))
                 if author:
                     mt_survey.set_attr_from_name(
-                        "project_lead.author", ', '.join(author))
+                        "project_lead.author", ", ".join(author)
+                    )
                 if email:
-                    mt_survey.set_attr_from_name(
-                        "project_lead.email", ', '.join(email))
+                    mt_survey.set_attr_from_name("project_lead.email", ", ".join(email))
                 if org:
                     mt_survey.set_attr_from_name(
-                        "project_lead.organization", ', '.join(org))
-            elif mt_key in ["citation_dataset.doi"]:
-                 mt_survey.set_attr_from_name(
-                        mt_key, self.read_xml_identifier(network.identifiers)
+                        "project_lead.organization", ", ".join(org)
                     )
-                 
+            elif mt_key in ["citation_dataset.doi"]:
+                mt_survey.set_attr_from_name(
+                    mt_key, self.read_xml_identifier(network.identifiers)
+                )
+
             elif mt_key in ["comments"]:
                 for comment in network.comments:
                     key, value = self.read_xml_comment(comment)
-                    key = key.split('mt.survey.')[1]
-                    if 'summary' in key:
+                    key = key.split("mt.survey.")[1]
+                    if "summary" in key:
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:
                         if mt_survey.comments:
@@ -128,7 +130,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 mt_survey.set_attr_from_name(mt_key, value)
 
         return mt_survey
-    
+
     def survey_to_network(self, survey, code="ZU"):
         """
         Convert MT Survey to Obspy Network
@@ -138,11 +140,11 @@ class XMLNetworkMTSurvey(BaseTranslator):
         """
 
         if not isinstance(survey, metadata.Survey):
-            msg = f"Input must be mt_metadata.timeseries.Survey object not {type(survey)}"
+            msg = (
+                f"Input must be mt_metadata.timeseries.Survey object not {type(survey)}"
+            )
             self.logger.error(msg)
             raise ValueError(msg)
-        
-
 
         network = inventory.Network(code)
         for inv_key, mt_key in self.xml_translator.items():
@@ -158,7 +160,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 )
                 operator.contacts = [person]
                 network.operators = [operator]
-    
+
             elif inv_key == "comments":
                 if survey.comments is not None:
                     comment = inventory.Comment(survey.comments)
@@ -168,17 +170,14 @@ class XMLNetworkMTSurvey(BaseTranslator):
             elif inv_key == "identifiers":
                 doi = survey.get_attr_from_name(mt_key)
                 network.identifiers.append(f"DOI: {doi}")
-    
+
             else:
                 setattr(network, inv_key, survey.get_attr_from_name(mt_key))
-                
+
         for key in sorted(self.mt_comments_list):
             value = survey.get_attr_from_name(key)
             if value:
-                comment = inventory.Comment(value, 
-                                            subject=f"mt.survey.{key}")
+                comment = inventory.Comment(value, subject=f"mt.survey.{key}")
                 network.comments.append(comment)
-        
-        return network  
-        
-        
+
+        return network

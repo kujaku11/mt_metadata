@@ -79,9 +79,6 @@ from .survey import Survey
 from .experiment import Experiment
 
 
-
-
-
 __all__ = [
     "Standards",
     "Declination",
@@ -112,4 +109,3 @@ __all__ = [
     "Electric",
     "Magnetic",
 ]
-

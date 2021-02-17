@@ -361,4 +361,3 @@ class NumpyEncoder(json.JSONEncoder):
             return str(obj)
 
         return json.JSONEncoder.default(self, obj)
-    

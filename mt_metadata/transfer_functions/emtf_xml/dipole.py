@@ -32,5 +32,3 @@ class Dipole(Base):
         self.negative = Electrode()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-

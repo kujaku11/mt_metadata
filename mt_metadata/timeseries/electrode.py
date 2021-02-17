@@ -37,4 +37,3 @@ class Electrode(Base):
         self.longitude = 0.0
         self.elevation = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)
-

@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestRun(unittest.TestCase):
     def setUp(self):
@@ -105,20 +106,19 @@ class TestRun(unittest.TestCase):
         self.run_object.from_dict(self.meta_dict)
         self.assertEqual(self.run_object.n_channels, 6)
         self.assertEqual(len(self.run_object), 6)
-        
+
     def test_set_channels(self):
         self.run_object.channels = [Electric(component="ez")]
         self.assertEqual(len(self.run_object), 1)
-        self.assertListEqual(["ez"],
-                             self.run_object.channels_recorded_all)
-        
+        self.assertListEqual(["ez"], self.run_object.channels_recorded_all)
+
     def test_set_channels_fail(self):
         def set_channels(value):
             self.run_object.channels = value
-            
+
         self.assertRaises(TypeError, set_channels, 10)
         self.assertRaises(TypeError, set_channels, [Run(), Electric()])
-        
+
     def test_add_channels(self):
         station_02 = Run()
         station_02.channels.append(Electric(component="ex"))
@@ -127,14 +127,17 @@ class TestRun(unittest.TestCase):
         self.run_object.channels.append(Electric(component="ey"))
         self.run_object += station_02
         self.assertEqual(len(self.run_object), 4)
-        self.assertListEqual(sorted(["ex", "ey", "hx", "temperature"]),
-                             sorted(self.run_object.channels_recorded_all))
-        self.assertListEqual(sorted(["ex", "ey"]),
-                             self.run_object.channels_recorded_electric)
-        self.assertListEqual(["hx"],
-                             self.run_object.channels_recorded_magnetic)
-        self.assertListEqual(["temperature"], 
-                             self.run_object.channels_recorded_auxiliary)
+        self.assertListEqual(
+            sorted(["ex", "ey", "hx", "temperature"]),
+            sorted(self.run_object.channels_recorded_all),
+        )
+        self.assertListEqual(
+            sorted(["ex", "ey"]), self.run_object.channels_recorded_electric
+        )
+        self.assertListEqual(["hx"], self.run_object.channels_recorded_magnetic)
+        self.assertListEqual(
+            ["temperature"], self.run_object.channels_recorded_auxiliary
+        )
 
 
 # =============================================================================
