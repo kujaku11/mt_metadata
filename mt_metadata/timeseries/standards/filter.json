@@ -26,7 +26,7 @@
         "alias": [],
         "example": "table"
     },
-    "units_in": {
+    "input_units": {
         "type": "string",
         "required": true,
         "style": "alpha numeric",
@@ -36,7 +36,7 @@
         "alias": [],
         "example": "count"
     },
-    "units_out": {
+    "output_units": {
         "type": "string",
         "required": true,
         "style": "alpha numeric",
@@ -56,77 +56,22 @@
         "alias": [],
         "example": "2/1/2020"
     },
-    "normalization_factor": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "normalization factor for a poles and zeros filter",
-        "options": [],
-        "alias": [],
-        "example": "2.34"
-    },
-    "normalization_frequency": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "normalization frequency for a poles and zeros filter",
-        "options": [],
-        "alias": [],
-        "example": "1"
-    },
-    "cutoff": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "cutoff frequency for filter",
-        "options": [],
-        "alias": [],
-        "example": "1"
-    },
-    "operation": {
-        "type": "float",
-        "required": false,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "how the filter should be applied",
-        "options": [
-            "mulitply",
-            "divide",
-            "add",
-            "subtract"
-        ],
-        "alias": [],
-        "example": "multiply"
-    },
-    "n_poles": {
-        "type": "integer",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "how many poles are in the filter",
-        "options": [],
-        "alias": [],
-        "example": "4"
-    },
-    "n_zeros": {
-        "type": "integer",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "how many zeros are in the filter",
-        "options": [],
-        "alias": [],
-        "example": "2"
-    },
     "conversion_factor": {
         "type": "float",
         "required": false,
         "style": "number",
         "units": null,
         "description": "unit conversion factor",
+        "options": [],
+        "alias": [],
+        "example": "100"
+    },
+    "gain": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "scale factor for a simple coefficient filter",
         "options": [],
         "alias": [],
         "example": "100"

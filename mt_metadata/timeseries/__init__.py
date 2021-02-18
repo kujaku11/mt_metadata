@@ -66,8 +66,8 @@ from .electrode import Electrode
 from .timing_system import TimingSystem
 from .time_period import TimePeriod
 from .orientation import Orientation
-from .filtered import Filtered
-from .filter import Filter
+from .filters.filtered import Filtered
+from .filters.filter import Filter
 from .data_logger import DataLogger
 from .survey import Survey
 from .channel import Channel
