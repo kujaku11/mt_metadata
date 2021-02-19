@@ -15,6 +15,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
+from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
 
 from obspy.core import inventory
 
@@ -76,6 +77,8 @@ class XMLStationMTStation(BaseTranslator):
             "provenance.comments"
             
         ]
+        
+        
         
     def xml_to_mt(self, xml_station):
         """
@@ -140,6 +143,10 @@ class XMLStationMTStation(BaseTranslator):
             if mt_station.fdsn.id is not None:
                 mt_station.id = mt_station.fdsn.id
         
+        # read in equipment information
+        mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
+        
+        
         return mt_station, run_comments
                 
     def mt_to_xml(self, mt_station):
@@ -172,7 +179,6 @@ class XMLStationMTStation(BaseTranslator):
                                         mt_station.location.elevation)
 
         for xml_key, mt_key in self.xml_translator.items():
-            print(xml_key, mt_key)
             if mt_key is None:
                 msg = "cannot currently map mt_key.station to inventory.station.{0}".format(
                     xml_key
@@ -199,3 +205,43 @@ class XMLStationMTStation(BaseTranslator):
             else:
                 setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
 
+    def _equipments_to_runs(self, equipments, station_obj):
+        """
+        Read in equipment and put into station runs 
+        """
+        if not hasattr(equipments, "__iter__"):
+            msg = f"Input must be an iterable, should be a list not {type(equipments)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+        for equipment in equipments:
+            run_translator = XMLEquipmentMTRun()
+            run_item = run_translator.xml_to_mt(equipment)
+            run_index = station_obj.run_index(run_item.id)
+            if run_index:
+                station_obj.runs[run_index].from_dict(run_item.to_dict())
+            else:
+                station_obj.add_run(run_item)
+            
+        return station_obj
+    
+    def _add_run_comments(self, run_comments, station_obj):
+        """
+        Add comments to runs
+        
+        :param run_comments: DESCRIPTION
+        :type run_comments: TYPE
+        :param station_obj: DESCRIPTION
+        :type station_obj: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        pass
+        # for comment in run_comments:
+            
+            
+        
+        
+        
+        

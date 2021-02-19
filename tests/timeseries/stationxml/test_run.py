@@ -30,6 +30,21 @@ class TestNetwork01(unittest.TestCase):
         
     def test_id(self):
         self.assertEqual(self.mt_run.id, "a")
+    
+    def test_data_type(self):
+        self.assertEqual(self.mt_run.data_type, "LP")
+        
+    def test_data_logger(self):
+        self.assertEqual(self.mt_run.data_logger.timing_system.type, "GPS")
+        self.assertEqual(self.mt_run.data_logger.firmware.author, "Barry Narod")
+        self.assertEqual(self.mt_run.data_logger.firmware.version, '')
+        self.assertEqual(self.mt_run.data_logger.power_source.type, "battery")
+        self.assertEqual(self.mt_run.data_logger.model, "NIMS")
+        self.assertEqual(self.mt_run.data_logger.id, "2612-09")
+        
+    def test_time_period(self):
+        self.assertEqual(self.mt_run.time_period.start, "2020-06-08T22:57:13+00:00")
+        self.assertEqual(self.mt_run.time_period.end, "2020-06-08T23:54:50+00:00")
         
 # =============================================================================
 # 

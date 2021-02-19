@@ -68,16 +68,27 @@ class BaseTranslator:
     def read_xml_comment(comment):
         """
         read stationxml comment
+        
+        Assuming that separate comments are split by ':' and separated 
+        by a comma. 
+        
         """
-
+        
         key = comment.subject.strip().replace(" ", "_").lower()
-
-        if ":" in comment.value:
-            value = {}
-            a_list = comment.value.split(",", comment.value.count(":") - 1)
-            for aa in a_list:
-                k, v = [vv.strip() for vv in aa.split(":", 1)]
-                value[k] = v
+        
+        def parse(comment_string, filled={}):
+            k, *other = comment_string.split(":", 1)
+            if other: 
+                key = k
+                value, *maybe = other[0].split(',', 1)
+                filled[key] = value
+                if maybe:
+                    filled = parse(maybe[0].strip(), filled)
+            else:
+                filled[k] = None
+            return filled
+        if ':' in comment.value:
+            value = parse(comment.value)
         else:
             value = comment.value
 

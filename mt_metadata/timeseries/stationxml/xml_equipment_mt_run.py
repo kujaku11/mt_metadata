@@ -31,7 +31,7 @@ class XMLEquipmentMTRun(BaseTranslator):
         self.xml_translator = {
             "type": "data_type",
             "manufacturer": "data_logger.manufacturer",
-            "model": "data_logger.type",
+            "model": "data_logger.model",
             "serial_number": "data_logger.id",
             "installation_date": "time_period.start",
             "removal_date": "time_period.end",
@@ -60,12 +60,14 @@ class XMLEquipmentMTRun(BaseTranslator):
             raise TypeError(msg)
             
         mt_run = metadata.Run()
-        for xml_key, mt_key in self.xml_translator:
+        for xml_key, mt_key in self.xml_translator.items():
             value = getattr(equipment, xml_key)
             if xml_key in ["description"]:
                 mt_run = self._parse_description(value, mt_run)
             elif xml_key in ["resource_id"]:
                 mt_run.id = value.split(":")[1]
+            elif "date" in xml_key:
+                mt_run.set_attr_from_name(mt_key, value.isoformat())
             else:
                 mt_run.set_attr_from_name(mt_key, value)
                 
