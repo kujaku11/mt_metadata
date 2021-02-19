@@ -60,6 +60,8 @@ class XMLStationMTStation(BaseTranslator):
         self.mt_translator = self.flip_dict(self.xml_translator)
         self.mt_translator["geographic_name"] = "site"
         self.mt_translator["provenance.comments"] = None
+        self.mt_translator["time_period.start"] = "start_date"
+        self.mt_translator["time_period.end"] = "end_date"
 
         self.mt_comments_list = [
             "run_list",
@@ -95,7 +97,6 @@ class XMLStationMTStation(BaseTranslator):
         run_comments = []
 
         for mt_key, xml_key in self.mt_translator.items():
-            print(xml_key, mt_key)
             if xml_key is None:
                 continue
             if xml_key in ["site"]:
@@ -106,7 +107,7 @@ class XMLStationMTStation(BaseTranslator):
                 for comment in xml_station.comments:
                     key, value = self.read_xml_comment(comment)
                     if "mt.run" in key:
-                        run_comments.append(key, value)
+                        run_comments.append({key: value})
                         continue
                     
                     key = key.split("mt.station.")[1]
@@ -119,6 +120,7 @@ class XMLStationMTStation(BaseTranslator):
                             mt_station.comments = value
                     else:
                         mt_station.set_attr_from_name(key, value)
+
             else:
                 value = getattr(xml_station, xml_key)
                 if value is None:
@@ -129,8 +131,9 @@ class XMLStationMTStation(BaseTranslator):
                 else:
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
-                    if xml_key in ["start_date", "end_date"]:
-                        value = value.isoformat() 
+                    if "time_period" in mt_key:
+                        value = value.isoformat()
+                    
                 mt_station.set_attr_from_name(mt_key, value)
         
         return mt_station, run_comments

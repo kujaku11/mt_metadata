@@ -74,10 +74,10 @@ class BaseTranslator:
 
         if ":" in comment.value:
             value = {}
-            a_list = comment.value.split(",")
+            a_list = comment.value.split(",", comment.value.count(":") - 1)
             for aa in a_list:
                 k, v = [vv.strip() for vv in aa.split(":", 1)]
-                value[key][k] = v
+                value[k] = v
         else:
             value = comment.value
 
