@@ -145,7 +145,7 @@ class XMLStationMTStation(BaseTranslator):
         
         # read in equipment information
         mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
-        
+        mt_station = self._add_run_comments(run_comments, mt_station)
         
         return mt_station, run_comments
                 
@@ -237,11 +237,31 @@ class XMLStationMTStation(BaseTranslator):
         :rtype: TYPE
 
         """
-        pass
-        # for comment in run_comments:
+        for comment in run_comments:
+            for rkey, rvalue in comment.items():
+                run_id = rkey.split(":", 1)[1]
+                run_attr = None
+                if run_id.count('.') > 0:
+                    run_id, run_attr = run_id.split('.', 1)
+                run_index = station_obj.run_index(run_id)
+                if isinstance(rvalue, dict):
+                    for ckey, cvalue in rvalue.items():
+                        if run_attr:
+                            if run_attr == 'comments':
+                                value = f"{ckey}: {cvalue}"
+                                try:
+                                    station_obj.runs[run_index].comments += f", {value}"
+                                except TypeError:
+                                    station_obj.runs[run_index].comments = value
+                            else:
+                                c_attr = f"{run_attr}.{ckey}"
+                        
+                                station_obj.runs[run_index].set_attr_from_name(c_attr, cvalue)
+                        else:
+                            station_obj.runs[run_index].set_attr_from_name(ckey, cvalue)
             
-            
-        
+        return station_obj
+    
         
         
         
