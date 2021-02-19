@@ -16,7 +16,7 @@ from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
 from tests import STATIONXML_02
 
 
-class TestNetwork01(unittest.TestCase):
+class TestRunFromXML(unittest.TestCase):
     """
     Test reading network into MT mt_station object
     """
@@ -45,6 +45,36 @@ class TestNetwork01(unittest.TestCase):
     def test_time_period(self):
         self.assertEqual(self.mt_run.time_period.start, "2020-06-08T22:57:13+00:00")
         self.assertEqual(self.mt_run.time_period.end, "2020-06-08T23:54:50+00:00")
+        
+        
+class TestEquipmemtXMLFromMT(unittest.TestCase):
+    """
+    test making equipment from MT Run
+    """
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_02.as_posix())
+        self.base_xml_equipment = self.inventory.networks[0].stations[0].equipments[0]
+
+        self.converter = XMLEquipmentMTRun()
+        self.mt_run = self.converter.xml_to_mt(self.base_xml_equipment)
+        self.test_xml_equipment = self.converter.mt_to_xml(self.mt_run)
+        
+    def test_resource_id(self):
+        self.assertEqual(self.base_xml_equipment.resource_id, 
+                         self.test_xml_equipment.resource_id)
+        
+    def test_type(self):
+        self.assertEqual(self.base_xml_equipment.type, 
+                         self.test_xml_equipment.type)
+    
+    def test_description(self):
+        self.assertNotEqual(self.base_xml_equipment.description, 
+                            self.test_xml_equipment.description)
+        self.assertEqual(("firmware.author: Barry Narod, "
+                          "power_source.type: battery, "
+                          "timing_system.type: GPS"),
+                         self.test_xml_equipment.description)
+        
         
 # =============================================================================
 # 

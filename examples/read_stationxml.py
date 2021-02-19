@@ -25,7 +25,8 @@ inv_test.networks.append(network)
 # read station
 st = XMLStationMTStation()
 mt_station = st.xml_to_mt(inv_obj.networks[0].stations[0])
-# inv_test.networks[0].stations.append(st.mt_to_xml)
+xml_station = st.mt_to_xml(mt_station)
+inv_test.networks[0].stations.append(xml_station)
 
 
 # check to see if a stationxml can be written

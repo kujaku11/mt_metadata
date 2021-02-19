@@ -284,7 +284,8 @@ class Base:
                 if v_type is str:
                     if isinstance(value, np.ndarray):
                         value = value.astype(np.unicode_)
-                    value = [f"{v}" for v in value]
+                    value = [f"{v}".replace("'", "").replace('"', "")
+                             for v in value]
                 elif v_type is int:
                     value = [int(float(v)) for v in value]
                 elif v_type is float:

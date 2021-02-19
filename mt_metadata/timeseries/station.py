@@ -188,9 +188,13 @@ class Station(Base):
             self.logger.error(msg)
             raise TypeError(msg)
         for run in value:
-            try:
-                self.runs.append(Run(id=run))
-            except (ValueError, TypeError):
-                msg = f"could not convert {run} to string"
-                self.logger.error(msg)
-                raise ValueError(msg)
+            if not isinstance(run, str):
+                try:
+                    run = str(run)
+                except (ValueError, TypeError):
+                    msg = f"could not convert {run} to string"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
+            
+            run = run.replace("'", "").replace('"', "")
+            self.runs.append(Run(id=run))

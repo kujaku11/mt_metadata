@@ -135,7 +135,8 @@ class XMLStationMTStation(BaseTranslator):
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
                     if "time_period" in mt_key:
-                        value = value.isoformat()
+                        if not isinstance(value, str):
+                            value = value.isoformat()
                     
                 mt_station.set_attr_from_name(mt_key, value)
         
@@ -171,7 +172,7 @@ class XMLStationMTStation(BaseTranslator):
             else:
                 code = mt_station.fdsn.id
         else:
-            code = inventory.Station(mt_station.id)
+            code = mt_station.id
             
         xml_station = inventory.Station(code, 
                                         mt_station.location.latitude,
@@ -195,22 +196,34 @@ class XMLStationMTStation(BaseTranslator):
                     xml_station.operators = [operator]
 
             elif xml_key == "site":
-                xml_station.site.description = mt_station.geographic_name
-                xml_station.site.name = mt_station.id
+                xml_station.site.name = mt_station.geographic_name
 
             elif xml_key == "comments":
                 if mt_station.comments is not None:
-                    comment = inventory.Comment(mt_station.comments, id=0)
+                    comment = inventory.Comment(mt_station.comments)
                     xml_station.comments.append(comment)
+            elif xml_key == "restricted_status":
+                xml_station.restricted_status = release_dict[xml_station.restricted_status]
             else:
                 setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
+                
+        # add comments for MT specific information
+        for key in sorted(self.mt_comments_list):
+            value = mt_station.get_attr_from_name(key)
+            if value:
+                if isinstance(value, (list, tuple)):
+                    value = ', '.join(value) 
+                comment = inventory.Comment(value, subject=f"mt.station.{key}")
+                xml_station.comments.append(comment)
+            
+        return xml_station
 
     def _equipments_to_runs(self, equipments, station_obj):
         """
         Read in equipment and put into station runs 
         """
-        if not hasattr(equipments, "__iter__"):
-            msg = f"Input must be an iterable, should be a list not {type(equipments)}"
+        if not isinstance(equipments, list):
+            msg = f"Input must be a list not {type(equipments)}"
             self.logger.error(msg)
             raise TypeError(msg)
             
@@ -261,6 +274,8 @@ class XMLStationMTStation(BaseTranslator):
                             station_obj.runs[run_index].set_attr_from_name(ckey, cvalue)
             
         return station_obj
+    
+    
     
         
         
