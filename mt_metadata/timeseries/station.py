@@ -123,11 +123,25 @@ class Station(Base):
         """
         index = self.run_index(run_obj.id)
         if index is not None:
-            print(f"replacing {run_obj.id}")
+            self.logger.warning(f"Run {run_obj.id} is being overwritten with curren information")
             self.runs[index] = run_obj
         else:
-            print(f"appending {run_obj.id}")
             self.runs.append(run_obj)
+            
+    def get_run(self, run_id):
+        """
+        Get a :class:`mt_metadata.timeseries.Run` object from the given
+        id
+        
+        :param run_id: run id verbatim
+        :type run_id: string
+            
+        """
+        
+        if self.has_run(run_id):
+            return self.runs[self.run_index(run_id)]
+        self.logger.warning(f"Could not find {run_id} in runs.")
+        return None
 
     @property
     def runs(self):
