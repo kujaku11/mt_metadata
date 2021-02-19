@@ -181,9 +181,7 @@ class XMLStationMTStation(BaseTranslator):
 
         for xml_key, mt_key in self.xml_translator.items():
             if xml_key in ["alternate_code"]:
-                print(f"alternate code {xml_station.code} {mt_station.id}")
                 if xml_station.code != mt_station.id:
-                    print("not equal")
                     xml_station.alternate_code = mt_station.id
                 continue
             if mt_key is None:
@@ -192,6 +190,7 @@ class XMLStationMTStation(BaseTranslator):
                 )
                 self.logger.debug(msg)
                 continue
+            
             if xml_key == "operators":
                 if mt_station.acquired_by.author is not None:
                     operator = inventory.Operator(

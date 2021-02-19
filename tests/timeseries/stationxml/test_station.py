@@ -177,7 +177,7 @@ class TestReadXMLStation02(unittest.TestCase):
               ('channels_recorded_electric', []),
               ('channels_recorded_magnetic', []),
               ('comments',
-               ('author: machine generated, comments:  A.Kelbert--Gap and a spike'
+               ('author: machine generated, comments: A.Kelbert--Gap and a spike'
                 ' 726 secs into the run. Poor quality data after this event. '
                 'However, timing before and after the gap verified against CAV09.')),
               ('data_logger.firmware.author', 'Barry Narod'),
@@ -301,7 +301,72 @@ class TestReadXMLStation02(unittest.TestCase):
         run_e = self.mt_station.get_run("e")
         self.assertDictEqual(base_run_e, run_e.to_dict())
 
+class TestMTStationToXML02(unittest.TestCase):
+    """
+    Test reading network into MT mt_station object
+    """
 
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_02.as_posix())
+        self.base_xml_station = self.inventory.networks[0].stations[0]
+
+        self.converter = XMLStationMTStation()
+        self.mt_station = self.converter.xml_to_mt(self.base_xml_station)
+        self.test_xml_station = self.converter.mt_to_xml(self.mt_station)
+
+    def test_time_period(self):
+        self.assertEqual(self.base_xml_station.start_date, 
+                         self.test_xml_station.start_date)
+        self.assertEqual(self.base_xml_station.end_date, 
+                         self.test_xml_station.end_date)
+    def test_code(self):
+        self.assertEqual(self.base_xml_station.code, 
+                         self.test_xml_station.code)
+        # the code and alternate code are the same so removed redundancy
+        self.assertNotEqual(self.base_xml_station.alternate_code, 
+                         self.test_xml_station.alternate_code)
+    
+    def test_location(self):
+        self.assertEqual(self.base_xml_station.latitude, 
+                         self.test_xml_station.latitude)
+        self.assertEqual(self.base_xml_station.longitude, 
+                         self.test_xml_station.longitude)
+        self.assertEqual(self.base_xml_station.elevation, 
+                         self.test_xml_station.elevation)
+        
+    def test_site(self):
+        self.assertEqual(self.base_xml_station.site.name, 
+                         self.test_xml_station.site.name)
+        
+    def test_equipments(self):
+        self.assertEquals(len(self.base_xml_station.equipments), 
+                          len(self.test_xml_station.equipments))
+        for be, te in zip(self.base_xml_station.equipments, 
+                          self.test_xml_station.equipments):
+            self.assertEqual(be.resource_id, te.resource_id)
+            self.assertEqual(be.manufacturer, te.manufacturer)
+            self.assertEqual(be.serial_number, te.serial_number)
+            self.assertEqual(be.installation_date, te.installation_date)
+            self.assertEqual(be.removal_date, te.removal_date)
+    
+    def test_comments(self):
+        for bc in self.base_xml_station.comments:
+            for tc in self.test_xml_station.comments:
+                if bc.subject == tc.subject:
+                    if bc.value:
+                        bk, bv = self.converter.read_xml_comment(bc)
+                        tk, tv = self.converter.read_xml_comment(tc)
+                        self.assertEqual(bk, tk)
+                        if isinstance(bv, dict):
+                            for kk, vv in bv.items():
+                                if vv not in ["", None]:
+                                    self.assertEqual(tv[kk], vv)
+                                    
+                        else:
+                            self.assertEqual(bv, tv)    
+
+                    continue
+            
 
 
 

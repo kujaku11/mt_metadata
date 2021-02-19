@@ -109,7 +109,7 @@
             <Value>geographic</Value>
          </Comment>
          <Comment subject="mt.station.location.declination.value">
-            <Value>-666</Value>
+            <Value>-666.0</Value>
          </Comment>
          <Comment subject="mt.station.location.declination.model">
             <Value>IGRF-13</Value>

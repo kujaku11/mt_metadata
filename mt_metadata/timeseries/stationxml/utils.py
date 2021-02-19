@@ -103,7 +103,7 @@ class BaseTranslator:
                             if maybe:
                                 filled = parse(maybe[0].strip(), filled)
                         else:
-                            filled[key] = other.replace(':', '--')
+                            filled[key] = other.replace(':', '--').strip()
                     else:
                         value, *maybe = other.split(',', 1)
                         filled[key] = value.strip()
