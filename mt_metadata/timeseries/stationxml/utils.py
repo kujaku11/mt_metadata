@@ -116,3 +116,10 @@ class BaseTranslator:
 
         self.logger.info(f"Could not find {subject} in the given list of comments.")
         return None
+    
+    def xml_to_mt(self, value):
+        pass
+    
+    def mt_to_xml(self, value):
+        pass
+    

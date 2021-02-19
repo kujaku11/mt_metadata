@@ -57,7 +57,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "acquired_by.comments",
         ]
 
-    def network_to_survey(self, network):
+    def xml_to_mt(self, network):
         """
         Translate a StationXML Network object to MT Survey object
 
@@ -75,7 +75,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
 
         mt_survey = metadata.Survey()
 
-        for mt_key, sxml_key in self.mt_translator.items():
+        for mt_key, xml_key in self.mt_translator.items():
             if mt_key == "project_lead":
                 author = []
                 email = []
@@ -115,23 +115,23 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         mt_survey.set_attr_from_name(key, value)
 
             else:
-                value = getattr(network, sxml_key)
+                value = getattr(network, xml_key)
                 if value is None:
                     continue
                 if isinstance(value, (list, tuple)):
                     for k, v in zip(mt_key, value):
                         mt_survey.set_attr_from_name(k, v)
                 else:
-                    if sxml_key == "restricted_status":
+                    if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
-                    if sxml_key in ["start_date", "end_date"]:
+                    if xml_key in ["start_date", "end_date"]:
                         value = value.isoformat()
 
                 mt_survey.set_attr_from_name(mt_key, value)
 
         return mt_survey
 
-    def survey_to_network(self, survey, code="ZU"):
+    def mt_to_xml(self, survey, code="ZU"):
         """
         Convert MT Survey to Obspy Network
         

@@ -26,7 +26,7 @@ class TestNetwork01(unittest.TestCase):
         self.network = self.inventory.networks[0]
 
         self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
-        self.survey = self.converter.network_to_survey(self.network)
+        self.survey = self.converter.xml_to_mt(self.network)
 
     def test_time_period(self):
         self.assertEqual(self.survey.time_period.start_date, "2020-01-01")
@@ -57,7 +57,7 @@ class TestNetwork02(unittest.TestCase):
         self.network = self.inventory.networks[0]
 
         self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
-        self.survey = self.converter.network_to_survey(self.network)
+        self.survey = self.converter.xml_to_mt(self.network)
 
     def test_comments_acquired_by(self):
         self.assertEqual(self.survey.acquired_by.author, "Pellerin, L.")
@@ -117,8 +117,8 @@ class TestSurveyToNetwork(unittest.TestCase):
         self.original_network = self.inventory.networks[0]
 
         self.converter = xml_network_mt_survey.XMLNetworkMTSurvey()
-        self.survey = self.converter.network_to_survey(self.original_network)
-        self.test_network = self.converter.survey_to_network(self.survey)
+        self.survey = self.converter.xml_to_mt(self.original_network)
+        self.test_network = self.converter.mt_to_xml(self.survey)
 
     def test_time_period(self):
         self.assertEqual(self.test_network.start_date, self.original_network.start_date)
