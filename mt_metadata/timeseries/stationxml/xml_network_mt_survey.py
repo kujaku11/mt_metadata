@@ -153,13 +153,15 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 self.logger.debug(msg)
                 continue
             if inv_key == "operators":
-                operator = inventory.Operator(agency=survey.project_lead.organization)
-                person = inventory.Person(
-                    names=[survey.project_lead.author],
-                    emails=[survey.project_lead.email],
-                )
-                operator.contacts = [person]
-                network.operators = [operator]
+                if survey.project_lead.organization:
+                    operator = inventory.Operator(agency=survey.project_lead.organization)
+                    if survey.project_lead.author:
+                        person = inventory.Person(
+                            names=[survey.project_lead.author],
+                            emails=[survey.project_lead.email],
+                        )
+                        operator.contacts = [person]
+                    network.operators = [operator]
 
             elif inv_key == "comments":
                 if survey.comments is not None:

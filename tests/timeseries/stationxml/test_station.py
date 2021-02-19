@@ -17,7 +17,7 @@ from mt_metadata.timeseries.stationxml import XMLStationMTStation
 from tests import STATIONXML_01, STATIONXML_02
 
 
-class TestNetwork01(unittest.TestCase):
+class TestReadXMLStation01(unittest.TestCase):
     """
     Test reading network into MT mt_station object
     """
@@ -47,8 +47,44 @@ class TestNetwork01(unittest.TestCase):
         
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, [])
+        
+class TestMTStationToXML01(unittest.TestCase):
+    """
+    Test reading network into MT mt_station object
+    """
 
-class TestNetwork02(unittest.TestCase):
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_01.as_posix())
+        self.base_xml_station = self.inventory.networks[0].stations[0]
+
+        self.converter = XMLStationMTStation()
+        self.mt_station = self.converter.xml_to_mt(self.base_xml_station)
+        self.test_xml_station = self.converter.mt_to_xml(self.mt_station)
+
+    def test_time_period(self):
+        self.assertEqual(self.base_xml_station.start_date, 
+                         self.test_xml_station.start_date)
+        self.assertEqual(self.base_xml_station.end_date, 
+                         self.test_xml_station.end_date)
+    def test_code(self):
+        self.assertEqual(self.base_xml_station.code, 
+                         self.test_xml_station.code)
+        self.assertEqual(self.base_xml_station.alternate_code, 
+                         self.test_xml_station.alternate_code)
+    
+    def test_location(self):
+        self.assertEqual(self.base_xml_station.latitude, 
+                         self.test_xml_station.latitude)
+        self.assertEqual(self.base_xml_station.longitude, 
+                         self.test_xml_station.longitude)
+        self.assertEqual(self.base_xml_station.elevation, 
+                         self.test_xml_station.elevation)
+        
+    def test_site(self):
+        self.assertEqual(self.base_xml_station.site.name, 
+                         self.test_xml_station.site.name)
+
+class TestReadXMLStation02(unittest.TestCase):
     """
     Test reading network into MT mt_station object
     """
@@ -266,85 +302,7 @@ class TestNetwork02(unittest.TestCase):
         self.assertDictEqual(base_run_e, run_e.to_dict())
 
 
-# class Testmt_stationToNetwork(unittest.TestCase):
-#     """
-#     Test converting a network to a mt_station
-#     """
 
-#     def setUp(self):
-#         self.inventory = read_inventory(STATIONXML_02.as_posix())
-#         self.original_network = self.inventory.networks[0]
-
-#         self.converter = xml_network_mt_mt_station.XMLNetworkMTmt_station()
-#         self.mt_station = self.converter.xml_to_mt(self.original_network)
-#         self.test_network = self.converter.mt_to_xml(self.mt_station)
-
-#     def test_time_period(self):
-#         self.assertEqual(self.test_network.start_date, self.original_network.start_date)
-#         self.assertEqual(self.test_network.end_date, self.original_network.end_date)
-
-#     def test_comment_mt_station_id(self):
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.mt_station_id"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.mt_station_id"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#     def test_comment_project(self):
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.project"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.project"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#     def test_comment_journal_doi(self):
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.citation_journal.doi"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.citation_journal.doi"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#     def test_comment_acquired_by(self):
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.acquired_by.author"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.acquired_by.author"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.acquired_by.comments"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.acquired_by.comments"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#     def test_comment_geographic_name(self):
-#         c1 = self.converter.get_comment(
-#             self.original_network.comments, "mt.mt_station.geographic_name"
-#         ).value
-#         c2 = self.converter.get_comment(
-#             self.test_network.comments, "mt.mt_station.geographic_name"
-#         ).value
-#         self.assertEqual(c1, c2)
-
-#     def test_description(self):
-#         self.assertEqual(
-#             self.original_network.description, self.test_network.description
-#         )
-
-#     def test_restricted_access(self):
-#         self.assertEqual(
-#             self.original_network.restricted_status, self.test_network.restricted_status
-#         )
 
 
 # =============================================================================

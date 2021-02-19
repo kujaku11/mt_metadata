@@ -11,9 +11,9 @@ Created on Tue Feb 16 09:50:30 2021
 from obspy import read_inventory
 from obspy.core import inventory
 from mt_metadata.timeseries.stationxml import XMLNetworkMTSurvey, XMLStationMTStation
-# inv_fn = r"c:\Users\jpeacock\Downloads\fdsn-station_2021-02-12T23_28_49.xml"
-
-inv_obj = read_inventory(r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\data\StationXML_REW09.xml")
+inv_fn = r"c:\Users\jpeacock\Downloads\fdsn-station_2021-02-12T23_28_49.xml"
+# inv_fn = r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\data\StationXML_REW09.xml"
+inv_obj = read_inventory(inv_fn)
 inv_test = inventory.Inventory()
 
 # read network
