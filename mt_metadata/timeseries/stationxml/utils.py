@@ -97,11 +97,11 @@ class BaseTranslator:
                     if other.find(':') < other.find(','):
                         if other.count(':') > 1:
                             value, *maybe = other.split(',', 1)
-                            filled[key] = value.strip()
+                            filled[key] = value.strip().replace(':', '--')
                             if maybe:
                                 filled = parse(maybe[0].strip(), filled)
                         else:
-                            filled[key] = other
+                            filled[key] = other.replace(':', '--')
                     else:
                         value, *maybe = other.split(',', 1)
                         filled[key] = value.strip()
@@ -117,6 +117,7 @@ class BaseTranslator:
                 filled[k] = None
             return filled
         
+        # if the string is dictionary like, parse, otherwise skip
         if ':' in comment.value:
             value = parse(comment.value)
         else:

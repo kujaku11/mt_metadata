@@ -147,7 +147,7 @@ class XMLStationMTStation(BaseTranslator):
         mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
         mt_station = self._add_run_comments(run_comments, mt_station)
         
-        return mt_station, run_comments
+        return mt_station
                 
     def mt_to_xml(self, mt_station):
         """

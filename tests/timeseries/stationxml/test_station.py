@@ -10,6 +10,7 @@ Created on Tue Feb 16 11:58:11 2021
 """
 
 import unittest
+from collections import OrderedDict
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLStationMTStation
@@ -26,7 +27,7 @@ class TestNetwork01(unittest.TestCase):
         self.xml_station = self.inventory.networks[0].stations[0]
 
         self.converter = XMLStationMTStation()
-        self.mt_station, self.run_comments = self.converter.xml_to_mt(self.xml_station)
+        self.mt_station = self.converter.xml_to_mt(self.xml_station)
 
     def test_time_period(self):
         self.assertEqual(self.mt_station.time_period.start, "2020-06-02T18:41:43+00:00")
@@ -44,8 +45,8 @@ class TestNetwork01(unittest.TestCase):
     def test_geographic_name(self):
         self.assertEqual(self.mt_station.geographic_name, "Corral Hollow, CA, USA")
         
-    def test_run_comments(self):
-        self.assertEqual(self.run_comments, [])
+    def test_run_list(self):
+        self.assertEqual(self.mt_station.run_list, [])
 
 class TestNetwork02(unittest.TestCase):
     """
@@ -57,7 +58,7 @@ class TestNetwork02(unittest.TestCase):
         self.xml_station = self.inventory.networks[0].stations[0]
 
         self.converter = XMLStationMTStation()
-        self.mt_station, self.run_comments = self.converter.xml_to_mt(self.xml_station)
+        self.mt_station = self.converter.xml_to_mt(self.xml_station)
 
     def test_time_period(self):
         self.assertEqual(self.mt_station.time_period.start, "2020-06-08T22:57:13+00:00")
@@ -99,9 +100,170 @@ class TestNetwork02(unittest.TestCase):
     def test_data_type(self):
         self.assertEqual(self.mt_station.data_type, "MT")
         
-    def test_run_comments(self):
-        self.assertNotEqual(self.run_comments, [])
-
+    def test_run_a(self):
+        base_run_a = {'run': 
+              OrderedDict([('acquired_by.author', 'Kristin Pratscher'),
+              ('acquired_by.comments',
+               ("X array at 0 and 90 degrees. Site i rocky drainage basin proximal "
+                "to basalt lava flows. Ln")),
+              ('channels_recorded_auxiliary', []),
+              ('channels_recorded_electric', []),
+              ('channels_recorded_magnetic', []),
+              ('comments', 'author: machine generated, comments: '),
+              ('data_logger.firmware.author', 'Barry Narod'),
+              ('data_logger.firmware.name', None),
+              ('data_logger.firmware.version', ''),
+              ('data_logger.id', '2612-09'),
+              ('data_logger.manufacturer', 'Barry Narod'),
+              ('data_logger.model', 'NIMS'),
+              ('data_logger.power_source.type', 'battery'),
+              ('data_logger.timing_system.drift', None),
+              ('data_logger.timing_system.type', 'GPS'),
+              ('data_logger.timing_system.uncertainty', None),
+              ('data_logger.type', None),
+              ('data_type', 'LP'),
+              ('id', 'a'),
+              ('metadata_by.author', 'Jade Crosbie'),
+              ('metadata_by.comments', ''),
+              ('sample_rate', None),
+              ('time_period.end', '2020-06-08T23:54:50+00:00'),
+              ('time_period.start', '2020-06-08T22:57:13+00:00')])}
+        run_a = self.mt_station.get_run("a")
+        self.assertDictEqual(base_run_a, run_a.to_dict())
+        
+    def test_run_b(self):
+        base_run_b = {'run':
+              OrderedDict([('acquired_by.author', 'Kristin Pratscher'),
+              ('acquired_by.comments',
+               ('X array a 0 and 90 degreest. Site in rocky drainage basin proximal '
+                'to basalt lava flows. L')),
+              ('channels_recorded_auxiliary', []),
+              ('channels_recorded_electric', []),
+              ('channels_recorded_magnetic', []),
+              ('comments',
+               ('author: machine generated, comments:  A.Kelbert--Gap and a spike'
+                ' 726 secs into the run. Poor quality data after this event. '
+                'However, timing before and after the gap verified against CAV09.')),
+              ('data_logger.firmware.author', 'Barry Narod'),
+              ('data_logger.firmware.name', None),
+              ('data_logger.firmware.version', ''),
+              ('data_logger.id', '2612-09'),
+              ('data_logger.manufacturer', 'Barry Narod'),
+              ('data_logger.model', 'NIMS'),
+              ('data_logger.power_source.type', 'battery'),
+              ('data_logger.timing_system.drift', None),
+              ('data_logger.timing_system.type', 'GPS'),
+              ('data_logger.timing_system.uncertainty', None),
+              ('data_logger.type', None),
+              ('data_type', 'LP'),
+              ('id', 'b'),
+              ('metadata_by.author', 'Jade Crosbie; Anna Kelbert'),
+              ('metadata_by.comments',
+              ('A.Kelbert- Gap and a spike 726 secs into the run. Poor quality '
+               'data after this event. However, timing before and after the gap '
+               'verified against CAV09.')),
+              ('sample_rate', None),
+              ('time_period.end', '2020-06-25T17:57:40+00:00'),
+              ('time_period.start', '2020-06-09T00:08:03+00:00')])}
+        
+        run_b = self.mt_station.get_run("b")
+        self.assertDictEqual(base_run_b, run_b.to_dict())
+        
+    def test_run_c(self):
+        base_run_c = {'run': 
+                  OrderedDict([('acquired_by.author', 'Kristin Pratscher'),
+              ('acquired_by.comments',
+               ('X array at 0 and 90 degrees. Site in rocky drainage basin proximal'
+                ' to basalt lava flows. Li')),
+              ('channels_recorded_auxiliary', []),
+              ('channels_recorded_electric', []),
+              ('channels_recorded_magnetic', []),
+              ('comments', 'author: machine generated, comments: '),
+              ('data_logger.firmware.author', 'Barry Narod'),
+              ('data_logger.firmware.name', None),
+              ('data_logger.firmware.version', ''),
+              ('data_logger.id', '2612-09'),
+              ('data_logger.manufacturer', 'Barry Narod'),
+              ('data_logger.model', 'NIMS'),
+              ('data_logger.power_source.type', 'battery'),
+              ('data_logger.timing_system.drift', None),
+              ('data_logger.timing_system.type', 'GPS'),
+              ('data_logger.timing_system.uncertainty', None),
+              ('data_logger.type', None),
+              ('data_type', 'LP'),
+              ('id', 'c'),
+              ('metadata_by.author', 'Jade Crosbie'),
+              ('metadata_by.comments', ''),
+              ('sample_rate', None),
+              ('time_period.end', '2020-07-04T01:16:15+00:00'),
+              ('time_period.start', '2020-06-25T19:57:57+00:00')])}
+            
+        run_c = self.mt_station.get_run("c")
+        self.assertDictEqual(base_run_c, run_c.to_dict())
+        
+    def test_run_d(self):
+        base_run_d = {'run':
+              OrderedDict([('acquired_by.author', 'Kristin Pratscher'),
+              ('acquired_by.comments',
+               ('Replaced mag cable & NIMS. X array at 0 and 90 degrees. Site in'
+                ' rocky drainage basin proxim')),
+              ('channels_recorded_auxiliary', []),
+              ('channels_recorded_electric', []),
+              ('channels_recorded_magnetic', []),
+              ('comments', 'author: machine generated, comments: '),
+              ('data_logger.firmware.author', 'Barry Narod'),
+              ('data_logger.firmware.name', None),
+              ('data_logger.firmware.version', ''),
+              ('data_logger.id', '2485'),
+              ('data_logger.manufacturer', 'Barry Narod'),
+              ('data_logger.model', 'NIMS'),
+              ('data_logger.power_source.type', 'battery'),
+              ('data_logger.timing_system.drift', None),
+              ('data_logger.timing_system.type', 'GPS'),
+              ('data_logger.timing_system.uncertainty', None),
+              ('data_logger.type', None),
+              ('data_type', 'LP'),
+              ('id', 'd'),
+              ('metadata_by.author', 'Jade Crosbie'),
+              ('metadata_by.comments', ''),
+              ('sample_rate', None),
+              ('time_period.end', '2020-07-04T03:07:30+00:00'),
+              ('time_period.start', '2020-07-04T02:59:02+00:00')])}
+            
+        run_d = self.mt_station.get_run("d")
+        self.assertDictEqual(base_run_d, run_d.to_dict())
+        
+    def test_run_e(self):
+        base_run_e = {'run': 
+                  OrderedDict([('acquired_by.author', 'Kristin Pratscher'),
+              ('acquired_by.comments',
+               ('Replaced mag cable & NIMS. MX array at 0 and 90 degrees. Site '
+                'in rocky drainage basin proxim')),
+              ('channels_recorded_auxiliary', []),
+              ('channels_recorded_electric', []),
+              ('channels_recorded_magnetic', []),
+              ('comments', 'author: machine generated, comments: '),
+              ('data_logger.firmware.author', 'Barry Narod'),
+              ('data_logger.firmware.name', None),
+              ('data_logger.firmware.version', ''),
+              ('data_logger.id', '2485'),
+              ('data_logger.manufacturer', 'Barry Narod'),
+              ('data_logger.model', 'NIMS'),
+              ('data_logger.power_source.type', 'battery'),
+              ('data_logger.timing_system.drift', None),
+              ('data_logger.timing_system.type', 'GPS'),
+              ('data_logger.timing_system.uncertainty', None),
+              ('data_logger.type', None),
+              ('data_type', 'LP'),
+              ('id', 'e'),
+              ('metadata_by.author', 'Jade Crosbie'),
+              ('metadata_by.comments', ''),
+              ('sample_rate', None),
+              ('time_period.end', '2020-07-17T21:15:32+00:00'),
+              ('time_period.start', '2020-07-04T03:28:45+00:00')])}
+            
+        run_e = self.mt_station.get_run("e")
+        self.assertDictEqual(base_run_e, run_e.to_dict())
 
 
 # class Testmt_stationToNetwork(unittest.TestCase):
