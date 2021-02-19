@@ -77,6 +77,18 @@ class BaseTranslator:
         key = comment.subject.strip().replace(" ", "_").lower()
         
         def parse(comment_string, filled={}):
+            """
+            Recursively parse a comment string trying to adhere to the 
+            original syntax of the comment.  Expecting a dictionary type
+            string
+            
+            'a: b, c:d' -> {'a': 'b', 'c':'d'}
+            
+            but sometimes looks like
+            
+            'a: b:c, d:e' -> {'a': 'b:c', 'd':'e'}
+            
+            """
             k, *other = comment_string.split(":", 1)
             if other: 
                 other = other[0]

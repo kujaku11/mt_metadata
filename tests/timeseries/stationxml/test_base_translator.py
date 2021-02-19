@@ -27,6 +27,7 @@ class TestReadXMLComment(unittest.TestCase):
         self.null_comment = Comment(None, subject="mt.survey.survey_id")
         self.long_comment = Comment("a: b, c: d, efg", subject="mt.run.a:comment")
         self.odd_comment = Comment("a: b: action, d: efg", subject="mt.run.odd")
+        self.normal_comment = Comment("normal", subject="mt.run.comment")
         
     def test_null_comment(self):
         k, v = BaseTranslator.read_xml_comment(self.null_comment)
@@ -51,6 +52,14 @@ class TestReadXMLComment(unittest.TestCase):
         self.assertEqual(k, "mt.run.odd")
         self.assertIsInstance(v, dict)
         self.assertDictEqual(v, {"a": "b: action", "d": "efg"})
+        
+    def test_normal_comment(self):
+        k, v = BaseTranslator().read_xml_comment(self.normal_comment)
+        self.assertEqual(k, "mt.run.comment")
+        self.assertEqual(v, "normal")
+        
+        
+    
         
 
 
