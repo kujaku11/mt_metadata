@@ -206,15 +206,16 @@ class XMLStationMTStation(BaseTranslator):
                 xml_station.restricted_status = release_dict[xml_station.restricted_status]
             else:
                 setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
+        
+        # add mt comments
+        xml_station.comments = self.make_mt_comments(mt_station, "mt.station")      
                 
-        # add comments for MT specific information
-        for key in sorted(self.mt_comments_list):
-            value = mt_station.get_attr_from_name(key)
-            if value:
-                if isinstance(value, (list, tuple)):
-                    value = ', '.join(value) 
-                comment = inventory.Comment(value, subject=f"mt.station.{key}")
-                xml_station.comments.append(comment)
+        # add run information
+        for mt_run in mt_station.runs:
+            run_converter = XMLEquipmentMTRun()
+            xml_station.equipments.append(run_converter.mt_to_xml(mt_run))
+            xml_station.comments += run_converter.make_mt_comments(mt_run, 
+                                                                   f"mt.run:{mt_run.id}")
             
         return xml_station
 

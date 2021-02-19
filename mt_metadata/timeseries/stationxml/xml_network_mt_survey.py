@@ -174,10 +174,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             else:
                 setattr(network, inv_key, survey.get_attr_from_name(mt_key))
 
-        for key in sorted(self.mt_comments_list):
-            value = survey.get_attr_from_name(key)
-            if value:
-                comment = inventory.Comment(value, subject=f"mt.survey.{key}")
-                network.comments.append(comment)
+        comments = self.make_mt_comments(survey, mt_key_base="mt.survey")
+        network.comments = comments
 
         return network

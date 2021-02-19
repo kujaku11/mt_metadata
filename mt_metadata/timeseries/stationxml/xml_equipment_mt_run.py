@@ -43,10 +43,10 @@ class XMLEquipmentMTRun(BaseTranslator):
         self.mt_translator["notes"] = "description"
 
         self.mt_comments_list = [
-            "acquired_by.author",
-            "acquired_by.comments",
-            "metadata_by.author",
-            "metadata_by.comments",
+            {"acquired_by": ["acquired_by.author",
+            "acquired_by.comments"]},
+            {"metadata_by": ["metadata_by.author",
+            "metadata_by.comments"]},
             "comments"]
 
         self.mt_description_list = [
@@ -155,4 +155,6 @@ class XMLEquipmentMTRun(BaseTranslator):
                 lines.append(f"{key.split('data_logger.')[1]}: {value}")
         
         return ", ".join(lines)
+
+            
                 

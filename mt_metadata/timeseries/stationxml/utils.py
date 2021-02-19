@@ -9,6 +9,7 @@ Created on Tue Feb 16 10:33:27 2021
 
 """
 from mt_metadata.utils.mt_logger import setup_logger
+from obspy.core.inventory import Comment
 
 # =============================================================================
 # Translate between metadata and inventory: mapping dictionaries
@@ -34,6 +35,7 @@ class BaseTranslator:
         }
 
         self.mt_translator = self.flip_dict(self.xml_translator)
+        self.mt_comments_list = []
 
     @staticmethod
     def flip_dict(original_dict):
@@ -158,6 +160,39 @@ class BaseTranslator:
 
         self.logger.info(f"Could not find {subject} in the given list of comments.")
         return None
+    
+    def make_mt_comments(self, mt_element, mt_key_base="mt"):
+        """
+        make comments from an MT element from self.mt_comments_list
+        
+        :param mt_element: MT metadata element
+        """
+        comments = []
+        # add comments for MT specific information
+        try:
+            key_list = sorted(self.mt_comments_list)
+        except TypeError:
+            key_list = self.mt_comments_list
+        for key in key_list:
+            if isinstance(key, dict):
+                values = []
+                comment_key = list(key.keys())[0]
+                for part in key[comment_key]:
+                    info = part.split('.')[-1]
+                    value = mt_element.get_attr_from_name(part)
+                    if value:
+                        values.append(f"{info}: {value}")
+                value = ", ".join(values)
+                comment = Comment(value, subject=f"{mt_key_base}.{comment_key}")
+                comments.append(comment)
+            else:
+                value = mt_element.get_attr_from_name(key)
+                if value:
+                    if isinstance(value, (list, tuple)):
+                        value = ', '.join(value) 
+                    comment = Comment(value, subject=f"{mt_key_base}.{key}")
+                    comments.append(comment)
+        return comments
     
     def xml_to_mt(self, value):
         pass
