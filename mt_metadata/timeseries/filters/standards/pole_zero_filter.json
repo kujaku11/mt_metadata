@@ -1,0 +1,32 @@
+{
+    "poles": {
+        "type": "string",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The complex-valued poles associated with the filter stage response",
+        "options": [],
+        "alias": [],
+        "example": "\"[-1/4., -0.1+j*0.3, -0.1-j*0.3]\""
+    },
+    "zeros": {
+        "type": "string",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The zeros associated with the filter stage response",
+        "options": [],
+        "alias": [],
+        "example": "\"[0.0, ]\""
+    },
+    "normalization_factor": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "The scale factor to apply to the monic PZ response",
+        "options": [],
+        "alias": [],
+        "example": "\"[-1000.1]\""
+    }
+}

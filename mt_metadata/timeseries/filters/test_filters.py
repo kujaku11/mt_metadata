@@ -39,11 +39,10 @@ import path
 
 import scipy.signal as signal
 
-from mt_metadata.filters.pole_zero_filter import PoleZeroFilter
-from mt_metadata.filters.obspy_stages import create_filter_from_stage
+from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mth5.utils.pathing import DATA_DIR
 
-from plotting_helpers import plot_response
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
 
 

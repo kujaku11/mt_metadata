@@ -1,17 +1,26 @@
 import numpy as np
 import scipy.signal as signal
 
-from mt_metadata.timeseries.filter import Filter
+from mt_metadata.base import get_schema, Base
+from mt_metadata.timeseries.filters.filter import Filter
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
+from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
+
+# =============================================================================
+attr_dict = get_schema("pole_zero_filter", SCHEMA_FN_PATHS)
+# =============================================================================
 
 class PoleZeroFilter(Filter):
 
     def __init__(self, **kwargs):
         Filter.__init__(self, **kwargs)
-        self._poles = kwargs.get('_poles', [])
-        self._zeros = kwargs.get('_zeros', [])
+        self._attr_dict.update(attr_dict)
 
-        self._scale_factor = kwargs.get('scale_factor', 1.0)
-
+    @classmethod
+    def from_obspy_stage(cls, stage):
+        kwargs = stage.__dict__
+        #kwargs['normalization_factor'] = stage['normalization_factor']
+        return cls(**kwargs)
 
     @property
     def poles(self):
@@ -20,10 +29,6 @@ class PoleZeroFilter(Filter):
     @property
     def zeros(self):
         return self._zeros
-
-    @property
-    def scale_factor(self):
-        return self._scale_factor
 
     @property
     def n_poles(self):
@@ -50,6 +55,11 @@ class PoleZeroFilter(Filter):
 
         """
         angular_frequencies = 2 * np.pi * frequencies
-        w, h = signal.freqs_zpk(self.zeros, self.poles, self.scale_factor, worN=angular_frequencies)
+        w, h = signal.freqs_zpk(self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies)
         return h
 
+    def plot_pole_zero_response(self):
+        zpg = self.zero_pole_gain_representation()
+        frequency_axis = np.logspace(-1, 5, num=100)
+        w = 2. * np.pi * frequency_axis
+        plot_response(zpk_obs=zpg, w_values=w, title=self.name)

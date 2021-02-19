@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.signal as signal
 
-from mt_metadata.timeseries.filter import Filter
+from mt_metadata.timeseries.filters.filter import Filter
 
 class CoefficientFilter(Filter):
     """
@@ -15,11 +15,6 @@ class CoefficientFilter(Filter):
     def from_obspy_stage(cls, stage):
         kwargs = {'gain' : stage.stage_gain}
         return cls(**kwargs)
-
-
-    @property
-    def scale_factor(self):
-        return self._scale_factor
 
 
 

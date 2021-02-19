@@ -29,10 +29,14 @@ works with FFTs.
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
+
 
 # =============================================================================
 attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
@@ -57,7 +61,6 @@ class Filter(Base):
 
         **kwargs note: these
         """
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
         self.name = kwargs.get('name', None)
         self.type = kwargs.get('type', None)
@@ -72,7 +75,8 @@ class Filter(Base):
         #self.n_theoretical_zeros = None
         self.comments = None
         #self.conversion_factor = None
-
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def calibration_date(self):
@@ -107,14 +111,27 @@ class Filter(Base):
     
     
     def complex_response(self, frqs):
-        print("I dont have one")
+        print("Filter Base Class does not have a complex response defined")
         return None
 
-    def plot_complex_response(self, frequency_band):
-        pass
-    # def complex_response(self, frqs):
-    #     h = self.interpolate_fap(frequencies)
-    #     return h
+    def generate_frequency_axis(self, sampling_rate, n_observations):
+        dt = 1./sampling_rate
+        frequency_axis = np.fft.fftfreq(n_observations, d=dt)
+        return frequency_axis
+
+    def plot_complex_response(self, frequency_axis):
+        import mt_metadata
+        if frequency_axis is None:
+            frequency_axis = self.generate_frequency_axis(10.0, 1000)
+        angular_frequency_axis = 2 * np.pi * frequency_axis
+        frequency_axis = np.logspace(-1, 5, num=100)
+        w = 2. * np.pi * frequency_axis
+        complex_response = self.complex_response(frequency_axis)
+        plot_response(w_obs=w, resp_obs=complex_response, title=self.name)
+        # if isinstance(self, mt_metadata.timeseries.filters.pole_zero_filter.PoleZeroFilter):
+        #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
+        # else:
+        #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
 
     def apply(self, ts):
         data_spectum = ts.fft()

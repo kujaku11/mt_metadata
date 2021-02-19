@@ -33,10 +33,11 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_pz = fig.add_subplot(gs[:, 2], aspect='equal')
 
     if w_obs is not None and resp_obs is not None:
-        ax_amp.plot(2. * np.pi / w_obs, np.absolute(resp_obs),
+        frequencies = 2. * np.pi / w_obs
+        ax_amp.plot(frequencies, np.absolute(resp_obs),
                     color='tab:blue', linewidth=1.5, linestyle='-',
                     label='True')
-        ax_phs.plot(2. * np.pi / w_obs, np.angle(resp_obs, deg=True),
+        ax_phs.plot(frequencies, np.angle(resp_obs, deg=True),
                     color='tab:blue', linewidth=1.5, linestyle='-')
     elif zpk_obs is not None:
         w_obs, resp_obs = signal.freqresp(zpk_obs, w=w_values)
