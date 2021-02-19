@@ -75,6 +75,26 @@ class TestEquipmemtXMLFromMT(unittest.TestCase):
                           "timing_system.type: GPS"),
                          self.test_xml_equipment.description)
         
+    def test_manufacturer(self):
+        self.assertEqual(self.base_xml_equipment.manufacturer, 
+                         self.test_xml_equipment.manufacturer)
+   
+    def test_model(self):
+        self.assertEqual(self.base_xml_equipment.model, 
+                         self.test_xml_equipment.model)
+        
+    def test_serial_number(self):
+        self.assertEqual(self.base_xml_equipment.serial_number, 
+                         self.test_xml_equipment.serial_number)
+        
+    def test_installation_date(self):
+        self.assertEqual(self.base_xml_equipment.installation_date, 
+                         self.test_xml_equipment.installation_date)
+    
+    def test_removal_date(self):
+        self.assertEqual(self.base_xml_equipment.removal_date, 
+                         self.test_xml_equipment.removal_date)
+        
         
 # =============================================================================
 # 
