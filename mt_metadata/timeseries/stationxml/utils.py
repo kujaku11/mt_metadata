@@ -79,14 +79,32 @@ class BaseTranslator:
         def parse(comment_string, filled={}):
             k, *other = comment_string.split(":", 1)
             if other: 
+                other = other[0]
                 key = k
-                value, *maybe = other[0].split(',', 1)
-                filled[key] = value
-                if maybe:
-                    filled = parse(maybe[0].strip(), filled)
+                if other.find(':') >= 0 and other.find(",") >= 0:
+                    if other.find(':') < other.find(','):
+                        if other.count(':') > 1:
+                            value, *maybe = other.split(',', 1)
+                            filled[key] = value.strip()
+                            if maybe:
+                                filled = parse(maybe[0].strip(), filled)
+                        else:
+                            filled[key] = other
+                    else:
+                        value, *maybe = other.split(',', 1)
+                        filled[key] = value.strip()
+                        if maybe:
+                            filled = parse(maybe[0].strip(), filled)
+                elif other.find(':') > 0:
+                    value, *maybe = other.split(':', 1)
+                    filled[key] = value.strip()
+                else:
+                    filled[key] = other.strip()
+                        
             else:
                 filled[k] = None
             return filled
+        
         if ':' in comment.value:
             value = parse(comment.value)
         else:
