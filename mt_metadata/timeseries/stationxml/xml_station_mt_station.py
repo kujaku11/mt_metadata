@@ -136,6 +136,10 @@ class XMLStationMTStation(BaseTranslator):
                     
                 mt_station.set_attr_from_name(mt_key, value)
         
+        if mt_station.id is None:
+            if mt_station.fdsn.id is not None:
+                mt_station.id = mt_station.fdsn.id
+        
         return mt_station, run_comments
                 
     def mt_to_xml(self, mt_station):

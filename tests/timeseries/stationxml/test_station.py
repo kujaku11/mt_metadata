@@ -26,7 +26,7 @@ class TestNetwork01(unittest.TestCase):
         self.xml_station = self.inventory.networks[0].stations[0]
 
         self.converter = XMLStationMTStation()
-        self.mt_station = self.converter.xml_to_mt(self.xml_station)
+        self.mt_station, self.run_comments = self.converter.xml_to_mt(self.xml_station)
 
     def test_time_period(self):
         self.assertEqual(self.mt_station.time_period.start, "2020-06-02T18:41:43+00:00")
@@ -44,66 +44,64 @@ class TestNetwork01(unittest.TestCase):
     def test_geographic_name(self):
         self.assertEqual(self.mt_station.geographic_name, "Corral Hollow, CA, USA")
         
+    def test_run_comments(self):
+        self.assertEqual(self.run_comments, [])
 
+class TestNetwork02(unittest.TestCase):
+    """
+    Test reading network into MT mt_station object
+    """
 
-# class TestNetwork02(unittest.TestCase):
-#     """
-#     Test reading network into MT mt_station object
-#     """
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_02.as_posix())
+        self.xml_station = self.inventory.networks[0].stations[0]
 
-#     def setUp(self):
-#         self.inventory = read_inventory(STATIONXML_02.as_posix())
-#         self.network = self.inventory.networks[0]
+        self.converter = XMLStationMTStation()
+        self.mt_station, self.run_comments = self.converter.xml_to_mt(self.xml_station)
 
-#         self.converter = xml_network_mt_mt_station.XMLNetworkMTmt_station()
-#         self.mt_station = self.converter.xml_to_mt(self.network)
+    def test_time_period(self):
+        self.assertEqual(self.mt_station.time_period.start, "2020-06-08T22:57:13+00:00")
+        self.assertEqual(self.mt_station.time_period.end, "2020-07-17T21:15:32+00:00")
 
-#     def test_comments_acquired_by(self):
-#         self.assertEqual(self.mt_station.acquired_by.author, "Pellerin, L.")
+    def test_code(self):
+        self.assertEqual(self.mt_station.fdsn.id, "REW09")
+        self.assertEqual(self.mt_station.id, "REW09")
+    
+    def test_location(self):
+        self.assertEqual(self.mt_station.location.latitude, 35.1469128125)
+        self.assertEqual(self.mt_station.location.longitude, -117.160798541667)
+        self.assertEqual(self.mt_station.location.elevation, 887.775)
+        
+    def test_geographic_name(self):
+        self.assertEqual(self.mt_station.geographic_name, "Opal Mountain, CA, USA")
+         
+    def test_provenance(self):
+        self.assertEqual(self.mt_station.provenance.software.author,
+                         "Anna Kelbert, USGS")
+        self.assertEqual(self.mt_station.provenance.software.name,
+                         "mth5_metadata.m")
+        self.assertEqual(self.mt_station.provenance.software.version,
+                         "2021-02-01")
+        
+    def test_declination(self):
+        self.assertEqual(self.mt_station.location.declination.value, -666)
+        self.assertEqual(self.mt_station.location.declination.model, "IGRF-13")
+        self.assertEqual(self.mt_station.location.declination.comments,
+                         "igrf.m by Drew Compston")
+        
+    def test_orientation(self):
+        self.assertEqual(self.mt_station.orientation.method, "compass")
+        self.assertEqual(self.mt_station.orientation.reference_frame, "geographic")
+        
+    def test_run_list(self):
+        self.assertEqual(self.mt_station.run_list, ["a", "b", "c", "d", "e"])
+        
+    def test_data_type(self):
+        self.assertEqual(self.mt_station.data_type, "MT")
+        
+    def test_run_comments(self):
+        self.assertNotEqual(self.run_comments, [])
 
-#     def test_comments_mt_station_id(self):
-#         self.assertEqual(self.mt_station.mt_station_id, "CONUS South-USGS")
-
-#     def test_comments_project(self):
-#         self.assertEqual(self.mt_station.project, "USMTArray")
-
-#     def test_comments_geographic_name(self):
-#         self.assertEqual(self.mt_station.geographic_name, "Southern USA")
-
-#     def test_comments_comments(self):
-#         self.assertEqual(
-#             self.mt_station.comments,
-#             "Long-period EarthScope-style coverage of southern United States",
-#         )
-
-#     def test_comments_project_lead(self):
-#         self.assertEqual(self.mt_station.project_lead.author, "Schultz, A.")
-#         self.assertEqual(self.mt_station.project_lead.email, "Adam.Schultz@oregonstate.edu")
-#         self.assertEqual(
-#             self.mt_station.project_lead.organization, "Oregon State University"
-#         )
-
-#     def test_time_period(self):
-#         self.assertEqual(self.mt_station.time_period.start_date, "2020-06-01")
-#         self.assertEqual(self.mt_station.time_period.end_date, "2023-12-31")
-#         self.assertEqual(self.mt_station.time_period.start, "2020-06-01T00:00:00+00:00")
-#         self.assertEqual(self.mt_station.time_period.end, "2023-12-31T23:59:59+00:00")
-
-#     def test_dataset_doi(self):
-#         self.assertEqual(
-#             self.mt_station.citation_dataset.doi, "10.17611/DP/EMTF/USMTARRAY/SOUTH"
-#         )
-
-#     def test_journal_doi(self):
-#         self.assertEqual(self.mt_station.citation_journal.doi, "10.666/test.doi")
-
-#     def test_networkd_code(self):
-#         self.assertEqual(self.mt_station.fdsn.network, "ZU")
-
-#     def test_description(self):
-#         self.assertEqual(
-#             self.mt_station.summary, "USMTArray South Magnetotelluric Time Series"
-#         )
 
 
 # class Testmt_stationToNetwork(unittest.TestCase):
