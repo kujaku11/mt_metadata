@@ -51,7 +51,7 @@ class TestReadXMLComment(unittest.TestCase):
         k, v = BaseTranslator().read_xml_comment(self.odd_comment)
         self.assertEqual(k, "mt.run.odd")
         self.assertIsInstance(v, dict)
-        self.assertDictEqual(v, {"a": "b: action", "d": "efg"})
+        self.assertDictEqual(v, {"a": "b-- action", "d": "efg"})
         
     def test_normal_comment(self):
         k, v = BaseTranslator().read_xml_comment(self.normal_comment)
