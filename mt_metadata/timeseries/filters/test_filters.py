@@ -39,10 +39,9 @@ import path
 
 import scipy.signal as signal
 
+from mt_metadata.timeseries.filters.channel_response_filter import ChannelResponseFilter
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mth5.utils.pathing import DATA_DIR
-
-from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
 
 
@@ -50,10 +49,9 @@ def load_sample_network_inventory():
     """
     """
     iris_dir = DATA_DIR.joinpath('iris')
-    xml_file_path = iris_dir.joinpath('ZU.xml')
+    xml_file_path = iris_dir.joinpath('ZU_20210212.xml')
     inventory = obspy.read_inventory(xml_file_path.__str__())
     return inventory
-
 
 
 
@@ -81,12 +79,22 @@ def test_filter_generation():
                 print(info)
                 filters_list = []
                 for stage in stages:
-                    # pass
                     print('stage {}'.format(stage))
                     filter = create_filter_from_stage(stage)
                     filters_list.append(filter)
-
+                channel_response = ChannelResponseFilter(filters_list=filters_list)
+                qq = qq=filters_list[0]
+                qq.plot_complex_response(None, x_units='frequency')
+                channel_response.complex_response(np.array([1, 2, 3, 4]))
+                
+#                channel_response.combine(filters_list[0])
+#                channel_response.combine(filters_list[1])
+#                channel_response.combine(filters_list[2])
+                print('ok')
             print(network)
+
+    #filters_list[0].__combine__(filters_list[1])
+#    qq.__combine__(filters_list[1])
     print('ok')
 #        if not isinstance(network, obspy.core.)
 

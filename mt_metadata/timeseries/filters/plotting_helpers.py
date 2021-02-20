@@ -5,9 +5,16 @@ from matplotlib.gridspec import GridSpec
 from scipy import signal
 
 
+def cast_angular_frequency_to_period_or_hertz(w, units):
+    if units.lower() == 'period':
+        x_axis = (2. * np.pi) / w
+    elif units.lower() == 'frequency':
+        x_axis = w / (2. * np.pi)
+    return x_axis
+
 def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
                   zpk_pred=None, w_values=None, xlim=None,
-                  title=None):
+                  title=None, x_units='Period'):
     """
     This function was contributed by Ben Murphy at USGS
     Parameters
@@ -33,18 +40,19 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_pz = fig.add_subplot(gs[:, 2], aspect='equal')
 
     if w_obs is not None and resp_obs is not None:
-        frequencies = 2. * np.pi / w_obs
-        ax_amp.plot(frequencies, np.absolute(resp_obs),
+        x_axis = cast_angular_frequency_to_period_or_hertz(w_obs, x_units)
+        ax_amp.plot(x_axis, np.absolute(resp_obs),
                     color='tab:blue', linewidth=1.5, linestyle='-',
                     label='True')
-        ax_phs.plot(frequencies, np.angle(resp_obs, deg=True),
+        ax_phs.plot(x_axis, np.angle(resp_obs, deg=True),
                     color='tab:blue', linewidth=1.5, linestyle='-')
     elif zpk_obs is not None:
         w_obs, resp_obs = signal.freqresp(zpk_obs, w=w_values)
-        ax_amp.plot(2. * np.pi / w_obs, np.absolute(resp_obs),
+        x_axis = cast_angular_frequency_to_period_or_hertz(w_obs, x_units)
+        ax_amp.plot(x_axis, np.absolute(resp_obs),
                     color='tab:blue', linewidth=1.5, linestyle='-',
                     label='True')
-        ax_phs.plot(2. * np.pi / w_obs, np.angle(resp_obs, deg=True),
+        ax_phs.plot(x_axis, np.angle(resp_obs, deg=True),
                     color='tab:blue', linewidth=1.5, linestyle='-')
         ax_pz.scatter(np.real(zpk_obs.zeros), np.imag(zpk_obs.zeros),
                       s=75, marker='o', ec='tab:blue', fc='w',
@@ -55,10 +63,11 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
 
     if zpk_pred is not None:
         w_pred, resp_pred = signal.freqresp(zpk_pred, w=w_values)
-        ax_amp.plot(2. * np.pi / w_pred, np.absolute(resp_pred),
+        x_axis = cast_angular_frequency_to_period_or_hertz(w_pred, x_units)
+        ax_amp.plot(x_axis, np.absolute(resp_pred),
                     color='tab:red', linewidth=3, linestyle=':',
                     label='Fit')
-        ax_phs.plot(2. * np.pi / w_pred, np.angle(resp_pred, deg=True),
+        ax_phs.plot(x_axis/ w_pred, np.angle(resp_pred, deg=True),
                     color='tab:red', linewidth=3, linestyle=':')
         ax_pz.scatter(np.real(zpk_pred.zeros), np.imag(zpk_pred.zeros),
                       s=35, marker='o', ec='tab:red', fc='w',
@@ -80,7 +89,11 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_phs.set_ylim([-180., 180.])
     ax_phs.set_xscale('log')
     ax_phs.set_ylabel('Phase Response')
-    ax_phs.set_xlabel('Period (s)')
+    if x_units.lower() == 'period':
+        x_label = 'Period (s)'
+    elif x_units.lower() == 'frequency':
+        x_label = 'Frequency (Hz)'
+    ax_phs.set_xlabel(x_label)
     ax_phs.grid()
 
     ax_pz.set_xlabel('Re(z)')

@@ -51,7 +51,7 @@ class Filter(Base):
         ----------
         kwargs
         name: The label for this filter, can act as a key for response info
-        type: One of {'pole_zero', 'frequencny_table', 'coefficient', 'fir', 'iir', 'time_shift'}
+        type: One of {'pole_zero', 'frequency_table', 'coefficient', 'fir', 'iir', 'time_shift'}
         units_in: expected units of data coming from the previous stage ...
         ? is this defined by the data itself? Or is this an Idealized Value?
         normalization_frequency: ???
@@ -67,15 +67,8 @@ class Filter(Base):
         self.input_units = kwargs.get('input_units', None)
         self.output_units = kwargs.get('output_units', None)
         self._calibration_dt = MTime()
-        #self.operation = None
-        #self.normalization_frequency = None
-        #self.normalization_factor = None
-        #self.cutoff = None
-        #self.n_theoretical_poles = None
-        #self.n_theoretical_zeros = None
         self.comments = None
-        #self.conversion_factor = None
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
@@ -86,20 +79,7 @@ class Filter(Base):
     def calibration_date(self, value):
         self._calibration_dt.from_str(value)
 
-    def __combine__(self, other, before_or_after='after'):
-        #TODO: Add checks here that when you are stitching two filters together the
-        #output_units of the before filter match the input units of the after
-        """
-        Parameters
-        ----------
-        other
 
-        Returns a filter that has the combined complex response of the product of
-        self and other.
-        -------
-
-        """
-        pass
 
     def from_obspy_stage(self, stage):
         if isinstance(stage, obspy.core.inventory.response.ResponseStage):
@@ -119,7 +99,7 @@ class Filter(Base):
         frequency_axis = np.fft.fftfreq(n_observations, d=dt)
         return frequency_axis
 
-    def plot_complex_response(self, frequency_axis):
+    def plot_complex_response(self, frequency_axis, x_units='period'):
         import mt_metadata
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
@@ -127,7 +107,7 @@ class Filter(Base):
         frequency_axis = np.logspace(-1, 5, num=100)
         w = 2. * np.pi * frequency_axis
         complex_response = self.complex_response(frequency_axis)
-        plot_response(w_obs=w, resp_obs=complex_response, title=self.name)
+        plot_response(w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units)
         # if isinstance(self, mt_metadata.timeseries.filters.pole_zero_filter.PoleZeroFilter):
         #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
         # else:
