@@ -241,6 +241,6 @@ def read_channel_code(channel_code):
 
     return {
         "period": period_range,
-        "component": component,
+        "measurement": component,
         "orientation": orientation,
     }

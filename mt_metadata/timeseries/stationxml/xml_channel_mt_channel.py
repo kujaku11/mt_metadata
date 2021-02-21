@@ -82,23 +82,15 @@ class XMLChannelMTChannel(BaseTranslator):
             
         ch_dict = read_channel_code(xml_channel.code)
 
-        channel_code = make_channel_code(xml_channel)
-
-        is_electric = xml_channel.type in ["electric"]
-        if is_electric:
-            mt_channel
-        else:
-            xml_channel = inventory.Channel(
-                channel_code,
-                location_code,
-                xml_channel.location.latitude,
-                xml_channel.location.longitude,
-                xml_channel.location.elevation,
-                xml_channel.location.elevation,
-            )
-
-        xml_channel.start_date = mt_channel.time_period.start
-        xml_channel.end_date = mt_channel.time_period.end
+        mt_channel = metadata.Channel(ch_dict["measurement"])
+        
+        for xml_key, mt_key in self.xml_translator.items():
+            if mt_key:
+                value = getattr(xml_channel, xml_key)
+                mt_channel.set_attr_from_name(mt_key, value)
+            
+            
+        
 
     def mt_to_xml(self, mt_channel):
         """
