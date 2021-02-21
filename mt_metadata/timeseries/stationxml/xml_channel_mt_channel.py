@@ -12,7 +12,7 @@ Created on Fri Feb 19 16:14:41 2021
 # Imports
 # =============================================================================
 from mt_metadata.timeseries.stationxml.fdsn_tools import (
-    release_dict, make_channel_code, get_location_code)
+    release_dict, read_channel_code, make_channel_code)
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
@@ -63,7 +63,7 @@ class XMLChannelMTChannel(BaseTranslator):
             "run.id"
         ]
 
-    def xml_to_mt(self, mt_channel):
+    def xml_to_mt(self, xml_channel):
         """
         Translate :class:`obspy.core.inventory.Channel` to 
         :class:`mt_metadata.timeseries.Channel`
@@ -79,20 +79,14 @@ class XMLChannelMTChannel(BaseTranslator):
             msg = f"Input must be obspy.core.inventory.Channel object not {type(xml_channel)}"
             self.logger.error(msg)
             raise TypeError(msg)
+            
+        ch_dict = read_channel_code(xml_channel.code)
 
-        location_code = get_location_code(xml_channel)
         channel_code = make_channel_code(xml_channel)
 
         is_electric = xml_channel.type in ["electric"]
         if is_electric:
-            xml_channel = inventory.Channel(
-                channel_code,
-                location_code,
-                xml_channel.positive.latitude,
-                xml_channel.positive.longitude,
-                xml_channel.positive.elevation,
-                xml_channel.positive.elevation,
-            )
+            mt_channel
         else:
             xml_channel = inventory.Channel(
                 channel_code,

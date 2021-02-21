@@ -52,7 +52,7 @@ measurement_code_dict = {
     "creep": "B",
     "calibration": "C",
     "pressure": "D",
-    "magnetics": "F",
+    "magnetic": "F",
     "gravity": "G",
     "humidity": "I",
     "temperature": "K",
