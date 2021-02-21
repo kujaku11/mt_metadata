@@ -64,7 +64,8 @@ measurement_code_dict = {
     "wind": "W",
 }
 
-measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
+measurement_code_dict_reverse = dict(
+    [(v, k) for k, v in measurement_code_dict.items()])
 
 # parts of a unit circle
 orientation_code_dict = {
@@ -80,7 +81,7 @@ orientation_code_dict = {
 def create_location_code(channel_obj):
     """
     Get the location code given the components and channel number
-    
+
     :param channel_obj: Channel object
     :type channel_obj: :class:`~mth5.metadata.Channel`
     :return: 2 character location code
@@ -98,7 +99,7 @@ def create_location_code(channel_obj):
 def get_period_code(sample_rate):
     """
     Get the SEED sampling rate code given a sample rate
-    
+
     :param sample_rate: sample rate in samples per second
     :type sample_rate: float
     :return: single character SEED sampling code
@@ -116,7 +117,7 @@ def get_period_code(sample_rate):
 def get_measurement_code(measurement):
     """
     get SEED sensor code given the measurement type
-    
+
     :param measurement: measurement type, e.g.
         * temperature
         * electric
@@ -138,7 +139,7 @@ def get_orientation_code(azimuth, orientation="horizontal"):
     """
     Get orientation code given angle and orientation.  This is a general
     code and the true azimuth is stored in channel
-    
+
     :param azimuth: angel assuming 0 is north, 90 is east, 0 is vertical down
     :type azimuth: float
     :return: single character SEED orientation code
@@ -147,13 +148,13 @@ def get_orientation_code(azimuth, orientation="horizontal"):
     """
     # angles are only from 0 to 360
     azimuth = azimuth % 360
-    
+
     value = abs(np.cos(np.deg2rad(azimuth)))
     delta = np.cos(np.deg2rad(5))
-    
+
     def angle(value):
         return abs(np.cos(np.deg2rad(value)))
-    
+
     if orientation == "horizontal":
         if value >= angle(5):
             return "N"
@@ -163,34 +164,35 @@ def get_orientation_code(azimuth, orientation="horizontal"):
             return "1"
         elif (value < angle(45)) and (value >= angle(95)):
             return "2"
-        
+
     elif orientation == "vertical":
         if value >= delta:
             return "Z"
         else:
             return "3"
 
-def make_channel_code(channel_obj):
-    """
-    Make the 3 character SEED channel code
-    
-    :param channel_obj: Channel metadata
-    :type channel_obj: :class:`~mth5.metadata.Channel`
-    :return: 3 character channel code
-    :type: string
-    
+
+def make_channel_code(sample_rate, measurement_type, azimuth, orientation="horizontal"):
     """
 
-    period_code = get_period_code(channel_obj.sample_rate)
-    sensor_code = get_measurement_code(channel_obj.type)
-    if "z" in channel_obj.component.lower():
-        orientation_code = get_orientation_code(
-            channel_obj.measurement_tilt, orientation="vertical"
-        )
-    else:
-        orientation_code = get_orientation_code(channel_obj.measurement_azimuth)
+    Make channel code from given parameters
 
-    channel_code = "{0}{1}{2}".format(period_code, sensor_code, orientation_code)
+    :param sample_rate: sample rate in samples per second
+    :type sample_rate: float
+    :param measurement_type: type of measurement, e.g. 'electric'
+    :type measurement_type: string
+    :param orientation: orientation azimuth (degrees)
+    :type orientation: float
+    :return: three letter channel code
+    :rtype: string
+
+    """
+
+    period_code = get_period_code(sample_rate)
+    sensor_code = get_measurement_code(measurement_type)
+    orientation_code = get_orientation_code(azimuth, orientation=orientation)
+
+    channel_code = f"{period_code}{sensor_code}{orientation_code}"
 
     return channel_code
 
@@ -198,7 +200,7 @@ def make_channel_code(channel_obj):
 def read_channel_code(channel_code):
     """
     read FDSN channel code
-    
+
     :param channel_code: Three character string {Period}{Component}{Orientation}
     :type channel_code: string
     :return: DESCRIPTION

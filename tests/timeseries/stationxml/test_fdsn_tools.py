@@ -85,7 +85,18 @@ class TestChannelCode(unittest.TestCase):
         self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
         self.assertEqual(ch_dict["component"], "temperature")
         self.assertDictEqual(ch_dict["orientation"], {"min": 0.996, "max": 0.996})
+        
+    def test_make_h_channel(self):
+        ch_code = fdsn_tools.make_channel_code(1, 'magnetics', 0)
+        self.assertEqual(ch_code, self.h_channel_code)        
 
+    def test_make_e_channel(self):
+        ch_code = fdsn_tools.make_channel_code(100, 'electric', 87)
+        self.assertEqual(ch_code, self.e_channel_code) 
+        
+    def test_make_aux_channel(self):
+        ch_code = fdsn_tools.make_channel_code(1, 'temperature', 4)
+        self.assertEqual(ch_code, self.h_channel_code) 
 
 # =============================================================================
 # run
