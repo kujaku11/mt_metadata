@@ -42,15 +42,16 @@ class TestOrientationCode(unittest.TestCase):
             self.vertical, "vertical"), "Z")
         self.assertEqual(fdsn_tools.get_orientation_code(-5, "vertical"), "Z")
         self.assertEqual(fdsn_tools.get_orientation_code(5, "vertical"), "Z")
-    
+
     def test_one(self):
         self.assertEqual(fdsn_tools.get_orientation_code(self.one), "1")
-        
+
     def test_two(self):
         self.assertEqual(fdsn_tools.get_orientation_code(self.two), "2")
-    
+
     def test_three(self):
-        self.assertEqual(fdsn_tools.get_orientation_code(self.three, "vertical"), "3")
+        self.assertEqual(fdsn_tools.get_orientation_code(
+            self.three, "vertical"), "3")
 
 
 class TestChannelCode(unittest.TestCase):
@@ -60,7 +61,7 @@ class TestChannelCode(unittest.TestCase):
 
     def setUp(self):
         self.h_channel_code = "LFN"
-        self.e_channel_code = "HQE"
+        self.e_channel_code = "EQE"
         self.aux_channel_code = "LKZ"
 
     def test_orientation_code(self):
@@ -78,25 +79,29 @@ class TestChannelCode(unittest.TestCase):
         ch_dict = fdsn_tools.read_channel_code(self.e_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 80, "max": 250})
         self.assertEqual(ch_dict["component"], "electric")
-        self.assertDictEqual(ch_dict["orientation"], {"min": 0, "max": 0.003805})
+        self.assertDictEqual(ch_dict["orientation"], {
+                             "min": 0, "max": 0.003805})
 
     def test_read_aux_channel(self):
         ch_dict = fdsn_tools.read_channel_code(self.aux_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
         self.assertEqual(ch_dict["component"], "temperature")
-        self.assertDictEqual(ch_dict["orientation"], {"min": 0.996, "max": 0.996})
-        
+        self.assertDictEqual(ch_dict["orientation"], {
+                             "min": 0.996, "max": 0.996})
+
     def test_make_h_channel(self):
         ch_code = fdsn_tools.make_channel_code(1, 'magnetics', 0)
-        self.assertEqual(ch_code, self.h_channel_code)        
+        self.assertEqual(ch_code, self.h_channel_code)
 
     def test_make_e_channel(self):
         ch_code = fdsn_tools.make_channel_code(100, 'electric', 87)
-        self.assertEqual(ch_code, self.e_channel_code) 
-        
+        self.assertEqual(ch_code, self.e_channel_code)
+
     def test_make_aux_channel(self):
-        ch_code = fdsn_tools.make_channel_code(1, 'temperature', 4)
-        self.assertEqual(ch_code, self.h_channel_code) 
+        ch_code = fdsn_tools.make_channel_code(
+            1, 'temperature', 4, orientation="vertical")
+        self.assertEqual(ch_code, self.aux_channel_code)
+
 
 # =============================================================================
 # run
