@@ -10,9 +10,12 @@ Created on Wed Sep 30 11:47:01 2020
 :license: MIT
 
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import logging
-
+import numpy as np
+# =============================================================================
 logger = logging.getLogger(__name__)
 
 release_dict = {
@@ -63,17 +66,18 @@ measurement_code_dict = {
 
 measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
 
+# parts of a unit circle
 orientation_code_dict = {
-    "N": {"min": 0, "max": 5},
-    "E": {"min": 85, "max": 90},
-    "Z": {"min": 0, "max": 5},
-    "1": {"min": 5, "max": 45},
-    "2": {"min": 45, "max": 85},
-    "3": {"min": 5, "max": 85},
+    "N": {"min": 0.996, "max": 1},
+    "E": {"min": 0, "max": 0.003805},
+    "Z": {"min": 0.996, "max": 0.996},
+    "1": {"min": .5, "max": 0.996},
+    "2": {"min": 0.003805, "max": .5},
+    "3": {"min": 0, "max": .996},
 }
 
 
-def get_location_code(channel_obj):
+def create_location_code(channel_obj):
     """
     Get the location code given the components and channel number
     
@@ -141,25 +145,30 @@ def get_orientation_code(azimuth, orientation="horizontal"):
     :rtype: string
 
     """
-    orientation_code = "1"
-    horizontal_keys = ["N", "E", "1", "2"]
-    vertical_keys = ["Z", "3"]
-
-    azimuth = abs(azimuth) % 91
+    # angles are only from 0 to 360
+    azimuth = azimuth % 360
+    
+    value = abs(np.cos(np.deg2rad(azimuth)))
+    delta = np.cos(np.deg2rad(5))
+    
+    def angle(value):
+        return abs(np.cos(np.deg2rad(value)))
+    
     if orientation == "horizontal":
-        test_keys = horizontal_keys
-
+        if value >= angle(5):
+            return "N"
+        elif (value <= angle(95)):
+            return "E"
+        elif (value < angle(5)) and (value >= angle(45)):
+            return "1"
+        elif (value < angle(45)) and (value >= angle(95)):
+            return "2"
+        
     elif orientation == "vertical":
-        test_keys = vertical_keys
-
-    for key in test_keys:
-        angle_min = orientation_code_dict[key]["min"]
-        angle_max = orientation_code_dict[key]["max"]
-        if (azimuth <= angle_max) and (azimuth >= angle_min):
-            orientation_code = key
-            break
-    return orientation_code
-
+        if value >= delta:
+            return "Z"
+        else:
+            return "3"
 
 def make_channel_code(channel_obj):
     """
@@ -190,8 +199,8 @@ def read_channel_code(channel_code):
     """
     read FDSN channel code
     
-    :param channel_code: DESCRIPTION
-    :type channel_code: TYPE
+    :param channel_code: Three character string {Period}{Component}{Orientation}
+    :type channel_code: string
     :return: DESCRIPTION
     :rtype: TYPE
 
