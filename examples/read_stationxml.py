@@ -33,6 +33,7 @@ inv_test.networks[0].stations.append(xml_station)
 
 ch = XMLChannelMTChannel()
 xml_ch = inv_obj.networks[0].stations[0].channels[0]
+mt_ch = ch.xml_to_mt(xml_ch)
 
 # check to see if a stationxml can be written
 inv_test.write(r"c:\Users\jpeacock\test_network.xml", "stationxml")

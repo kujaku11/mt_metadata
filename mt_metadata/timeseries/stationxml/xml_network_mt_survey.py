@@ -124,8 +124,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 else:
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
-                    if xml_key in ["start_date", "end_date"]:
-                        value = value.isoformat()
 
                 mt_survey.set_attr_from_name(mt_key, value)
 

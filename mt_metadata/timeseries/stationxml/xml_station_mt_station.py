@@ -134,9 +134,6 @@ class XMLStationMTStation(BaseTranslator):
                 else:
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
-                    if "time_period" in mt_key:
-                        if not isinstance(value, str):
-                            value = value.isoformat()
                     
                 mt_station.set_attr_from_name(mt_key, value)
         

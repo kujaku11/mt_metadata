@@ -85,8 +85,6 @@ class XMLEquipmentMTRun(BaseTranslator):
                 mt_run = self._parse_description(value, mt_run)
             elif xml_key in ["resource_id"]:
                 mt_run.id = value.split(":")[1]
-            elif "date" in xml_key:
-                mt_run.set_attr_from_name(mt_key, value.isoformat())
             else:
                 mt_run.set_attr_from_name(mt_key, value)
 
