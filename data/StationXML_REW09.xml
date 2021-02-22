@@ -589,7 +589,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>94 meters</Description>
+               <Description>94.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004007, negative: 2004008</SerialNumber>
@@ -793,7 +793,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>94 meters</Description>
+               <Description>94.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>
@@ -1369,7 +1369,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>94 meters</Description>
+               <Description>94.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004007, negative:</SerialNumber>
@@ -1570,7 +1570,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>4 meters</Description>
+               <Description>4.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>
@@ -2158,7 +2158,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>94 meters</Description>
+               <Description>94.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004007, negative: 2004008</SerialNumber>
@@ -2362,7 +2362,7 @@
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
-               <Description>94 meters</Description>
+               <Description>94.0 meters</Description>
                <Manufacturer>Oregon State University</Manufacturer>
                <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
                <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>

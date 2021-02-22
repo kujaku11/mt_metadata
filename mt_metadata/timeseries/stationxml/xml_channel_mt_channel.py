@@ -129,7 +129,7 @@ class XMLChannelMTChannel(BaseTranslator):
         if is_electric:
             xml_channel = inventory.Channel(
                 channel_code,
-                "location_code",
+                "",
                 mt_channel.positive.latitude,
                 mt_channel.positive.longitude,
                 mt_channel.positive.elevation,
@@ -138,7 +138,7 @@ class XMLChannelMTChannel(BaseTranslator):
         else:
             xml_channel = inventory.Channel(
                 channel_code,
-                "location_code",
+                "",
                 mt_channel.location.latitude,
                 mt_channel.location.longitude,
                 mt_channel.location.elevation,
@@ -229,7 +229,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
             mt_channel.sensor.type = sensor.type
             mt_channel.sensor.manufacturer = sensor.manufacturer
-            mt_channel.sensor.model = sensor.model
+            mt_channel.sensor.model = f"{sensor.model} {sensor.description}"
             mt_channel.sensor.id = sensor.serial_number
 
             return mt_channel
@@ -257,15 +257,13 @@ class XMLChannelMTChannel(BaseTranslator):
                                f"negative: {mt_channel.negative.id}")
             
         elif mt_channel.type in ["magnetic"]:
-            s.inventory.Sensor()
             s.type = mt_channel.sensor.type
-            s.model = mt_channel.sensor.model
+            s.model = mt_channel.sensor.model.split()[0]
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
-            s.description = mt_channel.sensor.model
+            s.description = mt_channel.sensor.model.split()[1]
             
         else:
-            s.inventory.Sensor()
             s.type = mt_channel.sensor.type
             s.model = mt_channel.sensor.model
             s.serial_number = mt_channel.sensor.id
