@@ -15,6 +15,7 @@ Created on Wed Sep 30 11:47:01 2020
 # =============================================================================
 import logging
 import numpy as np
+
 # =============================================================================
 logger = logging.getLogger(__name__)
 
@@ -64,30 +65,31 @@ measurement_code_dict = {
     "wind": "W",
 }
 
-measurement_code_dict_reverse = dict(
-    [(v, k) for k, v in measurement_code_dict.items()])
+measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
 
 # parts of a unit circle
 orientation_code_dict = {
     "N": {"min": 0.996, "max": 1},
     "E": {"min": 0, "max": 0.003805},
     "Z": {"min": 0.996, "max": 0.996},
-    "1": {"min": .5, "max": 0.996},
-    "2": {"min": 0.003805, "max": .5},
-    "3": {"min": 0, "max": .996},
+    "1": {"min": 0.5, "max": 0.996},
+    "2": {"min": 0.003805, "max": 0.5},
+    "3": {"min": 0, "max": 0.996},
 }
 
 # SI units short name
-units_names = {"millivolts per kilometer": "mV/km",
-               "volts": "V",
-               "millivolts": "mV",
-               "volts per meter": "V/m",
-               "millivolts per kilometer": "mV/km",
-               "nanotesla": "nT",
-               "tesla": "T",
-               "celsius": "C",
-               "ohms": "Ohm",
-               "ohm meters": "Ohm-m"}
+units_names = {
+    "millivolts per kilometer": "mV/km",
+    "volts": "V",
+    "millivolts": "mV",
+    "volts per meter": "V/m",
+    "millivolts per kilometer": "mV/km",
+    "nanotesla": "nT",
+    "tesla": "T",
+    "celsius": "C",
+    "ohms": "Ohm",
+    "ohm meters": "Ohm-m",
+}
 
 
 def create_location_code(channel_obj):
@@ -170,7 +172,7 @@ def get_orientation_code(azimuth, orientation="horizontal"):
     if orientation == "horizontal":
         if value >= angle(5):
             return "N"
-        elif (value <= angle(95)):
+        elif value <= angle(95):
             return "E"
         elif (value < angle(5)) and (value >= angle(45)):
             return "1"

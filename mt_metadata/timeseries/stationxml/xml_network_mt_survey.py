@@ -152,7 +152,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 continue
             if inv_key == "operators":
                 if survey.project_lead.organization:
-                    operator = inventory.Operator(agency=survey.project_lead.organization)
+                    operator = inventory.Operator(
+                        agency=survey.project_lead.organization
+                    )
                     if survey.project_lead.author:
                         person = inventory.Person(
                             names=[survey.project_lead.author],

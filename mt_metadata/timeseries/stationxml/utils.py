@@ -75,9 +75,9 @@ class BaseTranslator:
         by a comma. 
         
         """
-        
+
         key = comment.subject.strip().replace(" ", "_").lower()
-        
+
         def parse(comment_string, filled={}):
             """
             Recursively parse a comment string trying to adhere to the 
@@ -92,35 +92,35 @@ class BaseTranslator:
             
             """
             k, *other = comment_string.split(":", 1)
-            if other: 
+            if other:
                 other = other[0]
                 key = k
-                if other.find(':') >= 0 and other.find(",") >= 0:
-                    if other.find(':') < other.find(','):
-                        if other.count(':') > 1:
-                            value, *maybe = other.split(',', 1)
-                            filled[key] = value.strip().replace(':', '--')
+                if other.find(":") >= 0 and other.find(",") >= 0:
+                    if other.find(":") < other.find(","):
+                        if other.count(":") > 1:
+                            value, *maybe = other.split(",", 1)
+                            filled[key] = value.strip().replace(":", "--")
                             if maybe:
                                 filled = parse(maybe[0].strip(), filled)
                         else:
-                            filled[key] = other.replace(':', '--').strip()
+                            filled[key] = other.replace(":", "--").strip()
                     else:
-                        value, *maybe = other.split(',', 1)
+                        value, *maybe = other.split(",", 1)
                         filled[key] = value.strip()
                         if maybe:
                             filled = parse(maybe[0].strip(), filled)
-                elif other.find(':') > 0:
-                    value, *maybe = other.split(':', 1)
+                elif other.find(":") > 0:
+                    value, *maybe = other.split(":", 1)
                     filled[key] = value.strip()
                 else:
                     filled[key] = other.strip()
-                        
+
             else:
                 filled[k] = None
             return filled
-        
+
         # if the string is dictionary like, parse, otherwise skip
-        if ':' in comment.value:
+        if ":" in comment.value:
             value = parse(comment.value)
         else:
             value = comment.value
@@ -160,7 +160,7 @@ class BaseTranslator:
 
         self.logger.info(f"Could not find {subject} in the given list of comments.")
         return None
-    
+
     def make_mt_comments(self, mt_element, mt_key_base="mt"):
         """
         make comments from an MT element from self.mt_comments_list
@@ -178,7 +178,7 @@ class BaseTranslator:
                 values = []
                 comment_key = list(key.keys())[0]
                 for part in key[comment_key]:
-                    info = part.split('.')[-1]
+                    info = part.split(".")[-1]
                     value = mt_element.get_attr_from_name(part)
                     if value:
                         values.append(f"{info}: {value}")
@@ -189,14 +189,13 @@ class BaseTranslator:
                 value = mt_element.get_attr_from_name(key)
                 if value:
                     if isinstance(value, (list, tuple)):
-                        value = ', '.join(value) 
+                        value = ", ".join(value)
                     comment = Comment(value, subject=f"{mt_key_base}.{key}")
                     comments.append(comment)
         return comments
-    
+
     def xml_to_mt(self, value):
         pass
-    
+
     def mt_to_xml(self, value):
         pass
-    

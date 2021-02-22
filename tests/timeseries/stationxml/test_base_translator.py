@@ -28,39 +28,36 @@ class TestReadXMLComment(unittest.TestCase):
         self.long_comment = Comment("a: b, c: d, efg", subject="mt.run.a:comment")
         self.odd_comment = Comment("a: b: action, d: efg", subject="mt.run.odd")
         self.normal_comment = Comment("normal", subject="mt.run.comment")
-        
+
     def test_null_comment(self):
         k, v = BaseTranslator.read_xml_comment(self.null_comment)
         self.assertEqual("mt.survey.survey_id", k)
         self.assertEqual("None", v)
-        
+
     def test_run_comment(self):
         k, v = BaseTranslator.read_xml_comment(self.run_comment)
         self.assertEqual(k, "mt.run:b.metadata_by")
         self.assertIsInstance(v, dict)
-        self.assertDictEqual(v, {"author": "John Doe", 
-                                 "comments": "X array a 0 and 90 degrees."})
-    
+        self.assertDictEqual(
+            v, {"author": "John Doe", "comments": "X array a 0 and 90 degrees."}
+        )
+
     def test_long_comment(self):
         k, v = BaseTranslator.read_xml_comment(self.long_comment)
         self.assertEqual(k, "mt.run.a:comment")
         self.assertIsInstance(v, dict)
-        self.assertDictEqual(v, {"a": "b", "c":"d, efg"})
-        
+        self.assertDictEqual(v, {"a": "b", "c": "d, efg"})
+
     def test_odd_comment(self):
         k, v = BaseTranslator().read_xml_comment(self.odd_comment)
         self.assertEqual(k, "mt.run.odd")
         self.assertIsInstance(v, dict)
         self.assertDictEqual(v, {"a": "b-- action", "d": "efg"})
-        
+
     def test_normal_comment(self):
         k, v = BaseTranslator().read_xml_comment(self.normal_comment)
         self.assertEqual(k, "mt.run.comment")
         self.assertEqual(v, "normal")
-        
-        
-    
-        
 
 
 # =============================================================================

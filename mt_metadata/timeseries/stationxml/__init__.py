@@ -9,8 +9,8 @@ from .xml_station_mt_station import XMLStationMTStation
 from .xml_channel_mt_channel import XMLChannelMTChannel
 
 
-__all__ =[
- "XMLNetworkMTSurvey",
- "XMLStationMTStation"
- "XMLEquipmentMTRun",
- "XMLChannelMTChannel"]
+__all__ = [
+    "XMLNetworkMTSurvey",
+    "XMLStationMTStation" "XMLEquipmentMTRun",
+    "XMLChannelMTChannel",
+]

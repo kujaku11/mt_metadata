@@ -155,9 +155,9 @@ class MTime:
 
             elif isinstance(time, pd._libs.tslibs.timestamps.Timestamp):
                 self.from_str(time.isoformat())
-                
+
             elif hasattr(time, "isoformat"):
-                
+
                 self.from_str(time.isoformat())
 
             else:
@@ -462,7 +462,7 @@ class MTime:
     def copy(self):
         """ make a copy of the time """
         return deepcopy(self)
-    
+
     def isoformat(self):
         """
         
@@ -471,7 +471,7 @@ class MTime:
 
         """
         return self.dt_object.isoformat()
-    
+
     def isodate(self):
         """
         
@@ -480,7 +480,7 @@ class MTime:
 
         """
         return self.dt_object.isodate()
-    
+
     def isocalendar(self):
         """
         
@@ -489,6 +489,7 @@ class MTime:
 
         """
         return self.dt_object.isocalendar()
+
 
 def get_now_utc():
     """

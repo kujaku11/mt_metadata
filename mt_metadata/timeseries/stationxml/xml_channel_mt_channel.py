@@ -12,7 +12,11 @@ Created on Fri Feb 19 16:14:41 2021
 # Imports
 # =============================================================================
 from mt_metadata.timeseries.stationxml.fdsn_tools import (
-    release_dict, read_channel_code, make_channel_code, units_names)
+    release_dict,
+    read_channel_code,
+    make_channel_code,
+    units_names,
+)
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
@@ -56,12 +60,9 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # StationXML to MT Survey
         self.mt_translator = self.flip_dict(self.xml_translator)
-        self.mt_translator['units'] = "calibration_units_description"
-        
+        self.mt_translator["units"] = "calibration_units_description"
 
-        self.mt_comments_list = [
-            "run.id"
-        ]
+        self.mt_comments_list = ["run.id"]
 
     def xml_to_mt(self, xml_channel):
         """
@@ -87,7 +88,7 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel = metadata.Magnetic(type="magnetic")
         else:
             mt_channel = metadata.Auxiliary(type=ch_dict["measurement"])
-            
+
         mt_channel = self._get_mt_position(xml_channel, mt_channel)
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
         mt_channel = self._sensor_to_mt(xml_channel.sensor, mt_channel)
@@ -114,16 +115,17 @@ class XMLChannelMTChannel(BaseTranslator):
 
         """
 
-        if not isinstance(mt_channel, 
-                          (metadata.Electric, metadata.Magnetic, metadata.Auxiliary)):
+        if not isinstance(
+            mt_channel, (metadata.Electric, metadata.Magnetic, metadata.Auxiliary)
+        ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
         # location_code = get_location_code(mt_channel)
-        channel_code = make_channel_code(mt_channel.sample_rate, 
-                                         mt_channel.type,
-                                         mt_channel.measurement_azimuth)
+        channel_code = make_channel_code(
+            mt_channel.sample_rate, mt_channel.type, mt_channel.measurement_azimuth
+        )
 
         is_electric = mt_channel.type in ["electric"]
         if is_electric:
@@ -144,29 +146,32 @@ class XMLChannelMTChannel(BaseTranslator):
                 mt_channel.location.elevation,
                 0,
             )
-            
+
         xml_channel.types = ["geophysical".upper()]
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
-        
+
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
                 msg = f"Cannot currently map {mt_key} to inventory.station.{xml_key}"
                 self.logger.debug(msg)
                 continue
-    
+
             # obspy only allows angles (0, 360)
             if xml_key in ["azimuth"]:
                 xml_channel.azimuth = mt_channel.measurement_azimuth % 360
-    
+
             elif xml_key in ["dip"]:
                 xml_channel.dip = mt_channel.measurement_tilt % 360
-    
+
             else:
                 setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
                 if mt_key == "units":
-                    setattr(xml_channel, "calibration_units",
-                            units_names[mt_channel.get_attr_from_name(mt_key)])
+                    setattr(
+                        xml_channel,
+                        "calibration_units",
+                        units_names[mt_channel.get_attr_from_name(mt_key)],
+                    )
 
         return xml_channel
 
@@ -186,8 +191,10 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if sensor.type.lower() in ["magnetometer", "induction coil", "coil"]:
             if not isinstance(mt_channel, metadata.Magnetic):
-                msg = (f"Cannot put sensor of type {sensor.type} into an "
-                       f"MT Channel of {type(mt_channel)}.")
+                msg = (
+                    f"Cannot put sensor of type {sensor.type} into an "
+                    f"MT Channel of {type(mt_channel)}."
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
             mt_channel.sensor.id = sensor.serial_number
@@ -198,8 +205,10 @@ class XMLChannelMTChannel(BaseTranslator):
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
             if not isinstance(mt_channel, metadata.Electric):
-                msg = (f"Cannot put sensor of type {sensor.type} into an "
-                       f"MT Channel of {type(mt_channel)}.")
+                msg = (
+                    f"Cannot put sensor of type {sensor.type} into an "
+                    f"MT Channel of {type(mt_channel)}."
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
             if sensor.serial_number:
@@ -215,15 +224,16 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.negative.model = sensor.model
             mt_channel.negative.type = "electrode"
 
-            mt_channel.dipole_length = self._parse_dipole_length(
-                sensor.description)
+            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
 
             return mt_channel
 
         else:
             if not isinstance(mt_channel, metadata.Auxiliary):
-                msg = (f"Cannot put sensor of type {sensor.type} into an "
-                       f"MT Channel of {type(mt_channel)}.")
+                msg = (
+                    f"Cannot put sensor of type {sensor.type} into an "
+                    f"MT Channel of {type(mt_channel)}."
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -233,45 +243,47 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.sensor.id = sensor.serial_number
 
             return mt_channel
-        
+
     def _mt_to_sensor(self, mt_channel):
         """
         Create an xml sensor from an MT channel
         """
         s = inventory.Equipment()
         if mt_channel.type in ["electric"]:
-            
+
             s.type = "dipole"
             s.description = f"{mt_channel.dipole_length} meters"
             if mt_channel.positive.manufacturer:
                 s.manufacturer = mt_channel.positive.manufacturer
             elif mt_channel.positive.manufacturer:
                 s.manufacturer = mt_channel.negative.manufacturer
-                
+
             if mt_channel.positive.model:
                 s.model = mt_channel.positive.model
             elif mt_channel.positive.model:
                 s.model = mt_channel.negative.model
-                
-            s.serial_number = (f"positive: {mt_channel.positive.id}, "
-                               f"negative: {mt_channel.negative.id}")
-            
+
+            s.serial_number = (
+                f"positive: {mt_channel.positive.id}, "
+                f"negative: {mt_channel.negative.id}"
+            )
+
         elif mt_channel.type in ["magnetic"]:
             s.type = mt_channel.sensor.type
             s.model = mt_channel.sensor.model.split()[0]
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
             s.description = mt_channel.sensor.model.split()[1]
-            
+
         else:
             s.type = mt_channel.sensor.type
             s.model = mt_channel.sensor.model
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
             s.description = mt_channel.sensor.model
-            
+
         return s
-    
+
     def _parse_electrode_ids(self, serial_numbers):
         """
         parse electrode ids from a string formated 'positive: pid, negative: nid'
@@ -280,28 +292,34 @@ class XMLChannelMTChannel(BaseTranslator):
         if ":" in serial_numbers and "," in serial_numbers:
             serial_list = serial_numbers.split(",")
             if len(serial_list) != 2:
-                msg = (f"Cannot parse electrode ids from {serial_numbers}. Must "
-                       "have format 'positive: pid, negative: nid'")
+                msg = (
+                    f"Cannot parse electrode ids from {serial_numbers}. Must "
+                    "have format 'positive: pid, negative: nid'"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
-            pid, nid = [ss.split(':')[1].strip() for ss in serial_list]
+            pid, nid = [ss.split(":")[1].strip() for ss in serial_list]
             return pid, nid
 
         elif ":" not in serial_numbers and "," in serial_numbers:
             serial_list = serial_numbers.split(",")
             if len(serial_list) != 2:
-                msg = (f"Cannot parse electrode ids from {serial_numbers}. Must "
-                       "have format 'positive: pid, negative: nid'")
+                msg = (
+                    f"Cannot parse electrode ids from {serial_numbers}. Must "
+                    "have format 'positive: pid, negative: nid'"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
             pid, nid = [ss.strip() for ss in serial_list]
             return pid, nid
         else:
-            self.logger.warning("Electrod IDs are not properly formatted assigning"
-                                f" {serial_numbers} to both positive and negative. "
-                                "Accepted format is 'positive: pid, negative: nid'")
+            self.logger.warning(
+                "Electrod IDs are not properly formatted assigning"
+                f" {serial_numbers} to both positive and negative. "
+                "Accepted format is 'positive: pid, negative: nid'"
+            )
             return serial_numbers, serial_numbers
 
     def _parse_dipole_length(self, description):
@@ -318,7 +336,7 @@ class XMLChannelMTChannel(BaseTranslator):
             msg = f"Could not get dipole length from {description} got ValueError({error})"
             self.logger.warning(msg)
             return 0.0
-        
+
     def _parse_xml_comments(self, xml_comments, mt_channel):
         """
         Read xml comments into an MT comment
@@ -346,9 +364,9 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.comments += f", run_ids: [{','.join(runs)}]"
         else:
             mt_channel.comments = f", run_ids: [{','.join(runs)}]"
-            
+
         return mt_channel
-    
+
     def _make_xml_comments(self, mt_comment):
         """
         make xml comments from an mt comment, namely run ids.
@@ -369,7 +387,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 for run in item.replace("[", "").replace("]", "").split(","):
                     comments.append(inventory.Comment(run.strip(), subject="mt.run.id"))
         return comments
-    
+
     def _get_mt_position(self, xml_channel, mt_channel):
         """
         Get the correct locations given the channel type
@@ -382,7 +400,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-            
+
         if mt_channel.type in ["electric"]:
             for direction in ["positive", "negative"]:
                 for pos in ["latitude", "longitude", "elevation"]:
@@ -394,9 +412,9 @@ class XMLChannelMTChannel(BaseTranslator):
                 key = f"location.{pos}"
                 value = getattr(xml_channel, pos)
                 mt_channel.set_attr_from_name(key, value)
-                
+
         return mt_channel
-    
+
     def _get_mt_units(self, xml_channel, mt_channel):
         """
         
@@ -416,6 +434,3 @@ class XMLChannelMTChannel(BaseTranslator):
             self.logger.debug("Did not find any units descriptions in XML")
 
         return mt_channel
-                
-    
-        
