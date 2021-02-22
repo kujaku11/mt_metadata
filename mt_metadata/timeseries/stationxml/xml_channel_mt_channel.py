@@ -207,17 +207,17 @@ class XMLChannelMTChannel(BaseTranslator):
             if sensor.serial_number:
                 pid, nid = self._parse_electrode_ids(sensor.serial_number)
                 mt_channel.positive.id = pid
-                mt_channel.negative.id = pid
+                mt_channel.negative.id = nid
                 
             mt_channel.positive.manufacturer = sensor.manufacturer
             mt_channel.positive.model = sensor.model
-            mt_channel.positive.type = sensor.type
+            mt_channel.positive.type = "electrode"
             
             mt_channel.negative.manufacturer = sensor.manufacturer
             mt_channel.negative.model = sensor.model
-            mt_channel.negative.type = sensor.type
+            mt_channel.negative.type = "electrode"
             
-            mt_channel.dipole_length = self._parse_dipole_length(sensor.descrption)
+            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
             
             return mt_channel
         
