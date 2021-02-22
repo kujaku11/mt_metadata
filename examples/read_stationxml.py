@@ -13,8 +13,8 @@ from obspy.core import inventory
 from mt_metadata.timeseries.stationxml import (
     XMLNetworkMTSurvey, XMLStationMTStation, XMLChannelMTChannel)
 
-# inv_fn = r"c:\Users\jpeacock\Downloads\fdsn-station_2021-02-12T23_28_49.xml"
-inv_fn = r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\data\StationXML_REW09.xml"
+inv_fn = r"c:\Users\jpeacock\Downloads\fdsn-station_2021-02-12T23_28_49.xml"
+# inv_fn = r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\data\StationXML_REW09.xml"
 # inv_fn = r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\data\fdsn-station_2021-02-19T22_47_21.xml"
 inv_obj = read_inventory(inv_fn)
 inv_test = inventory.Inventory()
@@ -32,7 +32,7 @@ xml_station = st.mt_to_xml(mt_station)
 inv_test.networks[0].stations.append(xml_station)
 
 ch = XMLChannelMTChannel()
-xml_ch = inv_obj.networks[0].stations[0].channels[3]
+xml_ch = inv_obj.networks[0].stations[0].channels[0]
 mt_ch = ch.xml_to_mt(xml_ch)
 
 # check to see if a stationxml can be written
