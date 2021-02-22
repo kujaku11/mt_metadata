@@ -47,6 +47,20 @@ class TestParseSerialID(unittest.TestCase):
         test_pid, test_nid = self.converter._parse_electrode_ids(self.generic_str)
         self.assertEqual(test_pid, "basic")
         self.assertEqual(test_nid, "basic")
+        
+class TestParseDipole(unittest.TestCase):
+    """
+    Test parsing a dipole length string
+    """
+    def setUp(self):
+        self.converter = XMLChannelMTChannel()
+        self.dipole_length = 100.0
+        self.dipole_str = f"{self.dipole_length} meters"
+        
+    def test_parse(self):
+        d = self.converter._parse_dipole_length(self.dipole_str)
+        self.assertEqual(d, self.dipole_length)
+        
     
 
 class TestXMLChannel02(unittest.TestCase):
