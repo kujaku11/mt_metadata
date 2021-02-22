@@ -77,6 +77,18 @@ orientation_code_dict = {
     "3": {"min": 0, "max": .996},
 }
 
+# SI units short name
+units_names = {"millivolts per kilometer": "mV/km",
+               "volts": "V",
+               "millivolts": "mV",
+               "volts per meter": "V/m",
+               "millivolts per kilometer": "mV/km",
+               "nanotesla": "nT",
+               "tesla": "T",
+               "celsius": "C",
+               "ohms": "Ohm",
+               "ohm meters": "Ohm-m"}
+
 
 def create_location_code(channel_obj):
     """
