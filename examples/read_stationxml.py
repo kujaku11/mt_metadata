@@ -32,7 +32,7 @@ xml_station = st.mt_to_xml(mt_station)
 inv_test.networks[0].stations.append(xml_station)
 
 ch = XMLChannelMTChannel()
-xml_ch = inv_obj.networks[0].stations[0].channels[0]
+xml_ch = inv_obj.networks[0].stations[0].channels[3]
 mt_ch = ch.xml_to_mt(xml_ch)
 
 # check to see if a stationxml can be written

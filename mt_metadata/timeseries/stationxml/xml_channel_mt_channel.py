@@ -244,7 +244,7 @@ class XMLChannelMTChannel(BaseTranslator):
         
         if ":" in serial_numbers and "," in serial_numbers:
             serial_list = serial_numbers.split(",")
-            if serial_list != 2:
+            if len(serial_list) != 2:
                 msg = (f"Cannot parse electrode ids from {serial_numbers}. Must "
                        "have format 'positive: pid, negative: nid'")
                 self.logger.error(msg)
@@ -255,13 +255,13 @@ class XMLChannelMTChannel(BaseTranslator):
         
         elif ":" not in serial_numbers and "," in serial_numbers:
             serial_list = serial_numbers.split(",")
-            if serial_list != 2:
+            if len(serial_list) != 2:
                 msg = (f"Cannot parse electrode ids from {serial_numbers}. Must "
                        "have format 'positive: pid, negative: nid'")
                 self.logger.error(msg)
                 raise ValueError(msg)
                 
-            pid, nid = serial_list
+            pid, nid = [ss.strip() for ss in serial_list]
             return pid, nid
         else:
             self.logger.warning("Electrod IDs are not properly formatted assigning"
