@@ -63,6 +63,7 @@ class XMLChannelMTChannel(BaseTranslator):
         self.mt_translator["units"] = "calibration_units_description"
 
         self.mt_comments_list = ["run.id"]
+        self.run_list = None
 
     def xml_to_mt(self, xml_channel):
         """
@@ -364,7 +365,9 @@ class XMLChannelMTChannel(BaseTranslator):
         if mt_channel.comments:
             mt_channel.comments += f", run_ids: [{','.join(runs)}]"
         else:
-            mt_channel.comments = f", run_ids: [{','.join(runs)}]"
+            mt_channel.comments = f"run_ids: [{','.join(runs)}]"
+            
+        self.run_list = runs
 
         return mt_channel
 

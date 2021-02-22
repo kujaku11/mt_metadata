@@ -28,6 +28,7 @@ class TestReadXMLComment(unittest.TestCase):
         self.long_comment = Comment("a: b, c: d, efg", subject="mt.run.a:comment")
         self.odd_comment = Comment("a: b: action, d: efg", subject="mt.run.odd")
         self.normal_comment = Comment("normal", subject="mt.run.comment")
+        self.doi = [r"DOI:10.1234.mt/test"]
 
     def test_null_comment(self):
         k, v = BaseTranslator.read_xml_comment(self.null_comment)
@@ -58,6 +59,16 @@ class TestReadXMLComment(unittest.TestCase):
         k, v = BaseTranslator().read_xml_comment(self.normal_comment)
         self.assertEqual(k, "mt.run.comment")
         self.assertEqual(v, "normal")
+        
+    def test_flip_dict(self):
+        original = {"a": "b", "c": "d", "e": None, "f": "special"}
+        flipped = BaseTranslator().flip_dict(original)
+        self.assertDictEqual({'b': "a", "d": "c"}, flipped)
+        
+    def test_read_identifier(self):
+        read_doi = BaseTranslator().read_xml_identifier(self.doi)
+        self.assertEqual(read_doi, "10.1234.mt/test")
+        
 
 
 # =============================================================================
