@@ -150,6 +150,7 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.types = ["geophysical".upper()]
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
+        xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
