@@ -77,6 +77,19 @@ orientation_code_dict = {
     "3": {"min": 0, "max": 0.996},
 }
 
+mt_components_dict = {
+    "electric": "e",
+    "magnetic": "h",
+    "temperature": "temperature"}
+
+mt_orientation_dict = {
+    "N": "x",
+    "E": "y",
+    "Z": "z",
+    "1": "x",
+    "2": "y",
+    "3": "z"}
+
 # SI units short name
 units_names = {
     "millivolts per kilometer": "mV/km",
@@ -258,3 +271,20 @@ def read_channel_code(channel_code):
         "measurement": component,
         "orientation": orientation,
     }
+
+def create_mt_component(channel_code):
+    """
+    Create a component for an MT channel given the measurement and orientation
+    
+    >>> create_mt_component("LQN")
+    ex
+    
+    """
+        
+    code_dict = read_channel_code(channel_code)
+    
+    mt_component = mt_components_dict[code_dict["measurement"]]
+    mt_orientation = mt_orientation_dict[channel_code[2]]
+    
+    return f"{mt_component}{mt_orientation}"
+

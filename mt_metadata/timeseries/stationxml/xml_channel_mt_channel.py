@@ -16,6 +16,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     read_channel_code,
     make_channel_code,
     units_names,
+    create_mt_component,
 )
 
 from mt_metadata import timeseries as metadata
@@ -101,6 +102,9 @@ class XMLChannelMTChannel(BaseTranslator):
                 if value:
                     mt_channel.set_attr_from_name(mt_key, value)
 
+        if mt_channel.component is None:
+            mt_channel.component = create_mt_component(xml_channel.code)
+
         return mt_channel
 
     def mt_to_xml(self, mt_channel):
@@ -117,15 +121,21 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         if not isinstance(
-            mt_channel, (metadata.Electric, metadata.Magnetic, metadata.Auxiliary)
+            mt_channel, (metadata.Electric, metadata.Magnetic,
+                         metadata.Auxiliary)
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
         # location_code = get_location_code(mt_channel)
+        alignement = "horizontal"
+        if "z" in mt_channel.component.lower():
+            alignement = "vertical"
+
         channel_code = make_channel_code(
-            mt_channel.sample_rate, mt_channel.type, mt_channel.measurement_azimuth
+            mt_channel.sample_rate, mt_channel.type, mt_channel.measurement_azimuth,
+            orientation=alignement,
         )
 
         is_electric = mt_channel.type in ["electric"]
@@ -167,7 +177,8 @@ class XMLChannelMTChannel(BaseTranslator):
                 xml_channel.dip = mt_channel.measurement_tilt % 360
 
             else:
-                setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
+                setattr(xml_channel, xml_key,
+                        mt_channel.get_attr_from_name(mt_key))
                 if mt_key == "units":
                     setattr(
                         xml_channel,
@@ -226,7 +237,8 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.negative.model = sensor.model
             mt_channel.negative.type = "electrode"
 
-            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
+            mt_channel.dipole_length = self._parse_dipole_length(
+                sensor.description)
 
             return mt_channel
 
@@ -342,7 +354,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _parse_xml_comments(self, xml_comments, mt_channel):
         """
         Read xml comments into an MT comment
-        
+
         :param xml_comments: DESCRIPTION
         :type xml_comments: TYPE
         :param mt_channel: DESCRIPTION
@@ -366,7 +378,7 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.comments += f", run_ids: [{','.join(runs)}]"
         else:
             mt_channel.comments = f"run_ids: [{','.join(runs)}]"
-            
+
         self.run_list = runs
 
         return mt_channel
@@ -374,7 +386,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _make_xml_comments(self, mt_comment):
         """
         make xml comments from an mt comment, namely run ids.
-        
+
         :param mt_comment: DESCRIPTION
         :type mt_comment: TYPE
         :return: DESCRIPTION
@@ -389,13 +401,16 @@ class XMLChannelMTChannel(BaseTranslator):
                 comments.append(inventory.Comment(v, subject=k))
             elif "[" in item and "]" in item:
                 for run in item.replace("[", "").replace("]", "").split(","):
-                    comments.append(inventory.Comment(run.strip(), subject="mt.run.id"))
+                    run = run.strip()
+                    if run:
+                        comments.append(inventory.Comment(
+                            run.strip(), subject="mt.run.id"))
         return comments
 
     def _get_mt_position(self, xml_channel, mt_channel):
         """
         Get the correct locations given the channel type
-        
+
         :param xml_channel: DESCRIPTION
         :type xml_channel: TYPE
         :param mt_channel: DESCRIPTION
@@ -421,7 +436,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def _get_mt_units(self, xml_channel, mt_channel):
         """
-        
+
         """
         name = getattr(xml_channel, "calibration_units")
         description = getattr(xml_channel, "calibration_units_description")
