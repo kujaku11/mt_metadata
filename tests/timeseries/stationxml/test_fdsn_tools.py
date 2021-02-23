@@ -23,7 +23,7 @@ class TestOrientationCode(unittest.TestCase):
         self.north = 0
         self.vertical = 3
         self.east = 91
-        self.one = -10
+        self.one = -16
         self.two = 134
         self.three = 20
 
@@ -31,11 +31,19 @@ class TestOrientationCode(unittest.TestCase):
         self.assertEqual(fdsn_tools.get_orientation_code(self.north), "N")
         self.assertEqual(fdsn_tools.get_orientation_code(-5), "N")
         self.assertEqual(fdsn_tools.get_orientation_code(5), "N")
+        self.assertEqual(fdsn_tools.get_orientation_code(-10), "N")
+        self.assertEqual(fdsn_tools.get_orientation_code(10), "N")
+        self.assertEqual(fdsn_tools.get_orientation_code(-14), "N")
+        self.assertEqual(fdsn_tools.get_orientation_code(14), "N")
 
     def test_east(self):
         self.assertEqual(fdsn_tools.get_orientation_code(self.east), "E")
         self.assertEqual(fdsn_tools.get_orientation_code(85), "E")
         self.assertEqual(fdsn_tools.get_orientation_code(95), "E")
+        self.assertEqual(fdsn_tools.get_orientation_code(80), "E")
+        self.assertEqual(fdsn_tools.get_orientation_code(100), "E")
+        self.assertEqual(fdsn_tools.get_orientation_code(76), "E")
+        self.assertEqual(fdsn_tools.get_orientation_code(104), "E")
 
     def test_vertical(self):
         self.assertEqual(
@@ -43,6 +51,10 @@ class TestOrientationCode(unittest.TestCase):
         )
         self.assertEqual(fdsn_tools.get_orientation_code(-5, "vertical"), "Z")
         self.assertEqual(fdsn_tools.get_orientation_code(5, "vertical"), "Z")
+        self.assertEqual(fdsn_tools.get_orientation_code(-10, "vertical"), "Z")
+        self.assertEqual(fdsn_tools.get_orientation_code(10, "vertical"), "Z")
+        self.assertEqual(fdsn_tools.get_orientation_code(-14, "vertical"), "Z")
+        self.assertEqual(fdsn_tools.get_orientation_code(14, "vertical"), "Z")
 
     def test_one(self):
         self.assertEqual(fdsn_tools.get_orientation_code(self.one), "1")
@@ -67,25 +79,26 @@ class TestChannelCode(unittest.TestCase):
     def test_orientation_code(self):
 
         self.assertEqual(fdsn_tools.get_orientation_code(0, "vertical"), "Z")
-        self.assertEqual(fdsn_tools.get_orientation_code(6), "1")
+        self.assertEqual(fdsn_tools.get_orientation_code(16), "1")
+        self.assertEqual(fdsn_tools.get_orientation_code(50), "2")
 
     def test_read_h_channel(self):
         ch_dict = fdsn_tools.read_channel_code(self.h_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
         self.assertEqual(ch_dict["measurement"], "magnetic")
-        self.assertDictEqual(ch_dict["orientation"], {"min": 0.996, "max": 1})
+        self.assertDictEqual(ch_dict["orientation"], {"angle": 0, "variance": 15 })
 
     def test_read_e_channel(self):
         ch_dict = fdsn_tools.read_channel_code(self.e_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 80, "max": 250})
         self.assertEqual(ch_dict["measurement"], "electric")
-        self.assertDictEqual(ch_dict["orientation"], {"min": 0, "max": 0.003805})
+        self.assertDictEqual(ch_dict["orientation"], {"angle": 90, "variance": 15})
 
     def test_read_aux_channel(self):
         ch_dict = fdsn_tools.read_channel_code(self.aux_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
         self.assertEqual(ch_dict["measurement"], "temperature")
-        self.assertDictEqual(ch_dict["orientation"], {"min": 0.996, "max": 0.996})
+        self.assertDictEqual(ch_dict["orientation"], {"angle": 0, "variance": 15})
 
     def test_make_h_channel(self):
         ch_code = fdsn_tools.make_channel_code(1, "magnetic", 0)

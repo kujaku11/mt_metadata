@@ -77,7 +77,7 @@ class TestXMLChannel01(unittest.TestCase):
         self.converter = XMLChannelMTChannel()
         self.maxDiff = None
 
-    def test_channel_hx(self):
+    def test_channel_hy(self):
         xml_channel = self.inventory.networks[0].stations[0].channels[0]
         mt_channel = self.converter.xml_to_mt(xml_channel)
         self.assertDictEqual(
@@ -86,8 +86,8 @@ class TestXMLChannel01(unittest.TestCase):
                 "magnetic": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: []"),
-                        ("component", None),
+                        ("comments", "run_ids: []"),
+                        ("component", "hy"),
                         ("data_quality.rating.value", 0),
                         ("filter.applied", [False]),
                         ("filter.name", ["none"]),
@@ -110,7 +110,7 @@ class TestXMLChannel01(unittest.TestCase):
             },
         )
 
-    def test_channel_ex(self):
+    def test_channel_ey(self):
         xml_channel = self.inventory.networks[0].stations[0].channels[1]
         mt_channel = self.converter.xml_to_mt(xml_channel)
         self.assertDictEqual(
@@ -119,8 +119,8 @@ class TestXMLChannel01(unittest.TestCase):
                 "electric": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: []"),
-                        ("component", None),
+                        ("comments", "run_ids: []"),
+                        ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 92.0),
                         ("filter.applied", [False]),
@@ -172,7 +172,7 @@ class TestXMLChannel02(unittest.TestCase):
                 "magnetic": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: [a,b]"),
+                        ("comments", "run_ids: [a,b]"),
                         ("component", "hx"),
                         ("data_quality.rating.value", 0),
                         ("filter.applied", [False]),
@@ -206,7 +206,7 @@ class TestXMLChannel02(unittest.TestCase):
                 "magnetic": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: [a,b]"),
+                        ("comments", "run_ids: [a,b]"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
                         ("filter.applied", [False]),
@@ -240,7 +240,7 @@ class TestXMLChannel02(unittest.TestCase):
                 "magnetic": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: [a,b]"),
+                        ("comments", "run_ids: [a,b]"),
                         ("component", "hz"),
                         ("data_quality.rating.value", 0),
                         ("filter.applied", [False]),
@@ -273,7 +273,7 @@ class TestXMLChannel02(unittest.TestCase):
                 "electric": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: [a,b]"),
+                        ("comments", "run_ids: [a,b]"),
                         ("component", "ex"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
@@ -314,7 +314,7 @@ class TestXMLChannel02(unittest.TestCase):
                 "electric": OrderedDict(
                     [
                         ("channel_number", None),
-                        ("comments", ", run_ids: [a,b]"),
+                        ("comments", "run_ids: [a,b]"),
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
@@ -378,8 +378,8 @@ class TestMTChannelToXML01HY(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
-        self.assertEqual(
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertNotEqual(
             self.base_xml_channel.alternate_code, self.test_xml_channel.alternate_code
         )
 
@@ -457,8 +457,8 @@ class TestMTChannelToXML01EX(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
-        self.assertEqual(
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertNotEqual(
             self.base_xml_channel.alternate_code, self.test_xml_channel.alternate_code
         )
 
@@ -536,7 +536,7 @@ class TestMTChannelToXML02HX(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -623,7 +623,7 @@ class TestMTChannelToXML02HY(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -710,7 +710,7 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -797,7 +797,7 @@ class TestMTChannelToXML02EX(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -884,7 +884,7 @@ class TestMTChannelToXML02EY(unittest.TestCase):
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertNotEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),

@@ -67,14 +67,17 @@ measurement_code_dict = {
 
 measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
 
+
+def angle(value):
+        return abs(np.cos(np.deg2rad(value)))
 # parts of a unit circle
 orientation_code_dict = {
-    "N": {"min": 0.996, "max": 1},
-    "E": {"min": 0, "max": 0.003805},
-    "Z": {"min": 0.996, "max": 0.996},
-    "1": {"min": 0.5, "max": 0.996},
-    "2": {"min": 0.003805, "max": 0.5},
-    "3": {"min": 0, "max": 0.996},
+    "N": {"angle": 0, "variance": 15},
+    "E": {"angle": 90, "variance": 15},
+    "Z": {"angle": 0, "variance": 15},
+    "1": {"angle": 30, "variance": 15},
+    "2": {"angle": 60, "variance": 15},
+    "3": {"angle": 0, "variance": 15},
 }
 
 mt_components_dict = {
@@ -177,23 +180,19 @@ def get_orientation_code(azimuth, orientation="horizontal"):
     azimuth = azimuth % 360
 
     value = abs(np.cos(np.deg2rad(azimuth)))
-    delta = np.cos(np.deg2rad(5))
-
-    def angle(value):
-        return abs(np.cos(np.deg2rad(value)))
 
     if orientation == "horizontal":
-        if value >= angle(5):
+        if value >= angle(15):
             return "N"
-        elif value <= angle(95):
+        elif value <= angle(105):
             return "E"
-        elif (value < angle(5)) and (value >= angle(45)):
+        elif (value < angle(15)) and (value >= angle(45)):
             return "1"
-        elif (value < angle(45)) and (value >= angle(95)):
+        elif (value < angle(45)) and (value >= angle(105)):
             return "2"
 
     elif orientation == "vertical":
-        if value >= delta:
+        if value >= angle(15):
             return "Z"
         else:
             return "3"
