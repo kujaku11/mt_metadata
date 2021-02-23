@@ -160,33 +160,38 @@ class XMLInventoryMTExperiment():
                 channel=xml_channel.code).channels
             if existing_channels:
                 for existing_channel in existing_channels:
+                    print(xml_channel.code, existing_channel.code)
                     find = False
+                    run_list = [c.value for c in existing_channel.comments]
+                    # Compare channel metadata if matches just add run.id if its 
+                    # not already there.
                     if self.compare_xml_channel(xml_channel, existing_channel):
-                        print(mt_run.id, [c.value for c in existing_channel.comments])
-                        if not mt_run.id in [c.value for c in existing_channel.comments]:
-                            print("adding ", mt_run.id)
+                        print(f"Matched {xml_channel.code}={existing_channel.code}")
+                        if not mt_run.id in run_list:
+                            print(f"adding run id {mt_run.id} to {run_list}")
                             existing_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id"))
                         find = True
                     if not find:
-                        print("no find", mt_run.id, [c.value for c in existing_channel.comments])
-                        if not mt_run.id in [c.value for c in xml_channel.comments]:
-                            print("adding ", mt_run.id)
+                        print(f"xxx Unmatched {xml_channel.code}!={existing_channel.code}")
+                        run_list = [c.value for c in xml_channel.comments]
+                        if not mt_run.id in run_list:
+                            print(f"adding run id {mt_run.id} to {run_list}")
                             xml_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id"))
                         xml_station.channels.append(xml_channel)
             else:
-                print("no existing channels", mt_run.id)
-                if not mt_run.id in [c.value for c in xml_channel.comments]:
-                    print("adding ", mt_run.id)
+                print(f"no existing channels for {xml_channel.code}, adding {mt_run.id}")
+                run_list = [c.value for c in xml_channel.comments]
+                if not mt_run.id in run_list:
+                    print(f"adding run id {mt_run.id} to {run_list}")
                     xml_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id"))
                 xml_station.channels.append(xml_channel)
 
         return xml_station
 
-    @staticmethod
-    def compare_xml_channel(xml_channel_01, xml_channel_02):
+    def compare_xml_channel(self, xml_channel_01, xml_channel_02):
         """
         Compare xml channels to see if a new epoch needs to be made or not.
 
@@ -200,18 +205,23 @@ class XMLInventoryMTExperiment():
         """
 
         if xml_channel_01.code != xml_channel_02.code:
+            self.logger.info(f"{xml_channel_01.code} != {xml_channel_02.code}")
             return False
 
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
+            self.logger.info(f"{xml_channel_01.sample_rate} != {xml_channel_02.sample_rate}")
             return False
 
         if xml_channel_01.sensor != xml_channel_02.sensor:
+            self.logger.info(f"{xml_channel_01.sensor} != {xml_channel_02.sensor}")
             return False
 
         if round(xml_channel_01.latitude, 3) != round(xml_channel_02.latitude, 3):
+            self.logger.info(f"{round(xml_channel_01.latitude, 3)} != {round(xml_channel_02.latitude, 3)}")
             return False
 
         if round(xml_channel_01.longitude, 3) != round(xml_channel_02.longitude, 3):
+            self.logger.info(f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}")
             return False
 
         return True

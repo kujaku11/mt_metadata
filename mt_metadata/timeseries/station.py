@@ -124,7 +124,7 @@ class Station(Base):
         index = self.run_index(run_obj.id)
         if index is not None:
             self.logger.warning(
-                f"Run {run_obj.id} is being overwritten with curren information"
+                f"Run {run_obj.id} is being overwritten with current information"
             )
             self.runs[index] = run_obj
         else:
