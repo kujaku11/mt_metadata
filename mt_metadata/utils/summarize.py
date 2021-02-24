@@ -10,6 +10,8 @@ Created on Tue Feb 23 11:52:35 2021
 """
 
 import numpy as np
+import pandas as pd
+
 import mt_metadata.timeseries as metadata
 from mt_metadata.base import BaseDict
 
@@ -31,6 +33,15 @@ def summarize_timeseries_standards():
 
 
 def summary_to_array(summary_dict):
+    """
+    Summarize all metadata from a summarized dictionary of standards
+
+    :param summary_dict: Dictionary of summarized standards
+    :type summary_dict: dict
+    :return: numpy structured array 
+    :rtype: np.array
+
+    """
     dtype = np.dtype(
         [
                     ("attribute", "U72"),
@@ -60,9 +71,32 @@ def summary_to_array(summary_dict):
                     value = ",".join(["{0}".format(ii) for ii in value])
             if value is None:
                 value = ""
-            
+
             entries[count][dkey] = value
-        count += 1     
-             
+        count += 1
+
     return entries
-            
+
+
+def summarize_standards(metadata_type="timeseries", csv_fn=None):
+    """
+
+    Summarize standards into a numpy array and write a csv if specified
+
+    :param metadata_type: [ timeseries | transfer function | edi | emtf | j | zmm ], defaults to "timeseries"
+    :type metadata_type: string, optional
+    :param csv_fn: full path to write a csv file, defaults to None
+    :type csv_fn: string or Path, optional
+    :return: structured numpy array
+    :rtype: :class:`numpy.ndarray`
+
+    """
+
+    function_dict = {"timeseries": summarize_timeseries_standards}
+    
+    summary_df = pd.DataFrame(summary_to_array(function_dict[metadata_type]()))
+    
+    if csv_fn:
+        summary_df.to_csv(csv_fn, index=False)
+        
+    return summary_df

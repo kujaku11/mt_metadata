@@ -7,7 +7,7 @@ MT Metadata Structure
 Metadata Validation
 ---------------------
 
-Metadata validation can be done in many different ways.  After writing most of the code I learned about JSON and XML validation, but since I was naive to those I developed a structure that seems to work.  That structure is this, all metadata key words have certain attributes that describe how the metadata value should be represented and validated.  Those are:
+Metadata validation can be done in many different ways.  After writing most of the code I learned about JSON and XML validation, but since I was naive to those I developed a structure that works.  That structure is this, all metadata key words have certain attributes that describe how the metadata value should be represented and validated.  Those are:
 
 	* **type** - How the value should be represented based on very basic types
 	
@@ -35,7 +35,7 @@ Each metadata key word has these attributes and are stored in JSON files under *
 
 When MT Metadata is initiated these JSON files are read in to :class:`mt_metadata.base.schema.BaseDict` as the basis to validate new values against.  The basic structures are metadata that describe a single entity, like *location* or *person* or *instrument*.  These are then collected by more complex structures like **citation** or **survey** or **station**.
 
-Each of the aforementioned metadata attributes are used in a validation function.  For example **type** has is validated and if the input is not the specified type, the function will try to put it into standards type.  If the **type** is *integer* and the value 10.9 is given, the output of the validator will be 10.  Or if the **type** is a string and 10.9 is given the output will be "10.9".
+Each of the aforementioned metadata attributes are used in a validation function.  For example **type** is validated and if the input is not the specified type, the function will try to put it into standards type.  If the **type** is *integer* and the value 10.9 is given, the output of the validator will be 10.  Or if the **type** is a string and 10.9 is given the output will be "10.9".
 
 Metadata Structure
 --------------------
