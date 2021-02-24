@@ -74,7 +74,11 @@ class XMLInventoryMTExperiment():
                     # if there is a run list match channel to runs
                     if self.channel_translator.run_list:
                         for run_id in self.channel_translator.run_list:
-                            mt_station.get_run(run_id).add_channel(mt_channel)
+                            mt_run = mt_station.get_run(run_id)
+                            # need to set the start and end time to the run
+                            mt_channel.time_period.start = mt_run.time_period.start
+                            mt_channel.time_period.end = mt_run.time_period.end
+                            mt_run.add_channel(mt_channel)
 
                     # if there are runs already try to match by start, end, sample_rate
                     elif mt_station.runs:
@@ -143,7 +147,9 @@ class XMLInventoryMTExperiment():
     def add_run(self, xml_station, mt_run):
         """
         Check to see if channel information already exists in the channel list of 
-        an xml station.  We have 
+        an xml station.  
+        
+        .. todo:: Need to make sure the times are updated
 
         :param xml_station: DESCRIPTION
         :type xml_station: TYPE
@@ -166,12 +172,21 @@ class XMLInventoryMTExperiment():
                     # Compare channel metadata if matches just add run.id if its 
                     # not already there.
                     if self.compare_xml_channel(xml_channel, existing_channel):
+                        find = True
                         print(f"Matched {xml_channel.code}={existing_channel.code}")
                         if not mt_run.id in run_list:
                             print(f"adding run id {mt_run.id} to {run_list}")
                             existing_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id"))
-                        find = True
+                        
+                        if xml_channel.start_date < existing_channel.start_date:
+                            print("Changed starting time")
+                            existing_channel.start_date = xml_channel.start_date
+                            
+                        if xml_channel.end_date > existing_channel.end_date:
+                            print("Changed ending time")
+                            existing_channel.end_date = xml_channel.end_date
+                        
                     if not find:
                         print(f"xxx Unmatched {xml_channel.code}!={existing_channel.code}")
                         run_list = [c.value for c in xml_channel.comments]
