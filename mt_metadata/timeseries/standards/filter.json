@@ -9,6 +9,7 @@
         "alias": [],
         "example": "\"[counts2mv, lowpass_magnetic]\""
     },
+
     "type": {
         "type": "string",
         "required": true,
@@ -26,7 +27,8 @@
         "alias": [],
         "example": "table"
     },
-    "input_units": {
+
+    "units_in": {
         "type": "string",
         "required": true,
         "style": "alpha numeric",
@@ -36,7 +38,8 @@
         "alias": [],
         "example": "count"
     },
-    "output_units": {
+
+    "units_out": {
         "type": "string",
         "required": true,
         "style": "alpha numeric",
@@ -46,6 +49,7 @@
         "alias": [],
         "example": "millivolt"
     },
+
     "calibration_date": {
         "type": "string",
         "required": false,
@@ -55,25 +59,5 @@
         "options": [],
         "alias": [],
         "example": "2/1/2020"
-    },
-    "conversion_factor": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "unit conversion factor",
-        "options": [],
-        "alias": [],
-        "example": "100"
-    },
-    "gain": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": null,
-        "description": "scale factor for a simple coefficient filter",
-        "options": [],
-        "alias": [],
-        "example": "100"
     }
 }

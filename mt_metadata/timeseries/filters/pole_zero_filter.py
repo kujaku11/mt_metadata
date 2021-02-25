@@ -1,8 +1,11 @@
+import copy
 import numpy as np
+import obspy
 import scipy.signal as signal
 
-from mt_metadata.base import get_schema, Base
+from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter import Filter
+from mt_metadata.timeseries.filters.filter import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
@@ -10,17 +13,34 @@ from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 attr_dict = get_schema("pole_zero_filter", SCHEMA_FN_PATHS)
 # =============================================================================
 
+#Decision:
+#A
+#- import obspy mapping from filter.py
+#- add the desired attrs here
+#- assign to self._obspy_mapping in __init__
+#B
+#- augment obspy mapping in __init__()
+#C
+#- augment obspy mapping in from_obspy_stage()
+#D
+#- put obspy mapping in json
+obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
+obspy_mapping['_zeros'] = '_zeros'
+obspy_mapping['_poles'] = '_poles'
+obspy_mapping['normalization_factor'] = 'normalization_factor'
+
 class PoleZeroFilter(Filter):
 
     def __init__(self, **kwargs):
         Filter.__init__(self, **kwargs)
-        self._attr_dict.update(attr_dict)
+        #Filter().__init__(**kwargs)
+        self.type = 'zpk'
 
-    @classmethod
-    def from_obspy_stage(cls, stage):
-        kwargs = stage.__dict__
-        #kwargs['normalization_factor'] = stage['normalization_factor']
-        return cls(**kwargs)
+        #super(Filter, self).__init__(**kwargs)
+
+        self._attr_dict.update(attr_dict)
+        self._obspy_mapping = obspy_mapping
+
 
     @property
     def poles(self):
@@ -63,3 +83,11 @@ class PoleZeroFilter(Filter):
         frequency_axis = np.logspace(-1, 5, num=100)
         w = 2. * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
+
+
+def main():
+    pz_filter = PoleZeroFilter()
+    print('test')
+
+if __name__ == '__main__':
+    main()

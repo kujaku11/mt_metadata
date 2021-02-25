@@ -1,0 +1,12 @@
+{
+    "gain": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "scale factor for a simple coefficient filter",
+        "options": [],
+        "alias": [],
+        "example": "100"
+    }
+}

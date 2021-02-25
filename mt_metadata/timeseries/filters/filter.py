@@ -29,6 +29,8 @@ works with FFTs.
 # =============================================================================
 # Imports
 # =============================================================================
+import copy
+import obspy
 import numpy as np
 
 from mt_metadata.base.helpers import write_lines
@@ -41,6 +43,13 @@ from mt_metadata.utils.mttime import MTime
 # =============================================================================
 attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
 # =============================================================================
+
+#Form is OBSPY_MAPPING['obspy_label'] = 'mth5_label'
+OBSPY_MAPPING = {}
+OBSPY_MAPPING['input_units'] = 'units_in'
+OBSPY_MAPPING['name'] = 'name'
+OBSPY_MAPPING['output_units'] = 'units_out'
+
 class Filter(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -58,18 +67,22 @@ class Filter(Base):
         normalization_factor ???
         cutoff
 
-
-        **kwargs note: these
         """
-
-        self.name = kwargs.get('name', None)
-        self.type = kwargs.get('type', None)
-        self.input_units = kwargs.get('input_units', None)
-        self.output_units = kwargs.get('output_units', None)
+#        super().__init__(attr_dict=attr_dict, **kwargs)
+        self.type = None
+        self.units_in = None
+        self.units_out = None
         self._calibration_dt = MTime()
         self.comments = None
+        self._obspy_mapping = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+
+
+    @property
+    def obspy_mapping(self):
+        return self._obspy_mapping
 
     @property
     def calibration_date(self):
@@ -81,15 +94,36 @@ class Filter(Base):
 
 
 
-    def from_obspy_stage(self, stage):
-        if isinstance(stage, obspy.core.inventory.response.ResponseStage):
-            #this would execute obspy_stages.create_filter_from_stage()
-            pass
-        else:
+    @classmethod
+    def from_obspy_stage(cls, stage, mapping=None):
+        """
+        purpose of this method is to un-bloat the obspy stage dictionary which typically
+        contains a lot of extraneous information.
+        If you want to propagate all that info : you can make a mapping which is basically
+        dict(zip(stage.__dict__.keys(), stage.__dict__.keys()),
+        or we could maybe support something cleaner...
+
+        Parameters
+        ----------
+        stage:
+        mapping
+
+        Returns
+        -------
+
+        """
+        if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
             print("Expected a Stage and got a {}".format(type(stage)))
             raise Exception
-    
-    
+
+        if mapping is None:
+            mapping = cls().obspy_mapping
+        kwargs = {}
+        for obspy_label, mth5_label in mapping.items():
+            kwargs[mth5_label] = stage.__dict__[obspy_label]
+
+        return cls(**kwargs)
+
     def complex_response(self, frqs):
         print("Filter Base Class does not have a complex response defined")
         return None
@@ -103,8 +137,9 @@ class Filter(Base):
         import mt_metadata
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
-        angular_frequency_axis = 2 * np.pi * frequency_axis
-        frequency_axis = np.logspace(-1, 5, num=100)
+            x_units = 'frequency'
+        #angular_frequency_axis = 2 * np.pi * frequency_axis
+        #frequency_axis = np.logspace(-1, 5, num=100)
         w = 2. * np.pi * frequency_axis
         complex_response = self.complex_response(frequency_axis)
         plot_response(w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units)
@@ -112,6 +147,14 @@ class Filter(Base):
         #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
         # else:
         #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
+
+    @property
+    def decimation_inactive(self):
+        pass
+
+    # @property
+    # def gain_(self):
+    #     pass
 
     def apply(self, ts):
         data_spectum = ts.fft()
@@ -137,3 +180,9 @@ def apply_filter(mc_filter):
 
 
 """
+def main():
+    filter_instance = Filter()
+    print('test')
+
+if __name__ == '__main__':
+    main()

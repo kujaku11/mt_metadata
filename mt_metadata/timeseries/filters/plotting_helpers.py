@@ -4,6 +4,24 @@ import numpy as np
 from matplotlib.gridspec import GridSpec
 from scipy import signal
 
+def is_flat_amplitude(array):
+    """
+    Check of an amplitude response is basically flat.  If so, it is best to tune the y-axis lims to
+    make numeric noise invisible
+
+    Parameters
+    ----------
+    array
+
+    Returns
+    -------
+
+    """
+    differences = np.diff(np.abs(array))
+    if np.isclose(differences, 0.0).all():
+        return True
+    else:
+        return False
 
 def cast_angular_frequency_to_period_or_hertz(w, units):
     if units.lower() == 'period':
@@ -40,10 +58,20 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_pz = fig.add_subplot(gs[:, 2], aspect='equal')
 
     if w_obs is not None and resp_obs is not None:
+        kwargs = {}
+        # if is_flat_amplitude(resp_obs):
+        #     print("AMPLITUDE IS FLAT")
+        #     kwargs['']=1
+        response_amplitude = np.absolute(resp_obs)
+        if is_flat_amplitude(resp_obs):
+            response_amplitude[:] = response_amplitude[0]
+#            ax_amp.set_ylim([0.9*response_amplitude[0], 1.1*response_amplitude[0]])
         x_axis = cast_angular_frequency_to_period_or_hertz(w_obs, x_units)
-        ax_amp.plot(x_axis, np.absolute(resp_obs),
+        ax_amp.plot(x_axis, response_amplitude,
                     color='tab:blue', linewidth=1.5, linestyle='-',
                     label='True')
+        # if is_flat_amplitude(resp_obs):
+        #     ax_amp.set_ylim([0.9*response_amplitude[0], 1.1*response_amplitude[0]])
         ax_phs.plot(x_axis, np.angle(resp_obs, deg=True),
                     color='tab:blue', linewidth=1.5, linestyle='-')
     elif zpk_obs is not None:
@@ -106,3 +134,4 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_pz.legend()
 
     plt.show()
+

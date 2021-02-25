@@ -78,12 +78,16 @@ def test_filter_generation():
                 info = '{}-{}-{} {}-stage response'.format(network.code, station.code, channel.code, len(stages))
                 print(info)
                 filters_list = []
-                for stage in stages:
-                    print('stage {}'.format(stage))
-                    filter = create_filter_from_stage(stage)
-                    filters_list.append(filter)
+                stages = [stages[2], stages[0], stages[1]]
+                for i_stage, stage in enumerate(stages):
+                    print('Stage {} \n\n {}'.format(i_stage, stage))
+                    i_filter = create_filter_from_stage(stage)
+                    filters_list.append(i_filter)
+
+                qq = qq = filters_list[2]
+                qq.plot_complex_response(None, x_units='frequency')
                 channel_response = ChannelResponseFilter(filters_list=filters_list)
-                qq = qq=filters_list[0]
+                qq = qq=filters_list[2]
                 qq.plot_complex_response(None, x_units='frequency')
                 channel_response.complex_response(np.array([1, 2, 3, 4]))
                 
