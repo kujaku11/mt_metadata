@@ -10,7 +10,8 @@ from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("pole_zero_filter", SCHEMA_FN_PATHS)
+attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
 #Decision:
@@ -32,14 +33,12 @@ obspy_mapping['normalization_factor'] = 'normalization_factor'
 class PoleZeroFilter(Filter):
 
     def __init__(self, **kwargs):
-        Filter.__init__(self, **kwargs)
-        #Filter().__init__(**kwargs)
         self.type = 'zpk'
+        self._poles = None
+        self._zeros = None
+        super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
 
-        #super(Filter, self).__init__(**kwargs)
-
-        self._attr_dict.update(attr_dict)
-        self._obspy_mapping = obspy_mapping
+        self.obspy_mapping = obspy_mapping
 
 
     @property

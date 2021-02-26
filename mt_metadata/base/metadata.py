@@ -360,6 +360,7 @@ class Base:
             "logger",
             "changed",
             "hdf5_reference",
+            "obspy_mapping",
         ]
 
         if hasattr(self, "_attr_dict"):

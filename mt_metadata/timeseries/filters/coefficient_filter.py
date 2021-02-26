@@ -11,15 +11,16 @@ obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 obspy_mapping['stage_gain'] = 'gain'
 
 # =============================================================================
-attr_dict = get_schema("coefficient_filter", SCHEMA_FN_PATHS)
+attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
 class CoefficientFilter(Filter):
 
     def __init__(self, **kwargs):
-        Filter.__init__(self, **kwargs)
-        self._attr_dict.update(attr_dict)
-        self._obspy_mapping = obspy_mapping#['stage_gain'] = 'gain'
+        self.gain = 1.0
+        super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
+        self.obspy_mapping = obspy_mapping
 
 
     def complex_response(self, frequencies):

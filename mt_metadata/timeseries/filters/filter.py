@@ -36,7 +36,7 @@ import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
+from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
 
 
@@ -68,21 +68,33 @@ class Filter(Base):
         cutoff
 
         """
-#        super().__init__(attr_dict=attr_dict, **kwargs)
+
+        self.name = None
         self.type = None
         self.units_in = None
         self.units_out = None
+        
         self._calibration_dt = MTime()
         self.comments = None
-        self._obspy_mapping = None
+        self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-
 
     @property
     def obspy_mapping(self):
         return self._obspy_mapping
+    
+    @obspy_mapping.setter
+    def obspy_mapping(self, obspy_dict):
+        """
+        set the obspy mapping
+        """
+        if not isinstance(obspy_dict, dict):
+            msg = f"Input must be a dictionary not {type(obspy_dict)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+        self._obspy_mapping = obspy_dict
 
     @property
     def calibration_date(self):
@@ -134,7 +146,6 @@ class Filter(Base):
         return frequency_axis
 
     def plot_complex_response(self, frequency_axis, x_units='period'):
-        import mt_metadata
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
             x_units = 'frequency'
