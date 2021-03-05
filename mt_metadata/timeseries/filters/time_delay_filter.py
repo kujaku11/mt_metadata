@@ -39,10 +39,13 @@ class TimeDelayFilter(Filter):
         #e^-jwa
         w = 2 * np.pi * frequencies
         exponent = -1.j * w * self.delay
-        np.exp(exponent)
-        print('ok')
-        return np.exp(exponent)
+        spectral_shift_multiplier = np.exp(exponent)
+        return spectral_shift_multiplier
 
+
+def test_expected_behaviour():
+    import matplotlib.pyplot as plt
+    np.random.seed(1)
 
 
 def main():

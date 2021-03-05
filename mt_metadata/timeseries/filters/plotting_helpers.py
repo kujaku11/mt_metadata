@@ -59,19 +59,15 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
 
     if w_obs is not None and resp_obs is not None:
         kwargs = {}
-        # if is_flat_amplitude(resp_obs):
-        #     print("AMPLITUDE IS FLAT")
-        #     kwargs['']=1
+
         response_amplitude = np.absolute(resp_obs)
         if is_flat_amplitude(resp_obs):
             response_amplitude[:] = response_amplitude[0]
-#            ax_amp.set_ylim([0.9*response_amplitude[0], 1.1*response_amplitude[0]])
+            ax_amp.set_ylim([0.9*response_amplitude[0], 1.1*response_amplitude[0]])
         x_axis = cast_angular_frequency_to_period_or_hertz(w_obs, x_units)
         ax_amp.plot(x_axis, response_amplitude,
                     color='tab:blue', linewidth=1.5, linestyle='-',
                     label='True')
-        # if is_flat_amplitude(resp_obs):
-        #     ax_amp.set_ylim([0.9*response_amplitude[0], 1.1*response_amplitude[0]])
         ax_phs.plot(x_axis, np.angle(resp_obs, deg=True),
                     color='tab:blue', linewidth=1.5, linestyle='-')
     elif zpk_obs is not None:
@@ -91,11 +87,13 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
 
     if zpk_pred is not None:
         w_pred, resp_pred = signal.freqresp(zpk_pred, w=w_values)
-        x_axis = cast_angular_frequency_to_period_or_hertz(w_pred, x_units)
+        x_axis = cast_angular_frequency_to_period_or_hertz(w_values, x_units)
+
         ax_amp.plot(x_axis, np.absolute(resp_pred),
                     color='tab:red', linewidth=3, linestyle=':',
                     label='Fit')
-        ax_phs.plot(x_axis/ w_pred, np.angle(resp_pred, deg=True),
+        print(np.angle(resp_pred, deg=True))
+        ax_phs.plot(x_axis, np.angle(resp_pred, deg=True),
                     color='tab:red', linewidth=3, linestyle=':')
         ax_pz.scatter(np.real(zpk_pred.zeros), np.imag(zpk_pred.zeros),
                       s=35, marker='o', ec='tab:red', fc='w',
@@ -114,7 +112,7 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_amp.grid()
     ax_amp.legend()
 
-    ax_phs.set_ylim([-180., 180.])
+    ax_phs.set_ylim([-200., 200.])
     ax_phs.set_xscale('log')
     ax_phs.set_ylabel('Phase Response')
     if x_units.lower() == 'period':
@@ -134,4 +132,7 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
     ax_pz.legend()
 
     plt.show()
+
+
+
 
