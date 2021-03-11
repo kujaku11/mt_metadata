@@ -66,7 +66,7 @@ class Base:
         return self.to_json()
 
     def __eq__(self, other):
-        if other in [None]: 
+        if other in [None]:
             return False
         elif isinstance(other, (Base, dict, str, pd.Series)):
             home_dict = self.to_dict()[self._class_name]
@@ -105,11 +105,11 @@ class Base:
 
     def __len__(self):
         return len(self.get_attribute_list())
-    
+
     @property
     def changed(self):
         return self._changed
-    
+
     @changed.setter
     def changed(self, value):
         self._changed = value
@@ -284,7 +284,7 @@ class Base:
                 if v_type is str:
                     if isinstance(value, np.ndarray):
                         value = value.astype(np.unicode_)
-                    value = [f"{v}" for v in value]
+                    value = [f"{v}".replace("'", "").replace('"', "") for v in value]
                 elif v_type is int:
                     value = [int(float(v)) for v in value]
                 elif v_type is float:
@@ -368,7 +368,6 @@ class Base:
             "channels_recorded_electric"
             "channels_recorded_magnetic"
             "channels_recorded_auxiliary",
-            
         ]
 
         if hasattr(self, "_attr_dict"):
@@ -389,7 +388,6 @@ class Base:
                             self.logger.warning(msg.format(value, options, name))
 
         super().__setattr__(name, value)
-        
 
     def _get_standard_type(self, name):
         """

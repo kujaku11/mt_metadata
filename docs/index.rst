@@ -11,13 +11,13 @@ Welcome to MT Metadata documentation!
     contributing
     authors
     history
+    conventions
 	
 .. toctree::
 	:maxdepth: 2
 	:caption: Basics
 	
 	source/structure
-	source/conventions
 	
 .. toctree::
 	:maxdepth: 4

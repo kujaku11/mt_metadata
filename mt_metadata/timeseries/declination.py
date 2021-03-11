@@ -30,4 +30,3 @@ class Declination(Base):
         self.model = None
         self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)
-        

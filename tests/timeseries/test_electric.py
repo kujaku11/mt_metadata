@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Electric
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestElectric(unittest.TestCase):
     def setUp(self):
@@ -93,6 +94,7 @@ class TestElectric(unittest.TestCase):
         survey_json = self.electric_object.to_json(nested=True)
         self.electric_object.from_json(survey_json)
         self.assertDictEqual(self.meta_dict, self.electric_object.to_dict())
+
 
 # =============================================================================
 # run

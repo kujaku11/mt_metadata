@@ -15,10 +15,10 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Citation
+
 # =============================================================================
 attr_dict = get_schema("copyright", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("citation", 
-                              SCHEMA_FN_PATHS), "citation")
+attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation")
 
 # =============================================================================
 class Copyright(Base):
@@ -31,5 +31,3 @@ class Copyright(Base):
         self.creating_application = None
         self.citation = Citation()
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-

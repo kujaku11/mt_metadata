@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Channel
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestChannel(unittest.TestCase):
     def setUp(self):
@@ -79,6 +80,7 @@ class TestChannel(unittest.TestCase):
         survey_json = self.channel_object.to_json(nested=True)
         self.channel_object.from_json(survey_json)
         self.assertDictEqual(self.meta_dict, self.channel_object.to_dict())
+
 
 # =============================================================================
 # run

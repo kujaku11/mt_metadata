@@ -52,14 +52,18 @@ def validate_header(header, attribute=False):
 
     if attribute:
         if sorted(header) != sorted(REQUIRED_KEYS):
-            msg = (f"Keys is not correct, must include {REQUIRED_KEYS}" 
-                   + f". Currently has {header}")
+            msg = (
+                f"Keys is not correct, must include {REQUIRED_KEYS}"
+                + f". Currently has {header}"
+            )
             raise MTValidatorError(msg)
     else:
         required_keys = [key for key in REQUIRED_KEYS if key != "attribute"]
         if sorted(header) != sorted(required_keys):
-            msg = (f"Keys is not correct, must include {required_keys}" 
-                   + f". Currently has {header}")
+            msg = (
+                f"Keys is not correct, must include {required_keys}"
+                + f". Currently has {header}"
+            )
             raise MTValidatorError(msg)
     return header
 
@@ -167,10 +171,7 @@ def validate_type(value):
             return value
 
         else:
-            msg = (
-                "'type' must be type [ int | float "
-                + f"| str | bool ].  Not {value}"
-            )
+            msg = "'type' must be type [ int | float " + f"| str | bool ].  Not {value}"
             raise MTValidatorError(msg)
     else:
         msg = (
@@ -345,11 +346,10 @@ def validate_value_dict(value_dict):
     # loop over validating functions in this module
     for key in header:
         try:
-            value_dict[key] = getattr(sys.modules[__name__], 
-                                      f"validate_{key}")(value_dict[key])
+            value_dict[key] = getattr(sys.modules[__name__], f"validate_{key}")(
+                value_dict[key]
+            )
         except KeyError:
             raise KeyError("Could not find {key} for validator {__name__}")
 
     return value_dict
-
-

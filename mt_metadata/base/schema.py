@@ -121,7 +121,7 @@ class BaseDict(MutableMapping):
             return list(self.keys())[0]
         except KeyError:
             return None
-        
+
     def add_dict(self, add_dict, name=None, keys=None):
         """
         Add a dictionary to.  If name is input it is added to the keys of
@@ -163,7 +163,7 @@ class BaseDict(MutableMapping):
 
     def copy(self):
         return deepcopy(self)
-    
+
     def to_latex(self, max_entries=7, first_table_len=7):
         """
         
@@ -180,7 +180,7 @@ class BaseDict(MutableMapping):
             r"\caption*{{Attributes for {0} Category}}".format(self.name),
             r"\\begin{tabular}{p{.305\\textwidth}p{.47\\textwidth}p{.2\\textwidth}}",
         ]
-    
+
         end = [r"\end{tabular}", r"\label{tab:}", r"\end{table}"]
         header = [
             " & ".join(
@@ -188,15 +188,15 @@ class BaseDict(MutableMapping):
             )
             + " \\ \toprule"
         ]
-    
+
         order = ["name", "required", "units", "type", "style", "description", "example"]
-    
+
         level_dict = OrderedDict(sorted(self.items(), key=itemgetter(0)))
-    
+
         ntables = int(len(level_dict) / max_entries)
         if len(level_dict) // max_entries > 0:
             ntables += 1
-    
+
         lines = []
         for name, v_dict in level_dict.items():
             if not v_dict["options"] in [None, "none", "None", []]:
@@ -206,7 +206,7 @@ class BaseDict(MutableMapping):
                 + "".join(["{{{0}}}".format(v_dict[ii]) for ii in order[1:]])
             ]
             lines.append(line[0])
-    
+
         all_lines = beginning + header + ["\n".join(lines[0:first_table_len])] + end
         for ii in range(ntables - 1):
             stable = beginning + header
@@ -218,9 +218,9 @@ class BaseDict(MutableMapping):
                     break
             stable += end
             all_lines.append("\n".join(stable))
-    
+
         return all_lines
-    
+
     def from_csv(self, csv_fn):
         """
         Read in CSV file as a dictionary
@@ -241,12 +241,12 @@ class BaseDict(MutableMapping):
         if not csv_fn.exists():
             msg = f"Schema file {csv_fn} does not exist."
             logger.error(msg)
-            raise MTSchemaError(msg) 
-    
+            raise MTSchemaError(msg)
+
         with open(csv_fn, "r") as fid:
             logger.debug("Reading schema CSV {0}".format(csv_fn))
             lines = fid.readlines()
-    
+
         header = validators.validate_header(
             [ss.strip().lower() for ss in lines[0].strip().split(",")], attribute=True
         )
@@ -260,14 +260,13 @@ class BaseDict(MutableMapping):
                     for key, ss in zip(header, line.strip().split(",", len(header) - 1))
                 ]
             )
-    
+
             key_name = validators.validate_attribute(line_dict["attribute"])
             line_dict.pop("attribute")
-    
-            attribute_dict[key_name] = validators.validate_value_dict(line_dict)
-    
-        self.update(attribute_dict)
 
+            attribute_dict[key_name] = validators.validate_value_dict(line_dict)
+
+        self.update(attribute_dict)
 
     def to_csv(self, csv_fn):
         """
@@ -281,10 +280,10 @@ class BaseDict(MutableMapping):
         :rtype: TYPE
     
         """
-    
+
         if not isinstance(csv_fn, Path):
             csv_fn = Path(csv_fn)
-    
+
         # sort dictionary first
         lines = [",".join(REQUIRED_KEYS)]
         for key in sorted(list(self.keys())):
@@ -301,13 +300,13 @@ class BaseDict(MutableMapping):
                 else:
                     line.append("{0}".format(self[key][rkey]))
             lines.append(",".join(line))
-    
+
         with csv_fn.open("w") as fid:
             fid.write("\n".join(lines))
         logger.info("Wrote dictionary to {0}".format(csv_fn))
         return csv_fn
-    
-    def to_json(self, json_fn, indent=" "*4):
+
+    def to_json(self, json_fn, indent=" " * 4):
         """
         Write schema standards to json
         
@@ -317,15 +316,15 @@ class BaseDict(MutableMapping):
         :rtype: Path
 
         """
-        
+
         json_fn = Path(json_fn)
-        
+
         json_dict = dict([(k, v) for k, v in self.items() if k not in ["logger"]])
         with open(json_fn, "w") as fid:
             json.dump(json_dict, fid, cls=NumpyEncoder, indent=indent)
-            
-        return json_fn 
-    
+
+        return json_fn
+
     def from_json(self, json_fn):
         """
         
@@ -337,20 +336,21 @@ class BaseDict(MutableMapping):
         :rtype: Path
 
         """
-        
+
         json_fn = Path(json_fn)
         if not json_fn.exists():
             msg = f"JSON schema file {json_fn} does not exist"
             logger.error(msg)
             MTSchemaError(msg)
-            
+
         with open(json_fn, "r") as fid:
             json_dict = json.load(fid)
-            
+
         valid_dict = {}
         for k, v in json_dict.items():
             valid_dict[k] = validators.validate_value_dict(v)
         self.update(valid_dict)
+
 
 def get_schema_fn(schema_element, paths):
     """
@@ -368,7 +368,8 @@ def get_schema_fn(schema_element, paths):
             return fn
     msg = f"Could not find schema element {schema_element}.json in {paths[0].parent}."
     raise MTSchemaError(msg)
-        
+
+
 def get_schema(schema_element, paths):
     """
     Get a :class:`mt_metadata.schema_base.BaseDict` object of the element
@@ -379,10 +380,9 @@ def get_schema(schema_element, paths):
     :rtype: :class:`mt_metadata.schema_base.BaseDict`
 
     """
-    
+
     schema_fn = get_schema_fn(schema_element, paths)
     element_dict = BaseDict()
     element_dict.from_json(schema_fn)
-    
-    return element_dict
 
+    return element_dict
