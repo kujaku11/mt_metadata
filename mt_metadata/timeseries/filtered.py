@@ -68,7 +68,7 @@ class Filtered(Base):
 
     @applied.setter
     def applied(self, applied):
-        if not isinstance(applied, (list, tuple)):
+        if not hasattr(applied, "__iter__"):
             if applied in [None, "none", "None", "NONE", "null", 0, "0"]:
                 self._applied = [False]
                 return
