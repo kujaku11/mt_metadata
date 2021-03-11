@@ -186,6 +186,8 @@ class XMLStationMTStation(BaseTranslator):
 
             if xml_key == "operators":
                 if mt_station.acquired_by.author is not None:
+                    if mt_station.acquired_by.organization is None:
+                        mt_station.acquired_by.organization = " "
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
