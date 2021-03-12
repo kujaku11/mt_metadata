@@ -5,7 +5,9 @@ from mt_metadata.timeseries.filters.filter import Filter
 
 class ChannelResponseFilter(object):
     """
-    OK, the point of this class is that is has a list of filters and adds them all.
+    This class holds a list of all the filters associated with a channel.
+    It has methods for combining the responses of all the filters into a total
+    response that we will apply to a data segment.
     
     """
     def __init__(self, **kwargs):
@@ -37,7 +39,18 @@ class ChannelResponseFilter(object):
     #     cr3 = lambda f: cr1(f) * cr2(f)
     #     self.lambda_function = cr3
 
-    def complex_response(self, frequencies):
+    def delay(self):
+        """
+
+        Returns the delay of the set of filters
+        -------
+
+        """
+        delay_filters = [x for x in self.filters_list if x.type=='time_delay']
+        print("add a method here to return the total delay from all filters")
+        raise Exception
+
+    def complex_response(self, frequencies, include_delay=False):
         """
 
         Parameters
@@ -49,10 +62,28 @@ class ChannelResponseFilter(object):
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
         """
-        lambda_list = [lambda f:x.complex_response(f) for x in self.filters_list]
+        if include_delay:
+            lambda_list = [lambda f:x.complex_response(f) for x in self.filters_list]
+        else:
+            lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
         print('hi')
         evaluated_lambdas = [x(frequencies) for x in lambda_list]
 
         return self.lambda_function(frequencies)
+
+    @property
+    def units(self):
+        """
+        returns the units of the channel
+        """
+        pass
+
+    @property
+    def check_consistency_of_units(self):
+        """
+        confirms that the input and output units of each filter state are consistent
+        """
+        pass
+
 
 

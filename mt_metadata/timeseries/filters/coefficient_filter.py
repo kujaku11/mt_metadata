@@ -18,6 +18,7 @@ attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 class CoefficientFilter(Filter):
 
     def __init__(self, **kwargs):
+        self.type = 'coefficient'
         self.gain = 1.0
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping

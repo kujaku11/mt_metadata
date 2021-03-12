@@ -17,6 +17,7 @@ attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
 class TimeDelayFilter(Filter):
 
     def __init__(self, **kwargs):
+        self.type = 'time delay'
         self.delay = None
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
@@ -33,10 +34,13 @@ class TimeDelayFilter(Filter):
         -------
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
+        See notes in mt_metadata issue#14
+        The complex response for the time delay filter should in general be avoided.  Phase wrapping
+        artefacts at high frequency and non-causal time-series segments are expected.
+        In general, delay corrections should be applied in time domain before spectral processing.
+
         """
-        print('need to add a linear phase calculation here and a test to make '
-              'sure the sign on the exponent is correct')
-        #e^-jwa
+        print("WARNING - USING FREQUENCY DOMAIN VERSION OF THIS METHOD NOT RECOMMENDED FOR MT PROCESSING")
         w = 2 * np.pi * frequencies
         exponent = -1.j * w * self.delay
         spectral_shift_multiplier = np.exp(exponent)

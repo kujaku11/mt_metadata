@@ -1,3 +1,16 @@
+import obspy
+
+from mth5.utils.pathing import DATA_DIR
+
+def load_sample_network_inventory(xml_file_handle):
+    """
+    """
+    iris_dir = DATA_DIR.joinpath('iris')
+    xml_file_path = iris_dir.joinpath(xml_file_handle)
+    xml_file_path_str = xml_file_path.__str__()
+    inventory = obspy.read_inventory(xml_file_path_str)
+    #inventory = obspy.read_inventory(xml_file_path.__str__())
+    return inventory
 
 
 def decimation_info_is_degenerate(obspy_stage):
@@ -11,7 +24,13 @@ def decimation_info_is_degenerate(obspy_stage):
     Case 2:
 
     """
-    pass
+    cond1 = stage.stage_gain in [1.0, None]
+    cond2 = stage.decimation_factor in [1, None]
+
+    if cond1 & cond2:
+        return True
+    else:
+        return False
 
 
 def decimation_info_is_pure_delay(stage):

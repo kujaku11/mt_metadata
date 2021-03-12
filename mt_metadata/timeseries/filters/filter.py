@@ -8,23 +8,92 @@ Created on Wed Dec 23 21:30:36 2020
 :license: MIT
 
 This is a base class for filters.  We will extend this class for each specific 
-types of filter we need to implement. The "stages" that are described in the 
-IRIS StationXML documentation appear to be a fairly complete collection of 
-instance types we are likely to encounter.
+type of filter we need to implement.  Typical filters we will want to be able
+to support are:
+- PoleZero (or 'zpk') responses like those provided by IRIS
+- Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory calibrations via frequency sweep on a spectrum analyser.
+- Time Delay Filters: can come about in decimation, or from general timing errors that have been characterized
+- Coefficient multipliers, i.e. frequency independent gains
+- FIR filters
+- IIR filters
 
-current ZU.xml recieved Friday 12 Feb, 2021, 
-Karl will prototype some extension classes and try to make those containers
-behave themselves.
-Mostly this means 
+Note that many filters can be represented in more than one of these forms.  For example a Coefficient Multiplier can be
+seen as an FIR with a single coefficient.  Similarly, an FIR can be represented as a 'zpk' filter with no poles.  An IIR
+filter can also be associated with a zpk representation.  However, solving for the 'zpk' representation can be tedious
+and approximate and if we have for example, the known FIR coefficients, or FAP lookup table, then there is little
+to be gained by changing the representation.
+
+The "stages" that are described in the IRIS StationXML documentation appear to cover all possible linear time invariant
+filter types we are likely to encounter.
+
+TESTING:
+Several sample station xml files have been archived in the data repository for the purpose of testing the filter
+codes. These are described in the readme in mth5_test_data/iris
+
+Passing Tests Means:
 -the container has a place for all the (relevant) info in the "Stage"
 -The stages (or filters) can be combined,
--desired: Each Stage needs to be able to generate a resposne function
--Required
-The total response function of all the stage can be represented in a way that
-works with FFTs.
+-desired: Each Stage needs to be able to generate a response function
+-The total response function of all the stage can be represented in a way that works with FFTs.
 
+____
+Players on the stage:
 
+<ATTR_DICT>
+attr_dict: This comes from a json configuration.  This object is not actually of type dictionary.
+It does provide us with a bunch of dictionaries .. one per attribute of the Filter() class.
+Other attributes are listed here:
+['name',
+ 'type',
+ 'units_in',
+ 'units_out',
+ 'calibration_date',
+ 'normalization_factor',
+ 'normalization_frequency',
+ 'cutoff',
+ 'operation',
+ 'n_poles',
+ 'n_zeros',
+ 'conversion_factor']
 
+Since some of these attrs have 'required':True, and some have 'required':False, it isn;t
+clear to me yet if
+a)this is supposed to be an exhaustive list of all possible filter attrs,
+b) The list needs to be pared down to just the attrs that every filter will have
+c) something else I haven't thought of.
+</ATTR_DICT>
+
+<OBSPY_MAPPING>
+This is a dictionary that maps attribute names from obspy to the names we use in MTH5.
+
+Note that obspy defines all these filter attributes on __init__:
+class ResponseStage(ComparingObject):
+#    From the StationXML Definition:
+#        This complex type represents channel response and covers SEED
+#        blockettes 53 to 56.
+ def __init__(self, stage_sequence_number, stage_gain,
+                 stage_gain_frequency, input_units, output_units,
+                 resource_id=None, resource_id2=None, name=None,
+                 input_units_description=None,
+                 output_units_description=None, description=None,
+                 decimation_input_sample_rate=None, decimation_factor=None,
+                 decimation_offset=None, decimation_delay=None,
+                 decimation_correction=None):
+
+</OBSPY_MAPPING>
+
+<RELATIONSHIP TO OPBSPY>
+This is not yet 100% well defined.  We do require the ability to populate our Filter() objects from obspy.
+It is desireable to map an arbitrary filter back into an obspy stage, and this could possibly be done
+directly or by casting it to xml and
+</RELATIONSHIP TO OPBSPY>
+<TODO>
+add a helper function to identify when the decimation information in the obspy class is degenerate,
+such as set to None, or decimation_factor == 1.0.
+
+Review code in obspy/core/inventory/response.py
+This seems to contain the functionality we want ... makes me wonder if we should just wrap this with calls?
+</TODO>
 """
 # =============================================================================
 # Imports
@@ -60,7 +129,7 @@ class Filter(Base):
         ----------
         kwargs
         name: The label for this filter, can act as a key for response info
-        type: One of {'pole_zero', 'frequency_table', 'coefficient', 'fir', 'iir', 'time_shift'}
+        type: One of {'pole_zero', 'frequency_table', 'coefficient', 'fir', 'iir', 'time_delay'}
         units_in: expected units of data coming from the previous stage ...
         ? is this defined by the data itself? Or is this an Idealized Value?
         normalization_frequency: ???
@@ -145,7 +214,7 @@ class Filter(Base):
         frequency_axis = np.fft.fftfreq(n_observations, d=dt)
         return frequency_axis
 
-    def plot_complex_response(self, frequency_axis, x_units='period'):
+    def plot_response(self, frequency_axis, x_units='period'):
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
             x_units = 'frequency'
@@ -158,6 +227,11 @@ class Filter(Base):
         #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
         # else:
         #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
+
+    def plot_complex_response(self, frequency_axis, **kwargs):
+        from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
+        complex_response = self.complex_response(frequency_axis)
+        plot_complex_response(frequency_axis, complex_response)
 
     @property
     def decimation_inactive(self):

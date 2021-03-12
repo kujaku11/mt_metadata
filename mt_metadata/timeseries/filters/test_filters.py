@@ -40,33 +40,24 @@ import path
 import scipy.signal as signal
 
 from mt_metadata.timeseries.filters.channel_response_filter import ChannelResponseFilter
+from mt_metadata.timeseries.filters.helper_functions import load_sample_network_inventory
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
-from mth5.utils.pathing import DATA_DIR
-
-
-
-def load_sample_network_inventory():
-    """
-    """
-    iris_dir = DATA_DIR.joinpath('iris')
-    xml_file_path = iris_dir.joinpath('ZU_20210212.xml')
-    inventory = obspy.read_inventory(xml_file_path.__str__())
-    return inventory
-
 
 
 def create_filter_for_channel():
     #this combines all stages in channel to a single filter.
     pass
 
-def test_filter_generation():
+def test_filter_generation_from_xml_via_obspy(inventory):
     """
-    we probably want to
+    inventory: obspy.core.inventory.network.Network
+
+
     Returns
     -------
 
     """
-    networks = load_sample_network_inventory()
+    networks = inventory
     for network in networks:
         if not isinstance(network, obspy.core.inventory.network.Network):
             print("Expected a Network, got a {}".format(type(network)))
@@ -74,38 +65,34 @@ def test_filter_generation():
         for station in network:
             for channel in station:
                 response = channel.response
+                print(type(response))
                 stages = response.response_stages
                 info = '{}-{}-{} {}-stage response'.format(network.code, station.code, channel.code, len(stages))
                 print(info)
                 filters_list = []
-                stages = [stages[2], stages[0], stages[1]]
                 for i_stage, stage in enumerate(stages):
                     print('Stage {} \n\n {}'.format(i_stage, stage))
                     i_filter = create_filter_from_stage(stage)
                     filters_list.append(i_filter)
 
-                qq = qq = filters_list[2]
-                qq.plot_complex_response(None, x_units='frequency')
+                for fltr in filters_list:
+                    print(fltr.type)
+                    frequencies = np.logspace(-3,3,200)
+                    #fltr.plot_complex_response(frequencies)
+                    #fltr.plot_response(None, x_units='frequency')
                 channel_response = ChannelResponseFilter(filters_list=filters_list)
-                qq = qq=filters_list[2]
-                qq.plot_complex_response(None, x_units='frequency')
-                channel_response.complex_response(np.array([1, 2, 3, 4]))
-                
-#                channel_response.combine(filters_list[0])
-#                channel_response.combine(filters_list[1])
-#                channel_response.combine(filters_list[2])
                 print('ok')
             print(network)
 
-    #filters_list[0].__combine__(filters_list[1])
-#    qq.__combine__(filters_list[1])
     print('ok')
-#        if not isinstance(network, obspy.core.)
 
 def main():
     """
     """
-    test_filter_generation()
+    station_xml_filehandle = 'ZU_20210212.xml'
+    station_xml_filehandle = 'fdsn-station_2021-03-09T04_44_51.xml'
+    inventory = load_sample_network_inventory(station_xml_filehandle)
+    test_filter_generation_from_xml_via_obspy(inventory)
     print("finito {}".format(datetime.datetime.now()))
 
 if __name__ == "__main__":
