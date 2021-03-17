@@ -38,17 +38,25 @@ class ChannelResponseFilter(object):
     #     cr2 = lambda f: other.complex_response(f)
     #     cr3 = lambda f: cr1(f) * cr2(f)
     #     self.lambda_function = cr3
-
-    def delay(self):
-        """
-
-        Returns the delay of the set of filters
-        -------
-
-        """
+    @property
+    def total_delay(self):
         delay_filters = [x for x in self.filters_list if x.type=='time_delay']
-        print("add a method here to return the total delay from all filters")
-        raise Exception
+        delay = 0.0
+        for delay_filter in delay_filters:
+            delay += delay_filter.delay
+        return delay
+
+    # def delay_filters(self):
+    #     """
+    #
+    #     Returns the delay of the set of filters
+    #     -------
+    #
+    #     """
+    #     delay_filters = [x for x in self.filters_list if x.type=='time_delay']
+    #     return delay_filters
+    #     print("add a method here to return the total delay from all filters")
+    #     raise Exception
 
     def complex_response(self, frequencies, include_delay=False):
         """
