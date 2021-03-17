@@ -93,6 +93,13 @@ such as set to None, or decimation_factor == 1.0.
 
 Review code in obspy/core/inventory/response.py
 This seems to contain the functionality we want ... makes me wonder if we should just wrap this with calls?
+
+TAI: Currently we are casting time delay filters from stages that have degenerate decimation, but decimation_delay
+non-zero.  However, we should ask this question: Are there filters that we may expect to encounter that have
+both a time_delay and a non-identity response inasmuchas amplitude an phase? If so we want to address whether it is
+appropriate the factor these filters into a delay part and an "ampl/phase" part... is this legal?
+
+StageGain Is A hard requirement of both IRIS and OBSPY.  Let's play nice and add a gain to our base class.
 </TODO>
 """
 # =============================================================================
@@ -212,14 +219,14 @@ class Filter(Base):
     def generate_frequency_axis(self, sampling_rate, n_observations):
         dt = 1./sampling_rate
         frequency_axis = np.fft.fftfreq(n_observations, d=dt)
+        frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
     def plot_response(self, frequency_axis, x_units='period'):
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
             x_units = 'frequency'
-        #angular_frequency_axis = 2 * np.pi * frequency_axis
-        #frequency_axis = np.logspace(-1, 5, num=100)
+
         w = 2. * np.pi * frequency_axis
         complex_response = self.complex_response(frequency_axis)
         plot_response(w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units)

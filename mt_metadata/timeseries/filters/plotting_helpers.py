@@ -35,6 +35,8 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
                   title=None, x_units='Period'):
     """
     This function was contributed by Ben Murphy at USGS
+    2021-03-17: there are some issues encountered when using this function to plot generic resposnes, looks
+    like the x-axis gets out of order when using frequency as the axis ... 
     Parameters
     ----------
     w_obs
@@ -92,7 +94,7 @@ def plot_response(w_obs=None, resp_obs=None, zpk_obs=None,
         ax_amp.plot(x_values, np.absolute(resp_pred),
                     color='tab:red', linewidth=3, linestyle=':',
                     label='Fit')
-        print(np.angle(resp_pred, deg=True))
+        #print(np.angle(resp_pred, deg=True))
         ax_phs.plot(x_values, np.angle(resp_pred, deg=True),
                     color='tab:red', linewidth=3, linestyle=':')
         ax_pz.scatter(np.real(zpk_pred.zeros), np.imag(zpk_pred.zeros),
