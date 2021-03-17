@@ -17,46 +17,25 @@ class ChannelResponseFilter(object):
         # if self.lambda_function is None:
         #     self.lambda_function = lambda f: 1.0*f
 
-    # def combine(self, other):
-    #     # TODO: Add checks here that when you are stitching two filters together the
-    #     # output_units of the before filter match the input units of the after
-    #     """
-    #     Parameters
-    #     ----------
-    #     other
-    # 
-    #     Returns a filter that has the combined complex response of the product of
-    #     self and other.  The assumption is the the output of self matches to the imput of other.
-    #     -------
-    # 
-    #     """
-    #     print("units consistency check:")
-    #     print("self output {}".format(self.output_units))
-    #     print("other input {}".format(other.input_units))
-    # 
-    #     cr1 = lambda f: self.complex_response(f)
-    #     cr2 = lambda f: other.complex_response(f)
-    #     cr3 = lambda f: cr1(f) * cr2(f)
-    #     self.lambda_function = cr3
+
     @property
     def total_delay(self):
-        delay_filters = [x for x in self.filters_list if x.type=='time_delay']
-        delay = 0.0
+        delay_filters = self.delay_filters
+        total_delay = 0.0
         for delay_filter in delay_filters:
-            delay += delay_filter.delay
-        return delay
+            total_delay += delay_filter.delay
+        return total_delay
 
-    # def delay_filters(self):
-    #     """
-    #
-    #     Returns the delay of the set of filters
-    #     -------
-    #
-    #     """
-    #     delay_filters = [x for x in self.filters_list if x.type=='time_delay']
-    #     return delay_filters
-    #     print("add a method here to return the total delay from all filters")
-    #     raise Exception
+    @property
+    def delay_filters(self):
+        """
+
+        Returns the delay of the set of filters
+        -------
+
+        """
+        delay_filters = [x for x in self.filters_list if x.type=='time_delay']
+        return delay_filters
 
     def complex_response(self, frequencies, include_delay=False):
         """

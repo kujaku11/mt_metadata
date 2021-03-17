@@ -100,6 +100,30 @@ both a time_delay and a non-identity response inasmuchas amplitude an phase? If 
 appropriate the factor these filters into a delay part and an "ampl/phase" part... is this legal?
 
 StageGain Is A hard requirement of both IRIS and OBSPY.  Let's play nice and add a gain to our base class.
+
+COMBINE?
+Filters Combine Method ... do we keep time delay and others as separate entitites?
+If so, what do we do with decimation filters that have an inate time delay?
+# def combine(self, other):
+#     # TODO: Add checks here that when you are stitching two filters together the
+#     # output_units of the before filter match the input units of the after
+#     Parameters
+#     ----------
+#     other
+#
+#     Returns a filter that has the combined complex response of the product of
+#     self and other.  The assumption is the the output of self matches to the imput of other.
+#     -------
+#
+#     print("units consistency check:")
+#     print("self output {}".format(self.output_units))
+#     print("other input {}".format(other.input_units))
+#
+#     cr1 = lambda f: self.complex_response(f)
+#     cr2 = lambda f: other.complex_response(f)
+#     cr3 = lambda f: cr1(f) * cr2(f)
+#     self.lambda_function = cr3
+COMBINE?
 </TODO>
 """
 # =============================================================================
