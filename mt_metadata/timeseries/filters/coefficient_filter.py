@@ -1,6 +1,5 @@
 import copy
 import numpy as np
-import scipy.signal as signal
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter import Filter
@@ -38,13 +37,3 @@ class CoefficientFilter(Filter):
         """
         return self.gain * np.ones(len(frequencies))
 
-
-
-
-
-def main():
-    coeff_filter = CoefficientFilter()
-    print('test')
-
-if __name__ == '__main__':
-    main()
