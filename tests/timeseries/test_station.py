@@ -17,9 +17,10 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Station
+from mt_metadata.timeseries import Run, Station
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestStation(unittest.TestCase):
     """
@@ -125,7 +126,27 @@ class TestStation(unittest.TestCase):
         self.station_object.location.declination.value = "10.980"
         self.assertEqual(self.station_object.location.declination.value, 10.980)
 
-        
+    def test_set_runs(self):
+        self.station_object.runs = [Run(id="one")]
+        self.assertEqual(len(self.station_object), 1)
+        self.assertListEqual(["one"], self.station_object.run_list)
+
+    def test_set_runs_fail(self):
+        def set_runs(value):
+            self.station_object.runs = value
+
+        self.assertRaises(TypeError, set_runs, 10)
+        self.assertRaises(TypeError, set_runs, [Run(), Station()])
+
+    def test_add_stations(self):
+        station_02 = Station()
+        station_02.runs.append(Run(id="two"))
+        self.station_object.runs.append(Run(id="one"))
+        self.station_object += station_02
+        self.assertEqual(len(self.station_object), 2)
+        self.assertListEqual(["one", "two"], self.station_object.run_list)
+
+
 # =============================================================================
 # run
 # =============================================================================

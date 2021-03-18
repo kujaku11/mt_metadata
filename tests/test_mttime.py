@@ -64,25 +64,24 @@ class TestMTime(unittest.TestCase):
         self.assertTrue(dt_01 == dt_02.epoch_seconds)
         self.assertTrue(dt_01 >= dt_02)
         self.assertTrue(dt_01 <= dt_02)
-        
+
     def test_no_tz(self):
         dt_obj = dtparser.isoparse(self.dt_str_01)
-        
+
         if isinstance(dt_obj, tz.tzlocal):
             self.mtime_obj.logger.warning("Local Time Zone Found")
         self.assertIsInstance(dt_obj.tzinfo, type(None))
-        
+
     def test_tz(self):
         dt_obj = dtparser.isoparse(self.dt_true)
-        
+
         if isinstance(dt_obj, tz.tzlocal):
             self.mtime_obj.logger.warning("Local Time Zone Found")
         self.assertIsInstance(dt_obj.tzinfo, tz.tzutc)
-        
+
 
 # =============================================================================
 # Run
 # =============================================================================
 if __name__ == "__main__":
     unittest.main()
-

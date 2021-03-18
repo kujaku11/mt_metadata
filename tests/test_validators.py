@@ -78,14 +78,20 @@ class TestValidators(unittest.TestCase):
         )
 
     def test_validate_header_fail(self):
-        self.assertRaises(MTValidatorError, validators.validate_header, self.header_fail)
+        self.assertRaises(
+            MTValidatorError, validators.validate_header, self.header_fail
+        )
 
     def test_validate_required(self):
         self.assertEqual(self.required, validators.validate_required(self.required))
-        self.assertEqual(self.required, validators.validate_required(str(self.required)))
+        self.assertEqual(
+            self.required, validators.validate_required(str(self.required))
+        )
 
     def test_validate_required_fail(self):
-        self.assertRaises(MTValidatorError, validators.validate_required, self.required_fail)
+        self.assertRaises(
+            MTValidatorError, validators.validate_required, self.required_fail
+        )
 
     def test_validate_type(self):
         self.assertEqual("string", validators.validate_type(str))
@@ -114,7 +120,9 @@ class TestValidators(unittest.TestCase):
         self.assertEqual("test.standard_end", validators.validate_attribute(self.name))
 
     def test_validate_attribue_fail(self):
-        self.assertRaises(MTValidatorError, validators.validate_attribute, self.name_fail)
+        self.assertRaises(
+            MTValidatorError, validators.validate_attribute, self.name_fail
+        )
 
     def test_validate_description(self):
         self.assertEqual(

@@ -69,13 +69,14 @@ from .orientation import Orientation
 from .filters.filtered import Filtered
 from .filters.filter import Filter
 from .data_logger import DataLogger
-from .survey import Survey
 from .channel import Channel
 from .auxiliary import Auxiliary
 from .electric import Electric
 from .magnetic import Magnetic
 from .run import Run
 from .station import Station
+from .survey import Survey
+from .experiment import Experiment
 
 
 __all__ = [
@@ -108,4 +109,3 @@ __all__ = [
     "Electric",
     "Magnetic",
 ]
-

@@ -33,5 +33,5 @@ class Electric(Base):
         self.x2 = 0.0
         self.y2 = 0.0
         self.z2 = 0.0
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)

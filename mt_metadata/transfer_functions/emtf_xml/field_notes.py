@@ -17,6 +17,7 @@ from .standards import SCHEMA_FN_PATHS
 from . import Dipole
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.transfer_functions.tf import Instrument
+
 # =============================================================================
 attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Dipole()._attr_dict, "ex")
@@ -57,5 +58,3 @@ class FieldNotes(Base):
     @end.setter
     def end(self, value):
         self._end_dt.from_str(value)
-
-

@@ -14,8 +14,9 @@ Created on Thu Dec 31 11:18:39 2020
 
 import unittest
 from mt_metadata.timeseries import Location
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestLocation(unittest.TestCase):
     def setUp(self):
@@ -56,6 +57,7 @@ class TestLocation(unittest.TestCase):
         self.assertRaises(
             ValueError, self.location_object._assert_lon_value, self.lon_fail_02
         )
+
 
 # =============================================================================
 # run

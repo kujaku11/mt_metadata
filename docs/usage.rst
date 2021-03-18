@@ -4,133 +4,138 @@ Usage
 
 .. contents::  :local:
 
-**MTH5** is written to make read/writing an *.mth5* file easier.
+**mt_metadata** is written to make read/writing magnetotelluric (MT) metadata easier.
 
-.. hint:: MTH5 is comprehensively logged, therefore if any problems arise you can always check the mth5_debug.log and the mth5_error.log, which will be written to your current working directory.
+.. hint:: mt_metadata is comprehensively logged, therefore if any problems arise you can always check the mt_metadata_debug.log and the mt_metadata_error.log, which will be written to mt_metadata/logs.
 
-Each MTH5 file has default groups. A 'group' is basically like a folder that can contain other groups or datasets.  These are:
+Each element or category in the metadata standards is a :class:`mt_metadata.base.metadata.Base` which controls how the metadata is validated.  The way the validation is controlled is based on standards in JSON files in each of the modules.  For example the standards for timeseries are in :mod:`mt_metadata.timeseries.stanadards`. In each JSON file is information that describes each attribute.  This includes:
 
-	* **Survey**    --> The master or root group of the HDF5 file
-	* **Filters**   --> Holds all filters and filter information
-	* **Reports**   --> Holds any reports relevant to the survey
-	* **Standards** --> A summary of metadata standards used  
-	* **Stations**  --> Holds all the stations an subsequent data
+	* **alias**: An alternate name that the attribute might have
+	* **description**: Full description of what the attribute represents and means
+	* **example**: Good example of how the attribute should be used
+	* **options**: If the style is controlled vocabulary provide accepted options
+	* **required**: [ True | False ] True if the attribute is required
+	* **style**: If type is string, how the string should be styled, e.g. datetime
+	* **type**: Python data type [ str | int | float | bool ]
+	* **units**: Units of the attribute in SI full name, e.g. millivolts
 	
-Each group also has a summary table to make it easier to search and access different parts of the file. Each entry in the table will have an HDF5 reference that can be directly used to get the appropriate group or dataset without using the path. 
+When an attribute of :class:`mt_metadata.base.metadata.Base` is set the attribute will be validated against this standard.  The validators will try to put the attribute into the proper data type and style.  Therefore if the standards change just the JSON files should be changed.  This will hopefully make it easier to expand different standards.  
+ 
 
-
-Opening and Closing Files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To open a new *.mth5* file::
-
->>> from mth5 import mth5
->>> mth5_obj = mth5.MTH5()
->>> mth5_obj.open(r"path/to/file.mth5", mode="w")
-	
-To open an exiting *.mth5* file::
-
-
->>> from mth5 import mth5
->>> mth5_obj = mth5.MTH5()
->>> mth5_obj.open(r"path/to/file.mth5", mode="a")
-	
-.. note:: If 'w' is used for the mode, it will overwrite any file of the same name, so be careful you don't overwrite any files.  Using 'a' for the mode is safer as this will open  an existing file of the same name and will give you write privilages.
-
-To close a file::
-
-	>>> mth5_obj.close_mth5()
-	2020-06-26T15:01:05 - mth5.mth5.MTH5.close_mth5 - INFO - Flushed and 
-	closed example_02.mth5
-	
-.. note:: Once a MTH5 file is closed any data contained within cannot be accessed.  All groups are weakly referenced, therefore once the file closes the group can no longer access the HDF5 group and you will get a similar message as below.  This is to remove any lingering references to the HDF5 file which will be important for parallel computing.
-
->>> 2020-06-26T15:21:47 - mth5.groups.Station.__str__ - WARNING - MTH5 file is closed and cannot be accessed. MTH5 file is closed and cannot be accessed.
-
-A MTH5 object is represented by the file structure and
-can be displayed at anytime from the command line.
-
-	
->>> mth5_obj
-/:
-====================
-	|- Group: Survey
-	----------------
-		|- Group: Filters
-		-----------------
-			--> Dataset: Summary
-			......................
-		|- Group: Reports
-		-----------------
-			--> Dataset: Summary
-			......................
-		|- Group: Standards
-		-------------------
-			--> Dataset: Summary
-			......................
-		|- Group: Stations
-		------------------
-			|- Group: MT001
-			---------------
-				--> Dataset: Summary
-				......................
-			--> Dataset: Summary
-			......................
-				
-This file does not contain a lot of stations, but this can get verbose if there are a lot of stations and filters. If you want to check what stations are in the current file.
-
->>> mth5_obj.station_list
-['Summary', 'MT001']
-	
-	
-Each group has a property attribute with an appropriate container including convenience methods.  Each group has a property attribute called `group_list` that lists all groups the next level down.
-
-.. seealso:: :mod:`mth5.groups` and :mod:`mth5.metadata` for more information.  
-
-Metadata
+Examples
 ^^^^^^^^^^^^^^^^^
 
-Each group object has a container called `metadata` that holds the appropriate metadata (:mod:`mth5.metadata`) data according to the standards defined at `MT Metadata Standards <https://github.com/kujaku11/MTarchive/blob/tables/docs/mt_metadata_guide.pdf>`__. The exceptions are the HDF5 file object which has metadata that describes the file type and is not part of the standards, and the stations_group, which is just a container to hold a collection of stations. 
+Working with Metadata
+""""""""""""""""""""""
 
-Input metadata will be validated against the standards and if it does not conform will throw an error. 
+Base provides convenience filters to input and output metadata in different formats XML, JSON, Python dictionary, Pandas Series.  It also provides functions to help the user understand what's inside.    
 
-The basic Python type used to store metadata is a dictionary, but there are three ways to input/output the metadata, dictionary, JSON, and XML.  Many people have their own way of storing metadata so this should accommodate most everyone.  If you store your metadata as JSON or XML you will need to read in the file first and input the appropriate element to the metadata. 
+.. code-block:: python
+	
+	>>> from mt_metadata.base import Base
+	>>> example = Base()
+	>>> example
+	{
+	    "base": {}
+    }
 
-Setting Attributes
-"""""""""""""""""""
-
-Metadata can be input either manually by setting the appropriate attribute::
-
->>> existing_station = mth5_obj.get_station('MT001')
->>> existing_station.metadata.archive_id = 'MT010'
-
-.. hint:: Currently, if you change any `metadata` attribute you will need to mannually update the attribute in the HDF5 group: :: 
-
-	>>> existing_station.write_metadata() 
+Have a look at :class:`mt_metadata.timeseries.Station`
+	
+.. code-block:: python
+	
+	>>> from mt_metadata.timeseries import Station
+	>>> example = Station()
+	>>> example
+	{
+		"station": {
+			"acquired_by.author": null,
+			"channels_recorded": [],
+			"data_type": null,
+			"geographic_name": null,
+			"id": null,
+			"location.declination.model": null,
+			"location.declination.value": null,
+			"location.elevation": 0.0,
+			"location.latitude": 0.0,
+			"location.longitude": 0.0,
+			"orientation.method": null,
+			"orientation.reference_frame": "geographic",
+			"provenance.creation_time": "2021-02-24T06:16:40.657280+00:00",
+			"provenance.software.author": null,
+			"provenance.software.name": null,
+			"provenance.software.version": null,
+			"provenance.submitter.author": null,
+			"provenance.submitter.email": null,
+			"provenance.submitter.organization": null,
+			"run_list": [],
+			"time_period.end": "1980-01-01T00:00:00+00:00",
+			"time_period.start": "1980-01-01T00:00:00+00:00"
+		}
+	}
+	  
 	
 Metadata Help
 """""""""""""""""
 
-To get help with any metadata attribute you can use::
+To get a list of attributes in the metadata class
 
+.. code-block:: python
 
->>> existing_station.metadata.attribute_information('archive_id')
-archive_id:
-	alias: []
-	description: station name that is archived {a-z;A-Z;0-9}
-	example: MT201
-	options: []
-	required: True
-	style: alpha numeric
-	type: string
-	units: None
+	>>> example.get_attribute_list()
+	['acquired_by.author',
+	 'acquired_by.comments',
+	 'channel_layout',
+	 'channels_recorded',
+	 'comments',
+	 'data_type',
+	 'fdsn.channel_code',
+	 'fdsn.id',
+	 'fdsn.network',
+	 'fdsn.new_epoch',
+	 'geographic_name',
+	 'id',
+	 'location.declination.comments',
+	 'location.declination.model',
+	 'location.declination.value',
+	 'location.elevation',
+	 'location.latitude',
+	 'location.longitude',
+	 'orientation.method',
+	 'orientation.reference_frame',
+	 'provenance.comments',
+	 'provenance.creation_time',
+	 'provenance.log',
+	 'provenance.software.author',
+	 'provenance.software.name',
+	 'provenance.software.version',
+	 'provenance.submitter.author',
+	 'provenance.submitter.email',
+	 'provenance.submitter.organization',
+	 'run_list',
+	 'time_period.end',
+	 'time_period.start']
+
+To get help with any metadata attribute you can use
+
+.. code-block:: python
+
+	>>> example.metadata.attribute_information('id')
+	id:
+		alias: []
+		description: Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.
+		example: MT001
+		options: []
+		required: True
+		style: alpha numeric
+		type: string
+		units: None
 	
 If no argument is given information for all metadata attributes will be printed.
 
 Creating New Attributes
 """""""""""""""""""""""""
 
-If you want to add new standard attributes to the metadata you can do this through :function:`mth5.metadata.Base.add_base_attribute method`
+If you want to add new standard attributes to the metadata you can do this through :func:`mt_metadata.base.Base.add_base_attribute method`
 
 >>> extra = {'type': str,
 ...          'style': 'controlled vocabulary',
@@ -140,52 +145,42 @@ If you want to add new standard attributes to the metadata you can do this throu
 ...          'alias': ['temp'],
 ...          'options': [ 'ambient', 'air', 'other'],
 ...          'example': 'ambient'}
->>> existing_station.metadata.add_base_attribute('temperature', 'ambient', extra)
+>>> station.add_base_attribute('temperature', 'ambient', extra)
 
 Dictionary Input/Output
 """""""""""""""""""""""""
 
 You can input a dictionary of attributes
 
-.. note:: The dictionary must be of the form {'level': {'key': 'value'}}, where 'level' is either [ 'survey' | 'station' | 'run' | 'channel' | 'filter' ]
+.. note:: The dictionary must be of the form {'level': {'key': 'value'}}, where 'level' is the name of the metadata class. e.g. station.
 
 .. code-block:: python
 
-	>>> meta_dict = {'station': {'archive_id': 'MT010'}}
-	>>> existing_station.metadata.from_dict(meta_dict)
+	>>> meta_dict = {'station': {'id': 'MT010'}}
+	>>> station.from_dict(meta_dict)
 	>>> exiting_station.metadata.to_dict()
 	{'station': OrderedDict([('acquired_by.author', None),
-              ('acquired_by.comments', None),
-              ('archive_id', 'MT010'),
-              ('channel_layout', 'X'),
-              ('channels_recorded', ['Hx', 'Hy', 'Hz', 'Ex', 'Ey']),
-              ('comments', None),
-              ('data_type', 'BB, LP'),
-              ('geographic_name', 'Beachy Keen, FL, USA'),
-              ('hdf5_reference', '<HDF5 object reference>'),
-              ('id', 'FL001'),
-              ('location.declination.comments',
-               'Declination obtained from the instrument GNSS NMEA sequence'),
-              ('location.declination.model', 'Unknown'),
-              ('location.declination.value', -4.1),
+              ('channels_recorded', []),
+              ('data_type', None),
+              ('geographic_name', None),
+              ('id', 'MT010'),
+              ('location.declination.model', None),
+              ('location.declination.value', None),
               ('location.elevation', 0.0),
-              ('location.latitude', 29.7203555),
-              ('location.longitude', -83.4854715),
-              ('mth5_type', 'Station'),
-              ('orientation.method', 'compass'),
+              ('location.latitude', 0.0),
+              ('location.longitude', 0.0),
+              ('orientation.method', None),
               ('orientation.reference_frame', 'geographic'),
-              ('provenance.comments', None),
-              ('provenance.creation_time', '2020-05-29T21:08:40+00:00'),
-              ('provenance.log', None),
-              ('provenance.software.author', 'Anna Kelbert, USGS'),
-              ('provenance.software.name', 'mth5_metadata.m'),
-              ('provenance.software.version', '2020-05-29'),
-              ('provenance.submitter.author', 'Anna Kelbert, USGS'),
-              ('provenance.submitter.email', 'akelbert@usgs.gov'),
-              ('provenance.submitter.organization',
-               'USGS Geomagnetism Program'),
-              ('time_period.end', '2015-01-29T16:18:14+00:00'),
-              ('time_period.start', '2015-01-08T19:49:15+00:00')])}
+              ('provenance.creation_time', '2021-02-24T06:21:49.078957+00:00'),
+              ('provenance.software.author', None),
+              ('provenance.software.name', None),
+              ('provenance.software.version', None),
+              ('provenance.submitter.author', None),
+              ('provenance.submitter.email', None),
+              ('provenance.submitter.organization', None),
+              ('run_list', []),
+              ('time_period.end', '1980-01-01T00:00:00+00:00'),
+              ('time_period.start', '1980-01-01T00:00:00+00:00')])}
 
 
 JSON Input/Output
@@ -322,5 +317,4 @@ You can input as a XML element following the form previously mentioned.  If you 
 			<start>2015-01-08T19:49:15+00:00</start>
 		</time_period>
 	</station>
-	
-.. seealso:: :mod:`mth5.metadata` for more information.	
+		

@@ -84,7 +84,7 @@
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "list of runs recorded by the station. Should be a summary of all runss recorded",
+        "description": "list of runs recorded by the station. Should be a summary of all runs recorded",
         "options": [
             "a",
             "b",

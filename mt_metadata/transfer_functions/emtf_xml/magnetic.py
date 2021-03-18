@@ -30,5 +30,5 @@ class Magnetic(Base):
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)

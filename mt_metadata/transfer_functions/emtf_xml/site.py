@@ -56,5 +56,3 @@ class Site(Base):
     @end.setter
     def end(self, value):
         self._end_dt.from_str(value)
-
-

@@ -27,5 +27,5 @@ class SiteLayout(Base):
 
         self.input_channels = []
         self.output_channels = []
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)

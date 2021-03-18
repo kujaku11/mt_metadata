@@ -12,9 +12,9 @@ To install MTH5, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install mth5
+    $ pip install mt_metadata
 
-This is the preferred method to install MTH5, as it will always install the most recent stable release.
+This is the preferred method to install mt_metadata, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -34,13 +34,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/kujaku11/mth5
+    $ git clone git://github.com/kujaku11/mt_metadata
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/kujaku11/mth5/tarball/master
+    $ curl -OJL https://github.com/kujaku11/mt_metadata/tarball/main
 
 Once you have a copy of the source, you can install it with:
 
@@ -49,5 +49,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/kujaku11/mth5
-.. _tarball: https://github.com/kujaku11/mth5/tarball/master
+.. _Github repo: https://github.com/kujaku11/mt_metadata
+.. _tarball: https://github.com/kujaku11/mt_metadata/tarball/main

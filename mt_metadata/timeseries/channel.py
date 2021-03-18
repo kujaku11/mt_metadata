@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import re
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -52,6 +53,7 @@ class Channel(Base):
         self.translated_tilt = None
         self.sensor = Instrument()
         self.fdsn = Fdsn()
+        self._ch_pattern = r"\w+"
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -62,4 +64,10 @@ class Channel(Base):
     @component.setter
     def component(self, value):
         if value is not None:
-            self._component = value.lower()
+            value = value.lower()
+            if re.match(self._ch_pattern, value):
+                self._component = value
+            else:
+                msg = f"component {value} does not match expected pattern {self._ch_pattern}"
+                self.logger.error(msg)
+                raise ValueError(msg)

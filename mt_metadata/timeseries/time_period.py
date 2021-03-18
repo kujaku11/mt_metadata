@@ -34,7 +34,7 @@ class TimePeriod(Base):
 
     @start.setter
     def start(self, start_date):
-        self._start_dt.from_str(start_date)
+        self._start_dt = MTime(start_date)
 
     @property
     def end(self):
@@ -42,7 +42,7 @@ class TimePeriod(Base):
 
     @end.setter
     def end(self, stop_date):
-        self._end_dt.from_str(stop_date)
+        self._end_dt = MTime(stop_date)
 
     @property
     def start_date(self):
@@ -50,7 +50,7 @@ class TimePeriod(Base):
 
     @start_date.setter
     def start_date(self, start_date):
-        self._start_dt.from_str(start_date)
+        self._start_dt = MTime(start_date)
 
     @property
     def end_date(self):
@@ -58,4 +58,4 @@ class TimePeriod(Base):
 
     @end_date.setter
     def end_date(self, stop_date):
-        self._end_dt.from_str(stop_date)
+        self._end_dt = MTime(stop_date)

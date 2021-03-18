@@ -17,9 +17,10 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Run
+from mt_metadata.transfer_functions.tf import Run
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestRun(unittest.TestCase):
     def setUp(self):
@@ -49,8 +50,8 @@ class TestRun(unittest.TestCase):
                 "data_logger.timing_system.uncertainty": 0.000001,
                 "data_logger.type": "broadband",
                 "data_type": "mt",
-                "ex.dipole_length": 0.,
-                "ey.dipole_length": 0.,
+                "ex.dipole_length": 0.0,
+                "ey.dipole_length": 0.0,
                 "id": "mt01a",
                 "provenance.comments": "provenance comments",
                 "provenance.log": "provenance log",

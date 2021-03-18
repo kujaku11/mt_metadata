@@ -90,5 +90,3 @@ debug_logger = setup_logger(__name__, fn="mt_metadata_debug", level="debug")
 debug_logger.debug("Starting MT Metadata Debug Log File")
 
 error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
-
-

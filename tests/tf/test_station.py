@@ -18,8 +18,9 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 from mt_metadata.timeseries import Station
+
 # =============================================================================
-# 
+#
 # =============================================================================
 class TestStation(unittest.TestCase):
     """
@@ -125,7 +126,7 @@ class TestStation(unittest.TestCase):
         self.station_object.location.declination.value = "10.980"
         self.assertEqual(self.station_object.location.declination.value, 10.980)
 
-        
+
 # =============================================================================
 # run
 # =============================================================================

@@ -21,10 +21,11 @@
             "HDGM",
             "IGRF",
             "WMM",
-            "unknown"
+            "unknown",
+			"other"
         ],
         "alias": [],
-        "example": "WMM"
+        "example": "WMM-16"
     },
     "value": {
         "type": "float",

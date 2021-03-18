@@ -73,7 +73,7 @@ class Filtered(Base):
 
     @applied.setter
     def applied(self, applied):
-        if not isinstance(applied, (list, tuple)):
+        if not hasattr(applied, "__iter__"):
             if applied in [None, "none", "None", "NONE", "null", 0, "0"]:
                 self._applied = [False]
                 return
@@ -116,8 +116,8 @@ class Filtered(Base):
                     msg = "Filter.applied must be [ True | False ], not {0}"
                     self.logger.error(msg.format(app_bool))
                     raise MTSchemaError(msg.format(app_bool))
-            elif isinstance(app_bool, bool):
-                bool_list.append(app_bool)
+            elif isinstance(app_bool, (bool, np.bool_)):
+                bool_list.append(bool(app_bool))
             else:
                 msg = "Filter.applied must be [True | False], not {0}"
                 self.logger.error(msg.format(app_bool))
