@@ -111,8 +111,8 @@ class Filtered(Base):
                     msg = "Filter.applied must be [ True | False ], not {0}"
                     self.logger.error(msg.format(app_bool))
                     raise MTSchemaError(msg.format(app_bool))
-            elif isinstance(app_bool, bool):
-                bool_list.append(app_bool)
+            elif isinstance(app_bool, (bool, np.bool_)):
+                bool_list.append(bool(app_bool))
             else:
                 msg = "Filter.applied must be [True | False], not {0}"
                 self.logger.error(msg.format(app_bool))
