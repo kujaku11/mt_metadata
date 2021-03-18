@@ -15,6 +15,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Person, Citation, Location, TimePeriod, Fdsn, Station
+from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
@@ -64,6 +65,7 @@ class Survey(Base):
         self.survey_id = None
         self.time_period = TimePeriod()
         self.stations = []
+        self.filters = {}
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -113,3 +115,46 @@ class Survey(Base):
     def station_names(self):
         """ Return names of station in survey """
         return [ss.id for ss in self.stations]
+    
+    @property
+    def filters(self):
+        """ A dictionary of available filters """
+        return self._filters
+    
+    @filters.setter
+    def filters(self, value):
+        """
+        Set the filters dictionary
+        
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        if not isinstance(value, dict):
+            msg = ("Filters must be a dictionary with keys = names of filters, "
+                   f"not {type(value)}")
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+        filters = {}
+        fails = []
+        for k, v in value.items():
+            if not isinstance(v, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)):
+                msg = f"Item {k} is not Filter type; type={type(v)}"
+                fails.append(msg)
+                self.logger.error(msg)
+            else:
+                filters[k] = v
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+
+        self._filters = filters
+        
+    @property
+    def filter_names(self):
+        """ return a list of filter names """
+        return list(self.filters.keys())
+            

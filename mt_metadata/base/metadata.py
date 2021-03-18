@@ -362,6 +362,7 @@ class Base:
             "hdf5_reference",
             "obspy_mapping",
             "surveys",
+            "filters",
             "stations",
             "runs",
             "channels",
