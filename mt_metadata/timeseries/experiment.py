@@ -137,13 +137,16 @@ class Experiment:
         experiment_element = et.Element(self.__class__.__name__)
         for survey in self.surveys:
             survey.update_bounding_box()
+            survey.update_time_period()
             survey_element = survey.to_xml(required=required)
             filter_element = et.SubElement(survey_element, "filters")
             for key, value in survey.filters.items():
                 filter_element.append(value.to_xml(required=required))
             for station in survey.stations:
+                station.update_time_period()
                 station_element = station.to_xml(required=required)
                 for run in station.runs:
+                    run.update_time_period()
                     run_element = run.to_xml(required=required)
                     for channel in run.channels:
                         run_element.append(channel.to_xml(required=required))

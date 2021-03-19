@@ -176,4 +176,18 @@ class Survey(Base):
         self.southeast_corner.longitude = max(lon)
         self.northwest_corner.latitude = max(lat)
         self.northwest_corner.longitude = min(lon)
+        
+    def update_time_period(self):
+        """
+        Update the start and end time of the survey based on the stations
+        """
+        start = []
+        end = []
+        for station in self.stations:
+            start.append(station.time_period.start)
+            end.append(station.time_period.end)
+
+        self.time_period.start = min(start)
+        self.time_period.end = max(end)
+        
             

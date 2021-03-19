@@ -98,8 +98,10 @@ class XMLInventoryMTExperiment():
                         mt_run.sample_rate = mt_channel.sample_rate
                         mt_run.channels.append(mt_channel)
                         mt_station.runs.append(mt_run)
-
+                mt_station.update_time_period()
                 mt_survey.stations.append(mt_station)
+            mt_survey.update_bounding_box()
+            mt_survey.update_time_period()
             mt_experiment.surveys.append(mt_survey)
 
         if mt_fn:
