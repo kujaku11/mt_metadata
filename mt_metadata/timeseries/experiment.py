@@ -136,6 +136,7 @@ class Experiment:
 
         experiment_element = et.Element(self.__class__.__name__)
         for survey in self.surveys:
+            survey.update_bounding_box()
             survey_element = survey.to_xml(required=required)
             filter_element = et.SubElement(survey_element, "filters")
             for key, value in survey.filters.items():

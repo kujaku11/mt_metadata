@@ -157,4 +157,23 @@ class Survey(Base):
     def filter_names(self):
         """ return a list of filter names """
         return list(self.filters.keys())
+    
+    def update_bounding_box(self):
+        """
+        Update the bounding box of the survey from the station information
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        lat = []
+        lon = []
+        for station in self.stations:
+            lat.append(station.location.latitude)
+            lon.append(station.location.longitude)
+        
+        self.southeast_corner.latitude = min(lat)
+        self.southeast_corner.longitude = max(lon)
+        self.northwest_corner.latitude = max(lat)
+        self.northwest_corner.longitude = min(lon)
             
