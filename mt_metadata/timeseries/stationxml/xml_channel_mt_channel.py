@@ -20,7 +20,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
 )
 
 from mt_metadata import timeseries as metadata
-from mt_metadata.timeseries.filters.obspy_stages import create_coefficent_filter_from_stage
+from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 
 from obspy.core import inventory
@@ -466,7 +466,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         filter_dict = {}
         for stage in xml_channel.response.response_stages:
-            mt_filter = create_coefficent_filter_from_stage(stage)
+            mt_filter = create_filter_from_stage(stage)
             filter_dict[mt_filter.name] = mt_filter
             
         return filter_dict
