@@ -20,6 +20,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
 )
 
 from mt_metadata import timeseries as metadata
+from mt_metadata.timeseries.filters.obspy_stages import create_coefficent_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 
 from obspy.core import inventory
@@ -95,6 +96,7 @@ class XMLChannelMTChannel(BaseTranslator):
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
         mt_channel = self._sensor_to_mt(xml_channel.sensor, mt_channel)
         mt_channel = self._get_mt_units(xml_channel, mt_channel)
+        mt_filters = self._xml_response_to_mt(xml_channel)
 
         for xml_key, mt_key in self.xml_translator.items():
             if mt_key:
@@ -104,8 +106,12 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if mt_channel.component is None:
             mt_channel.component = create_mt_component(xml_channel.code)
+            
+        # fill channel filters
+        mt_channel.filter.name = list(mt_filters.keys())
+        mt_channel.filter.applied = [False] * len(list(mt_filters.keys()))
 
-        return mt_channel
+        return mt_channel, mt_filters
 
     def mt_to_xml(self, mt_channel):
         """
@@ -453,3 +459,16 @@ class XMLChannelMTChannel(BaseTranslator):
             self.logger.debug("Did not find any units descriptions in XML")
 
         return mt_channel
+    
+    def _xml_response_to_mt(self, xml_channel):
+        """
+        parse the filters from obspy into mt filters
+        """
+        filter_dict = {}
+        for stage in xml_channel.response.response_stages:
+            mt_filter = create_coefficent_filter_from_stage(stage)
+            filter_dict[mt_filter.name] = mt_filter
+            
+        return filter_dict
+            
+        

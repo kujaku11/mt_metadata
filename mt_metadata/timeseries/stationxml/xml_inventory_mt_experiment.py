@@ -70,7 +70,8 @@ class XMLInventoryMTExperiment():
             for xml_station in xml_network.stations:
                 mt_station = self.station_translator.xml_to_mt(xml_station)
                 for xml_channel in xml_station:
-                    mt_channel = self.channel_translator.xml_to_mt(xml_channel)
+                    mt_channel, mt_filters = self.channel_translator.xml_to_mt(xml_channel)
+                    mt_survey.filters.update(mt_filters)
                     # if there is a run list match channel to runs
                     if self.channel_translator.run_list:
                         for run_id in self.channel_translator.run_list:
