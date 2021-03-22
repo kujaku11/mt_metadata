@@ -44,10 +44,43 @@ class PoleZeroFilter(Filter):
     @property
     def poles(self):
         return self._poles
+    
+    @poles.setter
+    def poles(self, value):
+        """
+        Set the poles, make sure the input is validated
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._poles = np.array(value, dtype=np.complex)
+        
+        elif isinstance(value, str):
+            self._poles = np.array(value.split(','), dtype=np.complex)
+            
 
     @property
     def zeros(self):
         return self._zeros
+    
+    @zeros.setter
+    def zeros(self, value):
+        """
+        Set the zeros, make sure the input is validated
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._zeros = np.array(value, dtype=np.complex)
+        
+        elif isinstance(value, str):
+            self._zeros = np.array(value.split(','), dtype=np.complex)
 
     @property
     def n_poles(self):

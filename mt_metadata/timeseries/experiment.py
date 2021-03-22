@@ -29,6 +29,7 @@ Created on Mon Feb  8 21:25:40 2021
 from xml.etree import cElementTree as et
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
+from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 
@@ -202,6 +203,8 @@ class Experiment:
         for survey in list(experiment):
             survey_obj = Survey()
             survey_obj.from_xml(survey)
+            for filter_element in survey.findall("filters"):
+                survey_obj.filters.update(self._read_filter_element(filter_element)) 
             for station in survey.findall("station"):
                 station_obj = Station()
                 station_obj.from_xml(station)
@@ -257,3 +260,32 @@ class Experiment:
 
         """
         pass
+    
+    def _read_filter_element(self, filters_element):
+        """
+        Read in filter element an put it in the correct object
+        
+        :param filter_element: DESCRIPTION
+        :type filter_element: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        filters_dict = {}
+        for zpk_element in filters_element.findall("pole_zero_filter"):
+            zpk_filter = PoleZeroFilter()
+            zpk_filter.from_xml(zpk_element)
+            filters_dict[zpk_filter.name] = zpk_filter
+            
+        for co_element in filters_element.findall("coefficient_filter"):
+            co_filter = CoefficientFilter()
+            co_filter.from_xml(co_element)
+            filters_dict[co_filter.name] = co_filter
+            
+        for td_element in filters_element.findall("time_delay_filter"):
+            td_filter = CoefficientFilter()
+            td_filter.from_xml(co_element)
+            filters_dict[td_filter.name] = td_filter
+            
+        return filters_dict
+            
