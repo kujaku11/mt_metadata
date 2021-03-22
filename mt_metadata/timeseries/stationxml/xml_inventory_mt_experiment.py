@@ -12,6 +12,7 @@ Created on Mon Feb 22 09:27:10 2021
 # Imports
 # =============================================================================
 from pathlib import Path
+from copy import deepcopy
 
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata import timeseries as metadata
@@ -75,11 +76,15 @@ class XMLInventoryMTExperiment():
                     # if there is a run list match channel to runs
                     if self.channel_translator.run_list:
                         for run_id in self.channel_translator.run_list:
+                            # need to make a copy of the channel otherwise
+                            # the properties are constantly overwritten as we loop
+                            # through the runs
+                            run_channel = deepcopy(mt_channel)
                             mt_run = mt_station.get_run(run_id)
                             # need to set the start and end time to the run
-                            mt_channel.time_period.start = mt_run.time_period.start
-                            mt_channel.time_period.end = mt_run.time_period.end
-                            mt_run.add_channel(mt_channel)
+                            run_channel.time_period.start = mt_run.time_period.start
+                            run_channel.time_period.end = mt_run.time_period.end
+                            mt_run.add_channel(run_channel)
 
                     # if there are runs already try to match by start, end, sample_rate
                     elif mt_station.runs:
