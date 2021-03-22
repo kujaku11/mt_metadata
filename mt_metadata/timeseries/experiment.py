@@ -64,7 +64,11 @@ class Experiment:
                             "\t\t\tRecorded Channels: "
                             + ", ".join(run.channels_recorded_all)
                         )
+                        lines.append(f"\t\t\tStart: {run.time_period.start}")
+                        lines.append(f"\t\t\tEnd:   {run.time_period.end}")
+                        
                         lines.append(f"\t\t\t{'-' * 20}")
+                        
 
         return "\n".join(lines)
 
@@ -193,39 +197,72 @@ class Experiment:
         :type element: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
+        
+        
 
         """
         if fn:
-            experiment = et.parse(fn).getroot()
+            experiment_element = et.parse(fn).getroot()
         if element:
-            experiment = element
-
-        for survey in list(experiment):
+            experiment_element = element
+        
+        # need to set the lists for each layer, otherwise you get duplicates.
+        for survey_element in list(experiment_element):
+            survey_dict = helpers.element_to_dict(survey_element)
             survey_obj = Survey()
-            survey_obj.from_xml(survey)
-            for filter_element in survey.findall("filters"):
-                survey_obj.filters.update(self._read_filter_element(filter_element)) 
-            for station in survey.findall("station"):
+            fd = survey_dict["survey"].pop("filters")
+            filter_dict = self._read_filter_dict(fd)
+            survey_obj.filters.update(filter_dict)
+            
+            stations = self._pop_dictionary(survey_dict["survey"], "station")
+            for station_dict in stations:
                 station_obj = Station()
-                station_obj.from_xml(station)
-                for run in station.findall("run"):
+                run_list = []
+                runs = self._pop_dictionary(station_dict, "run")
+                for run_dict in runs:
                     run_obj = Run()
-                    run_obj.from_xml(run)
-                    for channel in run.findall("electric"):
-                        ch = Electric()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    for channel in run.findall("magnetic"):
-                        ch = Magnetic()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    for channel in run.findall("auxiliary"):
-                        ch = Auxiliary()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    station_obj.add_run(run_obj)
+                    channel_list = []
+                    for ch in ["electric", "magnetic", "auxiliary"]:
+                        try:
+                            for ch_dict in self._pop_dictionary(run_dict, ch):
+                                if ch == "electric":
+                                    channel = Electric()
+                                elif ch == "magnetic":
+                                    channel = Magnetic()
+                                elif ch == "auxiliary":
+                                    channel = Auxiliary()
+                                channel.from_dict(ch_dict)    
+                                channel_list.append(channel)
+                        except KeyError:
+                            self.logger.debug(f"Could not find channel {ch}")
+                    run_obj.from_dict(run_dict)
+                    run_obj.channels = channel_list
+                    run_list.append(run_obj)
+                
+                station_obj.from_dict(station_dict)
+                station_obj.runs = run_list
                 survey_obj.stations.append(station_obj)
+            survey_obj.from_dict(survey_dict)
             self.surveys.append(survey_obj)
+            
+    def _pop_dictionary(self, in_dict, element):
+        """
+        Pop off a key from an input dictionary, make sure output is a list
+        
+        :param in_dict: DESCRIPTION
+        :type in_dict: TYPE
+        :param element: DESCRIPTION
+        :type element: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        elements = in_dict.pop(element)
+        if not isinstance(elements, list):
+            elements = [elements]
+            
+        return elements
 
     def from_json(self, fn):
         """
@@ -261,7 +298,7 @@ class Experiment:
         """
         pass
     
-    def _read_filter_element(self, filters_element):
+    def _read_filter_dict(self, filters_dict):
         """
         Read in filter element an put it in the correct object
         
@@ -271,21 +308,19 @@ class Experiment:
         :rtype: TYPE
 
         """
-        filters_dict = {}
-        for zpk_element in filters_element.findall("pole_zero_filter"):
-            zpk_filter = PoleZeroFilter()
-            zpk_filter.from_xml(zpk_element)
-            filters_dict[zpk_filter.name] = zpk_filter
+        return_dict = {}
+        for key, value in filters_dict.items():
+            if key in ["pole_zero_filter"]:
+                mt_filter = PoleZeroFilter()
+
+            elif key in ["coefficient_filter"]:
+                mt_filter = CoefficientFilter()
+
+            elif key in ["time_delay_filter"]:
+                mt_filter = TimeDelayFilter()
             
-        for co_element in filters_element.findall("coefficient_filter"):
-            co_filter = CoefficientFilter()
-            co_filter.from_xml(co_element)
-            filters_dict[co_filter.name] = co_filter
+            mt_filter.from_dict(value)
+            return_dict[mt_filter.name] = mt_filter
             
-        for td_element in filters_element.findall("time_delay_filter"):
-            td_filter = CoefficientFilter()
-            td_filter.from_xml(co_element)
-            filters_dict[td_filter.name] = td_filter
-            
-        return filters_dict
+        return return_dict
             
