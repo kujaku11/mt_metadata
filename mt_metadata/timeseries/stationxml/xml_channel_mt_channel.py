@@ -113,7 +113,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return mt_channel, mt_filters
 
-    def mt_to_xml(self, mt_channel):
+    def mt_to_xml(self, mt_channel, filters):
         """
         Translate :class:`mt_metadata.timeseries.Channel` to 
         :class:`obspy.core.inventory.Channel`

@@ -14,21 +14,22 @@ attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-#Decision:
-#A
-#- import obspy mapping from filter.py
-#- add the desired attrs here
-#- assign to self._obspy_mapping in __init__
-#B
-#- augment obspy mapping in __init__()
-#C
-#- augment obspy mapping in from_obspy_stage()
-#D
-#- put obspy mapping in json
+# Decision:
+# A
+# - import obspy mapping from filter.py
+# - add the desired attrs here
+# - assign to self._obspy_mapping in __init__
+# B
+# - augment obspy mapping in __init__()
+# C
+# - augment obspy mapping in from_obspy_stage()
+# D
+# - put obspy mapping in json
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 obspy_mapping['_zeros'] = '_zeros'
 obspy_mapping['_poles'] = '_poles'
 obspy_mapping['normalization_factor'] = 'normalization_factor'
+
 
 class PoleZeroFilter(Filter):
 
@@ -40,11 +41,10 @@ class PoleZeroFilter(Filter):
 
         self.obspy_mapping = obspy_mapping
 
-
     @property
     def poles(self):
         return self._poles
-    
+
     @poles.setter
     def poles(self, value):
         """
@@ -57,15 +57,14 @@ class PoleZeroFilter(Filter):
         """
         if isinstance(value, (list, tuple, np.ndarray)):
             self._poles = np.array(value, dtype=np.complex)
-        
+
         elif isinstance(value, str):
             self._poles = np.array(value.split(','), dtype=np.complex)
-            
 
     @property
     def zeros(self):
         return self._zeros
-    
+
     @zeros.setter
     def zeros(self, value):
         """
@@ -78,7 +77,7 @@ class PoleZeroFilter(Filter):
         """
         if isinstance(value, (list, tuple, np.ndarray)):
             self._zeros = np.array(value, dtype=np.complex)
-        
+
         elif isinstance(value, str):
             self._zeros = np.array(value.split(','), dtype=np.complex)
 
@@ -89,10 +88,38 @@ class PoleZeroFilter(Filter):
     @property
     def n_zeros(self):
         return len(self._zeros)
-    
+
     def zero_pole_gain_representation(self):
-        zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
+        zpg = signal.ZerosPolesGain(
+            self.zeros, self.poles, self.normalization_factor)
         return zpg
+
+    def to_obspy(self, stage_number=1, normalization_frequency=.01, pz_type="LAPLACE (RADIANS/SECOND)"):
+        """
+        create an obspy stage
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.zeros is None:
+            self.zeros = []
+        if self.poles is None:
+            self.poles = []
+            
+        rs = obspy.core.inventory.PolesZerosResponseStage(stage_number,
+                                                1,
+                                                normalization_frequency,
+                                                self.units_in,
+                                                self.units_out,
+                                                pz_type,
+                                                normalization_frequency,
+                                                self.zeros,
+                                                self.poles,
+                                                name=self.name,
+                                                normalization_factor=self.normalization_factor)
+
+        return rs
 
     def complex_response(self, frequencies):
         """
@@ -107,7 +134,8 @@ class PoleZeroFilter(Filter):
 
         """
         angular_frequencies = 2 * np.pi * frequencies
-        w, h = signal.freqs_zpk(self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies)
+        w, h = signal.freqs_zpk(
+            self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies)
         return h
 
     def plot_pole_zero_response(self):
@@ -120,6 +148,7 @@ class PoleZeroFilter(Filter):
 def main():
     pz_filter = PoleZeroFilter()
     print('test')
+
 
 if __name__ == '__main__':
     main()
