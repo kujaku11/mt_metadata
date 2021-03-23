@@ -106,18 +106,18 @@ class PoleZeroFilter(Filter):
             self.zeros = []
         if self.poles is None:
             self.poles = []
-            
+
         rs = obspy.core.inventory.PolesZerosResponseStage(stage_number,
-                                                gain,
-                                                normalization_frequency,
-                                                self.units_in,
-                                                self.units_out,
-                                                pz_type,
-                                                normalization_frequency,
-                                                self.zeros,
-                                                self.poles,
-                                                name=self.name,
-                                                normalization_factor=self.normalization_factor)
+                                                          gain,
+                                                          normalization_frequency,
+                                                          self.units_in,
+                                                          self.units_out,
+                                                          pz_type,
+                                                          normalization_frequency,
+                                                          self.zeros,
+                                                          self.poles,
+                                                          name=self.name,
+                                                          normalization_factor=self.normalization_factor)
 
         return rs
 

@@ -9,7 +9,7 @@ Created on Mon Mar 22 10:21:28 2021
 
 """
 
-from mt_metadata.timeseries.filters import PoleZeroFilter, CoefficientFilter
+from mt_metadata.timeseries.filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
 from mt_metadata.base import helpers
 from obspy.core import inventory
 
@@ -28,7 +28,7 @@ for survey_element in list(experiment):
             co_filter.from_xml(co_element)
             filters_dict[co_filter.name] = co_filter
         for td_element in filters_element.findall("time_delay_filter"):
-            td_filter = CoefficientFilter()
+            td_filter = TimeDelayFilter()
             td_filter.from_xml(td_element)
             filters_dict[td_filter.name] = td_filter
             

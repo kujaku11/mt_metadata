@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import scipy.signal as signal
+from obspy.core import inventory
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter import Filter
@@ -21,6 +22,57 @@ class TimeDelayFilter(Filter):
         self.delay = None
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
+        
+    def to_obspy(self, stage_number=1, sample_rate=1):
+        """
+        stage_sequence_number,
+        stage_gain,
+        stage_gain_frequency,
+        input_units, 
+        output_units,
+        cf_transfer_function_type, 
+        resource_id=None,
+        resource_id2=None,
+        name=None,
+        numerator=None,
+        denominator=None, 
+        input_units_description=None,
+        output_units_description=None,
+        description=None,
+        decimation_input_sample_rate=None,
+        decimation_factor=None,
+        decimation_offset=None,
+        decimation_delay=None,
+        decimation_correction=None
+        
+        :param stage_number: DESCRIPTION, defaults to 1
+        :type stage_number: TYPE, optional
+        :param cf_type: DESCRIPTION, defaults to "DIGITAL"
+        :type cf_type: TYPE, optional
+        :param sample_rate: DESCRIPTION, defaults to 1
+        :type sample_rate: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        stage = inventory.CoefficientsTypeResponseStage(
+            stage_number,
+            1,
+            0,
+            self.units_in,
+            self.units_out,
+            "DIGITAL",
+            name=self.name,
+            decimation_input_sample_rate=sample_rate,
+            decimation_factor=1,
+            decimation_offset=0,
+            decimation_delay=self.delay,
+            decimation_correction=0,
+            numerator=[],
+            denominator=[])
+        
+        return stage
 
 
     def complex_response(self, frequencies):
