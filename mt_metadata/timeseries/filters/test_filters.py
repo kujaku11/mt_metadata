@@ -91,7 +91,7 @@ def main():
     """
     station_xml_filehandle = 'ZU_20210212.xml'
     station_xml_filehandle = 'fdsn-station_2021-03-09T04_44_51.xml'
-    inventory = load_sample_network_inventory(station_xml_filehandle)
+    inventory = load_sample_network_inventory(station_xml_filehandle, verbose=True)
     test_filter_generation_from_xml_via_obspy(inventory)
     print("finito {}".format(datetime.datetime.now()))
 
