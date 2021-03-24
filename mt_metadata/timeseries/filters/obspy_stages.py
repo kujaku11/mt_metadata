@@ -28,6 +28,7 @@ def create_pole_zero_filter_from_stage(stage):
 
 def check_if_coefficient_filter_is_delay_only(stage):
     """
+    stage: obspy_stage type in obspy.core.inventory.response
     This function may wind up being a method of the CoefficientFilter class, but leaving it
     separate for now.
     Conditions to check:

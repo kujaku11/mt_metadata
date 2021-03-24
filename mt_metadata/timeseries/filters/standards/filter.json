@@ -59,5 +59,16 @@
         "options": [],
         "alias": [],
         "example": "2/1/2020"
+    }, 
+
+    "gain": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
+        "options": [],
+        "alias": [],
+        "example": "1.0"
     }
 }

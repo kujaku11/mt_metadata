@@ -37,6 +37,7 @@ class PoleZeroFilter(Filter):
         self.type = 'zpk'
         self._poles = None
         self._zeros = None
+        self.normalization_factor = 1.0
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
@@ -93,6 +94,10 @@ class PoleZeroFilter(Filter):
         zpg = signal.ZerosPolesGain(
             self.zeros, self.poles, self.normalization_factor)
         return zpg
+
+    @property
+    def total_gain(self):
+        return self.gain * self.normalization_factor
 
     def to_obspy(self, stage_number=1, gain=1, normalization_frequency=.01, pz_type="LAPLACE (RADIANS/SECOND)"):
         """

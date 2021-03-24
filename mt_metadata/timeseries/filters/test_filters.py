@@ -86,12 +86,28 @@ def test_filter_generation_from_xml_via_obspy(inventory):
 
     print('ok')
 
+
+def test_correct_sense_of_normalization_factor():
+    """
+    Load in an mth5 with data from NIMS system and calibrate the data.  Confirm whether the normalization factor
+    needs to be multiplied or divided to yield the correct magnetic field amplitude.
+    Since the normalization factor for NIMS is around 2000 we are either going to get a DC field of around
+    50000nT or around 25nT so it should be pretty clear which way is correct.
+
+    this Basically will act as a test for the correct sense of total_gain() in PoleZeroFilter()
+	
+    -------
+
+    """
+    pass
+
+
 def main():
     """
     """
     station_xml_filehandle = 'ZU_20210212.xml'
     station_xml_filehandle = 'fdsn-station_2021-03-09T04_44_51.xml'
-    inventory = load_sample_network_inventory(station_xml_filehandle)
+    inventory = load_sample_network_inventory(station_xml_filehandle, verbose=True)
     test_filter_generation_from_xml_via_obspy(inventory)
     print("finito {}".format(datetime.datetime.now()))
 

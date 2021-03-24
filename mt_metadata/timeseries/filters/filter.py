@@ -149,6 +149,7 @@ OBSPY_MAPPING = {}
 OBSPY_MAPPING['input_units'] = 'units_in'
 OBSPY_MAPPING['name'] = 'name'
 OBSPY_MAPPING['output_units'] = 'units_out'
+OBSPY_MAPPING['stage_gain'] = 'gain'
 
 class Filter(Base):
     __doc__ = write_lines(attr_dict)
@@ -177,6 +178,7 @@ class Filter(Base):
         self._calibration_dt = MTime()
         self.comments = None
         self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
+        self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -204,7 +206,9 @@ class Filter(Base):
     def calibration_date(self, value):
         self._calibration_dt.from_str(value)
 
-
+    @property
+    def total_gain(self):
+        return self.gain
 
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):

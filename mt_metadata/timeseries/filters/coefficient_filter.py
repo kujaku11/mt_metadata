@@ -8,7 +8,6 @@ from mt_metadata.timeseries.filters.filter import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping['stage_gain'] = 'gain'
 
 # =============================================================================
 attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
@@ -19,7 +18,6 @@ class CoefficientFilter(Filter):
 
     def __init__(self, **kwargs):
         self.type = 'coefficient'
-        self.gain = 1.0
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
