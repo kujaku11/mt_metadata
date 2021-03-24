@@ -108,5 +108,5 @@ __all__ = [
     "Auxiliary",
     "Electric",
     "Magnetic",
-    "Experiment"
+    "Experiment",
 ]

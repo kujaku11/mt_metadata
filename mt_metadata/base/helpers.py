@@ -73,8 +73,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     lines = [
         hline,
-        line.format("**Metadata Key**", c1,
-                    "**Description**", c2, "**Example**", c3),
+        line.format("**Metadata Key**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -84,8 +83,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         d_lines = wrap_description(entry["description"], c2)
         e_lines = wrap_description(entry["example"], c3)
         # line 1 is with the entry
-        lines.append(line.format(f"**{key}**", c1,
-                                 d_lines[0], c2, e_lines[0], c3))
+        lines.append(line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3))
         # line 2 skip an entry in the
         lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
         # line 3 required
@@ -99,8 +97,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 5 units
         lines.append(
-            line.format(f"Units: {entry['units']}",
-                        c1, d_lines[4], c2, e_lines[4], c3)
+            line.format(f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3)
         )
 
         # line 6 blank
@@ -108,8 +105,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 7 type
         lines.append(
-            line.format(f"Type: {entry['type']}", c1,
-                        d_lines[6], c2, e_lines[6], c3)
+            line.format(f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3)
         )
 
         # line 8 blank
@@ -117,8 +113,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 9 type
         lines.append(
-            line.format(f"Style: {entry['style']}",
-                        c1, d_lines[8], c2, e_lines[8], c3)
+            line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
         )
 
         # line 10 blank
@@ -323,8 +318,7 @@ def element_to_dict(element):
             for k, v in dc.items():
                 child_dict[k].append(v)
         meta_dict = {
-            element.tag: {k: v[0] if len(
-                v) == 1 else v for k, v in child_dict.items()}
+            element.tag: {k: v[0] if len(v) == 1 else v for k, v in child_dict.items()}
         }
         if "item" in meta_dict[element.tag].keys():
             meta_dict[element.tag] = meta_dict[element.tag]["item"]

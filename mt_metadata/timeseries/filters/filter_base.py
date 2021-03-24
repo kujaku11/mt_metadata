@@ -184,7 +184,6 @@ class FilterBase(Base):
         self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-      
 
     @property
     def obspy_mapping(self):
@@ -213,11 +212,11 @@ class FilterBase(Base):
     @property
     def total_gain(self):
         return self.gain
-    
+
     @staticmethod
     def get_unit_description(units):
         return units_descriptions[units]
-    
+
     def get_filter_description(self):
         """
         
@@ -227,10 +226,10 @@ class FilterBase(Base):
         :rtype: TYPE
 
         """
-        
+
         if self.comments is None:
             return filter_descriptions[self.type]
-        
+
         return self.comments
 
     @classmethod
