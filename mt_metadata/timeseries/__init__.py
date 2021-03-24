@@ -67,7 +67,7 @@ from .timing_system import TimingSystem
 from .time_period import TimePeriod
 from .orientation import Orientation
 from .filters.filtered import Filtered
-from .filters.filter import Filter
+from .filters.filter_base import FilterBase
 from .data_logger import DataLogger
 from .channel import Channel
 from .auxiliary import Auxiliary
@@ -99,7 +99,7 @@ __all__ = [
     "Orientation",
     "Software",
     "Filtered",
-    "Filter",
+    "FilterBase",
     "DataLogger",
     "Survey",
     "Station",
@@ -108,4 +108,5 @@ __all__ = [
     "Auxiliary",
     "Electric",
     "Magnetic",
+    "Experiment"
 ]

@@ -4,23 +4,23 @@ import scipy.signal as signal
 from obspy.core import inventory
 
 from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter import Filter
-from mt_metadata.timeseries.filters.filter import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import FilterBase
+from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 obspy_mapping["decimation_delay"] = "delay"
 # =============================================================================
-attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
+attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
 
-class TimeDelayFilter(Filter):
+class TimeDelayFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "time delay"
         self.delay = None
-        super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
+        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
     def to_obspy(self, stage_number=1, sample_rate=1):

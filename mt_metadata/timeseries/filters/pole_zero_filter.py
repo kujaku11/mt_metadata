@@ -4,13 +4,13 @@ import obspy
 import scipy.signal as signal
 
 from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter import Filter
-from mt_metadata.timeseries.filters.filter import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import FilterBase
+from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
+attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
@@ -31,13 +31,13 @@ obspy_mapping["_poles"] = "_poles"
 obspy_mapping["normalization_factor"] = "normalization_factor"
 
 
-class PoleZeroFilter(Filter):
+class PoleZeroFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "zpk"
         self._poles = None
         self._zeros = None
         self.normalization_factor = 1.0
-        super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
+        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
 

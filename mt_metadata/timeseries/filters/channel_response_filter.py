@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.signal as signal
 
-from mt_metadata.timeseries.filters.filter import Filter
+from mt_metadata.timeseries.filters.filter_base import FilterBase
 
 
 class ChannelResponseFilter(object):
