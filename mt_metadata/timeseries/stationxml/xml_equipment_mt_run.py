@@ -129,7 +129,9 @@ class XMLEquipmentMTRun(BaseTranslator):
             d_key, d_value = d_str.split(":")
             d_value = d_value.strip()
             if not d_value in ["", "None", "null"]:
-                run_obj.set_attr_from_name(f"data_logger.{d_key.strip()}", d_value.strip())
+                run_obj.set_attr_from_name(
+                    f"data_logger.{d_key.strip()}", d_value.strip()
+                )
 
         return run_obj
 

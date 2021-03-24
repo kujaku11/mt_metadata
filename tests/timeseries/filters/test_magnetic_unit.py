@@ -35,8 +35,15 @@ ToDo:
 import unittest
 from obspy.core import inventory
 
-from mt_metadata.timeseries.filters import ChannelResponseFilter, PoleZeroFilter, CoefficientFilter, TimeDelayFilter
-from mt_metadata.timeseries.filters.helper_functions import load_sample_network_inventory
+from mt_metadata.timeseries.filters import (
+    ChannelResponseFilter,
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+)
+from mt_metadata.timeseries.filters.helper_functions import (
+    load_sample_network_inventory,
+)
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 
@@ -46,26 +53,31 @@ class TestFilterMagnetic(unittest.TestCase):
     """
 
     def setUp(self):
-        self.station_xml_filehandle = 'MTML_Magnetometer_Unit.xml'
-        self.inventory = load_sample_network_inventory(
-            self.station_xml_filehandle)
-        self.stages = self.inventory.networks[0].stations[0].channels[0].response.response_stages
-        self.instrument_sensitivity = self.inventory.networks[
-            0].stations[0].channels[0].response.instrument_sensitivity
+        self.station_xml_filehandle = "MTML_Magnetometer_Unit.xml"
+        self.inventory = load_sample_network_inventory(self.station_xml_filehandle)
+        self.stages = (
+            self.inventory.networks[0].stations[0].channels[0].response.response_stages
+        )
+        self.instrument_sensitivity = (
+            self.inventory.networks[0]
+            .stations[0]
+            .channels[0]
+            .response.instrument_sensitivity
+        )
 
     def test_inventory_type(self):
         self.assertIsInstance(self.inventory, inventory.Inventory)
 
     def test_instrument_sensitivity(self):
         """ Doesn't have a translation yet """
-        self.assertRaises(Exception, create_filter_from_stage,
-                          self.instrument_sensitivity)
+        self.assertRaises(
+            Exception, create_filter_from_stage, self.instrument_sensitivity
+        )
 
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])
         self.assertIsInstance(f1, PoleZeroFilter)
-        self.assertEqual(f1.name,
-                         "magnetic field 3 pole Butterworth low-pass")
+        self.assertEqual(f1.name, "magnetic field 3 pole Butterworth low-pass")
         self.assertEqual(f1.type, "zpk")
         self.assertEqual(f1.units_in, "nT")
         self.assertEqual(f1.units_out, "V")
@@ -73,8 +85,9 @@ class TestFilterMagnetic(unittest.TestCase):
         self.assertEqual(f1.n_zeros, 0)
         self.assertAlmostEqual(f1.normalization_factor, 1984.31, 2)
         self.assertListEqual(
-            f1.poles, 
-            [(-6.283185+10.882477j), (-6.283185-10.882477j), (-12.566371+0j)])
+            f1.poles,
+            [(-6.283185 + 10.882477j), (-6.283185 - 10.882477j), (-12.566371 + 0j)],
+        )
 
     def test_stage_02(self):
         f2 = create_filter_from_stage(self.stages[1])

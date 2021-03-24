@@ -106,7 +106,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if mt_channel.component is None:
             mt_channel.component = create_mt_component(xml_channel.code)
-            
+
         # fill channel filters
         mt_channel.filter.name = list(mt_filters.keys())
         mt_channel.filter.applied = [False] * len(list(mt_filters.keys()))
@@ -127,8 +127,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         if not isinstance(
-            mt_channel, (metadata.Electric, metadata.Magnetic,
-                         metadata.Auxiliary)
+            mt_channel, (metadata.Electric, metadata.Magnetic, metadata.Auxiliary)
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
@@ -140,7 +139,9 @@ class XMLChannelMTChannel(BaseTranslator):
             alignement = "vertical"
 
         channel_code = make_channel_code(
-            mt_channel.sample_rate, mt_channel.type, mt_channel.measurement_azimuth,
+            mt_channel.sample_rate,
+            mt_channel.type,
+            mt_channel.measurement_azimuth,
             orientation=alignement,
         )
 
@@ -184,8 +185,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 xml_channel.dip = mt_channel.measurement_tilt % 360
 
             else:
-                setattr(xml_channel, xml_key,
-                        mt_channel.get_attr_from_name(mt_key))
+                setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
                 if mt_key == "units":
                     setattr(
                         xml_channel,
@@ -244,8 +244,7 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.negative.model = sensor.model
             mt_channel.negative.type = "electrode"
 
-            mt_channel.dipole_length = self._parse_dipole_length(
-                sensor.description)
+            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
 
             return mt_channel
 
@@ -410,8 +409,9 @@ class XMLChannelMTChannel(BaseTranslator):
                 for run in item.replace("[", "").replace("]", "").split(","):
                     run = run.strip()
                     if run:
-                        comments.append(inventory.Comment(
-                            run.strip(), subject="mt.run.id"))
+                        comments.append(
+                            inventory.Comment(run.strip(), subject="mt.run.id")
+                        )
         return comments
 
     def _get_mt_position(self, xml_channel, mt_channel):
@@ -460,7 +460,7 @@ class XMLChannelMTChannel(BaseTranslator):
             self.logger.debug("Did not find any units descriptions in XML")
 
         return mt_channel
-    
+
     def _xml_response_to_mt(self, xml_channel):
         """
         parse the filters from obspy into mt filters
@@ -469,9 +469,9 @@ class XMLChannelMTChannel(BaseTranslator):
         for stage in xml_channel.response.response_stages:
             mt_filter = create_filter_from_stage(stage)
             filter_dict[mt_filter.name.lower()] = mt_filter
-            
+
         return filter_dict
-    
+
     def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
         """
         Translate MT filters into Obspy Response
@@ -486,7 +486,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-        
+        xml_channel.response = inventory.Response()
         for ii, name in enumerate(mt_channel.filter.name, 1):
             try:
                 mt_filter = filters_dict[name]
@@ -495,10 +495,8 @@ class XMLChannelMTChannel(BaseTranslator):
                 msg = f"Could not find {name} in filters dictionary, skipping"
                 self.logger.error(msg)
                 continue
-            
+
             xml_filter = mt_filter.to_obspy(stage_number=ii)
             xml_channel.response.response_stages.append(xml_filter)
-            
+
         return xml_channel
-            
-        

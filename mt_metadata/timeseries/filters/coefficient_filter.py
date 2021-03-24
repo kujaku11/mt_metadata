@@ -14,16 +14,16 @@ attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-class CoefficientFilter(Filter):
 
+class CoefficientFilter(Filter):
     def __init__(self, **kwargs):
-        self.type = 'coefficient'
+        self.type = "coefficient"
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
-
-    def to_obspy(self, stage_number=1, cf_type="DIGITAL", sample_rate=1,
-                 gain_frequency=0):
+    def to_obspy(
+        self, stage_number=1, cf_type="DIGITAL", sample_rate=1, gain_frequency=0
+    ):
         """
         stage_sequence_number,
         stage_gain,
@@ -55,7 +55,7 @@ class CoefficientFilter(Filter):
         :rtype: TYPE
 
         """
-        
+
         stage = inventory.CoefficientsTypeResponseStage(
             stage_number,
             self.gain,
@@ -69,9 +69,11 @@ class CoefficientFilter(Filter):
             decimation_offset=0,
             decimation_delay=0,
             decimation_correction=0,
-            numerator=[],
-            denominator=[])
-        
+            numerator=[1],
+            denominator=[],
+            description=self.type,
+        )
+
         return stage
 
     def complex_response(self, frequencies):
@@ -87,4 +89,3 @@ class CoefficientFilter(Filter):
 
         """
         return self.gain * np.ones(len(frequencies))
-

@@ -26,15 +26,14 @@ attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # D
 # - put obspy mapping in json
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping['_zeros'] = '_zeros'
-obspy_mapping['_poles'] = '_poles'
-obspy_mapping['normalization_factor'] = 'normalization_factor'
+obspy_mapping["_zeros"] = "_zeros"
+obspy_mapping["_poles"] = "_poles"
+obspy_mapping["normalization_factor"] = "normalization_factor"
 
 
 class PoleZeroFilter(Filter):
-
     def __init__(self, **kwargs):
-        self.type = 'zpk'
+        self.type = "zpk"
         self._poles = None
         self._zeros = None
         self.normalization_factor = 1.0
@@ -60,7 +59,7 @@ class PoleZeroFilter(Filter):
             self._poles = np.array(value, dtype=np.complex)
 
         elif isinstance(value, str):
-            self._poles = np.array(value.split(','), dtype=np.complex)
+            self._poles = np.array(value.split(","), dtype=np.complex)
 
     @property
     def zeros(self):
@@ -80,7 +79,7 @@ class PoleZeroFilter(Filter):
             self._zeros = np.array(value, dtype=np.complex)
 
         elif isinstance(value, str):
-            self._zeros = np.array(value.split(','), dtype=np.complex)
+            self._zeros = np.array(value.split(","), dtype=np.complex)
 
     @property
     def n_poles(self):
@@ -91,15 +90,20 @@ class PoleZeroFilter(Filter):
         return len(self._zeros)
 
     def zero_pole_gain_representation(self):
-        zpg = signal.ZerosPolesGain(
-            self.zeros, self.poles, self.normalization_factor)
+        zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
         return zpg
 
     @property
     def total_gain(self):
         return self.gain * self.normalization_factor
 
-    def to_obspy(self, stage_number=1, gain=1, normalization_frequency=.01, pz_type="LAPLACE (RADIANS/SECOND)"):
+    def to_obspy(
+        self,
+        stage_number=1,
+        gain=1,
+        normalization_frequency=0,
+        pz_type="LAPLACE (RADIANS/SECOND)",
+    ):
         """
         create an obspy stage
 
@@ -112,17 +116,22 @@ class PoleZeroFilter(Filter):
         if self.poles is None:
             self.poles = []
 
-        rs = obspy.core.inventory.PolesZerosResponseStage(stage_number,
-                                                          gain,
-                                                          normalization_frequency,
-                                                          self.units_in,
-                                                          self.units_out,
-                                                          pz_type,
-                                                          normalization_frequency,
-                                                          self.zeros,
-                                                          self.poles,
-                                                          name=self.name,
-                                                          normalization_factor=self.normalization_factor)
+        rs = obspy.core.inventory.PolesZerosResponseStage(
+            stage_number,
+            gain,
+            normalization_frequency,
+            self.units_in,
+            self.units_out,
+            pz_type,
+            normalization_frequency,
+            self.zeros,
+            self.poles,
+            name=self.name,
+            normalization_factor=self.normalization_factor,
+            description=self._type_dict[self.type],
+            input_units_description=self._units_descriptions[self.units_in],
+            output_units_description=self._units_descriptions[self.units_out],
+        )
 
         return rs
 
@@ -140,20 +149,21 @@ class PoleZeroFilter(Filter):
         """
         angular_frequencies = 2 * np.pi * frequencies
         w, h = signal.freqs_zpk(
-            self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies)
+            self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies
+        )
         return h
 
     def plot_pole_zero_response(self):
         zpg = self.zero_pole_gain_representation()
         frequency_axis = np.logspace(-1, 5, num=100)
-        w = 2. * np.pi * frequency_axis
+        w = 2.0 * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
 
 
 def main():
     pz_filter = PoleZeroFilter()
-    print('test')
+    print("test")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

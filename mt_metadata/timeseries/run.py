@@ -231,7 +231,7 @@ class Run(Base):
                 msg = f"entry must be a string or type Auxiliary not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
-                
+
     def update_time_period(self):
         """
         update time period from the channels
@@ -241,6 +241,6 @@ class Run(Base):
         for channel in self.channels:
             start.append(channel.time_period.start)
             end.append(channel.time_period.end)
-            
+
         self.time_period.start = min(start)
         self.time_period.end = max(end)

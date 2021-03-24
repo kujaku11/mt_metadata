@@ -75,7 +75,7 @@ class XMLStationMTStation(BaseTranslator):
             "provenance.software.name",
             "provenance.software.version",
             "provenance.comments",
-            "data_type"
+            "data_type",
         ]
 
     def xml_to_mt(self, xml_station):

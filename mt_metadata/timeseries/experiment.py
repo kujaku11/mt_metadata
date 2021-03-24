@@ -66,9 +66,8 @@ class Experiment:
                         )
                         lines.append(f"\t\t\tStart: {run.time_period.start}")
                         lines.append(f"\t\t\tEnd:   {run.time_period.end}")
-                        
+
                         lines.append(f"\t\t\t{'-' * 20}")
-                        
 
         return "\n".join(lines)
 
@@ -205,7 +204,7 @@ class Experiment:
             experiment_element = et.parse(fn).getroot()
         if element:
             experiment_element = element
-        
+
         # need to set the lists for each layer, otherwise you get duplicates.
         for survey_element in list(experiment_element):
             survey_dict = helpers.element_to_dict(survey_element)
@@ -213,7 +212,7 @@ class Experiment:
             fd = survey_dict["survey"].pop("filters")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
-            
+
             stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
@@ -231,20 +230,20 @@ class Experiment:
                                     channel = Magnetic()
                                 elif ch == "auxiliary":
                                     channel = Auxiliary()
-                                channel.from_dict(ch_dict)    
+                                channel.from_dict(ch_dict)
                                 channel_list.append(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
                     run_obj.from_dict(run_dict)
                     run_obj.channels = channel_list
                     run_list.append(run_obj)
-                
+
                 station_obj.from_dict(station_dict)
                 station_obj.runs = run_list
                 survey_obj.stations.append(station_obj)
             survey_obj.from_dict(survey_dict)
             self.surveys.append(survey_obj)
-            
+
     def _pop_dictionary(self, in_dict, element):
         """
         Pop off a key from an input dictionary, make sure output is a list
@@ -261,7 +260,7 @@ class Experiment:
         elements = in_dict.pop(element)
         if not isinstance(elements, list):
             elements = [elements]
-            
+
         return elements
 
     def from_json(self, fn):
@@ -297,7 +296,7 @@ class Experiment:
 
         """
         pass
-    
+
     def _read_filter_dict(self, filters_dict):
         """
         Read in filter element an put it in the correct object
@@ -318,9 +317,8 @@ class Experiment:
 
             elif key in ["time_delay_filter"]:
                 mt_filter = TimeDelayFilter()
-            
+
             mt_filter.from_dict(value)
             return_dict[mt_filter.name] = mt_filter
-            
+
         return return_dict
-            

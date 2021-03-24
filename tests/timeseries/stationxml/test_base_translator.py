@@ -59,16 +59,15 @@ class TestReadXMLComment(unittest.TestCase):
         k, v = BaseTranslator().read_xml_comment(self.normal_comment)
         self.assertEqual(k, "mt.run.comment")
         self.assertEqual(v, "normal")
-        
+
     def test_flip_dict(self):
         original = {"a": "b", "c": "d", "e": None, "f": "special"}
         flipped = BaseTranslator().flip_dict(original)
-        self.assertDictEqual({'b': "a", "d": "c"}, flipped)
-        
+        self.assertDictEqual({"b": "a", "d": "c"}, flipped)
+
     def test_read_identifier(self):
         read_doi = BaseTranslator().read_xml_identifier(self.doi)
         self.assertEqual(read_doi, "10.1234.mt/test")
-        
 
 
 # =============================================================================

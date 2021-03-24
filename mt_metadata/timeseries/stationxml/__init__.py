@@ -15,5 +15,5 @@ __all__ = [
     "XMLStationMTStation",
     "XMLEquipmentMTRun",
     "XMLChannelMTChannel",
-    "XMLInventoryMTExperiment"
+    "XMLInventoryMTExperiment",
 ]

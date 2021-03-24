@@ -115,12 +115,12 @@ class Survey(Base):
     def station_names(self):
         """ Return names of station in survey """
         return [ss.id for ss in self.stations]
-    
+
     @property
     def filters(self):
         """ A dictionary of available filters """
         return self._filters
-    
+
     @filters.setter
     def filters(self, value):
         """
@@ -132,13 +132,15 @@ class Survey(Base):
         :rtype: TYPE
 
         """
-        
+
         if not isinstance(value, dict):
-            msg = ("Filters must be a dictionary with keys = names of filters, "
-                   f"not {type(value)}")
+            msg = (
+                "Filters must be a dictionary with keys = names of filters, "
+                f"not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
         filters = {}
         fails = []
         for k, v in value.items():
@@ -152,12 +154,12 @@ class Survey(Base):
             raise TypeError("\n".join(fails))
 
         self._filters = filters
-        
+
     @property
     def filter_names(self):
         """ return a list of filter names """
         return list(self.filters.keys())
-    
+
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
@@ -171,12 +173,12 @@ class Survey(Base):
         for station in self.stations:
             lat.append(station.location.latitude)
             lon.append(station.location.longitude)
-        
+
         self.southeast_corner.latitude = min(lat)
         self.southeast_corner.longitude = max(lon)
         self.northwest_corner.latitude = max(lat)
         self.northwest_corner.longitude = min(lon)
-        
+
     def update_time_period(self):
         """
         Update the start and end time of the survey based on the stations
@@ -189,5 +191,3 @@ class Survey(Base):
 
         self.time_period.start = min(start)
         self.time_period.end = max(end)
-        
-            

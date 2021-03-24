@@ -3,6 +3,7 @@ import scipy.signal as signal
 
 from mt_metadata.timeseries.filters.filter import Filter
 
+
 class ChannelResponseFilter(object):
     """
     This class holds a list of all the filters associated with a channel.
@@ -10,13 +11,13 @@ class ChannelResponseFilter(object):
     response that we will apply to a data segment.
     
     """
+
     def __init__(self, **kwargs):
-        #Filter.__init__(self, **kwargs)
-        self.filters_list = kwargs.get('filters_list', None)
-        self.lambda_function = kwargs.get('lambda_function', None)
+        # Filter.__init__(self, **kwargs)
+        self.filters_list = kwargs.get("filters_list", None)
+        self.lambda_function = kwargs.get("lambda_function", None)
         # if self.lambda_function is None:
         #     self.lambda_function = lambda f: 1.0*f
-
 
     @property
     def total_delay(self):
@@ -34,7 +35,7 @@ class ChannelResponseFilter(object):
         -------
 
         """
-        delay_filters = [x for x in self.filters_list if x.type=='time_delay']
+        delay_filters = [x for x in self.filters_list if x.type == "time_delay"]
         return delay_filters
 
     def complex_response(self, frequencies, include_delay=False):
@@ -50,10 +51,10 @@ class ChannelResponseFilter(object):
 
         """
         if include_delay:
-            lambda_list = [lambda f:x.complex_response(f) for x in self.filters_list]
+            lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
         else:
             lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
-        print('hi')
+        print("hi")
         evaluated_lambdas = [x(frequencies) for x in lambda_list]
 
         return self.lambda_function(frequencies)
@@ -71,6 +72,3 @@ class ChannelResponseFilter(object):
         confirms that the input and output units of each filter state are consistent
         """
         pass
-
-
-

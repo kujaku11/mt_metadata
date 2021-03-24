@@ -16,16 +16,19 @@ from copy import deepcopy
 
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata import timeseries as metadata
-from mt_metadata.timeseries.stationxml import (XMLNetworkMTSurvey,
-                                               XMLStationMTStation,
-                                               XMLChannelMTChannel)
+from mt_metadata.timeseries.stationxml import (
+    XMLNetworkMTSurvey,
+    XMLStationMTStation,
+    XMLChannelMTChannel,
+)
 
 from obspy.core import inventory
 from obspy import read_inventory
+
 # =============================================================================
 
 
-class XMLInventoryMTExperiment():
+class XMLInventoryMTExperiment:
     """
     Read the full files and put the elements in the appropriate locations.
 
@@ -71,7 +74,9 @@ class XMLInventoryMTExperiment():
             for xml_station in xml_network.stations:
                 mt_station = self.station_translator.xml_to_mt(xml_station)
                 for xml_channel in xml_station:
-                    mt_channel, mt_filters = self.channel_translator.xml_to_mt(xml_channel)
+                    mt_channel, mt_filters = self.channel_translator.xml_to_mt(
+                        xml_channel
+                    )
                     mt_survey.filters.update(mt_filters)
                     # if there is a run list match channel to runs
                     if self.channel_translator.run_list:
@@ -90,14 +95,19 @@ class XMLInventoryMTExperiment():
                     elif mt_station.runs:
                         for mt_run in mt_station.runs:
                             if mt_run.sample_rate == mt_channel.sample_rate:
-                                if mt_run.time_period.start == mt_channel.time_period.start:
-                                    if mt_run.time_period.end == mt_channel.time_period.end:
+                                if (
+                                    mt_run.time_period.start
+                                    == mt_channel.time_period.start
+                                ):
+                                    if (
+                                        mt_run.time_period.end
+                                        == mt_channel.time_period.end
+                                    ):
                                         mt_run.channels.append(mt_channel)
 
                     # make a new run with generic information
                     else:
-                        mt_run = metadata.Run(
-                            id=f"{len(mt_station.runs)+1:03d}")
+                        mt_run = metadata.Run(id=f"{len(mt_station.runs)+1:03d}")
                         mt_run.time_period.start = mt_channel.time_period.start
                         mt_run.time_period.end = mt_channel.time_period.end
                         mt_run.sample_rate = mt_channel.sample_rate
@@ -170,14 +180,13 @@ class XMLInventoryMTExperiment():
 
         for mt_channel in mt_run.channels:
             xml_channel = self.channel_translator.mt_to_xml(mt_channel, filters_dict)
-            existing_channels = xml_station.select(
-                channel=xml_channel.code).channels
+            existing_channels = xml_station.select(channel=xml_channel.code).channels
             if existing_channels:
                 for existing_channel in existing_channels:
                     print(xml_channel.code, existing_channel.code)
                     find = False
                     run_list = [c.value for c in existing_channel.comments]
-                    # Compare channel metadata if matches just add run.id if its 
+                    # Compare channel metadata if matches just add run.id if its
                     # not already there.
                     if self.compare_xml_channel(xml_channel, existing_channel):
                         find = True
@@ -185,31 +194,38 @@ class XMLInventoryMTExperiment():
                         if not mt_run.id in run_list:
                             print(f"adding run id {mt_run.id} to {run_list}")
                             existing_channel.comments.append(
-                                inventory.Comment(mt_run.id, subject="mt.run.id"))
-                        
+                                inventory.Comment(mt_run.id, subject="mt.run.id")
+                            )
+
                         if xml_channel.start_date < existing_channel.start_date:
                             print("Changed starting time")
                             existing_channel.start_date = xml_channel.start_date
-                            
+
                         if xml_channel.end_date > existing_channel.end_date:
                             print("Changed ending time")
                             existing_channel.end_date = xml_channel.end_date
-                        
+
                     if not find:
-                        print(f"xxx Unmatched {xml_channel.code}!={existing_channel.code}")
+                        print(
+                            f"xxx Unmatched {xml_channel.code}!={existing_channel.code}"
+                        )
                         run_list = [c.value for c in xml_channel.comments]
                         if not mt_run.id in run_list:
                             print(f"adding run id {mt_run.id} to {run_list}")
                             xml_channel.comments.append(
-                                inventory.Comment(mt_run.id, subject="mt.run.id"))
+                                inventory.Comment(mt_run.id, subject="mt.run.id")
+                            )
                         xml_station.channels.append(xml_channel)
             else:
-                print(f"no existing channels for {xml_channel.code}, adding {mt_run.id}")
+                print(
+                    f"no existing channels for {xml_channel.code}, adding {mt_run.id}"
+                )
                 run_list = [c.value for c in xml_channel.comments]
                 if not mt_run.id in run_list:
                     print(f"adding run id {mt_run.id} to {run_list}")
                     xml_channel.comments.append(
-                                inventory.Comment(mt_run.id, subject="mt.run.id"))
+                        inventory.Comment(mt_run.id, subject="mt.run.id")
+                    )
                 xml_station.channels.append(xml_channel)
 
         return xml_station
@@ -232,7 +248,9 @@ class XMLInventoryMTExperiment():
             return False
 
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
-            self.logger.info(f"{xml_channel_01.sample_rate} != {xml_channel_02.sample_rate}")
+            self.logger.info(
+                f"{xml_channel_01.sample_rate} != {xml_channel_02.sample_rate}"
+            )
             return False
 
         if xml_channel_01.sensor != xml_channel_02.sensor:
@@ -240,11 +258,15 @@ class XMLInventoryMTExperiment():
             return False
 
         if round(xml_channel_01.latitude, 3) != round(xml_channel_02.latitude, 3):
-            self.logger.info(f"{round(xml_channel_01.latitude, 3)} != {round(xml_channel_02.latitude, 3)}")
+            self.logger.info(
+                f"{round(xml_channel_01.latitude, 3)} != {round(xml_channel_02.latitude, 3)}"
+            )
             return False
 
         if round(xml_channel_01.longitude, 3) != round(xml_channel_02.longitude, 3):
-            self.logger.info(f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}")
+            self.logger.info(
+                f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
+            )
             return False
 
         return True

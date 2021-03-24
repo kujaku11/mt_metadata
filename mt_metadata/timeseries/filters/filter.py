@@ -135,6 +135,7 @@ import numpy as np
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.base.helpers import units_descriptions
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
@@ -144,12 +145,13 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
 # =============================================================================
 
-#Form is OBSPY_MAPPING['obspy_label'] = 'mth5_label'
+# Form is OBSPY_MAPPING['obspy_label'] = 'mth5_label'
 OBSPY_MAPPING = {}
-OBSPY_MAPPING['input_units'] = 'units_in'
-OBSPY_MAPPING['name'] = 'name'
-OBSPY_MAPPING['output_units'] = 'units_out'
-OBSPY_MAPPING['stage_gain'] = 'gain'
+OBSPY_MAPPING["input_units"] = "units_in"
+OBSPY_MAPPING["name"] = "name"
+OBSPY_MAPPING["output_units"] = "units_out"
+OBSPY_MAPPING["stage_gain"] = "gain"
+
 
 class Filter(Base):
     __doc__ = write_lines(attr_dict)
@@ -174,7 +176,7 @@ class Filter(Base):
         self.type = None
         self.units_in = None
         self.units_out = None
-        
+
         self._calibration_dt = MTime()
         self.comments = None
         self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
@@ -182,10 +184,17 @@ class Filter(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+        self._type_dict = {
+            "zpk": "poles and zeros filter",
+            "coefficient": "coefficient filter",
+            "time delay": "time delay filter",
+        }
+        self._units_descriptions = units_descriptions
+
     @property
     def obspy_mapping(self):
         return self._obspy_mapping
-    
+
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
         """
@@ -195,7 +204,7 @@ class Filter(Base):
             msg = f"Input must be a dictionary not {type(obspy_dict)}"
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
         self._obspy_mapping = obspy_dict
 
     @property
@@ -245,19 +254,21 @@ class Filter(Base):
         return None
 
     def generate_frequency_axis(self, sampling_rate, n_observations):
-        dt = 1./sampling_rate
+        dt = 1.0 / sampling_rate
         frequency_axis = np.fft.fftfreq(n_observations, d=dt)
         frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
-    def plot_response(self, frequency_axis, x_units='period'):
+    def plot_response(self, frequency_axis, x_units="period"):
         if frequency_axis is None:
             frequency_axis = self.generate_frequency_axis(10.0, 1000)
-            x_units = 'frequency'
+            x_units = "frequency"
 
-        w = 2. * np.pi * frequency_axis
+        w = 2.0 * np.pi * frequency_axis
         complex_response = self.complex_response(frequency_axis)
-        plot_response(w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units)
+        plot_response(
+            w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units
+        )
         # if isinstance(self, mt_metadata.timeseries.filters.pole_zero_filter.PoleZeroFilter):
         #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
         # else:
@@ -265,6 +276,7 @@ class Filter(Base):
 
     def plot_complex_response(self, frequency_axis, **kwargs):
         from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
+
         complex_response = self.complex_response(frequency_axis)
         plot_complex_response(frequency_axis, complex_response)
 
@@ -286,7 +298,6 @@ class Filter(Base):
         return output
 
 
-
 """
 timeseries.calibrate(Filter())
 filter.apply(TimeSeries())
@@ -300,9 +311,12 @@ def apply_filter(mc_filter):
 
 
 """
+
+
 def main():
     filter_instance = Filter()
-    print('test')
+    print("test")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -55,7 +55,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "project",
             "acquired_by.author",
             "acquired_by.comments",
-            "summary"
+            "summary",
         ]
 
     def xml_to_mt(self, network):

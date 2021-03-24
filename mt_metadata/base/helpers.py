@@ -23,6 +23,20 @@ from xml.dom import minidom
 from operator import itemgetter
 
 # =============================================================================
+# Unit conversions
+# =============================================================================
+units_descriptions = {
+    "T": "Tesla",
+    "nT": "nanoTesla",
+    "V": "Volts",
+    "mV": "milliVolts",
+    "count": "counts",
+    "V/m": "Volts per meter",
+    "mV/km": "milliVolts per kilometer",
+}
+
+
+# =============================================================================
 # write doc strings
 # =============================================================================
 def wrap_description(description, column_width):
@@ -110,7 +124,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 # default seperater '_'
 def flatten_dict(meta_dict, parent_key=None, sep="."):
     """
-    
+
     :param meta_dict: DESCRIPTION
     :type meta_dict: TYPE
     :param parent_key: DESCRIPTION, defaults to None
@@ -138,7 +152,7 @@ def flatten_dict(meta_dict, parent_key=None, sep="."):
 def recursive_split_dict(key, value, remainder, sep="."):
     """
     recursively split a dictionary
-    
+
     :param key: DESCRIPTION
     :type key: TYPE
     :param value: DESCRIPTION
@@ -180,7 +194,7 @@ def recursive_split_setattr(base_object, name, value, sep="."):
 
 def structure_dict(meta_dict, sep="."):
     """
-    
+
     :param meta_dict: DESCRIPTION
     :type meta_dict: TYPE
     :param sep: DESCRIPTION, defaults to '.'
@@ -261,7 +275,7 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
 def dict_to_xml(meta_dict, attr_dict=None):
     """
     Assumes dictionary is structured {class:{attribute_dict}}
-    
+
     :param meta_dict: DESCRIPTION
     :type meta_dict: TYPE
     :return: DESCRIPTION
@@ -280,9 +294,9 @@ def dict_to_xml(meta_dict, attr_dict=None):
 
 def element_to_dict(element):
     """
-    
+
     .. todo:: Add way to read in attritues like units and validate them.
-    
+
     :param element: DESCRIPTION
     :type element: TYPE
     :return: DESCRIPTION

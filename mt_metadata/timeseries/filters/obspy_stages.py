@@ -9,16 +9,18 @@ from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
 from mt_metadata.timeseries.filters.time_delay_filter import TimeDelayFilter
 from mt_metadata.timeseries.filters.pole_zero_filter import PoleZeroFilter
 
+
 def create_time_delay_filter_from_stage(stage):
     time_delay_filter = TimeDelayFilter()
     time_delay_filter = time_delay_filter.from_obspy_stage(stage)
     return time_delay_filter
 
+
 def create_coefficent_filter_from_stage(stage):
     coeff_filter = CoefficientFilter()
     coeff_filter = coeff_filter.from_obspy_stage(stage)
     return coeff_filter
-    
+
 
 def create_pole_zero_filter_from_stage(stage):
     pz_filter = PoleZeroFilter()
@@ -54,14 +56,14 @@ def check_if_coefficient_filter_is_delay_only(stage):
 
 
 def create_filter_from_stage(stage):
-    #this works on a single stage
+    # this works on a single stage
 
     if isinstance(stage, obspy.core.inventory.response.PolesZerosResponseStage):
         return create_pole_zero_filter_from_stage(stage)
     elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):
         # Sometimes filter stages are used to kluge-represent filters of other types
         #
-        #Encountered Cases This Far:
+        # Encountered Cases This Far:
         #   CoefficientTypeResponseStage Used to package a time-delay filter
         is_a_delay_filter = check_if_coefficient_filter_is_delay_only(stage)
         if is_a_delay_filter:

@@ -27,6 +27,7 @@ class Filtered(Base):
 	applied.   May want to dict(zip(name, applied))
     
     """
+
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):

@@ -9,7 +9,11 @@ Created on Mon Mar 22 10:21:28 2021
 
 """
 
-from mt_metadata.timeseries.filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
+from mt_metadata.timeseries.filters import (
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+)
 from mt_metadata.base import helpers
 from obspy.core import inventory
 
@@ -31,9 +35,7 @@ for survey_element in list(experiment):
             td_filter = TimeDelayFilter()
             td_filter.from_xml(td_element)
             filters_dict[td_filter.name] = td_filter
-            
-     
-    
+
 
 # zpk_str = ("<pole_zero_filter>"
 #            "<name>magnetic field 3 pole Butterworth low-pass</name>"

@@ -9,20 +9,20 @@ from mt_metadata.timeseries.filters.filter import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping['decimation_delay'] = 'delay'
+obspy_mapping["decimation_delay"] = "delay"
 # =============================================================================
 attr_dict = get_schema("filter", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-class TimeDelayFilter(Filter):
 
+class TimeDelayFilter(Filter):
     def __init__(self, **kwargs):
-        self.type = 'time delay'
+        self.type = "time delay"
         self.delay = None
         super(Filter, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
-        
+
     def to_obspy(self, stage_number=1, sample_rate=1):
         """
         stage_sequence_number,
@@ -55,7 +55,7 @@ class TimeDelayFilter(Filter):
         :rtype: TYPE
 
         """
-        
+
         stage = inventory.CoefficientsTypeResponseStage(
             stage_number,
             1,
@@ -69,11 +69,12 @@ class TimeDelayFilter(Filter):
             decimation_offset=0,
             decimation_delay=self.delay,
             decimation_correction=0,
-            numerator=[],
-            denominator=[])
-        
-        return stage
+            numerator=[1],
+            denominator=[],
+            description=self.type,
+        )
 
+        return stage
 
     def complex_response(self, frequencies):
         """
@@ -92,21 +93,10 @@ class TimeDelayFilter(Filter):
         In general, delay corrections should be applied in time domain before spectral processing.
 
         """
-        print("WARNING - USING FREQUENCY DOMAIN VERSION OF THIS METHOD NOT RECOMMENDED FOR MT PROCESSING")
+        print(
+            "WARNING - USING FREQUENCY DOMAIN VERSION OF THIS METHOD NOT RECOMMENDED FOR MT PROCESSING"
+        )
         w = 2 * np.pi * frequencies
-        exponent = -1.j * w * self.delay
+        exponent = -1.0j * w * self.delay
         spectral_shift_multiplier = np.exp(exponent)
         return spectral_shift_multiplier
-
-
-def test_expected_behaviour():
-    import matplotlib.pyplot as plt
-    np.random.seed(1)
-
-
-def main():
-    time_delay_filter = TimeDelayFilter()
-    print('test')
-
-if __name__ == '__main__':
-    main()

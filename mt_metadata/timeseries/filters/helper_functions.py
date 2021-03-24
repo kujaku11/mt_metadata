@@ -2,16 +2,17 @@ import obspy
 
 from mth5.utils.pathing import DATA_DIR
 
+
 def load_sample_network_inventory(xml_file_handle, verbose=False):
     """
     """
-    iris_dir = DATA_DIR.joinpath('iris')
+    iris_dir = DATA_DIR.joinpath("iris")
     xml_file_path = iris_dir.joinpath(xml_file_handle)
     xml_file_path_str = xml_file_path.__str__()
     if verbose:
         print(f"Loading {xml_file_path_str}")
     inventory = obspy.read_inventory(xml_file_path_str)
-    #inventory = obspy.read_inventory(xml_file_path.__str__())
+    # inventory = obspy.read_inventory(xml_file_path.__str__())
     return inventory
 
 
@@ -48,5 +49,5 @@ def decimation_info_is_pure_delay(stage):
 
 
 def stage_gain_is_degenerate():
-    #if gain is 1.0 ignore it
+    # if gain is 1.0 ignore it
     pass

@@ -26,7 +26,8 @@ m.from_experiment(experiment)
 
 # Output StationXML from an MTH5 file
 new_experiment = m.to_experiment()
-new_station_xml = translator.mt_to_xml(new_experiment, 
-                                       stationxml_fn="new_stationxml.xml")
+new_station_xml = translator.mt_to_xml(
+    new_experiment, stationxml_fn="new_stationxml.xml"
+)
 
 m.close_mth5()

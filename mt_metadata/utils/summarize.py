@@ -44,15 +44,15 @@ def summary_to_array(summary_dict):
     """
     dtype = np.dtype(
         [
-                    ("attribute", "U72"),
-                    ("type", "U15"),
-                    ("required", np.bool_),
-                    ("style", "U72"),
-                    ("units", "U32"),
-                    ("description", "U300"),
-                    ("options", "U150"),
-                    ("alias", "U72"),
-                    ("example", "U72"),
+            ("attribute", "U72"),
+            ("type", "U15"),
+            ("required", np.bool_),
+            ("style", "U72"),
+            ("units", "U32"),
+            ("description", "U300"),
+            ("options", "U150"),
+            ("alias", "U72"),
+            ("example", "U72"),
         ]
     )
 
@@ -93,10 +93,10 @@ def summarize_standards(metadata_type="timeseries", csv_fn=None):
     """
 
     function_dict = {"timeseries": summarize_timeseries_standards}
-    
+
     summary_df = pd.DataFrame(summary_to_array(function_dict[metadata_type]()))
-    
+
     if csv_fn:
         summary_df.to_csv(csv_fn, index=False)
-        
+
     return summary_df
