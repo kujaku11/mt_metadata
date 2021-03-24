@@ -128,9 +128,9 @@ class PoleZeroFilter(FilterBase):
             self.poles,
             name=self.name,
             normalization_factor=self.normalization_factor,
-            description=self._type_dict[self.type],
-            input_units_description=self._units_descriptions[self.units_in],
-            output_units_description=self._units_descriptions[self.units_out],
+            description=self.get_filter_description(),
+            input_units_description=self.get_unit_description(self.units_in),
+            output_units_description=self.get_unit_description(self.units_out),
         )
 
         return rs
@@ -158,12 +158,3 @@ class PoleZeroFilter(FilterBase):
         frequency_axis = np.logspace(-1, 5, num=100)
         w = 2.0 * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
-
-
-def main():
-    pz_filter = PoleZeroFilter()
-    print("test")
-
-
-if __name__ == "__main__":
-    main()

@@ -71,7 +71,7 @@ class CoefficientFilter(FilterBase):
             decimation_correction=0,
             numerator=[1],
             denominator=[],
-            description=self.type,
+            description=self.get_filter_description(),
         )
 
         return stage

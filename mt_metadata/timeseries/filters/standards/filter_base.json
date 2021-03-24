@@ -1,0 +1,85 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "name of filter applied or to be applies. If more than one filter input as a comma separated list",
+        "options": [],
+        "alias": [],
+        "example": "\"[counts2mv, lowpass_magnetic]\""
+    },
+
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the channel",
+        "options": [],
+        "alias": [],
+        "example": "ambient air temperature"
+    },
+	
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "type of filter",
+        "options": [
+            "table",
+            "zpk",
+            "conversion",
+            "gain",
+            "time_delay",
+            "other"
+        ],
+        "alias": [],
+        "example": "table"
+    },
+
+    "units_in": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "name of the input units to the filter. Should be all lowercase and separated with an underscore",
+        "options": [],
+        "alias": [],
+        "example": "count"
+    },
+
+    "units_out": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "name of the output units.  Should be alpha numeric.",
+        "options": [],
+        "alias": [],
+        "example": "millivolt"
+    },
+
+    "calibration_date": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "latest date of filter calibration",
+        "options": [],
+        "alias": [],
+        "example": "2/1/2020"
+    }, 
+
+    "gain": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
+        "options": [],
+        "alias": [],
+        "example": "1.0"
+    }
+}
