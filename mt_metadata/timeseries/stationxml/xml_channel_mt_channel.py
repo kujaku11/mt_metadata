@@ -113,7 +113,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return mt_channel, mt_filters
 
-    def mt_to_xml(self, mt_channel, filters):
+    def mt_to_xml(self, mt_channel, filters_dict):
         """
         Translate :class:`mt_metadata.timeseries.Channel` to 
         :class:`obspy.core.inventory.Channel`
@@ -168,6 +168,7 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
         xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
+        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -467,8 +468,37 @@ class XMLChannelMTChannel(BaseTranslator):
         filter_dict = {}
         for stage in xml_channel.response.response_stages:
             mt_filter = create_filter_from_stage(stage)
-            filter_dict[mt_filter.name] = mt_filter
+            filter_dict[mt_filter.name.lower()] = mt_filter
             
         return filter_dict
+    
+    def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
+        """
+        Translate MT filters into Obspy Response
+        
+        :param mt_channel: DESCRIPTION
+        :type mt_channel: TYPE
+        :param filters_dict: DESCRIPTION
+        :type filters_dict: TYPE
+        :param xml_channel: DESCRIPTION
+        :type xml_channel: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        for ii, name in enumerate(mt_channel.filter.name, 1):
+            try:
+                mt_filter = filters_dict[name]
+            except KeyError:
+                print(f"Key Error for {name}")
+                msg = f"Could not find {name} in filters dictionary, skipping"
+                self.logger.error(msg)
+                continue
+            
+            xml_filter = mt_filter.to_obspy(stage_number=ii)
+            xml_channel.response.response_stages.append(xml_filter)
+            
+        return xml_channel
             
         

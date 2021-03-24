@@ -147,7 +147,7 @@ class Survey(Base):
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                filters[k] = v
+                filters[k.lower()] = v
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 

@@ -141,7 +141,7 @@ class XMLInventoryMTExperiment():
             for mt_station in mt_survey.stations:
                 xml_station = self.station_translator.mt_to_xml(mt_station)
                 for mt_run in mt_station.runs:
-                    xml_station = self.add_run(xml_station, mt_run)
+                    xml_station = self.add_run(xml_station, mt_run, mt_survey.filters)
                 xml_network.stations.append(xml_station)
             xml_inventory.networks.append(xml_network)
 
@@ -152,7 +152,7 @@ class XMLInventoryMTExperiment():
 
         return xml_inventory
 
-    def add_run(self, xml_station, mt_run):
+    def add_run(self, xml_station, mt_run, filters_dict):
         """
         Check to see if channel information already exists in the channel list of 
         an xml station.  
@@ -169,7 +169,7 @@ class XMLInventoryMTExperiment():
         """
 
         for mt_channel in mt_run.channels:
-            xml_channel = self.channel_translator.mt_to_xml(mt_channel)
+            xml_channel = self.channel_translator.mt_to_xml(mt_channel, filters_dict)
             existing_channels = xml_station.select(
                 channel=xml_channel.code).channels
             if existing_channels:
