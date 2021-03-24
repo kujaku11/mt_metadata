@@ -72,6 +72,8 @@ class TimeDelayFilter(FilterBase):
             numerator=[1],
             denominator=[],
             description=self.get_filter_description(),
+            input_units_description=self.get_unit_description(self.units_in),
+            output_units_description=self.get_unit_description(self.units_out),
         )
 
         return stage

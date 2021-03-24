@@ -30,7 +30,7 @@ units_descriptions = {
     "nT": "nanoTesla",
     "V": "Volts",
     "mV": "milliVolts",
-    "count": "counts",
+    "count": "digital counts",
     "V/m": "Volts per meter",
     "mV/km": "milliVolts per kilometer",
 }

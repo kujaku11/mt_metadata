@@ -1,7 +1,11 @@
 import numpy as np
 import scipy.signal as signal
 
-from mt_metadata.timeseries.filters.filter_base import FilterBase
+from mt_metadata.timeseries.filters import (
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+)
 
 
 class ChannelResponseFilter(object):
@@ -18,6 +22,49 @@ class ChannelResponseFilter(object):
         self.lambda_function = kwargs.get("lambda_function", None)
         # if self.lambda_function is None:
         #     self.lambda_function = lambda f: 1.0*f
+
+    @property
+    def filters_list(self):
+        """ filters list """
+        return self._filters_list
+
+    @filters_list.setter
+    def filters_list(self, filters_list):
+        """ set the filters list and validate the list """
+        self._filters_list = self.validate_filters_list(filters_list)
+
+    def validate_filters_list(self, filters_list):
+        """
+        make sure the filters list is valid
+        
+        :param filters_list: DESCRIPTION
+        :type filters_list: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if filters_list in [[], None]:
+            return None
+
+        if not isinstance(filters_list, list):
+            msg = f"Input filters list must be a list not {type(filters_list)}"
+            raise TypeError(msg)
+
+        fails = []
+        return_list = []
+        for item in filters_list:
+            if not isinstance(
+                item, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)
+            ):
+                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+            else:
+                return_list.append(item)
+
+        if fails:
+            raise TypeError(", ".join(fails))
+
+        return return_list
 
     @property
     def total_delay(self):
@@ -50,6 +97,8 @@ class ChannelResponseFilter(object):
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
         """
+        frequencies = np.array(frequencies)
+
         if include_delay:
             lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
         else:
@@ -59,16 +108,52 @@ class ChannelResponseFilter(object):
 
         return self.lambda_function(frequencies)
 
+    def compute_xml_sensitivity(self, normalization_frequency):
+        """
+        Compute the StationXML sensitivity for the given normalization frequency
+        
+        :param normalization_frequency: DESCRIPTION
+        :type normalization_frequency: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        sensitivity = np.array([0], dtype=np.complex)
+        normalization_frequency = np.array([normalization_frequency])
+        for mt_filter in self.filters_list:
+            complex_response = mt_filter.complex_response(normalization_frequency)
+            sensitivity += complex_response
+
+        return np.abs(sensitivity)[0]
+
     @property
-    def units(self):
+    def units_in(self):
         """
         returns the units of the channel
         """
-        pass
+        return self.filters_list[0].units_in
+
+    @property
+    def units_out(self):
+        """
+        returns the units of the channel
+        """
+        return self.filters_list[-1].units_out
 
     @property
     def check_consistency_of_units(self):
         """
         confirms that the input and output units of each filter state are consistent
         """
-        pass
+        previous_units = self.filters_list[0].units_out
+        for mt_filter in self.filters_list[1:]:
+            if mt_filter.units_in != previous_units:
+                msg = (
+                    f"Unit consistency is incorrect,  {previous_units} != {mt_filter.units_in}"
+                    f" For filter {mt_filter.name}"
+                )
+                raise ValueError(msg)
+            previous_units = mt_filter.units_out
+
+        return True
