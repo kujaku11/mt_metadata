@@ -206,7 +206,9 @@ class Filter(Base):
     def calibration_date(self, value):
         self._calibration_dt.from_str(value)
 
-
+    @property
+    def total_gain(self):
+        return self.gain
 
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):
