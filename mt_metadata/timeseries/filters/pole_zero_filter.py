@@ -101,7 +101,6 @@ class PoleZeroFilter(FilterBase):
         self,
         stage_number=1,
         gain=1,
-        normalization_frequency=0,
         pz_type="LAPLACE (RADIANS/SECOND)",
     ):
         """
@@ -119,11 +118,11 @@ class PoleZeroFilter(FilterBase):
         rs = obspy.core.inventory.PolesZerosResponseStage(
             stage_number,
             gain,
-            normalization_frequency,
+            self.normalization_frequency(),
             self.units_in,
             self.units_out,
             pz_type,
-            normalization_frequency,
+            self.normalization_frequency(),
             self.zeros,
             self.poles,
             name=self.name,
@@ -158,3 +157,39 @@ class PoleZeroFilter(FilterBase):
         frequency_axis = np.logspace(-1, 5, num=100)
         w = 2.0 * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
+        
+    def normalization_frequency(self, window_len=5, tol=.15):
+        """
+        Try to estimate the normalization frequency in the pass band
+        by finding the flattest spot in the amplitude.
+        
+        The flattest spot is determined by calculating a sliding window
+        with length `window_len` and estimating the mean/std which will be
+        close to 1 for a flat spot.  This only works for simple filters with
+        on flat pass band.
+        
+        :param window_len: length of sliding window in points
+        :type window_len: integer
+        
+        :param tol: the ratio of the mean/std should be around 1 
+        tol is the range around 1 to find the flat part of the curve.
+        :type tol: float
+        
+        :return: estimated normalization frequency Hz
+        :rtype: float
+
+        """
+        f = np.logspace(-5, 5, num=30 * window_len)
+        cr = self.complex_response(f)
+        amp = np.sqrt(cr.real**2 + cr.imag**2)
+        
+        for ii in range(window_len, len(cr) - window_len, 1):
+            cr_window = amp[ii:ii+window_len]
+            ratio = (cr_window.mean())/(cr_window.std())
+            
+            if ratio <= 1 + tol:
+                return f[ii]
+            
+        return 1
+                
+        

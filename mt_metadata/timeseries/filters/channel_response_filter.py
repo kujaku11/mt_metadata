@@ -89,7 +89,24 @@ class ChannelResponseFilter(object):
         for delay_filter in delay_filters:
             total_delay += delay_filter.delay
         return total_delay
+    
+    @property
+    def normalization_frequency(self):
+        """ get normalization frequency from ZPK or FAP filter """
 
+        nf = []
+        for f in self.filters_list:
+            if hasattr(f, "normalization_frequency"):
+                nf.append(f.normalization_frequency())
+        
+        if len(nf) > 1:
+            return np.median(np.array(nf))
+        elif not nf:
+            return 0
+        elif len(nf) == 1:
+            return nf[0]
+        
+        
     @property
     def delay_filters(self):
         """
@@ -124,7 +141,7 @@ class ChannelResponseFilter(object):
 
         return self.lambda_function(frequencies)
 
-    def compute_instrument_sensitivity(self, normalization_frequency):
+    def compute_instrument_sensitivity(self):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
         
@@ -134,9 +151,8 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
-
         sensitivity = np.array([0], dtype=np.complex)
-        normalization_frequency = np.array([normalization_frequency])
+        normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
             complex_response = mt_filter.complex_response(normalization_frequency)
             sensitivity += complex_response
