@@ -59,6 +59,12 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
+        ACCEPTABLE_FILTERS = [PoleZeroFilter, CoefficientFilter, TimeDelayFilter, ]
+        def is_acceptable_filter(item):
+            if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
+                return True
+            else:
+                return False
 
         if filters_list in [[], None]:
             return None
@@ -70,14 +76,11 @@ class ChannelResponseFilter(object):
         fails = []
         return_list = []
         for item in filters_list:
-            if not isinstance(
-                item, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)
-            ):
-                fails.append(
-                    f"Item is not an acceptable filter type, {type(item)}")
-            else:
+            if is_acceptable_filter(item):
                 return_list.append(item)
-
+            else:
+                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+            
         if fails:
             raise TypeError(", ".join(fails))
 
