@@ -170,7 +170,7 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
         xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
-        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
+        xml_channel.response = self._mt_to_xml_response(mt_channel, filters_dict)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -473,7 +473,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return filter_dict
 
-    def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
+    def _mt_to_xml_response(self, mt_channel, filters_dict):
         """
         Translate MT filters into Obspy Response
         
@@ -487,7 +487,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-        xml_channel.response = inventory.Response()
+        
         mt_channel_response = ChannelResponseFilter()
         mt_filter_list = []
         for ii, name in enumerate(mt_channel.filter.name, 1):
@@ -499,12 +499,8 @@ class XMLChannelMTChannel(BaseTranslator):
                 msg = f"Could not find {name} in filters dictionary, skipping"
                 self.logger.error(msg)
                 continue
-
-            xml_filter = mt_filter.to_obspy(stage_number=ii)
-            xml_channel.response.response_stages.append(xml_filter)
         
         # compute instrument sensitivity and units in/out
-        mt_channel_response.filters_list = mt_filter_list
-        xml_channel.response.instrument_sensitivity = mt_channel_response.to_obspy(0)
+        mt_channel_response = ChannelResponseFilter(filters_list=mt_filter_list)
         
-        return xml_channel
+        return mt_channel_response.to_obspy()
