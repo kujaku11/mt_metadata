@@ -161,6 +161,10 @@ class PoleZeroFilter(FilterBase):
         
     def pass_band(self, window_len=7, tol=1E-4):
         """
+
+        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
+        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
+
         Try to estimate pass band of the filter from the flattest spots in 
         the amplitude.
         
@@ -183,10 +187,10 @@ class PoleZeroFilter(FilterBase):
         """
         
         if not self.poles and not self.zeros:
-            return np.NAN
-        f = np.logspace(-5, 5, num=50 * window_len)
+            return np.nan
+        f = np.logspace(-5, 5, num=50 * window_len) #freq Hz
         cr = self.complex_response(f)
-        amp = np.sqrt(cr.real**2 + cr.imag**2)
+        amp = np.abs(cr)
         pass_band = []
         for ii in range(window_len, len(cr) - window_len, 1):
             cr_window = amp[ii:ii+window_len]
@@ -197,8 +201,19 @@ class PoleZeroFilter(FilterBase):
             
             if cr_window.std() <= tol:
                 pass_band.append(f[ii])
-                
-        return np.array(pass_band)
+
+
+        #Check for discontinuities in the pass band
+        pass_band = np.array(pass_band)
+        if len(pass_band)>1:
+            df_passband = np.diff(np.log(pass_band))
+            df_0 = np.log(f[1]) - np.log(f[0])
+            if np.isclose(df_passband, df_0).all():
+                pass
+            else:
+                self.logger("WARNING -- Passband appears discontinuous")
+        pass_band = np.array([pass_band.min(), pass_band.max()])
+        return pass_band
         
     def normalization_frequency(self, estimate="mean", window_len=5, tol=1E-4):
         """

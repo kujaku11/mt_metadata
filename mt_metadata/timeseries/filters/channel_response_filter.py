@@ -106,7 +106,7 @@ class ChannelResponseFilter(object):
                 pb.append((f_pb.min(), f_pb.max()))
 
         pb = np.array(pb)
-        return np.array([pb[0].max(), pb[1].min()])
+        return np.array([pb[:,0].max(), pb[:,1].min()])
 
     @property
     def normalization_frequency(self):
@@ -161,12 +161,11 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
-        sensitivity = np.array([0], dtype=np.complex)
+        sensitivity = 1.0
         normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(
-                normalization_frequency)
-            sensitivity += complex_response
+            complex_response = mt_filter.complex_response(normalization_frequency)
+            sensitivity *= complex_response
 
         return np.abs(sensitivity)[0]
 
