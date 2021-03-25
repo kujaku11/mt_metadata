@@ -59,6 +59,12 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
+        ACCEPTABLE_FILTERS = [PoleZeroFilter, CoefficientFilter, TimeDelayFilter, ]
+        def is_acceptable_filter(item):
+            if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
+                return True
+            else:
+                return False
 
         if filters_list in [[], None]:
             return None
@@ -70,13 +76,11 @@ class ChannelResponseFilter(object):
         fails = []
         return_list = []
         for item in filters_list:
-            if not isinstance(
-                item, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)
-            ):
-                fails.append(f"Item is not an acceptable filter type, {type(item)}")
-            else:
+            if is_acceptable_filter(item):
                 return_list.append(item)
-
+            else:
+                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+            
         if fails:
             raise TypeError(", ".join(fails))
 
@@ -92,15 +96,22 @@ class ChannelResponseFilter(object):
     
     @property
     def normalization_frequency(self):
-        """ get normalization frequency from ZPK or FAP filter """
+        """ get normalization frequency from ZPK or FAP filter 
+        ##20210325: not sure about the nanmedian of the normalization frequency 
+        here ... I would thro
+        """
 
         nf = []
         for f in self.filters_list:
             if hasattr(f, "normalization_frequency"):
                 if f.normalization_factor not in [np.nan]:
                     nf.append(f.normalization_frequency())
-        
+
+        nf = list(set(nf))#make unique if all equal
+
         if len(nf) > 1:
+            print("WARNING - NORMALIZATION FREQUENCIES DIFFER")
+            #could add a np.isclose(nf, nf[0]).all() check here ...
             return np.nanmedian(np.array(nf))
         elif not nf:
             return 0
