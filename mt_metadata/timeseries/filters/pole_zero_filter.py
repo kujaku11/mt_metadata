@@ -154,18 +154,60 @@ class PoleZeroFilter(FilterBase):
 
     def plot_pole_zero_response(self):
         zpg = self.zero_pole_gain_representation()
-        frequency_axis = np.logspace(-1, 5, num=100)
+        frequency_axis = np.logspace(-5, 5, num=100)
         w = 2.0 * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
         
-    def normalization_frequency(self, window_len=5, tol=.15):
+    def pass_band(self, window_len=7, tol=1E-4):
+        """
+        Try to estimate pass band of the filter from the flattest spots in 
+        the amplitude.
+        
+        The flattest spot is determined by calculating a sliding window
+        with length `window_len` and estimating normalized std. 
+        
+        ..note:: This only works for simple filters with
+        on flat pass band.
+        
+        :param window_len: length of sliding window in points
+        :type window_len: integer
+        
+        :param tol: the ratio of the mean/std should be around 1 
+        tol is the range around 1 to find the flat part of the curve.
+        :type tol: float
+        
+        :return: pass band frequencies
+        :rtype: np.ndarray
+
+        """
+        
+        if not self.poles and not self.zeros:
+            return np.NAN
+        f = np.logspace(-5, 5, num=50 * window_len)
+        cr = self.complex_response(f)
+        amp = np.sqrt(cr.real**2 + cr.imag**2)
+        pass_band = []
+        for ii in range(window_len, len(cr) - window_len, 1):
+            cr_window = amp[ii:ii+window_len]
+            cr_window /= cr_window.max()
+
+            if cr_window.std() == 0:
+                continue
+            
+            if cr_window.std() <= tol:
+                pass_band.append(f[ii])
+                
+        return np.array(pass_band)
+        
+    def normalization_frequency(self, estimate="mean", window_len=5, tol=1E-4):
         """
         Try to estimate the normalization frequency in the pass band
         by finding the flattest spot in the amplitude.
         
         The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating the mean/std which will be
-        close to 1 for a flat spot.  This only works for simple filters with
+        with length `window_len` and estimating normalized std. 
+        
+        ..note:: This only works for simple filters with
         on flat pass band.
         
         :param window_len: length of sliding window in points
@@ -179,17 +221,22 @@ class PoleZeroFilter(FilterBase):
         :rtype: float
 
         """
-        f = np.logspace(-5, 5, num=30 * window_len)
-        cr = self.complex_response(f)
-        amp = np.sqrt(cr.real**2 + cr.imag**2)
+        pass_band = self.pass_band(window_len, tol)
         
-        for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = amp[ii:ii+window_len]
-            ratio = (cr_window.mean())/(cr_window.std())
-            
-            if ratio <= 1 + tol:
-                return f[ii]
-            
-        return 1
+        if len(pass_band) == 0:
+            return np.NAN
+        
+        if estimate == "mean":
+            return pass_band.mean()
+        
+        elif estimate == "median":
+            return np.median(pass_band)
+        
+        elif estimate == "min":
+            return pass_band.min()
+        
+        elif estimate == "max":
+            return pass_band.max()
+        
                 
         

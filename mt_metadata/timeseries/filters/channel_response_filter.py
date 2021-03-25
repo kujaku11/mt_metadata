@@ -97,10 +97,11 @@ class ChannelResponseFilter(object):
         nf = []
         for f in self.filters_list:
             if hasattr(f, "normalization_frequency"):
-                nf.append(f.normalization_frequency())
+                if f.normalization_factor not in [np.nan]:
+                    nf.append(f.normalization_frequency())
         
         if len(nf) > 1:
-            return np.median(np.array(nf))
+            return np.nanmedian(np.array(nf))
         elif not nf:
             return 0
         elif len(nf) == 1:
