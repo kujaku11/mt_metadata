@@ -102,6 +102,7 @@ class PoleZeroFilter(FilterBase):
         stage_number=1,
         gain=1,
         pz_type="LAPLACE (RADIANS/SECOND)",
+        normalization_frequency=1,
     ):
         """
         create an obspy stage
@@ -118,11 +119,11 @@ class PoleZeroFilter(FilterBase):
         rs = obspy.core.inventory.PolesZerosResponseStage(
             stage_number,
             gain,
-            self.normalization_frequency(),
+            normalization_frequency,
             self.units_in,
             self.units_out,
             pz_type,
-            self.normalization_frequency(),
+            normalization_frequency,
             self.zeros,
             self.poles,
             name=self.name,

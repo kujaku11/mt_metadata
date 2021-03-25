@@ -20,7 +20,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
-from obspy.core.inventory import InstrumentSensitivity
+from obspy.core import inventory
 # =============================================================================
 
 
@@ -29,7 +29,7 @@ class ChannelResponseFilter(object):
     This class holds a list of all the filters associated with a channel.
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
-    
+
     """
 
     def __init__(self, **kwargs):
@@ -52,7 +52,7 @@ class ChannelResponseFilter(object):
     def _validate_filters_list(self, filters_list):
         """
         make sure the filters list is valid
-        
+
         :param filters_list: DESCRIPTION
         :type filters_list: TYPE
         :return: DESCRIPTION
@@ -73,7 +73,8 @@ class ChannelResponseFilter(object):
             if not isinstance(
                 item, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)
             ):
-                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+                fails.append(
+                    f"Item is not an acceptable filter type, {type(item)}")
             else:
                 return_list.append(item)
 
@@ -89,25 +90,27 @@ class ChannelResponseFilter(object):
         for delay_filter in delay_filters:
             total_delay += delay_filter.delay
         return total_delay
-    
+
+    @property
+    def pass_band(self):
+        """ estimate pass band for all filters """
+        pb = []
+        for f in self.filters_list:
+            if hasattr(f, "pass_band"):
+                f_pb = f.pass_band()
+                if f_pb is np.nan:
+                    continue
+                pb.append((f_pb.min(), f_pb.max()))
+
+        pb = np.array(pb)
+        return np.array([pb[0].max(), pb[1].min()])
+
     @property
     def normalization_frequency(self):
         """ get normalization frequency from ZPK or FAP filter """
 
-        nf = []
-        for f in self.filters_list:
-            if hasattr(f, "normalization_frequency"):
-                if f.normalization_factor not in [np.nan]:
-                    nf.append(f.normalization_frequency())
-        
-        if len(nf) > 1:
-            return np.nanmedian(np.array(nf))
-        elif not nf:
-            return 0
-        elif len(nf) == 1:
-            return nf[0]
-        
-        
+        return self.pass_band.mean()
+
     @property
     def delay_filters(self):
         """
@@ -116,7 +119,8 @@ class ChannelResponseFilter(object):
         -------
 
         """
-        delay_filters = [x for x in self.filters_list if x.type == "time_delay"]
+        delay_filters = [
+            x for x in self.filters_list if x.type == "time_delay"]
         return delay_filters
 
     def complex_response(self, frequencies, include_delay=False):
@@ -134,9 +138,11 @@ class ChannelResponseFilter(object):
         frequencies = np.array(frequencies)
 
         if include_delay:
-            lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
+            lambda_list = [lambda f: x.complex_response(
+                f) for x in self.filters_list]
         else:
-            lambda_list = [lambda f: x.complex_response(f) for x in self.filters_list]
+            lambda_list = [lambda f: x.complex_response(
+                f) for x in self.filters_list]
         print("hi")
         evaluated_lambdas = [x(frequencies) for x in lambda_list]
 
@@ -145,7 +151,7 @@ class ChannelResponseFilter(object):
     def compute_instrument_sensitivity(self):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
-        
+
         :param normalization_frequency: DESCRIPTION
         :type normalization_frequency: TYPE
         :return: DESCRIPTION
@@ -155,7 +161,8 @@ class ChannelResponseFilter(object):
         sensitivity = np.array([0], dtype=np.complex)
         normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(normalization_frequency)
+            complex_response = mt_filter.complex_response(
+                normalization_frequency)
             sensitivity += complex_response
 
         return np.abs(sensitivity)[0]
@@ -190,26 +197,28 @@ class ChannelResponseFilter(object):
             previous_units = mt_filter.units_out
 
         return True
-    
-    def to_obspy(self, normalization_frequency):
+
+    def to_obspy(self):
         """
         Output :class:`obspy.core.inventory.InstrumentSensitivity` object that
         can be used in a stationxml file.
-        
+
         :param normalization_frequency: DESCRIPTION
         :type normalization_frequency: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
+        total_sensitivity = self.compute_instrument_sensitivity()
+
+        total_response = inventory.Response()
+        total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
+            total_sensitivity,
+            self.normalization_frequency,
+            self.units_in,
+            self.units_out)
         
-        total_sensitivity = self.compute_instrument_sensitivity(normalization_frequency)
-        
-        return InstrumentSensitivity(total_sensitivity,
-                                     normalization_frequency,
-                                     self.units_in,
-                                     self.units_out)
-    
-        
-        
-        
+        for ii, f in enumerate(self.filters_list, 1):
+            total_response.response_stages.append(f.to_obspy(stage_number=ii, normalization_frequency=self.normalization_frequency))
+
+        return total_response

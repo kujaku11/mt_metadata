@@ -23,7 +23,7 @@ class TimeDelayFilter(FilterBase):
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
-    def to_obspy(self, stage_number=1, sample_rate=1):
+    def to_obspy(self, stage_number=1, sample_rate=1, normalization_frequency=0):
         """
         stage_sequence_number,
         stage_gain,
@@ -59,7 +59,7 @@ class TimeDelayFilter(FilterBase):
         stage = inventory.CoefficientsTypeResponseStage(
             stage_number,
             1,
-            0,
+            normalization_frequency,
             self.units_in,
             self.units_out,
             "DIGITAL",

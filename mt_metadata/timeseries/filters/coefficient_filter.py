@@ -22,7 +22,7 @@ class CoefficientFilter(FilterBase):
         self.obspy_mapping = obspy_mapping
 
     def to_obspy(
-        self, stage_number=1, cf_type="DIGITAL", sample_rate=1, gain_frequency=0
+        self, stage_number=1, cf_type="DIGITAL", sample_rate=1, normalization_frequency=0
     ):
         """
         stage_sequence_number,
@@ -59,7 +59,7 @@ class CoefficientFilter(FilterBase):
         stage = inventory.CoefficientsTypeResponseStage(
             stage_number,
             self.gain,
-            gain_frequency,
+            normalization_frequency,
             self.units_in,
             self.units_out,
             cf_type,
