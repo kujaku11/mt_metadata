@@ -495,7 +495,6 @@ class XMLChannelMTChannel(BaseTranslator):
                 mt_filter = filters_dict[name]
                 mt_filter_list.append(mt_filter)
             except KeyError:
-                print(f"Key Error for {name}")
                 msg = f"Could not find {name} in filters dictionary, skipping"
                 self.logger.error(msg)
                 continue

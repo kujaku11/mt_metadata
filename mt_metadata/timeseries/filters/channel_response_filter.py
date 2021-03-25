@@ -20,6 +20,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
+from mt_metadata.base.helpers import units_descriptions
 from obspy.core import inventory
 # =============================================================================
 
@@ -103,13 +104,13 @@ class ChannelResponseFilter(object):
                 pb.append((f_pb.min(), f_pb.max()))
 
         pb = np.array(pb)
-        return np.array([pb[0].max(), pb[1].min()])
+        return np.array([pb[:, 0].max(), pb[:, 1].min()])
 
     @property
     def normalization_frequency(self):
         """ get normalization frequency from ZPK or FAP filter """
 
-        return self.pass_band.mean()
+        return np.round(self.pass_band.mean(), decimals=3)
 
     @property
     def delay_filters(self):
@@ -158,12 +159,12 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
-        sensitivity = np.array([0], dtype=np.complex)
+        sensitivity = np.array([1], dtype=np.complex)
         normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
             complex_response = mt_filter.complex_response(
                 normalization_frequency)
-            sensitivity += complex_response
+            sensitivity *= complex_response
 
         return np.abs(sensitivity)[0]
 
@@ -216,7 +217,9 @@ class ChannelResponseFilter(object):
             total_sensitivity,
             self.normalization_frequency,
             self.units_in,
-            self.units_out)
+            self.units_out,
+            input_units_description=units_descriptions[self.units_in],
+            output_units_description=units_descriptions[self.units_out],)
         
         for ii, f in enumerate(self.filters_list, 1):
             total_response.response_stages.append(f.to_obspy(stage_number=ii, normalization_frequency=self.normalization_frequency))
