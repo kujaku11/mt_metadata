@@ -1,3 +1,17 @@
+"""
+Channel Response Filter
+=========================
+
+Combines all filters for a given channel into a total response that can be used in 
+the frequency domain.
+
+.. note:: Time Delay filters should be applied in the time domain otherwise bad
+things can happen.   
+
+"""
+# =============================================================================
+# Imports
+# =============================================================================
 import numpy as np
 import scipy.signal as signal
 
@@ -6,6 +20,8 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
+from obspy.core.inventory import InstrumentSensitivity
+# =============================================================================
 
 
 class ChannelResponseFilter(object):
@@ -31,9 +47,9 @@ class ChannelResponseFilter(object):
     @filters_list.setter
     def filters_list(self, filters_list):
         """ set the filters list and validate the list """
-        self._filters_list = self.validate_filters_list(filters_list)
+        self._filters_list = self._validate_filters_list(filters_list)
 
-    def validate_filters_list(self, filters_list):
+    def _validate_filters_list(self, filters_list):
         """
         make sure the filters list is valid
         
@@ -108,9 +124,9 @@ class ChannelResponseFilter(object):
 
         return self.lambda_function(frequencies)
 
-    def compute_xml_sensitivity(self, normalization_frequency):
+    def compute_instrument_sensitivity(self, normalization_frequency):
         """
-        Compute the StationXML sensitivity for the given normalization frequency
+        Compute the StationXML instrument sensitivity for the given normalization frequency
         
         :param normalization_frequency: DESCRIPTION
         :type normalization_frequency: TYPE
@@ -157,3 +173,26 @@ class ChannelResponseFilter(object):
             previous_units = mt_filter.units_out
 
         return True
+    
+    def to_obspy(self, normalization_frequency):
+        """
+        Output :class:`obspy.core.inventory.InstrumentSensitivity` object that
+        can be used in a stationxml file.
+        
+        :param normalization_frequency: DESCRIPTION
+        :type normalization_frequency: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        total_sensitivity = self.compute_instrument_sensitivity(normalization_frequency)
+        
+        return InstrumentSensitivity(total_sensitivity,
+                                     normalization_frequency,
+                                     self.units_in,
+                                     self.units_out)
+    
+        
+        
+        

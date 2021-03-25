@@ -21,6 +21,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
+from mt_metadata.timeseries.filters import ChannelResponseFilter
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 
 from obspy.core import inventory
@@ -487,9 +488,12 @@ class XMLChannelMTChannel(BaseTranslator):
 
         """
         xml_channel.response = inventory.Response()
+        mt_channel_response = ChannelResponseFilter()
+        mt_filter_list = []
         for ii, name in enumerate(mt_channel.filter.name, 1):
             try:
                 mt_filter = filters_dict[name]
+                mt_filter_list.append(mt_filter)
             except KeyError:
                 print(f"Key Error for {name}")
                 msg = f"Could not find {name} in filters dictionary, skipping"
@@ -498,5 +502,9 @@ class XMLChannelMTChannel(BaseTranslator):
 
             xml_filter = mt_filter.to_obspy(stage_number=ii)
             xml_channel.response.response_stages.append(xml_filter)
-
+        
+        # compute instrument sensitivity and units in/out
+        mt_channel_response.filters_list = mt_filter_list
+        xml_channel.response.instrument_sensitivity = mt_channel_response.to_obspy(0)
+        
         return xml_channel
