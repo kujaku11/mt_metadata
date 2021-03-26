@@ -37,6 +37,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.channel_0 = self.network_0.stations[0].channels[0]
         self.channel_1 = self.network_1.stations[0].channels[0]
         
+        self.response_0 = self.channel_0.response
+        self.response_1 = self.channel_1.response
+        
     def test_network_start(self):
         self.assertEqual(self.network_0.start_date,
                          self.network_1.start_date)
@@ -177,11 +180,96 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertEqual(self.channel_0.sensor.serial_number, 
                          self.channel_1.sensor.serial_number)
         
+
+    def test_response_sensitivity(self):
+        self.assertAlmostEqual(self.response_0.instrument_sensitivity.value,
+                               self.response_1.instrument_sensitivity.value)
         
+        self.assertEqual(self.response_0.instrument_sensitivity.input_units,
+                         self.response_1.instrument_sensitivity.input_units)
         
-    def test_response(self):
-        pass
-    
+        self.assertEqual(self.response_0.instrument_sensitivity.output_units,
+                         self.response_1.instrument_sensitivity.output_units)
+        
+    def test_response_zpk(self):
+        zpk_0 = self.response_0.response_stages[0]
+        zpk_1 = self.response_1.response_stages[0]
+        
+        # test all but the normalization and gain frequency.
+        for key in ['pz_transfer_function_type',
+                    'normalization_factor',
+                    'zeros',
+                    'poles',
+                    'stage_sequence_number',
+                    'input_units',
+                    'output_units',
+                    'input_units_description',
+                    'output_units_description',
+                    'resource_id',
+                    'resource_id2',
+                    'stage_gain',                    'name',
+                    'description',
+                    'decimation_input_sample_rate',
+                    'decimation_factor',
+                    'decimation_offset',
+                    'decimation_delay',
+                    'decimation_correction']:
+            self.assertEqual(getattr(zpk_0, key),
+                             getattr(zpk_1, key))
+            
+    def test_response_coefficient_filter(self):
+        f_0 = self.response_0.response_stages[1]
+        f_1 = self.response_1.response_stages[1]
+        
+        # test all but the normalization and gain frequency.
+        for key in ['cf_transfer_function_type',
+                    'numerator',
+                    'denominator',
+                    'stage_sequence_number',
+                    'input_units',
+                    'output_units',
+                    'input_units_description',
+                    'output_units_description',
+                    'resource_id',
+                    'resource_id2',
+                    'stage_gain',
+                    'name',
+                    'description',
+                    'decimation_input_sample_rate',
+                    'decimation_factor',
+                    'decimation_offset',
+                    'decimation_delay',
+                    'decimation_correction']:
+            self.assertEqual(getattr(f_0, key),
+                             getattr(f_1, key))
+            
+    def test_response_time_delay(self):
+        f_0 = self.response_0.response_stages[2]
+        f_1 = self.response_1.response_stages[2]
+        
+        # test all but the normalization and gain frequency.
+        for key in ['cf_transfer_function_type',
+                    'numerator',
+                    'denominator',
+                    'stage_sequence_number',
+                    'input_units',
+                    'output_units',
+                    'input_units_description',
+                    'output_units_description',
+                    'resource_id',
+                    'resource_id2',
+                    'stage_gain',
+                    'name',
+                    'description',
+                    'decimation_input_sample_rate',
+                    'decimation_factor',
+                    'decimation_offset',
+                    'decimation_delay',
+                    'decimation_correction']:
+            self.assertEqual(getattr(f_0, key),
+                             getattr(f_1, key))
+            
+
 # =============================================================================
 # run
 # =============================================================================

@@ -160,8 +160,8 @@
                      <Description>nanotesla</Description>
                   </InputUnits>
                   <OutputUnits>
-                     <Name>counts</Name>
-                     <Description>Digital Counts</Description>
+                     <Name>count</Name>
+                     <Description>digital counts</Description>
                   </OutputUnits>
                </InstrumentSensitivity>
                <Stage number="1">
@@ -170,11 +170,11 @@
                      <Description> poles and zeros </Description> 
                      <InputUnits>
                         <Name>nT</Name>
-                        <Description>nanotesla</Description>
+                        <Description>nanoTesla</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V</Name>
-                        <Description>Volt</Description>
+                        <Description>Volts</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1984.31439386406</NormalizationFactor>
@@ -203,11 +203,11 @@
                       <Description>ADC</Description>
                       <InputUnits>
                        <Name>V</Name>
-                       <Description>Volt</Description>
+                       <Description>Volts</Description>
                       </InputUnits>
                       <OutputUnits>
                        <Name>count</Name>
-                       <Description>Counts</Description>
+                       <Description>digital counts</Description>
                       </OutputUnits>
                       <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
                       <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
@@ -230,11 +230,11 @@
                     <Description>Time Offset (seconds)</Description>
                     <InputUnits>
                      <Name>count</Name>
-                     <Description>Count</Description>
+                     <Description>digital counts</Description>
                     </InputUnits>
                     <OutputUnits>
                      <Name>count</Name>
-                     <Description>Count</Description>
+                     <Description>digital counts</Description>
                     </OutputUnits>
                      <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
                      <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
