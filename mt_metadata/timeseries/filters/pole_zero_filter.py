@@ -150,7 +150,7 @@ class PoleZeroFilter(FilterBase):
         """
         angular_frequencies = 2 * np.pi * frequencies
         w, h = signal.freqs_zpk(
-            self.zeros, self.poles, self.normalization_factor, worN=angular_frequencies
+            self.zeros, self.poles, self.total_gain, worN=angular_frequencies
         )
         return h
 

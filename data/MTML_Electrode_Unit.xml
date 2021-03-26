@@ -249,7 +249,7 @@
                       <Description>volts per meter</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFactor>1.00000</NormalizationFactor>
                      <NormalizationFrequency>0.01</NormalizationFrequency>
                   </PolesZeros>
                   <StageGain>
@@ -270,7 +270,7 @@
                       <Description>volt</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFactor>1.00000</NormalizationFactor>
                      <NormalizationFrequency>0.01</NormalizationFrequency>
                   </PolesZeros>
                   <StageGain>
