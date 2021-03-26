@@ -498,8 +498,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 msg = f"Could not find {name} in filters dictionary, skipping"
                 self.logger.error(msg)
                 continue
-        
         # compute instrument sensitivity and units in/out
         mt_channel_response = ChannelResponseFilter(filters_list=mt_filter_list)
-        
-        return mt_channel_response.to_obspy()
+
+        return mt_channel_response.to_obspy(sample_rate=mt_channel.sample_rate)

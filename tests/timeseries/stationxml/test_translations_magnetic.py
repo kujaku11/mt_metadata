@@ -27,4 +27,6 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.original_xml = inventory.read_inventory(STATIONXML_MAGNETIC)
         self.new_xml = self.translator.mt_to_xml(self.mtml)
         
+    def 
+        
         

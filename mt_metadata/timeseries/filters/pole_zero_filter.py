@@ -103,6 +103,7 @@ class PoleZeroFilter(FilterBase):
         gain=1,
         pz_type="LAPLACE (RADIANS/SECOND)",
         normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         create an obspy stage

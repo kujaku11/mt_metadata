@@ -22,7 +22,10 @@ class CoefficientFilter(FilterBase):
         self.obspy_mapping = obspy_mapping
 
     def to_obspy(
-        self, stage_number=1, cf_type="DIGITAL", sample_rate=1, normalization_frequency=0
+        self, stage_number=1,
+        cf_type="DIGITAL",
+        sample_rate=1,
+        normalization_frequency=0
     ):
         """
         stage_sequence_number,
