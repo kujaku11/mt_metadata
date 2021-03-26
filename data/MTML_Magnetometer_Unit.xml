@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1"
+                xmlns:iris="http://www.fdsn.org/xml/station/1/iris"
+                xmlns:mt="http://emiw.org/xmlns/mt/1.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                schemaVersion="1.1"
+                xsi:schemaLocation="http://www.fdsn.org/xml/station/1 http://www.fdsn.org/xml/station/fdsn-station-1.1.xsd">
+   <!--> NIMS Magnetometer Unit Test <-->
+   <!--> Authors: Tim Ronan, Anna Kelbert, Karl Kappler <--> 
+   <Source>IRIS-DMC</Source>
+   <Module>mth5_to_mtml.m by A. Kelbert</Module>
+   <Created>2021-01-01T00:00:00</Created>
+   <Network code="XX" restrictedStatus="open" startDate="2015-01-01T00:00:00">
+      <Description>Florida 2015 Long Period and Wideband</Description>
+      <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
+      <Comment subject="mt.survey.citation_journal.doi">
+          <Value>10.3133/ofr20151185</Value>
+       </Comment>
+       <Comment subject="mt.survey.survey_id">
+          <Value>Florida</Value>
+       </Comment>
+       <Comment subject="mt.survey.project">
+          <Value>USGS-GEOMAG</Value>
+       </Comment>
+       <Comment subject="mt.survey.geographic_name">
+          <Value>Florida, USA</Value>
+       </Comment>
+       <Comment subject="mt.survey.summary">
+          <Value>Long-period and wideband EarthScope-style coverage of Florida</Value>
+       </Comment>
+       <Comment subject="mt.survey.acknowledgements">
+          <Value/>
+       </Comment>
+       <Comment subject="mt.survey.comments">
+          <Value/>
+       </Comment>
+       <Comment subject="mt.survey.acquired_by.author">
+          <Value>Bedrosian, P. A.</Value>
+       </Comment>
+       <Comment subject="mt.survey.acquired_by.comments">
+          <Value/>
+       </Comment>
+      <Operator>
+         <Agency>U.S. Geological Survey</Agency>
+         <Contact>
+            <Name>Bedrosian, P. A.</Name>
+            <Email>pbedrosian@usgs.gov</Email>
+         </Contact>
+      </Operator>
+      <SelectedNumberStations>1</SelectedNumberStations>
+      <Station code="FL001" alternateCode="FL001" restrictedStatus="open" startDate="2015-01-01T00:00:00">
+          <Comment subject="mt.station.data_type">
+             <Value>MT</Value>
+          </Comment>
+          <Comment subject="mt.station.run_list">
+             <Value>a, b</Value>
+          </Comment>
+          <Comment subject="mt.run:a.acquired_by">
+             <Value>author: BB, comments: it's cold in florida</Value>
+          </Comment>
+          <Comment subject="mt.run:a.metadata_by">
+             <Value>author: Anna Kelbert; Paul Bedrosian, comments: Paul Bedrosian: Ey, electrode dug up</Value>
+          </Comment>
+          <Comment subject="mt.run:a.comments">
+             <Value>author: machine generated, comments: Paul Bedrosian: Ey, electrode dug up</Value>
+          </Comment>
+          <Comment subject="mt.run:b.acquired_by">
+             <Value>author: blb, comments: Big Bend Wildlife Conservation, sunny, warm, very sandy, animals dug up site a bit during run a</Value>
+          </Comment>
+          <Comment subject="mt.run:b.metadata_by">
+             <Value>author: Anna Kelbert, comments:</Value>
+          </Comment>
+          <Comment subject="mt.run:b.comments">
+             <Value>author: machine generated, comments:</Value>
+          </Comment>
+          <Comment subject="mt.station.orientation.method">
+             <Value>compass</Value>
+          </Comment>
+          <Comment subject="mt.station.orientation.reference_frame">
+             <Value>geographic</Value>
+          </Comment>
+          <Comment subject="mt.station.location.declination.value">
+             <Value>-4.1</Value>
+          </Comment>
+          <Comment subject="mt.station.location.declination.model">
+             <Value>Unknown</Value>
+          </Comment>
+          <Comment subject="mt.station.location.declination.comments">
+             <Value>Declination obtained from the instrument GNSS NMEA sequence</Value>
+          </Comment>
+          <Comment subject="mt.station.provenance.software.author">
+             <Value>Anna Kelbert, USGS</Value>
+          </Comment>
+          <Comment subject="mt.station.provenance.software.name">
+             <Value>mth5_metadata.m</Value>
+          </Comment>
+          <Comment subject="mt.station.provenance.software.version">
+              <Value>2020-10-29</Value>
+         </Comment>
+         <Latitude>29.7203555</Latitude>
+         <Longitude>-83.4854715</Longitude>
+         <Elevation>0</Elevation>
+         <Site>
+            <Name>Beachy Keen, FL, USA</Name>
+            <Country>USA</Country>
+         </Site>
+         <Equipment resourceId="mt.run.id:a">
+            <Type>BB, LP</Type>
+            <Description>timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , timing_system.comments: , firmware.author: Barry Narod, firmware.version: , power_source.type: battery, power_source.comments: voltage measurements not recorded</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>1305-1</SerialNumber>
+            <InstallationDate>2015-01-01T00:00:00</InstallationDate>
+            <RemovalDate>2015-12-31T23:59:59</RemovalDate>
+         </Equipment>
+         <Equipment resourceId="mt.run.id:b">
+            <Type>BB, LP</Type>
+            <Description>timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , timing_system.comments: , firmware.author: Barry Narod, firmware.version: , power_source.type: battery, power_source.comments: voltage measurements not recorded</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>1305-1</SerialNumber>
+            <InstallationDate>2016-01-01T00:00:00</InstallationDate>
+            <RemovalDate>2016-06-01T23:59:59</RemovalDate>
+         </Equipment>
+         <CreationDate>2015-01-01T00:00:00</CreationDate>
+         <TotalNumberChannels>5</TotalNumberChannels>
+         <SelectedNumberChannels>1</SelectedNumberChannels>
+         <Channel alternateCode="Hx" code="MFN" endDate="2018-01-01T00:00:00" locationCode=""
+                   restrictedStatus="open"
+                   startDate="2015-01-01T00:00:00">
+             <Comment subject="mt.run.id">
+                <Value>a</Value>
+             </Comment>
+             <Comment subject="mt.run.id">
+                <Value>b</Value>
+             </Comment>
+             <Latitude>29.7203555</Latitude>
+             <Longitude>-83.4854715</Longitude>
+             <Elevation>0</Elevation>
+             <Depth>0</Depth>
+             <Azimuth>355.9</Azimuth>
+             <Dip>0</Dip>
+             <Type>GEOPHYSICAL</Type>
+             <SampleRate>8</SampleRate>
+             <ClockDrift>0</ClockDrift>
+             <CalibrationUnits>
+                <Name>nT</Name>
+                <Description>nanotesla</Description>
+             </CalibrationUnits>
+             <Sensor>
+                <Type>Magnetometer</Type>
+                <Description>NIMS</Description>
+                <Manufacturer>Barry Narod</Manufacturer>
+                <Model>fluxgate</Model>
+                <SerialNumber>1105-1</SerialNumber>
+             </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>Digital Counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                   <!-- Name field is equivilent of name proposed mt:name. Description is equivilent of proposed mt:type-->
+                   <PolesZeros name = "magnetic field 3 pole Butterworth low-pass"> 
+                     <Description> poles and zeros </Description> 
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>Volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>  
+             <!-- ANALOG TO DIGITAL CONVERSION STAGE -->
+               <Stage number="2">
+                   <Coefficients name ="magnatometer A to D">
+                      <Description>ADC</Description>
+                      <InputUnits>
+                       <Name>V</Name>
+                       <Description>Volt</Description>
+                      </InputUnits>
+                      <OutputUnits>
+                       <Name>count</Name>
+                       <Description>Counts</Description>
+                      </OutputUnits>
+                      <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                      <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                   </Coefficients>
+                   <Decimation>
+                     <InputSampleRate>8</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                   </Decimation>
+                   <StageGain>
+                    <Value>100</Value>
+                    <Frequency>0</Frequency>
+                </StageGain>
+            </Stage>
+             <!-- TIME CORRECTION STAGE -->
+             <Stage number="3">
+                 <Coefficients name ="Hz time offset">
+                    <Description>Time Offset (seconds)</Description>
+                    <InputUnits>
+                     <Name>count</Name>
+                     <Description>Count</Description>
+                    </InputUnits>
+                    <OutputUnits>
+                     <Name>count</Name>
+                     <Description>Count</Description>
+                    </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                    </Coefficients>
+                    <Decimation>
+                     <InputSampleRate>8</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0.2455</Delay>
+                     <Correction>0</Correction>
+                    </Decimation>
+                    <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                 </StageGain>
+             </Stage>
+            </Response>
+         </Channel>
+      </Station>
+   </Network>
+</FDSNStationXML>

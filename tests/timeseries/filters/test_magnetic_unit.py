@@ -46,7 +46,6 @@ from mt_metadata.timeseries.filters.helper_functions import (
 )
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
-
 class TestFilterMagnetic(unittest.TestCase):
     """
     Test filter translation from :class:`obspy.inventory.Network

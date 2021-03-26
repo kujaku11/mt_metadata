@@ -98,6 +98,9 @@ class TimeDelayFilter(FilterBase):
         self.logger.warning(
             "USING FREQUENCY DOMAIN VERSION OF TIME DELAY FILTER NOT RECOMMENDED FOR MT PROCESSING"
         )
+        
+        if isinstance(frequencies, (float, int)):
+            frequencies = np.array([frequencies])
         w = 2 * np.pi * frequencies
         exponent = -1.0j * w * self.delay
         spectral_shift_multiplier = np.exp(exponent)

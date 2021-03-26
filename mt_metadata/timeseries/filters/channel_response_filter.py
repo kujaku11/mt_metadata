@@ -164,12 +164,11 @@ class ChannelResponseFilter(object):
         """
 
         sensitivity = 1.0
-        normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(normalization_frequency)
+            complex_response = mt_filter.complex_response(self.normalization_frequency)
             sensitivity *= complex_response
-
-        return np.abs(sensitivity)[0]
+            
+        return np.round(np.abs(sensitivity[0]), 3)
 
     @property
     def units_in(self):

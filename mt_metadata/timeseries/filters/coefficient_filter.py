@@ -90,4 +90,6 @@ class CoefficientFilter(FilterBase):
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
         """
+        if isinstance(frequencies, (float, int)):
+            frequencies = np.array([frequencies])
         return self.gain * np.ones(len(frequencies))
