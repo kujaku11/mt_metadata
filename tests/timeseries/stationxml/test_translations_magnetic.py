@@ -110,10 +110,75 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
     
     def test_station_site(self):
         self.assertEqual(self.station_0.site.name, self.station_1.site.name)
+        
+    def test_station_equipment(self):
+        for eq_0, eq_1 in zip(self.station_0.equipments, self.station_1.equipments):
+            self.assertEqual(eq_0.resource_id, eq_1.resource_id)
+            self.assertEqual(eq_0.type, eq_1.type)
+            self.assertEqual(eq_0.manufacturer, eq_1.manufacturer)
+            self.assertEqual(eq_0.model, eq_1.model)
+            self.assertEqual(eq_0.serial_number, eq_1.serial_number)
+            self.assertEqual(eq_0.installation_date, eq_1.installation_date)
+            self.assertEqual(eq_0.removal_date, eq_1.removal_date)
+            
+    def test_channel_start(self):
+        self.assertEqual(self.channel_0.start_date,
+                         self.channel_1.start_date)
+        
+    def test_channel_end(self):
+        # original file does not have the correct end date
+        self.assertNotEqual(self.channel_0.end_date,
+                            self.channel_1.end_date)
+        
+    def test_channel_code(self):
+        self.assertEqual(self.channel_0.code, self.channel_1.code)
+        
+    def test_channel_alternate_code(self):
+        self.assertEqual(self.channel_0.alternate_code.lower(),
+                         self.channel_1.alternate_code.lower())
     
-    def test_channel(self):
-        pass
+    def test_channel_restricted(self):
+        self.assertEqual(self.channel_0.restricted_status,
+                         self.channel_1.restricted_status)
+        
+    def test_channel_comments(self):
+        original_comment_dict = dict([(c.subject, c.value) for c in self.channel_0.comments if c.value not in [None, ""]])
+        new_comment_dict = dict([(c.subject, c.value) for c in self.channel_1.comments if c.value not in [None, ""]])
+        
+        self.assertDictEqual(original_comment_dict, new_comment_dict)
+        
+    def test_channel_location(self):
+        self.assertAlmostEqual(self.channel_0.latitude, self.channel_1.latitude, 4)
+        self.assertAlmostEqual(self.channel_0.longitude, self.channel_1.longitude, 4)
+        self.assertAlmostEqual(self.channel_0.elevation, self.channel_1.elevation, 4)
     
+    def test_channel_orientation(self):
+        self.assertAlmostEqual(self.channel_0.azimuth, self.channel_1.azimuth, 4)
+        self.assertAlmostEqual(self.channel_0.dip, self.channel_1.dip, 4)
+        self.assertAlmostEqual(self.channel_0.depth, self.channel_1.depth, 4)
+        
+        
+    def test_channel_sample_rate(self):
+        self.assertEqual(self.channel_0.sample_rate, self.channel_1.sample_rate)
+        
+    def test_channel_calibration_units(self):
+        self.assertEqual(self.channel_0.calibration_units, 
+                         self.channel_1.calibration_units)
+        
+    def test_channel_sensor(self):
+        self.assertEqual(self.channel_0.sensor.type, 
+                         self.channel_1.sensor.type)
+        self.assertEqual(self.channel_0.sensor.description, 
+                         self.channel_1.sensor.description)
+        self.assertEqual(self.channel_0.sensor.manufacturer, 
+                         self.channel_1.sensor.manufacturer)
+        self.assertEqual(self.channel_0.sensor.model, 
+                         self.channel_1.sensor.model)
+        self.assertEqual(self.channel_0.sensor.serial_number, 
+                         self.channel_1.sensor.serial_number)
+        
+        
+        
     def test_response(self):
         pass
     
