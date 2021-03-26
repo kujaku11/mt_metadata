@@ -55,7 +55,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "project",
             "acquired_by.author",
             "acquired_by.comments",
-            "summary",
         ]
 
     def xml_to_mt(self, network):
@@ -172,7 +171,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 network.restricted_status = release_dict[survey.release_license]
             elif inv_key == "identifiers":
                 doi = survey.get_attr_from_name(mt_key)
-                network.identifiers.append(f"DOI: {doi}")
+                network.identifiers.append(f"DOI:{doi}")
 
             else:
                 setattr(network, inv_key, survey.get_attr_from_name(mt_key))

@@ -11,7 +11,7 @@
    <Module>mth5_to_mtml.m by A. Kelbert</Module>
    <Created>2021-01-01T00:00:00</Created>
    <Network code="XX" restrictedStatus="open" startDate="2015-01-01T00:00:00">
-      <Description>Florida 2015 Long Period and Wideband</Description>
+      <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
       <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
       <Comment subject="mt.survey.citation_journal.doi">
           <Value>10.3133/ofr20151185</Value>
@@ -24,9 +24,6 @@
        </Comment>
        <Comment subject="mt.survey.geographic_name">
           <Value>Florida, USA</Value>
-       </Comment>
-       <Comment subject="mt.survey.summary">
-          <Value>Long-period and wideband EarthScope-style coverage of Florida</Value>
        </Comment>
        <Comment subject="mt.survey.acknowledgements">
           <Value/>
