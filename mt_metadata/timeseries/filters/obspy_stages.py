@@ -67,10 +67,10 @@ def create_filter_from_stage(stage):
         #   CoefficientTypeResponseStage Used to package a time-delay filter
         is_a_delay_filter = check_if_coefficient_filter_is_delay_only(stage)
         if is_a_delay_filter:
-            filter = create_time_delay_filter_from_stage(stage)
+            obspy_filter = create_time_delay_filter_from_stage(stage)
         else:
-            filter = create_coefficent_filter_from_stage(stage)
-        return filter
+            obspy_filter = create_coefficent_filter_from_stage(stage)
+        return obspy_filter
     else:
         print("Filter Stage of Type {} not known".format(type(stage)))
         raise Exception

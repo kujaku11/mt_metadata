@@ -8,8 +8,8 @@
    <Source>IRIS-DMC</Source>
    <Module>mth5_to_mtml.m by A. Kelbert</Module>
    <Created>2020-10-29T14:40:49</Created>
-   <Network code="XX" restrictedStatus="open" startDate="2015-01-01T00:00:00">
-      <Description>Florida 2015 Long Period and Wideband</Description>
+   <Network code="XX" restrictedStatus="open" startDate="2015-01-08T19:49:15">
+      <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
       <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
       <Comment subject="mt.survey.citation_journal.doi">
          <Value>10.3133/ofr20151185</Value>
@@ -22,9 +22,6 @@
       </Comment>
       <Comment subject="mt.survey.geographic_name">
          <Value>Florida, USA</Value>
-      </Comment>
-      <Comment subject="mt.survey.summary">
-         <Value>Long-period and wideband EarthScope-style coverage of Florida</Value>
       </Comment>
       <Comment subject="mt.survey.acknowledgements">
          <Value/>
@@ -48,7 +45,7 @@
       <SelectedNumberStations>1</SelectedNumberStations>
       <Station alternateCode="FL001" code="FL001"
                restrictedStatus="open"
-               startDate="2015-01-01T00:00:00">
+               startDate="2015-01-08T19:49:15">
          <Comment subject="mt.station.data_type">
             <Value>MT</Value>
          </Comment>
@@ -110,7 +107,7 @@
             <Manufacturer>Barry Narod</Manufacturer>
             <Model>NIMS</Model>
             <SerialNumber>1305-1</SerialNumber>
-            <InstallationDate>2015-01-01T00:00:00</InstallationDate>
+            <InstallationDate>2015-01-08T19:49:15</InstallationDate>
             <RemovalDate>2015-12-31T23:59:59</RemovalDate>
          </Equipment>
          <Equipment resourceId="mt.run.id:b">
@@ -163,7 +160,7 @@
                   </InputUnits>
                   <OutputUnits>
                      <Name>count</Name>
-                     <Description>Digital Counts</Description>
+                     <Description>digital counts</Description>
                   </OutputUnits>
               </InstrumentSensitivity>
               <!-- Poles and Zeros Filter 1 -->   
@@ -172,11 +169,11 @@
                      <Description>butterworth filter</Description>  
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>milliVolts per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>milliVolts per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -213,11 +210,11 @@
                      <Description>butterworth filter</Description>   
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>milliVolts per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>milliVolts per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -242,11 +239,11 @@
                     <Description>unit conversion</Description>
                      <InputUnits>
                       <Name>mV/km</Name>
-                      <Description>millivolts per kilometer</Description>
+                      <Description>milliVolts per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                       <Name>V/m</Name>
-                      <Description>volts per meter</Description>
+                      <Description>Volts per meter</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000</NormalizationFactor>
@@ -263,11 +260,11 @@
                      <Description>electric dipole</Description>
                      <InputUnits>
                       <Name>V/m</Name>
-                      <Description>volts per meter</Description>
+                      <Description>Volts per meter</Description>
                      </InputUnits>
                      <OutputUnits>
                       <Name>V</Name>
-                      <Description>volt</Description>
+                      <Description>Volts</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000</NormalizationFactor>
@@ -284,7 +281,7 @@
                      <Description>analog to digital conversion</Description>
                      <InputUnits>
                       <Name>V</Name>
-                      <Description>volt</Description>
+                      <Description>Volts</Description>
                      </InputUnits>
                      <OutputUnits>
                       <Name>count</Name>
