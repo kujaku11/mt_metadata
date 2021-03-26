@@ -60,6 +60,12 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
+        ACCEPTABLE_FILTERS = [PoleZeroFilter, CoefficientFilter, TimeDelayFilter, ]
+        def is_acceptable_filter(item):
+            if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
+                return True
+            else:
+                return False
 
         if filters_list in [[], None]:
             return None
@@ -71,14 +77,11 @@ class ChannelResponseFilter(object):
         fails = []
         return_list = []
         for item in filters_list:
-            if not isinstance(
-                item, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)
-            ):
-                fails.append(
-                    f"Item is not an acceptable filter type, {type(item)}")
-            else:
+            if is_acceptable_filter(item):
                 return_list.append(item)
-
+            else:
+                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+            
         if fails:
             raise TypeError(", ".join(fails))
 
@@ -159,11 +162,11 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
-        sensitivity = np.array([1], dtype=np.complex)
+
+        sensitivity = 1.0
         normalization_frequency = np.array([self.normalization_frequency])
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(
-                normalization_frequency)
+            complex_response = mt_filter.complex_response(normalization_frequency)
             sensitivity *= complex_response
 
         return np.abs(sensitivity)[0]
