@@ -35,7 +35,6 @@ class ChannelResponseFilter(object):
 
     def __init__(self, **kwargs):
         self.filters_list = None
-        self.lambda_function = None
         self.normalization_frequency = None
         
         for k, v in kwargs.items():
@@ -129,16 +128,43 @@ class ChannelResponseFilter(object):
         self._normalization_frequency = value
 
     @property
+    def non_delay_filters(self):
+        """
+
+        Returns all the non-time_delay filters as a list
+        -------
+
+        """
+        non_delay_filters = [
+            x for x in self.filters_list if x.type != "time delay"]
+        return non_delay_filters
+
+    @property
     def delay_filters(self):
         """
 
-        Returns the delay of the set of filters
+        Returns all the time delay filters as a list
         -------
 
         """
         delay_filters = [
-            x for x in self.filters_list if x.type == "time_delay"]
+            x for x in self.filters_list if x.type == "time delay"]
         return delay_filters
+
+    @property
+    def total_delay(self):
+        """
+
+        Returns the total delay of all filters
+        -------
+
+        """
+        delay_filters = self.delay_filters
+        total_delay = 0.0
+        for delay_filter in delay_filters:
+            total_delay += delay_filter.delay
+        return total_delay
+
 
     def complex_response(self, frequencies, include_delay=False):
         """
@@ -155,15 +181,17 @@ class ChannelResponseFilter(object):
         frequencies = np.array(frequencies)
 
         if include_delay:
-            lambda_list = [lambda f: x.complex_response(
-                f) for x in self.filters_list]
+            filters_list = self.filters_list
         else:
-            lambda_list = [lambda f: x.complex_response(
-                f) for x in self.filters_list]
-        print("hi")
-        evaluated_lambdas = [x(frequencies) for x in lambda_list]
+            filters_list = self.non_delay_filters
 
-        return self.lambda_function(frequencies)
+        filter_stage = filters_list.pop(0)
+        result = filter_stage.complex_response(frequencies)
+        while len(filters_list):
+            filter_stage = filters_list.pop(0)
+            result *= filter_stage.complex_response(frequencies)
+
+        return result
 
     def compute_instrument_sensitivity(self, normalization_frequency=None):
         """

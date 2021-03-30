@@ -85,8 +85,9 @@ def test_filter_generation_from_xml_via_obspy(inventory):
                     frequencies = np.logspace(-3, 3, 200)
                     # fltr.plot_complex_response(frequencies)
                     # fltr.plot_response(None, x_units='frequency')
-                channel_response = ChannelResponseFilter(filters_list=filters_list)
-                sens = channel_response.compute_instrument_sensitivity()
+                channel_response_filter = ChannelResponseFilter(filters_list=filters_list)
+                complex_channel_response = channel_response_filter.complex_response(frequencies)
+                sens = channel_response_filter.compute_instrument_sensitivity()
                 
             print(network)
 
