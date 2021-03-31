@@ -35,7 +35,6 @@ ToDo:
 import datetime
 import numpy as np
 import obspy
-import path
 
 import scipy.signal as signal
 
