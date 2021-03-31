@@ -13,7 +13,7 @@ import unittest
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import xml_network_mt_survey
-from tests import STATIONXML_01, STATIONXML_02
+from mt_metadata.utils import STATIONXML_01, STATIONXML_02
 
 
 class TestNetwork01(unittest.TestCase):

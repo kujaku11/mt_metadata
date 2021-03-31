@@ -14,4 +14,4 @@ recursive-include mt_metadata/utils *.yaml
 recursive-include mt_metadata/timeseries/standards *.json
 recursive-include mt_metadata/transfer_functions/tf/standards *.json
 recursive-include mt_metadata/transfer_functions/emtf_xml/standards *.json
-recursive-include data/ *.xml
+recursive-include data/xml *.xml
