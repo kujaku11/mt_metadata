@@ -83,15 +83,23 @@ def test_filter_generation_from_xml_via_obspy(inventory):
                 for fltr in filters_list:
                     print(fltr.type)
                     frequencies = np.logspace(-3, 3, 200)
+                    test_filter_response_works_for_float(fltr)
                     # fltr.plot_complex_response(frequencies)
                     # fltr.plot_response(None, x_units='frequency')
-                channel_response = ChannelResponseFilter(filters_list=filters_list)
-                sens = channel_response.compute_instrument_sensitivity()
+                channel_response_filter = ChannelResponseFilter(filters_list=filters_list)
+                complex_channel_response = channel_response_filter.complex_response(frequencies)
+                sens = channel_response_filter.compute_instrument_sensitivity()
                 
             print(network)
 
     print("ok")
 
+
+def test_filter_response_works_for_float(fltr):
+    integer_response = fltr.complex_response(1)
+    float_response = fltr.complex_response(1.0)
+    print(f'integer response {integer_response},  float response {float_response}')
+    return
 
 def test_correct_sense_of_normalization_factor():
     """
