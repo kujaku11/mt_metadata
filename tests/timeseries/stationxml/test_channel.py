@@ -161,83 +161,92 @@ class TestXMLChannel01(unittest.TestCase):
         )
 
 
-# class TestXMLChannel02(unittest.TestCase):
-#     """
-#     Test reading XML channel to MT Channel
-#     """
+class TestXMLChannel02(unittest.TestCase):
+    """
+    Test reading XML channel to MT Channel
+    """
 
-#     def setUp(self):
-#         self.inventory = read_inventory(STATIONXML_02.as_posix())
-#         self.converter = XMLChannelMTChannel()
-#         self.maxDiff = None
+    def setUp(self):
+        self.inventory = read_inventory(STATIONXML_02.as_posix())
+        self.xml_hx = self.inventory.networks[0].stations[0].channels[0]
+        self.xml_hy = self.inventory.networks[0].stations[0].channels[1]
+        self.xml_hz = self.inventory.networks[0].stations[0].channels[2]
+        self.xml_ex = self.inventory.networks[0].stations[0].channels[3]
+        self.xml_ey = self.inventory.networks[0].stations[0].channels[4]
 
-#     def test_channel_hx(self):
-#         xml_channel = self.inventory.networks[0].stations[0].channels[0]
-#         mt_channel, mt_filters = self.converter.xml_to_mt(xml_channel)
+        self.filters_dict = dict([(c.name, c) for c in [create_filter_from_stage(s) for s in self.xml_hy.response.response_stages]])
+        self.converter = XMLChannelMTChannel()
+        self.maxDiff = None
 
-#         self.assertDictEqual(
-#             mt_channel.to_dict(),
-#             {
-#                 "magnetic": OrderedDict(
-#                     [
-#                         ("channel_number", None),
-#                         ("comments", "run_ids: [a,b]"),
-#                         ("component", "hx"),
-#                         ("data_quality.rating.value", 0),
-#                         ("filter.applied", [False]),
-#                         ("filter.name", ["none"]),
-#                         ("location.elevation", 887.775),
-#                         ("location.latitude", 35.1469128125),
-#                         ("location.longitude", -117.160798541667),
-#                         ("measurement_azimuth", 11.8287420852694),
-#                         ("measurement_tilt", 0.0),
-#                         ("sample_rate", 1.0),
-#                         ("sensor.id", "1303-01"),
-#                         ("sensor.manufacturer", "Barry Narod"),
-#                         ("sensor.model", "fluxgate NIMS"),
-#                         ("sensor.type", "Magnetometer"),
-#                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
-#                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
-#                         ("type", "magnetic"),
-#                         ("units", "nanotesla"),
-#                     ]
-#                 )
-#             },
-#         )
+    def test_channel_hx(self):
+        mt_channel, mt_filters = self.converter.xml_to_mt(self.xml_hx)
 
-#     def test_channel_hy(self):
-#         xml_channel = self.inventory.networks[0].stations[0].channels[1]
-#         mt_channel, mt_filters = self.converter.xml_to_mt(xml_channel)
+        self.assertDictEqual(
+            mt_channel.to_dict(),
+            {
+                "magnetic": OrderedDict(
+                    [
+                        ("channel_number", None),
+                        ("comments", "run_ids: [a,b]"),
+                        ("component", "hx"),
+                        ("data_quality.rating.value", 0),
+                        ("filter.applied", [False]*3),
+                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
+                                         'v to counts (magnetic)',
+                                         'hx time offset']),
+                        ("location.elevation", 887.775),
+                        ("location.latitude", 35.1469128125),
+                        ("location.longitude", -117.160798541667),
+                        ("measurement_azimuth", 11.8287420852694),
+                        ("measurement_tilt", 0.0),
+                        ("sample_rate", 1.0),
+                        ("sensor.id", "1303-01"),
+                        ("sensor.manufacturer", "Barry Narod"),
+                        ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.type", "Magnetometer"),
+                        ("time_period.end", "2020-06-25T17:57:40+00:00"),
+                        ("time_period.start", "2020-06-08T22:57:13+00:00"),
+                        ("type", "magnetic"),
+                        ("units", "nanotesla"),
+                    ]
+                )
+            },
+        )
 
-#         self.assertDictEqual(
-#             mt_channel.to_dict(),
-#             {
-#                 "magnetic": OrderedDict(
-#                     [
-#                         ("channel_number", None),
-#                         ("comments", "run_ids: [a,b]"),
-#                         ("component", "hy"),
-#                         ("data_quality.rating.value", 0),
-#                         ("filter.applied", [False]),
-#                         ("filter.name", ["none"]),
-#                         ("location.elevation", 887.775),
-#                         ("location.latitude", 35.1469128125),
-#                         ("location.longitude", -117.160798541667),
-#                         ("measurement_azimuth", 101.828742085269),
-#                         ("measurement_tilt", 0.0),
-#                         ("sample_rate", 1.0),
-#                         ("sensor.id", "1303-01"),
-#                         ("sensor.manufacturer", "Barry Narod"),
-#                         ("sensor.model", "fluxgate NIMS"),
-#                         ("sensor.type", "Magnetometer"),
-#                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
-#                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
-#                         ("type", "magnetic"),
-#                         ("units", "nanotesla"),
-#                     ]
-#                 )
-#             },
-#         )
+    def test_channel_hy(self):
+        mt_channel, mt_filters = self.converter.xml_to_mt(self.xml_hy)
+
+        self.assertDictEqual(
+            mt_channel.to_dict(),
+            {
+                "magnetic": OrderedDict(
+                    [
+                        ("channel_number", None),
+                        ("comments", "run_ids: [a,b]"),
+                        ("component", "hy"),
+                        ("data_quality.rating.value", 0),
+                        ("filter.applied", [False]*3),
+                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
+                                         'v to counts (magnetic)',
+                                         'hy time offset']),
+                        ("location.elevation", 887.775),
+                        ("location.latitude", 35.1469128125),
+                        ("location.longitude", -117.160798541667),
+                        ("measurement_azimuth", 101.828742085269),
+                        ("measurement_tilt", 0.0),
+                        ("sample_rate", 1.0),
+                        ("sensor.id", "1303-01"),
+                        ("sensor.manufacturer", "Barry Narod"),
+                        ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.type", "Magnetometer"),
+                        ("time_period.end", "2020-06-25T17:57:40+00:00"),
+                        ("time_period.start", "2020-06-08T22:57:13+00:00"),
+                        ("type", "magnetic"),
+                        ("units", "nanotesla"),
+                    ]
+                )
+            },
+        )
 
 #     def test_channel_hz(self):
 #         xml_channel = self.inventory.networks[0].stations[0].channels[2]
