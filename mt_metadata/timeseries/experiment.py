@@ -308,6 +308,9 @@ class Experiment:
 
         """
         return_dict = {}
+        if filters_dict is None:
+            return return_dict
+        
         for key, value in filters_dict.items():
             if key in ["pole_zero_filter"]:
                 mt_filter = PoleZeroFilter()
