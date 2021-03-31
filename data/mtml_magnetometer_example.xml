@@ -3,8 +3,8 @@
   <Source>ObsPy 1.2.2</Source>
   <Module>ObsPy 1.2.2</Module>
   <ModuleURI>https://www.obspy.org</ModuleURI>
-  <Created>2021-03-26T22:09:06.824016Z</Created>
-  <Network code="XX" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
+  <Created>2021-03-26T18:41:24.493121Z</Created>
+  <Network code="XX" startDate="2015-01-01T00:00:00+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
     <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
     <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
     <Comment subject="mt.survey.acquired_by.author">
@@ -30,7 +30,7 @@
       </Contact>
       <WebSite/>
     </Operator>
-    <Station code="FL001" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="FL001">
+    <Station code="FL001" startDate="2015-01-01T00:00:00+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="FL001">
       <Comment subject="mt.station.data_type">
         <Value>MT</Value>
       </Comment>
@@ -91,7 +91,7 @@
         <Manufacturer>Barry Narod</Manufacturer>
         <Model>NIMS</Model>
         <SerialNumber>1305-1</SerialNumber>
-        <InstallationDate>2015-01-08T19:49:15+00:00</InstallationDate>
+        <InstallationDate>2015-01-01T00:00:00+00:00</InstallationDate>
         <RemovalDate>2015-12-31T23:59:59+00:00</RemovalDate>
       </Equipment>
       <Equipment resourceId="mt.run.id:b">
@@ -103,9 +103,9 @@
         <InstallationDate>2016-01-01T00:00:00+00:00</InstallationDate>
         <RemovalDate>2016-06-01T23:59:59+00:00</RemovalDate>
       </Equipment>
-      <CreationDate>2015-01-08T19:49:15.000000Z</CreationDate>
+      <CreationDate>2015-01-01T00:00:00.000000Z</CreationDate>
       <TerminationDate>2016-06-01T23:59:59.000000Z</TerminationDate>
-      <Channel code="MQN" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="ex" locationCode="">
+      <Channel code="MFN" startDate="2015-01-01T00:00:00+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="hx" locationCode="">
         <Comment subject="mt.run.id">
           <Value>a</Value>
         </Comment>
@@ -114,30 +114,30 @@
         </Comment>
         <Latitude unit="DEGREES">29.7203555</Latitude>
         <Longitude unit="DEGREES">-83.4854715</Longitude>
-        <Elevation>0.0</Elevation>
+        <Elevation unit="METERS">0.0</Elevation>
         <Depth unit="METERS">0.0</Depth>
         <Azimuth unit="DEGREES">355.9</Azimuth>
         <Dip unit="DEGREES">0.0</Dip>
         <Type>GEOPHYSICAL</Type>
         <SampleRate unit="SAMPLES/S">8.0</SampleRate>
         <CalibrationUnits>
-          <Name>mV/km</Name>
-          <Description>millivolts per kilometer</Description>
+          <Name>nT</Name>
+          <Description>nanotesla</Description>
         </CalibrationUnits>
         <Sensor>
-          <Type>dipole</Type>
-          <Description>84.5 meters</Description>
-          <Manufacturer>Oregon State University</Manufacturer>
-          <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
-          <SerialNumber>positive: 3, negative: 1</SerialNumber>
+          <Type>Magnetometer</Type>
+          <Description>NIMS</Description>
+          <Manufacturer>Barry Narod</Manufacturer>
+          <Model>fluxgate</Model>
+          <SerialNumber>1105-1</SerialNumber>
         </Sensor>
         <Response>
           <InstrumentSensitivity>
-            <Value>40960151795.1</Value>
-            <Frequency>0.305</Frequency>
+            <Value>100.0</Value>
+            <Frequency>0.192</Frequency>
             <InputUnits>
-              <Name>mV/km</Name>
-              <Description>milliVolts per kilometer</Description>
+              <Name>nT</Name>
+              <Description>nanoTesla</Description>
             </InputUnits>
             <OutputUnits>
               <Name>count</Name>
@@ -145,116 +145,40 @@
             </OutputUnits>
           </InstrumentSensitivity>
           <Stage number="1">
-            <PolesZeros name="electric field 5 pole Butterworth low-pass">
-              <Description>butterworth filter</Description>
+            <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+              <Description> poles and zeros </Description>
               <InputUnits>
-                <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
-              </InputUnits>
-              <OutputUnits>
-                <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
-              </OutputUnits>
-              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-              <NormalizationFactor>313383.601119193</NormalizationFactor>
-              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
-              <Pole number="0">
-                <Real>-3.883009</Real>
-                <Imaginary>11.951875</Imaginary>
-              </Pole>
-              <Pole number="1">
-                <Real>-3.883009</Real>
-                <Imaginary>-11.951875</Imaginary>
-              </Pole>
-              <Pole number="2">
-                <Real>-10.166194</Real>
-                <Imaginary>7.386513</Imaginary>
-              </Pole>
-              <Pole number="3">
-                <Real>-10.166194</Real>
-                <Imaginary>-7.386513</Imaginary>
-              </Pole>
-              <Pole number="4">
-                <Real>-12.566371</Real>
-                <Imaginary>0.0</Imaginary>
-              </Pole>
-            </PolesZeros>
-            <StageGain>
-              <Value>1.0</Value>
-              <Frequency>0.305</Frequency>
-            </StageGain>
-          </Stage>
-          <Stage number="2">
-            <PolesZeros name="electric field 1 pole Butterworth high-pass">
-              <Description>butterworth filter</Description>
-              <InputUnits>
-                <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
-              </InputUnits>
-              <OutputUnits>
-                <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
-              </OutputUnits>
-              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-              <NormalizationFactor>1.00000351809047</NormalizationFactor>
-              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
-              <Zero number="0">
-                <Real>0.0</Real>
-                <Imaginary>0.0</Imaginary>
-              </Zero>
-              <Pole number="0">
-                <Real>-0.000167</Real>
-                <Imaginary>0.0</Imaginary>
-              </Pole>
-            </PolesZeros>
-            <StageGain>
-              <Value>1.0</Value>
-              <Frequency>0.305</Frequency>
-            </StageGain>
-          </Stage>
-          <Stage number="3">
-            <PolesZeros name="mV/km to V/m">
-              <Description>unit conversion</Description>
-              <InputUnits>
-                <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
-              </InputUnits>
-              <OutputUnits>
-                <Name>V/m</Name>
-                <Description>Volts per meter</Description>
-              </OutputUnits>
-              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-              <NormalizationFactor>1.0</NormalizationFactor>
-              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
-            </PolesZeros>
-            <StageGain>
-              <Value>1e-06</Value>
-              <Frequency>0.305</Frequency>
-            </StageGain>
-          </Stage>
-          <Stage number="4">
-            <PolesZeros name="V/m to V">
-              <Description>electric dipole</Description>
-              <InputUnits>
-                <Name>V/m</Name>
-                <Description>Volts per meter</Description>
+                <Name>nT</Name>
+                <Description>nanoTesla</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>V</Name>
                 <Description>Volts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
-              <NormalizationFactor>1.0</NormalizationFactor>
-              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
+              <NormalizationFactor>1984.31439386406</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.192</NormalizationFrequency>
+              <Pole number="0">
+                <Real>-6.283185</Real>
+                <Imaginary>10.882477</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real>-6.283185</Real>
+                <Imaginary>-10.882477</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real>-12.566371</Real>
+                <Imaginary>0.0</Imaginary>
+              </Pole>
             </PolesZeros>
             <StageGain>
-              <Value>84.5</Value>
-              <Frequency>0.305</Frequency>
+              <Value>1</Value>
+              <Frequency>0.192</Frequency>
             </StageGain>
           </Stage>
-          <Stage number="5">
-            <Coefficients name="V to counts (electric)">
-              <Description>analog to digital conversion</Description>
+          <Stage number="2">
+            <Coefficients name="magnatometer A to D">
+              <Description>ADC</Description>
               <InputUnits>
                 <Name>V</Name>
                 <Description>Volts</Description>
@@ -274,13 +198,13 @@
               <Correction>0.0</Correction>
             </Decimation>
             <StageGain>
-              <Value>484733700000000.0</Value>
-              <Frequency>0.305</Frequency>
+              <Value>100.0</Value>
+              <Frequency>0.192</Frequency>
             </StageGain>
           </Stage>
-          <Stage number="6">
-            <Coefficients name="electric time offset">
-              <Description>time correction</Description>
+          <Stage number="3">
+            <Coefficients name="Hz time offset">
+              <Description>Time Offset (seconds)</Description>
               <InputUnits>
                 <Name>count</Name>
                 <Description>digital counts</Description>
@@ -296,12 +220,12 @@
               <InputSampleRate unit="HERTZ">8.0</InputSampleRate>
               <Factor>1</Factor>
               <Offset>0</Offset>
-              <Delay>0.1525</Delay>
+              <Delay>0.2455</Delay>
               <Correction>0.0</Correction>
             </Decimation>
             <StageGain>
               <Value>1</Value>
-              <Frequency>0.305</Frequency>
+              <Frequency>0.192</Frequency>
             </StageGain>
           </Stage>
         </Response>
