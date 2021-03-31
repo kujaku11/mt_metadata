@@ -46,7 +46,7 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         
     def test_network_end(self):
         # original does not have an end date
-        self.assertNotEqual(self.network_0.end_date,
+        self.assertNotEqual(self.network_0.end_date.isoformat(),
                             self.network_1.end_date)
         
     def test_network_comments(self):
@@ -84,7 +84,7 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         
     def test_station_end(self):
         # original file does not have an end date
-        self.assertNotEqual(self.station_0.end_date,
+        self.assertNotEqual(self.station_0.end_date.isoformat(),
                             self.station_1.end_date)
         
     def test_station_code(self):
@@ -130,7 +130,7 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         
     def test_channel_end(self):
         # original file does not have the correct end date
-        self.assertNotEqual(self.channel_0.end_date,
+        self.assertNotEqual(self.channel_0.end_date.isoformat(),
                             self.channel_1.end_date)
         
     def test_channel_code(self):
