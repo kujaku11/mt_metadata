@@ -8,14 +8,16 @@ Created on Tue Feb 16 11:58:11 2021
 :license: MIT
 
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 from collections import OrderedDict
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLStationMTStation
-from tests import STATIONXML_01, STATIONXML_02
-
+from mt_metadata.utils import STATIONXML_01, STATIONXML_02
+# =============================================================================
 
 class TestReadXMLStation01(unittest.TestCase):
     """
@@ -61,6 +63,7 @@ class TestMTStationToXML01(unittest.TestCase):
         self.converter = XMLStationMTStation()
         self.mt_station = self.converter.xml_to_mt(self.base_xml_station)
         self.test_xml_station = self.converter.mt_to_xml(self.mt_station)
+        self.maxDiff = None
 
     def test_time_period(self):
         self.assertEqual(
@@ -70,7 +73,8 @@ class TestMTStationToXML01(unittest.TestCase):
 
     def test_code(self):
         self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
-        self.assertEqual(
+        # the original file does not have an alternate code
+        self.assertNotEqual(
             self.base_xml_station.alternate_code, self.test_xml_station.alternate_code
         )
 
@@ -100,6 +104,8 @@ class TestReadXMLStation02(unittest.TestCase):
 
         self.converter = XMLStationMTStation()
         self.mt_station = self.converter.xml_to_mt(self.xml_station)
+        
+        self.maxDiff = None
 
     def test_time_period(self):
         self.assertEqual(self.mt_station.time_period.start, "2020-06-08T22:57:13+00:00")
@@ -159,7 +165,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
                     ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", ""),
+                    ("data_logger.firmware.version", None),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
@@ -206,7 +212,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     ),
                     ("data_logger.firmware.author", "Barry Narod"),
                     ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", ""),
+                    ("data_logger.firmware.version", None),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
@@ -254,7 +260,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
                     ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", ""),
+                    ("data_logger.firmware.version", None),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
@@ -295,7 +301,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
                     ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", ""),
+                    ("data_logger.firmware.version", None),
                     ("data_logger.id", "2485"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
@@ -336,7 +342,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
                     ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", ""),
+                    ("data_logger.firmware.version", None),
                     ("data_logger.id", "2485"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
@@ -372,6 +378,8 @@ class TestMTStationToXML02(unittest.TestCase):
         self.converter = XMLStationMTStation()
         self.mt_station = self.converter.xml_to_mt(self.base_xml_station)
         self.test_xml_station = self.converter.mt_to_xml(self.mt_station)
+        
+        self.maxDiff = None
 
     def test_time_period(self):
         self.assertEqual(
@@ -381,8 +389,7 @@ class TestMTStationToXML02(unittest.TestCase):
 
     def test_code(self):
         self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
-        # the code and alternate code are the same so removed redundancy
-        self.assertNotEqual(
+        self.assertEqual(
             self.base_xml_station.alternate_code, self.test_xml_station.alternate_code
         )
 
