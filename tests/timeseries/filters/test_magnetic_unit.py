@@ -41,9 +41,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
-from mt_metadata.timeseries.filters.helper_functions import (
-    load_sample_network_inventory,
-)
+from mt_metadata.utils import STATIONXML_MAGNETIC
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 class TestFilterMagnetic(unittest.TestCase):
@@ -52,8 +50,7 @@ class TestFilterMagnetic(unittest.TestCase):
     """
 
     def setUp(self):
-        self.station_xml_filehandle = "MTML_Magnetometer_Unit.xml"
-        self.inventory = load_sample_network_inventory(self.station_xml_filehandle)
+        self.inventory = inventory.read_inventory(STATIONXML_MAGNETIC.as_posix())
         self.stages = (
             self.inventory.networks[0].stations[0].channels[0].response.response_stages
         )
@@ -68,10 +65,11 @@ class TestFilterMagnetic(unittest.TestCase):
         self.assertIsInstance(self.inventory, inventory.Inventory)
 
     def test_instrument_sensitivity(self):
-        """ Doesn't have a translation yet """
-        self.assertRaises(
-            Exception, create_filter_from_stage, self.instrument_sensitivity
-        )
+        filters_list = [create_filter_from_stage(s) for s in self.stages]
+        cr = ChannelResponseFilter(filters_list=filters_list)
+        
+        self.assertAlmostEqual(cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
+                         self.instrument_sensitivity.value, 0)
 
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])
