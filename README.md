@@ -11,6 +11,9 @@ MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https:/
 
 - **Time Series** 
     - Supports translation to/from **StationXML**
+    - Structured as:
+        - Experiment -> Survey -> Station -> Run -> Channel
+        
 - **Transfer Functions**
     - Supports (will support) to/from **EDI**, **ZMM** (Egberts EMTF output), **JFILE** (BIRRP output), **EMTFXML** (Kelbert's format)
 
