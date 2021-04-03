@@ -16,6 +16,8 @@ MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https:/
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
 
+## Standards
+
 Each metadata keyword has an associated standard that goes with it.  These are stored internally in JSON file.  The JSON files are read in when the package is loaded to initialize the standards.  Each keyword is described by:  
 
 - **type** - How the value should be represented based on very basic types
@@ -80,3 +82,93 @@ The time series module is more mature than the transfer function module at the m
 # Documentation
 
 [MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
+
+# Example
+
+```
+from mt_metadata import timeseries
+x = timeseries.Instrument()
+
+```
+### Help
+```
+help(x)
+
++----------------------------------------------+-----------------------------------------------+----------------+
+| **Metadata Key**                             | **Description**                               | **Example**    |
++==============================================+===============================================+================+
+| **id**                                       | instrument ID number can be serial number or  | mt01           |
+|                                              | a designated ID                               |                |
+| Required: True                               |                                               |                |
+|                                              |                                               |                |
+| Units: None                                  |                                               |                |
+|                                              |                                               |                |
+| Type: string                                 |                                               |                |
+|                                              |                                               |                |
+| Style: free form                             |                                               |                |
++----------------------------------------------+-----------------------------------------------+----------------+
+| **manufacturer**                             | who manufactured the instrument               | mt gurus       |
+|                                              |                                               |                |
+| Required: True                               |                                               |                |
+|                                              |                                               |                |
+| Units: None                                  |                                               |                |
+|                                              |                                               |                |
+| Type: string                                 |                                               |                |
+|                                              |                                               |                |
+| Style: free form                             |                                               |                |
++----------------------------------------------+-----------------------------------------------+----------------+
+| **type**                                     | instrument type                               | broadband      |
+|                                              |                                               | 32-bit         |
+| Required: True                               |                                               |                |
+|                                              |                                               |                |
+| Units: None                                  |                                               |                |
+|                                              |                                               |                |
+| Type: string                                 |                                               |                |
+|                                              |                                               |                |
+| Style: free form                             |                                               |                |
++----------------------------------------------+-----------------------------------------------+----------------+
+| **model**                                    | model version of the instrument               | falcon5        |
+|                                              |                                               |                |
+| Required: False                              |                                               |                |
+|                                              |                                               |                |
+| Units: None                                  |                                               |                |
+|                                              |                                               |                |
+| Type: string                                 |                                               |                |
+|                                              |                                               |                |
+| Style: free form                             |                                               |                |
++----------------------------------------------+-----------------------------------------------+----------------+
+```
+
+### Fill in metadata
+```
+x.model = "falcon 5"
+x.type = "broadband 32-bit"
+x.manufacturer = "MT Gurus"
+x.id = "f176"
+```
+
+### to JSON
+```
+print(x.to_json())
+{
+    "instrument": {
+        "id": "f176",
+        "manufacturer": "MT Gurus",
+        "model": "falcon 5",
+        "type": "broadband 32-bit"
+    }
+}
+```
+
+### to XML
+```
+print(x.to_xml(string=True))
+<?xml version="1.0" ?>
+<instrument>
+    <id>f176</id>
+    <manufacturer>MT Gurus</manufacturer>
+    <model>falcon 5</model>
+    <type>broadband 32-bit</type>
+</instrument>
+
+```
