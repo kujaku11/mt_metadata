@@ -37,13 +37,12 @@ class FrequencyResponseTableFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = 'frequency response table'
         self.instrument_type = None #FGM or FBC or other?
-        #self.log_interpolate = None
         self.gain = 1.0
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
-        self._empirical_frequencies = kwargs.get('empirical_frequencies', None)
-        self._empirical_amplitudes = kwargs.get('empirical_amplitudes', None)
-        self._empirical_phases = kwargs.get('empirical_phases', None)
+        self._empirical_frequencies = kwargs.get('frequencies', None)
+        self._empirical_amplitudes = kwargs.get('amplitudes', None)
+        self._empirical_phases = kwargs.get('phases', None)
         self.amplitude_response = None
         self.phase_response = None
         self._total_response_function = None
@@ -55,13 +54,58 @@ class FrequencyResponseTableFilter(FilterBase):
     def frequencies(self):
         return self._empirical_frequencies
 
+    @frequencies.setter
+    def frequencies(self, value):
+        """
+        Set the frequencies, make sure the input is validated
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_frequencies = np.array(value, dtype=float)
+
+        #elif isinstance(value, str):
+        #    self._poles = np.array(value.split(","), dtype=np.complex)
+
     @property
     def amplitudes(self):
         return self._empirical_amplitudes
 
+    @amplitudes.setter
+    def amplitudes(self, value):
+        """
+        Set the amplitudes, make sure the input is validated
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_amplitudes = np.array(value, dtype=float)
+
+        # elif isinstance(value, str):
+        #    self._poles = np.array(value.split(","), dtype=np.complex)
+
     @property
     def phases(self):
         return self._empirical_phases
+
+    @phases.setter
+    def phases(self, value):
+        """
+        Set the amplitudes, make sure the input is validated
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_phases = np.array(value, dtype=float)
 
     @property
     def min_frequency(self):
@@ -119,7 +163,7 @@ def main():
     z = df['phase'][2:].to_numpy()
     #</READ FAP FILE>
 
-    fap_filter = FrequencyResponseTableFilter(empirical_frequencies=x, empirical_amplitudes=y, empirical_phases=z)
+    fap_filter = FrequencyResponseTableFilter(frequencies=x, amplitudes=y, phases=z)
     xx = np.logspace(-1.6, 2, 10000)
     fap_filter.plot_complex_response(xx)
 
