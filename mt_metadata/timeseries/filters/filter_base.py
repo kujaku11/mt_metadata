@@ -192,7 +192,8 @@ class FilterBase(Base):
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
         """
-        set the obspy mapping
+        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to 
+        mt_metadata filter objects.
         """
         if not isinstance(obspy_dict, dict):
             msg = f"Input must be a dictionary not {type(obspy_dict)}"
