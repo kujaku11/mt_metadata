@@ -7,10 +7,14 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+# Description
+
 MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https://www.iris.edu/hq/about_iris/governance/mt_soft>) and USGS to develop tools that standardize magnetotelluric metadata, well, at least create tools for standards that are generally accepted.  This include the two main types of magnetotelluric data
 
-- Time Series 
-- Transfer Functions
+- **Time Series** 
+    - Supports translation to/from **StationXML**
+- **Transfer Functions**
+    - Supports (will support) to/from **EDI**, **ZMM** (Egberts EMTF output), **JFILE** (BIRRP output), **EMTFXML** (Kelbert's format)
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
 
@@ -65,4 +69,16 @@ And each object has a doc string that describes the standard:
 
 The time series module is more mature than the transfer function module at the moment, and this is still a work in progress.
 
-Documentation can be found at: [MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
+# Installation
+
+## PIP
+`pip install mt_metadata`
+
+## Conda
+
+*Soon to be*
+`conda install mt_metadata`
+
+# Documentation
+
+[MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
