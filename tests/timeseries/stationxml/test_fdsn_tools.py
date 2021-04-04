@@ -86,7 +86,7 @@ class TestChannelCode(unittest.TestCase):
         ch_dict = fdsn_tools.read_channel_code(self.h_channel_code)
         self.assertDictEqual(ch_dict["period"], {"min": 0.95, "max": 1.05})
         self.assertEqual(ch_dict["measurement"], "magnetic")
-        self.assertDictEqual(ch_dict["orientation"], {"angle": 0, "variance": 15 })
+        self.assertDictEqual(ch_dict["orientation"], {"angle": 0, "variance": 15})
 
     def test_read_e_channel(self):
         ch_dict = fdsn_tools.read_channel_code(self.e_channel_code)

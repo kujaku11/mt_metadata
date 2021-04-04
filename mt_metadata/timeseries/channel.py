@@ -16,6 +16,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import DataQuality, Filtered, Location, TimePeriod, Instrument, Fdsn
+from mt_metadata.timeseries.filters import ChannelResponseFilter
 
 # =============================================================================
 attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
@@ -71,3 +72,20 @@ class Channel(Base):
                 msg = f"component {value} does not match expected pattern {self._ch_pattern}"
                 self.logger.error(msg)
                 raise ValueError(msg)
+                
+    def channel_response(self, filters_dict):
+        """
+        full channel response
+        """
+        
+        mt_filter_list = []
+        for name in self.filter.name:
+            try:
+                mt_filter = filters_dict[name]
+                mt_filter_list.append(mt_filter)
+            except KeyError:
+                msg = f"Could not find {name} in filters dictionary, skipping"
+                self.logger.error(msg)
+                continue
+        # compute instrument sensitivity and units in/out
+        return ChannelResponseFilter(filters_list=mt_filter_list)

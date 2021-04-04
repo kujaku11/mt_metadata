@@ -13,7 +13,7 @@ import unittest
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
-from tests import STATIONXML_02
+from mt_metadata.utils import STATIONXML_02
 
 
 class TestRunFromXML(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestRunFromXML(unittest.TestCase):
     def test_data_logger(self):
         self.assertEqual(self.mt_run.data_logger.timing_system.type, "GPS")
         self.assertEqual(self.mt_run.data_logger.firmware.author, "Barry Narod")
-        self.assertEqual(self.mt_run.data_logger.firmware.version, "")
+        self.assertEqual(self.mt_run.data_logger.firmware.version, None)
         self.assertEqual(self.mt_run.data_logger.power_source.type, "battery")
         self.assertEqual(self.mt_run.data_logger.model, "NIMS")
         self.assertEqual(self.mt_run.data_logger.id, "2612-09")

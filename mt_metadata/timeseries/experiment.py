@@ -29,6 +29,7 @@ Created on Mon Feb  8 21:25:40 2021
 from xml.etree import cElementTree as et
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
+from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 
@@ -63,6 +64,9 @@ class Experiment:
                             "\t\t\tRecorded Channels: "
                             + ", ".join(run.channels_recorded_all)
                         )
+                        lines.append(f"\t\t\tStart: {run.time_period.start}")
+                        lines.append(f"\t\t\tEnd:   {run.time_period.end}")
+
                         lines.append(f"\t\t\t{'-' * 20}")
 
         return "\n".join(lines)
@@ -136,10 +140,17 @@ class Experiment:
 
         experiment_element = et.Element(self.__class__.__name__)
         for survey in self.surveys:
+            survey.update_bounding_box()
+            survey.update_time_period()
             survey_element = survey.to_xml(required=required)
+            filter_element = et.SubElement(survey_element, "filters")
+            for key, value in survey.filters.items():
+                filter_element.append(value.to_xml(required=required))
             for station in survey.stations:
+                station.update_time_period()
                 station_element = station.to_xml(required=required)
                 for run in station.runs:
+                    run.update_time_period()
                     run_element = run.to_xml(required=required)
                     for channel in run.channels:
                         run_element.append(channel.to_xml(required=required))
@@ -185,37 +196,72 @@ class Experiment:
         :type element: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
+        
+        
 
         """
         if fn:
-            experiment = et.parse(fn).getroot()
+            experiment_element = et.parse(fn).getroot()
         if element:
-            experiment = element
+            experiment_element = element
 
-        for survey in list(experiment):
+        # need to set the lists for each layer, otherwise you get duplicates.
+        for survey_element in list(experiment_element):
+            survey_dict = helpers.element_to_dict(survey_element)
             survey_obj = Survey()
-            survey_obj.from_xml(survey)
-            for station in survey.findall("station"):
+            fd = survey_dict["survey"].pop("filters")
+            filter_dict = self._read_filter_dict(fd)
+            survey_obj.filters.update(filter_dict)
+
+            stations = self._pop_dictionary(survey_dict["survey"], "station")
+            for station_dict in stations:
                 station_obj = Station()
-                station_obj.from_xml(station)
-                for run in station.findall("run"):
+                run_list = []
+                runs = self._pop_dictionary(station_dict, "run")
+                for run_dict in runs:
                     run_obj = Run()
-                    run_obj.from_xml(run)
-                    for channel in run.findall("electric"):
-                        ch = Electric()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    for channel in run.findall("magnetic"):
-                        ch = Magnetic()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    for channel in run.findall("auxiliary"):
-                        ch = Auxiliary()
-                        ch.from_xml(channel)
-                        run_obj.add_channel(ch)
-                    station_obj.add_run(run_obj)
+                    channel_list = []
+                    for ch in ["electric", "magnetic", "auxiliary"]:
+                        try:
+                            for ch_dict in self._pop_dictionary(run_dict, ch):
+                                if ch == "electric":
+                                    channel = Electric()
+                                elif ch == "magnetic":
+                                    channel = Magnetic()
+                                elif ch == "auxiliary":
+                                    channel = Auxiliary()
+                                channel.from_dict(ch_dict)
+                                channel_list.append(channel)
+                        except KeyError:
+                            self.logger.debug(f"Could not find channel {ch}")
+                    run_obj.from_dict(run_dict)
+                    run_obj.channels = channel_list
+                    run_list.append(run_obj)
+
+                station_obj.from_dict(station_dict)
+                station_obj.runs = run_list
                 survey_obj.stations.append(station_obj)
+            survey_obj.from_dict(survey_dict)
             self.surveys.append(survey_obj)
+
+    def _pop_dictionary(self, in_dict, element):
+        """
+        Pop off a key from an input dictionary, make sure output is a list
+        
+        :param in_dict: DESCRIPTION
+        :type in_dict: TYPE
+        :param element: DESCRIPTION
+        :type element: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        elements = in_dict.pop(element)
+        if not isinstance(elements, list):
+            elements = [elements]
+
+        return elements
 
     def from_json(self, fn):
         """
@@ -250,3 +296,32 @@ class Experiment:
 
         """
         pass
+
+    def _read_filter_dict(self, filters_dict):
+        """
+        Read in filter element an put it in the correct object
+        
+        :param filter_element: DESCRIPTION
+        :type filter_element: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        return_dict = {}
+        if filters_dict is None:
+            return return_dict
+        
+        for key, value in filters_dict.items():
+            if key in ["pole_zero_filter"]:
+                mt_filter = PoleZeroFilter()
+
+            elif key in ["coefficient_filter"]:
+                mt_filter = CoefficientFilter()
+
+            elif key in ["time_delay_filter"]:
+                mt_filter = TimeDelayFilter()
+
+            mt_filter.from_dict(value)
+            return_dict[mt_filter.name] = mt_filter
+
+        return return_dict

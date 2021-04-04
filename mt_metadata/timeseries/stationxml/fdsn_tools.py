@@ -69,7 +69,9 @@ measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.i
 
 
 def angle(value):
-        return abs(np.cos(np.deg2rad(value)))
+    return abs(np.cos(np.deg2rad(value)))
+
+
 # parts of a unit circle
 orientation_code_dict = {
     "N": {"angle": 0, "variance": 15},
@@ -80,18 +82,9 @@ orientation_code_dict = {
     "3": {"angle": 0, "variance": 15},
 }
 
-mt_components_dict = {
-    "electric": "e",
-    "magnetic": "h",
-    "temperature": "temperature"}
+mt_components_dict = {"electric": "e", "magnetic": "h", "temperature": "temperature"}
 
-mt_orientation_dict = {
-    "N": "x",
-    "E": "y",
-    "Z": "z",
-    "1": "x",
-    "2": "y",
-    "3": "z"}
+mt_orientation_dict = {"N": "x", "E": "y", "Z": "z", "1": "x", "2": "y", "3": "z"}
 
 # SI units short name
 units_names = {
@@ -271,6 +264,7 @@ def read_channel_code(channel_code):
         "orientation": orientation,
     }
 
+
 def create_mt_component(channel_code):
     """
     Create a component for an MT channel given the measurement and orientation
@@ -279,11 +273,10 @@ def create_mt_component(channel_code):
     ex
     
     """
-        
+
     code_dict = read_channel_code(channel_code)
-    
+
     mt_component = mt_components_dict[code_dict["measurement"]]
     mt_orientation = mt_orientation_dict[channel_code[2]]
-    
-    return f"{mt_component}{mt_orientation}"
 
+    return f"{mt_component}{mt_orientation}"

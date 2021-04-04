@@ -75,7 +75,7 @@ class XMLStationMTStation(BaseTranslator):
             "provenance.software.name",
             "provenance.software.version",
             "provenance.comments",
-            "data_type"
+            "data_type",
         ]
 
     def xml_to_mt(self, xml_station):
@@ -164,6 +164,9 @@ class XMLStationMTStation(BaseTranslator):
                 code = mt_station.fdsn.id
         else:
             code = mt_station.id
+            
+        if mt_station.fdsn.id is None:
+            mt_station.fdsn.id = mt_station.id
 
         xml_station = inventory.Station(
             code,
@@ -174,9 +177,7 @@ class XMLStationMTStation(BaseTranslator):
 
         for xml_key, mt_key in self.xml_translator.items():
             if xml_key in ["alternate_code"]:
-                if xml_station.code != mt_station.id:
-                    xml_station.alternate_code = mt_station.id
-                continue
+                xml_station.alternate_code = mt_station.id
             if mt_key is None:
                 msg = "cannot currently map mt_key.station to inventory.station.{0}".format(
                     xml_key

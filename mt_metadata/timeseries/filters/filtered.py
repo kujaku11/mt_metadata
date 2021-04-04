@@ -15,13 +15,19 @@ import numpy as np
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.exceptions import MTSchemaError
 
 # =============================================================================
 attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
 # =============================================================================
 class Filtered(Base):
+    """
+    List of filter names booleans tracking if filter has been 
+	applied.   May want to dict(zip(name, applied))
+    
+    """
+
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):

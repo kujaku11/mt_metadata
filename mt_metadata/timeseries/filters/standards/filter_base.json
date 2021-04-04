@@ -10,6 +10,17 @@
         "example": "\"[counts2mv, lowpass_magnetic]\""
     },
 
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the channel",
+        "options": [],
+        "alias": [],
+        "example": "ambient air temperature"
+    },
+	
     "type": {
         "type": "string",
         "required": true,
@@ -59,5 +70,16 @@
         "options": [],
         "alias": [],
         "example": "2/1/2020"
+    }, 
+
+    "gain": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
+        "options": [],
+        "alias": [],
+        "example": "1.0"
     }
 }

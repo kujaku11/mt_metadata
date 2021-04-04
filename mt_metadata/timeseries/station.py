@@ -200,3 +200,16 @@ class Station(Base):
 
             run = run.replace("'", "").replace('"', "")
             self.runs.append(Run(id=run))
+
+    def update_time_period(self):
+        """
+        update time period from run information
+        """
+        start = []
+        end = []
+        for run in self.runs:
+            start.append(run.time_period.start)
+            end.append(run.time_period.end)
+
+        self.time_period.start = min(start)
+        self.time_period.end = max(end)

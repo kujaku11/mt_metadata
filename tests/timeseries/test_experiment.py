@@ -59,6 +59,7 @@ class TestBuildExperiment(unittest.TestCase):
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(survey_id=survey)
+            survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
                 station_obj = Station(id=station)
                 for run in ["mt01a", "mt01b"]:
