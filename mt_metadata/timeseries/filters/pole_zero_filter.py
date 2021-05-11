@@ -37,6 +37,7 @@ class PoleZeroFilter(FilterBase):
         self._poles = None
         self._zeros = None
         self.normalization_factor = 1.0
+        self.gain = 1.0
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
@@ -186,7 +187,7 @@ class PoleZeroFilter(FilterBase):
 
         """
         
-        if not self.poles and not self.zeros:
+        if self.poles is None and self.zeros is None:
             return np.nan
         f = np.logspace(-5, 5, num=50 * window_len) #freq Hz
         cr = self.complex_response(f)
@@ -211,7 +212,7 @@ class PoleZeroFilter(FilterBase):
             if np.isclose(df_passband, df_0).all():
                 pass
             else:
-                self.logger("WARNING -- Passband appears discontinuous")
+                self.logger.warning("Passband appears discontinuous")
         pass_band = np.array([pass_band.min(), pass_band.max()])
         return pass_band
         
