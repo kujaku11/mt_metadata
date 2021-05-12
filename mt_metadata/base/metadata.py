@@ -15,6 +15,7 @@ import json
 import pandas as pd
 import numpy as np
 import logging
+from copy import deepcopy
 
 from collections import OrderedDict
 from collections.abc import Iterable
@@ -113,7 +114,25 @@ class Base:
     @changed.setter
     def changed(self, value):
         self._changed = value
+        
+    def __deepcopy__(self, memodict={}):
+        """
+        Need to skip copying the logger
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
+        copied = type(self)()
+        for key in self.to_dict(single=True).keys():
+            try:
+                copied.set_attr_from_name(key, 
+                                          deepcopy(self.get_attr_from_name(key), memodict))
+            except AttributeError:
+                continue
+            
+        return copied
+    
     def get_attribute_list(self):
         """
         return a list of the attributes 
