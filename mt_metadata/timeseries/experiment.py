@@ -321,7 +321,13 @@ class Experiment:
             elif key in ["time_delay_filter"]:
                 mt_filter = TimeDelayFilter()
 
-            mt_filter.from_dict(value)
-            return_dict[mt_filter.name] = mt_filter
+            if isinstance(value, list):
+                for single_filter in value:
+                    mt_filter.from_dict(single_filter)
+                    return_dict[mt_filter.name] = mt_filter
+            else:
+                mt_filter.from_dict(value)
+                return_dict[mt_filter.name] = mt_filter
+                
 
         return return_dict
