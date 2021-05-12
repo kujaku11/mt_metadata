@@ -103,6 +103,7 @@ class ChannelResponseFilter(object):
         """ estimate pass band for all filters """
         pb = []
         for f in self.filters_list:
+            print(f)
             if hasattr(f, "pass_band"):
                 f_pb = f.pass_band()
                 if f_pb is np.nan:

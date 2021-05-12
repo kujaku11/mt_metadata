@@ -192,6 +192,8 @@ class PoleZeroFilter(FilterBase):
         f = np.logspace(-5, 5, num=50 * window_len) #freq Hz
         cr = self.complex_response(f)
         amp = np.abs(cr)
+        if np.all(cr==cr[0]):
+            return np.array([f.min(), f.max()])
         pass_band = []
         for ii in range(window_len, len(cr) - window_len, 1):
             cr_window = amp[ii:ii+window_len]
