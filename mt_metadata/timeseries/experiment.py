@@ -210,8 +210,6 @@ class Experiment:
             survey_dict = helpers.element_to_dict(survey_element)
             survey_obj = Survey()
             fd = survey_dict["survey"].pop("filters")
-            for k, v in fd.items():
-                print(f"{k}: {v}\n")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
 
