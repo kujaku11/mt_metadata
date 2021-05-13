@@ -210,6 +210,8 @@ class Experiment:
             survey_dict = helpers.element_to_dict(survey_element)
             survey_obj = Survey()
             fd = survey_dict["survey"].pop("filters")
+            for k, v in fd.items():
+                print(f"{k}: {v}\n")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
 
@@ -313,21 +315,31 @@ class Experiment:
         
         for key, value in filters_dict.items():
             if key in ["pole_zero_filter"]:
-                mt_filter = PoleZeroFilter()
+                if isinstance(value, list):
+                    for v in value:
+                        mt_filter = PoleZeroFilter(**v)
+                        return_dict[mt_filter.name] = mt_filter
+                else:
+                    mt_filter = PoleZeroFilter(value)
+                    return_dict[mt_filter.name] = mt_filter
 
             elif key in ["coefficient_filter"]:
-                mt_filter = CoefficientFilter()
+                if isinstance(value, list):
+                    for v in value:
+                        mt_filter = CoefficientFilter(**v)
+                        return_dict[mt_filter.name] = mt_filter
+                else:
+                    mt_filter = CoefficientFilter(value)
+                    return_dict[mt_filter.name] = mt_filter
 
             elif key in ["time_delay_filter"]:
-                mt_filter = TimeDelayFilter()
-
-            if isinstance(value, list):
-                for single_filter in value:
-                    mt_filter.from_dict(single_filter)
+                if isinstance(value, list):
+                    for v in value:
+                        mt_filter = TimeDelayFilter(**v)
+                        return_dict[mt_filter.name] = mt_filter
+                else:
+                    mt_filter = TimeDelayFilter(value)
                     return_dict[mt_filter.name] = mt_filter
-            else:
-                mt_filter.from_dict(value)
-                return_dict[mt_filter.name] = mt_filter
-                
+
 
         return return_dict
