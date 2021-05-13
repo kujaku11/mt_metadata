@@ -62,6 +62,9 @@ class PoleZeroFilter(FilterBase):
         elif isinstance(value, str):
             self._poles = np.array(value.split(","), dtype=np.complex)
 
+        else:
+            self._poles = np.empty(0)
+
     @property
     def zeros(self):
         return self._zeros
@@ -81,6 +84,9 @@ class PoleZeroFilter(FilterBase):
 
         elif isinstance(value, str):
             self._zeros = np.array(value.split(","), dtype=np.complex)
+
+        else:
+            self._zeros = np.empty(0)
 
     @property
     def n_poles(self):
