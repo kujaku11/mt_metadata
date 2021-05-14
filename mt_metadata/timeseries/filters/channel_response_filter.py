@@ -39,6 +39,17 @@ class ChannelResponseFilter(object):
         
         for k, v in kwargs.items():
             setattr(self, k, v)
+            
+    def __str__(self):
+        lines = ["Filters Included:\n", "=" * 25, "\n"]
+        for f in self.filters_list:
+            lines.append(f.__str__())
+            lines.append(f"\n{'-'*20}\n")
+            
+        return ''.join(lines)
+    
+    def __repr__(self):
+        return self.__str__()
 
     @property
     def filters_list(self):
