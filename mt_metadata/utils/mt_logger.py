@@ -10,6 +10,7 @@ from pathlib import Path
 import yaml
 import logging
 import logging.config
+from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 # =============================================================================
 # Global Variables
@@ -98,21 +99,15 @@ def setup_logger(logger_name, fn=None, level="debug"):
             exists = True
 
         # fn_handler = logging.FileHandler(fn)
-        fn_handler = logging.handlers.RotatingFileHandler(
-            fn, maxBytes=2 ** 21, backupCount=2
-        )
+        # fn_handler = logging.handlers.RotatingFileHandler(
+        #     fn, maxBytes=2 ** 21, backupCount=2
+        # )
+        fn_handler = ConcurrentRotatingFileHandler(fn, maxBytes=2**21)
         fn_handler.setFormatter(LOG_FORMAT)
         fn_handler.setLevel(LEVEL_DICT[level.lower()])
         logger.addHandler(fn_handler)
         if not exists:
             logger.info(f"Logging file can be found {logger.handlers[-1].baseFilename}")
-    # commented this out because it leads to a drastic reduction in processing
-    # else, give it a null handler, which will go to default logger.
-    # else:
-    #     pass
-    #     # null_handler = logging.NullHandler()
-    #     # null_handler.setFormatter(LOG_FORMAT)
-    #     # null_handler.setLevel(LEVEL_DICT[level.lower()])
-    #     # logger.addHandler(null_handler)
+
 
     return logger
