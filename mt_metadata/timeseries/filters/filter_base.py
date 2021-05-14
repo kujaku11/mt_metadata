@@ -188,6 +188,15 @@ class FilterBase(Base):
     @property
     def obspy_mapping(self):
         return self._obspy_mapping
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        if value is not None:
+            self._name = str(value).lower()
 
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
@@ -298,9 +307,6 @@ class FilterBase(Base):
     def decimation_inactive(self):
         pass
 
-    # @property
-    # def gain_(self):
-    #     pass
 
     def apply(self, ts):
         data_spectum = ts.fft()
@@ -311,26 +317,3 @@ class FilterBase(Base):
         output.data = calibrated_data
         return output
 
-
-"""
-timeseries.calibrate(Filter())
-filter.apply(TimeSeries())
-
-def apply_filter(mc_filter):
-    complex_response = mc_filter.complex_response(self.frequencies)
-    data_spectum = self.fft()
-    calibrated_spectrum = data_spectum / complex_response
-    calibrated_data = np.fft.ifft(calibrated_spectrum)
-    
-
-
-"""
-
-
-def main():
-    filter_instance = FilterBase()
-    print("test")
-
-
-if __name__ == "__main__":
-    main()

@@ -20,6 +20,7 @@ class TimeDelayFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "time delay"
         self.delay = None
+        self.comments = None
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 

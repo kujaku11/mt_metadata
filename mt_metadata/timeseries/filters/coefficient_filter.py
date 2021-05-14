@@ -18,6 +18,7 @@ attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 class CoefficientFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "coefficient"
+        self.comments = None
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 

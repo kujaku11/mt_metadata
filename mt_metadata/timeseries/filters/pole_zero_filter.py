@@ -38,6 +38,7 @@ class PoleZeroFilter(FilterBase):
         self.zeros = None
         self.normalization_factor = 1.0
         self.gain = 1.0
+        self.comments = None
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
