@@ -34,8 +34,8 @@ obspy_mapping["normalization_factor"] = "normalization_factor"
 class PoleZeroFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "zpk"
-        self._poles = None
-        self._zeros = None
+        self.poles = None
+        self.zeros = None
         self.normalization_factor = 1.0
         self.gain = 1.0
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
