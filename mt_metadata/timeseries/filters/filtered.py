@@ -78,7 +78,7 @@ class Filtered(Base):
             if applied in [None, "none", "None", "NONE", "null", 0, "0"]:
                 self._applied = [False]
                 return
-        if applied == []:
+        if isinstance(applied, list) and len(applied)==0:
             self.applied = [False]
             return
 
