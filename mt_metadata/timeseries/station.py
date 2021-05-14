@@ -211,5 +211,7 @@ class Station(Base):
             start.append(run.time_period.start)
             end.append(run.time_period.end)
 
-        self.time_period.start = min(start)
-        self.time_period.end = max(end)
+        if start:
+           self.time_period.start = min(start)
+        if end:
+            elf.time_period.end = max(end)

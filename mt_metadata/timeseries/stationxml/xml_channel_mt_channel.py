@@ -208,7 +208,10 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-
+        if not sensor.type:
+            print(mt_channel.type)
+            return mt_channel
+        
         if sensor.type.lower() in ["magnetometer", "induction coil", "coil"]:
             if not isinstance(mt_channel, metadata.Magnetic):
                 msg = (
@@ -468,7 +471,8 @@ class XMLChannelMTChannel(BaseTranslator):
         filter_dict = {}
         for stage in xml_channel.response.response_stages:
             mt_filter = create_filter_from_stage(stage)
-            filter_dict[mt_filter.name.lower()] = mt_filter
+            if mt_filter.name:
+                filter_dict[mt_filter.name.lower()] = mt_filter
 
         return filter_dict
 

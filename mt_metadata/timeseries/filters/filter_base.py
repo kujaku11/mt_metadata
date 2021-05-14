@@ -197,6 +197,9 @@ class FilterBase(Base):
     def name(self, value):
         if value is not None:
             self._name = str(value).lower()
+        else:
+            self._name = None
+            
 
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
