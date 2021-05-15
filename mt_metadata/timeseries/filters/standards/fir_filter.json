@@ -1,0 +1,12 @@
+{
+    "coefficients": {
+        "type": "string",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The FIR coefficients associated with the filter stage response",
+        "options": [],
+        "alias": [],
+        "example": "\"[0.25, 0.5, 0.25]\""
+    }
+}

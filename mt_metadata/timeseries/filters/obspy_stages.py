@@ -60,6 +60,10 @@ def create_filter_from_stage(stage):
 
     if isinstance(stage, obspy.core.inventory.response.PolesZerosResponseStage):
         return create_pole_zero_filter_from_stage(stage)
+    if isinstance(stage, obspy.core.inventory.response.ResponseStage):
+        print("NEWLY ENCOUNTERED 20210514 -- may need some massaging")
+        obspy_filter = create_coefficent_filter_from_stage(stage)
+        return obspy_filter
     elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):
         # Sometimes filter stages are used to kluge-represent filters of other types
         #
