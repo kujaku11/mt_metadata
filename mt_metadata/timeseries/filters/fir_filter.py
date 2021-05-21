@@ -1,4 +1,5 @@
 import copy
+import matplotlib.pyplot as plt
 import numpy as np
 import obspy
 import scipy.signal as signal
@@ -24,7 +25,7 @@ obspy_mapping["_coefficients"] = "_coefficients"
 class FIRFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "fir"
-        self.coefficients = coefficients
+        self.coefficients = None
         # self.zeros = None
         # self.normalization_factor = 1.0
         #self.gain = 1.0
@@ -60,10 +61,23 @@ class FIRFilter(FilterBase):
     def n_coefficients(self):
         return len(self._coefficients)
 
+    def plot_fir_response(self):
+        w, h = signal.freqz(self.coefficients)
+        fig = plt.figure()
+        plt.title('Digital filter frequency response')
+        ax1 = fig.add_subplot(111)
+        plt.plot(w, 20 * np.log10(abs(h)), 'b')
+        plt.ylabel('Amplitude [dB]', color='b')
+        plt.xlabel('Frequency [rad/sample]')
 
-    # def zero_pole_gain_representation(self):
-    #     zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
-    #     return zpg
+        ax2 = ax1.twinx()
+        angles = np.unwrap(np.angle(h))
+        plt.plot(w, angles, 'g')
+        plt.ylabel('Angle (radians)', color='g')
+        plt.grid()
+        plt.axis('tight')
+        plt.show()
+
 
     @property
     def total_gain(self):
@@ -120,9 +134,10 @@ class FIRFilter(FilterBase):
 
         """
         angular_frequencies = 2 * np.pi * frequencies
-        w, h = signal.freqs_zpk(
-            self.zeros, self.poles, self.total_gain, worN=angular_frequencies
-        )
+        w, h = signal.freqz(self.coefficients, worN=angular_frequencies)
+#        w, h = signal.freqs_zpk(
+#            self.zeros, self.poles, self.total_gain, worN=angular_frequencies
+#        )
         return h
 
 

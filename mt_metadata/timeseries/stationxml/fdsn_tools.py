@@ -61,7 +61,7 @@ measurement_code_dict = {
     "electric": "Q",
     "rain_fall": "R",
     "linear_strain": "S",
-    "tide": "T",
+    "magnetic": "T",
     "wind": "W",
 }
 
@@ -273,8 +273,12 @@ def create_mt_component(channel_code):
     ex
     
     """
-
     code_dict = read_channel_code(channel_code)
+    if code_dict["measurement"]=="tide":
+        print("It is unikely that we have encountered tidal data here")
+        print("It is more likely that the channel code 'T' appeared")
+        print("Some historial MT data (PKD, SAO) used 'T' as the code for feedback coil magnetometers")
+        code_dict = read_channel_code(channel_code.replace("T", "F"))
 
     mt_component = mt_components_dict[code_dict["measurement"]]
     mt_orientation = mt_orientation_dict[channel_code[2]]

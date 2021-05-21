@@ -469,10 +469,18 @@ class XMLChannelMTChannel(BaseTranslator):
         parse the filters from obspy into mt filters
         """
         filter_dict = {}
-        for stage in xml_channel.response.response_stages:
+        for i_stage, stage in enumerate(xml_channel.response.response_stages):
+            print(f"\n\n{i_stage}: stagename {stage.name} seq#:{stage.stage_sequence_number}")
+            print(f"type {type(stage)}")
             mt_filter = create_filter_from_stage(stage)
+            # if mt_filter.name is None:
+            #     mt_filter.name = f"{channel.code}_{i_stage}"
             if mt_filter.name:
                 filter_dict[mt_filter.name.lower()] = mt_filter
+            else:
+                print(f"UnNamed filter not added to dictionary {mt_filter}")
+                raise Exception
+
 
         return filter_dict
 
