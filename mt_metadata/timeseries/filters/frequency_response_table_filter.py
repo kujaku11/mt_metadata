@@ -21,7 +21,6 @@ from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
-obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
@@ -29,6 +28,10 @@ attr_dict.add_dict(get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS
 
 # =============================================================================
 
+obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
+obspy_mapping["amplitudes"] = "_empirical_amplitudes"
+obspy_mapping["frequencies"] = "_empirical_frequencies"
+obspy_mapping["phases"] = "_empirical_phases"
 
 class FrequencyResponseTableFilter(FilterBase):
 
@@ -39,9 +42,9 @@ class FrequencyResponseTableFilter(FilterBase):
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         
         self.obspy_mapping = obspy_mapping
-        self._empirical_frequencies = kwargs.get('frequencies', None)
-        self._empirical_amplitudes = kwargs.get('amplitudes', None)
-        self._empirical_phases = kwargs.get('phases', None)
+        #self._empirical_frequencies = kwargs.get('frequencies', None)
+        #self._empirical_amplitudes = kwargs.get('amplitudes', None)
+        #self._empirical_phases = kwargs.get('phases', None)
         self.amplitude_response = None
         self.phase_response = None
         self._total_response_function = None
@@ -55,7 +58,7 @@ class FrequencyResponseTableFilter(FilterBase):
     def frequencies(self, value):
         """
         Set the frequencies, make sure the input is validated
-        
+
         Linear frequencies
         :param value: Linear Frequencies
         :type value: iterable

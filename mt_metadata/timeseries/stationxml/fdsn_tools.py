@@ -61,12 +61,12 @@ measurement_code_dict = {
     "electric": "Q",
     "rain_fall": "R",
     "linear_strain": "S",
-    "magnetic": "T",
+    "tide": "T",
     "wind": "W",
 }
 
 measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
-
+measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"]
 
 def angle(value):
     return abs(np.cos(np.deg2rad(value)))

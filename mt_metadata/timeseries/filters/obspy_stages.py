@@ -7,6 +7,7 @@ import obspy
 
 from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
 from mt_metadata.timeseries.filters.fir_filter import FIRFilter
+from mt_metadata.timeseries.filters.frequency_response_table_filter import FrequencyResponseTableFilter
 from mt_metadata.timeseries.filters.time_delay_filter import TimeDelayFilter
 from mt_metadata.timeseries.filters.pole_zero_filter import PoleZeroFilter
 
@@ -33,6 +34,35 @@ def create_fir_filter_from_stage(stage):
     fir_filter = fir_filter.from_obspy_stage(stage)
     return fir_filter
 
+def create_frequency_response_table_filter_from_stage(stage):
+    """
+    Notes: Issue here is that the stage has a list of response_list_elements, it does not actually
+    have attrs frequencies, amplitudes, phases... will try assigning them on the fly here
+
+    Parameters
+    ----------
+    stage
+
+    Returns
+    -------
+
+    """
+    print("20210523 -- FAP may need some massaging")
+    n_freq = len(stage.response_list_elements)
+    frequencies = np.full(n_freq, np.nan)
+    amplitudes = np.full(n_freq, np.nan)
+    phases = np.full(n_freq, np.nan)
+    for i,response_list_element in enumerate(stage.response_list_elements):
+        frequencies[i] = response_list_element.frequency
+        amplitudes[i] = response_list_element.amplitude
+        phases[i] = response_list_element.phase
+    stage.frequencies = frequencies
+    stage.amplitudes = amplitudes
+    stage.phases = phases
+
+    fap_filter = FrequencyResponseTableFilter()
+    fap_filter = fap_filter.from_obspy_stage(stage)
+    return fap_filter
 
 
 def check_if_coefficient_filter_is_delay_only(stage):
@@ -97,16 +127,20 @@ def create_filter_from_stage(stage):
         return obspy_filter
 
     elif isinstance(stage, obspy.core.inventory.response.FIRResponseStage):
-        print("20210520 -- FIR may need some massaging")
         try:
             if isinstance(stage.coefficients, list):
                 pass
             else:
                 print("expected list of coefficients")
+                raise Exception
         except:
             print("something seems off with this FIR")
             raise Exception
         obspy_filter = create_fir_filter_from_stage(stage)
+        return obspy_filter
+
+    elif isinstance(stage, obspy.core.inventory.response.ResponseListResponseStage):
+        obspy_filter = create_frequency_response_table_filter_from_stage(stage)
         return obspy_filter
 
     elif isinstance(stage, obspy.core.inventory.response.ResponseStage):
