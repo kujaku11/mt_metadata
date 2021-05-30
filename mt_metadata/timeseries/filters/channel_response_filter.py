@@ -177,7 +177,8 @@ class ChannelResponseFilter(object):
         return total_delay
 
 
-    def complex_response(self, frequencies, include_delay=False):
+    def complex_response(self, frequencies, include_delay=False, 
+                         normalize=False):
         """
 
         Parameters
@@ -202,6 +203,8 @@ class ChannelResponseFilter(object):
             filter_stage = filters_list.pop(0)
             result *= filter_stage.complex_response(frequencies)
 
+        if normalize:
+            result /= np.max(np.abs(result))
         return result
 
     def compute_instrument_sensitivity(self, normalization_frequency=None):

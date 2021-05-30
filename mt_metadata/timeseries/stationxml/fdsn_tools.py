@@ -66,7 +66,7 @@ measurement_code_dict = {
 }
 
 measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
-measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"]
+#measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"] #HACK
 
 def angle(value):
     return abs(np.cos(np.deg2rad(value)))
