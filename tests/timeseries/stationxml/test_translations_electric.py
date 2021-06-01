@@ -230,8 +230,6 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
                 attr_1 = getattr(stage_1, key)
                 if isinstance(attr_0, str):
                     attr_0 = attr_0.lower()
-                    
-                if isinstance(attr_0, str):
                     attr_1 = attr_1.lower()
                 self.assertEqual(attr_0, attr_1)
 
