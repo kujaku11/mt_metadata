@@ -29,7 +29,8 @@ Created on Mon Feb  8 21:25:40 2021
 from xml.etree import cElementTree as et
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
-from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
+from .filters import (PoleZeroFilter, CoefficientFilter, TimeDelayFilter,
+                      FIRFilter, FrequencyResponseTableFilter)
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 
@@ -337,6 +338,24 @@ class Experiment:
                         return_dict[mt_filter.name] = mt_filter
                 else:
                     mt_filter = TimeDelayFilter(value)
+                    return_dict[mt_filter.name] = mt_filter
+                    
+            elif key in ["frequency_response_table_filter"]:
+                if isinstance(value, list):
+                    for v in value:
+                        mt_filter = FrequencyResponseTableFilter(**v)
+                        return_dict[mt_filter.name] = mt_filter
+                else:
+                    mt_filter = FrequencyResponseTableFilter(value)
+                    return_dict[mt_filter.name] = mt_filter
+                    
+            elif key in ["fir_filter"]:
+                if isinstance(value, list):
+                    for v in value:
+                        mt_filter = FIRFilter(**v)
+                        return_dict[mt_filter.name] = mt_filter
+                else:
+                    mt_filter = FIRFilter(value)
                     return_dict[mt_filter.name] = mt_filter
 
 
