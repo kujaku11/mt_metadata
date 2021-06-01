@@ -74,7 +74,7 @@ class TestFilterMagnetic(unittest.TestCase):
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])
         self.assertIsInstance(f1, PoleZeroFilter)
-        self.assertEqual(f1.name, "magnetic field 3 pole Butterworth low-pass")
+        self.assertEqual(f1.name, "magnetic field 3 pole Butterworth low-pass".lower())
         self.assertEqual(f1.type, "zpk")
         self.assertEqual(f1.units_in, "nT")
         self.assertEqual(f1.units_out, "V")
@@ -89,7 +89,7 @@ class TestFilterMagnetic(unittest.TestCase):
     def test_stage_02(self):
         f2 = create_filter_from_stage(self.stages[1])
         self.assertIsInstance(f2, CoefficientFilter)
-        self.assertEqual(f2.name, "magnatometer A to D")
+        self.assertEqual(f2.name, "magnatometer A to D".lower())
         self.assertEqual(f2.type, "coefficient")
         self.assertEqual(f2.gain, 100)
         self.assertEqual(f2.units_in, "V")
@@ -98,7 +98,7 @@ class TestFilterMagnetic(unittest.TestCase):
     def test_stage_03(self):
         f2 = create_filter_from_stage(self.stages[2])
         self.assertIsInstance(f2, TimeDelayFilter)
-        self.assertEqual(f2.name, "Hz time offset")
+        self.assertEqual(f2.name, "Hz time offset".lower())
         self.assertEqual(f2.type, "time delay")
         self.assertEqual(f2.delay, 0.2455)
         self.assertEqual(f2.units_in, "count")

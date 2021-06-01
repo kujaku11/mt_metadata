@@ -214,8 +214,12 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
                     'decimation_offset',
                     'decimation_delay',
                     'decimation_correction']:
-            self.assertEqual(getattr(zpk_0, key),
-                             getattr(zpk_1, key))
+            attr_0 = getattr(zpk_0, key)
+            attr_1 = getattr(zpk_1, key)
+            if isinstance(attr_0, str):
+                attr_0 = attr_0.lower()
+                attr_1 = attr_1.lower()
+            self.assertEqual(attr_0, attr_1)
             
     def test_response_coefficient_filter(self):
         f_0 = self.response_0.response_stages[1]
@@ -240,8 +244,12 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
                     'decimation_offset',
                     'decimation_delay',
                     'decimation_correction']:
-            self.assertEqual(getattr(f_0, key),
-                             getattr(f_1, key))
+            attr_0 = getattr(f_0, key)
+            attr_1 = getattr(f_1, key)
+            if isinstance(attr_0, str):
+                attr_0 = attr_0.lower()
+                attr_1 = attr_1.lower()
+            self.assertEqual(attr_0, attr_1)
             
     def test_response_time_delay(self):
         f_0 = self.response_0.response_stages[2]
@@ -266,8 +274,13 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
                     'decimation_offset',
                     'decimation_delay',
                     'decimation_correction']:
-            self.assertEqual(getattr(f_0, key),
-                             getattr(f_1, key))
+            attr_0 = getattr(f_0, key)
+            attr_1 = getattr(f_1, key)
+            if isinstance(attr_0, str):
+                attr_0 = attr_0.lower()
+                attr_1 = attr_1.lower()
+            self.assertEqual(attr_0, attr_1)
+
             
 
 # =============================================================================
