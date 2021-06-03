@@ -47,7 +47,6 @@ def create_frequency_response_table_filter_from_stage(stage):
     -------
 
     """
-    print("20210523 -- FAP may need some massaging")
     n_freq = len(stage.response_list_elements)
     frequencies = np.full(n_freq, np.nan)
     amplitudes = np.full(n_freq, np.nan)

@@ -72,6 +72,31 @@ class TestFAPTranslation(unittest.TestCase):
         
         self.experiment = self.translator.xml_to_mt(self.inventory)
         
+    def test_has_surveys(self):
+        self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
+        self.assertEqual(self.inventory.networks[0].code, 
+                         self.experiment.surveys[0].fdsn.network)
+        
+    def test_has_stations(self):
+        self.assertEqual(len(self.inventory.networks[0].stations),
+                         len(self.experiment.surveys[0].stations))
+        self.assertEqual(self.inventory.networks[0].stations[0].code, 
+                         self.experiment.surveys[0].stations[0].fdsn.id)
+        
+        
+    def test_has_channels(self):
+        self.assertEqual(len(self.inventory.networks[0].stations[0].channels),
+                         len(self.experiment.surveys[0].stations[0].runs[0].channels))
+        
+    def test_has_filters(self):
+        self.assertIn("frequency response table_00", 
+                      self.experiment.surveys[0].filters.keys())
+        
+        self.assertIn("v to counts (electric)", 
+                      self.experiment.surveys[0].filters.keys())
+    
+        
+        
     
         
         

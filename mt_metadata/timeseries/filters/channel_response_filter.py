@@ -19,6 +19,8 @@ from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
     TimeDelayFilter,
+    FrequencyResponseTableFilter,
+    FIRFilter,
 )
 from mt_metadata.base.helpers import units_descriptions
 from obspy.core import inventory
@@ -72,7 +74,10 @@ class ChannelResponseFilter(object):
 
         """
         ACCEPTABLE_FILTERS = [PoleZeroFilter,
-                              CoefficientFilter, TimeDelayFilter, ]
+                              CoefficientFilter,
+                              TimeDelayFilter, 
+                              FrequencyResponseTableFilter,
+                              FIRFilter]
 
         def is_acceptable_filter(item):
             if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
@@ -115,6 +120,7 @@ class ChannelResponseFilter(object):
         pb = []
         for f in self.filters_list:
             if hasattr(f, "pass_band"):
+                print(f.name)
                 f_pb = f.pass_band()
                 if f_pb is np.nan:
                     continue

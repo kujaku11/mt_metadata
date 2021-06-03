@@ -33,6 +33,7 @@ units_descriptions = {
     "count": "digital counts",
     "V/m": "Volts per meter",
     "mV/km": "milliVolts per kilometer",
+    "m": "meters",
 }
 
 filter_descriptions = {
