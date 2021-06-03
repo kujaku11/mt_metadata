@@ -470,19 +470,42 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         filter_dict = {}
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
-            print(f"\n\n{i_stage}: stagename {stage.name} seq#:{stage.stage_sequence_number}")
-            print(f"type {type(stage)}")
+            # print(f"\n\n{i_stage}: stagename {stage.name} seq#:{stage.stage_sequence_number}")
+            # print(f"type {type(stage)}")
             mt_filter = create_filter_from_stage(stage)
             # if mt_filter.name is None:
             #     mt_filter.name = f"{channel.code}_{i_stage}"
-            if mt_filter.name:
-                filter_dict[mt_filter.name.lower()] = mt_filter
-            else:
-                print(f"UnNamed filter not added to dictionary {mt_filter}")
-                raise Exception
+            if not mt_filter.name:
+                filter_number = self._add_filter_number(filter_dict.keys(),
+                                                        mt_filter.type)
+                mt_filter.name = f"{mt_filter.type}_{filter_number:02}"
+                
+                # print(f"UnNamed filter not added to dictionary {mt_filter}")
+                print(f"Unnamed filter named {mt_filter.name}")
+                #raise Exception
+            filter_dict[mt_filter.name.lower()] = mt_filter
 
 
         return filter_dict
+    
+    def _add_filter_number(self, keys, filter_type):
+        """
+        return the next number the number of filters
+    
+        :param keys: DESCRIPTION
+        :type keys: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        try:
+            last = sorted([k for k in keys if filter_type in k])[-1]
+        except IndexError:
+            return 0
+        try:
+            return int(last[-2:]) + 1
+        except ValueError:
+            return 0
 
     def _mt_to_xml_response(self, mt_channel, filters_dict):
         """

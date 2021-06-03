@@ -21,7 +21,7 @@ https://www.obspy.org
 <Name>Beachy Keen, FL, USA</Name>
 </Site>
 <CreationDate>2015-01-29T16:18:14</CreationDate>
-<Equipment resourceId="mt_run_id_a">
+<Equipment resourceId="mt.run.id:a">
 <Type>BB, LP</Type>
 <Description>
 timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , timing_system.comments: , firmware. author: Barry Narod, firmware.version: , power_source.type: battery, power_source.comments: voltage measurements not recorded
@@ -32,7 +32,7 @@ timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , tim
 <InstallationDate>2015-01-08T19:49:15</InstallationDate>
 <RemovalDate>2015-01-19T14:54:54</RemovalDate>
 </Equipment>
-<Equipment resourceId="mt_run_id_b">
+<Equipment resourceId="mt.run.id:b">
 <Type>BB, LP</Type>
 <Description>
 timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , timing_system.comments: , firmware. author: Barry Narod, firmware.version: , power_source.type: battery, power_source.comments: voltage measurements not recorded
@@ -46,6 +46,12 @@ timing_system.type: GPS, timing_system.drift: , timing_system.uncertainty: , tim
 <TotalNumberChannels>5</TotalNumberChannels>
 <SelectedNumberChannels>1</SelectedNumberChannels>
 <Channel code="MFN" locationCode="" startDate="2015-01-08T19:49:15" endDate="2015-01-29T16:18:14" restrictedStatus="open">
+<Comment subject="mt.run.id">
+<Value>a</Value>
+</Comment>
+<Comment subject="mt.run.id">
+<Value>b</Value>
+</Comment>
 <Latitude>29.720356</Latitude>
 <Longitude>-83.485472</Longitude>
 <Elevation>0</Elevation>

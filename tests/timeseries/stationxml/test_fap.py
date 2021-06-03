@@ -8,9 +8,8 @@ import unittest
 import numpy as np
 from obspy.core import inventory
 
-from mt_metadata.timeseries.filters import (
-    FrequencyResponseTableFilter
-)
+from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
+from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 from mt_metadata.utils import STATIONXML_FAP
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
@@ -59,6 +58,22 @@ class TestFAPFilter(unittest.TestCase):
         
     def test_gain(self):
         self.assertTrue(self.fir_stage.stage_gain, self.fir.gain)
+        
+
+class TestFAPTranslation(unittest.TestCase):
+    """
+    Test the translation of a FAP table from stationXML -> MTXML -> StationXML
+    """
+    
+    def setUp(self):
+        self.translator = XMLInventoryMTExperiment()
+        
+        self.inventory = inventory.read_inventory(STATIONXML_FAP.as_posix())
+        
+        self.experiment = self.translator.xml_to_mt(self.inventory)
+        
+    
+        
         
 
         
