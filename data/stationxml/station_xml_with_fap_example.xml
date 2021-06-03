@@ -5,7 +5,7 @@
 IRIS WEB SERVICE: fdsnwsbeta-station | version: 1.1.48
 </Module>
 <ModuleURI>
-http://service.iris.edu/fdsnwsbeta/station/1/query?net=EM&sta=FL001&cha=MFN&level=response&format=xml&includecomments=true&nodata=404
+https://www.obspy.org
 </ModuleURI>
 <Created>2021-05-27T23:38:53</Created>
 <Network code="EM" startDate="1996-01-01T00:00:00" restrictedStatus="open">
