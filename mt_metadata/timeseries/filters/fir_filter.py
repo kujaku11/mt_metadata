@@ -1,7 +1,7 @@
 import copy
 import matplotlib.pyplot as plt
 import numpy as np
-import obspy
+from obspy.core.inventory.response import FIRResponseStage
 import scipy.signal as signal
 
 from mt_metadata.base import get_schema
@@ -83,43 +83,37 @@ class FIRFilter(FilterBase):
     def total_gain(self):
         return self.gain
 
-    # def to_obspy(
-    #     self,
-    #     stage_number=1,
-    #     pz_type="LAPLACE (RADIANS/SECOND)",
-    #     normalization_frequency=1,
-    #     sample_rate=1,
-    # ):
-    #     """
-    #     create an obspy stage
-    #
-    #     :return: DESCRIPTION
-    #     :rtype: TYPE
-    #
-    #     """
-    #     if self.zeros is None:
-    #         self.zeros = []
-    #     if self.poles is None:
-    #         self.poles = []
-    #
-    #     rs = obspy.core.inventory.PolesZerosResponseStage(
-    #         stage_number,
-    #         self.gain,
-    #         normalization_frequency,
-    #         self.units_in,
-    #         self.units_out,
-    #         pz_type,
-    #         normalization_frequency,
-    #         self.zeros,
-    #         self.poles,
-    #         name=self.name,
-    #         normalization_factor=self.normalization_factor,
-    #         description=self.get_filter_description(),
-    #         input_units_description=self.get_unit_description(self.units_in),
-    #         output_units_description=self.get_unit_description(self.units_out),
-    #     )
-    #
-    #     return rs
+    def to_obspy(
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+    ):
+        """
+        create an obspy stage
+    
+        :return: DESCRIPTION
+        :rtype: TYPE
+    
+        """
+    
+    
+    
+        rs = FIRResponseStage(
+            stage_number,
+            self.gain,
+            normalization_frequency,
+            self.units_in,
+            self.units_out,
+            normalization_frequency,
+            self.zeros,
+            self.poles,
+            name=self.name,
+            description=self.get_filter_description(),
+            input_units_description=self.get_unit_description(self.units_in),
+            output_units_description=self.get_unit_description(self.units_out),
+        )
+    
+        return rs
 
     def complex_response(self, frequencies):
         """

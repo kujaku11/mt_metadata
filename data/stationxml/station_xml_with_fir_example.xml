@@ -3,7 +3,7 @@
 <Sender>IRIS-DMC</Sender>
 <Module>IRIS WEB SERVICE: fdsnws-station | version: 1.1.47</Module>
 <ModuleURI>
-http://service.iris.edu/fdsnws/station/1/query?net=BK&sta=PKD&loc=--&cha=LQ2,LQ3,LT1,LT2&starttime=2007-03-14T14:20:00&endtime=2008-08-26T00:00:00&level=response&format=xml&includecomments=true&nodata=404
+https://www.obspy.org
 </ModuleURI>
 <Created>2021-05-27T23:38:21</Created>
 <Network code="BK" startDate="1980-01-01T00:00:00" restrictedStatus="open">
