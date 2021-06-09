@@ -17,8 +17,8 @@ attr_dict.add_dict(get_schema("fir_filter", SCHEMA_FN_PATHS))
 
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-#obspy_mapping["_zeros"] = "_zeros"
-#obspy_mapping["_symmetry"] = "_symmetry"
+# obspy_mapping["_zeros"] = "_zeros"
+# obspy_mapping["_symmetry"] = "_symmetry"
 obspy_mapping["_coefficients"] = "coefficients"
 
 
@@ -28,7 +28,7 @@ class FIRFilter(FilterBase):
         self.coefficients = None
         # self.zeros = None
         # self.normalization_factor = 1.0
-        #self.gain = 1.0
+        # self.gain = 1.0
         self.comments = None
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
@@ -64,30 +64,26 @@ class FIRFilter(FilterBase):
     def plot_fir_response(self):
         w, h = signal.freqz(self.coefficients)
         fig = plt.figure()
-        plt.title('Digital filter frequency response')
+        plt.title("Digital filter frequency response")
         ax1 = fig.add_subplot(111)
-        plt.plot(w, 20 * np.log10(abs(h)), 'b')
-        plt.ylabel('Amplitude [dB]', color='b')
-        plt.xlabel('Frequency [rad/sample]')
+        plt.plot(w, 20 * np.log10(abs(h)), "b")
+        plt.ylabel("Amplitude [dB]", color="b")
+        plt.xlabel("Frequency [rad/sample]")
 
         ax2 = ax1.twinx()
         angles = np.unwrap(np.angle(h))
-        plt.plot(w, angles, 'g')
-        plt.ylabel('Angle (radians)', color='g')
+        plt.plot(w, angles, "g")
+        plt.ylabel("Angle (radians)", color="g")
         plt.grid()
-        plt.axis('tight')
+        plt.axis("tight")
         plt.show()
-
 
     @property
     def total_gain(self):
         return self.gain
 
     def to_obspy(
-        self,
-        stage_number=1,
-        normalization_frequency=1,
-        sample_rate=1,
+        self, stage_number=1, normalization_frequency=1, sample_rate=1,
     ):
         """
         create an obspy stage
@@ -96,9 +92,7 @@ class FIRFilter(FilterBase):
         :rtype: TYPE
     
         """
-    
-    
-    
+
         rs = FIRResponseStage(
             stage_number,
             self.gain,
@@ -112,7 +106,7 @@ class FIRFilter(FilterBase):
             input_units_description=self.get_unit_description(self.units_in),
             output_units_description=self.get_unit_description(self.units_out),
         )
-    
+
         return rs
 
     def complex_response(self, frequencies):
@@ -129,11 +123,10 @@ class FIRFilter(FilterBase):
         """
         angular_frequencies = 2 * np.pi * frequencies
         w, h = signal.freqz(self.coefficients, worN=angular_frequencies)
-#        w, h = signal.freqs_zpk(
-#            self.zeros, self.poles, self.total_gain, worN=angular_frequencies
-#        )
+        #        w, h = signal.freqs_zpk(
+        #            self.zeros, self.poles, self.total_gain, worN=angular_frequencies
+        #        )
         return h
-
 
     # def pass_band(self, window_len=7, tol=1E-4):
     #     """
@@ -192,7 +185,7 @@ class FIRFilter(FilterBase):
     #             self.logger.warning("Passband appears discontinuous")
     #     pass_band = np.array([pass_band.min(), pass_band.max()])
     #     return pass_band
-        
+
     # def normalization_frequency(self, estimate="mean", window_len=5, tol=1E-4):
     #     """
     #     Try to estimate the normalization frequency in the pass band
@@ -233,4 +226,3 @@ class FIRFilter(FilterBase):
     #         return pass_band.max()
     #
     #
-        

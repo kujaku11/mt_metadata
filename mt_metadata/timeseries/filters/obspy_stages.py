@@ -7,7 +7,9 @@ import obspy
 
 from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
 from mt_metadata.timeseries.filters.fir_filter import FIRFilter
-from mt_metadata.timeseries.filters.frequency_response_table_filter import FrequencyResponseTableFilter
+from mt_metadata.timeseries.filters.frequency_response_table_filter import (
+    FrequencyResponseTableFilter,
+)
 from mt_metadata.timeseries.filters.time_delay_filter import TimeDelayFilter
 from mt_metadata.timeseries.filters.pole_zero_filter import PoleZeroFilter
 
@@ -29,10 +31,12 @@ def create_pole_zero_filter_from_stage(stage):
     pz_filter = pz_filter.from_obspy_stage(stage)
     return pz_filter
 
+
 def create_fir_filter_from_stage(stage):
     fir_filter = FIRFilter()
     fir_filter = fir_filter.from_obspy_stage(stage)
     return fir_filter
+
 
 def create_frequency_response_table_filter_from_stage(stage):
     """
@@ -51,7 +55,7 @@ def create_frequency_response_table_filter_from_stage(stage):
     frequencies = np.full(n_freq, np.nan)
     amplitudes = np.full(n_freq, np.nan)
     phases = np.full(n_freq, np.nan)
-    for i,response_list_element in enumerate(stage.response_list_elements):
+    for i, response_list_element in enumerate(stage.response_list_elements):
         frequencies[i] = response_list_element.frequency
         amplitudes[i] = response_list_element.amplitude
         phases[i] = response_list_element.phase

@@ -116,7 +116,7 @@ class Base:
     @changed.setter
     def changed(self, value):
         self._changed = value
-        
+
     def __deepcopy__(self, memodict={}):
         """
         Need to skip copying the logger
@@ -128,13 +128,14 @@ class Base:
         copied = type(self)()
         for key in self.to_dict(single=True).keys():
             try:
-                copied.set_attr_from_name(key, 
-                                          deepcopy(self.get_attr_from_name(key), memodict))
+                copied.set_attr_from_name(
+                    key, deepcopy(self.get_attr_from_name(key), memodict)
+                )
             except AttributeError:
                 continue
-            
+
         return copied
-    
+
     def get_attribute_list(self):
         """
         return a list of the attributes 

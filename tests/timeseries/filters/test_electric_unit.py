@@ -68,10 +68,12 @@ class TestFilterElectric(unittest.TestCase):
     def test_instrument_sensitivity(self):
         filters_list = [create_filter_from_stage(s) for s in self.stages]
         cr = ChannelResponseFilter(filters_list=filters_list)
-        
-        self.assertAlmostEqual(cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
-                         self.instrument_sensitivity.value, 0)
-        
+
+        self.assertAlmostEqual(
+            cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
+            self.instrument_sensitivity.value,
+            0,
+        )
 
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])
@@ -145,4 +147,3 @@ class TestFilterElectric(unittest.TestCase):
         self.assertEqual(f2.delay, 0.1525)
         self.assertEqual(f2.units_in, "count")
         self.assertEqual(f2.units_out, "count")
-        

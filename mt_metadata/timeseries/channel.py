@@ -72,12 +72,12 @@ class Channel(Base):
                 msg = f"component {value} does not match expected pattern {self._ch_pattern}"
                 self.logger.error(msg)
                 raise ValueError(msg)
-                
+
     def channel_response(self, filters_dict):
         """
         full channel response
         """
-        
+
         mt_filter_list = []
         for name in self.filter.name:
             try:

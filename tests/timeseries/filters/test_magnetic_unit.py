@@ -44,6 +44,7 @@ from mt_metadata.timeseries.filters import (
 from mt_metadata.utils import STATIONXML_MAGNETIC
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
+
 class TestFilterMagnetic(unittest.TestCase):
     """
     Test filter translation from :class:`obspy.inventory.Network
@@ -67,9 +68,12 @@ class TestFilterMagnetic(unittest.TestCase):
     def test_instrument_sensitivity(self):
         filters_list = [create_filter_from_stage(s) for s in self.stages]
         cr = ChannelResponseFilter(filters_list=filters_list)
-        
-        self.assertAlmostEqual(cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
-                         self.instrument_sensitivity.value, 0)
+
+        self.assertAlmostEqual(
+            cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
+            self.instrument_sensitivity.value,
+            0,
+        )
 
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])

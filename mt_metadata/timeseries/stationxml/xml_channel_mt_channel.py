@@ -210,7 +210,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         if not sensor.type:
             return mt_channel
-        
+
         if sensor.type.lower() in ["magnetometer", "induction coil", "coil"]:
             if not isinstance(mt_channel, metadata.Magnetic):
                 msg = (
@@ -300,7 +300,6 @@ class XMLChannelMTChannel(BaseTranslator):
                     pass
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
-            
 
         else:
             s.type = mt_channel.sensor.type
@@ -476,16 +475,19 @@ class XMLChannelMTChannel(BaseTranslator):
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
             mt_filter = create_filter_from_stage(stage)
             if not mt_filter.name:
-                filter_number = self._add_filter_number(filter_dict.keys(),
-                                                        mt_filter.type)
+                filter_number = self._add_filter_number(
+                    filter_dict.keys(), mt_filter.type
+                )
                 mt_filter.name = f"{mt_filter.type}_{filter_number:02}"
 
-                self.logger.info(f"Found an nnnamed filter, named it: '{mt_filter.name}'")
+                self.logger.info(
+                    f"Found an nnnamed filter, named it: '{mt_filter.name}'"
+                )
 
             filter_dict[mt_filter.name.lower()] = mt_filter
 
         return filter_dict
-    
+
     def _add_filter_number(self, keys, filter_type):
         """
         return the next number the number of filters
@@ -519,7 +521,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-        
+
         mt_channel_response = mt_channel.channel_response(filters_dict)
 
         return mt_channel_response.to_obspy(sample_rate=mt_channel.sample_rate)

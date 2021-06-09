@@ -10,17 +10,17 @@ import pandas as pd
 import re
 
 RAD2DEG = 180 / np.pi
-DEG2RAD = 1./RAD2DEG
-DEGREE_LABELS = ['degrees', 'deg']
-MILLIRADIAN_LABELS = ['milliradians', 'mrad', 'mradians']
-RADIAN_LABELS = ['rad', 'radians']
+DEG2RAD = 1.0 / RAD2DEG
+DEGREE_LABELS = ["degrees", "deg"]
+MILLIRADIAN_LABELS = ["milliradians", "mrad", "mradians"]
+RADIAN_LABELS = ["rad", "radians"]
+
 
 class FrequencyResponseTable(object):
-
     def __init__(self, **kwargs):
-        self.frequencies = kwargs.get('frequencies', None)
-        self.amplitudes = kwargs.get('amplitudes', None)
-        self.phases = kwargs.get('phases', None)
+        self.frequencies = kwargs.get("frequencies", None)
+        self.amplitudes = kwargs.get("amplitudes", None)
+        self.phases = kwargs.get("phases", None)
         self.frequency_units = None
         self.amplitude_units = None
         self.phase_units = None
@@ -42,7 +42,6 @@ class FrequencyResponseTable(object):
         if fail:
             raise Exception
 
-
     def parse_header(self, filepath):
         """
         handles the specific case of fap headers of the following form:
@@ -56,26 +55,32 @@ class FrequencyResponseTable(object):
         # <\initialize rparams>
 
         with open(filepath) as f:
-            header_list = f.readline().strip().split(',')
+            header_list = f.readline().strip().split(",")
         if len(header_list) != 3:
-            logger.warn(f"Header indicates unexpected number of columns -- expected 3, got {len(header_list)}")
+            logger.warn(
+                f"Header indicates unexpected number of columns -- expected 3, got {len(header_list)}"
+            )
 
-        columns_order = 3*[None]
-        looking_for = ['frequency', 'amplitude', 'phase']
+        columns_order = 3 * [None]
+        looking_for = ["frequency", "amplitude", "phase"]
         for i, text_string in enumerate(header_list):
             for label in looking_for:
                 if re.search(label, text_string.lower()):
                     columns_order[i] = label
-                    if label == 'frequency':
-                        self.frequency_units = text_string.split('[', 1)[1].split(']')[0]
-                    elif label == 'amplitude':
-                        self.amplitude_units = text_string.split('[', 1)[1].split(']')[0]
-                    elif label == 'phase':
-                        self.phase_units = text_string.split('[', 1)[1].split(']')[0]
+                    if label == "frequency":
+                        self.frequency_units = text_string.split("[", 1)[1].split("]")[
+                            0
+                        ]
+                    elif label == "amplitude":
+                        self.amplitude_units = text_string.split("[", 1)[1].split("]")[
+                            0
+                        ]
+                    elif label == "phase":
+                        self.phase_units = text_string.split("[", 1)[1].split("]")[0]
 
         self.validate_units()
 
-        units_out, units_in = self.amplitude_units.split('/')
+        units_out, units_in = self.amplitude_units.split("/")
         self.units_out = units_out.strip()
         self.units_in = units_in.strip()
 
@@ -99,11 +104,13 @@ class FrequencyResponseTable(object):
             if self.phase_units.lower() in RADIAN_LABELS:
                 pass
             elif self.phase_units.lower() in DEGREE_LABELS:
-                df['phase'] = df['phase']*DEG2RAD
+                df["phase"] = df["phase"] * DEG2RAD
             elif self.phase_units.lower() in MILLIRADIAN_LABELS:
-                df['phase'] = df['phase']*1000.0
+                df["phase"] = df["phase"] * 1000.0
             else:
-                print(f"Tried to cast phase to radians but did not recognize {self.phase_units} units")
-            self.phase_units = 'radians'
+                print(
+                    f"Tried to cast phase to radians but did not recognize {self.phase_units} units"
+                )
+            self.phase_units = "radians"
 
         return df

@@ -188,18 +188,17 @@ class FilterBase(Base):
     @property
     def obspy_mapping(self):
         return self._obspy_mapping
-    
+
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
         if value is not None:
             self._name = str(value).lower()
         else:
             self._name = None
-            
 
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
@@ -310,7 +309,6 @@ class FilterBase(Base):
     def decimation_inactive(self):
         pass
 
-
     def apply(self, ts):
         data_spectum = ts.fft()
         complex_response = self.complex_response(ts.frequencies)
@@ -319,4 +317,3 @@ class FilterBase(Base):
         output = ts._deepcopy()
         output.data = calibrated_data
         return output
-

@@ -24,6 +24,7 @@ from mt_metadata.timeseries.filters import (
 )
 from mt_metadata.base.helpers import units_descriptions
 from obspy.core import inventory
+
 # =============================================================================
 
 
@@ -38,18 +39,18 @@ class ChannelResponseFilter(object):
     def __init__(self, **kwargs):
         self.filters_list = None
         self.normalization_frequency = None
-        
+
         for k, v in kwargs.items():
             setattr(self, k, v)
-            
+
     def __str__(self):
         lines = ["Filters Included:\n", "=" * 25, "\n"]
         for f in self.filters_list:
             lines.append(f.__str__())
             lines.append(f"\n{'-'*20}\n")
-            
-        return ''.join(lines)
-    
+
+        return "".join(lines)
+
     def __repr__(self):
         return self.__str__()
 
@@ -73,11 +74,13 @@ class ChannelResponseFilter(object):
         :rtype: TYPE
 
         """
-        ACCEPTABLE_FILTERS = [PoleZeroFilter,
-                              CoefficientFilter,
-                              TimeDelayFilter, 
-                              FrequencyResponseTableFilter,
-                              FIRFilter]
+        ACCEPTABLE_FILTERS = [
+            PoleZeroFilter,
+            CoefficientFilter,
+            TimeDelayFilter,
+            FrequencyResponseTableFilter,
+            FIRFilter,
+        ]
 
         def is_acceptable_filter(item):
             if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
@@ -98,8 +101,7 @@ class ChannelResponseFilter(object):
             if is_acceptable_filter(item):
                 return_list.append(item)
             else:
-                fails.append(
-                    f"Item is not an acceptable filter type, {type(item)}")
+                fails.append(f"Item is not an acceptable filter type, {type(item)}")
 
         if fails:
             raise TypeError(", ".join(fails))
@@ -131,16 +133,16 @@ class ChannelResponseFilter(object):
     @property
     def normalization_frequency(self):
         """ get normalization frequency from ZPK or FAP filter """
-        
+
         if self._normalization_frequency is None:
             return np.round(self.pass_band.mean(), decimals=3)
-        
+
         return self._normalization_frequency
-    
+
     @normalization_frequency.setter
     def normalization_frequency(self, value):
         """ Set normalization frequency if input """
-        
+
         self._normalization_frequency = value
 
     @property
@@ -151,8 +153,7 @@ class ChannelResponseFilter(object):
         -------
 
         """
-        non_delay_filters = [
-            x for x in self.filters_list if x.type != "time delay"]
+        non_delay_filters = [x for x in self.filters_list if x.type != "time delay"]
         return non_delay_filters
 
     @property
@@ -163,8 +164,7 @@ class ChannelResponseFilter(object):
         -------
 
         """
-        delay_filters = [
-            x for x in self.filters_list if x.type == "time delay"]
+        delay_filters = [x for x in self.filters_list if x.type == "time delay"]
         return delay_filters
 
     @property
@@ -181,9 +181,7 @@ class ChannelResponseFilter(object):
             total_delay += delay_filter.delay
         return total_delay
 
-
-    def complex_response(self, frequencies, include_delay=False, 
-                         normalize=False):
+    def complex_response(self, frequencies, include_delay=False, normalize=False):
         """
 
         Parameters
@@ -226,8 +224,7 @@ class ChannelResponseFilter(object):
             self.normalization_frequency = normalization_frequency
         sensitivity = 1.0
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(
-                self.normalization_frequency)
+            complex_response = mt_filter.complex_response(self.normalization_frequency)
             sensitivity *= complex_response
 
         return np.round(np.abs(sensitivity[0]), 3)
@@ -283,13 +280,16 @@ class ChannelResponseFilter(object):
             self.units_in,
             self.units_out,
             input_units_description=units_descriptions[self.units_in],
-            output_units_description=units_descriptions[self.units_out],)
+            output_units_description=units_descriptions[self.units_out],
+        )
 
         for ii, f in enumerate(self.filters_list, 1):
-            total_response.response_stages.append(f.to_obspy(
-                stage_number=ii,
-                normalization_frequency=self.normalization_frequency,
-                sample_rate=sample_rate))
-            
+            total_response.response_stages.append(
+                f.to_obspy(
+                    stage_number=ii,
+                    normalization_frequency=self.normalization_frequency,
+                    sample_rate=sample_rate,
+                )
+            )
 
         return total_response

@@ -77,7 +77,15 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
         self.xml_hy = self.inventory.networks[0].stations[0].channels[0]
         self.xml_ey = self.inventory.networks[0].stations[0].channels[1]
-        self.filters_dict = dict([(c.name, c) for c in [create_filter_from_stage(s) for s in self.xml_hy.response.response_stages]])
+        self.filters_dict = dict(
+            [
+                (c.name, c)
+                for c in [
+                    create_filter_from_stage(s)
+                    for s in self.xml_hy.response.response_stages
+                ]
+            ]
+        )
         self.converter = XMLChannelMTChannel()
         self.maxDiff = None
 
@@ -92,10 +100,15 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("comments", "run_ids: []"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False]*3),
-                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
-                                         'v to counts (magnetic)',
-                                         'hy time offset']),
+                        ("filter.applied", [False] * 3),
+                        (
+                            "filter.name",
+                            [
+                                "magnetic field 3 pole butterworth low-pass",
+                                "v to counts (magnetic)",
+                                "hy time offset",
+                            ],
+                        ),
                         ("location.elevation", 329.4),
                         ("location.latitude", 37.633351),
                         ("location.longitude", -121.468382),
@@ -127,13 +140,18 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 92.0),
-                        ("filter.applied", [False]*6),
-                        ("filter.name",  ['electric field 5 pole butterworth low-pass',
-                                          'electric field 1 pole butterworth high-pass',
-                                          'mv/km to v/m',
-                                          'v/m to v',
-                                          'v to counts (electric)',
-                                          'electric time offset']),
+                        ("filter.applied", [False] * 6),
+                        (
+                            "filter.name",
+                            [
+                                "electric field 5 pole butterworth low-pass",
+                                "electric field 1 pole butterworth high-pass",
+                                "mv/km to v/m",
+                                "v/m to v",
+                                "v to counts (electric)",
+                                "electric time offset",
+                            ],
+                        ),
                         ("measurement_azimuth", 103.2),
                         ("measurement_tilt", 0.0),
                         ("negative.elevation", 329.4),
@@ -174,7 +192,15 @@ class TestXMLChannelSingleStation(unittest.TestCase):
         self.xml_ex = self.inventory.networks[0].stations[0].channels[3]
         self.xml_ey = self.inventory.networks[0].stations[0].channels[4]
 
-        self.filters_dict = dict([(c.name, c) for c in [create_filter_from_stage(s) for s in self.xml_hy.response.response_stages]])
+        self.filters_dict = dict(
+            [
+                (c.name, c)
+                for c in [
+                    create_filter_from_stage(s)
+                    for s in self.xml_hy.response.response_stages
+                ]
+            ]
+        )
         self.converter = XMLChannelMTChannel()
         self.maxDiff = None
 
@@ -190,10 +216,15 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hx"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False]*3),
-                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
-                                         'v to counts (magnetic)',
-                                         'hx time offset']),
+                        ("filter.applied", [False] * 3),
+                        (
+                            "filter.name",
+                            [
+                                "magnetic field 3 pole butterworth low-pass",
+                                "v to counts (magnetic)",
+                                "hx time offset",
+                            ],
+                        ),
                         ("location.elevation", 887.775),
                         ("location.latitude", 35.1469128125),
                         ("location.longitude", -117.160798541667),
@@ -225,10 +256,15 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False]*3),
-                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
-                                         'v to counts (magnetic)',
-                                         'hy time offset']),
+                        ("filter.applied", [False] * 3),
+                        (
+                            "filter.name",
+                            [
+                                "magnetic field 3 pole butterworth low-pass",
+                                "v to counts (magnetic)",
+                                "hy time offset",
+                            ],
+                        ),
                         ("location.elevation", 887.775),
                         ("location.latitude", 35.1469128125),
                         ("location.longitude", -117.160798541667),
@@ -260,10 +296,15 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hz"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False]*3),
-                        ("filter.name", ['magnetic field 3 pole butterworth low-pass',
-                                         'v to counts (magnetic)',
-                                         'hz time offset']),
+                        ("filter.applied", [False] * 3),
+                        (
+                            "filter.name",
+                            [
+                                "magnetic field 3 pole butterworth low-pass",
+                                "v to counts (magnetic)",
+                                "hz time offset",
+                            ],
+                        ),
                         ("location.elevation", 887.775),
                         ("location.latitude", 35.1469128125),
                         ("location.longitude", -117.160798541667),
@@ -295,13 +336,18 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("component", "ex"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
-                        ("filter.applied", [False]*6),
-                        ("filter.name", ['electric field 5 pole butterworth low-pass',
-                                          'electric field 1 pole butterworth high-pass',
-                                          'mv/km to v/m',
-                                          'v/m to v',
-                                          'v to counts (electric)',
-                                          'electric time offset']),
+                        ("filter.applied", [False] * 6),
+                        (
+                            "filter.name",
+                            [
+                                "electric field 5 pole butterworth low-pass",
+                                "electric field 1 pole butterworth high-pass",
+                                "mv/km to v/m",
+                                "v/m to v",
+                                "v to counts (electric)",
+                                "electric time offset",
+                            ],
+                        ),
                         ("measurement_azimuth", 11.8287420852694),
                         ("measurement_tilt", 0.0),
                         ("negative.elevation", 887.775),
@@ -340,13 +386,18 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
-                        ("filter.applied", [False]*6),
-                        ("filter.name", ['electric field 5 pole butterworth low-pass',
-                                          'electric field 1 pole butterworth high-pass',
-                                          'mv/km to v/m',
-                                          'v/m to v',
-                                          'v to counts (electric)',
-                                          'electric time offset']),
+                        ("filter.applied", [False] * 6),
+                        (
+                            "filter.name",
+                            [
+                                "electric field 5 pole butterworth low-pass",
+                                "electric field 1 pole butterworth high-pass",
+                                "mv/km to v/m",
+                                "v/m to v",
+                                "v to counts (electric)",
+                                "electric time offset",
+                            ],
+                        ),
                         ("measurement_azimuth", 101.828742085269),
                         ("measurement_tilt", 0.0),
                         ("negative.elevation", 887.775),
@@ -384,8 +435,12 @@ class TestMTChannelToXML01HY(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[0]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -463,9 +518,12 @@ class TestMTChannelToXML01EX(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[1]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -543,9 +601,12 @@ class TestMTChannelToXML02HX(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[0]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -631,9 +692,12 @@ class TestMTChannelToXML02HY(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[1]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -719,9 +783,12 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[2]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -807,9 +874,12 @@ class TestMTChannelToXML02EX(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[3]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
@@ -895,9 +965,12 @@ class TestMTChannelToXML02EY(unittest.TestCase):
         self.base_xml_channel = self.inventory.networks[0].stations[0].channels[4]
 
         self.converter = XMLChannelMTChannel()
-        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(self.base_xml_channel)
-        self.test_xml_channel = self.converter.mt_to_xml(self.mt_channel, self.filters_dict)
-
+        self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
+            self.base_xml_channel
+        )
+        self.test_xml_channel = self.converter.mt_to_xml(
+            self.mt_channel, self.filters_dict
+        )
 
     def test_location(self):
         self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)

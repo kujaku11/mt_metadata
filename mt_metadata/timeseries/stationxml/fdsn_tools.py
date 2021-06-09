@@ -66,7 +66,8 @@ measurement_code_dict = {
 }
 
 measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
-#measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"] #HACK
+# measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"] #HACK
+
 
 def angle(value):
     return abs(np.cos(np.deg2rad(value)))
@@ -244,7 +245,9 @@ def read_channel_code(channel_code):
     try:
         component = measurement_code_dict_reverse[channel_code[1]]
         if component in ["tide"]:
-            logger.warning("Found channel code `Tide` Assuming older data changing to `magnetic`")
+            logger.warning(
+                "Found channel code `Tide` Assuming older data changing to `magnetic`"
+            )
             component = "magnetic"
     except KeyError:
         msg = f"Could not find component for {channel_code[1]}"
@@ -277,10 +280,12 @@ def create_mt_component(channel_code):
     
     """
     code_dict = read_channel_code(channel_code)
-    if code_dict["measurement"]=="tide":
+    if code_dict["measurement"] == "tide":
         logger.warning("It is unikely that we have encountered tidal data here")
         logger.warning("It is more likely that the channel code 'T' appeared")
-        logger.warning("Some historial MT data (PKD, SAO) used 'T' as the code for feedback coil magnetometers")
+        logger.warning(
+            "Some historial MT data (PKD, SAO) used 'T' as the code for feedback coil magnetometers"
+        )
         code_dict = read_channel_code(channel_code.replace("T", "F"))
 
     mt_component = mt_components_dict[code_dict["measurement"]]

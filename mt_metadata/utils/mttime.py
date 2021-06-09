@@ -130,7 +130,7 @@ class MTime:
     def __init__(self, time=None, gps_time=False):
 
         self.logger = setup_logger(
-            "{0}.{1}".format(__name__, self.__class__.__name__), 
+            "{0}.{1}".format(__name__, self.__class__.__name__),
             fn="mt_time.log",
             level=LOG_LEVEL,
         )

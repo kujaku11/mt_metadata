@@ -35,22 +35,21 @@ obspy_mapping["amplitudes"] = "_empirical_amplitudes"
 obspy_mapping["frequencies"] = "_empirical_frequencies"
 obspy_mapping["phases"] = "_empirical_phases"
 
-class FrequencyResponseTableFilter(FilterBase):
 
+class FrequencyResponseTableFilter(FilterBase):
     def __init__(self, **kwargs):
-        self.type = 'frequency response table'
-        self.instrument_type = None #FGM or FBC or other?
+        self.type = "frequency response table"
+        self.instrument_type = None  # FGM or FBC or other?
         self.gain = 1.0
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-        
+
         self.obspy_mapping = obspy_mapping
-        #self._empirical_frequencies = kwargs.get('frequencies', None)
-        #self._empirical_amplitudes = kwargs.get('amplitudes', None)
-        #self._empirical_phases = kwargs.get('phases', None)
+        # self._empirical_frequencies = kwargs.get('frequencies', None)
+        # self._empirical_amplitudes = kwargs.get('amplitudes', None)
+        # self._empirical_phases = kwargs.get('phases', None)
         self.amplitude_response = None
         self.phase_response = None
         self._total_response_function = None
-
 
     @property
     def frequencies(self):
@@ -69,10 +68,12 @@ class FrequencyResponseTableFilter(FilterBase):
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_frequencies = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def amplitudes(self):
         return self._empirical_amplitudes
@@ -91,7 +92,9 @@ class FrequencyResponseTableFilter(FilterBase):
             self._empirical_amplitudes = np.array(value, dtype=float)
 
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -112,7 +115,9 @@ class FrequencyResponseTableFilter(FilterBase):
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_phases = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -123,12 +128,9 @@ class FrequencyResponseTableFilter(FilterBase):
     @property
     def max_frequency(self):
         return self._empirical_frequencies.max()
-    
+
     def to_obspy(
-        self,
-        stage_number=1,
-        normalization_frequency=1,
-        sample_rate=1,
+        self, stage_number=1, normalization_frequency=1, sample_rate=1,
     ):
         """
         Convert to an obspy stage
@@ -149,7 +151,7 @@ class FrequencyResponseTableFilter(FilterBase):
         for f, a, p in zip(self.frequencies, self.amplitudes, self.phases):
             element = ResponseListElement(f, a, p)
             response_elements.append(element)
-            
+
         rs = ResponseListResponseStage(
             stage_number,
             self.gain,
@@ -162,14 +164,13 @@ class FrequencyResponseTableFilter(FilterBase):
             output_units_description=self.get_unit_description(self.units_out),
             response_list_elements=response_elements,
         )
-        
 
         return rs
 
     def total_response_function(self, frequencies):
         return self._total_response_function(frequencies)
-    
-    def pass_band(self, window_len=7, tol=1E-2):
+
+    def pass_band(self, window_len=7, tol=1e-2):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -201,16 +202,16 @@ class FrequencyResponseTableFilter(FilterBase):
 
         if np.all(self.amplitudes == self.amplitudes[0]):
             return np.array([self.frequencies.min(), self.frequencies.max()])
-        
+
         pass_band = []
         for ii in range(window_len, self.frequencies.size - window_len, 1):
-            cr_window = np.array(self.amplitudes[ii:ii + window_len])
+            cr_window = np.array(self.amplitudes[ii : ii + window_len])
             cr_window /= cr_window.max()
 
             if cr_window.std() <= tol:
                 pass_band.append(self.frequencies[ii])
 
-        #Check for discontinuities in the pass band
+        # Check for discontinuities in the pass band
         pass_band = np.array(pass_band)
         if len(pass_band) > 1:
             df_passband = np.diff(np.log(pass_band))
@@ -221,7 +222,6 @@ class FrequencyResponseTableFilter(FilterBase):
                 self.logger.warning("Passband appears discontinuous")
         pass_band = np.array([pass_band.min(), pass_band.max()])
         return pass_band
-
 
     def complex_response(self, frequencies, k=3, ext=2):
         """
@@ -242,14 +242,14 @@ class FrequencyResponseTableFilter(FilterBase):
 
         if np.max(frequencies) > self.max_frequency:
             self.logger.warning("Extrapolation warning ")
-        phase_response = InterpolatedUnivariateSpline(self.frequencies, 
-                                                      self.phases,
-                                                      k=k,
-                                                      ext=ext)
-        amplitude_response = InterpolatedUnivariateSpline(self.frequencies,
-                                                          self.amplitudes,
-                                                          k=k,
-                                                          ext=ext)
-        total_response_function = lambda f: amplitude_response(f) * np.exp(1.j * phase_response(f))
+        phase_response = InterpolatedUnivariateSpline(
+            self.frequencies, self.phases, k=k, ext=ext
+        )
+        amplitude_response = InterpolatedUnivariateSpline(
+            self.frequencies, self.amplitudes, k=k, ext=ext
+        )
+        total_response_function = lambda f: amplitude_response(f) * np.exp(
+            1.0j * phase_response(f)
+        )
 
         return self.gain * total_response_function(frequencies)
