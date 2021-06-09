@@ -19,7 +19,7 @@ attr_dict.add_dict(get_schema("fir_filter", SCHEMA_FN_PATHS))
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 #obspy_mapping["_zeros"] = "_zeros"
 #obspy_mapping["_symmetry"] = "_symmetry"
-obspy_mapping["_coefficients"] = "_coefficients"
+obspy_mapping["_coefficients"] = "coefficients"
 
 
 class FIRFilter(FilterBase):
@@ -87,6 +87,7 @@ class FIRFilter(FilterBase):
         self,
         stage_number=1,
         normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         create an obspy stage
@@ -105,8 +106,7 @@ class FIRFilter(FilterBase):
             self.units_in,
             self.units_out,
             normalization_frequency,
-            self.zeros,
-            self.poles,
+            self.coefficients,
             name=self.name,
             description=self.get_filter_description(),
             input_units_description=self.get_unit_description(self.units_in),

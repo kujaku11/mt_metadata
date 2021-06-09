@@ -34,12 +34,15 @@ units_descriptions = {
     "V/m": "Volts per meter",
     "mV/km": "milliVolts per kilometer",
     "m": "meters",
+    "COUNTS": "digital counts",
 }
 
 filter_descriptions = {
     "zpk": "poles and zeros filter",
     "coefficient": "coefficient filter",
     "time delay": "time delay filter",
+    "fir": "finite impaulse response filter",
+    "fap": "frequency amplitude phase lookup table",
 }
 
 # =============================================================================

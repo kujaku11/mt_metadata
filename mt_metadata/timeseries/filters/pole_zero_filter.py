@@ -26,8 +26,8 @@ attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # D
 # - put obspy mapping in json
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping["_zeros"] = "_zeros"
-obspy_mapping["_poles"] = "_poles"
+obspy_mapping["_zeros"] = "zeros"
+obspy_mapping["_poles"] = "poles"
 obspy_mapping["normalization_factor"] = "normalization_factor"
 
 
@@ -203,13 +203,10 @@ class PoleZeroFilter(FilterBase):
             return np.array([f.min(), f.max()])
         pass_band = []
         for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = amp[ii:ii+window_len]
+            cr_window = np.array(amp[ii:ii+window_len])
             cr_window /= cr_window.max()
 
-            if cr_window.std() == 0:
-                continue
-            
-            if cr_window.std() <= tol:
+            if cr_window.std() <= tol and cr_window.std() > 0:
                 pass_band.append(f[ii])
 
 
