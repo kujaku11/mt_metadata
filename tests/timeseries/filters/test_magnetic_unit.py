@@ -82,7 +82,7 @@ class TestFilterMagnetic(unittest.TestCase):
         self.assertEqual(f1.n_zeros, 0)
         self.assertAlmostEqual(f1.normalization_factor, 1984.31, 2)
         self.assertListEqual(
-            f1.poles,
+            list(f1.poles),
             [(-6.283185 + 10.882477j), (-6.283185 - 10.882477j), (-12.566371 + 0j)],
         )
 

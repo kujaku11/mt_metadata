@@ -84,7 +84,7 @@ class TestFilterElectric(unittest.TestCase):
         self.assertEqual(f1.n_zeros, 0)
         self.assertAlmostEqual(f1.normalization_factor, 313383.60, 2)
         self.assertListEqual(
-            f1.poles,
+            list(f1.poles),
             [
                 (-3.883009 + 11.951875j),
                 (-3.883009 - 11.951875j),
@@ -103,8 +103,8 @@ class TestFilterElectric(unittest.TestCase):
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 1)
         self.assertEqual(f2.n_zeros, 1)
-        self.assertListEqual(f2.poles, [(-0.000167 + 0j)])
-        self.assertListEqual(f2.zeros, [0j])
+        self.assertListEqual(list(f2.poles), [(-0.000167 + 0j)])
+        self.assertListEqual(list(f2.zeros), [0j])
 
     def test_stage_03(self):
         f2 = create_filter_from_stage(self.stages[2])
