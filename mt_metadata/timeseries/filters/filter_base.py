@@ -135,7 +135,8 @@ import numpy as np
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.base.helpers import units_descriptions, filter_descriptions
+from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.utils.units import obspy_units_descriptions as unit_descriptions
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
