@@ -26,24 +26,14 @@ from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata import LOG_LEVEL
+from mt_metadata.base.helpers import write_lines
 
+attr_dict = {}
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
 class Base:
-    """
-    A Base class that is common to most of the Metadata objects
-
-    Includes:
-        
-        * to_json
-        * from_json
-        * to_dict
-        * from_dict
-        * to_series
-        * from_series
-        
-    """
+    __doc__ = write_lines(attr_dict)
 
     def __init__(self, attr_dict={}, **kwargs):
 
