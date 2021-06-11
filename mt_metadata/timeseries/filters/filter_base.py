@@ -135,7 +135,8 @@ import numpy as np
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.base.helpers import units_descriptions, filter_descriptions
+from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
@@ -188,18 +189,17 @@ class FilterBase(Base):
     @property
     def obspy_mapping(self):
         return self._obspy_mapping
-    
+
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
         if value is not None:
             self._name = str(value).lower()
         else:
             self._name = None
-            
 
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
@@ -310,7 +310,6 @@ class FilterBase(Base):
     def decimation_inactive(self):
         pass
 
-
     def apply(self, ts):
         data_spectum = ts.fft()
         complex_response = self.complex_response(ts.frequencies)
@@ -319,4 +318,3 @@ class FilterBase(Base):
         output = ts._deepcopy()
         output.data = calibrated_data
         return output
-

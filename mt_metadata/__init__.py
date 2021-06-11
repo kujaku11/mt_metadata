@@ -83,10 +83,10 @@ REQUIRED_KEYS = [
 # =============================================================================
 # Initiate loggers
 # =============================================================================
-
+LOG_LEVEL = "info"
 
 load_logging_config()
-debug_logger = setup_logger(__name__, fn="mt_metadata_debug", level="debug")
-debug_logger.debug("Starting MT Metadata Debug Log File")
+debug_logger = setup_logger(__name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL)
+debug_logger.debug(f"Starting MT Metadata {LOG_LEVEL} Log File")
 
 error_logger = setup_logger("error", fn="mt_metadata_error", level="error")

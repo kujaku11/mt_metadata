@@ -189,9 +189,13 @@ class XMLInventoryMTExperiment:
                     # not already there.
                     if self.compare_xml_channel(xml_channel, existing_channel):
                         find = True
-                        self.logger.debug(f"Matched {xml_channel.code}={existing_channel.code}")
+                        self.logger.debug(
+                            f"Matched {xml_channel.code}={existing_channel.code}"
+                        )
                         if not mt_run.id in run_list:
-                            self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
+                            self.logger.debug(
+                                f"adding run id {mt_run.id} to {run_list}"
+                            )
                             existing_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id")
                             )
@@ -210,7 +214,9 @@ class XMLInventoryMTExperiment:
                         )
                         run_list = [c.value for c in xml_channel.comments]
                         if not mt_run.id in run_list:
-                            self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
+                            self.logger.debug(
+                                f"adding run id {mt_run.id} to {run_list}"
+                            )
                             xml_channel.comments.append(
                                 inventory.Comment(mt_run.id, subject="mt.run.id")
                             )

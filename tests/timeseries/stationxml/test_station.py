@@ -17,7 +17,9 @@ from collections import OrderedDict
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLStationMTStation
 from mt_metadata.utils import STATIONXML_01, STATIONXML_02
+
 # =============================================================================
+
 
 class TestReadXMLStation01(unittest.TestCase):
     """
@@ -104,7 +106,7 @@ class TestReadXMLStation02(unittest.TestCase):
 
         self.converter = XMLStationMTStation()
         self.mt_station = self.converter.xml_to_mt(self.xml_station)
-        
+
         self.maxDiff = None
 
     def test_time_period(self):
@@ -378,7 +380,7 @@ class TestMTStationToXML02(unittest.TestCase):
         self.converter = XMLStationMTStation()
         self.mt_station = self.converter.xml_to_mt(self.base_xml_station)
         self.test_xml_station = self.converter.mt_to_xml(self.mt_station)
-        
+
         self.maxDiff = None
 
     def test_time_period(self):

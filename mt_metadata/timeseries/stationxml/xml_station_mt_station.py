@@ -164,7 +164,7 @@ class XMLStationMTStation(BaseTranslator):
                 code = mt_station.fdsn.id
         else:
             code = mt_station.id
-            
+
         if mt_station.fdsn.id is None:
             mt_station.fdsn.id = mt_station.id
 

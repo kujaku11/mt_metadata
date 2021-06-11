@@ -6,6 +6,7 @@ from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
+from mt_metadata.base.helpers import write_lines
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 
@@ -16,6 +17,8 @@ attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 
 
 class CoefficientFilter(FilterBase):
+    __doc__ = write_lines(attr_dict)
+    
     def __init__(self, **kwargs):
         self.type = "coefficient"
         self.comments = None
@@ -23,10 +26,11 @@ class CoefficientFilter(FilterBase):
         self.obspy_mapping = obspy_mapping
 
     def to_obspy(
-        self, stage_number=1,
+        self,
+        stage_number=1,
         cf_type="DIGITAL",
         sample_rate=1,
-        normalization_frequency=0
+        normalization_frequency=0,
     ):
         """
         stage_sequence_number,

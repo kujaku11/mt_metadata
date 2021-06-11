@@ -10,7 +10,14 @@ with open("README.md") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["concurrent-log-handler", "numpy", "pandas", "pyyaml", "obspy", "matplotlib"]
+requirements = [
+    "concurrent-log-handler",
+    "numpy",
+    "pandas",
+    "pyyaml",
+    "obspy",
+    "matplotlib",
+]
 
 setup_requirements = [
     "pytest-runner",
@@ -39,6 +46,7 @@ setup(
     install_requires=requirements,
     license="MIT license",
     long_description=readme + "\n\n" + history,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     keywords="mt_metadata",
     name="mt_metadata",

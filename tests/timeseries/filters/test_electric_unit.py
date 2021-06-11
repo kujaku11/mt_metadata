@@ -68,15 +68,17 @@ class TestFilterElectric(unittest.TestCase):
     def test_instrument_sensitivity(self):
         filters_list = [create_filter_from_stage(s) for s in self.stages]
         cr = ChannelResponseFilter(filters_list=filters_list)
-        
-        self.assertAlmostEqual(cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
-                         self.instrument_sensitivity.value, 0)
-        
+
+        self.assertAlmostEqual(
+            cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
+            self.instrument_sensitivity.value,
+            0,
+        )
 
     def test_stage_01(self):
         f1 = create_filter_from_stage(self.stages[0])
         self.assertIsInstance(f1, PoleZeroFilter)
-        self.assertEqual(f1.name, "electric field 5 pole Butterworth low-pass")
+        self.assertEqual(f1.name, "electric field 5 pole butterworth low-pass")
         self.assertEqual(f1.type, "zpk")
         self.assertEqual(f1.units_in, "mV/km")
         self.assertEqual(f1.units_out, "mV/km")
@@ -84,7 +86,7 @@ class TestFilterElectric(unittest.TestCase):
         self.assertEqual(f1.n_zeros, 0)
         self.assertAlmostEqual(f1.normalization_factor, 313383.60, 2)
         self.assertListEqual(
-            f1.poles,
+            list(f1.poles),
             [
                 (-3.883009 + 11.951875j),
                 (-3.883009 - 11.951875j),
@@ -98,18 +100,18 @@ class TestFilterElectric(unittest.TestCase):
         f2 = create_filter_from_stage(self.stages[1])
 
         self.assertIsInstance(f2, PoleZeroFilter)
-        self.assertEqual(f2.name, "electric field 1 pole Butterworth high-pass")
+        self.assertEqual(f2.name, "electric field 1 pole butterworth high-pass")
         self.assertEqual(f2.type, "zpk")
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 1)
         self.assertEqual(f2.n_zeros, 1)
-        self.assertListEqual(f2.poles, [(-0.000167 + 0j)])
-        self.assertListEqual(f2.zeros, [0j])
+        self.assertListEqual(list(f2.poles), [(-0.000167 + 0j)])
+        self.assertListEqual(list(f2.zeros), [0j])
 
     def test_stage_03(self):
         f2 = create_filter_from_stage(self.stages[2])
         self.assertIsInstance(f2, PoleZeroFilter)
-        self.assertEqual(f2.name, "mV/km to V/m")
+        self.assertEqual(f2.name, "mV/km to V/m".lower())
         self.assertEqual(f2.type, "zpk")
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 0)
@@ -120,7 +122,7 @@ class TestFilterElectric(unittest.TestCase):
     def test_stage_04(self):
         f2 = create_filter_from_stage(self.stages[3])
         self.assertIsInstance(f2, PoleZeroFilter)
-        self.assertEqual(f2.name, "V/m to V")
+        self.assertEqual(f2.name, "V/m to V".lower())
         self.assertEqual(f2.type, "zpk")
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 0)
@@ -131,7 +133,7 @@ class TestFilterElectric(unittest.TestCase):
     def test_stage_05(self):
         f2 = create_filter_from_stage(self.stages[4])
         self.assertIsInstance(f2, CoefficientFilter)
-        self.assertEqual(f2.name, "V to counts (electric)")
+        self.assertEqual(f2.name, "V to counts (electric)".lower())
         self.assertEqual(f2.type, "coefficient")
         self.assertEqual(f2.gain, 484733700000000.0)
         self.assertEqual(f2.units_in, "V")
@@ -145,4 +147,3 @@ class TestFilterElectric(unittest.TestCase):
         self.assertEqual(f2.delay, 0.1525)
         self.assertEqual(f2.units_in, "count")
         self.assertEqual(f2.units_out, "count")
-        

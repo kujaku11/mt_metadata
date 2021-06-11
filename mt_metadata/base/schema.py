@@ -23,8 +23,9 @@ from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.base.helpers import NumpyEncoder
 from mt_metadata.utils.mt_logger import setup_logger
+from mt_metadata import LOG_LEVEL
 
-logger = setup_logger(__name__, fn="metadata_schema")
+logger = setup_logger(__name__, fn="metadata_schema", level=LOG_LEVEL)
 # =============================================================================
 # base dictionary
 # =============================================================================
