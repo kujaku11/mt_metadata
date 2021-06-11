@@ -22,7 +22,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     FIRFilter,
 )
-from mt_metadata.utils.units import obspy_units_descriptions as unit_descriptions
+from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
 from obspy.core import inventory
 
 # =============================================================================
