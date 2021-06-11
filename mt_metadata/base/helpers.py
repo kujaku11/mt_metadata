@@ -21,21 +21,8 @@ from collections import OrderedDict, defaultdict
 from xml.etree import cElementTree as et
 from xml.dom import minidom
 from operator import itemgetter
+from mt_metadata.utils.units import obspy_units_descriptions as unit_descriptions
 
-# =============================================================================
-# Unit conversions
-# =============================================================================
-units_descriptions = {
-    "T": "Tesla",
-    "nT": "nanoTesla",
-    "V": "Volts",
-    "mV": "milliVolts",
-    "count": "digital counts",
-    "V/m": "Volts per meter",
-    "mV/km": "milliVolts per kilometer",
-    "m": "meters",
-    "COUNTS": "digital counts",
-}
 
 filter_descriptions = {
     "zpk": "poles and zeros filter",
@@ -65,6 +52,8 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     """
      write table lines
     :param lines_list: DESCRIPTION
+    Takes the attribute dictionary from the json and parses it into a table
+    Returns a string representation of this table.  This overwrites the doc.
 
     """
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
