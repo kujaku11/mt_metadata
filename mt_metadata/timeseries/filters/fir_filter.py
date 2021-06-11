@@ -20,12 +20,14 @@ obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 # obspy_mapping["_zeros"] = "_zeros"
 # obspy_mapping["_symmetry"] = "_symmetry"
 obspy_mapping["_coefficients"] = "coefficients"
+obspy_mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
 
 
 class FIRFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "fir"
         self.coefficients = None
+        # self.decimation_input_sample_rate = None
         # self.zeros = None
         # self.normalization_factor = 1.0
         # self.gain = 1.0
