@@ -17,8 +17,7 @@ attr_dict.add_dict(get_schema("fir_filter", SCHEMA_FN_PATHS))
 
 
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-# obspy_mapping["_zeros"] = "_zeros"
-# obspy_mapping["_symmetry"] = "_symmetry"
+obspy_mapping["_symmetry"] = "_symmetry"
 obspy_mapping["_coefficients"] = "coefficients"
 obspy_mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
 
@@ -78,6 +77,16 @@ class FIRFilter(FilterBase):
         plt.ylabel("Angle (radians)", color="g")
         plt.grid()
         plt.axis("tight")
+        plt.show()
+
+    def plot_time_domain_response(self):
+        fig = plt.figure()
+        #plt.clf()
+        plt.plot(self.coefficients)
+        plt.ylabel("Filter Amplitude")
+        plt.xlabel("Filter 'Tap'")
+        plt.title(f"{self.name}; symmetry: {self.symmetry}")
+        #plt.savefig(FIGURES_PATH.joinpath(f"{stage.name}.png"))
         plt.show()
 
     @property

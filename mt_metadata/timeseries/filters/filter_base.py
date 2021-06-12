@@ -153,6 +153,7 @@ OBSPY_MAPPING["name"] = "name"
 OBSPY_MAPPING["output_units"] = "units_out"
 OBSPY_MAPPING["stage_gain"] = "gain"
 OBSPY_MAPPING["description"] = "comments"
+OBSPY_MAPPING["decimation_factor"] = "_decimation_factor"
 
 
 class FilterBase(Base):
@@ -307,8 +308,22 @@ class FilterBase(Base):
         plot_complex_response(frequency_axis, complex_response)
 
     @property
-    def decimation_inactive(self):
-        pass
+    def decimation_active(self):
+        """
+        This method
+        Returns boolean, whether this filter has a lower output samplling rate
+        than its input sampling rate.  All obspy filters seem to have the
+        all decimation fields populated, although they are typically None
+        unless its a decimation filter.  So far all instances of decimation
+        filters encountered have been FIR, but there is no reason in
+        principle that one couldn't use a IIR filter for AAF.
+
+
+        -------
+
+        """
+        return bool(self._decimation_factor)
+
 
     def apply(self, ts):
         data_spectum = ts.fft()
