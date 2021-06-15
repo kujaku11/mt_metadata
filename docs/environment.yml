@@ -9,6 +9,9 @@ dependencies:
   - jupyter_client
   - nbsphinx
   - numpy>=1.17
+  - pandas
+  - obspy
+  - matploptlib
   - setuptools
   - sphinx>=2.3
   - sphinx_rtd_theme>=0.4
