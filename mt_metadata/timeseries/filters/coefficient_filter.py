@@ -22,6 +22,7 @@ class CoefficientFilter(FilterBase):
     def __init__(self, **kwargs):
         self.type = "coefficient"
         self.comments = None
+        super().__init__()
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 

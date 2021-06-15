@@ -21,6 +21,7 @@ class TimeDelayFilter(FilterBase):
         self.type = "time delay"
         self.delay = None
         self.comments = None
+        super().__init__()
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 

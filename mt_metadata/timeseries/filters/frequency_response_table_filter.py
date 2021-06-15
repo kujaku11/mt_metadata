@@ -41,6 +41,7 @@ class FrequencyResponseTableFilter(FilterBase):
         self.type = "frequency response table"
         self.instrument_type = None  # FGM or FBC or other?
         self.gain = 1.0
+        super().__init__()
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping

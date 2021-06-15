@@ -174,6 +174,8 @@ class FilterBase(Base):
 
         """
 
+        
+        
         self.name = None
         self.type = None
         self.units_in = None
@@ -183,8 +185,10 @@ class FilterBase(Base):
         self.comments = None
         self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
         self.gain = 1.0
-
+        
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        
 
     @property
     def obspy_mapping(self):

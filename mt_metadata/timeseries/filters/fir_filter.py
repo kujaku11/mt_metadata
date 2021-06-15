@@ -32,6 +32,7 @@ class FIRFilter(FilterBase):
         # self.normalization_factor = 1.0
         # self.gain = 1.0
         self.comments = None
+        super().__init__()
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
