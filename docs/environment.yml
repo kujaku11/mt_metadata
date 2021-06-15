@@ -9,8 +9,13 @@ dependencies:
   - jupyter_client
   - nbsphinx
   - numpy>=1.17
+  - pandas
+  - obspy
+  - matplotlib
   - setuptools
   - sphinx>=2.3
   - sphinx_rtd_theme>=0.4
   - PyYAML
-  - concurrent_log_handler
+  - pip
+  - pip:
+    - concurrent_log_handler
