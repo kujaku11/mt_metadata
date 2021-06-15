@@ -38,16 +38,13 @@ obspy_mapping["phases"] = "_empirical_phases"
 
 class FrequencyResponseTableFilter(FilterBase):
     def __init__(self, **kwargs):
+        super().__init__()
         self.type = "frequency response table"
         self.instrument_type = None  # FGM or FBC or other?
-        self.gain = 1.0
-        super().__init__()
+        
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
-        # self._empirical_frequencies = kwargs.get('frequencies', None)
-        # self._empirical_amplitudes = kwargs.get('amplitudes', None)
-        # self._empirical_phases = kwargs.get('phases', None)
         self.amplitude_response = None
         self.phase_response = None
         self._total_response_function = None

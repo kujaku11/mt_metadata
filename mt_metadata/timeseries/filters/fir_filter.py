@@ -25,14 +25,10 @@ obspy_mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
 
 class FIRFilter(FilterBase):
     def __init__(self, **kwargs):
+        super().__init__()
         self.type = "fir"
         self.coefficients = None
-        # self.decimation_input_sample_rate = None
-        # self.zeros = None
-        # self.normalization_factor = 1.0
-        # self.gain = 1.0
-        self.comments = None
-        super().__init__()
+        
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping

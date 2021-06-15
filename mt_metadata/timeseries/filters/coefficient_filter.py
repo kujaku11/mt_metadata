@@ -20,9 +20,9 @@ class CoefficientFilter(FilterBase):
     __doc__ = write_lines(attr_dict)
     
     def __init__(self, **kwargs):
-        self.type = "coefficient"
-        self.comments = None
         super().__init__()
+        self.type = "coefficient"
+        
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 

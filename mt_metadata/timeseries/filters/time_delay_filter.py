@@ -18,10 +18,10 @@ attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
 
 class TimeDelayFilter(FilterBase):
     def __init__(self, **kwargs):
+        super().__init__()
         self.type = "time delay"
         self.delay = None
-        self.comments = None
-        super().__init__()
+        
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
