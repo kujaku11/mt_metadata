@@ -39,7 +39,7 @@ you should only have to changes these dictionaries.
 
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 # =============================================================================
 # Imports
