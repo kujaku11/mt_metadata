@@ -31,9 +31,9 @@ def read_manifest(fn):
 class TestStandards(unittest.TestCase):
     def setUp(self):
        self.home = Path(__file__).parent.parent
-       self.manifest_fn = self.home.joinpath("Manifest.in")
+       self.manifest_fn = self.home.joinpath("MANIFEST.in")
        if not self.manifest_fn.exists():
-           self.manifest_fn = self.home.parent.joinpath("Manifest.in")
+           self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
        
     def test_standards_exist(self):
         existing_dirs = sorted(get_standard_dirs(self.home))
