@@ -14,8 +14,7 @@ from pathlib import Path
 
 def get_standard_dirs(dir_path):
     existing_dirs = list(set([fn.parent.as_posix() for fn in dir_path.rglob("*.json")]))
-    skip = len("/mt_metadata")
-    existing_dirs = [fn[fn.find("mt_metadata") + skip:] for fn in existing_dirs]
+    existing_dirs = [fn[fn.rfind("mt_metadata"):] for fn in existing_dirs]
     
     return existing_dirs
 
@@ -30,10 +29,11 @@ def read_manifest(fn):
 
 class TestStandards(unittest.TestCase):
     def setUp(self):
-       self.home = Path(__file__).parent.parent
-       self.manifest_fn = self.home.joinpath("MANIFEST.in")
-       if not self.manifest_fn.exists():
-           self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
+        self.maxDiff = None
+        self.home = Path(__file__).parent.parent
+        self.manifest_fn = self.home.joinpath("MANIFEST.in")
+        if not self.manifest_fn.exists():
+            self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
        
     def test_standards_exist(self):
         existing_dirs = sorted(get_standard_dirs(self.home))
