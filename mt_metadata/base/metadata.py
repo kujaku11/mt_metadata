@@ -98,7 +98,31 @@ class Base:
 
     def __len__(self):
         return len(self.get_attribute_list())
+    
+    def update(self, other, match=[]):
+        """
+        Update attribute values from another like element, skipping None
+        
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
+        if not isinstance(other, type(self)):
+            self.logger.warning("Cannot update %s with %s", type(self), type(other))
+        for k in match:
+            if self.get_attr_from_name(k) != other.get_attr_from_name(k):
+                msg = "%s is not equal %s != %s"
+                self.logger.error(msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k))
+                raise ValueError(msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k))
+            
+        for k, v in other.to_dict(single=True).items():
+            if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+
+                self.set_attr_from_name(k, v)
+        
+        
     @property
     def changed(self):
         return self._changed
