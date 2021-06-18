@@ -33,7 +33,7 @@ class TestSurvey(unittest.TestCase):
             "survey": {
                 "acquired_by.author": "MT",
                 "acquired_by.comments": "tired",
-                "survey_id": "MT001",
+                "id": "MT001",
                 "fdsn.network": "EM",
                 "citation_dataset.doi": "http://doi.####",
                 "citation_journal.doi": None,

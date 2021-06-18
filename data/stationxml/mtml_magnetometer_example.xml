@@ -19,7 +19,7 @@
     <Comment subject="mt.survey.project">
       <Value>USGS-GEOMAG</Value>
     </Comment>
-    <Comment subject="mt.survey.survey_id">
+    <Comment subject="mt.survey.id">
       <Value>Florida</Value>
     </Comment>
     <Operator>

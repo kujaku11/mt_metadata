@@ -37,7 +37,7 @@
             <longitude units="degrees" type="float">-117.160798541667</longitude>
         </southeast_corner>
         <summary>USMTArray South Magnetotelluric Time Series</summary>
-        <survey_id>CONUS South-USGS</survey_id>
+        <id>CONUS South-USGS</id>
         <time_period>
             <end_date>2020-07-17</end_date>
             <start_date>2020-06-08</start_date>

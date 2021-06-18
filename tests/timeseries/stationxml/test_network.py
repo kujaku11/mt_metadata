@@ -62,8 +62,8 @@ class TestNetwork02(unittest.TestCase):
     def test_comments_acquired_by(self):
         self.assertEqual(self.survey.acquired_by.author, "Pellerin, L.")
 
-    def test_comments_survey_id(self):
-        self.assertEqual(self.survey.survey_id, "CONUS South-USGS")
+    def test_comments_id(self):
+        self.assertEqual(self.survey.id, "CONUS South-USGS")
 
     def test_comments_project(self):
         self.assertEqual(self.survey.project, "USMTArray")
@@ -124,12 +124,12 @@ class TestSurveyToNetwork(unittest.TestCase):
         self.assertEqual(self.test_network.start_date, self.original_network.start_date)
         self.assertEqual(self.test_network.end_date, self.original_network.end_date)
 
-    def test_comment_survey_id(self):
+    def test_comment_id(self):
         c1 = self.converter.get_comment(
-            self.original_network.comments, "mt.survey.survey_id"
+            self.original_network.comments, "mt.survey.id"
         ).value
         c2 = self.converter.get_comment(
-            self.test_network.comments, "mt.survey.survey_id"
+            self.test_network.comments, "mt.survey.id"
         ).value
         self.assertEqual(c1, c2)
 

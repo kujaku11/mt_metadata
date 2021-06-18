@@ -51,7 +51,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "country",
             "geographic_name",
             "citation_journal.doi",
-            "survey_id",
+            "id",
             "project",
             "acquired_by.author",
             "acquired_by.comments",

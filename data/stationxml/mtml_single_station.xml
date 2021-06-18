@@ -15,7 +15,7 @@
       <Comment subject="mt.survey.citation_journal.doi">
          <Value>10.666/test.doi</Value>
       </Comment>
-      <Comment subject="mt.survey.survey_id">
+      <Comment subject="mt.survey.id">
          <Value>CONUS South-USGS</Value>
       </Comment>
       <Comment subject="mt.survey.project">
