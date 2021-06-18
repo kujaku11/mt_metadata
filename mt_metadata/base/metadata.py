@@ -561,10 +561,6 @@ class Base:
         name = self._validate_name(name)
         self._attr_dict.update({name: value_dict})
         self.set_attr_from_name(name, value)
-        self.logger.debug("Added {0} to _attr_dict with {1}".format(name, value_dict))
-        self.logger.debug(
-            "set {0} to {1} as type {2}".format(name, value, value_dict["type"])
-        )
 
     def to_dict(self, nested=False, single=False, required=True):
         """
@@ -584,11 +580,7 @@ class Base:
         for name in list(self._attr_dict.keys()):
             try:
                 value = self.get_attr_from_name(name)
-            except AttributeError as error:
-                msg = "{0}: setting {1} to None.  ".format(
-                    error, name
-                ) + "Try setting {0} to the desired value".format(name)
-                self.logger.debug(msg)
+            except AttributeError:
                 value = None
 
             if required:
@@ -630,13 +622,13 @@ class Base:
             if class_name.lower() != self._class_name.lower():
                 msg = (
                     "name of input dictionary is not the same as class type "
-                    "input = {0}, class type = {1}".format(class_name, self._class_name)
+                    "input = %s, class type = %s"
                 )
-                self.logger.debug(msg)
+                self.logger.debug(msg, class_name, self._class_name)
             meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
             self.logger.debug(
-                f"Assuming input dictionary is of type {self._class_name}"
+                "Assuming input dictionary is of type %s", self._class_name
             )
             meta_dict = helpers.flatten_dict(meta_dict)
 
@@ -669,9 +661,9 @@ class Base:
 
         """
         if not isinstance(json_str, str):
-            msg = "Input must be valid JSON string not {0}".format(type(json_str))
-            self.logger.error(msg)
-            raise MTSchemaError(msg)
+            msg = "Input must be valid JSON string not %"
+            self.logger.error(msg, type(json_str))
+            raise MTSchemaError(msg % type(json_str))
 
         self.from_dict(json.loads(json_str))
 
@@ -689,9 +681,9 @@ class Base:
         
         """
         if not isinstance(pd_series, pd.Series):
-            msg = "Input must be a Pandas.Series not type {0}".format(type(pd_series))
-            self.logger.error(msg)
-            MTSchemaError(msg)
+            msg = "Input must be a Pandas.Series not type %s"
+            self.logger.error(msg, type(pd_series))
+            MTSchemaError(msg % type(pd_series))
         for key, value in pd_series.iteritems():
             self.set_attr_from_name(key, value)
 
