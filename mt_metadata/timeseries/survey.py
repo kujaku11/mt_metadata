@@ -62,7 +62,7 @@ class Survey(Base):
         self.release_license = "CC-0"
         self.southeast_corner = Location()
         self.summary = None
-        self.survey_id = None
+        self.id = None
         self.time_period = TimePeriod()
         self.stations = []
         self.filters = {}

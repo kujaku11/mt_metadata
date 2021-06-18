@@ -37,7 +37,7 @@ class ChannelResponseFilter(object):
     """
 
     def __init__(self, **kwargs):
-        self.filters_list = None
+        self.filters_list = []
         self.normalization_frequency = None
 
         for k, v in kwargs.items():
