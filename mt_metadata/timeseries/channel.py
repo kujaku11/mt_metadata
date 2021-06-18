@@ -75,7 +75,7 @@ class Channel(Base):
 
     def channel_response(self, filters_dict):
         """
-        full channel response
+        full channel response from a dictionary of filter objects
         """
 
         mt_filter_list = []
