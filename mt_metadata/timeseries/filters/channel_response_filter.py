@@ -63,6 +63,14 @@ class ChannelResponseFilter(object):
     def filters_list(self, filters_list):
         """ set the filters list and validate the list """
         self._filters_list = self._validate_filters_list(filters_list)
+        
+    @property
+    def names(self):
+        """ names of the filters """
+        names = []
+        if self.filters_list:
+            names = [f.name for f in self.filters_list]
+        return names
 
     def _validate_filters_list(self, filters_list):
         """
