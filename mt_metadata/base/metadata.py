@@ -32,6 +32,8 @@ attr_dict = {}
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
+
+
 class Base:
     __doc__ = write_lines(attr_dict)
 
@@ -42,7 +44,8 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = setup_logger(f"{__name__}.{self._class_name}", level=LOG_LEVEL)
+        self.logger = setup_logger(
+            f"{__name__}.{self._class_name}", level=LOG_LEVEL)
         self._debug = False
 
         for name, value in kwargs.items():
@@ -91,18 +94,19 @@ class Base:
                         self.logger.info(msg)
 
                 return False
-        raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
+        raise ValueError(
+            f"Cannot compare {self._class_name} with {type(other)}")
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __len__(self):
         return len(self.get_attribute_list())
-    
+
     def update(self, other, match=[]):
         """
         Update attribute values from another like element, skipping None
-        
+
         :param other: DESCRIPTION
         :type other: TYPE
         :return: DESCRIPTION
@@ -110,19 +114,21 @@ class Base:
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning("Cannot update %s with %s", type(self), type(other))
+            self.logger.warning("Cannot update %s with %s",
+                                type(self), type(other))
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = "%s is not equal %s != %s"
-                self.logger.error(msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k))
-                raise ValueError(msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k))
-            
+                self.logger.error(msg, k, self.get_attr_from_name(
+                    k), other.get_attr_from_name(k))
+                raise ValueError(msg, k, self.get_attr_from_name(
+                    k), other.get_attr_from_name(k))
+
         for k, v in other.to_dict(single=True).items():
             if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
 
                 self.set_attr_from_name(k, v)
-        
-        
+
     @property
     def changed(self):
         return self._changed
@@ -134,7 +140,7 @@ class Base:
     def __deepcopy__(self, memodict={}):
         """
         Need to skip copying the logger
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -160,7 +166,7 @@ class Base:
     def attribute_information(self, name=None):
         """
         return a descriptive string of the attribute if none returns for all
-    
+
         :param key: DESCRIPTION, defaults to None
         :type key: TYPE, optional
         :return: DESCRIPTION
@@ -217,7 +223,7 @@ class Base:
     def _validate_type(self, value, v_type, style=None):
         """
         validate type from standards
-        
+
         """
         # if the value is a metadata type skip cause the individual components
         # will be validated separately
@@ -249,7 +255,8 @@ class Base:
 
         # if not a python type but a string organize into a dictionary
         if not isinstance(v_type, type) and isinstance(v_type, str):
-            type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+            type_dict = {"string": str, "integer": int,
+                         "float": float, "boolean": bool}
             v_type = type_dict[validate_type(v_type)]
         else:
             msg = "v_type must be a string or type not {0}".format(v_type)
@@ -290,7 +297,8 @@ class Base:
                         self.logger.debug(info.format(value, True))
                         return True
                     else:
-                        self.logger.exception(msg.format(value, v_type, type(value)))
+                        self.logger.exception(
+                            msg.format(value, v_type, type(value)))
                         raise MTSchemaError(msg, value, v_type, type(value))
                 elif v_type is str:
                     return value
@@ -320,7 +328,8 @@ class Base:
                 if v_type is str:
                     if isinstance(value, np.ndarray):
                         value = value.astype(np.unicode_)
-                    value = [f"{v}".replace("'", "").replace('"', "") for v in value]
+                    value = [f"{v}".replace("'", "").replace(
+                        '"', "") for v in value]
                 elif v_type is int:
                     value = [int(float(v)) for v in value]
                 elif v_type is float:
@@ -347,7 +356,7 @@ class Base:
         """
         validate the given attribute name agains possible options and check
         for aliases
-        
+
         :param name: DESCRIPTION
         :type name: TYPE
         :param option_list: DESCRIPTION
@@ -418,12 +427,14 @@ class Base:
                     # check options
                     if v_dict["style"] == "controlled vocabulary":
                         options = v_dict["options"]
-                        accept, other, msg = self._validate_option(value, options)
+                        accept, other, msg = self._validate_option(
+                            value, options)
                         if not accept:
                             self.logger.error(msg.format(value, options))
                             raise MTSchemaError(msg.format(value, options))
                         if other and not accept:
-                            self.logger.warning(msg.format(value, options, name))
+                            self.logger.warning(
+                                msg.format(value, options, name))
 
         super().__setattr__(name, value)
 
@@ -522,18 +533,18 @@ class Base:
         """
         Add an attribute to _attr_dict so it will be included in the
         output dictionary
-        
+
         :param name: name of attribute
         :type name: string
-        
+
         :param value: value of the new attribute
         :type value: described in value_dict
-        
+
         :param value_dict: dictionary describing the attribute, must have keys
             ['type', 'required', 'style', 'units', 'alias', 'description',
              'options', 'example']
         :type name: string
-    
+
         * type --> the data type [ str | int | float | bool ]
         * required --> required in the standards [ True | False ]
         * style --> style of the string
@@ -543,9 +554,9 @@ class Base:
           comma.b [ option_01 | option_02 | other ]. 'other' means other options 
           available but not yet defined.
         * example --> an example of the attribute
-        
+
         :Example:
-            
+
         >>> extra = {'type': str,
         >>> ...      'style': 'controlled vocabulary',
         >>> ...      'required': False,
@@ -565,16 +576,16 @@ class Base:
     def to_dict(self, nested=False, single=False, required=True):
         """
         make a dictionary from attributes, makes dictionary from _attr_list.
-        
+
         :param nested: make the returned dictionary nested
         :type nested: [ True | False ] , default is False
-        
+
         :param single: return just metadata dictionary -> meta_dict[class_name]
         :type single: [ True | False ], default is False
-        
+
         :param required: return just the required elements and any elements with
                          non-None values
-        
+
         """
         meta_dict = {}
         for name in list(self._attr_dict.keys()):
@@ -603,13 +614,13 @@ class Base:
 
         return meta_dict
 
-    def from_dict(self, meta_dict):
+    def from_dict(self, meta_dict, skip_none=False):
         """
         fill attributes from a dictionary
-        
+
         :param meta_dict: dictionary with keys equal to metadata.
         :type meta_dict: dictionary
-        
+
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
             msg = "Input must be a dictionary not {0}".format(type(meta_dict))
@@ -634,16 +645,23 @@ class Base:
 
         # set attributes by key.
         for name, value in meta_dict.items():
+            if skip_none:
+                if value in [
+                        None,
+                        "None", "none", "NONE",
+                        "null", "Null", "NULL",
+                        "1980-01-01T00:00:00+00:00"]:
+                    continue
             self.set_attr_from_name(name, value)
 
     def to_json(self, nested=False, indent=" " * 4, required=True):
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
-        
+
         :param nested: make the returned json nested
         :type nested: [ True | False ] , default is False
-        
+
         """
 
         return json.dumps(
@@ -670,15 +688,15 @@ class Base:
     def from_series(self, pd_series):
         """
         Fill attributes from a Pandas series
-        
+
         .. note:: Currently, the series must be single layered with key names
                   separated by dots. (location.latitude)
-        
+
         :param pd_series: Series containing metadata information
         :type pd_series: pandas.Series
-        
+
         ..todo:: Force types in series
-        
+
         """
         if not isinstance(pd_series, pd.Series):
             msg = "Input must be a Pandas.Series not type %s"
@@ -690,9 +708,9 @@ class Base:
     def to_series(self, required=True):
         """
         Convert attribute list to a pandas.Series
-        
+
         .. note:: this is a flattened version of the metadata
-        
+
         :return: pandas.Series
         :rtype: pandas.Series
 
@@ -704,10 +722,10 @@ class Base:
         """
         make an xml element for the attribute that will add types and 
         units.  
-        
+
         :param string: output a string instead of an XML element
         :type string: [ True | False ], default is False
-        
+
         :return: XML element or string
 
         """
@@ -721,10 +739,10 @@ class Base:
 
     def from_xml(self, xml_element):
         """
-        
+
         :param xml_element: XML element
         :type xml_element: etree.Element
-        
+
         :return: Fills attributes accordingly
 
         """
