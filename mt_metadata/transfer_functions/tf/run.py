@@ -43,14 +43,27 @@ attr_dict.add_dict(
 attr_dict.add_dict(
     get_schema("provenance", SCHEMA_FN_PATHS), "provenance", keys=["comments", "log"]
 )
-attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ex")
-attr_dict.add_dict(get_schema("electric", SCHEMA_FN_PATHS), "ey")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hx")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hy")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "hz")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "rrhx")
-attr_dict.add_dict(get_schema("magnetic", SCHEMA_FN_PATHS), "rrhy")
-attr_dict.add_dict(get_schema("auxiliary", SCHEMA_FN_PATHS), "temperature")
+# add channels
+ex_dict = get_schema("electric", SCHEMA_FN_PATHS)
+ey_dict = get_schema("electric", SCHEMA_FN_PATHS)
+hx_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
+hy_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
+hz_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
+rrhx_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
+rrhy_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
+temperature_dict = get_schema("auxiliary", SCHEMA_FN_PATHS)
+
+for ch in [ex_dict, ey_dict, hx_dict, hy_dict, hz_dict, rrhx_dict, rrhy_dict, temperature_dict]:
+    ch.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
+
+attr_dict.add_dict(ex_dict, "ex")
+attr_dict.add_dict(ey_dict, "ey")
+attr_dict.add_dict(hx_dict, "hx")
+attr_dict.add_dict(hy_dict, "hy")
+attr_dict.add_dict(hz_dict, "hz")
+attr_dict.add_dict(rrhx_dict, "rrhx")
+attr_dict.add_dict(rrhy_dict, "rrhy")
+attr_dict.add_dict(temperature_dict, "temperature")
 # =============================================================================
 class Run(Base):
     __doc__ = write_lines(attr_dict)

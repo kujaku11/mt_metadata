@@ -66,5 +66,19 @@
         "options": [],
         "alias": [],
         "example": "[nfft=4096, n_windows=16]"
+    },
+	"coordinate_system": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
+        "options": [
+			"geographic",
+			"geomagnetic",
+			"other"
+		],
+        "alias": [],
+        "example": "geographic"
     }
 }

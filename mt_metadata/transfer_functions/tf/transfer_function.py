@@ -35,6 +35,7 @@ class TransferFunction(Base):
         self.remote_references = []
         self.processing_parameters = []
         self._processed_date = MTime()
+        self.coordinate_system = "geographic"
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
