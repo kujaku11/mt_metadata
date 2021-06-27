@@ -60,10 +60,10 @@ class PoleZeroFilter(FilterBase):
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
-            self._poles = np.array(value, dtype=np.complex)
+            self._poles = np.array(value, dtype=complex)
 
         elif isinstance(value, str):
-            self._poles = np.array(value.split(","), dtype=np.complex)
+            self._poles = np.array(value.split(","), dtype=complex)
 
         else:
             self._poles = np.empty(0)
@@ -83,10 +83,10 @@ class PoleZeroFilter(FilterBase):
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
-            self._zeros = np.array(value, dtype=np.complex)
+            self._zeros = np.array(value, dtype=complex)
 
         elif isinstance(value, str):
-            self._zeros = np.array(value.split(","), dtype=np.complex)
+            self._zeros = np.array(value.split(","), dtype=complex)
 
         else:
             self._zeros = np.empty(0)
