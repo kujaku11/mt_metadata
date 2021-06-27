@@ -484,6 +484,9 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Found an nnnamed filter, named it: '{mt_filter.name}'"
                 )
 
+            if mt_filter.decimation_active:
+                #keep filter names unique if same one used more than once
+                mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
             filter_dict[mt_filter.name.lower()] = mt_filter
 
         return filter_dict
