@@ -189,7 +189,8 @@ class ChannelResponseFilter(object):
             total_delay += delay_filter.delay
         return total_delay
 
-    def complex_response(self, frequencies, include_delay=False, normalize=False):
+    def complex_response(self, frequencies, include_delay=False,
+                         normalize=False, include_decimation=True):
         """
 
         Parameters
@@ -207,6 +208,9 @@ class ChannelResponseFilter(object):
             filters_list = self.filters_list
         else:
             filters_list = self.non_delay_filters
+
+        if not include_decimation:
+            filters_list = [x for x in filters_list if not x.decimation_active]
 
         filter_stage = filters_list.pop(0)
         result = filter_stage.complex_response(frequencies)
