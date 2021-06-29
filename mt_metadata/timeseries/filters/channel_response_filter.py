@@ -97,7 +97,7 @@ class ChannelResponseFilter(object):
                 return False
 
         if filters_list in [[], None]:
-            return None
+            return []
 
         if not isinstance(filters_list, list):
             msg = f"Input filters list must be a list not {type(filters_list)}"
@@ -211,6 +211,10 @@ class ChannelResponseFilter(object):
 
         if not include_decimation:
             filters_list = [x for x in filters_list if not x.decimation_active]
+
+        if len(filters_list)==0:
+            #warn that there are no filters associated with channel?
+            return np.ones(len(frequencies))
 
         filter_stage = filters_list.pop(0)
         result = filter_stage.complex_response(frequencies)
