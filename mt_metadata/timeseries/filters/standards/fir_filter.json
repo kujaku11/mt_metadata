@@ -15,7 +15,7 @@
         "required": false,
         "style": "number",
         "units": null,
-        "description": "downsample factor",
+        "description": "Downsample factor.",
         "options": [],
         "alias": [],
         "example": "16"
@@ -37,7 +37,7 @@
         "required": true,
         "style": "number",
         "units": "hertz",
-        "description": "frequency of the reference gain, usually in passband",
+        "description": "Frequency of the reference gain, usually in passband.",
         "options": [],
         "alias": [],
         "example": "0.0"
@@ -48,9 +48,9 @@
         "required": false,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "symmetry of FIR coefficients",
+        "description": "Symmetry of FIR coefficients",
         "options": ["NONE", "ODD", "EVEN"],
         "alias": [],
-        "example": "???"
+        "example": "NONE"
     }
 }

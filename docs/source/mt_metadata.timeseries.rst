@@ -111,18 +111,11 @@ mt\_metadata.timeseries.fdsn module
 mt\_metadata.timeseries.filter module
 -------------------------------------
 
-.. automodule:: mt_metadata.timeseries.filter
+.. automodule:: mt_metadata.timeseries.filters
    :members:
    :undoc-members:
    :show-inheritance:
 
-mt\_metadata.timeseries.filtered module
----------------------------------------
-
-.. automodule:: mt_metadata.timeseries.filtered
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 mt\_metadata.timeseries.instrument module
 -----------------------------------------

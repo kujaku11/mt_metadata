@@ -12,5 +12,5 @@ group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__.
 
 The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__. 
 
-.. note:: This is a work in progress. Feel free to comment or send me a message at jpeacock@usgs.gov on the data format.
+.. note:: This is a work in progress. Feel free to comment by raising an issue on GitHub in the repository `mt_metadata <https://github.com/kujaku11/mt_metadata>`__ 
 

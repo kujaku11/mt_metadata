@@ -12,9 +12,21 @@ Created on Tue Feb 23 11:52:35 2021
 import numpy as np
 import pandas as pd
 
-import mt_metadata.timeseries as metadata
 from mt_metadata.base import BaseDict
-
+from mt_metadata.timeseries import (
+    Survey,
+    Station,
+    Run,
+    Auxiliary,
+    Electric,
+    Magnetic,
+)
+from mt_metadata.timeseries.filters import (
+    PoleZeroFilter,
+    FrequencyResponseTableFilter,
+    CoefficientFilter,
+    FIRFilter,
+    TimeDelayFilter)
 
 def summarize_timeseries_standards():
     """
@@ -22,12 +34,17 @@ def summarize_timeseries_standards():
     """
 
     summary_dict = BaseDict()
-    summary_dict.add_dict(metadata.Survey()._attr_dict.copy(), "survey")
-    summary_dict.add_dict(metadata.Station()._attr_dict.copy(), "station")
-    summary_dict.add_dict(metadata.Run()._attr_dict.copy(), "run")
-    summary_dict.add_dict(metadata.Electric()._attr_dict.copy(), "electric")
-    summary_dict.add_dict(metadata.Magnetic()._attr_dict.copy(), "magnetic")
-    summary_dict.add_dict(metadata.Auxiliary()._attr_dict.copy(), "auxiliary")
+    summary_dict.add_dict(Survey()._attr_dict.copy(), "survey")
+    summary_dict.add_dict(Station()._attr_dict.copy(), "station")
+    summary_dict.add_dict(Run()._attr_dict.copy(), "run")
+    summary_dict.add_dict(Electric()._attr_dict.copy(), "electric")
+    summary_dict.add_dict(Magnetic()._attr_dict.copy(), "magnetic")
+    summary_dict.add_dict(Auxiliary()._attr_dict.copy(), "auxiliary")
+    summary_dict.add_dict(PoleZeroFilter()._attr_dict.copy(), "pole_zero_filter")
+    summary_dict.add_dict(FrequencyResponseTableFilter()._attr_dict.copy(), "frequency_amplitude_phase_filter"),
+    summary_dict.add_dict(CoefficientFilter()._attr_dict.copy(), "coefficient_filter"),
+    summary_dict.add_dict(FIRFilter()._attr_dict.copy(), "fir_filter"),
+    summary_dict.add_dict(TimeDelayFilter()._attr_dict.copy(), "time_delay_filter")
 
     return summary_dict
 

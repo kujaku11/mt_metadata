@@ -5,64 +5,6 @@
 Station
 =======
 
-.. contents::  :local:
-
-A station encompasses a single site where data are collected. If the
-location changes during a run, then a new station should be created and
-subsequently a new run under the new station. If the sensors, cables,
-data logger, battery, etc. are replaced during a run but the station
-remains in the same location, then this can be recorded in the ``Run``
-metadata but does not require a new station entry.
-
-Station Attributes
--------------------
-
-:navy:`acquired_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **acquired_by.author**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of person or group that   | person name    |
-       |                                              | collected the station data and |                |
-       | **Units**: None                              | will be the point of contact   |                |
-       |                                              | if any questions arise about   |                |
-       | **Type**: String                             | the data.                      |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`acquired_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **acquired_by.comments**                     | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments about who         | Expert diggers.|
-       |                                              | acquired the data.             |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
 
 :navy:`channel_layout`
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -71,20 +13,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **channel_layout**                           | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | How the dipoles and magnetic   | "+"            |
-       |                                              | channels of the station were   |                |
-       | **Units**: None                              | laid out.  Options: ["L"; "+"] |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channel_layout**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | How the station channels were laid out.       | x              |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`channels_recorded`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,21 +36,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **channels_recorded**                        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | List of components recorded by |  T             |
-       |                                              | the station. Should be a       |                |
-       | **Units**: None                              | summary of all channels        |                |
-       |                                              | recorded dropped channels will |                |
-       | **Type**: String                             | be recorded in Run.            |                |
-       |                                              | Options:                       |                |
-       | **Style**: Controlled Vocabulary             | [ Ex;  Ey; Hx; Hy; Hz; T       |                |
-       |                                              | Battery; other  ]              |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channels_recorded**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of components recorded by the station.   | "[ Ex, Ey, Hx, |
+       |                                              | Should be a summary of all channels recorded. | Hy, Hz, T]"    |
+       | **Units**: None                              | Dropped channels will be recorded in Run      |                |
+       |                                              | metadata.                                     |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name list                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`comments`
 ~~~~~~~~~~~~~~~~
@@ -116,21 +59,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **comments**                                 | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments on the station    | Pipeline near  |
-       |                                              | that would be important for a  | by.            |
-       | **Units**: None                              | user.                          |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments on the station.                  | 5 runs         |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`data_type`
 ~~~~~~~~~~~~~~~~~
@@ -139,44 +82,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_type**                                | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | All types of data recorded by  | BBMT           |
-       |                                              | the station. If multiple types |                |
-       | **Units**: None                              | input as a comma separated     |                |
-       |                                              | list. Options -->              |                |
-       | **Type**: String                             | [RMT; AMT; BBMT; LPMT]         |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-	   
-:navy:`fdsn.identifier`
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **fdsn.identifier**                          | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Station name that is archived  | MT201          |
-       |                                              | {a-z;A-Z;0-9.  For IRIS this   |                |
-       | **Units**: None                              | is a 5 character String.       |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Alpha Numeric                     |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_type**                                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Type of data recorded. If multiple types      | BBMT           |
+       |                                              | input as a comma separated list.              |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`geographic_name`
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -185,21 +105,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **geographic_name**                          | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Closest geographic name to the | Kelly, YK      |
-       |                                              | station, or a location         | or             |
-       | **Units**: None                              | description unique to the      | Three Elms     |
-       |                                              | station                        |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **geographic_name**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Closest geographic name to the station,       | "Whitehorse,   |
+       |                                              | usually a city, but could be another common   | YK"            |
+       | **Units**: None                              | geographic location.                          |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`id`
 ~~~~~~~~~~
@@ -208,112 +128,136 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **id**                                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Station ID name.  This should  | MT001          |
-       |                                              | be an alpha numeric name that  |                |
-       | **Units**: None                              | is typically 5-6 characters    |                |
-       |                                              | long.  Commonly the project    |                |
-       | **Type**: String                             | name in 2 or 3 letters and     |                |
-       |                                              | the station number.            |                |
-       | **Style**: Alpha Numeric                     |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **id**                                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Station ID name.  This should be an alpha     | MT001          |
+       |                                              | numeric name that is typically 5-6 characters |                |
+       | **Units**: None                              | long.  Commonly the project name in 2 or 3    |                |
+       |                                              | letters and the station number.               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.declination.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.declination.comments**            | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments on declination    | Different than |
-       |                                              | that are important to an end   | recorded       |
-       | **Units**: None                              | user.                          | declination    |
-       |                                              |                                | from data      |
-       | **Type**: String                             |                                | logger.        |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`location.declination.model`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`run_list`
+~~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.declination.model**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the geomagnetic        | WMM-2016       |
-       |                                              | reference model as             |                |
-       | **Units**: None                              | model_name-YYYY.               |                |
-       |                                              | Model options ->               |                |
-       | **Type**: String                             | [EMAG2; EMM; HDGM; IGRF; WMM]  |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **run_list**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of runs recorded by the station. Should  | "[ mt001a,     |
+       |                                              | be a summary of all runs recorded.            | mt001b, mt001c |
+       | **Units**: None                              |                                               | ]"             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name list                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`location.declination.value`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.declination.value**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Declination angle relative to  | 12.3           |
-       |                                              | geographic north positive      |                |
-       | **Units**: decimal degrees                   | clockwise estimated from       |                |
-       |                                              | location and geomagnetic       |                |
-       | **Type**: Float                              | model.                         |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`location.elevation`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`fdsn.id`
+~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.elevation**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Elevation of station location  | 123.4          |
-       |                                              | in datum specified at survey   |                |
-       | **Units**: meters                            | level.                         |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.id**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.network`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.network**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.channel_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.channel_code**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.new_epoch`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
+       |                                              | created or not.                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: boolean                            |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`location.latitude`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -322,21 +266,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.latitude**                        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Latitude of station location   | 23.134         |
-       |                                              | in datum specified at survey   |                |
-       | **Units**: decimal degrees                   | level.                         |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.latitude**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Latitude of location in datum specified at    | 23.134         |
+       |                                              | survey level.                                 |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`location.longitude`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -345,21 +289,159 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **location.longitude**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Longitude of station location  | 14.23          |
-       |                                              | in datum specified at survey   |                |
-       | **Units**: decimal degrees                   | level.                         |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.longitude**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Longitude of location in datum specified at   | 14.23          |
+       |                                              | survey level.                                 |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.elevation`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.elevation**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Elevation of location in datum specified at   | 123.4          |
+       |                                              | survey level.                                 |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.declination.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.declination.comments**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments on declination                   | estimated from |
+       |                                              |                                               | WMM 2016       |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.declination.model`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.declination.model**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Geomagnetic reference model used to calculate | WMM-16         |
+       |                                              | declination plus the year estimated.          |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`location.declination.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **location.declination.value**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Geomagnetic declination angle relative to     | 12.3           |
+       |                                              | geographic north positive clockwise.          |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author name, should be full first and last    | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments**                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`orientation.method`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -368,21 +450,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **orientation.method**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Method for orienting station   | compass        |
-       |                                              | channels.  Options:            |                |
-       | **Units**: None                              | [compass; GPS; theodolite;     |                |
-       |                                              | electric_compass ]             |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **orientation.method**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Method for orienting station layout.          | compass        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`orientation.reference_frame`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -391,67 +473,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **orientation.reference_frame**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Reference frame for station    | geomagnetic    |
-       |                                              | layout.  There are only 2      |                |
-       | **Units**: None                              | options geographic and         |                |
-       |                                              | geomagnetic.  Both assume a    |                |
-       | **Type**: String                             | right-handed coordinate system |                |
-       |                                              | with North=0                   |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`orientation.transformed_reference_frame`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **orientation.transformed_reference_frame**  | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Reference frame rotation angel | 10             |
-       |                                              | relative to                    |                |
-       | **Units**: None                              | orientation.reference_frame    |                |
-       |                                              | assuming positive clockwise.   |                |
-       | **Type**: Float                              | Should only be used if data    |                |
-       |                                              | are rotated.                   |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`provenance.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.comments**                      | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments on provenance of  | From a         |
-       |                                              | the data.                      | graduated      |
-       | **Units**: None                              |                                | graduate       |
-       |                                              |                                | student.       |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **orientation.reference_frame**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Reference frame for station layout.  There    | geomagnetic    |
+       |                                              | are only 2 options geographic and             |                |
+       | **Units**: None                              | geomagnetic.  Both assume a right-handed      |                |
+       |                                              | coordinate system with North=0 E=90 and       |                |
+       | **Type**: string                             | vertical positive downward.                   |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.creation_time`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -460,21 +496,44 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.creation_time**                 | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Date and time the file was     | 2020-02-08 T12:|
-       |                                              | created.                       | 23:40.324600   |
-       | **Units**: None                              |                                | +00:00         |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Date Time                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.creation_time**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time the file was created.           | 2020-02-08T12:2|
+       |                                              |                                               | 3:40.324600+00:|
+       | **Units**: None                              |                                               | 00             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: date time                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments on provenance of the data.       | all good       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.log`
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -483,21 +542,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.log**                           | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | A history of any changes made  | 2020-02-10     |
-       |                                              | to the data.                   | T14:24:45+00:00|
-       | **Units**: None                              |                                | updated station|
-       |                                              |                                | metadata.      |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.log**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-10T14:2|
+       |                                              |                                               | 4:45+00:00     |
+       | **Units**: None                              |                                               | updated        |
+       |                                              |                                               | metadata       |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.software.author`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -506,44 +565,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.software.author**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Author of the software used to | programmer 01  |
-       |                                              | create the data files.         |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`provenance.software.name`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.software.name**                 | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the software used to   | mtrules        |
-       |                                              | create data files              |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.author**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author of the software                        | Neo            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.software.version`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -552,21 +588,44 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.software.version**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Version of the software used   | 12.01a         |
-       |                                              | to create data files           |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.version**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software version                              | 12.01a         |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.software.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.software.name**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software name                                 | mtrules        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.submitter.author`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -575,44 +634,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.submitter.author**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the person submitting  | person name    |
-       |                                              | the data to the archive.       |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`provenance.submitter.email`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.submitter.email**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Email of the person submitting | mt.guru@em.org |
-       |                                              | the data to the archive.       |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Email                             |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author name, should be full first and last    | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`provenance.submitter.organization`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -621,21 +657,44 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.submitter.organization**        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the organization that  | MT Gurus       |
-       |                                              | is submitting data to the      |                |
-       | **Units**: None                              | archive.                       |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.organization**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.submitter.email`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.submitter.email**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`time_period.end`
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -644,21 +703,21 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **time_period.end**                          | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | End date and time of           | 2020-02-04 T16:|
-       |                                              | collection in UTC.             | 23:45.453670   |
-       | **Units**: None                              |                                | +00:00         |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Date Time                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.end**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
+       |                                              |                                               | 3:45.453670+00:|
+       | **Units**: None                              |                                               | 00             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: time                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`time_period.start`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -667,63 +726,18 @@ Station Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **time_period.start**                        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Start date and time of         | 2020-02-01 T09:|
-       |                                              | collection in UTC.             | 23:45.453670   |
-       | **Units**: None                              |                                | +00:00         |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Date Time                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-
-Example Station JSON
---------------------
-
-::
-
-   {    "station": {
-           "acquired_by": {
-               "author": "mt",
-               "comments": null},
-           "channel_layout": "L",
-           "channels_recorded": "Ex, Ey, Bx, By",
-           "comments": null,
-           "data_type": "MT",
-           "geographic_name": "Whitehorse, Yukon",
-           "id": "MT012",
-           "location": {
-               "latitude": 10.0,
-               "longitude": -112.98,
-               "elevation": 1234.0,
-               "declination": {
-                   "value": 12.3,
-                   "comments": null,
-                   "model": "WMM-2016"}},
-           "orientation": {
-               "method": "compass",
-               "reference_frame": "geomagnetic"},
-           "provenance": {
-               "comments": null,
-               "creation_time": "1980-01-01T00:00:00+00:00",
-               "log": null,
-               "software": {
-                   "author": "test",
-                   "version": "1.0a",
-                   "name": "name"},
-               "submitter": {
-                   "author": "name",
-                   "organization": null,
-                   "email": "test@here.org"}},
-           "time_period": {
-               "end": "1980-01-01T00:00:00+00:00",
-               "start": "1982-01-01T16:45:15+00:00"}
-            }
-   }
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.start**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
+       |                                              |                                               | 3:45.453670+00:|
+       | **Units**: None                              |                                               | 00             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: time                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+

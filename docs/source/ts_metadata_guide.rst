@@ -156,12 +156,14 @@ transformation angles at the channel level in
 transformed reference frame can then be recorded in
 ``station.orientation.transformed_reference_frame``.
 
-.. figure:: images/reference_frame.svg
+.. _reference_frame:
+.. figure:: images/reference_frame.png
 
    Diagram showing a right-handed geographic coordinate system. The
    azimuth is measured positive clockwise along the horizontal axis and
    tilt is measured from the vertical axis with positive down = 0,
    positive up = 180, and horizontal = 90.
+	
 
 Units
 -----
@@ -267,7 +269,7 @@ Metadata Definitions
 ======================
 
 .. toctree::
-	:maxdepth: 3
+	:maxdepth: 1
 	:caption: Time Series Metadata Standards
 
 	ts_survey
@@ -276,7 +278,11 @@ Metadata Definitions
 	ts_auxiliary
 	ts_electric
 	ts_magnetic
-	ts_filters
+	ts_coefficient_filter
+	ts_f_i_r_filter
+	ts_frequency_response_table_filter
+	ts_pole_zero_filter
+	ts_time_delay_filter
 
 .. _appendix:
 
@@ -324,7 +330,7 @@ Directions
 .. container::
    :name: directions
 	
-   .. table:: The convention for many MT setups follows the right-hand-rule (Figure `2 <#fig:reference>`__) with X in the northern direction, Y in the eastern direction, and Z positive down. If the setup has multiple channels in the same direction, they can be labeled with a Number. For instance, if you measure multiple electric fields Ex01, Ey01, Ex02, Ey02.
+   .. table:: The convention for many MT setups follows the right-hand-rule ( :ref:`Figure 2 <reference_frame>`.) with X in the northern direction, Y in the eastern direction, and Z positive down. If the setup has multiple channels in the same direction, they can be labeled with a Number. For instance, if you measure multiple electric fields Ex01, Ey01, Ex02, Ey02.
 
       ============= ===================
       **Direction** **Definition**

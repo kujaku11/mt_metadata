@@ -8,7 +8,10 @@ Installation
 Stable release
 --------------
 
-To install MTH5, run this command in your terminal:
+PIP
+^^^^
+
+To install `mt_metadata`, run this command in your terminal:
 
 .. code-block:: console
 
@@ -22,8 +25,24 @@ you through the process.
 .. _pip: https://pip.pypa.io
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
-.. note:: This will not currently work, only a source download is available.
+Conda-Forge
+^^^^^^^^^^^^^
+To install `mt_metadata`, run either of these commands in your Conda terminal (`<https://conda-forge.org/#about>`_):
 
+.. code-block:: console
+    
+	$ conda install -c conda-forge mt_metadata
+
+or 
+
+.. code-block:: console
+
+    $ conda config --add channels conda-forge
+    $ conda config --set channel_priority strict
+    $ conda install mt_metadata 
+
+
+.. note:: If you are updating `mt_metadata` you should use the same installer as your previous version or remove the current version and do a fresh install. 
 
 From sources
 ------------

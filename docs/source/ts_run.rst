@@ -2,67 +2,9 @@
 .. role:: blue
 .. role:: navy
 
-
 Run
 ===
 
-.. contents::  :local:
-
-A run represents data collected at a single station with a single
-sampling rate. If the dipole length or other such station parameters are
-changed between runs, this would require adding a new run. If the
-station is relocated then a new station should be created. If a run has
-channels that drop out, the start and end period will be the minimum
-time and maximum time for all channels recorded.
-
-Run Attributes
----------------
-
-:navy:`acquired_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **acquired_by.author**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the person or persons  | M.T. Nubee     |
-       |                                              | who acquired the run data.     |                |
-       | **Units**: None                              | This can be different from the |                |
-       |                                              | station.acquired_by and        |                |
-       | **Type**: String                             | survey.acquired_by.            |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`acquired_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **acquired_by.comments**                     | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments about who         | Group of       |
-       |                                              | acquired the data.             | undergraduates.|
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
 
 :navy:`channels_recorded_auxiliary`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,21 +13,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **channels_recorded_auxiliary**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | List of auxiliary channels     |  battery       |
-       |                                              | recorded.                      |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: name list                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channels_recorded_auxiliary**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of auxiliary channels recorded           | [T]            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name list                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`channels_recorded_electric`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,21 +36,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **channels_recorded_electric**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | List of electric channels      |  Ey            |
-       |                                              | recorded.                      |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: name list                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channels_recorded_electric**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of electric channels recorded            | "[Ex , Ey]"    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name list                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`channels_recorded_magnetic`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,21 +59,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **channels_recorded_magnetic**               | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | List of magnetic channels      |  Hz            |
-       |                                              | recorded.                      |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: name list                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channels_recorded_magnetic**               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | List of magnetic channels recorded            | "[Hx , Hy ,    |
+       |                                              |                                               | Hz]"           |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name list                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`comments`
 ~~~~~~~~~~~~~~~~
@@ -140,390 +82,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **comments**                                 | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments on the run that   | Badger attacked|
-       |                                              | would be important for a user. | Ex.            |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-
-:navy:`data_logger.firmware.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.firmware.author**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Author of the firmware that    | instrument     |
-       |                                              | runs the data logger.          | engineer       |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.firmware.name`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.firmware.name**                | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Name of the firmware the data  | mtrules        |
-       |                                              | logger runs.                   |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.firmware.version`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.firmware.version**             | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Version of the firmware that   | 12.01a         |
-       |                                              | runs the data logger.          |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.id`
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.id**                           | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Instrument ID Number can be    | mt01           |
-       |                                              | serial Number or a designated  |                |
-       | **Units**: None                              | ID.                            |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.manufacturer`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.manufacturer**                 | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of person or company that | MT Gurus       |
-       |                                              | manufactured the data logger.  |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.model`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.model**                        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Model version of the data      | falcon5        |
-       |                                              | logger.                        |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.power_source.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.power_source.comments**        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comment about the power    | Used a solar   |
-       |                                              | source.                        | panel and it   |
-       | **Units**: None                              |                                | was cloudy.    |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Name                              |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.power_source.id`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.power_source.id**              | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Battery ID or name             | battery01      |
-       |                                              |                                |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: name                              |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.power_source.type`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.power_source.type**            | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Battery type                   | pb-acid gel    |
-       |                                              |                                | cell           |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: name                              |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.power_source.voltage.end`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.power_source.voltage.end**     | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | End voltage                    | 12.1           |
-       |                                              |                                |                |
-       | **Units**: volts                             |                                |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.power_source.voltage.start`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.power_source.voltage.start**   | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Starting voltage               | 14.3           |
-       |                                              |                                |                |
-       | **Units**: volts                             |                                |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.timing_system.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.timing_system.comments**       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comment on timing system   | GPS locked with|
-       |                                              | that might be useful for the   | internal quartz|
-       | **Units**: None                              | user.                          | clock          |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.timing_system.drift`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.timing_system.drift**          | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Estimated drift of the timing  | 0.001          |
-       |                                              | system.                        |                |
-       | **Units**: seconds                           |                                |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.timing_system.type`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.timing_system.type**           | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Type of timing system used in  | GPS            |
-       |                                              | the data logger.               |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.timing_system.uncertainty`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.timing_system.uncertainty**    | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Estimated uncertainty of the   | 0.0002         |
-       |                                              | timing system.                 |                |
-       | **Units**: seconds                           |                                |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`data_logger.type`
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_logger.type**                         | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Type of data logger            | broadband      |
-       |                                              |                                | 32-bit         |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments on the run.                      | cows chewed    |
+       |                                              |                                               | cables         |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`data_type`
 ~~~~~~~~~~~~~~~~~
@@ -532,44 +105,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_type**                                | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Type of data recorded for this | BBMT           |
-       |                                              | run.  Options ->               |                |
-       | **Units**: None                              | [RMT; AMT; BBMT; LPMT]         |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`fdsn.new_epoch`
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **data_type**                                | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Boolean if a new epoch should  | False          |
-       |                                              | be made.  An epoch is a run    |                |
-       | **Units**: None                              | and if parameters of the run   |                |
-       |                                              | changes  set to True           |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Controlled Vocabulary             |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+	   
-
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_type**                                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Type of data recorded for this run.           | BBMT           |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: controlled vocabulary             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`id`
 ~~~~~~~~~~
@@ -578,136 +128,504 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **id**                                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Name of the run.  Should be    | MT302b         |
-       |                                              | station name followed by an    |                |
-       | **Units**: None                              | alphabet letter for the run.   |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Alpha Numeric                     |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **id**                                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Run ID should be station name followed by a   | 001            |
+       |                                              | number or character.  Characters should only  |                |
+       | **Units**: None                              | be used if the run number is small, if the    |                |
+       |                                              | run number is high consider using digits with |                |
+       | **Type**: string                             | zeros.  For example if you have 100 runs the  |                |
+       |                                              | run ID could be 001 or {station}001.          |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`metadata_by.author`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 30 45 15
-
-       +----------------------------------------------+--------------------------------+----------------+
-       | **metadata_by.author**                       | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Person who input the metadata. | Metadata Zen   |
-       |                                              |                                |                |
-       | **Units**: None                              |                                |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
-
-:navy:`metadata_by.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`sample_rate`
+~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **metadata_by.comments**                     | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the         | Undergraduate  |
-       |                                              | metadata that would be useful  | did the input. |
-       | **Units**: None                              | for the user.                  |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **sample_rate**                              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Digital sample rate for the run               | 100            |
+       |                                              |                                               |                |
+       | **Units**: samples per second                |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.comments`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`fdsn.id`
+~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.comments**                      | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | Any comments on provenance of  | all good       |
-       |                                              | the data that would be useful  |                |
-       | **Units**: None                              | to users.                      |                |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.id**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`provenance.log`
+:navy:`fdsn.network`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.network**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.channel_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.channel_code**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.new_epoch`
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **provenance.log**                           | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :blue:`False`                  | A history of changes made to   | 2020-02-10     |
-       |                                              | the data.                      | T14:24:45      |
-       | **Units**: None                              |                                | +00:00 updated |
-       |                                              |                                | metadata       |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Free Form                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
+       |                                              | created or not.                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: boolean                            |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`sampling_rate`
-~~~~~~~~~~~~~~~~~~~~~
+:navy:`data_logger.id`
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **sampling_rate**                            | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Sampling rate for the recorded | 100            |
-       |                                              | run.                           |                |
-       | **Units**: samples per second                |                                |                |
-       |                                              |                                |                |
-       | **Type**: Float                              |                                |                |
-       |                                              |                                |                |
-       | **Style**: Number                            |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.id**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       |                                              | a designated ID.                              |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.manufacturer`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.manufacturer**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.type`
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.type**                         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
+       |                                              |                                               | 32-bit         |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.model`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.model**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.comments**       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comment on the timing system.             | GPS locked with|
+       |                                              |                                               | internal quartz|
+       | **Units**: None                              |                                               | clock          |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.drift`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.drift**          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Estimated drift of the timing system.         | 0.001          |
+       |                                              |                                               |                |
+       | **Units**: seconds                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.type`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.type**           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Type of timing system.                        | GPS            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.timing_system.uncertainty`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.timing_system.uncertainty**    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Estimated uncertainty of the timing system.   | 0.0002         |
+       |                                              |                                               |                |
+       | **Units**: seconds                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.firmware.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.firmware.author**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author of the software                        | Neo            |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.firmware.version`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.firmware.version**             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software version                              | 12.01a         |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.firmware.name`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.firmware.name**                | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Software name                                 | mtrules        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.type`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.type**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Description of battery type.                  | pb-acid gel    |
+       |                                              |                                               | cell           |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.id`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.id**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | battery id                                    | battery01      |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.voltage.start`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.voltage.start**   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Starting voltage                              | 14.3           |
+       |                                              |                                               |                |
+       | **Units**: volts                             |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.voltage.end`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.voltage.end**     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Ending voltage                                | 12.1           |
+       |                                              |                                               |                |
+       | **Units**: volts                             |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_logger.power_source.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_logger.power_source.comments**        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments about the battery.               | discharged too |
+       |                                              |                                               | quickly        |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`time_period.end`
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -716,21 +634,21 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **time_period.end**                          | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | End date and time of           | 2020-02-04 T16:|
-       |                                              | collection in UTC.             | 23:45.453670   |
-       | **Units**: None                              |                                | +00:00         |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Date Time                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.end**                          | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
+       |                                              |                                               | 3:45.453670+00:|
+       | **Units**: None                              |                                               | 00             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: time                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`time_period.start`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -739,61 +657,156 @@ Run Attributes
 
    .. table::
        :class: tight-table
-       :widths: 30 45 15
+       :widths: 45 45 15
 
-       +----------------------------------------------+--------------------------------+----------------+
-       | **time_period.start**                        | **Description**                | **Example**    |
-       +==============================================+================================+================+
-       | **Required**: :red:`True`                    | Start date and time of         | 2020-02-01 T09:|
-       |                                              | collection in UTC.             | 23:45.453670   |
-       | **Units**: None                              |                                | +00:00         |
-       |                                              |                                |                |
-       | **Type**: String                             |                                |                |
-       |                                              |                                |                |
-       | **Style**: Date Time                         |                                |                |
-       |                                              |                                |                |
-       |                                              |                                |                |
-       +----------------------------------------------+--------------------------------+----------------+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **time_period.start**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
+       |                                              |                                               | 3:45.453670+00:|
+       | **Units**: None                              |                                               | 00             |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: time                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
 
+:navy:`acquired_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Example Run JSON
-----------------
+.. container::
 
-::
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
 
-   {
-       "run": {
-           "acquired_by.author": "Magneto",
-           "acquired_by.comments": "No hands all telekinesis.",
-           "channels_recorded_auxiliary": ["temperature", "battery"],
-           "channels_recorded_electric": ["Ex", "Ey"],
-           "channels_recorded_magnetic": ["Bx", "By", "Bz"],
-           "comments": "Good solar activity",
-           "data_logger.firmware.author": "Engineer 01",
-           "data_logger.firmware.name": "MTDL",
-           "data_logger.firmware.version": "12.23a",
-           "data_logger.id": "DL01",
-           "data_logger.manufacturer": "MT Gurus",
-           "data_logger.model": "Falcon 7",
-           "data_logger.power_source.comments": "Used solar panel but cloudy",
-           "data_logger.power_source.id": "Battery_07",
-           "data_logger.power_source.type": "Pb-acid gel cell 72 Amp-hr",
-           "data_logger.power_source.voltage.end": 14.1,
-           "data_logger.power_source.voltage.start": 13.7,
-           "data_logger.timing_system.comments": null,
-           "data_logger.timing_system.drift": 0.000001,
-           "data_logger.timing_system.type": "GPS + internal clock",
-           "data_logger.timing_system.uncertainty": 0.0000001,
-           "data_logger.type": "Broadband 32-bit 5 channels",
-           "data_type": "BBMT",
-           "fdsn.new_epoch": "False",
-           "id": "YKN201b",
-           "metadata_by.author": "Graduate Student",
-           "metadata_by.comments": "Lazy",
-           "provenance.comments": "Data found on old hard drive",
-           "provenance.log": "2020-01-02 Updated metadata from old records",
-           "sampling_rate": 256,
-           "time_period.end": "1999-06-01T15:30:00+00:00",
-           "time_period.start": "1999-06-5T20:45:00+00:00"
-       }
-   }
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author name, should be full first and last    | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acquired_by.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acquired_by.comments**                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.author**                       | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Author name, should be full first and last    | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`metadata_by.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **metadata_by.comments**                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.comments**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Any comments on provenance of the data.       | all good       |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`provenance.log`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **provenance.log**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | A history of changes made to the data.        | 2020-02-10T14:2|
+       |                                              |                                               | 4:45+00:00     |
+       | **Units**: None                              |                                               | updated        |
+       |                                              |                                               | metadata       |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+

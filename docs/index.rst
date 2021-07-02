@@ -1,9 +1,11 @@
 Welcome to MT Metadata documentation!
 ======================================
 
+MT Metadata is meant to be a tool to standardize both time series and transfer function metadata for magnetotelluric data.  
+
 .. toctree::
-    :maxdepth: 2
-    :caption: Contents:
+    :maxdepth: 1
+    :caption: General Information
 
     readme
     installation
@@ -14,13 +16,13 @@ Welcome to MT Metadata documentation!
     conventions
 	
 .. toctree::
-	:maxdepth: 2
-	:caption: Basics
+	:maxdepth: 1
+	:caption: Basics of Metadata Structure
 	
 	source/structure
 	
 .. toctree::
-	:maxdepth: 4
+	:maxdepth: 1
 	:caption: Time Series Metadata Standards
 
 	source/ts_metadata_guide
@@ -31,7 +33,7 @@ Welcome to MT Metadata documentation!
 	
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Packages
 	
     source/modules
