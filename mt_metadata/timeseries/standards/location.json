@@ -4,7 +4,7 @@
         "required": true,
         "style": "number",
         "units": "degrees",
-        "description": "latitude of location in datum specified at survey level",
+        "description": "Latitude of location in datum specified at survey level.",
         "options": [],
         "alias": [
             "lat"
@@ -16,7 +16,7 @@
         "required": true,
         "style": "number",
         "units": "degrees",
-        "description": "longitude of location in datum specified at survey level",
+        "description": "Longitude of location in datum specified at survey level.",
         "options": [],
         "alias": [
             "lon",
@@ -28,8 +28,8 @@
         "type": "float",
         "required": true,
         "style": "number",
-        "units": "degrees",
-        "description": "elevation of location in datum specified at survey level",
+        "units": "meters",
+        "description": "Elevation of location in datum specified at survey level.",
         "options": [],
         "alias": [
             "elev"

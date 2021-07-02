@@ -4,7 +4,7 @@
         "required": true,
         "style": "alpha numeric",
         "units": null,
-        "description": "Alphanumeric survey ID that will be specific to the archive",
+        "description": "Alpha numeric ID that will be unique for archiving.",
         "options": [],
         "alias": [],
         "example": "EMT20"
@@ -14,7 +14,7 @@
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "any comments about the survey",
+        "description": "Any comments about the survey.",
         "options": [],
         "alias": [],
         "example": "long survey"
@@ -24,7 +24,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "country(s) countries survey located in. If multiple input as comma separated names",
+        "description": "Country(s) the survey located in. If multiple input as comma separated names.",
         "options": [],
         "alias": [],
         "example": "\"[USA, Canada]\""
@@ -34,7 +34,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "datum of latitude and longitude coordinates. Should be a well-known datum [ WGS84 ] and will be the reference datum for all location",
+        "description": "Datum of latitude and longitude coordinates. Should be a well-known datum, such as WGS84, and will be the reference datum for all locations.  This is important for the user, they need to make sure all coordinates in the survey and child items (i.e. stations, channels) are referenced to this datum.",
         "options": [
             "WGS84",
             "NAD27",
@@ -52,7 +52,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "closest geographic reference to survey",
+        "description": "Closest geographic reference to survey, usually a city but could be a landmark or some other common geographic reference point.",
         "options": [],
         "alias": [],
         "example": "Yukon"
@@ -62,7 +62,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "descriptive name of the survey",
+        "description": "Descriptive name of the survey.",
         "options": [],
         "alias": [],
         "example": "MT Characterization of Yukon Terrane"
@@ -72,7 +72,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "alphanumeric name for the project e.g USGS-GEOMAG",
+        "description": "Alpha numeric name for the project e.g USGS-GEOMAG.",
         "options": [],
         "alias": [],
         "example": "YUTOO"
@@ -82,7 +82,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled",
+        "description": "Summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled.",
         "options": [],
         "alias": [],
         "example": "long project of characterizing mineral resources in Yukon"
@@ -92,7 +92,7 @@
         "required": true,
         "style": "date",
         "units": null,
-        "description": "end date of the survey in UTC",
+        "description": "End date of the survey in UTC.",
         "options": [],
         "alias": [],
         "example": "1/2/1995"
@@ -102,7 +102,7 @@
         "required": true,
         "style": "date",
         "units": null,
-        "description": "start date of the survey in UTC",
+        "description": "Start date of the survey in UTC.",
         "options": [],
         "alias": [],
         "example": "1/2/2020"

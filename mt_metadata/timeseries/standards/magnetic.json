@@ -4,7 +4,7 @@
         "required": false,
         "style": "number",
         "units": "nt",
-        "description": "minimum magnetic field strength at beginning of measurement",
+        "description": "Minimum magnetic field strength at beginning of measurement.",
         "options": [],
         "alias": [],
         "example": "40345.1"
@@ -14,7 +14,7 @@
         "required": false,
         "style": "number",
         "units": "nt",
-        "description": "minimum magnetic field strength at end of measurement",
+        "description": "Minimum magnetic field strength at end of measurement.",
         "options": [],
         "alias": [],
         "example": "50453.2"
@@ -24,7 +24,7 @@
         "required": false,
         "style": "number",
         "units": "nt",
-        "description": "maximum magnetic field strength at beginning of measurement",
+        "description": "Maximum magnetic field strength at beginning of measurement.",
         "options": [],
         "alias": [],
         "example": "34565.2"
@@ -34,7 +34,7 @@
         "required": false,
         "style": "number",
         "units": "nt",
-        "description": "maximum magnetic field strength at end of measurement",
+        "description": "Maximum magnetic field strength at end of measurement.",
         "options": [],
         "alias": [],
         "example": "34526.1"

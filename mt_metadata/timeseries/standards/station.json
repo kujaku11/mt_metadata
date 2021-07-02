@@ -4,7 +4,7 @@
         "required": false,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "how the station was laid out",
+        "description": "How the station channels were laid out.",
         "options": [
             "L",
             "X",
@@ -18,7 +18,7 @@
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "list of components recorded by the station. Should be a summary of all channels recorded dropped channels will be recorded in Run metadata.",
+        "description": "List of components recorded by the station. Should be a summary of all channels recorded. Dropped channels will be recorded in Run metadata.",
         "options": [
             "Ex",
             "Ey",
@@ -37,7 +37,7 @@
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "any comments on the station",
+        "description": "Any comments on the station.",
         "options": [],
         "alias": [],
         "example": "5 runs"
@@ -47,7 +47,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "type of data recorded. If multiple types input as a comma separated list",
+        "description": "Type of data recorded. If multiple types input as a comma separated list.",
         "options": [
             "RMT",
             "AMT",
@@ -64,7 +64,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "closest geographic name to the station",
+        "description": "Closest geographic name to the station, usually a city, but could be another common geographic location.",
         "options": [],
         "alias": [],
         "example": "\"Whitehorse, YK\""
@@ -84,7 +84,7 @@
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "list of runs recorded by the station. Should be a summary of all runs recorded",
+        "description": "List of runs recorded by the station. Should be a summary of all runs recorded.",
         "options": [
             "a",
             "b",

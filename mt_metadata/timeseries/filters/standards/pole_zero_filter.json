@@ -4,7 +4,7 @@
         "required": true,
         "style": "number list",
         "units": null,
-        "description": "The complex-valued poles associated with the filter stage response",
+        "description": "The complex-valued poles associated with the filter response.",
         "options": [],
         "alias": [],
         "example": "\"[-1/4., -0.1+j*0.3, -0.1-j*0.3]\""
@@ -14,7 +14,7 @@
         "required": true,
         "style": "number list",
         "units": null,
-        "description": "The zeros associated with the filter stage response",
+        "description": "The complex-valued zeros associated with the filter response.",
         "options": [],
         "alias": [],
         "example": "\"[0.0, ]\""
@@ -24,7 +24,7 @@
         "required": true,
         "style": "number",
         "units": null,
-        "description": "The scale factor to apply to the monic PZ response",
+        "description": "The scale factor to apply to the monic response.",
         "options": [],
         "alias": [],
         "example": "\"[-1000.1]\""

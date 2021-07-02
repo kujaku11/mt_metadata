@@ -4,7 +4,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "author name",
+        "description": "Author name, should be full first and last name.",
         "options": [],
         "alias": [],
         "example": "person name"
@@ -14,7 +14,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "organization name",
+        "description": "Organization full name",
         "options": [],
         "alias": [],
         "example": "mt gurus"
@@ -24,7 +24,7 @@
         "required": true,
         "style": "email",
         "units": null,
-        "description": "email of the contact person",
+        "description": "Email of the contact person",
         "options": [],
         "alias": [],
         "example": "mt.guru@em.org"
@@ -34,7 +34,7 @@
         "required": false,
         "style": "email",
         "units": null,
-        "description": "email of the contact person",
+        "description": "Any comments about the person",
         "options": [],
         "alias": [],
         "example": "expert digger"

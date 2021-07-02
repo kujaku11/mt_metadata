@@ -4,17 +4,17 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "author of the software",
+        "description": "Author of the software",
         "options": [],
         "alias": [],
-        "example": "nerd alert"
+        "example": "Neo"
     },
     "version": {
         "type": "string",
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "software version",
+        "description": "Software version",
         "options": [],
         "alias": [],
         "example": "12.01a"
@@ -24,7 +24,7 @@
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "software name",
+        "description": "Software name",
         "options": [],
         "alias": [],
         "example": "mtrules"

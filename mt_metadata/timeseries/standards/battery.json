@@ -4,7 +4,7 @@
         "required": false,
         "style": "name",
         "units": null,
-        "description": "battery type",
+        "description": "Description of battery type.",
         "options": [],
         "alias": [],
         "example": "pb-acid gel cell"
@@ -24,7 +24,7 @@
         "required": false,
         "style": "number",
         "units": "volts",
-        "description": "starting voltage",
+        "description": "Starting voltage",
         "options": [],
         "alias": [],
         "example": "14.3"
@@ -34,7 +34,7 @@
         "required": false,
         "style": "number",
         "units": "volts",
-        "description": "end voltage",
+        "description": "Ending voltage",
         "options": [],
         "alias": [],
         "example": "12.1"
@@ -44,9 +44,9 @@
         "required": false,
         "style": "name",
         "units": null,
-        "description": "any comment about the battery",
+        "description": "Any comments about the battery.",
         "options": [],
         "alias": [],
-        "example": "this is a comment"
+        "example": "discharged too quickly"
     }
 }

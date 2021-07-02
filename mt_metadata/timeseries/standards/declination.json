@@ -4,7 +4,7 @@
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "any comments on declination",
+        "description": "Any comments on declination",
         "options": [],
         "alias": [],
         "example": "estimated from WMM 2016"
@@ -14,7 +14,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "geomagnetic reference model used to calculate declination plus the year estimated.",
+        "description": "Geomagnetic reference model used to calculate declination plus the year estimated.",
         "options": [
             "EMAG2",
             "EMM",
@@ -32,7 +32,7 @@
         "required": true,
         "style": "number",
         "units": "degrees",
-        "description": "declination angle relative to geographic north positive clockwise",
+        "description": "Geomagnetic declination angle relative to geographic north positive clockwise.",
         "options": [],
         "alias": [],
         "example": "12.3"

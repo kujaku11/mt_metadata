@@ -4,7 +4,7 @@
         "required": true,
         "style": "time",
         "units": null,
-        "description": "end date and time of collection in UTC",
+        "description": "End date and time of collection in UTC.",
         "options": [],
         "alias": [],
         "example": "2020-02-04T16:23:45.453670+00:00"
@@ -14,7 +14,7 @@
         "required": true,
         "style": "time",
         "units": null,
-        "description": "start date and time of collection in UTC",
+        "description": "Start date and time of collection in UTC.",
         "options": [],
         "alias": [],
         "example": "2020-02-01T09:23:45.453670+00:00"

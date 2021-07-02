@@ -4,7 +4,7 @@
         "required": true,
         "style": "url",
         "units": null,
-        "description": "full url of the doi number",
+        "description": "Full url to the DOI.",
         "options": [],
         "alias": [],
         "example": "http://doi.###"

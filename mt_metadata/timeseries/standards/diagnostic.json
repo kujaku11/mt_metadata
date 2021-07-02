@@ -4,7 +4,7 @@
         "required": false,
         "style": "number",
         "units": null,
-        "description": "end value of a diagnostic measurement",
+        "description": "Ending value of a diagnostic measurement.",
         "options": [],
         "alias": [],
         "example": "10"
@@ -14,7 +14,7 @@
         "required": false,
         "style": "number",
         "units": null,
-        "description": "start value of a diagnostic measurement",
+        "description": "Starting value of a diagnostic measurement.",
         "options": [],
         "alias": [],
         "example": "12.3"

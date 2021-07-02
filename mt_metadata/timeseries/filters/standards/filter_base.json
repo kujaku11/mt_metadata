@@ -4,7 +4,7 @@
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "name of filter applied or to be applies. If more than one filter input as a comma separated list",
+        "description": "Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
         "options": [],
         "alias": [],
         "example": "\"[counts2mv, lowpass_magnetic]\""
@@ -15,7 +15,7 @@
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "any comments about the channel",
+        "description": "Any comments about the filter.",
         "options": [],
         "alias": [],
         "example": "ambient air temperature"
@@ -26,7 +26,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "type of filter",
+        "description": "Type of filter.",
         "options": [
             "table",
             "zpk",
@@ -44,7 +44,7 @@
         "required": true,
         "style": "alpha numeric",
         "units": null,
-        "description": "name of the input units to the filter. Should be all lowercase and separated with an underscore",
+        "description": "Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
         "options": [],
         "alias": [],
         "example": "count"
@@ -55,7 +55,7 @@
         "required": true,
         "style": "alpha numeric",
         "units": null,
-        "description": "name of the output units.  Should be alpha numeric.",
+        "description": "Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
         "options": [],
         "alias": [],
         "example": "millivolt"
@@ -66,10 +66,10 @@
         "required": false,
         "style": "date",
         "units": null,
-        "description": "latest date of filter calibration",
+        "description": "Most recent date of filter calibration in ISO format of YYY-MM-DD.",
         "options": [],
         "alias": [],
-        "example": "2/1/2020"
+        "example": "2020-01-01"
     }, 
 
     "gain": {

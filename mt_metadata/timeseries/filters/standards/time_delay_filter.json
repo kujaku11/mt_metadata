@@ -3,8 +3,8 @@
         "type": "float",
         "required": true,
         "style": "number",
-        "units": "s",
-        "description": "The delay interval of the filter",
+        "units": "second",
+        "description": "The delay interval of the filter. This should be a single number.",
         "options": [],
         "alias": [],
         "example": "-0.201"

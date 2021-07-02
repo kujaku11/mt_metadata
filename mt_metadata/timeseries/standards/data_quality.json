@@ -4,7 +4,7 @@
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "any warnings about the data that should be noted",
+        "description": "Any warnings about the data that should be noted.",
         "options": [],
         "alias": [],
         "example": "periodic pipeline noise"
