@@ -173,7 +173,6 @@ class FilterBase(Base):
         cutoff
 
         """
-
         
         
         self.name = None
@@ -275,12 +274,16 @@ class FilterBase(Base):
             mapping = cls().obspy_mapping
         kwargs = {}
         for obspy_label, mth5_label in mapping.items():
-            kwargs[mth5_label] = stage.__dict__[obspy_label]
+            try:
+                kwargs[mth5_label] = stage.__dict__[obspy_label]
+            except KeyError:
+                print(f"Key {obspy_label} not found in stage object")
+                raise Exception
 
         return cls(**kwargs)
 
     def complex_response(self, frqs):
-        print("Filter Base Class does not have a complex response defined")
+        print("Filter Base class does not have a complex response defined")
         return None
 
     def generate_frequency_axis(self, sampling_rate, n_observations):
@@ -304,15 +307,20 @@ class FilterBase(Base):
         # else:
         #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
 
-    def plot_complex_response(self, frequency_axis, **kwargs):
-        from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
-
-        complex_response = self.complex_response(frequency_axis)
-        plot_complex_response(frequency_axis, complex_response)
+    #Removed reference to iris_mt_scratch; Delete after issue #37 closed.
+    # def plot_complex_response(self, frequency_axis, **kwargs):
+    #     from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
+    #
+    #     complex_response = self.complex_response(frequency_axis)
+    #     plot_complex_response(frequency_axis, complex_response)
 
     @property
-    def decimation_inactive(self):
-        pass
+    def decimation_active(self):
+        if hasattr(self, "decimation_factor"):
+            if self.decimation_factor!=1.0:
+                return True
+        return False
+
 
     def apply(self, ts):
         data_spectum = ts.fft()
