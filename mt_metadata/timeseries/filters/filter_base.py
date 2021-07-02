@@ -173,8 +173,7 @@ class FilterBase(Base):
         cutoff
 
         """
-        
-        
+
         self.name = None
         self.type = None
         self.units_in = None
@@ -184,10 +183,8 @@ class FilterBase(Base):
         self.comments = None
         self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
         self.gain = 1.0
-        
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
-        
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def obspy_mapping(self):
@@ -207,7 +204,7 @@ class FilterBase(Base):
     @obspy_mapping.setter
     def obspy_mapping(self, obspy_dict):
         """
-        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to 
+        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
         mt_metadata filter objects.
         """
         if not isinstance(obspy_dict, dict):
@@ -235,7 +232,7 @@ class FilterBase(Base):
 
     def get_filter_description(self):
         """
-        
+
         :param filter_type: DESCRIPTION
         :type filter_type: TYPE
         :return: DESCRIPTION
@@ -307,7 +304,7 @@ class FilterBase(Base):
         # else:
         #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
 
-    #Removed reference to iris_mt_scratch; Delete after issue #37 closed.
+    # Removed reference to iris_mt_scratch; Delete after issue #37 closed.
     # def plot_complex_response(self, frequency_axis, **kwargs):
     #     from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
     #
@@ -317,10 +314,9 @@ class FilterBase(Base):
     @property
     def decimation_active(self):
         if hasattr(self, "decimation_factor"):
-            if self.decimation_factor!=1.0:
+            if self.decimation_factor != 1.0:
                 return True
         return False
-
 
     def apply(self, ts):
         data_spectum = ts.fft()

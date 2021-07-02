@@ -42,8 +42,8 @@ class XMLInventoryMTExperiment:
 
     def xml_to_mt(self, inventory_object=None, stationxml_fn=None, mt_fn=None):
         """
-        Read in a StationXML using Obspy :class:`obspy.core.inventory.Inventory` 
-        and convert to an MT :class:`mt_metadata.timeseries.Experiment` 
+        Read in a StationXML using Obspy :class:`obspy.core.inventory.Inventory`
+        and convert to an MT :class:`mt_metadata.timeseries.Experiment`
 
 
         :param inventory_object: inventory object or StationXML file name
@@ -164,9 +164,9 @@ class XMLInventoryMTExperiment:
 
     def add_run(self, xml_station, mt_run, filters_dict):
         """
-        Check to see if channel information already exists in the channel list of 
-        an xml station.  
-        
+        Check to see if channel information already exists in the channel list of
+        an xml station.
+
         .. todo:: Need to make sure the times are updated
 
         :param xml_station: DESCRIPTION

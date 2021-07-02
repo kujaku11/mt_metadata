@@ -33,15 +33,14 @@ obspy_mapping["normalization_factor"] = "normalization_factor"
 
 class PoleZeroFilter(FilterBase):
     def __init__(self, **kwargs):
-        
+
         super().__init__()
         self.type = "zpk"
         self.poles = None
         self.zeros = None
         self.normalization_factor = 1.0
-        
+
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-        
 
         self.obspy_mapping = obspy_mapping
 
@@ -175,22 +174,22 @@ class PoleZeroFilter(FilterBase):
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
         having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
 
-        Try to estimate pass band of the filter from the flattest spots in 
+        Try to estimate pass band of the filter from the flattest spots in
         the amplitude.
-        
+
         The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std. 
-        
+        with length `window_len` and estimating normalized std.
+
         ..note:: This only works for simple filters with
         on flat pass band.
-        
+
         :param window_len: length of sliding window in points
         :type window_len: integer
-        
-        :param tol: the ratio of the mean/std should be around 1 
+
+        :param tol: the ratio of the mean/std should be around 1
         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
-        
+
         :return: pass band frequencies
         :rtype: np.ndarray
 
@@ -227,20 +226,20 @@ class PoleZeroFilter(FilterBase):
         """
         Try to estimate the normalization frequency in the pass band
         by finding the flattest spot in the amplitude.
-        
+
         The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std. 
-        
+        with length `window_len` and estimating normalized std.
+
         ..note:: This only works for simple filters with
         on flat pass band.
-        
+
         :param window_len: length of sliding window in points
         :type window_len: integer
-        
-        :param tol: the ratio of the mean/std should be around 1 
+
+        :param tol: the ratio of the mean/std should be around 1
         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
-        
+
         :return: estimated normalization frequency Hz
         :rtype: float
 

@@ -4,8 +4,7 @@ from mth5.utils.pathing import DATA_DIR
 
 
 def load_sample_network_inventory(xml_file_handle, verbose=False):
-    """
-    """
+    """ """
     iris_dir = DATA_DIR.joinpath("iris")
     xml_file_path = iris_dir.joinpath(xml_file_handle)
     xml_file_path_str = xml_file_path.__str__()

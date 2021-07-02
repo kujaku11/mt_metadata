@@ -67,7 +67,7 @@ class XMLEquipmentMTRun(BaseTranslator):
 
     def xml_to_mt(self, equipment):
         """
-        Read in an equipment block. 
+        Read in an equipment block.
 
         :param equipment: an Equipment element
         :type equipment: :class:`obspy.core.inventory.Equipment`
@@ -116,7 +116,7 @@ class XMLEquipmentMTRun(BaseTranslator):
 
     def _parse_description(self, description, run_obj):
         """
-        Parse a run description into run 
+        Parse a run description into run
 
         :param description: DESCRIPTION
         :type description: TYPE
@@ -138,7 +138,7 @@ class XMLEquipmentMTRun(BaseTranslator):
     def _make_description(self, run_obj):
         """
         Make an Equipment description from a run object
-        
+
         :param run_obj: DESCRIPTION
         :type run_obj: TYPE
         :return: DESCRIPTION

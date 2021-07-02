@@ -120,6 +120,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     return "\n".join(lines)
 
+
 def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     """
      write table lines
@@ -164,20 +165,26 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     e_lines = wrap_description(attr_dict["example"], c3)
     # line 1 is with the entry
     lines.append(
-        line.format(f"**Required**: {attr_dict['required']}", c1, d_lines[0], c2, e_lines[0], c3)
+        line.format(
+            f"**Required**: {attr_dict['required']}", c1, d_lines[0], c2, e_lines[0], c3
+        )
     )
     # line 2 skip an entry in the
     lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
     # line 3 required
     lines.append(
-        line.format(f"**Units**: {attr_dict['units']}", c1, d_lines[2], c2, e_lines[2], c3)
+        line.format(
+            f"**Units**: {attr_dict['units']}", c1, d_lines[2], c2, e_lines[2], c3
+        )
     )
     # line 4 blank
     lines.append(line.format("", c1, d_lines[3], c2, e_lines[3], c3))
 
     # line 5 units
     lines.append(
-        line.format(f"**Type**: {attr_dict['type']}", c1, d_lines[4], c2, e_lines[4], c3)
+        line.format(
+            f"**Type**: {attr_dict['type']}", c1, d_lines[4], c2, e_lines[4], c3
+        )
     )
 
     # line 6 blank
@@ -185,7 +192,9 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
 
     # line 7 type
     lines.append(
-        line.format(f"**Style**: {attr_dict['style']}", c1, d_lines[6], c2, e_lines[6], c3)
+        line.format(
+            f"**Style**: {attr_dict['style']}", c1, d_lines[6], c2, e_lines[6], c3
+        )
     )
 
     # line 8 blank
@@ -296,8 +305,7 @@ def structure_dict(meta_dict, sep="."):
 
 
 def get_units(name, attr_dict):
-    """
-    """
+    """ """
     try:
         units = attr_dict[name]["units"]
         if not isinstance(units, str):
@@ -311,8 +319,7 @@ def get_units(name, attr_dict):
 
 
 def get_type(name, attr_dict):
-    """
-    """
+    """ """
     try:
         v_type = attr_dict[name]["type"]
         if v_type in ["string", str, "str", "String"]:
@@ -323,8 +330,7 @@ def get_type(name, attr_dict):
 
 
 def recursive_split_xml(element, item, base, name, attr_dict=None):
-    """
-    """
+    """ """
     key = None
     if isinstance(item, dict):
         for key, value in item.items():

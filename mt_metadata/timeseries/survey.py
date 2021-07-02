@@ -84,12 +84,12 @@ class Survey(Base):
 
     @property
     def stations(self):
-        """ Return station list """
+        """Return station list"""
         return self._stations
 
     @stations.setter
     def stations(self, value):
-        """ set the station list """
+        """set the station list"""
         if not hasattr(value, "__iter__"):
             msg = (
                 "input survey_list must be an iterable, should be a list "
@@ -113,19 +113,19 @@ class Survey(Base):
 
     @property
     def station_names(self):
-        """ Return names of station in survey """
+        """Return names of station in survey"""
         return [ss.id for ss in self.stations]
 
     @property
     def filters(self):
-        """ A dictionary of available filters """
+        """A dictionary of available filters"""
         return self._filters
 
     @filters.setter
     def filters(self, value):
         """
         Set the filters dictionary
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
@@ -157,13 +157,13 @@ class Survey(Base):
 
     @property
     def filter_names(self):
-        """ return a list of filter names """
+        """return a list of filter names"""
         return list(self.filters.keys())
 
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 

@@ -18,11 +18,11 @@ attr_dict.add_dict(get_schema("coefficient_filter", SCHEMA_FN_PATHS))
 
 class CoefficientFilter(FilterBase):
     __doc__ = write_lines(attr_dict)
-    
+
     def __init__(self, **kwargs):
         super().__init__()
         self.type = "coefficient"
-        
+
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.obspy_mapping = obspy_mapping
 
@@ -37,14 +37,14 @@ class CoefficientFilter(FilterBase):
         stage_sequence_number,
         stage_gain,
         stage_gain_frequency,
-        input_units, 
+        input_units,
         output_units,
-        cf_transfer_function_type, 
+        cf_transfer_function_type,
         resource_id=None,
         resource_id2=None,
         name=None,
         numerator=None,
-        denominator=None, 
+        denominator=None,
         input_units_description=None,
         output_units_description=None,
         description=None,
@@ -53,7 +53,7 @@ class CoefficientFilter(FilterBase):
         decimation_offset=None,
         decimation_delay=None,
         decimation_correction=None
-        
+
         :param stage_number: DESCRIPTION, defaults to 1
         :type stage_number: TYPE, optional
         :param cf_type: DESCRIPTION, defaults to "DIGITAL"

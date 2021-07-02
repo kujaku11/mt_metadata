@@ -23,9 +23,9 @@ attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
 # =============================================================================
 class Filtered(Base):
     """
-    List of filter names booleans tracking if filter has been 
-	applied.   May want to dict(zip(name, applied))
-    
+    List of filter names booleans tracking if filter has been
+        applied.   May want to dict(zip(name, applied))
+
     """
 
     __doc__ = write_lines(attr_dict)

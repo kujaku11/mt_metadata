@@ -9,17 +9,21 @@ case strings.
 
 """
 
-ABBREVIATIONS = {"digital counts":"cts",
-                 "millivolts": "mV",
-                 "nanotesla": "nT",
-                 "tesla": "T",
-                 "volts": "V"}
+ABBREVIATIONS = {
+    "digital counts": "cts",
+    "millivolts": "mV",
+    "nanotesla": "nT",
+    "tesla": "T",
+    "volts": "V",
+}
 
-PLOT_AXES_LABELS  = {"digital counts": "digital counts",
-                     "millivolts": "milliVolts",
-                     "tesla": "Tesla",
-                     "nanotesla": "nanoTesla",
-                     "volts": "Volts"}
+PLOT_AXES_LABELS = {
+    "digital counts": "digital counts",
+    "millivolts": "milliVolts",
+    "tesla": "Tesla",
+    "nanotesla": "nanoTesla",
+    "volts": "Volts",
+}
 
 # =============================================================================
 # Unit conversions

@@ -46,7 +46,7 @@ def plot_response(
     """
     This function was contributed by Ben Murphy at USGS
     2021-03-17: there are some issues encountered when using this function to plot generic resposnes, looks
-    like the x-axis gets out of order when using frequency as the axis ... 
+    like the x-axis gets out of order when using frequency as the axis ...
     Parameters
     ----------
     w_obs

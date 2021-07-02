@@ -85,7 +85,7 @@ class Station(Base):
     def has_run(self, run_id):
         """
         Check to see if the run id already exists
-        
+
         :param run_id: DESCRIPTION
         :type run_id: TYPE
         :return: DESCRIPTION
@@ -99,7 +99,7 @@ class Station(Base):
     def run_index(self, run_id):
         """
         Get the index of the run_id
-        
+
         :param run_id: DESCRIPTION
         :type run_id: TYPE
         :return: DESCRIPTION
@@ -114,7 +114,7 @@ class Station(Base):
     def add_run(self, run_obj):
         """
         Add a run, if one of the same name exists overwrite it.
-        
+
         :param run_obj: DESCRIPTION
         :type run_obj: TYPE
         :return: DESCRIPTION
@@ -134,10 +134,10 @@ class Station(Base):
         """
         Get a :class:`mt_metadata.timeseries.Run` object from the given
         id
-        
+
         :param run_id: run id verbatim
         :type run_id: string
-            
+
         """
 
         if self.has_run(run_id):
@@ -147,12 +147,12 @@ class Station(Base):
 
     @property
     def runs(self):
-        """ Return run list """
+        """Return run list"""
         return self._runs
 
     @runs.setter
     def runs(self, value):
-        """ set the run list """
+        """set the run list"""
         if not hasattr(value, "__iter__"):
             msg = (
                 "input station_list must be an iterable, should be a list "
@@ -176,12 +176,12 @@ class Station(Base):
 
     @property
     def run_list(self):
-        """ Return names of run in survey """
+        """Return names of run in survey"""
         return [ss.id for ss in self.runs]
 
     @run_list.setter
     def run_list(self, value):
-        """ Set list of run names """
+        """Set list of run names"""
         if not hasattr(value, "__iter__"):
             msg = (
                 "input station_list must be an iterable, should be a list "

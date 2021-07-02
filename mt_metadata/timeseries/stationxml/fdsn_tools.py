@@ -274,10 +274,10 @@ def read_channel_code(channel_code):
 def create_mt_component(channel_code):
     """
     Create a component for an MT channel given the measurement and orientation
-    
+
     >>> create_mt_component("LQN")
     ex
-    
+
     """
     code_dict = read_channel_code(channel_code)
     if code_dict["measurement"] == "tide":

@@ -235,9 +235,9 @@ def validate_style(value):
 
 def validate_description(description):
     """
-    
+
     make sure the description is a string
-    
+
     :param description: detailed description of an attribute
     :type description: str
     :return: validated string of description
@@ -254,7 +254,7 @@ def validate_description(description):
 def validate_options(options):
     """
     turn options into a list of strings
-    
+
     :param options: DESCRIPTION
     :type options: TYPE
     :return: DESCRIPTION
@@ -311,7 +311,7 @@ def validate_alias(alias):
 
 def validate_example(example):
     """
-    
+
     :param example: DESCRIPTION
     :type example: TYPE
     :return: DESCRIPTION

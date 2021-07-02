@@ -132,9 +132,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
     def mt_to_xml(self, survey, code="ZU"):
         """
         Convert MT Survey to Obspy Network
-        
+
         .. note:: For now the default code is ZU which is an IRIS catch-all network
-        
+
         """
 
         if not isinstance(survey, metadata.Survey):

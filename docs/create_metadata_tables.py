@@ -30,35 +30,41 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     CoefficientFilter,
     FIRFilter,
-    TimeDelayFilter)
+    TimeDelayFilter,
+)
+
 # =============================================================================
 
 fn_path = Path(r"c:\Users\jpeacock\Documents\GitHub\mt_metadata\docs\source")
 
-for level in [Survey, Station, Run, Auxiliary, Electric, Magnetic, 
-              PoleZeroFilter, FrequencyResponseTableFilter, CoefficientFilter,
-              FIRFilter, TimeDelayFilter]:
-    
-    lines = [".. role:: red",
-             ".. role:: blue",
-             ".. role:: navy",
-             ""]
+for level in [
+    Survey,
+    Station,
+    Run,
+    Auxiliary,
+    Electric,
+    Magnetic,
+    PoleZeroFilter,
+    FrequencyResponseTableFilter,
+    CoefficientFilter,
+    FIRFilter,
+    TimeDelayFilter,
+]:
+
+    lines = [".. role:: red", ".. role:: blue", ".. role:: navy", ""]
 
     obj = level()
     lines += [f"{obj._class_name.capitalize()}"]
     lines += ["=" * len(lines[-1])]
     lines += ["", ""]
-    
+
     for key, k_dict in obj._attr_dict.items():
         if k_dict["required"]:
             k_dict["required"] = ":red:`True`"
         else:
             k_dict["required"] = ":blue:`False`"
         lines += write_block(key, k_dict)
-        
+
     fn = fn_path.joinpath(f"ts_{obj._class_name}.rst")
     with fn.open(mode="w") as fid:
         fid.write("\n".join(lines))
-        
-        
-        

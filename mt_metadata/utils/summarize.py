@@ -26,7 +26,9 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     CoefficientFilter,
     FIRFilter,
-    TimeDelayFilter)
+    TimeDelayFilter,
+)
+
 
 def summarize_timeseries_standards():
     """
@@ -41,7 +43,10 @@ def summarize_timeseries_standards():
     summary_dict.add_dict(Magnetic()._attr_dict.copy(), "magnetic")
     summary_dict.add_dict(Auxiliary()._attr_dict.copy(), "auxiliary")
     summary_dict.add_dict(PoleZeroFilter()._attr_dict.copy(), "pole_zero_filter")
-    summary_dict.add_dict(FrequencyResponseTableFilter()._attr_dict.copy(), "frequency_amplitude_phase_filter"),
+    summary_dict.add_dict(
+        FrequencyResponseTableFilter()._attr_dict.copy(),
+        "frequency_amplitude_phase_filter",
+    ),
     summary_dict.add_dict(CoefficientFilter()._attr_dict.copy(), "coefficient_filter"),
     summary_dict.add_dict(FIRFilter()._attr_dict.copy(), "fir_filter"),
     summary_dict.add_dict(TimeDelayFilter()._attr_dict.copy(), "time_delay_filter")
@@ -55,7 +60,7 @@ def summary_to_array(summary_dict):
 
     :param summary_dict: Dictionary of summarized standards
     :type summary_dict: dict
-    :return: numpy structured array 
+    :return: numpy structured array
     :rtype: np.array
 
     """

@@ -81,7 +81,7 @@ class Run(Base):
     def has_channel(self, component):
         """
         Check to see if the channel already exists
-        
+
         :param component: DESCRIPTION
         :type component: TYPE
         :return: DESCRIPTION
@@ -104,7 +104,7 @@ class Run(Base):
     def add_channel(self, channel_obj):
         """
         Add a channel to the list, check if one exists if it does overwrite it
-        
+
         :param channel_obj: DESCRIPTION
         :type channel_obj: TYPE
         :return: DESCRIPTION
@@ -119,12 +119,12 @@ class Run(Base):
 
     @property
     def channels(self):
-        """ List of channels in the run """
+        """List of channels in the run"""
         return self._channels
 
     @channels.setter
     def channels(self, value):
-        """ set the channel list """
+        """set the channel list"""
         if not hasattr(value, "__iter__"):
             msg = (
                 "input channels must be an iterable, should be a list "

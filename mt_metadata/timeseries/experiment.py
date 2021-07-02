@@ -101,12 +101,12 @@ class Experiment:
 
     @property
     def surveys(self):
-        """ Return survey list """
+        """Return survey list"""
         return self._surveys
 
     @surveys.setter
     def surveys(self, value):
-        """ set the survey list """
+        """set the survey list"""
         if not hasattr(value, "__iter__"):
             msg = (
                 "input surveys must be an iterable, should be a list "
@@ -130,13 +130,13 @@ class Experiment:
 
     @property
     def survey_names(self):
-        """ Return names of surveys in experiment """
+        """Return names of surveys in experiment"""
         return [ss.survey_id for ss in self.surveys]
 
     def to_xml(self, fn=None, required=True):
         """
         Write XML version of the experiment
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -172,7 +172,7 @@ class Experiment:
     def to_json(self, fn):
         """
         Write JSON version of the experiment
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -184,7 +184,7 @@ class Experiment:
     def to_pickle(self, fn):
         """
         Write a pickle version of the experiment
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -195,15 +195,15 @@ class Experiment:
 
     def from_xml(self, fn=None, element=None):
         """
-        
+
         :param fn: DESCRIPTION, defaults to None
         :type fn: TYPE, optional
         :param element: DESCRIPTION, defaults to None
         :type element: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
-        
-        
+
+
 
         """
         if fn:
@@ -253,7 +253,7 @@ class Experiment:
     def _pop_dictionary(self, in_dict, element):
         """
         Pop off a key from an input dictionary, make sure output is a list
-        
+
         :param in_dict: DESCRIPTION
         :type in_dict: TYPE
         :param element: DESCRIPTION
@@ -272,7 +272,7 @@ class Experiment:
     def from_json(self, fn):
         """
         Read JSON version of experiment
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -284,7 +284,7 @@ class Experiment:
     def from_pickle(self, fn):
         """
         Read pickle version of experiment
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -296,7 +296,7 @@ class Experiment:
     def validate_experiment(self):
         """
         Validate experiment is legal
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -306,7 +306,7 @@ class Experiment:
     def _read_filter_dict(self, filters_dict):
         """
         Read in filter element an put it in the correct object
-        
+
         :param filter_element: DESCRIPTION
         :type filter_element: TYPE
         :return: DESCRIPTION

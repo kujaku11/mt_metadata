@@ -268,8 +268,8 @@ class MTime:
 
     def __add__(self, other):
         """
-        add time only using datetime.timedelta, otherwise it does not make 
-        sense to at 2 times together.  
+        add time only using datetime.timedelta, otherwise it does not make
+        sense to at 2 times together.
 
         """
         if isinstance(other, (int, float)):
@@ -344,14 +344,14 @@ class MTime:
     def from_str(self, dt_str):
         """
         Parse a date-time string using dateutil.parser
-        
+
         Need to use dateutil.parser.isoparser to get correct tzinfo=tzutc
         If the input is a weird date string then try to use parse.
-        
+
         :param dt_str: date-time string
         :type: string
-        
-        
+
+
         """
         try:
             parsed_str = dtparser.isoparser(dt_str)
@@ -463,12 +463,12 @@ class MTime:
         return self
 
     def copy(self):
-        """ make a copy of the time """
+        """make a copy of the time"""
         return deepcopy(self)
 
     def isoformat(self):
         """
-        
+
         :return: Date-time in ISO format
         :rtype: string
 
@@ -477,7 +477,7 @@ class MTime:
 
     def isodate(self):
         """
-        
+
         :return: Date in ISO format
         :rtype: string
 
@@ -486,7 +486,7 @@ class MTime:
 
     def isocalendar(self):
         """
-        
+
         :return: Calendar Date in ISO format
         :rtype: string
 

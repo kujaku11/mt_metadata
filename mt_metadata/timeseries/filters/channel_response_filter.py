@@ -56,17 +56,17 @@ class ChannelResponseFilter(object):
 
     @property
     def filters_list(self):
-        """ filters list """
+        """filters list"""
         return self._filters_list
 
     @filters_list.setter
     def filters_list(self, filters_list):
-        """ set the filters list and validate the list """
+        """set the filters list and validate the list"""
         self._filters_list = self._validate_filters_list(filters_list)
-        
+
     @property
     def names(self):
-        """ names of the filters """
+        """names of the filters"""
         names = []
         if self.filters_list:
             names = [f.name for f in self.filters_list]
@@ -126,7 +126,7 @@ class ChannelResponseFilter(object):
 
     @property
     def pass_band(self):
-        """ estimate pass band for all filters in frequency"""
+        """estimate pass band for all filters in frequency"""
         pb = []
         for f in self.filters_list:
             if hasattr(f, "pass_band"):
@@ -140,7 +140,7 @@ class ChannelResponseFilter(object):
 
     @property
     def normalization_frequency(self):
-        """ get normalization frequency from ZPK or FAP filter """
+        """get normalization frequency from ZPK or FAP filter"""
 
         if self._normalization_frequency is None:
             return np.round(self.pass_band.mean(), decimals=3)
@@ -149,7 +149,7 @@ class ChannelResponseFilter(object):
 
     @normalization_frequency.setter
     def normalization_frequency(self, value):
-        """ Set normalization frequency if input """
+        """Set normalization frequency if input"""
 
         self._normalization_frequency = value
 
@@ -189,8 +189,9 @@ class ChannelResponseFilter(object):
             total_delay += delay_filter.delay
         return total_delay
 
-    def complex_response(self, frequencies, include_delay=False,
-                         normalize=False, include_decimation=True):
+    def complex_response(
+        self, frequencies, include_delay=False, normalize=False, include_decimation=True
+    ):
         """
 
         Parameters
@@ -212,8 +213,8 @@ class ChannelResponseFilter(object):
         if not include_decimation:
             filters_list = [x for x in filters_list if not x.decimation_active]
 
-        if len(filters_list)==0:
-            #warn that there are no filters associated with channel?
+        if len(filters_list) == 0:
+            # warn that there are no filters associated with channel?
             return np.ones(len(frequencies))
 
         filter_stage = filters_list.pop(0)

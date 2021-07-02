@@ -146,9 +146,9 @@ class XMLStationMTStation(BaseTranslator):
     def mt_to_xml(self, mt_station):
         """
         Convert MT Survey to Obspy Network
-        
+
         .. note:: For now the default code is ZU which is an IRIS catch-all network
-        
+
         """
         if not isinstance(mt_station, metadata.Station):
             msg = f"Input must be mt_metadata.timeseries.Station object not {type(mt_station)}"
@@ -225,7 +225,7 @@ class XMLStationMTStation(BaseTranslator):
 
     def _equipments_to_runs(self, equipments, station_obj):
         """
-        Read in equipment and put into station runs 
+        Read in equipment and put into station runs
         """
         if not isinstance(equipments, list):
             msg = f"Input must be a list not {type(equipments)}"
@@ -246,7 +246,7 @@ class XMLStationMTStation(BaseTranslator):
     def _add_run_comments(self, run_comments, station_obj):
         """
         Add comments to runs
-        
+
         :param run_comments: DESCRIPTION
         :type run_comments: TYPE
         :param station_obj: DESCRIPTION

@@ -25,22 +25,21 @@ obspy_mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
 obspy_mapping["stage_gain_frequency"] = "gain_frequency"
 
 
-
 class FIRFilter(FilterBase):
     """
     Note: Regarding the symmetery property the json standard indicates that
     we expect the values "NONE", "ODD", "EVEN".  These are obspy standards.
     StationXML gives options: "A", "B", "C".  A:NONE, B:ODD, C:EVEN
     """
+
     def __init__(self, **kwargs):
         super().__init__()
         self.type = "fir"
         self.coefficients = None
-        
+
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
-
 
     # @property
     # def symmetry(self):
@@ -55,7 +54,7 @@ class FIRFilter(FilterBase):
 
     @property
     def output_sampling_rate(self):
-        return self.decimation_input_sample_rate/self.decimation_factor
+        return self.decimation_input_sample_rate / self.decimation_factor
 
     @coefficients.setter
     def coefficients(self, value):
@@ -88,9 +87,9 @@ class FIRFilter(FilterBase):
 
     @property
     def symmetry_corrected_coefficients(self):
-        if self.symmetry=="EVEN":
+        if self.symmetry == "EVEN":
             return np.hstack((self.coefficients, np.flipud(self.coefficients)))
-        elif self.symmetry=="ODD":
+        elif self.symmetry == "ODD":
             return np.hstack((self.coefficients, np.flipud(self.coefficients[1:])))
         else:
             return self.coefficients
@@ -105,28 +104,26 @@ class FIRFilter(FilterBase):
         if self.gain_frequency == 0.0:
             coefficient_gain = self.symmetry_corrected_coefficients.sum()
         else:
-            #estimate the gain from the coefficeints at gain_frequency
-            ww, hh = signal.freqz(self.symmetry_corrected_coefficients,
-                            worN=2*np.pi*self.gain_frequency,
-                            fs=2*np.pi*self.decimation_input_sample_rate)
+            # estimate the gain from the coefficeints at gain_frequency
+            ww, hh = signal.freqz(
+                self.symmetry_corrected_coefficients,
+                worN=2 * np.pi * self.gain_frequency,
+                fs=2 * np.pi * self.decimation_input_sample_rate,
+            )
             coefficient_gain = np.abs(hh)
         return coefficient_gain
-
 
     @property
     def n_coefficients(self):
         return len(self._coefficients)
 
-
     @property
     def corrective_scalar(self):
-        """
-        """
+        """ """
         if self.coefficient_gain != self.gain:
-            return  self.coefficient_gain / self.total_gain
+            return self.coefficient_gain / self.total_gain
         else:
             return 1.0
-
 
     def plot_fir_response(self):
         w, h = signal.freqz(self.full_coefficients)
@@ -146,14 +143,17 @@ class FIRFilter(FilterBase):
         plt.show()
 
     def to_obspy(
-        self, stage_number=1, normalization_frequency=1, sample_rate=1,
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         create an obspy stage
-    
+
         :return: DESCRIPTION
         :rtype: TYPE
-    
+
         """
 
         rs = FIRResponseStage(
@@ -187,11 +187,12 @@ class FIRFilter(FilterBase):
         :param frequencies:
         :return:
         """
-        w, h = signal.freqz(self.symmetry_corrected_coefficients,
-                            worN=angular_frequencies,
-                            fs=2 * np.pi * self.decimation_input_sample_rate)
+        w, h = signal.freqz(
+            self.symmetry_corrected_coefficients,
+            worN=angular_frequencies,
+            fs=2 * np.pi * self.decimation_input_sample_rate,
+        )
         return h
-
 
     def complex_response(self, frequencies):
         """
@@ -205,16 +206,18 @@ class FIRFilter(FilterBase):
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
         """
-        #fir_filter.full_coefficients
+        # fir_filter.full_coefficients
         angular_frequencies = 2 * np.pi * frequencies
-        w, h = signal.freqz(self.symmetry_corrected_coefficients,
-                            worN=angular_frequencies,
-                            fs=2*np.pi*self.decimation_input_sample_rate)
+        w, h = signal.freqz(
+            self.symmetry_corrected_coefficients,
+            worN=angular_frequencies,
+            fs=2 * np.pi * self.decimation_input_sample_rate,
+        )
         h /= self.corrective_scalar
-        
+
         return h
 
-    def pass_band(self, window_len=7, tol=1E-4):
+    def pass_band(self, window_len=7, tol=1e-4):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -241,14 +244,14 @@ class FIRFilter(FilterBase):
 
         """
 
-        f = np.logspace(-5, 5, num=50 * window_len) #freq Hz
+        f = np.logspace(-5, 5, num=50 * window_len)  # freq Hz
         cr = self.unscaled_complex_response(f)
         amp = np.abs(cr)
-        if np.all(cr==cr[0]):
+        if np.all(cr == cr[0]):
             return np.array([f.min(), f.max()])
         pass_band = []
         for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = amp[ii:ii+window_len]
+            cr_window = amp[ii : ii + window_len]
             cr_window /= cr_window.max()
 
             if cr_window.std() == 0:
@@ -257,10 +260,9 @@ class FIRFilter(FilterBase):
             if cr_window.std() <= tol:
                 pass_band.append(f[ii])
 
-
-        #Check for discontinuities in the pass band
+        # Check for discontinuities in the pass band
         pass_band = np.array(pass_band)
-        if len(pass_band)>1:
+        if len(pass_band) > 1:
             df_passband = np.diff(np.log(pass_band))
             df_0 = np.log(f[1]) - np.log(f[0])
             if np.isclose(df_passband, df_0).all():

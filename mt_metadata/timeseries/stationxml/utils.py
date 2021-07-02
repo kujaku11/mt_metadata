@@ -17,7 +17,7 @@ from obspy.core.inventory import Comment
 class BaseTranslator:
     """
     Base translator for StationXML <--> MT Metadata
-    
+
     """
 
     def __init__(self):
@@ -41,14 +41,14 @@ class BaseTranslator:
     def flip_dict(original_dict):
         """
         Flip keys and values of the dictionary
-        
+
         Need to take care of duplicate names and lists of names
-        
+
         :param original_dict: original dictionary
         :type original_dict: dict
         :return: reversed dictionary
         :rtype: dictionary
-    
+
         """
         flipped_dict = {}
 
@@ -70,26 +70,26 @@ class BaseTranslator:
     def read_xml_comment(comment):
         """
         read stationxml comment
-        
-        Assuming that separate comments are split by ':' and separated 
-        by a comma. 
-        
+
+        Assuming that separate comments are split by ':' and separated
+        by a comma.
+
         """
 
         key = comment.subject.strip().replace(" ", "_").lower()
 
         def parse(comment_string, filled={}):
             """
-            Recursively parse a comment string trying to adhere to the 
+            Recursively parse a comment string trying to adhere to the
             original syntax of the comment.  Expecting a dictionary type
             string
-            
+
             'a: b, c:d' -> {'a': 'b', 'c':'d'}
-            
+
             but sometimes looks like
-            
+
             'a: b:c, d:e' -> {'a': 'b:c', 'd':'e'}
-            
+
             """
             k, *other = comment_string.split(":", 1)
             if other:
@@ -132,7 +132,7 @@ class BaseTranslator:
         """
         Read stationxml idenfier, which is a list of doi numbers, make
         it into a string without the doi
-        
+
         :param doi: DESCRIPTION
         :type doi: TYPE
         :return: DESCRIPTION
@@ -144,7 +144,7 @@ class BaseTranslator:
     def get_comment(self, comments, subject):
         """
         Get the correct comment from a list of comments
-        
+
         :param comments: list of :class:`obspy.core.inventory.Comments`
         :type comments: list
         :param subject: subject heading to get
@@ -164,7 +164,7 @@ class BaseTranslator:
     def make_mt_comments(self, mt_element, mt_key_base="mt"):
         """
         make comments from an MT element from self.mt_comments_list
-        
+
         :param mt_element: MT metadata element
         """
         comments = []

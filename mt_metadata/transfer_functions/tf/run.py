@@ -53,7 +53,16 @@ rrhx_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
 rrhy_dict = get_schema("magnetic", SCHEMA_FN_PATHS)
 temperature_dict = get_schema("auxiliary", SCHEMA_FN_PATHS)
 
-for ch in [ex_dict, ey_dict, hx_dict, hy_dict, hz_dict, rrhx_dict, rrhy_dict, temperature_dict]:
+for ch in [
+    ex_dict,
+    ey_dict,
+    hx_dict,
+    hy_dict,
+    hz_dict,
+    rrhx_dict,
+    rrhy_dict,
+    temperature_dict,
+]:
     ch.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
 
 attr_dict.add_dict(ex_dict, "ex")
@@ -103,7 +112,7 @@ class Run(Base):
     @property
     def channels_recorded_all(self):
         """
-        
+
         :return: a list of all channels recorded
         :rtype: TYPE
 

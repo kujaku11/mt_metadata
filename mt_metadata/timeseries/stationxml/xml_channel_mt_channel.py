@@ -69,7 +69,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def xml_to_mt(self, xml_channel):
         """
-        Translate :class:`obspy.core.inventory.Channel` to 
+        Translate :class:`obspy.core.inventory.Channel` to
         :class:`mt_metadata.timeseries.Channel`
 
         :param xml_channel: Obspy Channel object
@@ -115,7 +115,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def mt_to_xml(self, mt_channel, filters_dict):
         """
-        Translate :class:`mt_metadata.timeseries.Channel` to 
+        Translate :class:`mt_metadata.timeseries.Channel` to
         :class:`obspy.core.inventory.Channel`
 
 
@@ -448,9 +448,7 @@ class XMLChannelMTChannel(BaseTranslator):
         return mt_channel
 
     def _get_mt_units(self, xml_channel, mt_channel):
-        """
-
-        """
+        """ """
         name = getattr(xml_channel, "calibration_units")
         description = getattr(xml_channel, "calibration_units_description")
         if description and name:
@@ -485,7 +483,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 )
 
             if mt_filter.decimation_active:
-                #keep filter names unique if same one used more than once
+                # keep filter names unique if same one used more than once
                 mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
             filter_dict[mt_filter.name.lower()] = mt_filter
 
@@ -494,7 +492,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _add_filter_number(self, keys, filter_type):
         """
         return the next number the number of filters
-    
+
         :param keys: DESCRIPTION
         :type keys: TYPE
         :return: DESCRIPTION
@@ -513,7 +511,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _mt_to_xml_response(self, mt_channel, filters_dict):
         """
         Translate MT filters into Obspy Response
-        
+
         :param mt_channel: DESCRIPTION
         :type mt_channel: TYPE
         :param filters_dict: DESCRIPTION

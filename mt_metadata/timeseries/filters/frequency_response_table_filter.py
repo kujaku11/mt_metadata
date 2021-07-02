@@ -41,7 +41,7 @@ class FrequencyResponseTableFilter(FilterBase):
         super().__init__()
         self.type = "frequency response table"
         self.instrument_type = None  # FGM or FBC or other?
-        
+
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
@@ -128,11 +128,14 @@ class FrequencyResponseTableFilter(FilterBase):
         return self._empirical_frequencies.max()
 
     def to_obspy(
-        self, stage_number=1, normalization_frequency=1, sample_rate=1,
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         Convert to an obspy stage
-        
+
         :param stage_number: DESCRIPTION, defaults to 1
         :type stage_number: TYPE, optional
         :param normalization_frequency: DESCRIPTION, defaults to 1
@@ -174,22 +177,22 @@ class FrequencyResponseTableFilter(FilterBase):
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
         having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
 
-        Try to estimate pass band of the filter from the flattest spots in 
+        Try to estimate pass band of the filter from the flattest spots in
         the amplitude.
-        
+
         The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std. 
-        
+        with length `window_len` and estimating normalized std.
+
         ..note:: This only works for simple filters with
         on flat pass band.
-        
+
         :param window_len: length of sliding window in points
         :type window_len: integer
-        
-        :param tol: the ratio of the mean/std should be around 1 
+
+        :param tol: the ratio of the mean/std should be around 1
         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
-        
+
         :return: pass band frequencies
         :rtype: np.ndarray
 

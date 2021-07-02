@@ -44,8 +44,7 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = setup_logger(
-            f"{__name__}.{self._class_name}", level=LOG_LEVEL)
+        self.logger = setup_logger(f"{__name__}.{self._class_name}", level=LOG_LEVEL)
         self._debug = False
 
         for name, value in kwargs.items():
@@ -94,8 +93,7 @@ class Base:
                         self.logger.info(msg)
 
                 return False
-        raise ValueError(
-            f"Cannot compare {self._class_name} with {type(other)}")
+        raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -114,15 +112,16 @@ class Base:
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning("Cannot update %s with %s",
-                                type(self), type(other))
+            self.logger.warning("Cannot update %s with %s", type(self), type(other))
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = "%s is not equal %s != %s"
-                self.logger.error(msg, k, self.get_attr_from_name(
-                    k), other.get_attr_from_name(k))
-                raise ValueError(msg, k, self.get_attr_from_name(
-                    k), other.get_attr_from_name(k))
+                self.logger.error(
+                    msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k)
+                )
+                raise ValueError(
+                    msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k)
+                )
 
         for k, v in other.to_dict(single=True).items():
             if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
@@ -158,7 +157,7 @@ class Base:
 
     def get_attribute_list(self):
         """
-        return a list of the attributes 
+        return a list of the attributes
         """
 
         return sorted(list(self._attr_dict.keys()))
@@ -255,8 +254,7 @@ class Base:
 
         # if not a python type but a string organize into a dictionary
         if not isinstance(v_type, type) and isinstance(v_type, str):
-            type_dict = {"string": str, "integer": int,
-                         "float": float, "boolean": bool}
+            type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
             v_type = type_dict[validate_type(v_type)]
         else:
             msg = "v_type must be a string or type not {0}".format(v_type)
@@ -297,8 +295,7 @@ class Base:
                         self.logger.debug(info.format(value, True))
                         return True
                     else:
-                        self.logger.exception(
-                            msg.format(value, v_type, type(value)))
+                        self.logger.exception(msg.format(value, v_type, type(value)))
                         raise MTSchemaError(msg, value, v_type, type(value))
                 elif v_type is str:
                     return value
@@ -328,8 +325,7 @@ class Base:
                 if v_type is str:
                     if isinstance(value, np.ndarray):
                         value = value.astype(np.unicode_)
-                    value = [f"{v}".replace("'", "").replace(
-                        '"', "") for v in value]
+                    value = [f"{v}".replace("'", "").replace('"', "") for v in value]
                 elif v_type is int:
                     value = [int(float(v)) for v in value]
                 elif v_type is float:
@@ -427,14 +423,12 @@ class Base:
                     # check options
                     if v_dict["style"] == "controlled vocabulary":
                         options = v_dict["options"]
-                        accept, other, msg = self._validate_option(
-                            value, options)
+                        accept, other, msg = self._validate_option(value, options)
                         if not accept:
                             self.logger.error(msg.format(value, options))
                             raise MTSchemaError(msg.format(value, options))
                         if other and not accept:
-                            self.logger.warning(
-                                msg.format(value, options, name))
+                            self.logger.warning(msg.format(value, options, name))
 
         super().__setattr__(name, value)
 
@@ -506,7 +500,7 @@ class Base:
         :param value: attribute value
         :type value: type is defined by the attribute name
 
-        :Example: 
+        :Example:
 
         >>> b = Base(**{'category.test_attr':10})
         >>> b.set_attr_from_name('category.test_attr', '10')
@@ -550,8 +544,8 @@ class Base:
         * style --> style of the string
         * units --> units of the attribute, must be a string
         * alias --> other possible names for the attribute
-        * options --> if only a few options are accepted, separated by | or 
-          comma.b [ option_01 | option_02 | other ]. 'other' means other options 
+        * options --> if only a few options are accepted, separated by | or
+          comma.b [ option_01 | option_02 | other ]. 'other' means other options
           available but not yet defined.
         * example --> an example of the attribute
 
@@ -647,10 +641,15 @@ class Base:
         for name, value in meta_dict.items():
             if skip_none:
                 if value in [
-                        None,
-                        "None", "none", "NONE",
-                        "null", "Null", "NULL",
-                        "1980-01-01T00:00:00+00:00"]:
+                    None,
+                    "None",
+                    "none",
+                    "NONE",
+                    "null",
+                    "Null",
+                    "NULL",
+                    "1980-01-01T00:00:00+00:00",
+                ]:
                     continue
             self.set_attr_from_name(name, value)
 
@@ -720,8 +719,8 @@ class Base:
 
     def to_xml(self, string=False, required=True):
         """
-        make an xml element for the attribute that will add types and 
-        units.  
+        make an xml element for the attribute that will add types and
+        units.
 
         :param string: output a string instead of an XML element
         :type string: [ True | False ], default is False

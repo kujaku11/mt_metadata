@@ -31,28 +31,28 @@ logger = setup_logger(__name__, fn="metadata_schema", level=LOG_LEVEL)
 # =============================================================================
 class BaseDict(MutableMapping):
     """
-    BaseDict is a convenience class that can help the metadata dictionaries 
+    BaseDict is a convenience class that can help the metadata dictionaries
     act like classes so you can access variables by .name or [name]
-    
+
     .. note:: If the attribute has a . in the name then you will not be able
-              to access that attribute by class.name.name  You will get an 
-              attribute error.  You need to access the attribute like a 
+              to access that attribute by class.name.name  You will get an
+              attribute error.  You need to access the attribute like a
               dictionary class['name.name']
-              
+
     You can add an attribute by:
-        
+
         >>> b = BaseDict()
         >>> b.update({name: value_dict})
-        
+
     Or you can add a whole dictionary:
-        
+
         >>> b.add_dict(ATTR_DICT['run'])
-        
+
     All attributes have a descriptive dictionary of the form:
-        
+
         >>> {'type': data type, 'required': [True | False],
         >>> ... 'style': 'string style', 'units': attribute units}
-    
+
         * **type** --> the data type [ str | int | float | bool ]
         * **required** --> required in the standards [ True | False ]
         * **style** --> style of the string
@@ -69,9 +69,7 @@ class BaseDict(MutableMapping):
         try:
             return self.__dict__[key]
         except KeyError as error:
-            msg = (
-                "%s %s is not in dictionary yet. Returning default schema dictionary."
-            )
+            msg = "%s %s is not in dictionary yet. Returning default schema dictionary."
             logger.debug(msg, error, key)
             return {
                 "type": "string",
@@ -126,18 +124,18 @@ class BaseDict(MutableMapping):
         """
         Add a dictionary to.  If name is input it is added to the keys of
         the input dictionary
-        
+
         :param add_dict: dictionary to add
         :type add_dict: dictionary, or MutableMapping
         :param name: name to add to keys
         :type name: string or None
-    
-        :Example: :: 
-            
+
+        :Example: ::
+
             >>> s_obj = Standards()
             >>> run_dict = s_obj.run_dict
             >>> run_dict.add_dict(s_obj.declination_dict, 'declination')
-            
+
         """
         if not isinstance(add_dict, (dict, MutableMapping)):
             msg = "add_dict takes only a dictionary not type {0}".format(type(add_dict))
@@ -166,12 +164,12 @@ class BaseDict(MutableMapping):
 
     def to_latex(self, max_entries=7, first_table_len=7):
         """
-        
+
         :param level_dict: DESCRIPTION
         :type level_dict: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
-    
+
         """
         beginning = [
             r"\clearpage",
@@ -224,18 +222,18 @@ class BaseDict(MutableMapping):
     def from_csv(self, csv_fn):
         """
         Read in CSV file as a dictionary
-    
+
         :param csv_fn: csv file to read metadata standards from
         :type csv_fn: pathlib.Path or string
-    
+
         :return: dictionary of the contents of the file
         :rtype: Dictionary
-    
+
         :Example: ::
-    
+
             >>> run_dict = BaseDict()
             >>> run_dict.from_csv(get_level_fn('run'))
-    
+
         """
         csv_fn = Path(csv_fn)
         if not csv_fn.exists():
@@ -271,14 +269,14 @@ class BaseDict(MutableMapping):
     def to_csv(self, csv_fn):
         """
         write dictionary to csv file
-        
+
         :param level_dict: DESCRIPTION
         :type level_dict: TYPE
         :param csv_fn: DESCRIPTION
         :type csv_fn: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
-    
+
         """
 
         if not isinstance(csv_fn, Path):
@@ -309,7 +307,7 @@ class BaseDict(MutableMapping):
     def to_json(self, json_fn, indent=" " * 4):
         """
         Write schema standards to json
-        
+
         :param json_fn: full path to json file
         :type json_fn: string or Path
         :return: full path to json file
@@ -327,9 +325,9 @@ class BaseDict(MutableMapping):
 
     def from_json(self, json_fn):
         """
-        
+
         Read schema standards from json
-        
+
         :param json_fn: full path to json file
         :type json_fn: string or Path
         :return: full path to json file
@@ -356,7 +354,7 @@ def get_schema_fn(schema_element, paths):
     """
     Get the correct file name for the given schema element from the provided
     list of valid file names
-    
+
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
     :return: correct file name for given element
@@ -373,7 +371,7 @@ def get_schema_fn(schema_element, paths):
 def get_schema(schema_element, paths):
     """
     Get a :class:`mt_metadata.schema_base.BaseDict` object of the element
-    
+
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
     :return: return a dictionary that describes the standards for the element
