@@ -56,7 +56,7 @@ class Experiment:
         if len(self.surveys) > 0:
             lines.append(f"Number of Surveys: {len(self.surveys)}")
             for survey in self.surveys:
-                lines.append(f"\tSurvey ID: {survey.survey_id}")
+                lines.append(f"\tSurvey ID: {survey.id}")
                 lines.append(f"\tNumber of Stations: {len(survey)}")
                 lines.append(f"\t{'-' * 20}")
                 for station in survey.stations:
