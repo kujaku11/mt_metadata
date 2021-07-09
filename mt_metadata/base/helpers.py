@@ -349,7 +349,11 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
     elif isinstance(item, (float, int, type(None))):
         element.text = str(item)
     else:
-        raise ValueError("Value cannot be {0}".format(type(item)))
+        # if the value is an hdf5 reference make it a string
+        if "reference" in str(type(item)).lower():
+            element.text = str(item)
+        else:
+            raise ValueError("Value cannot be {0}".format(type(item)))
 
     if attr_dict:
 
