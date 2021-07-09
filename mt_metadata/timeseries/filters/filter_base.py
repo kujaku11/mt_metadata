@@ -197,7 +197,7 @@ class FilterBase(Base):
     @name.setter
     def name(self, value):
         if value is not None:
-            self._name = str(value).lower()
+            self._name = str(value).lower().replace("/", " per ")
         else:
             self._name = None
 
