@@ -2,7 +2,7 @@
 from pathlib import Path
 
 # assume tests is on the root level of mt_metadata
-TEST_ROOT = Path(__file__).absolute().parent.parent.parent
+TEST_ROOT = Path(__file__).absolute().parent.parent
 
 STATIONXML_01 = TEST_ROOT.joinpath("data/stationxml/fdsn_no_mt_info.xml")
 STATIONXML_02 = TEST_ROOT.joinpath("data/stationxml/mtml_single_station.xml")
