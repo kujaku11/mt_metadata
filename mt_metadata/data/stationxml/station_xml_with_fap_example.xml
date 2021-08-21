@@ -1,0 +1,2100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.1">
+  <Source>ObsPy 1.2.2</Source>
+  <Module>ObsPy 1.2.2</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2021-06-03T20:32:09.971688Z</Created>
+  <Network code="EM" startDate="2015-01-08T19:49:15+00:00" endDate="2015-01-29T16:18:14+00:00" restrictedStatus="open">
+    <Description>Electromagnetic Studies of the Continents (EMSOC)</Description>
+    <Identifier type="DOI">10.7914/SN/EM</Identifier>
+    <Station code="FL001" startDate="2015-01-08T19:49:15+00:00" endDate="2015-01-29T16:18:14+00:00" restrictedStatus="open" alternateCode="FL001">
+      <Comment subject="mt.station.orientation.reference_frame">
+        <Value>geographic</Value>
+      </Comment>
+      <Comment subject="mt.station.run_list">
+        <Value>a, b</Value>
+      </Comment>
+      <Comment subject="mt.run:a.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:a.metadata_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:b.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:b.metadata_by">
+        <Value></Value>
+      </Comment>
+      <Latitude unit="DEGREES">29.720356</Latitude>
+      <Longitude unit="DEGREES">-83.485472</Longitude>
+      <Elevation unit="METERS">0.0</Elevation>
+      <Site>
+        <Name>Beachy Keen, FL, USA</Name>
+      </Site>
+      <Equipment resourceId="mt.run.id:a">
+        <Type>BB, LP</Type>
+        <Description>power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>1305-1</SerialNumber>
+        <InstallationDate>2015-01-08T19:49:15+00:00</InstallationDate>
+        <RemovalDate>2015-01-19T14:54:54+00:00</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:b">
+        <Type>BB, LP</Type>
+        <Description>power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>1305-1</SerialNumber>
+        <InstallationDate>2015-01-19T16:16:31+00:00</InstallationDate>
+        <RemovalDate>2015-01-29T16:18:14+00:00</RemovalDate>
+      </Equipment>
+      <CreationDate>2015-01-08T19:49:15.000000Z</CreationDate>
+      <TerminationDate>2015-01-29T16:18:14.000000Z</TerminationDate>
+      <Channel code="MFN" startDate="2015-01-08T19:49:15+00:00" endDate="2015-01-29T16:18:14+00:00" restrictedStatus="open" alternateCode="hx" locationCode="">
+        <Comment subject="mt.run.id">
+          <Value>a</Value>
+        </Comment>
+        <Comment subject="mt.run.id">
+          <Value>b</Value>
+        </Comment>
+        <Latitude unit="DEGREES">29.720356</Latitude>
+        <Longitude unit="DEGREES">-83.485472</Longitude>
+        <Elevation unit="METERS">0.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">355.9</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate unit="SAMPLES/S">8.0</SampleRate>
+        <CalibrationUnits>
+          <Name>T</Name>
+          <Description>Tesla</Description>
+        </CalibrationUnits>
+        <Sensor/>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>21856451.659</Value>
+            <Frequency>3.851</Frequency>
+            <InputUnits>
+              <Name>m</Name>
+              <Description>meters</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>count</Name>
+              <Description>digital counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <ResponseList name="frequency response table_00">
+              <Description>Test</Description>
+              <InputUnits>
+                <Name>m</Name>
+                <Description>meters</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </OutputUnits>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0158</Frequency>
+                <Amplitude>0.0633360132</Amplitude>
+                <Phase unit="DEGREES">86.2190838675</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0161680293</Frequency>
+                <Amplitude>0.06480527559999999</Amplitude>
+                <Phase unit="DEGREES">86.1312638598</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.016544631100000002</Frequency>
+                <Amplitude>0.0663083325</Amplitude>
+                <Phase unit="DEGREES">86.04141407469999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.016930005</Frequency>
+                <Amplitude>0.0678459408</Amplitude>
+                <Phase unit="DEGREES">85.94948840069999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0173243555</Frequency>
+                <Amplitude>0.0694188726</Amplitude>
+                <Phase unit="DEGREES">85.8554397339</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0177278916</Frequency>
+                <Amplitude>0.0710279159</Amplitude>
+                <Phase unit="DEGREES">85.7592199608</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0181408272</Frequency>
+                <Amplitude>0.0726738743</Amplitude>
+                <Phase unit="DEGREES">85.66077994060001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0185633814</Frequency>
+                <Amplitude>0.0743575678</Amplitude>
+                <Phase unit="DEGREES">85.5600694882</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0189957781</Frequency>
+                <Amplitude>0.0760798325</Amplitude>
+                <Phase unit="DEGREES">85.4570373571</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0194382466</Frequency>
+                <Amplitude>0.077841521</Amplitude>
+                <Phase unit="DEGREES">85.3516312215</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.019891021499999998</Frequency>
+                <Amplitude>0.0796435025</Amplitude>
+                <Phase unit="DEGREES">85.2437976601</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0203543429</Frequency>
+                <Amplitude>0.0814866632</Amplitude>
+                <Phase unit="DEGREES">85.1334821383</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0208284565</Frequency>
+                <Amplitude>0.0833719059</Amplitude>
+                <Phase unit="DEGREES">85.02062899239999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.021313613500000002</Frequency>
+                <Amplitude>0.0853001508</Amplitude>
+                <Phase unit="DEGREES">84.9051814123</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.021810071400000002</Frequency>
+                <Amplitude>0.0872723352</Amplitude>
+                <Phase unit="DEGREES">84.7870814259</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0223180932</Frequency>
+                <Amplitude>0.08928941359999999</Amplitude>
+                <Phase unit="DEGREES">84.6662698828</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0228379484</Frequency>
+                <Amplitude>0.0913523581</Amplitude>
+                <Phase unit="DEGREES">84.5426864393</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0233699125</Frequency>
+                <Amplitude>0.0934621583</Amplitude>
+                <Phase unit="DEGREES">84.4162695431</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.023914267700000002</Frequency>
+                <Amplitude>0.0956198212</Amplitude>
+                <Phase unit="DEGREES">84.2869564188</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.024471302599999998</Frequency>
+                <Amplitude>0.09782637150000001</Amplitude>
+                <Phase unit="DEGREES">84.1546830542</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0250413124</Frequency>
+                <Amplitude>0.1000828514</Amplitude>
+                <Phase unit="DEGREES">84.019384187</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0256245995</Frequency>
+                <Amplitude>0.10239032070000001</Amplitude>
+                <Phase unit="DEGREES">83.88099329229999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0262214731</Frequency>
+                <Amplitude>0.1047498567</Amplitude>
+                <Phase unit="DEGREES">83.7394425708</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0268322497</Frequency>
+                <Amplitude>0.1071625542</Amplitude>
+                <Phase unit="DEGREES">83.59466293850001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.027457253100000002</Frequency>
+                <Amplitude>0.1096295252</Amplitude>
+                <Phase unit="DEGREES">83.4465840165</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.028096814700000004</Frequency>
+                <Amplitude>0.1121518989</Amplitude>
+                <Phase unit="DEGREES">83.2951341224</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0287512736</Frequency>
+                <Amplitude>0.1147308216</Amplitude>
+                <Phase unit="DEGREES">83.1402402634</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0294209768</Frequency>
+                <Amplitude>0.1173674562</Amplitude>
+                <Phase unit="DEGREES">82.9818281297</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0301062793</Frequency>
+                <Amplitude>0.1200629821</Amplitude>
+                <Phase unit="DEGREES">82.8198220902</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0308075447</Frequency>
+                <Amplitude>0.12281859490000001</Amplitude>
+                <Phase unit="DEGREES">82.6541451896</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0315251446</Frequency>
+                <Amplitude>0.125635506</Amplitude>
+                <Phase unit="DEGREES">82.4847191468</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.032259459500000004</Frequency>
+                <Amplitude>0.128514942</Amplitude>
+                <Phase unit="DEGREES">82.311464356</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0330108789</Frequency>
+                <Amplitude>0.1314581444</Amplitude>
+                <Phase unit="DEGREES">82.1342998892</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.033779801</Frequency>
+                <Amplitude>0.1344663689</Amplitude>
+                <Phase unit="DEGREES">81.9531435011</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0345666337</Frequency>
+                <Amplitude>0.137540885</Amplitude>
+                <Phase unit="DEGREES">81.7679116365</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.035371794</Frequency>
+                <Amplitude>0.1406829749</Amplitude>
+                <Phase unit="DEGREES">81.57851944</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0361957089</Frequency>
+                <Amplitude>0.1438939333</Amplitude>
+                <Phase unit="DEGREES">81.3848807691</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0370388153</Frequency>
+                <Amplitude>0.1471750657</Amplitude>
+                <Phase unit="DEGREES">81.1869082095</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.037901560099999995</Frequency>
+                <Amplitude>0.1505276884</Amplitude>
+                <Phase unit="DEGREES">80.9845130942</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0387844009</Frequency>
+                <Amplitude>0.1539531267</Amplitude>
+                <Phase unit="DEGREES">80.77760552560001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0396878056</Frequency>
+                <Amplitude>0.1574527142</Amplitude>
+                <Phase unit="DEGREES">80.5660944018</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0406122534</Frequency>
+                <Amplitude>0.16102779109999998</Amplitude>
+                <Phase unit="DEGREES">80.3498874462</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0415582343</Frequency>
+                <Amplitude>0.1646797034</Amplitude>
+                <Phase unit="DEGREES">80.12889124189999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0425262499</Frequency>
+                <Amplitude>0.1684098011</Amplitude>
+                <Phase unit="DEGREES">79.9030112703</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.043516813499999994</Frequency>
+                <Amplitude>0.1722194364</Amplitude>
+                <Phase unit="DEGREES">79.6721519542</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0445304503</Frequency>
+                <Amplitude>0.1761099623</Amplitude>
+                <Phase unit="DEGREES">79.43621670649999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.04556769769999999</Frequency>
+                <Amplitude>0.18008273079999998</Amplitude>
+                <Phase unit="DEGREES">79.1951079838</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0466291058</Frequency>
+                <Amplitude>0.1841390902</Amplitude>
+                <Phase unit="DEGREES">78.948727346</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.047715237199999996</Frequency>
+                <Amplitude>0.18828038379999998</Amplitude>
+                <Phase unit="DEGREES">78.6969755217</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0488266678</Frequency>
+                <Amplitude>0.19250794710000002</Amplitude>
+                <Phase unit="DEGREES">78.4397524801</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.049963987</Frequency>
+                <Amplitude>0.1968231052</Amplitude>
+                <Phase unit="DEGREES">78.1769575096</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0511277978</Frequency>
+                <Amplitude>0.2012271704</Amplitude>
+                <Phase unit="DEGREES">77.9084893033</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.052318717199999996</Frequency>
+                <Amplitude>0.2057214393</Amplitude>
+                <Phase unit="DEGREES">77.634246052</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0535373767</Frequency>
+                <Amplitude>0.2103071896</Amplitude>
+                <Phase unit="DEGREES">77.3541255452</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.054784422400000005</Frequency>
+                <Amplitude>0.214985677</Amplitude>
+                <Phase unit="DEGREES">77.0680252801</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0560605155</Frequency>
+                <Amplitude>0.21975813190000001</Amplitude>
+                <Phase unit="DEGREES">76.7758425788</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.057366332699999995</Frequency>
+                <Amplitude>0.2246257554</Amplitude>
+                <Phase unit="DEGREES">76.4774747152</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0587025662</Frequency>
+                <Amplitude>0.22958971579999998</Amplitude>
+                <Phase unit="DEGREES">76.1728190504</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0600699246</Frequency>
+                <Amplitude>0.2346511445</Amplitude>
+                <Phase unit="DEGREES">75.86177317810001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0614691329</Frequency>
+                <Amplitude>0.2398111316</Amplitude>
+                <Phase unit="DEGREES">75.5442350803</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0629009329</Frequency>
+                <Amplitude>0.2450707214</Amplitude>
+                <Phase unit="DEGREES">75.2201032923</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0643660839</Frequency>
+                <Amplitude>0.2504309079</Amplitude>
+                <Phase unit="DEGREES">74.88927708</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.06586536259999999</Frequency>
+                <Amplitude>0.25589262960000003</Amplitude>
+                <Phase unit="DEGREES">74.5516566263</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.06739956400000001</Frequency>
+                <Amplitude>0.2614567644</Amplitude>
+                <Phase unit="DEGREES">74.20714323050001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0689695015</Frequency>
+                <Amplitude>0.2671241245</Amplitude>
+                <Phase unit="DEGREES">73.855639518</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0705760076</Frequency>
+                <Amplitude>0.2728954501</Amplitude>
+                <Phase unit="DEGREES">73.4970496623</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.072219934</Frequency>
+                <Amplitude>0.2787714045</Amplitude>
+                <Phase unit="DEGREES">73.13127961869999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.07390215230000001</Frequency>
+                <Amplitude>0.2847525673</Amplitude>
+                <Phase unit="DEGREES">72.7582373702</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0756235546</Frequency>
+                <Amplitude>0.2908394283</Amplitude>
+                <Phase unit="DEGREES">72.3778331852</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0773850535</Frequency>
+                <Amplitude>0.2970323815</Amplitude>
+                <Phase unit="DEGREES">71.9899798878</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0791875829</Frequency>
+                <Amplitude>0.30333171789999996</Amplitude>
+                <Phase unit="DEGREES">71.5945931393</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0810320987</Frequency>
+                <Amplitude>0.30973761910000003</Amplitude>
+                <Phase unit="DEGREES">71.1915917329</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0829195787</Frequency>
+                <Amplitude>0.31625015030000003</Amplitude>
+                <Phase unit="DEGREES">70.7808978988</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.08485102380000001</Frequency>
+                <Amplitude>0.3228692531</Amplitude>
+                <Phase unit="DEGREES">70.3624376214</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0868274581</Frequency>
+                <Amplitude>0.3295947387</Amplitude>
+                <Phase unit="DEGREES">69.9361409674</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0888499294</Frequency>
+                <Amplitude>0.3364262801</Amplitude>
+                <Phase unit="DEGREES">69.5019424239</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0909195101</Frequency>
+                <Amplitude>0.3433634054</Amplitude>
+                <Phase unit="DEGREES">69.0597812468</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0930372975</Frequency>
+                <Amplitude>0.35040549049999997</Amplitude>
+                <Phase unit="DEGREES">68.6096018181</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.09520441460000001</Frequency>
+                <Amplitude>0.3575517514</Amplitude>
+                <Phase unit="DEGREES">68.1513540107</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.09742201029999999</Frequency>
+                <Amplitude>0.3648012375</Amplitude>
+                <Phase unit="DEGREES">67.6849935608</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.0996912604</Frequency>
+                <Amplitude>0.37215282450000003</Amplitude>
+                <Phase unit="DEGREES">67.2104824462</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.10201336820000001</Frequency>
+                <Amplitude>0.37960520729999997</Amplitude>
+                <Phase unit="DEGREES">66.7277892685</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1043895648</Frequency>
+                <Amplitude>0.3871568938</Amplitude>
+                <Phase unit="DEGREES">66.2368896384</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.10682111009999999</Frequency>
+                <Amplitude>0.394806198</Amplitude>
+                <Phase unit="DEGREES">65.7377665623</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1093092934</Frequency>
+                <Amplitude>0.4025512347</Amplitude>
+                <Phase unit="DEGREES">65.2304108286</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.11185543390000001</Frequency>
+                <Amplitude>0.4103899131</Amplitude>
+                <Phase unit="DEGREES">64.7148213902</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1144608817</Frequency>
+                <Amplitude>0.41831993240000004</Amplitude>
+                <Phase unit="DEGREES">64.1910057434</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.11712701810000001</Frequency>
+                <Amplitude>0.426338777</Amplitude>
+                <Phase unit="DEGREES">63.6589802987</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1198552569</Frequency>
+                <Amplitude>0.4344437122</Amplitude>
+                <Phase unit="DEGREES">63.118770741999995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.12264704439999999</Frequency>
+                <Amplitude>0.4426317817</Amplitude>
+                <Phase unit="DEGREES">62.570412383699995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1255038611</Frequency>
+                <Amplitude>0.45089980399999996</Amplitude>
+                <Phase unit="DEGREES">62.0139504921</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1284272216</Frequency>
+                <Amplitude>0.459244372</Amplitude>
+                <Phase unit="DEGREES">61.449440608900005</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1314186758</Frequency>
+                <Amplitude>0.4676618512</Amplitude>
+                <Phase unit="DEGREES">60.8769488437</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.13447981</Frequency>
+                <Amplitude>0.4761483803</Amplitude>
+                <Phase unit="DEGREES">60.2965521435</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1376122472</Frequency>
+                <Amplitude>0.4846998724</Amplitude>
+                <Phase unit="DEGREES">59.708338535900005</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1408176482</Frequency>
+                <Amplitude>0.4933120176</Amplitude>
+                <Phase unit="DEGREES">59.1124073405</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1440977126</Frequency>
+                <Amplitude>0.5019802858</Amplitude>
+                <Phase unit="DEGREES">58.5088693474</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1474541795</Frequency>
+                <Amplitude>0.5106999321</Amplitude>
+                <Phase unit="DEGREES">57.8978469587</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1508888286</Frequency>
+                <Amplitude>0.5194660024000001</Amplitude>
+                <Phase unit="DEGREES">57.279474289</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1544034809</Frequency>
+                <Amplitude>0.528273</Amplitude>
+                <Phase unit="DEGREES">56.6538972248</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.158</Frequency>
+                <Amplitude>0.5371165969</Amplitude>
+                <Phase unit="DEGREES">56.0212734364</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1616802928</Frequency>
+                <Amplitude>0.5459902384</Amplitude>
+                <Phase unit="DEGREES">55.3817723425</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1654463106</Frequency>
+                <Amplitude>0.5548885593</Amplitude>
+                <Phase unit="DEGREES">54.7355750242</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1693000502</Frequency>
+                <Amplitude>0.563805694</Amplitude>
+                <Phase unit="DEGREES">54.0828740859</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.173243555</Frequency>
+                <Amplitude>0.5727356303</Amplitude>
+                <Phase unit="DEGREES">53.423873461999996</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1772789158</Frequency>
+                <Amplitude>0.581672225</Amplitude>
+                <Phase unit="DEGREES">52.7587881683</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1814082722</Frequency>
+                <Amplitude>0.5906092193</Amplitude>
+                <Phase unit="DEGREES">52.0878439954</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1856338137</Frequency>
+                <Amplitude>0.5995402567</Amplitude>
+                <Phase unit="DEGREES">51.4112771469</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1899577807</Frequency>
+                <Amplitude>0.608458901</Amplitude>
+                <Phase unit="DEGREES">50.7293338185</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1943824658</Frequency>
+                <Amplitude>0.6173586554</Amplitude>
+                <Phase unit="DEGREES">50.0422697216</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.1989102151</Frequency>
+                <Amplitude>0.6262329827</Amplitude>
+                <Phase unit="DEGREES">49.3503495506</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.20354342920000001</Frequency>
+                <Amplitude>0.6350753261</Amplitude>
+                <Phase unit="DEGREES">48.6538463962</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.20828456469999998</Frequency>
+                <Amplitude>0.6438791303</Amplitude>
+                <Phase unit="DEGREES">47.9530411062</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.21313613539999998</Frequency>
+                <Amplitude>0.6526378635</Amplitude>
+                <Phase unit="DEGREES">47.2482215975</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.21810071379999998</Frequency>
+                <Amplitude>0.661345039</Amplitude>
+                <Phase unit="DEGREES">46.539682120600006</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2231809321</Frequency>
+                <Amplitude>0.6699942377</Amplitude>
+                <Phase unit="DEGREES">45.8277224818</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.22837948379999998</Frequency>
+                <Amplitude>0.6785791297</Amplitude>
+                <Phase unit="DEGREES">45.1126472266</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2336991253</Frequency>
+                <Amplitude>0.6870934964000001</Amplitude>
+                <Phase unit="DEGREES">44.3947647888</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2391426773</Frequency>
+                <Amplitude>0.6955312518000001</Amplitude>
+                <Phase unit="DEGREES">43.6743866096</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.24471302579999998</Frequency>
+                <Amplitude>0.7038864631999999</Amplitude>
+                <Phase unit="DEGREES">42.951826233199995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2504131244</Frequency>
+                <Amplitude>0.7121533713</Amplitude>
+                <Phase unit="DEGREES">42.2273983837</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2562459954</Frequency>
+                <Amplitude>0.7203264095999999</Amplitude>
+                <Phase unit="DEGREES">41.5014180283</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2622147314</Frequency>
+                <Amplitude>0.7284002222</Amplitude>
+                <Phase unit="DEGREES">40.7741994341</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2683224971</Frequency>
+                <Amplitude>0.7363696808</Amplitude>
+                <Phase unit="DEGREES">40.0460552235</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2745725309</Frequency>
+                <Amplitude>0.7442299007</Amplitude>
+                <Phase unit="DEGREES">39.3172954346</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2809681468</Frequency>
+                <Amplitude>0.7519762548000001</Amplitude>
+                <Phase unit="DEGREES">38.5882265917</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2875127357</Frequency>
+                <Amplitude>0.7596043861</Amplitude>
+                <Phase unit="DEGREES">37.8591507932</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.2942097676</Frequency>
+                <Amplitude>0.7671102192</Amplitude>
+                <Phase unit="DEGREES">37.1303648205</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3010627934</Frequency>
+                <Amplitude>0.7744899697</Amplitude>
+                <Phase unit="DEGREES">36.4021592754</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3080754468</Frequency>
+                <Amplitude>0.781740152</Amplitude>
+                <Phase unit="DEGREES">35.6748177482</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3152514458</Frequency>
+                <Amplitude>0.788857585</Amplitude>
+                <Phase unit="DEGREES">34.9486160246</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3225945953</Frequency>
+                <Amplitude>0.7958393972</Amplitude>
+                <Phase unit="DEGREES">34.223821331799996</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3301087887</Frequency>
+                <Amplitude>0.8026830287000001</Amplitude>
+                <Phase unit="DEGREES">33.5006916305</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3377980101</Frequency>
+                <Amplitude>0.8093862323000001</Amplitude>
+                <Phase unit="DEGREES">32.7794749547</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.34566633659999996</Frequency>
+                <Amplitude>0.815947073</Amplitude>
+                <Phase unit="DEGREES">32.0604088018</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3537179399</Frequency>
+                <Amplitude>0.8223639256</Amplitude>
+                <Phase unit="DEGREES">31.343719575399998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.36195708909999996</Frequency>
+                <Amplitude>0.8286354709</Amplitude>
+                <Phase unit="DEGREES">30.6296220836</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.37038815280000004</Frequency>
+                <Amplitude>0.8347606905</Amplitude>
+                <Phase unit="DEGREES">29.918319091199997</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3790156012</Frequency>
+                <Amplitude>0.8407388604000001</Amplitude>
+                <Phase unit="DEGREES">29.210000929899998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.38784400869999996</Frequency>
+                <Amplitude>0.8465695431</Amplitude>
+                <Phase unit="DEGREES">28.5048451627</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.3968780562</Frequency>
+                <Amplitude>0.8522525787999999</Amplitude>
+                <Phase unit="DEGREES">27.803016306</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.40612253369999995</Frequency>
+                <Amplitude>0.8577880754</Amplitude>
+                <Phase unit="DEGREES">27.1046656054</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.41558234270000005</Frequency>
+                <Amplitude>0.863176398</Amplitude>
+                <Phase unit="DEGREES">26.4099308658</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.42526249899999996</Frequency>
+                <Amplitude>0.8684181573</Amplitude>
+                <Phase unit="DEGREES">25.7189363329</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.43516813509999996</Frequency>
+                <Amplitude>0.8735141973999999</Amplitude>
+                <Phase unit="DEGREES">25.031792625500003</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4453045031</Frequency>
+                <Amplitude>0.878465583</Amplitude>
+                <Phase unit="DEGREES">24.348596715</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4556769775</Frequency>
+                <Amplitude>0.8832735866</Amplitude>
+                <Phase unit="DEGREES">23.669431949899998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4662910578</Frequency>
+                <Amplitude>0.8879396751</Amplitude>
+                <Phase unit="DEGREES">22.9943681237</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4771523718</Frequency>
+                <Amplitude>0.8924654961</Amplitude>
+                <Phase unit="DEGREES">22.323461580900002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4882666783</Frequency>
+                <Amplitude>0.8968528644</Amplitude>
+                <Phase unit="DEGREES">21.6567553607</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.4996398703</Frequency>
+                <Amplitude>0.9011037481</Amplitude>
+                <Phase unit="DEGREES">20.9942793727</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5090689</Frequency>
+                <Amplitude>0.9108023999999999</Amplitude>
+                <Phase unit="DEGREES">21.330189999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5203457</Frequency>
+                <Amplitude>0.9139431999999998</Amplitude>
+                <Phase unit="DEGREES">20.710620000000002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5318724</Frequency>
+                <Amplitude>0.9170947</Amplitude>
+                <Phase unit="DEGREES">20.09104</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5436544</Frequency>
+                <Amplitude>0.9202572</Amplitude>
+                <Phase unit="DEGREES">19.47146</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5556974</Frequency>
+                <Amplitude>0.9234304</Amplitude>
+                <Phase unit="DEGREES">18.851879999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5680071999999999</Frequency>
+                <Amplitude>0.9266148000000001</Amplitude>
+                <Phase unit="DEGREES">18.232310000000002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5805895999999999</Frequency>
+                <Amplitude>0.92981</Amplitude>
+                <Phase unit="DEGREES">17.61273</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.5934508000000001</Frequency>
+                <Amplitude>0.9330162000000001</Amplitude>
+                <Phase unit="DEGREES">16.99315</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6065969</Frequency>
+                <Amplitude>0.9362335999999999</Amplitude>
+                <Phase unit="DEGREES">16.37358</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6200342</Frequency>
+                <Amplitude>0.9388321</Amplitude>
+                <Phase unit="DEGREES">15.84075</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6337691</Frequency>
+                <Amplitude>0.9412767</Amplitude>
+                <Phase unit="DEGREES">15.33005</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6478083</Frequency>
+                <Amplitude>0.9437277000000001</Amplitude>
+                <Phase unit="DEGREES">14.81935</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6621585</Frequency>
+                <Amplitude>0.9461851000000001</Amplitude>
+                <Phase unit="DEGREES">14.30865</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6768266</Frequency>
+                <Amplitude>0.9486488999999999</Amplitude>
+                <Phase unit="DEGREES">13.79795</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.6918196</Frequency>
+                <Amplitude>0.9511190999999999</Amplitude>
+                <Phase unit="DEGREES">13.28725</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.7071447</Frequency>
+                <Amplitude>0.9535957</Amplitude>
+                <Phase unit="DEGREES">12.776539999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.7228094</Frequency>
+                <Amplitude>0.9560788</Amplitude>
+                <Phase unit="DEGREES">12.26585</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.738821</Frequency>
+                <Amplitude>0.9585683</Amplitude>
+                <Phase unit="DEGREES">11.755139999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.7551873</Frequency>
+                <Amplitude>0.9603396000000001</Amplitude>
+                <Phase unit="DEGREES">11.206669999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.7719161999999999</Frequency>
+                <Amplitude>0.9619791999999999</Amplitude>
+                <Phase unit="DEGREES">10.65115</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.7890155</Frequency>
+                <Amplitude>0.9636214</Amplitude>
+                <Phase unit="DEGREES">10.09564</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8064938</Frequency>
+                <Amplitude>0.9652665000000001</Amplitude>
+                <Phase unit="DEGREES">9.540127</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8243591999999998</Frequency>
+                <Amplitude>0.9669145</Amplitude>
+                <Phase unit="DEGREES">8.984613000000001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8426203000000001</Frequency>
+                <Amplitude>0.9685651</Amplitude>
+                <Phase unit="DEGREES">8.429101</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8612859</Frequency>
+                <Amplitude>0.9702187</Amplitude>
+                <Phase unit="DEGREES">7.873587</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8803651</Frequency>
+                <Amplitude>0.9718751</Amplitude>
+                <Phase unit="DEGREES">7.318074</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.8998669</Frequency>
+                <Amplitude>0.9735343000000001</Amplitude>
+                <Phase unit="DEGREES">6.762561</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.9198006</Frequency>
+                <Amplitude>0.9749178</Amplitude>
+                <Phase unit="DEGREES">6.264926</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.940176</Frequency>
+                <Amplitude>0.9762687</Amplitude>
+                <Phase unit="DEGREES">5.774493</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.9610027</Frequency>
+                <Amplitude>0.9776214</Amplitude>
+                <Phase unit="DEGREES">5.28406</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">0.9822907</Frequency>
+                <Amplitude>0.9789760000000001</Amplitude>
+                <Phase unit="DEGREES">4.793628</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.00405</Frequency>
+                <Amplitude>0.9803325</Amplitude>
+                <Phase unit="DEGREES">4.303195</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.026292</Frequency>
+                <Amplitude>0.9816908000000001</Amplitude>
+                <Phase unit="DEGREES">3.812762</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.049026</Frequency>
+                <Amplitude>0.9830511000000001</Amplitude>
+                <Phase unit="DEGREES">3.3223300000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.0722639999999999</Frequency>
+                <Amplitude>0.9844130999999999</Amplitude>
+                <Phase unit="DEGREES">2.831897</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.096017</Frequency>
+                <Amplitude>0.9857771000000001</Amplitude>
+                <Phase unit="DEGREES">2.3414639999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.120296</Frequency>
+                <Amplitude>0.9864491</Amplitude>
+                <Phase unit="DEGREES">1.852438</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.1451129999999998</Frequency>
+                <Amplitude>0.9870735999999999</Amplitude>
+                <Phase unit="DEGREES">1.363509</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.170479</Frequency>
+                <Amplitude>0.9876985999999999</Amplitude>
+                <Phase unit="DEGREES">0.8745796</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.196407</Frequency>
+                <Amplitude>0.9883238999999999</Amplitude>
+                <Phase unit="DEGREES">0.38565040000000006</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.22291</Frequency>
+                <Amplitude>0.9889496999999999</Amplitude>
+                <Phase unit="DEGREES">-0.10327889999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.25</Frequency>
+                <Amplitude>0.9895757</Amplitude>
+                <Phase unit="DEGREES">-0.5922081</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.27769</Frequency>
+                <Amplitude>0.9902021999999999</Amplitude>
+                <Phase unit="DEGREES">-1.081137</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.305993</Frequency>
+                <Amplitude>0.9908292</Amplitude>
+                <Phase unit="DEGREES">-1.570067</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.334924</Frequency>
+                <Amplitude>0.9914565999999999</Amplitude>
+                <Phase unit="DEGREES">-2.058996</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.364495</Frequency>
+                <Amplitude>0.9922718</Amplitude>
+                <Phase unit="DEGREES">-2.592279</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.3947209999999999</Frequency>
+                <Amplitude>0.9930911</Amplitude>
+                <Phase unit="DEGREES">-3.1263799999999997</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.425617</Frequency>
+                <Amplitude>0.9939111999999999</Amplitude>
+                <Phase unit="DEGREES">-3.660481</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.4571969999999999</Frequency>
+                <Amplitude>0.9947319</Amplitude>
+                <Phase unit="DEGREES">-4.194583000000001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.489476</Frequency>
+                <Amplitude>0.9955533000000001</Amplitude>
+                <Phase unit="DEGREES">-4.728683999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.522471</Frequency>
+                <Amplitude>0.9963754000000001</Amplitude>
+                <Phase unit="DEGREES">-5.262786</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.5561969999999998</Frequency>
+                <Amplitude>0.9971982</Amplitude>
+                <Phase unit="DEGREES">-5.796887</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.59067</Frequency>
+                <Amplitude>0.9980215</Amplitude>
+                <Phase unit="DEGREES">-6.330989</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.6259059999999999</Frequency>
+                <Amplitude>0.9988259</Amplitude>
+                <Phase unit="DEGREES">-6.865483</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.661923</Frequency>
+                <Amplitude>0.9989507</Amplitude>
+                <Phase unit="DEGREES">-7.413519</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.698738</Frequency>
+                <Amplitude>0.9990754000000001</Amplitude>
+                <Phase unit="DEGREES">-7.961555000000001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.7363680000000001</Frequency>
+                <Amplitude>0.9992002000000001</Amplitude>
+                <Phase unit="DEGREES">-8.509591</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.774832</Frequency>
+                <Amplitude>0.9993249</Amplitude>
+                <Phase unit="DEGREES">-9.057628</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.8141479999999999</Frequency>
+                <Amplitude>0.9994496999999999</Amplitude>
+                <Phase unit="DEGREES">-9.605663</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.8543349999999998</Frequency>
+                <Amplitude>0.9995745</Amplitude>
+                <Phase unit="DEGREES">-10.1537</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.8954119999999999</Frequency>
+                <Amplitude>0.9996993000000001</Amplitude>
+                <Phase unit="DEGREES">-10.70174</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.937399</Frequency>
+                <Amplitude>0.9998242</Amplitude>
+                <Phase unit="DEGREES">-11.24977</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">1.980316</Frequency>
+                <Amplitude>0.99998</Amplitude>
+                <Phase unit="DEGREES">-11.8017</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.024184</Frequency>
+                <Amplitude>1.000521</Amplitude>
+                <Phase unit="DEGREES">-12.40203</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.069023</Frequency>
+                <Amplitude>1.0010620000000001</Amplitude>
+                <Phase unit="DEGREES">-13.002369999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.114856</Frequency>
+                <Amplitude>1.0016040000000002</Amplitude>
+                <Phase unit="DEGREES">-13.6027</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.1617040000000003</Frequency>
+                <Amplitude>1.002146</Amplitude>
+                <Phase unit="DEGREES">-14.203029999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.20959</Frequency>
+                <Amplitude>1.002688</Amplitude>
+                <Phase unit="DEGREES">-14.803360000000001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.258537</Frequency>
+                <Amplitude>1.003231</Amplitude>
+                <Phase unit="DEGREES">-15.40369</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.308568</Frequency>
+                <Amplitude>1.003774</Amplitude>
+                <Phase unit="DEGREES">-16.00402</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.3597069999999998</Frequency>
+                <Amplitude>1.004317</Amplitude>
+                <Phase unit="DEGREES">-16.60435</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.411979</Frequency>
+                <Amplitude>1.0048110000000001</Amplitude>
+                <Phase unit="DEGREES">-17.2133</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.465409</Frequency>
+                <Amplitude>1.00495</Amplitude>
+                <Phase unit="DEGREES">-17.88502</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.520022</Frequency>
+                <Amplitude>1.005088</Amplitude>
+                <Phase unit="DEGREES">-18.556729999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.575846</Frequency>
+                <Amplitude>1.005227</Amplitude>
+                <Phase unit="DEGREES">-19.22844</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.632906</Frequency>
+                <Amplitude>1.005365</Amplitude>
+                <Phase unit="DEGREES">-19.90015</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.69123</Frequency>
+                <Amplitude>1.0055040000000002</Amplitude>
+                <Phase unit="DEGREES">-20.57186</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.750846</Frequency>
+                <Amplitude>1.005642</Amplitude>
+                <Phase unit="DEGREES">-21.243579999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.811782</Frequency>
+                <Amplitude>1.005781</Amplitude>
+                <Phase unit="DEGREES">-21.91529</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.874068</Frequency>
+                <Amplitude>1.0059200000000001</Amplitude>
+                <Phase unit="DEGREES">-22.587</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">2.937735</Frequency>
+                <Amplitude>1.006049</Amplitude>
+                <Phase unit="DEGREES">-23.28124</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.002811</Frequency>
+                <Amplitude>1.00613</Amplitude>
+                <Phase unit="DEGREES">-24.087870000000002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.069329</Frequency>
+                <Amplitude>1.006211</Amplitude>
+                <Phase unit="DEGREES">-24.89449</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.137321</Frequency>
+                <Amplitude>1.006292</Amplitude>
+                <Phase unit="DEGREES">-25.70111</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.206818</Frequency>
+                <Amplitude>1.006373</Amplitude>
+                <Phase unit="DEGREES">-26.507740000000002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.277856</Frequency>
+                <Amplitude>1.0064540000000002</Amplitude>
+                <Phase unit="DEGREES">-27.314359999999997</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.3504660000000004</Frequency>
+                <Amplitude>1.006535</Amplitude>
+                <Phase unit="DEGREES">-28.12098</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.424686</Frequency>
+                <Amplitude>1.006616</Amplitude>
+                <Phase unit="DEGREES">-28.927609999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.500549</Frequency>
+                <Amplitude>1.006697</Amplitude>
+                <Phase unit="DEGREES">-29.73423</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.578093</Frequency>
+                <Amplitude>1.006788</Amplitude>
+                <Phase unit="DEGREES">-30.56745</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.6573550000000004</Frequency>
+                <Amplitude>1.006913</Amplitude>
+                <Phase unit="DEGREES">-31.49881</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.738372</Frequency>
+                <Amplitude>1.007039</Amplitude>
+                <Phase unit="DEGREES">-32.43016</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.8211839999999997</Frequency>
+                <Amplitude>1.0071649999999999</Amplitude>
+                <Phase unit="DEGREES">-33.36152</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.9058309999999996</Frequency>
+                <Amplitude>1.007291</Amplitude>
+                <Phase unit="DEGREES">-34.29287</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">3.992352</Frequency>
+                <Amplitude>1.007417</Amplitude>
+                <Phase unit="DEGREES">-35.22422</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.0807910000000005</Frequency>
+                <Amplitude>1.007543</Amplitude>
+                <Phase unit="DEGREES">-36.155570000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.171188</Frequency>
+                <Amplitude>1.0076690000000001</Amplitude>
+                <Phase unit="DEGREES">-37.086929999999995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.2635879999999995</Frequency>
+                <Amplitude>1.007795</Amplitude>
+                <Phase unit="DEGREES">-38.01828</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.358035</Frequency>
+                <Amplitude>1.0078479999999999</Amplitude>
+                <Phase unit="DEGREES">-39.009370000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.454573</Frequency>
+                <Amplitude>1.007692</Amplitude>
+                <Phase unit="DEGREES">-40.17088</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.553251</Frequency>
+                <Amplitude>1.007535</Amplitude>
+                <Phase unit="DEGREES">-41.332390000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.654114</Frequency>
+                <Amplitude>1.007379</Amplitude>
+                <Phase unit="DEGREES">-42.4939</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.757212</Frequency>
+                <Amplitude>1.007223</Amplitude>
+                <Phase unit="DEGREES">-43.655409999999996</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.862593</Frequency>
+                <Amplitude>1.007067</Amplitude>
+                <Phase unit="DEGREES">-44.81693</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">4.970308999999999</Frequency>
+                <Amplitude>1.0069110000000001</Amplitude>
+                <Phase unit="DEGREES">-45.97844</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.08041</Frequency>
+                <Amplitude>1.0067549999999998</Amplitude>
+                <Phase unit="DEGREES">-47.13995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.192951</Frequency>
+                <Amplitude>1.006599</Amplitude>
+                <Phase unit="DEGREES">-48.30146</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.3079849999999995</Frequency>
+                <Amplitude>1.0062389999999999</Amplitude>
+                <Phase unit="DEGREES">-49.55585</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.425567</Frequency>
+                <Amplitude>1.005417</Amplitude>
+                <Phase unit="DEGREES">-51.02108</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.5457540000000005</Frequency>
+                <Amplitude>1.0045950000000001</Amplitude>
+                <Phase unit="DEGREES">-52.486290000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.668603</Frequency>
+                <Amplitude>1.003774</Amplitude>
+                <Phase unit="DEGREES">-53.951519999999995</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.794174</Frequency>
+                <Amplitude>1.002953</Amplitude>
+                <Phase unit="DEGREES">-55.416740000000004</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">5.922526</Frequency>
+                <Amplitude>1.002134</Amplitude>
+                <Phase unit="DEGREES">-56.88196</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.053721</Frequency>
+                <Amplitude>1.001314</Amplitude>
+                <Phase unit="DEGREES">-58.34718</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.187823000000001</Frequency>
+                <Amplitude>1.0004959999999998</Amplitude>
+                <Phase unit="DEGREES">-59.8124</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.324895</Frequency>
+                <Amplitude>0.9996780999999999</Amplitude>
+                <Phase unit="DEGREES">-61.27762</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.465003</Frequency>
+                <Amplitude>0.9983523000000001</Amplitude>
+                <Phase unit="DEGREES">-62.88612</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.6082160000000005</Frequency>
+                <Amplitude>0.9960943000000001</Amplitude>
+                <Phase unit="DEGREES">-64.75825999999999</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.754600999999999</Frequency>
+                <Amplitude>0.9938414000000001</Amplitude>
+                <Phase unit="DEGREES">-66.63041</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">6.904228</Frequency>
+                <Amplitude>0.9915934999999999</Amplitude>
+                <Phase unit="DEGREES">-68.50256</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.057169</Frequency>
+                <Amplitude>0.9893506999999999</Amplitude>
+                <Phase unit="DEGREES">-70.3747</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.2135</Frequency>
+                <Amplitude>0.9871129999999999</Amplitude>
+                <Phase unit="DEGREES">-72.24685</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.373292</Frequency>
+                <Amplitude>0.9848804</Amplitude>
+                <Phase unit="DEGREES">-74.11899</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.536625</Frequency>
+                <Amplitude>0.9826529</Amplitude>
+                <Phase unit="DEGREES">-75.99113</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.703575999999999</Frequency>
+                <Amplitude>0.9804303</Amplitude>
+                <Phase unit="DEGREES">-77.86328</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">7.874225</Frequency>
+                <Amplitude>0.9762021000000001</Amplitude>
+                <Phase unit="DEGREES">-79.95781</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.048653999999999</Frequency>
+                <Amplitude>0.9689767</Amplitude>
+                <Phase unit="DEGREES">-82.38815</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.226947000000001</Frequency>
+                <Amplitude>0.9618046999999998</Amplitude>
+                <Phase unit="DEGREES">-84.8185</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.409189999999999</Frequency>
+                <Amplitude>0.9546859000000001</Amplitude>
+                <Phase unit="DEGREES">-87.24885</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.595469</Frequency>
+                <Amplitude>0.9476197000000001</Amplitude>
+                <Phase unit="DEGREES">-89.6792</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.785875</Frequency>
+                <Amplitude>0.9406058</Amplitude>
+                <Phase unit="DEGREES">-92.10955</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">8.9805</Frequency>
+                <Amplitude>0.9336439000000001</Amplitude>
+                <Phase unit="DEGREES">-94.53989</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">9.179435</Frequency>
+                <Amplitude>0.9267334</Amplitude>
+                <Phase unit="DEGREES">-96.97025</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">9.382777</Frequency>
+                <Amplitude>0.9198741</Amplitude>
+                <Phase unit="DEGREES">-99.40059000000001</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">9.590624</Frequency>
+                <Amplitude>0.9080724</Amplitude>
+                <Phase unit="DEGREES">-102.0924</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">9.803075</Frequency>
+                <Amplitude>0.8903037</Amplitude>
+                <Phase unit="DEGREES">-105.1109</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">10.02023</Frequency>
+                <Amplitude>0.8728828000000002</Amplitude>
+                <Phase unit="DEGREES">-108.1294</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">10.2422</Frequency>
+                <Amplitude>0.8558028</Amplitude>
+                <Phase unit="DEGREES">-111.1478</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">10.46908</Frequency>
+                <Amplitude>0.8390569</Amplitude>
+                <Phase unit="DEGREES">-114.1663</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">10.70099</Frequency>
+                <Amplitude>0.8226386999999998</Amplitude>
+                <Phase unit="DEGREES">-117.1847</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">10.938039999999999</Frequency>
+                <Amplitude>0.8065419</Amplitude>
+                <Phase unit="DEGREES">-120.2032</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">11.18034</Frequency>
+                <Amplitude>0.7907599000000001</Amplitude>
+                <Phase unit="DEGREES">-123.2217</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">11.42801</Frequency>
+                <Amplitude>0.7752868</Amplitude>
+                <Phase unit="DEGREES">-126.2401</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">11.68116</Frequency>
+                <Amplitude>0.7532732</Amplitude>
+                <Phase unit="DEGREES">-129.3233</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">11.939919999999999</Frequency>
+                <Amplitude>0.7250536999999999</Amplitude>
+                <Phase unit="DEGREES">-132.4737</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">12.204410000000001</Frequency>
+                <Amplitude>0.6978914</Amplitude>
+                <Phase unit="DEGREES">-135.6241</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">12.47476</Frequency>
+                <Amplitude>0.6717466</Amplitude>
+                <Phase unit="DEGREES">-138.7745</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">12.7511</Frequency>
+                <Amplitude>0.6465812</Amplitude>
+                <Phase unit="DEGREES">-141.9249</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">13.033560000000001</Frequency>
+                <Amplitude>0.6223586</Amplitude>
+                <Phase unit="DEGREES">-145.0753</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">13.32228</Frequency>
+                <Amplitude>0.5990435000000001</Amplitude>
+                <Phase unit="DEGREES">-148.2257</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">13.6174</Frequency>
+                <Amplitude>0.5766018</Amplitude>
+                <Phase unit="DEGREES">-151.3761</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">13.91905</Frequency>
+                <Amplitude>0.5550008000000001</Amplitude>
+                <Phase unit="DEGREES">-154.5265</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">14.227379999999998</Frequency>
+                <Amplitude>0.5296741</Amplitude>
+                <Phase unit="DEGREES">-157.4353</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">14.542539999999999</Frequency>
+                <Amplitude>0.5018041</Amplitude>
+                <Phase unit="DEGREES">-160.136</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">14.86469</Frequency>
+                <Amplitude>0.47540059999999995</Amplitude>
+                <Phase unit="DEGREES">-162.8366</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">15.193970000000002</Frequency>
+                <Amplitude>0.4503863</Amplitude>
+                <Phase unit="DEGREES">-165.5373</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">15.53055</Frequency>
+                <Amplitude>0.42668829999999996</Amplitude>
+                <Phase unit="DEGREES">-168.238</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">15.874579999999998</Frequency>
+                <Amplitude>0.4042372</Amplitude>
+                <Phase unit="DEGREES">-170.9386</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">16.226229999999997</Frequency>
+                <Amplitude>0.38296740000000007</Amplitude>
+                <Phase unit="DEGREES">-173.6393</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">16.58567</Frequency>
+                <Amplitude>0.3628167</Amplitude>
+                <Phase unit="DEGREES">-176.34</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">16.95308</Frequency>
+                <Amplitude>0.3437263</Amplitude>
+                <Phase unit="DEGREES">-179.0406</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">17.32862</Frequency>
+                <Amplitude>0.3241589</Amplitude>
+                <Phase unit="DEGREES">-181.3866</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">17.71248</Frequency>
+                <Amplitude>0.304712</Amplitude>
+                <Phase unit="DEGREES">-183.4794</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">18.10485</Frequency>
+                <Amplitude>0.28643179999999996</Amplitude>
+                <Phase unit="DEGREES">-185.5722</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">18.50591</Frequency>
+                <Amplitude>0.2692482</Amplitude>
+                <Phase unit="DEGREES">-187.665</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">18.91585</Frequency>
+                <Amplitude>0.2530955</Amplitude>
+                <Phase unit="DEGREES">-189.7578</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">19.334870000000002</Frequency>
+                <Amplitude>0.2379118</Amplitude>
+                <Phase unit="DEGREES">-191.8506</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">19.763170000000002</Frequency>
+                <Amplitude>0.22363899999999998</Amplitude>
+                <Phase unit="DEGREES">-193.9434</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">20.20097</Frequency>
+                <Amplitude>0.21022249999999998</Amplitude>
+                <Phase unit="DEGREES">-196.0361</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">20.64846</Frequency>
+                <Amplitude>0.1976108</Amplitude>
+                <Phase unit="DEGREES">-198.1289</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">21.10586</Frequency>
+                <Amplitude>0.185417</Amplitude>
+                <Phase unit="DEGREES">-199.9007</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">21.57339</Frequency>
+                <Amplitude>0.1737889</Amplitude>
+                <Phase unit="DEGREES">-201.4837</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">22.051289999999998</Frequency>
+                <Amplitude>0.16289</Amplitude>
+                <Phase unit="DEGREES">-203.0667</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">22.53977</Frequency>
+                <Amplitude>0.1526747</Amplitude>
+                <Phase unit="DEGREES">-204.6497</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">23.03906</Frequency>
+                <Amplitude>0.1431</Amplitude>
+                <Phase unit="DEGREES">-206.2327</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">23.549429999999997</Frequency>
+                <Amplitude>0.1341258</Amplitude>
+                <Phase unit="DEGREES">-207.8157</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">24.071089999999998</Frequency>
+                <Amplitude>0.1257143</Amplitude>
+                <Phase unit="DEGREES">-209.3987</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">24.60431</Frequency>
+                <Amplitude>0.11783039999999999</Amplitude>
+                <Phase unit="DEGREES">-210.9817</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">25.14934</Frequency>
+                <Amplitude>0.1104409</Amplitude>
+                <Phase unit="DEGREES">-212.5647</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">25.70645</Frequency>
+                <Amplitude>0.10348289999999999</Amplitude>
+                <Phase unit="DEGREES">-213.8974</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">26.2759</Frequency>
+                <Amplitude>0.09694900000000001</Amplitude>
+                <Phase unit="DEGREES">-215.1101</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">26.85796</Frequency>
+                <Amplitude>0.09082765</Amplitude>
+                <Phase unit="DEGREES">-216.3228</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">27.452920000000002</Frequency>
+                <Amplitude>0.0850928</Amplitude>
+                <Phase unit="DEGREES">-217.5355</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">28.06105</Frequency>
+                <Amplitude>0.07972004</Amplitude>
+                <Phase unit="DEGREES">-218.7482</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">28.68266</Frequency>
+                <Amplitude>0.07468652</Amplitude>
+                <Phase unit="DEGREES">-219.9608</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">29.31803</Frequency>
+                <Amplitude>0.06997082</Amplitude>
+                <Phase unit="DEGREES">-221.1736</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">29.96748</Frequency>
+                <Amplitude>0.06555287</Amplitude>
+                <Phase unit="DEGREES">-222.3862</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">30.631320000000002</Frequency>
+                <Amplitude>0.06141386</Amplitude>
+                <Phase unit="DEGREES">-223.5989</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">31.309859999999997</Frequency>
+                <Amplitude>0.05750622</Amplitude>
+                <Phase unit="DEGREES">-224.6217</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">32.003440000000005</Frequency>
+                <Amplitude>0.05383643</Amplitude>
+                <Phase unit="DEGREES">-225.5714</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">32.71237</Frequency>
+                <Amplitude>0.05040083</Amplitude>
+                <Phase unit="DEGREES">-226.5211</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">33.437020000000004</Frequency>
+                <Amplitude>0.04718447</Amplitude>
+                <Phase unit="DEGREES">-227.4708</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">34.17771</Frequency>
+                <Amplitude>0.04417337</Amplitude>
+                <Phase unit="DEGREES">-228.4205</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">34.93481</Frequency>
+                <Amplitude>0.04135442</Amplitude>
+                <Phase unit="DEGREES">-229.3702</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">35.70868</Frequency>
+                <Amplitude>0.03871537</Amplitude>
+                <Phase unit="DEGREES">-230.3199</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">36.4997</Frequency>
+                <Amplitude>0.03624472</Amplitude>
+                <Phase unit="DEGREES">-231.2696</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">37.308240000000005</Frequency>
+                <Amplitude>0.03393175</Amplitude>
+                <Phase unit="DEGREES">-232.2193</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">38.13469</Frequency>
+                <Amplitude>0.03176025</Amplitude>
+                <Phase unit="DEGREES">-233.0071</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">38.97945</Frequency>
+                <Amplitude>0.029726</Amplitude>
+                <Phase unit="DEGREES">-233.7461</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">39.842909999999996</Frequency>
+                <Amplitude>0.02782204</Amplitude>
+                <Phase unit="DEGREES">-234.4851</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">40.72551</Frequency>
+                <Amplitude>0.02604003</Amplitude>
+                <Phase unit="DEGREES">-235.2241</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">41.62766</Frequency>
+                <Amplitude>0.02437216</Amplitude>
+                <Phase unit="DEGREES">-235.9631</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">42.54979</Frequency>
+                <Amplitude>0.02281111</Amplitude>
+                <Phase unit="DEGREES">-236.7021</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">43.49235</Frequency>
+                <Amplitude>0.02135005</Amplitude>
+                <Phase unit="DEGREES">-237.4411</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">44.45579</Frequency>
+                <Amplitude>0.01998257</Amplitude>
+                <Phase unit="DEGREES">-238.1801</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">45.44057</Frequency>
+                <Amplitude>0.01870269</Amplitude>
+                <Phase unit="DEGREES">-238.9191</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">46.44717</Frequency>
+                <Amplitude>0.01750974</Amplitude>
+                <Phase unit="DEGREES">-239.5766</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">47.47606</Frequency>
+                <Amplitude>0.01639394</Amplitude>
+                <Phase unit="DEGREES">-240.2155</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">48.52775</Frequency>
+                <Amplitude>0.01534925</Amplitude>
+                <Phase unit="DEGREES">-240.8544</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">49.60273</Frequency>
+                <Amplitude>0.01437113</Amplitude>
+                <Phase unit="DEGREES">-241.4933</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">50.70153</Frequency>
+                <Amplitude>0.01345534</Amplitude>
+                <Phase unit="DEGREES">-242.1323</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">51.824670000000005</Frequency>
+                <Amplitude>0.01259791</Amplitude>
+                <Phase unit="DEGREES">-242.7712</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">52.972680000000004</Frequency>
+                <Amplitude>0.01179511</Amplitude>
+                <Phase unit="DEGREES">-243.4101</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">54.14613000000001</Frequency>
+                <Amplitude>0.01104348</Amplitude>
+                <Phase unit="DEGREES">-244.049</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">55.345569999999995</Frequency>
+                <Amplitude>0.01033974</Amplitude>
+                <Phase unit="DEGREES">-244.688</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">56.571580000000004</Frequency>
+                <Amplitude>0.009686808</Amplitude>
+                <Phase unit="DEGREES">-245.2584</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">57.82475</Frequency>
+                <Amplitude>0.009076008</Amplitude>
+                <Phase unit="DEGREES">-245.8178</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">59.10568000000001</Frequency>
+                <Amplitude>0.00850372</Amplitude>
+                <Phase unit="DEGREES">-246.3772</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">60.41498000000001</Frequency>
+                <Amplitude>0.007967518</Amplitude>
+                <Phase unit="DEGREES">-246.9366</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">61.75329</Frequency>
+                <Amplitude>0.007465126</Amplitude>
+                <Phase unit="DEGREES">-247.49599999999998</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">63.12124</Frequency>
+                <Amplitude>0.0069944130000000005</Amplitude>
+                <Phase unit="DEGREES">-248.0554</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">64.5195</Frequency>
+                <Amplitude>0.006553381</Amplitude>
+                <Phase unit="DEGREES">-248.6148</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">65.94873</Frequency>
+                <Amplitude>0.006140158000000001</Amplitude>
+                <Phase unit="DEGREES">-249.1741</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">67.40961999999999</Frequency>
+                <Amplitude>0.00575299</Amplitude>
+                <Phase unit="DEGREES">-249.7335</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">68.90288000000001</Frequency>
+                <Amplitude>0.00539328</Amplitude>
+                <Phase unit="DEGREES">-250.1002</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">70.42921</Frequency>
+                <Amplitude>0.005056352</Amplitude>
+                <Phase unit="DEGREES">-250.4473</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">71.98935</Frequency>
+                <Amplitude>0.004740474000000001</Amplitude>
+                <Phase unit="DEGREES">-250.7943</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">73.58405</Frequency>
+                <Amplitude>0.004444328</Amplitude>
+                <Phase unit="DEGREES">-251.1413</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">75.21408000000001</Frequency>
+                <Amplitude>0.004166683</Amplitude>
+                <Phase unit="DEGREES">-251.4884</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">76.88022</Frequency>
+                <Amplitude>0.003906383</Amplitude>
+                <Phase unit="DEGREES">-251.8354</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">78.58326</Frequency>
+                <Amplitude>0.003662345</Amplitude>
+                <Phase unit="DEGREES">-252.1825</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">80.32404</Frequency>
+                <Amplitude>0.0034335520000000003</Amplitude>
+                <Phase unit="DEGREES">-252.5295</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">82.10336</Frequency>
+                <Amplitude>0.003219052</Amplitude>
+                <Phase unit="DEGREES">-252.8765</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">83.92211</Frequency>
+                <Amplitude>0.003014078</Amplitude>
+                <Phase unit="DEGREES">-253.3445</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">85.78115</Frequency>
+                <Amplitude>0.002821981</Amplitude>
+                <Phase unit="DEGREES">-253.8183</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">87.68137</Frequency>
+                <Amplitude>0.002642126</Amplitude>
+                <Phase unit="DEGREES">-254.2922</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">89.62366999999999</Frequency>
+                <Amplitude>0.002473734</Amplitude>
+                <Phase unit="DEGREES">-254.766</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">91.60901</Frequency>
+                <Amplitude>0.002316075</Amplitude>
+                <Phase unit="DEGREES">-255.2398</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">93.63833000000001</Frequency>
+                <Amplitude>0.002168463</Amplitude>
+                <Phase unit="DEGREES">-255.7137</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">95.7126</Frequency>
+                <Amplitude>0.002030259</Amplitude>
+                <Phase unit="DEGREES">-256.1875</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">97.83282</Frequency>
+                <Amplitude>0.001900864</Amplitude>
+                <Phase unit="DEGREES">-256.6614</Phase>
+              </ResponseListElement>
+              <ResponseListElement>
+                <Frequency unit="HERTZ">100.0</Frequency>
+                <Amplitude>0.001779715</Amplitude>
+                <Phase unit="DEGREES">-257.1352</Phase>
+              </ResponseListElement>
+            </ResponseList>
+            <StageGain>
+              <Value>21700000.0</Value>
+              <Frequency>3.851</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <Coefficients name="v to counts (electric)">
+              <Description>analog to digital conversion</Description>
+              <InputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">8.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>3.851</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>

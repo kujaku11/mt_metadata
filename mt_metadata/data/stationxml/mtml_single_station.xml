@@ -1,0 +1,2547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1"
+                xmlns:iris="http://www.fdsn.org/xml/station/1/iris"
+                xmlns:mt="http://emiw.org/xmlns/mt/1.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                schemaVersion="1.1"
+                xsi:schemaLocation="http://www.fdsn.org/xml/station/1 http://www.fdsn.org/xml/station/fdsn-station-1.1.xsd">
+   <Source>IRIS-DMC</Source>
+   <Module>mth5_to_mtml.m by A. Kelbert</Module>
+   <Created>2021-02-09T12:20:43</Created>
+   <Network code="ZU" endDate="2023-12-31T23:59:59" restrictedStatus="open"
+            startDate="2020-06-01T00:00:00">
+      <Description>USMTArray South Magnetotelluric Time Series</Description>
+      <Identifier type="DOI">10.17611/DP/EMTF/USMTARRAY/SOUTH</Identifier>
+      <Comment subject="mt.survey.citation_journal.doi">
+         <Value>10.666/test.doi</Value>
+      </Comment>
+      <Comment subject="mt.survey.id">
+         <Value>CONUS South-USGS</Value>
+      </Comment>
+      <Comment subject="mt.survey.project">
+         <Value>USMTArray</Value>
+      </Comment>
+      <Comment subject="mt.survey.geographic_name">
+         <Value>Southern USA</Value>
+      </Comment>
+      <Comment subject="mt.survey.summary">
+         <Value>Long-period EarthScope-style coverage of southern United States</Value>
+      </Comment>
+      <Comment subject="mt.survey.acknowledgements">
+         <Value/>
+      </Comment>
+      <Comment subject="mt.survey.comments">
+         <Value/>
+      </Comment>
+      <Comment subject="mt.survey.acquired_by.author">
+         <Value>Pellerin, L.</Value>
+      </Comment>
+      <Comment subject="mt.survey.acquired_by.comments">
+         <Value>Collected by Green Geophysics</Value>
+      </Comment>
+      <Operator>
+		<Agency>Oregon State University</Agency>
+         <Contact>
+            <Name>Schultz, A.</Name>
+            <Email>Adam.Schultz@oregonstate.edu</Email>
+         </Contact>
+      </Operator>
+      <SelectedNumberStations>1</SelectedNumberStations>
+      <Station alternateCode="REW09" code="REW09" endDate="2020-07-17T21:15:32"
+               iris:alternateNetworkCodes="_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA"
+               restrictedStatus="open"
+               startDate="2020-06-08T22:57:13">
+         <Comment subject="mt.station.data_type">
+            <Value>MT</Value>
+         </Comment>
+         <Comment subject="mt.station.run_list">
+            <Value>a, b, c, d, e</Value>
+         </Comment>
+         <Comment subject="mt.run:a.acquired_by">
+            <Value>author: Kristin Pratscher, comments: X array at 0 and 90 degrees. Site i rocky drainage basin proximal to basalt lava flows. Ln</Value>
+         </Comment>
+         <Comment subject="mt.run:a.metadata_by">
+            <Value>author: Jade Crosbie, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:a.comments">
+            <Value>author: machine generated, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:b.acquired_by">
+            <Value>author: Kristin Pratscher, comments: X array a 0 and 90 degreest. Site in rocky drainage basin proximal to basalt lava flows. L</Value>
+         </Comment>
+         <Comment subject="mt.run:b.metadata_by">
+            <Value>author: Jade Crosbie; Anna Kelbert, comments: A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.</Value>
+         </Comment>
+         <Comment subject="mt.run:b.comments">
+            <Value>author: machine generated, comments: A.Kelbert:Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.</Value>
+         </Comment>
+         <Comment subject="mt.run:c.acquired_by">
+            <Value>author: Kristin Pratscher, comments: X array at 0 and 90 degrees. Site in rocky drainage basin proximal to basalt lava flows. Li</Value>
+         </Comment>
+         <Comment subject="mt.run:c.metadata_by">
+            <Value>author: Jade Crosbie, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:c.comments">
+            <Value>author: machine generated, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:d.acquired_by">
+            <Value>author: Kristin Pratscher, comments: Replaced mag cable &amp; NIMS. X array at 0 and 90 degrees. Site in rocky drainage basin proxim</Value>
+         </Comment>
+         <Comment subject="mt.run:d.metadata_by">
+            <Value>author: Jade Crosbie, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:d.comments">
+            <Value>author: machine generated, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:e.acquired_by">
+            <Value>author: Kristin Pratscher, comments: Replaced mag cable &amp; NIMS. MX array at 0 and 90 degrees. Site in rocky drainage basin proxim</Value>
+         </Comment>
+         <Comment subject="mt.run:e.metadata_by">
+            <Value>author: Jade Crosbie, comments:</Value>
+         </Comment>
+         <Comment subject="mt.run:e.comments">
+            <Value>author: machine generated, comments:</Value>
+         </Comment>
+         <Comment subject="mt.station.orientation.method">
+            <Value>compass</Value>
+         </Comment>
+         <Comment subject="mt.station.orientation.reference_frame">
+            <Value>geographic</Value>
+         </Comment>
+         <Comment subject="mt.station.location.declination.value">
+            <Value>-666.0</Value>
+         </Comment>
+         <Comment subject="mt.station.location.declination.model">
+            <Value>IGRF-13</Value>
+         </Comment>
+         <Comment subject="mt.station.location.declination.comments">
+            <Value>igrf.m by Drew Compston</Value>
+         </Comment>
+         <Comment subject="mt.station.provenance.software.author">
+            <Value>Anna Kelbert, USGS</Value>
+         </Comment>
+         <Comment subject="mt.station.provenance.software.name">
+            <Value>mth5_metadata.m</Value>
+         </Comment>
+         <Comment subject="mt.station.provenance.software.version">
+            <Value>2021-02-01</Value>
+         </Comment>
+         <Latitude>35.1469128125</Latitude>
+         <Longitude>-117.160798541667</Longitude>
+         <Elevation>887.775</Elevation>
+         <Site>
+            <Name>Opal Mountain, CA, USA</Name>
+            <Country>USA</Country>
+         </Site>
+         <Equipment resourceId="mt.run.id:a">
+            <Type>LP</Type>
+            <Description>timing_system.type: GPS, firmware.author: Barry Narod, firmware.version: , power_source.type: battery</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>2612-09</SerialNumber>
+            <InstallationDate>2020-06-08T22:57:13</InstallationDate>
+            <RemovalDate>2020-06-08T23:54:50</RemovalDate>
+         </Equipment>
+         <Equipment resourceId="mt.run.id:b">
+            <Type>LP</Type>
+            <Description>timing_system.type: GPS, firmware.author: Barry Narod, firmware.version: , power_source.type: battery</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>2612-09</SerialNumber>
+            <InstallationDate>2020-06-09T00:08:03</InstallationDate>
+            <RemovalDate>2020-06-25T17:57:40</RemovalDate>
+         </Equipment>
+         <Equipment resourceId="mt.run.id:c">
+            <Type>LP</Type>
+            <Description>timing_system.type: GPS, firmware.author: Barry Narod, firmware.version: , power_source.type: battery</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>2612-09</SerialNumber>
+            <InstallationDate>2020-06-25T19:57:57</InstallationDate>
+            <RemovalDate>2020-07-04T01:16:15</RemovalDate>
+         </Equipment>
+         <Equipment resourceId="mt.run.id:d">
+            <Type>LP</Type>
+            <Description>timing_system.type: GPS, firmware.author: Barry Narod, firmware.version: , power_source.type: battery</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>2485</SerialNumber>
+            <InstallationDate>2020-07-04T02:59:02</InstallationDate>
+            <RemovalDate>2020-07-04T03:07:30</RemovalDate>
+         </Equipment>
+         <Equipment resourceId="mt.run.id:e">
+            <Type>LP</Type>
+            <Description>timing_system.type: GPS, firmware.author: Barry Narod, firmware.version: , power_source.type: battery</Description>
+            <Manufacturer>Barry Narod</Manufacturer>
+            <Model>NIMS</Model>
+            <SerialNumber>2485</SerialNumber>
+            <InstallationDate>2020-07-04T03:28:45</InstallationDate>
+            <RemovalDate>2020-07-17T21:15:32</RemovalDate>
+         </Equipment>
+         <CreationDate>2020-07-17T21:15:32</CreationDate>
+         <TotalNumberChannels>5</TotalNumberChannels>
+         <SelectedNumberChannels>5</SelectedNumberChannels>
+         <Channel alternateCode="Hx" code="LFN" endDate="2020-06-25T17:57:40" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-08T22:57:13">
+            <Comment subject="mt.run.id">
+               <Value>a</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>b</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>11.8287420852694</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hx time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.192</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hy" code="LFE" endDate="2020-06-25T17:57:40" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-08T22:57:13">
+            <Comment subject="mt.run.id">
+               <Value>a</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>b</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>101.828742085269</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hy time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.201</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hz" code="LFZ" endDate="2020-06-25T17:57:40" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-08T22:57:13">
+            <Comment subject="mt.run.id">
+               <Value>a</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>b</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>0</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hz time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.21</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ex" code="LQN" endDate="2020-06-25T17:57:40" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-08T22:57:13">
+            <Comment subject="mt.run.id">
+               <Value>a</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>b</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>11.8287420852694</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>94.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004007, negative: 2004008</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>45564967800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>94</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ey" code="LQE" endDate="2020-06-25T17:57:40" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-08T22:57:13">
+            <Comment subject="mt.run.id">
+               <Value>a</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>b</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>101.828742085269</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>94.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>45564967800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>94</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hx" code="LFN" endDate="2020-07-04T01:16:15" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-25T19:57:57">
+            <Comment subject="mt.run.id">
+               <Value>c</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>11.8287420213278</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hx time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.192</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hy" code="LFE" endDate="2020-07-04T01:16:15" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-25T19:57:57">
+            <Comment subject="mt.run.id">
+               <Value>c</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>101.828742021328</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hy time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.201</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hz" code="LFZ" endDate="2020-07-04T01:16:15" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-25T19:57:57">
+            <Comment subject="mt.run.id">
+               <Value>c</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>0</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hz time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.21</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ex" code="LQN" endDate="2020-07-04T01:16:15" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-25T19:57:57">
+            <Comment subject="mt.run.id">
+               <Value>c</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>11.8287420213278</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>94.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004007, negative:</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>45564967800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>94</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ey" code="LQE" endDate="2020-07-04T01:16:15" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-06-25T19:57:57">
+            <Comment subject="mt.run.id">
+               <Value>c</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>101.828742021328</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>4.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>1938934800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>4</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hx" code="LFN" endDate="2020-07-17T21:15:32" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-07-04T02:59:02">
+            <Comment subject="mt.run.id">
+               <Value>d</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>e</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>NaN</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hx time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.192</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hy" code="LFE" endDate="2020-07-17T21:15:32" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-07-04T02:59:02">
+            <Comment subject="mt.run.id">
+               <Value>d</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>e</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>NaN</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hy time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.201</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Hz" code="LFZ" endDate="2020-07-17T21:15:32" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-07-04T02:59:02">
+            <Comment subject="mt.run.id">
+               <Value>d</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>e</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>0</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>nT</Name>
+               <Description>nanotesla</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>Magnetometer</Type>
+               <Description>NIMS</Description>
+               <Manufacturer>Barry Narod</Manufacturer>
+               <Model>fluxgate</Model>
+               <SerialNumber>1303-01</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>100</Value>
+                  <Frequency>0</Frequency>
+                  <InputUnits>
+                     <Name>nT</Name>
+                     <Description>nanotesla</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="magnetic field 3 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>nT</Name>
+                        <Description>nanotesla</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1984.31439386406</NormalizationFactor>
+                     <NormalizationFrequency>0</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-6.283185</Real>
+                        <Imaginary>10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-6.283185</Real>
+                        <Imaginary>-10.882477</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <Coefficients name="V to counts (magnetic)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>100</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <Coefficients name="Hz time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.21</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ex" code="LQN" endDate="2020-07-17T21:15:32" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-07-04T02:59:02">
+            <Comment subject="mt.run.id">
+               <Value>d</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>e</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>NaN</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>94.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004007, negative: 2004008</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>45564967800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>94</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+         <Channel alternateCode="Ey" code="LQE" endDate="2020-07-17T21:15:32" locationCode=""
+                  restrictedStatus="open"
+                  startDate="2020-07-04T02:59:02">
+            <Comment subject="mt.run.id">
+               <Value>d</Value>
+            </Comment>
+            <Comment subject="mt.run.id">
+               <Value>e</Value>
+            </Comment>
+            <Latitude>35.1469128125</Latitude>
+            <Longitude>-117.160798541667</Longitude>
+            <Elevation>887.775</Elevation>
+            <Depth>0</Depth>
+            <Azimuth>NaN</Azimuth>
+            <Dip>0</Dip>
+            <Type>GEOPHYSICAL</Type>
+            <SampleRate>1</SampleRate>
+            <ClockDrift>0</ClockDrift>
+            <CalibrationUnits>
+               <Name>mV/km</Name>
+               <Description>millivolts per kilometer</Description>
+            </CalibrationUnits>
+            <Sensor>
+               <Type>dipole</Type>
+               <Description>94.0 meters</Description>
+               <Manufacturer>Oregon State University</Manufacturer>
+               <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+               <SerialNumber>positive: 2004002, negative: 2004004</SerialNumber>
+            </Sensor>
+            <Response>
+               <InstrumentSensitivity>
+                  <Value>45564967800</Value>
+                  <Frequency>0.01</Frequency>
+                  <InputUnits>
+                     <Name>mV/km</Name>
+                     <Description>millivolts per kilometer</Description>
+                  </InputUnits>
+                  <OutputUnits>
+                     <Name>counts</Name>
+                     <Description>digital counts</Description>
+                  </OutputUnits>
+               </InstrumentSensitivity>
+               <Stage number="1">
+                  <PolesZeros name="electric field 5 pole Butterworth low-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>313383.601119193</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Pole number="0">
+                        <Real>-3.883009</Real>
+                        <Imaginary>11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="1">
+                        <Real>-3.883009</Real>
+                        <Imaginary>-11.951875</Imaginary>
+                     </Pole>
+                     <Pole number="2">
+                        <Real>-10.166194</Real>
+                        <Imaginary>7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="3">
+                        <Real>-10.166194</Real>
+                        <Imaginary>-7.386513</Imaginary>
+                     </Pole>
+                     <Pole number="4">
+                        <Real>-12.566371</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="2">
+                  <PolesZeros name="electric field 1 pole Butterworth high-pass">
+                     <Description>butterworth filter</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                     <Zero number="0">
+                        <Real>0</Real>
+                        <Imaginary>0</Imaginary>
+                     </Zero>
+                     <Pole number="0">
+                        <Real>-0.000167</Real>
+                        <Imaginary>0</Imaginary>
+                     </Pole>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="3">
+                  <PolesZeros name="mV/km to V/m">
+                     <Description>unit conversion</Description>
+                     <InputUnits>
+                        <Name>mV/km</Name>
+                        <Description>millivolts per kilometer</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>1e-06</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="4">
+                  <PolesZeros name="V/m to V">
+                     <Description>electric dipole</Description>
+                     <InputUnits>
+                        <Name>V/m</Name>
+                        <Description>volts per meter</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </OutputUnits>
+                     <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+                     <NormalizationFactor>1.00000351809047</NormalizationFactor>
+                     <NormalizationFrequency>0.01</NormalizationFrequency>
+                  </PolesZeros>
+                  <StageGain>
+                     <Value>94</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="5">
+                  <Coefficients name="V to counts (electric)">
+                     <Description>analog to digital conversion</Description>
+                     <InputUnits>
+                        <Name>V</Name>
+                        <Description>volt</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>0</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>484733700000000</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+               <Stage number="6">
+                  <Coefficients name="electric time offset">
+                     <Description>time correction</Description>
+                     <InputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </InputUnits>
+                     <OutputUnits>
+                        <Name>count</Name>
+                        <Description>digital counts</Description>
+                     </OutputUnits>
+                     <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+                     <Numerator minusError="0.00000" plusError="0.00000">1.00000</Numerator>
+                  </Coefficients>
+                  <Decimation>
+                     <InputSampleRate>1</InputSampleRate>
+                     <Factor>1</Factor>
+                     <Offset>0</Offset>
+                     <Delay>-0.285</Delay>
+                     <Correction>0</Correction>
+                  </Decimation>
+                  <StageGain>
+                     <Value>1</Value>
+                     <Frequency>0.01</Frequency>
+                  </StageGain>
+               </Stage>
+            </Response>
+         </Channel>
+      </Station>
+   </Network>
+</FDSNStationXML>

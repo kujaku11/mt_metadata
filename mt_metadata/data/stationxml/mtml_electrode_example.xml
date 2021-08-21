@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.1">
+  <Source>ObsPy 1.2.2</Source>
+  <Module>ObsPy 1.2.2</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2021-03-26T22:09:06.824016Z</Created>
+  <Network code="XX" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
+    <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
+    <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
+    <Comment subject="mt.survey.acquired_by.author">
+      <Value>Bedrosian, P. A.</Value>
+    </Comment>
+    <Comment subject="mt.survey.citation_journal.doi">
+      <Value>10.3133/ofr20151185</Value>
+    </Comment>
+    <Comment subject="mt.survey.geographic_name">
+      <Value>Florida, USA</Value>
+    </Comment>
+    <Comment subject="mt.survey.project">
+      <Value>USGS-GEOMAG</Value>
+    </Comment>
+    <Comment subject="mt.survey.id">
+      <Value>Florida</Value>
+    </Comment>
+    <Operator>
+      <Agency>U.S. Geological Survey</Agency>
+      <Contact>
+        <Name>Bedrosian, P. A.</Name>
+        <Email>pbedrosian@usgs.gov</Email>
+      </Contact>
+      <WebSite/>
+    </Operator>
+    <Station code="FL001" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="FL001">
+      <Comment subject="mt.station.data_type">
+        <Value>MT</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.comments">
+        <Value>Declination obtained from the instrument GNSS NMEA sequence</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.model">
+        <Value>Unknown</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.value">
+        <Value>-4.1</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.method">
+        <Value>compass</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.reference_frame">
+        <Value>geographic</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.author">
+        <Value>Anna Kelbert, USGS</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.name">
+        <Value>mth5_metadata.m</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.version">
+        <Value>2020-10-29</Value>
+      </Comment>
+      <Comment subject="mt.station.run_list">
+        <Value>a, b</Value>
+      </Comment>
+      <Comment subject="mt.run:a.acquired_by">
+        <Value>author: BB, comments: it's cold in florida</Value>
+      </Comment>
+      <Comment subject="mt.run:a.metadata_by">
+        <Value>author: Anna Kelbert; Paul Bedrosian, comments: Paul Bedrosian-- Ey, electrode dug up</Value>
+      </Comment>
+      <Comment subject="mt.run:a.comments">
+        <Value>author: machine generated, comments: Paul Bedrosian-- Ey, electrode dug up</Value>
+      </Comment>
+      <Comment subject="mt.run:b.acquired_by">
+        <Value>author: blb, comments: Big Bend Wildlife Conservation, sunny, warm, very sandy, animals dug up site a bit during run a</Value>
+      </Comment>
+      <Comment subject="mt.run:b.metadata_by">
+        <Value>author: Anna Kelbert</Value>
+      </Comment>
+      <Comment subject="mt.run:b.comments">
+        <Value>author: machine generated, comments: </Value>
+      </Comment>
+      <Latitude unit="DEGREES">29.7203555</Latitude>
+      <Longitude unit="DEGREES">-83.4854715</Longitude>
+      <Elevation unit="METERS">0.0</Elevation>
+      <Site>
+        <Name>Beachy Keen, FL, USA</Name>
+      </Site>
+      <Equipment resourceId="mt.run.id:a">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>1305-1</SerialNumber>
+        <InstallationDate>2015-01-08T19:49:15+00:00</InstallationDate>
+        <RemovalDate>2015-12-31T23:59:59+00:00</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:b">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>1305-1</SerialNumber>
+        <InstallationDate>2016-01-01T00:00:00+00:00</InstallationDate>
+        <RemovalDate>2016-06-01T23:59:59+00:00</RemovalDate>
+      </Equipment>
+      <CreationDate>2015-01-08T19:49:15.000000Z</CreationDate>
+      <TerminationDate>2016-06-01T23:59:59.000000Z</TerminationDate>
+      <Channel code="MQN" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open" alternateCode="ex" locationCode="">
+        <Comment subject="mt.run.id">
+          <Value>a</Value>
+        </Comment>
+        <Comment subject="mt.run.id">
+          <Value>b</Value>
+        </Comment>
+        <Latitude unit="DEGREES">29.7203555</Latitude>
+        <Longitude unit="DEGREES">-83.4854715</Longitude>
+        <Elevation>0.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">355.9</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate unit="SAMPLES/S">8.0</SampleRate>
+        <CalibrationUnits>
+          <Name>mV/km</Name>
+          <Description>millivolts per kilometer</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Type>dipole</Type>
+          <Description>84.5 meters</Description>
+          <Manufacturer>Oregon State University</Manufacturer>
+          <Model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</Model>
+          <SerialNumber>positive: 3, negative: 1</SerialNumber>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>40960151795.1</Value>
+            <Frequency>0.305</Frequency>
+            <InputUnits>
+              <Name>mV/km</Name>
+              <Description>milliVolts per kilometer</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>count</Name>
+              <Description>digital counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros name="electric field 5 pole Butterworth low-pass">
+              <Description>butterworth filter</Description>
+              <InputUnits>
+                <Name>mV/km</Name>
+                <Description>milliVolts per kilometer</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>mV/km</Name>
+                <Description>milliVolts per kilometer</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>313383.601119193</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
+              <Pole number="0">
+                <Real>-3.883009</Real>
+                <Imaginary>11.951875</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real>-3.883009</Real>
+                <Imaginary>-11.951875</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real>-10.166194</Real>
+                <Imaginary>7.386513</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real>-10.166194</Real>
+                <Imaginary>-7.386513</Imaginary>
+              </Pole>
+              <Pole number="4">
+                <Real>-12.566371</Real>
+                <Imaginary>0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <PolesZeros name="electric field 1 pole Butterworth high-pass">
+              <Description>butterworth filter</Description>
+              <InputUnits>
+                <Name>mV/km</Name>
+                <Description>milliVolts per kilometer</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>mV/km</Name>
+                <Description>milliVolts per kilometer</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.00000351809047</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
+              <Zero number="0">
+                <Real>0.0</Real>
+                <Imaginary>0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real>-0.000167</Real>
+                <Imaginary>0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <PolesZeros name="mV/km to V/m">
+              <Description>unit conversion</Description>
+              <InputUnits>
+                <Name>mV/km</Name>
+                <Description>milliVolts per kilometer</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V/m</Name>
+                <Description>Volts per meter</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1e-06</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <PolesZeros name="V/m to V">
+              <Description>electric dipole</Description>
+              <InputUnits>
+                <Name>V/m</Name>
+                <Description>Volts per meter</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.305</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>84.5</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="5">
+            <Coefficients name="V to counts (electric)">
+              <Description>analog to digital conversion</Description>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">8.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>484733700000000.0</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="6">
+            <Coefficients name="electric time offset">
+              <Description>time correction</Description>
+              <InputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>count</Name>
+                <Description>digital counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">8.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.1525</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1</Value>
+              <Frequency>0.305</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>
