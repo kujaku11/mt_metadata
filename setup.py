@@ -57,4 +57,5 @@ setup(
     url="https://github.com/kujaku11/mt_metadata",
     version="0.1.3",
     zip_safe=False,
+    package_data={"": ["data/mt_xml/*.xml", "data/stationxml/*xml"]}
 )
