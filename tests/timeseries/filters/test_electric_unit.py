@@ -41,7 +41,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
-from mt_metadata.utils import STATIONXML_ELECTRIC
+from mt_metadata import STATIONXML_ELECTRIC
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 
@@ -111,7 +111,7 @@ class TestFilterElectric(unittest.TestCase):
     def test_stage_03(self):
         f2 = create_filter_from_stage(self.stages[2])
         self.assertIsInstance(f2, PoleZeroFilter)
-        self.assertEqual(f2.name, "mV/km to V/m".lower())
+        self.assertEqual(f2.name, "mv per km to v per m".lower())
         self.assertEqual(f2.type, "zpk")
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 0)
@@ -122,7 +122,7 @@ class TestFilterElectric(unittest.TestCase):
     def test_stage_04(self):
         f2 = create_filter_from_stage(self.stages[3])
         self.assertIsInstance(f2, PoleZeroFilter)
-        self.assertEqual(f2.name, "V/m to V".lower())
+        self.assertEqual(f2.name, "v per m to v".lower())
         self.assertEqual(f2.type, "zpk")
         self.assertAlmostEqual(f2.normalization_factor, 1, 2)
         self.assertEqual(f2.n_poles, 0)

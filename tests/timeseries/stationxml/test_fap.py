@@ -10,7 +10,7 @@ from obspy.core import inventory
 
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils import STATIONXML_FAP
+from mt_metadata import STATIONXML_FAP
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 

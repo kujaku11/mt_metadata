@@ -15,7 +15,7 @@ Created on Fri Mar 26 08:15:49 2021
 # =============================================================================
 import unittest
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils import STATIONXML_ELECTRIC
+from mt_metadata import STATIONXML_ELECTRIC
 from obspy.core import inventory
 
 # =============================================================================
@@ -290,8 +290,8 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
                 attr_0 = getattr(stage_0, key)
                 attr_1 = getattr(stage_1, key)
                 if isinstance(attr_0, str):
-                    attr_0 = attr_0.lower()
-                    attr_1 = attr_1.lower()
+                    attr_0 = attr_0.lower().replace("/", " per ")
+                    attr_1 = attr_1.lower().replace("/", " per ")
                 self.assertEqual(attr_0, attr_1)
 
 

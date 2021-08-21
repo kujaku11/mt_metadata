@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
-from mt_metadata.utils import STATIONXML_01, STATIONXML_02
+from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 # =============================================================================
@@ -146,8 +146,8 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                             [
                                 "electric field 5 pole butterworth low-pass",
                                 "electric field 1 pole butterworth high-pass",
-                                "mv/km to v/m",
-                                "v/m to v",
+                                "mv per km to v per m",
+                                "v per m to v",
                                 "v to counts (electric)",
                                 "electric time offset",
                             ],
@@ -342,8 +342,8 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                             [
                                 "electric field 5 pole butterworth low-pass",
                                 "electric field 1 pole butterworth high-pass",
-                                "mv/km to v/m",
-                                "v/m to v",
+                                "mv per km to v per m",
+                                "v per m to v",
                                 "v to counts (electric)",
                                 "electric time offset",
                             ],
@@ -392,8 +392,8 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                             [
                                 "electric field 5 pole butterworth low-pass",
                                 "electric field 1 pole butterworth high-pass",
-                                "mv/km to v/m",
-                                "v/m to v",
+                                "mv per km to v per m",
+                                "v per m to v",
                                 "v to counts (electric)",
                                 "electric time offset",
                             ],
