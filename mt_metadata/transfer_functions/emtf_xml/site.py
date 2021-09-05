@@ -14,13 +14,18 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import Location, Orientation
+from mt_metadata.transfer_functions.tf import (Location, Orientation)
+from mt_metadata.transfer_functions.emtf_xml import (
+    DataQualityNotes, DataQualityWarnings
+    )
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
 attr_dict = get_schema("site", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Location()._attr_dict, "location")
 attr_dict.add_dict(Orientation()._attr_dict, "orientation")
+attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
+attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
 # =============================================================================
 class Site(Base):
     __doc__ = write_lines(attr_dict)
@@ -35,6 +40,8 @@ class Site(Base):
         self.acquired_by = None
         self.location = Location()
         self.orientation = Orientation()
+        self.data_quality_notes = DataQualityNotes()
+        self.data_quality_warnings = DataQualityWarnings()
         self.run_list = []
         self._start_dt = MTime()
         self._end_dt = MTime()

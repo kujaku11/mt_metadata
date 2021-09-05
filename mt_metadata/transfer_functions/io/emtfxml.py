@@ -32,7 +32,23 @@ class EMTFXML(emtf_xml.EMTF):
     
     def __init__(self):
         super().__init__()
+        self.logger = setup_logger(self.__class__.__name__)
         self.external_url = emtf_xml.ExternalUrl()
+        self.primary_data = emtf_xml.PrimaryData()
+        self.attachment = emtf_xml.Attachment()
+        self.provenance = emtf_xml.Provenance()
+        self.copyright = emtf_xml.Copyright()
+        self.site = emtf_xml.Site()
+        
+        
+        self.element_keys = [
+            "external_url",
+            "primary_data",
+            "attachment",
+            "provenance",
+            "copyright",
+            "site",
+            ]
         
     def read(self, fn):
         """
@@ -58,22 +74,54 @@ class EMTFXML(emtf_xml.EMTF):
         self._read_product_id(root_dict)
         self._read_notes(root_dict)
         self._read_tags(root_dict)
-        self._read_external_url(root_dict)
+        for element in self.element_keys:
+            self._read_element(root_dict, element)
         
     def _read_description(self, root_dict):
-        self.description = root_dict["description"]
+        try:
+            self.description = root_dict["description"]
+        except KeyError:
+            self.logger.debug("no description in xml")
+            
         
     def _read_product_id(self, root_dict):
-        self.product_id = root_dict["product_id"]
+        try:
+            self.product_id = root_dict["product_id"]
+        except KeyError:
+            self.logger.debug("no product_id in xml")
     
     def _read_notes(self, root_dict):
-        self.notes = root_dict["notes"]
+        try:
+            self.notes = root_dict["notes"]
+        except KeyError:
+            self.logger.debug("no notes in xml")
         
     def _read_tags(self, root_dict):
-        self.tags = root_dict["tags"]
+        try:
+            self.tags = root_dict["tags"]
+        except KeyError:
+            self.logger.debug("no tags in xml")
+            
+    def _read_element(self, root_dict, element_name):
+        """
+        generic read an element given a name 
         
-    def _read_external_url(self, root_dict):
-        self.external_url.from_dict(root_dict["external_url"])
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :param element_name: DESCRIPTION
+        :type element_name: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        element_name = validate_attribute(element_name)
+        try:
+            element_dict = {element_name: root_dict[element_name]}
+            getattr(self, element_name).from_dict(element_dict)
+        except KeyError:
+            print(f"No {element_name} in EMTF XML")
+            self.logger.debug(f"No {element_name} in EMTF XML")
         
     def _convert_keys_to_lower_case(self, root_dict):
         """
