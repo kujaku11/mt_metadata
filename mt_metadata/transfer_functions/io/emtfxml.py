@@ -219,7 +219,6 @@ class EMTFXML(emtf_xml.EMTF):
         """
         res = OrderedDict()
         if isinstance(root_dict, (dict, OrderedDict)):
-            
             for key in root_dict.keys():
                 new_key = validate_attribute(key)
                 res[new_key] = root_dict[key]
