@@ -19,6 +19,16 @@
         "alias": [],
         "example": "USMTArray.NVS11.2020"
     },
+	"tags": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "tags that help describe the data",
+        "options": [],
+        "alias": [],
+        "example": "impedance, induction vectors"
+    },
     "sub_type": {
         "type": "string",
         "required": true,

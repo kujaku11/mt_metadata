@@ -42,6 +42,7 @@ from .magnetic import Magnetic
 from .electric import Electric
 from .channels import Channels
 from .site_layout import SiteLayout
+from .emtf import EMTF
 
 
 __all__ = [
@@ -52,6 +53,7 @@ __all__ = [
     "Provenance",
     "Citation",
     "Copyright",
+    "Comment",
     "DataQualityNotes",
     "DataQualityWarnings",
     "Site",
@@ -67,5 +69,6 @@ __all__ = [
     "Magnetic",
     "Electric",
     "Channels",
-    "Layout",
+    "SiteLayout",
+    "EMTF"
 ]
