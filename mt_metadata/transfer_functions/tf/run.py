@@ -72,7 +72,7 @@ for ch_dict in [
         rrhx_dict,
         rrhy_dict,
         ]:
-    
+    ch_dict.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
     dq_dict = get_schema("data_quality", SCHEMA_FN_PATHS)
     dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
     ch_dict.add_dict(dq_dict, "data_quality")
