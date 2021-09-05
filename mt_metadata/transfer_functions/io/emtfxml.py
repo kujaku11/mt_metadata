@@ -21,9 +21,11 @@ from mt_metadata.transfer_functions import emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
+from mt_metadata.transfer_functions.tf import Instrument
 
 meta_classes = dict([(validate_attribute(k), v) for k, v in inspect.getmembers(emtf_xml, inspect.isclass)])
-
+meta_classes["instrument"] = Instrument
+meta_classes["magnetometer"] = Instrument
 # =============================================================================
 # EMTFXML
 # =============================================================================
@@ -121,26 +123,88 @@ class EMTFXML(emtf_xml.EMTF):
         """
         
         element_name = validate_attribute(element_name)
-        try:
-            value = root_dict[element_name]
-            if isinstance(value, (dict, OrderedDict)):
-                element_dict = {element_name: value}
-                getattr(self, element_name).from_dict(element_dict)
-            elif isinstance(value, list):
-                xml_attr = []
+        if element_name in ["field_notes"]:
+            self._read_field_notes(root_dict)
+        else:
+            try:
+                value = root_dict[element_name]
+                if isinstance(value, (dict, OrderedDict)):
+                    element_dict = {element_name: value}
+                    getattr(self, element_name).from_dict(element_dict)
+                # elif isinstance(value, list):
+                #     xml_attr = []
+                #     for item in value:
+                #         print("Element", element_name)
+                #         obj = meta_classes[element_name]()
+                #         if isinstance(item, (dict, OrderedDict)):
+                #             for key, piece in item.items():
+                #                 print("attr", key)
+                #                 if isinstance(piece, (dict, OrderedDict)):
+                #                     print("value is a dict")
+                #                     a = meta_classes[key]()
+                #                     a.from_dict({key: piece})
+                                    
+                #                 elif isinstance(piece, (list)):
+                #                     print("value is a list", piece)
+                #                     a = []
+                #                     for iota in piece:
+                #                         print("iota", iota)
+                #                         b = meta_classes[key]()
+                #                         b.from_dict({key: iota})
+                #                         a.append(b)
+                                        
+                                    
+                #                 obj.set_attr_from_name(key, a)
+                                    
+                #         xml_attr.append(obj)
+                #     setattr(self, element_name, xml_attr)
+            except KeyError:
+                print(f"No {element_name} in EMTF XML")
+                self.logger.debug(f"No {element_name} in EMTF XML")
+            
+    def _read_field_notes(self, root_dict):
+        """
+        Field notes are odd so have a special reader to do it piece by
+        painstaking piece.
+        
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self.field_notes = []
+        for run in root_dict["field_notes"]:
+            f = meta_classes["field_notes"]()
+            f.run = run["run"]
+            f.instrument.from_dict({"instrument": run["instrument"]})
+            
+            
+            if isinstance(run["magnetometer"], list):
+                f.magnetometer = []
+                for mag in run["magnetometer"]:
+                    m = meta_classes["magnetometer"]()
+                    m.from_dict({"magnetometer": mag})
+                    f.magnetometer.append(m)
+            else:
+                f.magnetometer = meta_classes["magnetometer"]()
+                f.magnetometer.from_dict({"magnetometer": run["magnetometer"]})
                 
-                for item in value:
-                    print(element_name, type(item))
-                    element_dict = {element_name: item}
-                    obj = meta_classes[element_name]()
-                    obj.from_dict(element_dict)
-                    xml_attr.append(obj)
-                setattr(self, element_name, xml_attr)
+            if isinstance(run["dipole"], list):
+                f.dipole = []
+                for mag in run["dipole"]:
+                    m = meta_classes["dipole"]()
+                    m.from_dict({"dipole": mag})
+                    f.dipole.append(m)
+            else:
+                f.dipole = meta_classes["dipole"]()
+                f.dipole.from_dict({"dipole": run["dipole"]})
+            
+            self.field_notes.append(f)
+            
                     
                     
-        except KeyError:
-            print(f"No {element_name} in EMTF XML")
-            self.logger.debug(f"No {element_name} in EMTF XML")
+        
         
     def _convert_keys_to_lower_case(self, root_dict):
         """

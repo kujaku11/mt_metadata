@@ -27,6 +27,7 @@ attr_dict.add_dict(Instrument()._attr_dict, "hx")
 attr_dict.add_dict(Instrument()._attr_dict, "hy")
 attr_dict.add_dict(Instrument()._attr_dict, "hz")
 attr_dict.add_dict(Instrument()._attr_dict, "magnetometer")
+attr_dict.add_dict(Instrument()._attr_dict, "instrument")
 
 # =============================================================================
 class FieldNotes(Base):

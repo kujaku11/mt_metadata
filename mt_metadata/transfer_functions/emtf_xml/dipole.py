@@ -30,5 +30,6 @@ class Dipole(Base):
         self.azimuth = None
         self.positive = Electrode()
         self.negative = Electrode()
+        self.name = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

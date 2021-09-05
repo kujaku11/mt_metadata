@@ -28,5 +28,15 @@
         "options": [],
         "alias": [],
         "example": "90"
+    },
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the dipole",
+        "options": [],
+        "alias": [],
+        "example": "ex"
     }
 }

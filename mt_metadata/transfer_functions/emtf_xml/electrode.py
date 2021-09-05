@@ -26,5 +26,6 @@ class Electrode(Base):
     def __init__(self, **kwargs):
         self.location = None
         self.number = 0
+        self.value = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
