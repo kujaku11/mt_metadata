@@ -12,6 +12,7 @@ Created on Sat Sep  4 17:59:53 2021
 # =============================================================================
 # Imports
 # =============================================================================
+import inspect
 from pathlib import Path
 from collections import OrderedDict
 from xml.etree import cElementTree as et
@@ -20,6 +21,8 @@ from mt_metadata.transfer_functions import emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
+
+meta_classes = dict([(validate_attribute(k), v) for k, v in inspect.getmembers(emtf_xml, inspect.isclass)])
 
 # =============================================================================
 # EMTFXML
@@ -39,6 +42,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance = emtf_xml.Provenance()
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
+        self.field_notes = [emtf_xml.FieldNotes()]
         
         
         self.element_keys = [
@@ -48,6 +52,7 @@ class EMTFXML(emtf_xml.EMTF):
             "provenance",
             "copyright",
             "site",
+            "field_notes",
             ]
         
     def read(self, fn):
@@ -117,8 +122,22 @@ class EMTFXML(emtf_xml.EMTF):
         
         element_name = validate_attribute(element_name)
         try:
-            element_dict = {element_name: root_dict[element_name]}
-            getattr(self, element_name).from_dict(element_dict)
+            value = root_dict[element_name]
+            if isinstance(value, (dict, OrderedDict)):
+                element_dict = {element_name: value}
+                getattr(self, element_name).from_dict(element_dict)
+            elif isinstance(value, list):
+                xml_attr = []
+                
+                for item in value:
+                    print(element_name, type(item))
+                    element_dict = {element_name: item}
+                    obj = meta_classes[element_name]()
+                    obj.from_dict(element_dict)
+                    xml_attr.append(obj)
+                setattr(self, element_name, xml_attr)
+                    
+                    
         except KeyError:
             print(f"No {element_name} in EMTF XML")
             self.logger.debug(f"No {element_name} in EMTF XML")
@@ -136,14 +155,17 @@ class EMTFXML(emtf_xml.EMTF):
         """
         res = OrderedDict()
         if isinstance(root_dict, (dict, OrderedDict)):
+            
             for key in root_dict.keys():
                 new_key = validate_attribute(key)
                 res[new_key] = root_dict[key]
                 if isinstance(res[new_key], (dict, OrderedDict, list)):
                    res[new_key] = self._convert_keys_to_lower_case(res[new_key])
         elif isinstance(root_dict, list):
+            res = []
             for item in root_dict:
                 item = self._convert_keys_to_lower_case(item)
+                res.append(item)
         return res
             
         

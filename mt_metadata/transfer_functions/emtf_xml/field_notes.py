@@ -22,9 +22,12 @@ from mt_metadata.transfer_functions.tf import Instrument
 attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Dipole()._attr_dict, "ex")
 attr_dict.add_dict(Dipole()._attr_dict, "ey")
+attr_dict.add_dict(Dipole()._attr_dict, "dipole")
 attr_dict.add_dict(Instrument()._attr_dict, "hx")
 attr_dict.add_dict(Instrument()._attr_dict, "hy")
 attr_dict.add_dict(Instrument()._attr_dict, "hz")
+attr_dict.add_dict(Instrument()._attr_dict, "magnetometer")
+
 # =============================================================================
 class FieldNotes(Base):
     __doc__ = write_lines(attr_dict)
@@ -35,6 +38,8 @@ class FieldNotes(Base):
         self._start_dt = MTime()
         self._end_dt = MTime()
         self.instrument = Instrument()
+        self.magnetometer = [Instrument()]
+        self.dipole = [Dipole()]
         self.hx = Instrument()
         self.hy = Instrument()
         self.hz = Instrument()
