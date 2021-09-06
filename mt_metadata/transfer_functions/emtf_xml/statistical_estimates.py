@@ -14,6 +14,7 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from .estimate import Estimate
 
 # =============================================================================
 attr_dict = get_schema("statistical_estimates", SCHEMA_FN_PATHS)
@@ -25,5 +26,19 @@ class StatisticalEstimates(Base):
 
     def __init__(self, **kwargs):
 
-        self.estimates_list = []
+        self._estimates_list = []
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    @property
+    def estimates_list(self):
+        return self._estimates_list
+    
+    @estimates_list.setter
+    def estimates_list(self, value):
+        if not isinstance(value, list):
+            value = [value]
+        for item in value:
+            est = Estimate()
+            est.from_dict(item)
+            self._estimates_list.append(est)
+            

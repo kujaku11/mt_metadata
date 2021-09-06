@@ -33,6 +33,7 @@ from .electrode import Electrode
 from .dipole import Dipole
 from .field_notes import FieldNotes
 from .software import Software
+from .remote_ref import RemoteRef
 from .processing_info import ProcessingInfo
 from .estimate import Estimate
 from .statistical_estimates import StatisticalEstimates
@@ -42,7 +43,9 @@ from .magnetic import Magnetic
 from .electric import Electric
 from .channels import Channels
 from .site_layout import SiteLayout
+from .data import TransferFunction
 from .emtf import EMTF
+
 
 
 __all__ = [
@@ -61,6 +64,7 @@ __all__ = [
     "Dipole",
     "FieldNotes",
     "Software",
+    "RemoteRef",
     "ProcessingInfo",
     "Estimate",
     "StatisticalEstimates",
@@ -70,5 +74,7 @@ __all__ = [
     "Electric",
     "Channels",
     "SiteLayout",
-    "EMTF"
+    "TransferFunction",
+    "EMTF",
+ 
 ]

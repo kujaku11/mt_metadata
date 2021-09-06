@@ -37,6 +37,7 @@ class EMTFXML(emtf_xml.EMTF):
     
     def __init__(self):
         super().__init__()
+        self._root_dict = None
         self.logger = setup_logger(self.__class__.__name__)
         self.external_url = emtf_xml.ExternalUrl()
         self.primary_data = emtf_xml.PrimaryData()
@@ -45,9 +46,18 @@ class EMTFXML(emtf_xml.EMTF):
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
         self.field_notes = [emtf_xml.FieldNotes()]
+        self.processing_info = emtf_xml.ProcessingInfo()
+        self.statistical_estimates = emtf_xml.StatisticalEstimates()
+        self.data_types = emtf_xml.DataTypes()
+        self.site_layout = emtf_xml.SiteLayout()
+        self.tf = emtf_xml.TransferFunction()
         
         
         self.element_keys = [
+            "description",
+            "product_id",
+            "sub_type", 
+            "notes",
             "external_url",
             "primary_data",
             "attachment",
@@ -55,7 +65,25 @@ class EMTFXML(emtf_xml.EMTF):
             "copyright",
             "site",
             "field_notes",
+            "processing_info",
+            "statistical_estimates",
+            "data_types",
+            "site_layout",
+            "data"
             ]
+        
+        self._reader_dict = {
+            "description": self._read_description,
+            "product_id": self._read_product_id,
+            "sub_type": self._read_sub_type,
+            "notes": self._read_notes,
+            "tags": self._read_tags,
+            "field_notes": self._read_field_notes,
+            "statistical_estimates": self._read_statistical_estimates,
+            "site_layout": self._read_site_layout,
+            "data_types": self._read_data_types,
+            "data": self._read_data,
+            }
         
     def read(self, fn):
         """
@@ -75,39 +103,34 @@ class EMTFXML(emtf_xml.EMTF):
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
         root_dict = self._convert_keys_to_lower_case(root_dict)
-        
-        
-        self._read_description(root_dict)
-        self._read_product_id(root_dict)
-        self._read_notes(root_dict)
-        self._read_tags(root_dict)
+        self._root_dict = root_dict
+
         for element in self.element_keys:
-            self._read_element(root_dict, element)
-        
-    def _read_description(self, root_dict):
+            if element in self._reader_dict.keys():
+                self._reader_dict[element](root_dict)
+            else:
+                self._read_element(root_dict, element)
+                
+    def _read_single(self, root_dict, key):
         try:
-            self.description = root_dict["description"]
+            setattr(self, key, root_dict[key])
         except KeyError:
             self.logger.debug("no description in xml")
-            
         
+    def _read_description(self, root_dict):
+        self._read_single(root_dict, "description")
+
     def _read_product_id(self, root_dict):
-        try:
-            self.product_id = root_dict["product_id"]
-        except KeyError:
-            self.logger.debug("no product_id in xml")
+        self._read_single(root_dict, "product_id")
+        
+    def _read_sub_type(self, root_dict):
+        self._read_single(root_dict, "sub_type")
     
     def _read_notes(self, root_dict):
-        try:
-            self.notes = root_dict["notes"]
-        except KeyError:
-            self.logger.debug("no notes in xml")
+        self._read_single(root_dict, "notes")
         
     def _read_tags(self, root_dict):
-        try:
-            self.tags = root_dict["tags"]
-        except KeyError:
-            self.logger.debug("no tags in xml")
+        self._read_single(root_dict, "tags")
             
     def _read_element(self, root_dict, element_name):
         """
@@ -125,39 +148,16 @@ class EMTFXML(emtf_xml.EMTF):
         element_name = validate_attribute(element_name)
         if element_name in ["field_notes"]:
             self._read_field_notes(root_dict)
+        elif element_name in ["statistical_estimates"]:
+            self._read_statistical_estimates(root_dict)
+        elif element_name in ["site_layout"]:
+            self._read_site_layout(root_dict)
         else:
             try:
                 value = root_dict[element_name]
-                if isinstance(value, (dict, OrderedDict)):
-                    element_dict = {element_name: value}
-                    getattr(self, element_name).from_dict(element_dict)
-                # elif isinstance(value, list):
-                #     xml_attr = []
-                #     for item in value:
-                #         print("Element", element_name)
-                #         obj = meta_classes[element_name]()
-                #         if isinstance(item, (dict, OrderedDict)):
-                #             for key, piece in item.items():
-                #                 print("attr", key)
-                #                 if isinstance(piece, (dict, OrderedDict)):
-                #                     print("value is a dict")
-                #                     a = meta_classes[key]()
-                #                     a.from_dict({key: piece})
-                                    
-                #                 elif isinstance(piece, (list)):
-                #                     print("value is a list", piece)
-                #                     a = []
-                #                     for iota in piece:
-                #                         print("iota", iota)
-                #                         b = meta_classes[key]()
-                #                         b.from_dict({key: iota})
-                #                         a.append(b)
-                                        
-                                    
-                #                 obj.set_attr_from_name(key, a)
-                                    
-                #         xml_attr.append(obj)
-                #     setattr(self, element_name, xml_attr)
+                element_dict = {element_name: value}
+                getattr(self, element_name).from_dict(element_dict)
+                    
             except KeyError:
                 print(f"No {element_name} in EMTF XML")
                 self.logger.debug(f"No {element_name} in EMTF XML")
@@ -202,10 +202,70 @@ class EMTFXML(emtf_xml.EMTF):
             
             self.field_notes.append(f)
             
-                    
-                    
+            
+    def _read_statistical_estimates(self, root_dict):
+        """
+        Read in statistical estimate descriptions
         
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
         
+        self.statistical_estimates.estimates_list = root_dict["statistical_estimates"]["estimate"]
+            
+    def _read_data_types(self, root_dict):
+        """
+        Read in data types
+        
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        self.data_types.data_types_list = root_dict["data_types"]["data_type"]
+        
+    def _read_site_layout(self, root_dict):
+        """
+        read site layout into the proper input/output channels
+        
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        # read input channels
+        for ch in ['input_channels', 'output_channels']:
+            ch_list = []
+            try:
+                c_list = root_dict["site_layout"][ch]["magnetic"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
+                    
+            except (KeyError):
+                pass
+            
+            try:
+                c_list = root_dict["site_layout"][ch]["electric"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"electric": ch_dict} for ch_dict in c_list]
+            except (KeyError):
+                pass
+
+            setattr(self.site_layout, ch, ch_list)
+            
+
     def _convert_keys_to_lower_case(self, root_dict):
         """
         Convert the key names to lower case and separated by _ if
@@ -230,8 +290,19 @@ class EMTFXML(emtf_xml.EMTF):
                 item = self._convert_keys_to_lower_case(item)
                 res.append(item)
         return res
-            
+    
+    def _read_data(self, root_dict):
+        """
+        Read data use 
+        :param root_dict: DESCRIPTION
+        :type root_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
         
+        self.tf = emtf_xml.TransferFunction()
+        self.tf.read_data(root_dict)
     
         
         

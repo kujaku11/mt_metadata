@@ -411,7 +411,11 @@ class Base:
             "channels_recorded_electric"
             "channels_recorded_magnetic"
             "channels_recorded_auxiliary",
-            "electrode"
+            "electrode",
+            "estimates_list",
+            "input_channels",
+            "output_channels",
+            "data_types_list",
         ]
 
         if hasattr(self, "_attr_dict"):
