@@ -331,6 +331,27 @@ class EMTFXML(emtf_xml.EMTF):
             s.geographic_name = self.site.name
             s.id = self.site.id
             s.location.from_dict(self.site.location.to_dict())
+            s.orientation.angle_to_geographic_north = self.site.orientation.angle_to_geographic_north
+            s.provenance.software.name = self.provenance.creating_application
+            s.provenance.creation_time = self.provenance.create_time
+            s.provenance.creator.author = self.provenance.creator.name
+            s.provenance.creator.email = self.provenance.creator.email
+            s.provenance.creator.organization = self.provenance.creator.org
+            s.provenance.creator.url = self.provenance.creator.org_url
+            s.provenance.submitter.author = self.provenance.submitter.name
+            s.provenance.submitter.email = self.provenance.submitter.email
+            s.provenance.submitter.organization = self.provenance.submitter.org
+            s.provenance.submitter.url = self.provenance.submitter.org_url
+            s.time_period.start = self.site.start
+            s.time_period.end = self.site.end
+            s.transfer_function.sign_convention = self.processing_info.sign_convention
+            s.transfer_function.processed_by = self.processing_info.processed_by
+            s.transfer_function.software.author = self.processing_info.processing_software.author
+            s.transfer_function.software.name = self.processing_info.processing_software.name
+            s.transfer_function.software.last_updated = self.processing_info.processing_software.last_mod
+            s.transfer_function.remote_references = self.processing_info.processing_tag.split('_')
+            s.transfer_function.runs_processed = self.site.run_list
+            s.transfer_function.processing_parameters.append({"type": self.processing_info.remote_ref.type})
         return s
         
             

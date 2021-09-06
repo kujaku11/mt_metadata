@@ -27,9 +27,9 @@
         "example": "WMM"
     },
     "epoch": {
-        "type": "integer",
+        "type": "string",
         "required": true,
-        "style": "number",
+        "style": "free form",
         "units": null,
         "description": "Epoch for which declination was approximated in.",
         "options": [],
