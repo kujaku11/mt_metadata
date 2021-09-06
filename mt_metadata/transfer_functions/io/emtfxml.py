@@ -300,7 +300,6 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        
         self.tf = emtf_xml.TransferFunction()
         self.tf.read_data(root_dict)
     

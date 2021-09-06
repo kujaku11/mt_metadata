@@ -36,6 +36,7 @@ class TransferFunction:
             "t_residcov": self.t_residcov}
     
     def initialize_arrays(self, n_periods):
+        print(type(n_periods), n_periods)
         self.periods = np.zeros(n_periods)
         self.z = np.zeros((n_periods, 2, 2), dtype=np.complex)
         self.z_var = np.zeros_like(self.z, dtype=np.float)
@@ -57,7 +58,7 @@ class TransferFunction:
             "t_residcov": self.t_residcov}
         
     def get_n_periods(self, root_dict):
-        self.n_periods = int(root_dict["data"]["count"])
+        self.n_periods = int(float((root_dict["data"]["count"].strip())))
         self.initialize_arrays(self.n_periods)
         
     
