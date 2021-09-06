@@ -24,5 +24,15 @@
         "options": [],
         "alias": [],
         "example": "1"
+    },
+	"comments": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "comments on the electrode",
+        "options": [],
+        "alias": [],
+        "example": "Ag-AgCl porous pot"
     }
 }

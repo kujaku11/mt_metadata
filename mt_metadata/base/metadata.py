@@ -411,6 +411,7 @@ class Base:
             "channels_recorded_electric"
             "channels_recorded_magnetic"
             "channels_recorded_auxiliary",
+            "electrode"
         ]
 
         if hasattr(self, "_attr_dict"):

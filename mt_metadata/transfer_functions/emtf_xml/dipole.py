@@ -18,8 +18,8 @@ from . import Electrode
 
 # =============================================================================
 attr_dict = get_schema("dipole", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Electrode()._attr_dict, "positive")
-attr_dict.add_dict(Electrode()._attr_dict, "negative")
+attr_dict.add_dict(Electrode()._attr_dict, "electrode")
+
 # =============================================================================
 class Dipole(Base):
     __doc__ = write_lines(attr_dict)
@@ -28,8 +28,21 @@ class Dipole(Base):
         self.manufacturer = None
         self.length = None
         self.azimuth = None
-        self.positive = Electrode()
-        self.negative = Electrode()
         self.name = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        self._electrode = []
+
+    @property
+    def electrode(self):
+        return self._electrode
+    
+    @electrode.setter
+    def electrode(self, value):
+        if not isinstance(value, list):
+            value = [value]
+        for item in value:
+            e_obj = Electrode()
+            e_obj.from_dict(item)
+            self._electrode.append(e_obj)
+        

@@ -283,7 +283,7 @@ def recursive_split_setattr(base_object, name, value, sep="."):
     if other:
         base_object = getattr(base_object, key)
         recursive_split_setattr(base_object, other[0], value)
-    else:
+    else:                   
         setattr(base_object, key, value)
 
 

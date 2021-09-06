@@ -29,3 +29,11 @@ class Electrode(Base):
         self.value = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    @property
+    def comments(self):
+        return self.value
+    
+    @comments.setter
+    def comments(self, value):
+        self.value = value
