@@ -26,6 +26,16 @@
         "alias": [],
         "example": "WMM"
     },
+    "epoch": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Epoch for which declination was approximated in.",
+        "options": [],
+        "alias": [],
+        "example": "2020"
+    },
     "value": {
         "type": "float",
         "required": true,

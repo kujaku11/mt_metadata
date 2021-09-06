@@ -21,7 +21,8 @@ from mt_metadata.transfer_functions import emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
-from mt_metadata.transfer_functions.tf import Instrument
+from mt_metadata.transfer_functions.tf import (
+    Instrument, Survey, Station, Run, Electric, Magnetic)
 
 meta_classes = dict([(validate_attribute(k), v) for k, v in inspect.getmembers(emtf_xml, inspect.isclass)])
 meta_classes["instrument"] = Instrument
@@ -302,8 +303,35 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.tf = emtf_xml.TransferFunction()
         self.tf.read_data(root_dict)
-    
         
+    @property
+    def survey_metadata(self):
+        survey_obj = Survey()
+        if self._root_dict is not None:
+            survey_obj.acquired_by.author = self.site.acquired_by
+            survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
+            survey_obj.country = self.site.country
+            survey_obj.datum = self.site.location.datum
+            survey_obj.geographic_name = self.site.survey
+            survey_obj.id = self.site.survey
+            survey_obj.project = self.site.project
+            survey_obj.time_period.start = self.site.start
+            survey_obj.time_period.end = self.site.end
+        
+        
+        return survey_obj
+    
+    @property
+    def station_metadata(self):
+        s = Station()
+        if self._root_dict is not None:
+            s.acquired_by.author = self.site.acquired_by
+            s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [d.name for d in self.site_layout.output_channels]
+            s.data_type = self.sub_type.lower().split('_')[0]
+            s.geographic_name = self.site.name
+            s.id = self.site.id
+            s.location.from_dict(self.site.location.to_dict())
+        return s
         
             
         
