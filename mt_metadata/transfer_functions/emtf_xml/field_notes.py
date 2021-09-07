@@ -36,6 +36,7 @@ class FieldNotes(Base):
         self.instrument = Instrument()
         self.magnetometer = [Instrument()]
         self.dipole = [Dipole()]
+        self.sampling_rate = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

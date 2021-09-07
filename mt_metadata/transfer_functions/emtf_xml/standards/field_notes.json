@@ -18,5 +18,15 @@
         "options": [],
         "alias": [],
         "example": "mt001a"
+    },
+	"sampling_rate": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the run",
+        "options": [],
+        "alias": [],
+        "example": "1"
     }
 }

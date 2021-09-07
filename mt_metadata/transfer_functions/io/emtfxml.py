@@ -179,6 +179,9 @@ class EMTFXML(emtf_xml.EMTF):
             f = meta_classes["field_notes"]()
             f.run = run["run"]
             f.instrument.from_dict({"instrument": run["instrument"]})
+            f.sampling_rate = run["sampling_rate"]
+            f.start = run["start"]
+            f.end = run["end"]
             
             
             if isinstance(run["magnetometer"], list):
@@ -188,8 +191,10 @@ class EMTFXML(emtf_xml.EMTF):
                     m.from_dict({"magnetometer": mag})
                     f.magnetometer.append(m)
             else:
-                f.magnetometer = meta_classes["magnetometer"]()
-                f.magnetometer.from_dict({"magnetometer": run["magnetometer"]})
+                f.magnetometer = []
+                m = meta_classes["magnetometer"]()
+                m.from_dict({"magnetometer": run["magnetometer"]})
+                f.magnetometer.append(m)
                 
             if isinstance(run["dipole"], list):
                 f.dipole = []
@@ -198,8 +203,9 @@ class EMTFXML(emtf_xml.EMTF):
                     m.from_dict({"dipole": mag})
                     f.dipole.append(m)
             else:
-                f.dipole = meta_classes["dipole"]()
-                f.dipole.from_dict({"dipole": run["dipole"]})
+                m = meta_classes["dipole"]()
+                m.from_dict({"dipole": run["dipole"]})
+                f.dipole.append(m)
             
             self.field_notes.append(f)
             
@@ -352,6 +358,52 @@ class EMTFXML(emtf_xml.EMTF):
             s.transfer_function.remote_references = self.processing_info.processing_tag.split('_')
             s.transfer_function.runs_processed = self.site.run_list
             s.transfer_function.processing_parameters.append({"type": self.processing_info.remote_ref.type})
+        
+            for run in self.field_notes:
+                r = Run()
+                r.data_logger.id = run.instrument.id
+                r.data_logger.name = run.instrument.name
+                r.data_logger.manufacturer = run.instrument.manufacturer
+                r.sample_rate = run.sampling_rate
+                r.time_period.start = run.start
+                r.time_period.end = run.end
+                
+                if len(run.magnetometer) == 1:
+                    for comp in ["hx", "hy", "hz"]:
+                        c = getattr(r, comp)
+                        c.component = comp
+                        c.sensor.id = run.magnetometer[0].id
+                        c.sensor.name = run.magnetometer[0].name
+                        c.sensor.manufacturer = run.magnetometer[0].manufacturer
+                else:
+                    for mag in run.magnetometer:
+                        comp = mag.name().lower()
+                        c = getattr(r, comp)
+                        c.component = comp
+                        c.sensor.id = mag.id
+                        c.sensor.name = mag.name
+                        c.sensor.manufacturer = mag.manufacturer
+                        c.translated_azimuth = mag.azimuth
+                        
+                for dp in run.dipole:
+                    comp = dp.name.lower()
+                    c = getattr(r, comp)
+                    c.component = comp
+                    c.translated_azimuth = dp.azimuth
+                    c.dipole_length = dp.length
+                    for pot in dp.electrode:
+                        if pot.location.lower() in ["n", "e"]:
+                            c.positive.id = pot.number
+                            c.positive.type = pot.value
+                            c.positive.manufacture = dp.manufacturer
+                        elif pot.location.lower() in ["s", "w"]:
+                            c.negative.id = pot.number
+                            c.negative.type = pot.value
+                            c.negative.manufacture = dp.manufacturer
+                        
+                s.run_list.append(r)
+                
+        
         return s
         
             
