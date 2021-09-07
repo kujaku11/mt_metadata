@@ -33,7 +33,7 @@ class Electrode(Base):
     @property
     def comments(self):
         return self.value
-    
+
     @comments.setter
     def comments(self, value):
         self.value = value

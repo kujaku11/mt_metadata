@@ -656,7 +656,7 @@ class Base:
                     "1980-01-01T00:00:00+00:00",
                 ]:
                     continue
-         
+
             self.set_attr_from_name(name, value)
 
     def to_json(self, nested=False, indent=" " * 4, required=True):

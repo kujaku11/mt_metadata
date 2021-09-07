@@ -21,21 +21,26 @@ from mt_metadata.transfer_functions import emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
-from mt_metadata.transfer_functions.tf import (
-    Instrument, Survey, Station, Run)
+from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run
 
-meta_classes = dict([(validate_attribute(k), v) for k, v in inspect.getmembers(emtf_xml, inspect.isclass)])
+meta_classes = dict(
+    [
+        (validate_attribute(k), v)
+        for k, v in inspect.getmembers(emtf_xml, inspect.isclass)
+    ]
+)
 meta_classes["instrument"] = Instrument
 meta_classes["magnetometer"] = Instrument
 # =============================================================================
 # EMTFXML
 # =============================================================================
 
+
 class EMTFXML(emtf_xml.EMTF):
     """
     This is meant to follow Anna's XML schema for transfer functions
     """
-    
+
     def __init__(self):
         super().__init__()
         self._root_dict = None
@@ -52,12 +57,11 @@ class EMTFXML(emtf_xml.EMTF):
         self.data_types = emtf_xml.DataTypes()
         self.site_layout = emtf_xml.SiteLayout()
         self.tf = emtf_xml.TransferFunction()
-        
-        
+
         self.element_keys = [
             "description",
             "product_id",
-            "sub_type", 
+            "sub_type",
             "notes",
             "external_url",
             "primary_data",
@@ -70,9 +74,9 @@ class EMTFXML(emtf_xml.EMTF):
             "statistical_estimates",
             "data_types",
             "site_layout",
-            "data"
-            ]
-        
+            "data",
+        ]
+
         self._reader_dict = {
             "description": self._read_description,
             "product_id": self._read_product_id,
@@ -84,12 +88,12 @@ class EMTFXML(emtf_xml.EMTF):
             "site_layout": self._read_site_layout,
             "data_types": self._read_data_types,
             "data": self._read_data,
-            }
-        
+        }
+
     def read(self, fn):
         """
         Read xml file
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
@@ -99,7 +103,7 @@ class EMTFXML(emtf_xml.EMTF):
         fn = Path(fn)
         if not fn.exists():
             raise IOError(f"Cannot find: {fn}")
-            
+
         root = et.parse(fn).getroot()
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
@@ -111,32 +115,32 @@ class EMTFXML(emtf_xml.EMTF):
                 self._reader_dict[element](root_dict)
             else:
                 self._read_element(root_dict, element)
-                
+
     def _read_single(self, root_dict, key):
         try:
             setattr(self, key, root_dict[key])
         except KeyError:
             self.logger.debug("no description in xml")
-        
+
     def _read_description(self, root_dict):
         self._read_single(root_dict, "description")
 
     def _read_product_id(self, root_dict):
         self._read_single(root_dict, "product_id")
-        
+
     def _read_sub_type(self, root_dict):
         self._read_single(root_dict, "sub_type")
-    
+
     def _read_notes(self, root_dict):
         self._read_single(root_dict, "notes")
-        
+
     def _read_tags(self, root_dict):
         self._read_single(root_dict, "tags")
-            
+
     def _read_element(self, root_dict, element_name):
         """
-        generic read an element given a name 
-        
+        generic read an element given a name
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :param element_name: DESCRIPTION
@@ -145,7 +149,7 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        
+
         element_name = validate_attribute(element_name)
         if element_name in ["field_notes"]:
             self._read_field_notes(root_dict)
@@ -158,16 +162,16 @@ class EMTFXML(emtf_xml.EMTF):
                 value = root_dict[element_name]
                 element_dict = {element_name: value}
                 getattr(self, element_name).from_dict(element_dict)
-                    
+
             except KeyError:
                 print(f"No {element_name} in EMTF XML")
                 self.logger.debug(f"No {element_name} in EMTF XML")
-            
+
     def _read_field_notes(self, root_dict):
         """
         Field notes are odd so have a special reader to do it piece by
         painstaking piece.
-        
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
@@ -182,8 +186,7 @@ class EMTFXML(emtf_xml.EMTF):
             f.sampling_rate = run["sampling_rate"]
             f.start = run["start"]
             f.end = run["end"]
-            
-            
+
             if isinstance(run["magnetometer"], list):
                 f.magnetometer = []
                 for mag in run["magnetometer"]:
@@ -195,7 +198,7 @@ class EMTFXML(emtf_xml.EMTF):
                 m = meta_classes["magnetometer"]()
                 m.from_dict({"magnetometer": run["magnetometer"]})
                 f.magnetometer.append(m)
-                
+
             if isinstance(run["dipole"], list):
                 f.dipole = []
                 for mag in run["dipole"]:
@@ -206,40 +209,41 @@ class EMTFXML(emtf_xml.EMTF):
                 m = meta_classes["dipole"]()
                 m.from_dict({"dipole": run["dipole"]})
                 f.dipole.append(m)
-            
+
             self.field_notes.append(f)
-            
-            
+
     def _read_statistical_estimates(self, root_dict):
         """
         Read in statistical estimate descriptions
-        
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
-        self.statistical_estimates.estimates_list = root_dict["statistical_estimates"]["estimate"]
-            
+
+        self.statistical_estimates.estimates_list = root_dict["statistical_estimates"][
+            "estimate"
+        ]
+
     def _read_data_types(self, root_dict):
         """
         Read in data types
-        
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         self.data_types.data_types_list = root_dict["data_types"]["data_type"]
-        
+
     def _read_site_layout(self, root_dict):
         """
         read site layout into the proper input/output channels
-        
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
@@ -247,7 +251,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         """
         # read input channels
-        for ch in ['input_channels', 'output_channels']:
+        for ch in ["input_channels", "output_channels"]:
             ch_list = []
             try:
                 c_list = root_dict["site_layout"][ch]["magnetic"]
@@ -256,10 +260,10 @@ class EMTFXML(emtf_xml.EMTF):
                 if not isinstance(c_list, list):
                     c_list = [c_list]
                 ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
-                    
+
             except (KeyError):
                 pass
-            
+
             try:
                 c_list = root_dict["site_layout"][ch]["electric"]
                 if c_list is None:
@@ -271,13 +275,12 @@ class EMTFXML(emtf_xml.EMTF):
                 pass
 
             setattr(self.site_layout, ch, ch_list)
-            
 
     def _convert_keys_to_lower_case(self, root_dict):
         """
         Convert the key names to lower case and separated by _ if
         needed
-        
+
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
@@ -290,17 +293,17 @@ class EMTFXML(emtf_xml.EMTF):
                 new_key = validate_attribute(key)
                 res[new_key] = root_dict[key]
                 if isinstance(res[new_key], (dict, OrderedDict, list)):
-                   res[new_key] = self._convert_keys_to_lower_case(res[new_key])
+                    res[new_key] = self._convert_keys_to_lower_case(res[new_key])
         elif isinstance(root_dict, list):
             res = []
             for item in root_dict:
                 item = self._convert_keys_to_lower_case(item)
                 res.append(item)
         return res
-    
+
     def _read_data(self, root_dict):
         """
-        Read data use 
+        Read data use
         :param root_dict: DESCRIPTION
         :type root_dict: TYPE
         :return: DESCRIPTION
@@ -309,7 +312,7 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.tf = emtf_xml.TransferFunction()
         self.tf.read_data(root_dict)
-        
+
     @property
     def survey_metadata(self):
         survey_obj = Survey()
@@ -323,21 +326,24 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.project = self.site.project
             survey_obj.time_period.start = self.site.start
             survey_obj.time_period.end = self.site.end
-        
-        
+
         return survey_obj
-    
+
     @property
     def station_metadata(self):
         s = Station()
         if self._root_dict is not None:
             s.acquired_by.author = self.site.acquired_by
-            s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [d.name for d in self.site_layout.output_channels]
-            s.data_type = self.sub_type.lower().split('_')[0]
+            s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [
+                d.name for d in self.site_layout.output_channels
+            ]
+            s.data_type = self.sub_type.lower().split("_")[0]
             s.geographic_name = self.site.name
             s.id = self.site.id
             s.location.from_dict(self.site.location.to_dict())
-            s.orientation.angle_to_geographic_north = self.site.orientation.angle_to_geographic_north
+            s.orientation.angle_to_geographic_north = (
+                self.site.orientation.angle_to_geographic_north
+            )
             s.provenance.software.name = self.provenance.creating_application
             s.provenance.creation_time = self.provenance.create_time
             s.provenance.creator.author = self.provenance.creator.name
@@ -352,13 +358,23 @@ class EMTFXML(emtf_xml.EMTF):
             s.time_period.end = self.site.end
             s.transfer_function.sign_convention = self.processing_info.sign_convention
             s.transfer_function.processed_by = self.processing_info.processed_by
-            s.transfer_function.software.author = self.processing_info.processing_software.author
-            s.transfer_function.software.name = self.processing_info.processing_software.name
-            s.transfer_function.software.last_updated = self.processing_info.processing_software.last_mod
-            s.transfer_function.remote_references = self.processing_info.processing_tag.split('_')
+            s.transfer_function.software.author = (
+                self.processing_info.processing_software.author
+            )
+            s.transfer_function.software.name = (
+                self.processing_info.processing_software.name
+            )
+            s.transfer_function.software.last_updated = (
+                self.processing_info.processing_software.last_mod
+            )
+            s.transfer_function.remote_references = (
+                self.processing_info.processing_tag.split("_")
+            )
             s.transfer_function.runs_processed = self.site.run_list
-            s.transfer_function.processing_parameters.append({"type": self.processing_info.remote_ref.type})
-        
+            s.transfer_function.processing_parameters.append(
+                {"type": self.processing_info.remote_ref.type}
+            )
+
             for run in self.field_notes:
                 r = Run()
                 r.data_logger.id = run.instrument.id
@@ -367,7 +383,7 @@ class EMTFXML(emtf_xml.EMTF):
                 r.sample_rate = run.sampling_rate
                 r.time_period.start = run.start
                 r.time_period.end = run.end
-                
+
                 if len(run.magnetometer) == 1:
                     for comp in ["hx", "hy", "hz"]:
                         c = getattr(r, comp)
@@ -384,7 +400,7 @@ class EMTFXML(emtf_xml.EMTF):
                         c.sensor.name = mag.name
                         c.sensor.manufacturer = mag.manufacturer
                         c.translated_azimuth = mag.azimuth
-                        
+
                 for dp in run.dipole:
                     comp = dp.name.lower()
                     c = getattr(r, comp)
@@ -400,16 +416,16 @@ class EMTFXML(emtf_xml.EMTF):
                             c.negative.id = pot.number
                             c.negative.type = pot.value
                             c.negative.manufacture = dp.manufacturer
-                        
+
                 s.run_list.append(r)
-                
-        
+
         return s
-       
+
+
 def read_emtfxml(fn):
     """
     read an EMTF XML file
-    
+
     :param fn: DESCRIPTION
     :type fn: TYPE
     :return: DESCRIPTION
@@ -417,20 +433,21 @@ def read_emtfxml(fn):
 
     """
     from mt_metadata.transfer_functions.core import TF
-    
+
     obj = EMTFXML()
     obj.read(fn)
-    
+
     emtf = TF()
     emtf.survey_metadata = obj.survey_metadata
     emtf.station_metadata = obj.station_metadata
-    
+
     return emtf
+
 
 def write_emtfxml(tf_obj, fn=None):
     """
     Write an XML file from a TF object
-    
+
     :param tf_obj: DESCRIPTION
     :type tf_obj: TYPE
     :param fn: DESCRIPTION, defaults to None
@@ -440,7 +457,3 @@ def write_emtfxml(tf_obj, fn=None):
 
     """
     pass
-
-    
-        
-        

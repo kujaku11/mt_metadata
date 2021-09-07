@@ -28,19 +28,17 @@ class DataTypes(Base):
 
         self._data_types_list = []
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
+
     @property
     def data_types_list(self):
         return self._data_types_list
-    
+
     @data_types_list.setter
     def data_types_list(self, value):
         if not isinstance(value, list):
             value = [value]
-            
+
         for item in value:
             dt = DataType()
             dt.from_dict(item)
             self._data_types_list.append(dt)
-            
-        

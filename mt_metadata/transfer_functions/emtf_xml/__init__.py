@@ -47,7 +47,6 @@ from .data import TransferFunction
 from .emtf import EMTF
 
 
-
 __all__ = [
     "ExternalUrl",
     "PrimaryData",
@@ -76,5 +75,4 @@ __all__ = [
     "SiteLayout",
     "TransferFunction",
     "EMTF",
- 
 ]

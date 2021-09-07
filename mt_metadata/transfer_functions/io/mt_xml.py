@@ -41,9 +41,9 @@ class XMLElement(object):
         * 'name'  --> name of the element
         * 'attr'  --> attribute information of the element
         * 'value' --> value of the element
-        
-    Used the property function here to be sure that these 3 cannot be set 
-    through the common k.value = 10, just in case there are similar names in 
+
+    Used the property function here to be sure that these 3 cannot be set
+    through the common k.value = 10, just in case there are similar names in
     the xml file.  This seemed to be the safest to avoid those cases.
     """
 
@@ -235,29 +235,29 @@ data_types = [
 class XMLConfig(object):
     """
     Class to deal with configuration files for xml.
-    
-    Includes all the important information for the station and how data was 
-    processed.  
-    
+
+    Includes all the important information for the station and how data was
+    processed.
+
     Key Information includes:
-        
+
     ======================== ==================================================
     Name                     Purpose
     ======================== ==================================================
     ProductID                Station name
     ExternalUrl              External URL to link to data
-    Notes                    Any important information on station, 
+    Notes                    Any important information on station,
                              data collection.
-    TimeSeriesArchived       Information on Archiving time series including 
-                             URL.   
+    TimeSeriesArchived       Information on Archiving time series including
+                             URL.
     Image                    A location to an image of the station or
                              the MT response.
-    ======================== ==================================================    
+    ======================== ==================================================
     * ProductID --> station name
         * ExternalUrl --> external url to link to data
-        * Notes --> any 
-    
-    
+        * Notes --> any
+
+
     """
 
     def __init__(self, **kwargs):
@@ -346,7 +346,11 @@ class XMLConfig(object):
             None,
             None,
             **{
-                "CreationTime": XMLElement("CreationTime", None, get_now_utc(),),
+                "CreationTime": XMLElement(
+                    "CreationTime",
+                    None,
+                    get_now_utc(),
+                ),
                 "CreatingApplication": XMLElement(
                     "CreatingApplication", None, "MTpy.core.mtxml"
                 ),
@@ -688,41 +692,41 @@ class XMLConfig(object):
 
     def read_cfg_file(self, cfg_fn=None):
         """
-        Read in a cfg file making all key = value pairs attribures of 
+        Read in a cfg file making all key = value pairs attribures of
         XMLConfig.  Being sure all new attributes are XMLElement objects.
-        
+
         The assumed structure of the xml.cfg file is similar to:
             ``# XML Configuration File MTpy
- 
+
             Attachement.Description = Original file use to produce XML
             Attachment.Filename = None
-             
+
             Copyright.Citation.Authors = None
             Copyright.Citation.DOI = None
             Copyright.Citation.Journal = None
             Copyright.Citation.Title = None
             Copyright.Citation.Volume = None
             Copyright.Citation.Year = None
-            
+
             PeriodRange(max=0)(min=0) = None``
-            
+
         where the heirarchy of information is separated by a . and if the
-        information has attribures they are in the name with (key=value) 
+        information has attribures they are in the name with (key=value)
         syntax.
-        
+
         Arguments
         -------------
             **cfg_fn** : string
                          full path to cfg file to read in
-                         
+
         Example
         ---------
         :Read in xml.cfg file: ::
-        
+
             >>> import mtpy.core.mtxml as mtxml
             >>> cfg_obj = mtxml.XMLConfig()
             >>> cfg_obj.read_cfg_file(r"/home/MT/xml.cfg")
-            
+
         """
 
         if cfg_fn is not None:
@@ -750,7 +754,7 @@ class XMLConfig(object):
         """
         read a configuration file line to make the appropriate attribute
         have the correct values and attributes.
-        
+
         porbably should think of a better name for XMLElement objects that are
         attributes of self.
         """
@@ -820,12 +824,12 @@ class XMLConfig(object):
         """
         Write out configuration file in the style of:
         parent.attribute = value
-        
+
         Arguments
         --------------
             **cfg_fn** : string
                          full path to write the configuration file
-                         
+
         """
         if cfg_fn is not None:
             self.cfg_fn = cfg_fn
@@ -1019,42 +1023,42 @@ class XMLConfig(object):
 # ==============================================================================
 class EMTFXML(XMLConfig):
     """
-    Class to read and write MT information from XML format.  This tries to 
-    follow the format put forward by Anna Kelbert for archiving MT response 
+    Class to read and write MT information from XML format.  This tries to
+    follow the format put forward by Anna Kelbert for archiving MT response
     data.
-    
+
     A configuration file can be read in that might make it easier to write
-    multiple files for the same survey.  
-    
+    multiple files for the same survey.
+
     .. seealso:: mtpy.core.mt_xml.XMLConfig
-   
+
     =============== ===========================================================
     Attributes      Description
     =============== ===========================================================
-    Z               object of type mtpy.core.z.Z 
+    Z               object of type mtpy.core.z.Z
     Tipper          object of type mtpy.core.z.Tipper
     =============== ===========================================================
-   
+
     .. note:: All other attributes are of the same name and of type XMLElement,
-              where attributes are name, value and attr.  Attr contains any 
+              where attributes are name, value and attr.  Attr contains any
               tag information.  This is left this way so that mtpy.core.mt.MT
-              can read in the information.  **Use mtpy.core.mt.MT for 
+              can read in the information.  **Use mtpy.core.mt.MT for
               conversion between data formats.**
-   
+
     =============== ===========================================================
     Methods         Description
-    =============== =========================================================== 
+    =============== ===========================================================
     read_cfg_file   Read a configuration file in the format of XMLConfig
     read_xml_file   Read an xml file
     write_xml_file  Write an xml file
     =============== ===========================================================
-    
+
     :Example: ::
         >>> import mtpy.core.mt_xml as mtxml
         >>> x = mtxml.read_xml_file(r"/home/mt_data/mt01.xml")
         >>> x.read_cfg_file(r"/home/mt_data/survey_xml.cfg")
         >>> x.write_xml_file(r"/home/mt_data/xml/mt01.xml")
-        
+
     """
 
     def __init__(self, **kwargs):
@@ -1282,7 +1286,7 @@ class EMTFXML(XMLConfig):
 
     def _write_element(self, parent_et, XMLElement_obj):
         """
-        make a new element 
+        make a new element
         """
         if XMLElement_obj._attr is None:
             XMLElement_obj._attr = {}
@@ -1372,9 +1376,7 @@ class EMTFXML(XMLConfig):
         return self.xml_fn
 
     def read_xml_file_2(self, xml_fn):
-        """
-        
-        """
+        """ """
         self.xml_fn = xml_fn
 
         et_xml = ET.parse(xml_fn)
@@ -1390,7 +1392,7 @@ class EMTFXML(XMLConfig):
     def read_xml_file(self, xml_fn):
         """
         read in an xml file and set attributes appropriately.
-        
+
         Arguments
         --------------
             **xml_fn** : string
@@ -1547,11 +1549,11 @@ class EMTFXML(XMLConfig):
     def _get_info_from_element(self, element):
         """
         Get information from an element, including name, attr, value
-        
+
         Arguments
         ------------
             **element** : ET.Element
-            
+
         Returns
         ---------
             **XMLElement** XMLElement Object
@@ -1570,7 +1572,7 @@ class EMTFXML(XMLConfig):
     def _get_attr_name(self, parent, attr_name):
         """
         make attribute name, if one already exists, then add a number to it
-        
+
         ex. attribute_01
         """
         attr_name = attr_name.replace(".", "")

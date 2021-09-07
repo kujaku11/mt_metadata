@@ -198,7 +198,7 @@ class ZMMHeader(object):
 class ZMM(ZMMHeader):
     """
     Container for Egberts zrr format.
-    
+
     """
 
     def __init__(self, fn=None, **kwargs):
@@ -294,7 +294,7 @@ class ZMM(ZMMHeader):
     def read_zmm_file(self, fn=None):
         """
         Read in Egbert zrr/zmm file
-        
+
         :param fn: full path to zmm/zrr file
         :type fn: string or pathlib.Path
         """
@@ -624,9 +624,9 @@ class ZMM(ZMMHeader):
 
     def _get_magnetic_metadata(self, comp):
         """
-        
+
         get magnetic metadata from the various sources
-        
+
         :param comp: DESCRIPTION
         :type comp: TYPE
         :return: DESCRIPTION
@@ -694,7 +694,7 @@ def read_zmm(zmm_fn):
 def write_zmm(mt_object, fn=None):
     """
     write a zmm file
-    
+
     :param mt_object: DESCRIPTION
     :type mt_object: TYPE
     :param fn: DESCRIPTION, defaults to None

@@ -225,10 +225,10 @@ class JFile(object):
     def read_header(self, j_lines=None):
         """
         Parsing the header lines of a j-file to extract processing information.
-    
+
         Input:
         - j-file as list of lines (output of readlines())
-    
+
         Output:
         - Dictionary with all parameters found
 
@@ -266,9 +266,9 @@ class JFile(object):
 
     def read_metadata(self, j_lines=None, fn=None):
         """
-        read in the metadata of the station, or information of station 
+        read in the metadata of the station, or information of station
         logistics like: lat, lon, elevation
-        
+
         Not really needed for a birrp output since all values are nan's
         """
         if j_lines is None:
@@ -292,16 +292,16 @@ class JFile(object):
     def read_j_file(self, fn=None):
         """
         read_j_file will read in a *.j file output by BIRRP (better than reading lots of *.<k>r<l>.rf files)
-    
+
         Input:
         j-filename
-    
+
         Output: 4-tuple
         - periods : N-array
         - Z_array : 2-tuple - values and errors
         - tipper_array : 2-tuple - values and errors
         - processing_dict : parsed processing parameters from j-file header
-    
+
         """
         # read data
         z_index_dict = {"zxx": (0, 0), "zxy": (0, 1), "zyx": (1, 0), "zyy": (1, 1)}
@@ -478,10 +478,10 @@ class JFile(object):
 def read_jfile(fn):
     """
     Read a .j file output by BIRRP
-    
+
     :param fn: full path to j file
     :type fn: string or :class:`pathlib.Path`
-    
+
     """
 
     from mtpy.core import mt
@@ -508,7 +508,7 @@ def read_jfile(fn):
 
 def write_jfile(mt_obj, fn=None):
     """
-    
+
     :param mt_obj: DESCRIPTION
     :type mt_obj: TYPE
     :param fn: DESCRIPTION, defaults to None

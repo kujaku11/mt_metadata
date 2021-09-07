@@ -366,11 +366,9 @@ class MTime:
                 )
                 self.logger.error(msg)
                 raise MTTimeError(msg)
-                
+
             except TypeError as error:
-                msg = (
-                    "%s input is type(%s), %s"
-                )
+                msg = "%s input is type(%s), %s"
                 self.logger.error(msg, error, type(dt_str), dt_str)
                 raise MTTimeError(msg % (error, type(dt_str), dt_str))
 

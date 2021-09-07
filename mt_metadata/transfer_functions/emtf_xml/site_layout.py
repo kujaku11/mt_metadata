@@ -34,14 +34,14 @@ class SiteLayout(Base):
     @property
     def input_channels(self):
         return self._input_channels
-    
+
     @input_channels.setter
     def input_channels(self, value):
         if not isinstance(value, list):
             value = [value]
-            
+
         for item in value:
-            
+
             ch_type = list(item.keys())[0]
             if ch_type in ["magnetic"]:
                 ch = Magnetic()
@@ -51,18 +51,18 @@ class SiteLayout(Base):
                 msg = "Channel type %s not supported"
                 self.logger.error(msg, ch_type)
                 raise ValueError(msg % ch_type)
-            ch.from_dict(item)  
+            ch.from_dict(item)
             self._input_channels.append(ch)
-                
+
     @property
     def output_channels(self):
         return self._output_channels
-    
+
     @output_channels.setter
     def output_channels(self, value):
         if not isinstance(value, list):
             value = [value]
-            
+
         for item in value:
             ch_type = list(item.keys())[0]
             if ch_type in ["magnetic"]:
@@ -73,7 +73,6 @@ class SiteLayout(Base):
                 msg = "Channel type %s not supported"
                 self.logger.error(msg, ch_type)
                 raise ValueError(msg % ch_type)
-            
+
             ch.from_dict(item)
             self._output_channels.append(ch)
-                

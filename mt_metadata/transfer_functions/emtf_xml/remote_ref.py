@@ -16,6 +16,7 @@ from .standards import SCHEMA_FN_PATHS
 attr_dict = get_schema("remote_ref", SCHEMA_FN_PATHS)
 # =============================================================================
 
+
 class RemoteRef(Base):
     __doc__ = write_lines(attr_dict)
 

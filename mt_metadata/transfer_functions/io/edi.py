@@ -658,11 +658,11 @@ class EDI(object):
                            file as the input .edi with as:
                            r"/home/mt/mt01_1.edi"
         :type new_edi_fn: string
-        :param longitude_format:  whether to write longitude as LON or LONG. 
+        :param longitude_format:  whether to write longitude as LON or LONG.
                                   options are 'LON' or 'LONG', default 'LON'
         :type longitude_format:  string
         :param latlon_format:  format of latitude and longitude in output edi,
-                               degrees minutes seconds ('dms') or decimal 
+                               degrees minutes seconds ('dms') or decimal
                                degrees ('dd')
         :type latlon_format:  string
 
@@ -948,7 +948,7 @@ class EDI(object):
         sm.provenance.software.version = self.Header.progvers
         sm.transfer_function.processed_date = self.Header.filedate
         sm.transfer_function.runs_processed = sm.run_names
-        
+
         for key, value in self.Info.info_dict.items():
             if key is None:
                 continue
@@ -996,7 +996,7 @@ class EDI(object):
                 sm.transfer_function.sign_convention = value
             if "mtft" in key or "emtf" in key or "mtedit" in key:
                 sm.transfer_function.processing_parameters.append(f"{key}={value}")
-                
+
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
 
@@ -1018,7 +1018,6 @@ class EDI(object):
                 rr.rrhx = self.rrhx_metadata
             if self.rrhy_metadata.component in ["rrhy"]:
                 rr.rrhy = self.rrhy_metadata
-                
 
         return sm
 
@@ -1065,7 +1064,7 @@ class EDI(object):
                 electric.positive.y2 = electric.dipole_length * np.sin(
                     np.deg2rad(meas.azimuth)
                 )
-                
+
             for key, value in self.Info.info_dict.items():
                 if key is None:
                     continue
@@ -1085,9 +1084,9 @@ class EDI(object):
 
     def _get_magnetic_metadata(self, comp):
         """
-        
+
         get magnetic metadata from the various sources
-        
+
         :param comp: DESCRIPTION
         :type comp: TYPE
         :return: DESCRIPTION
@@ -1202,9 +1201,9 @@ class Header(object):
     ============== ======================================= ======== ===========
     acqby          Acquired by                             None     yes
     acqdate        Acquired date (YYYY-MM-DD)              None     yes
-    coordinate     [ geographic | geomagnetic ]            None     yes 
+    coordinate     [ geographic | geomagnetic ]            None     yes
     dataid         Station name, should be a string        None     yes
-    declination    geomagnetic declination                 None     yes 
+    declination    geomagnetic declination                 None     yes
     fn         Full path to .edi file                  None     no
     elev           Elevation of station (m)                None     yes
     empty          Value for missing data                  1e32     yes
@@ -1534,11 +1533,11 @@ class Header(object):
         :param header_list: should be read from an .edi file or input as
                             ['key_01=value_01', 'key_02=value_02']
         :type header_list: list
-        :param longitude_format:  whether to write longitude as LON or LONG. 
+        :param longitude_format:  whether to write longitude as LON or LONG.
                                   options are 'LON' or 'LONG', default 'LON'
         :type longitude_format:  string
         :param latlon_format:  format of latitude and longitude in output edi,
-                               degrees minutes seconds ('dms') or decimal 
+                               degrees minutes seconds ('dms') or decimal
                                degrees ('dd')
         :type latlon_format:  string
 
@@ -1574,7 +1573,7 @@ class Header(object):
                     value = "{0:.3f}".format(value)
                 except ValueError:
                     # raise Exception("value error for key elev or declination")
-                    value = '0.000'
+                    value = "0.000"
 
             if key in ["filedate"]:
                 value = get_now_utc()
@@ -1698,8 +1697,8 @@ class Information(object):
                 if line.lower().find("run information") >= 0:
                     phoenix_file = True
                 if phoenix_file and len(line) > self.phoenix_col_width:
-                    self.info_list.append(line[0:self.phoenix_col_width].strip())
-                    phoenix_list_02.append(line[self.phoenix_col_width:].strip())
+                    self.info_list.append(line[0 : self.phoenix_col_width].strip())
+                    phoenix_list_02.append(line[self.phoenix_col_width :].strip())
                 else:
                     if len(line) > 1:
                         self.info_list.append(line)
@@ -1747,7 +1746,7 @@ class Information(object):
                     sep = ":"
                 else:
                     sep = "="
-            
+
             if ll.count(":") == 1:
                 sep = ":"
                 # colon_find = ll.find(":")
@@ -2163,7 +2162,7 @@ class DefineMeasurement(object):
     def from_metadata(self, channel):
         """
         create a measurement class from metadata
-        
+
         :param channel: DESCRIPTION
         :type channel: TYPE
         :return: DESCRIPTION
@@ -2205,7 +2204,7 @@ class DefineMeasurement(object):
 
     @property
     def channels_recorded(self):
-        """ Get the channels recorded """
+        """Get the channels recorded"""
 
         return [cc.lower() for cc in self.get_measurement_dict().keys()]
 
@@ -2588,7 +2587,7 @@ class DataSection(object):
 
     def match_channels(self, ch_ids):
         """
-        
+
 
         Parameters
         ----------
@@ -2679,9 +2678,9 @@ def _validate_edi_lines(edi_lines):
 # =============================================================================
 def read_edi(fn):
     """
-    
+
     Read an edi file and return a :class:`mtpy.core.mt.MT` object
-    
+
     :param fn: DESCRIPTION
     :type fn: TYPE
     :return: DESCRIPTION
@@ -2692,6 +2691,7 @@ def read_edi(fn):
     # importing.  This may not be the best way to do this but works for now
     # so we don't have to break how MTpy structure is setup now.
     from mtpy.core import mt
+
     st = MTime().now()
 
     edi_obj = EDI()
@@ -2711,9 +2711,11 @@ def read_edi(fn):
     # need to set latitude to compute UTM coordinates to make sure station
     # location is estimated for ModEM
     mt_obj.latitude = edi_obj.station_metadata.location.latitude
-    
+
     et = MTime().now()
-    mt_obj.logger.debug(f"Reading EDI for {mt_obj.station} and conversion to MT took {et - st:.2f} seconds")
+    mt_obj.logger.debug(
+        f"Reading EDI for {mt_obj.station} and conversion to MT took {et - st:.2f} seconds"
+    )
 
     return mt_obj
 
@@ -2721,7 +2723,7 @@ def read_edi(fn):
 def write_edi(mt_object, fn=None):
     """
     Write an edi file from an :class:`mtpy.core.mt.MT` object
-    
+
     :param mt_object: DESCRIPTION
     :type mt_object: TYPE
     :return: DESCRIPTION
@@ -2853,7 +2855,7 @@ def write_edi(mt_object, fn=None):
                         "data_quality.flag",
                     ]
                 ]
-                
+
                 if rk not in skip_list:
                     edi_obj.Info.info_list.append(f"{run.id}.{rk} = {rv}")
             else:

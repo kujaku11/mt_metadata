@@ -77,9 +77,9 @@ plugins = {
 
 def get_reader(extension):
     """
-    
+
     get the proper reader for file extension
-    
+
     :param extension: file extension
     :type extension: string
     :return: the correct function to read the file
@@ -98,9 +98,9 @@ def get_reader(extension):
 
 def get_writer(extension):
     """
-    
+
     get the proper reader for file extension
-    
+
     :param extension: file extension
     :type extension: string
     :return: the correct function to read the file
@@ -119,7 +119,7 @@ def get_writer(extension):
 
 def read_file(fn, file_type=None):
     """
-    
+
     :param fn: full path to file
     :type fn: string or :class:`pathlib.Path`
     :param string file_type: a specific file time if the extension is ambiguous.
@@ -162,7 +162,7 @@ def write_file(
 ):
     """
     write a file based on extension or file type
-    
+
     :param fn: DESCRIPTION
     :type fn: TYPE
     :param file_type: DESCRIPTION, defaults to None

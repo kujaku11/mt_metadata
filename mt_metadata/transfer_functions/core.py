@@ -13,8 +13,7 @@ from copy import deepcopy
 import numpy as np
 import xarray as xr
 
-from mt_metadata.transfer_functions.tf import (
-    Survey, Station, Run, Electric, Magnetic)
+from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 
@@ -22,7 +21,7 @@ from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 # =============================================================================
 class TF:
     """
-    Generic container to hold information about an electromagnetic 
+    Generic container to hold information about an electromagnetic
     transfer funtion
     """
 
@@ -124,12 +123,12 @@ class TF:
     # ==========================================================================
     @property
     def fn(self):
-        """ reference to original data file"""
+        """reference to original data file"""
         return self._fn
 
     @fn.setter
     def fn(self, value):
-        """ set file name """
+        """set file name"""
         try:
             self._fn = Path(value)
             if self._fn.exists():
@@ -152,7 +151,7 @@ class TF:
         upon setting utm coordinates are recalculated
         """
         self.station_metadata.location.latitude = latitude
-        
+
     @property
     def longitude(self):
         """Longitude"""
@@ -178,8 +177,6 @@ class TF:
         set elevation, should be input as meters
         """
         self.station_metadata.location.elevation = elevation
-        
-    
 
     # @property
     # def Z(self):
@@ -282,8 +279,8 @@ class TF:
     #         **kwargs,
     #     )
 
-        # return plot_obj
-        # # raise NotImplementedError
+    # return plot_obj
+    # # raise NotImplementedError
 
     def write_tf_file(
         self,
@@ -311,11 +308,11 @@ class TF:
         :param file_type: [ 'edi' | 'xml' ]
         :type file_type: string
 
-        :param longitude_format:  whether to write longitude as longitude or LONG. 
+        :param longitude_format:  whether to write longitude as longitude or LONG.
                                   options are 'longitude' or 'LONG', default 'longitude'
         :type longitude_format:  string
         :param latlon_format:  format of latitude and longitude in output edi,
-                               degrees minutes seconds ('dms') or decimal 
+                               degrees minutes seconds ('dms') or decimal
                                degrees ('dd')
         :type latlon_format:  string
 
@@ -380,6 +377,7 @@ class TF:
 
         mt_obj = read_file(fn, file_type=file_type)
         self.__dict__.update(mt_obj.__dict__)
+
 
 # ==============================================================================
 #             Error

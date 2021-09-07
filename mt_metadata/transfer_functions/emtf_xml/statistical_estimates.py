@@ -32,7 +32,7 @@ class StatisticalEstimates(Base):
     @property
     def estimates_list(self):
         return self._estimates_list
-    
+
     @estimates_list.setter
     def estimates_list(self, value):
         if not isinstance(value, list):
@@ -41,4 +41,3 @@ class StatisticalEstimates(Base):
             est = Estimate()
             est.from_dict(item)
             self._estimates_list.append(est)
-            

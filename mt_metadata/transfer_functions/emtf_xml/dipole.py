@@ -36,7 +36,7 @@ class Dipole(Base):
     @property
     def electrode(self):
         return self._electrode
-    
+
     @electrode.setter
     def electrode(self, value):
         if not isinstance(value, list):
@@ -45,4 +45,3 @@ class Dipole(Base):
             e_obj = Electrode()
             e_obj.from_dict(item)
             self._electrode.append(e_obj)
-        

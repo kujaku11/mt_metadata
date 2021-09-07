@@ -14,10 +14,11 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import (Location, Orientation)
+from mt_metadata.transfer_functions.tf import Location, Orientation
 from mt_metadata.transfer_functions.emtf_xml import (
-    DataQualityNotes, DataQualityWarnings
-    )
+    DataQualityNotes,
+    DataQualityWarnings,
+)
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
