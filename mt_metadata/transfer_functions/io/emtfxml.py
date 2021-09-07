@@ -22,7 +22,7 @@ from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.transfer_functions.tf import (
-    Instrument, Survey, Station, Run, Electric, Magnetic)
+    Instrument, Survey, Station, Run)
 
 meta_classes = dict([(validate_attribute(k), v) for k, v in inspect.getmembers(emtf_xml, inspect.isclass)])
 meta_classes["instrument"] = Instrument
@@ -405,7 +405,42 @@ class EMTFXML(emtf_xml.EMTF):
                 
         
         return s
-        
-            
+       
+def read_emtfxml(fn):
+    """
+    read an EMTF XML file
+    
+    :param fn: DESCRIPTION
+    :type fn: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    from mt_metadata.transfer_functions.core import TF
+    
+    obj = EMTFXML()
+    obj.read(fn)
+    
+    emtf = TF()
+    emtf.survey_metadata = obj.survey_metadata
+    emtf.station_metadata = obj.station_metadata
+    
+    return emtf
+
+def write_emtfxml(tf_obj, fn=None):
+    """
+    Write an XML file from a TF object
+    
+    :param tf_obj: DESCRIPTION
+    :type tf_obj: TYPE
+    :param fn: DESCRIPTION, defaults to None
+    :type fn: TYPE, optional
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    pass
+
+    
         
         

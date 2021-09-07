@@ -48,11 +48,10 @@ Created on Wed Aug 26 10:32:45 2020
 
 from pathlib import Path
 
-from mtpy.utils import filehandling as MTfh
-from mtpy.utils.mtpy_logger import get_mtpy_logger
-from mtpy.core.io import edi, zmm, jfile
+from mt_metadata.utils.mt_logger import setup_logger
+from mt_metadata.transfer_functions.io import edi, zmm, jfile, emtfxml
 
-logger = get_mtpy_logger(__name__)
+logger = setup_logger(__name__)
 # =============================================================================
 # generic reader for any file type
 # =============================================================================
@@ -67,6 +66,11 @@ plugins = {
         "file_types": ["j"],
         "reader": jfile.read_jfile,
         "writer": jfile.write_jfile,
+    },
+    "emtfxml": {
+        "file_types": ["xml"],
+        "reader": emtfxml.read_emtfxml,
+        "writer": emtfxml.write_emtfxml,
     },
 }
 
@@ -171,9 +175,9 @@ def write_file(
     if not isinstance(fn, Path):
         fn = Path(fn)
 
-    if fn.exists():
-        if not overwrite:
-            fn = MTfh.make_unique_filename(fn)
+    # if fn.exists():
+    #     if not overwrite:
+    #         fn = MTfh.make_unique_filename(fn)
 
     if file_type is not None:
         try:
