@@ -31,6 +31,7 @@ from .data_quality_warnings import DataQualityWarnings
 from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
+from .magnetometer import Magnetometer
 from .field_notes import FieldNotes
 from .software import Software
 from .remote_ref import RemoteRef
@@ -61,6 +62,7 @@ __all__ = [
     "Site",
     "Electrode",
     "Dipole",
+    "Magnetometer",
     "FieldNotes",
     "Software",
     "RemoteRef",

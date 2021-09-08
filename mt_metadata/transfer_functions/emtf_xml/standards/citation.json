@@ -1,15 +1,23 @@
 {
     "doi": {
         "type": "string",
-        "required": true,
+        "required": false,
         "style": "url",
         "units": null,
-        "description": "full url of the doi number",
+        "description": "doi number of the citation",
         "options": [],
-        "alias": [
-            "survey_doi"
-        ],
-        "example": "http://doi.###"
+        "alias": [],
+        "example": "###/###"
+    },
+	"survey_d_o_i": {
+        "type": "string",
+        "required": false,
+        "style": "url",
+        "units": null,
+        "description": "doi number of the survey",
+        "options": [],
+        "alias": [],
+        "example": "###/###"
     },
     "authors": {
         "type": "string",

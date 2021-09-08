@@ -39,5 +39,18 @@
         ],
         "alias": [],
         "example": "geomagnetic"
+    },
+	"value": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "\"Channel orientation relative to each other\"",
+        "options": [
+            "orthogonal",
+            "other"
+        ],
+        "alias": [],
+        "example": "orthogonal"
     }
 }

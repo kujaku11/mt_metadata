@@ -38,5 +38,15 @@
         "options": [],
         "alias": [],
         "example": "0"
+    },
+	"comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the data quality",
+        "options": [],
+        "alias": [],
+        "example": "0"
     }
 }

@@ -14,14 +14,12 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Dipole
+from . import Dipole, Magnetometer
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.transfer_functions.tf import Instrument
 
 # =============================================================================
 attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Dipole()._attr_dict, "dipole")
-attr_dict.add_dict(Instrument()._attr_dict, "magnetometer")
 attr_dict.add_dict(Instrument()._attr_dict, "instrument")
 
 # =============================================================================
@@ -34,7 +32,7 @@ class FieldNotes(Base):
         self._start_dt = MTime()
         self._end_dt = MTime()
         self.instrument = Instrument()
-        self.magnetometer = [Instrument()]
+        self.magnetometer = [Magnetometer()]
         self.dipole = [Dipole()]
         self.sampling_rate = None
 

@@ -37,7 +37,7 @@ class TF:
         self.station_metadata.run_list[0].hx = Magnetic(component="hx")
         self.station_metadata.run_list[0].hy = Magnetic(component="hy")
         self.station_metadata.run_list[0].hz = Magnetic(component="hz")
-        self.data = None
+        self.data = {}
 
         self._rotation_angle = 0
 
@@ -65,25 +65,25 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
-        # if self.Z.z is not None:
-        #     lines.append("\tImpedance:     True")
-        # else:
-        #     lines.append("\tImpedance:     False")
-        # if self.Tipper.tipper is not None:
-        #     lines.append("\tTipper:        True")
-        # else:
-        #     lines.append("\tTipper:        False")
+        if 'z' in self.data.keys():
+            lines.append("\tImpedance:     True")
+        else:
+            lines.append("\tImpedance:     False")
+        if 't' in self.data.keys() is not None:
+            lines.append("\tTipper:        True")
+        else:
+            lines.append("\tTipper:        False")
 
-        # if self.Z.z is not None:
-        #     lines.append(f"\tN Periods:     {len(self.Z.freq)}")
+        if 'period' in self.data.keys():
+            lines.append(f"\tN Periods:     {len(self.data['period'])}")
 
-        #     lines.append("\tPeriod Range:")
-        #     lines.append(f"\t\tMin:   {self.periods.min():.5E} s")
-        #     lines.append(f"\t\tMax:   {self.periods.max():.5E} s")
+            lines.append("\tPeriod Range:")
+            lines.append(f"\t\tMin:   {self.data['period'].min():.5E} s")
+            lines.append(f"\t\tMax:   {self.data['period'].max():.5E} s")
 
-        #     lines.append("\tFrequency Range:")
-        #     lines.append(f"\t\tMin:   {self.frequencies.max():.5E} Hz")
-        #     lines.append(f"\t\tMax:   {self.frequencies.min():.5E} Hz")
+            lines.append("\tFrequency Range:")
+            lines.append(f"\t\tMin:   {1./self.data['period'].max():.5E} Hz")
+            lines.append(f"\t\tMax:   {1./self.data['period'].min():.5E} Hz")
 
         return "\n".join(lines)
 

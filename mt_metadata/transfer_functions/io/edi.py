@@ -174,7 +174,7 @@ class EDI(object):
             if self._fn.exists():
                 self.read_edi_file()
 
-    def read_edi_file(self, fn=None):
+    def read(self, fn=None):
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
@@ -645,7 +645,7 @@ class EDI(object):
         self.Tipper.compute_amp_phase()
         self.Tipper.compute_mag_direction()
 
-    def write_edi_file(
+    def write(
         self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"
     ):
         """
@@ -2695,7 +2695,7 @@ def read_edi(fn):
     st = MTime().now()
 
     edi_obj = EDI()
-    edi_obj.read_edi_file(fn)
+    edi_obj.read(fn)
 
     mt_obj = mt.MT()
     mt_obj._fn = fn
@@ -2884,7 +2884,7 @@ def write_edi(mt_object, fn=None):
         if hasattr(edi_obj.Measurement, f"meas_{comp}"):
             setattr(edi_obj.Data, comp, getattr(edi_obj.Measurement, f"meas_{comp}").id)
 
-    new_edi_fn = edi_obj.write_edi_file(new_edi_fn=fn)
+    new_edi_fn = edi_obj.write(new_edi_fn=fn)
     edi_obj._fn = new_edi_fn
 
     return edi_obj

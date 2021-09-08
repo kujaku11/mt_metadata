@@ -18,7 +18,6 @@ from . import Electrode
 
 # =============================================================================
 attr_dict = get_schema("dipole", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Electrode()._attr_dict, "electrode")
 
 # =============================================================================
 class Dipole(Base):
