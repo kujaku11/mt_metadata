@@ -62,6 +62,7 @@ class EMTFXML(emtf_xml.EMTF):
             "product_id",
             "sub_type",
             "notes",
+            "tags",
             "external_url",
             "primary_data",
             "attachment",
@@ -98,8 +99,8 @@ class EMTFXML(emtf_xml.EMTF):
             "provenance": self._write_provenance,
             "field_notes": self._write_field_notes,
             "statistical_estimates": self._write_statistical_estimates,
-            "site_layout": self._write_site_layout,
             "data_types": self._write_data_types,
+            "site_layout": self._write_site_layout,
             "data": self._write_data,
         }
 
@@ -151,7 +152,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.location.y2 = None
             
         
-        for key in self.element_keys[0:11]:
+        for key in self.element_keys[0:15]:
             value = getattr(self, key)
             if key in self._writer_dict.keys():
                 self._writer_dict[key](emtf_element, key, value)
@@ -170,7 +171,8 @@ class EMTFXML(emtf_xml.EMTF):
             
     def _write_single(self, parent, key, value, attributes={}):
         element = et.SubElement(parent, self._capwords(key), attributes) 
-        element.text = str(value)
+        if value:
+            element.text = str(value)
         return element
 
     def _read_description(self, root_dict):
@@ -273,6 +275,8 @@ class EMTFXML(emtf_xml.EMTF):
             f.sampling_rate = run["sampling_rate"]
             f.start = run["start"]
             f.end = run["end"]
+            f.comments.from_dict({"comments": run["comments"]})
+            f.errors = run["errors"]
 
             if isinstance(run["magnetometer"], list):
                 f.magnetometer = []
@@ -330,8 +334,10 @@ class EMTFXML(emtf_xml.EMTF):
             "estimate"
         ]
 
-    def _write_statistical_estimates(self):
-        pass
+    def _write_statistical_estimates(self, parent, key, attributes={}):
+        section = self._write_single(parent, key, None)
+        for estimate in self.statistical_estimates.estimates_list:
+            self._write_element(section, estimate)
 
     def _read_data_types(self, root_dict):
         """
@@ -346,8 +352,10 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.data_types.data_types_list = root_dict["data_types"]["data_type"]
 
-    def _write_data_types(self):
-        pass
+    def _write_data_types(self, parent, key, attributes={}):
+        section = self._write_single(parent, key, None)
+        for estimate in self.data_types.data_types_list:
+            self._write_element(section, estimate)
 
     def _read_site_layout(self, root_dict):
         """
@@ -385,8 +393,19 @@ class EMTFXML(emtf_xml.EMTF):
 
             setattr(self.site_layout, ch, ch_list)
             
-    def _write_site_layout(self):
-        pass
+    def _write_site_layout(self, parent, key, attributes={}):
+        section = self._write_single(parent, key, None)
+        
+        ch_in = self._write_single(section, "input_channels", None)
+        for ch in self.site_layout.input_channels:
+            self._write_element(ch_in, ch)
+    
+        
+        ch_out = self._write_single(section, "output_channels", None)
+        for ch in self.site_layout.output_channels:
+            self._write_element(ch_out, ch)  
+        
+        
     
     def _read_data(self, root_dict):
         """

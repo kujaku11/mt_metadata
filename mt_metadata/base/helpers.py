@@ -418,9 +418,11 @@ def element_to_dict(element):
         pop = False
         for k, v in element.attrib.items():
             if k in ["units"]:
-                pop = True
-                continue
+                if len(element.attrib.keys()) <= 2:
+                    pop = True
+                    continue
             meta_dict[element.tag][k] = v
+        
         if pop:
             element.attrib.pop("units")
 
