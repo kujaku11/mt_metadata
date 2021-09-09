@@ -55,7 +55,8 @@ class EMTFXML(emtf_xml.EMTF):
         self.statistical_estimates = emtf_xml.StatisticalEstimates()
         self.data_types = emtf_xml.DataTypes()
         self.site_layout = emtf_xml.SiteLayout()
-        self.tf = emtf_xml.TransferFunction()
+        self.data = emtf_xml.TransferFunction()
+        self.period_range = emtf_xml.PeriodRange()
 
         self.element_keys = [
             "description",
@@ -75,6 +76,7 @@ class EMTFXML(emtf_xml.EMTF):
             "data_types",
             "site_layout",
             "data",
+            "period_range"
         ]
 
         self._reader_dict = {
@@ -130,6 +132,9 @@ class EMTFXML(emtf_xml.EMTF):
             else:
                 self._read_element(root_dict, element)
                 
+        self.period_range.min = self.data.period.min()
+        self.period_range.max = self.data.period.max()
+                
     def write(self, fn):
         """
         Write an xml 
@@ -152,7 +157,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.location.y2 = None
             
         
-        for key in self.element_keys[0:15]:
+        for key in self.element_keys:
             value = getattr(self, key)
             if key in self._writer_dict.keys():
                 self._writer_dict[key](emtf_element, key, value)
@@ -416,11 +421,16 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        self.tf = emtf_xml.TransferFunction()
-        self.tf.read_data(root_dict)
+        self.data = emtf_xml.TransferFunction()
+        self.data.read_data(root_dict)
         
-    def _write_data(self):
-        pass
+    def _write_data(self, parent, key, attributes={}):
+        """
+        write data blocks
+        """
+        data_element = self._write_single(parent, "Data", None, {"count": str(self.data.period.size)})
+        self.data.write_data(data_element)
+        
 
     def _convert_keys_to_lower_case(self, root_dict):
         """

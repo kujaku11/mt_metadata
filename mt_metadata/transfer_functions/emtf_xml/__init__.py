@@ -44,6 +44,7 @@ from .magnetic import Magnetic
 from .electric import Electric
 from .channels import Channels
 from .site_layout import SiteLayout
+from .period_range import PeriodRange
 from .data import TransferFunction
 from .emtf import EMTF
 
@@ -75,6 +76,7 @@ __all__ = [
     "Electric",
     "Channels",
     "SiteLayout",
+    "PeriodRange",
     "TransferFunction",
     "EMTF",
 ]

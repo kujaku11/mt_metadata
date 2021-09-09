@@ -31,7 +31,7 @@ class TransferFunction:
             }
         
 
-        self.periods = None
+        self.period = None
         self.z = None
         self.z_var = None
         self.z_invsigcov = None
@@ -63,7 +63,7 @@ class TransferFunction:
         }
 
     def initialize_arrays(self, n_periods):
-        self.periods = np.zeros(n_periods)
+        self.period = np.zeros(n_periods)
         self.z = np.zeros((n_periods, 2, 2), dtype=np.complex)
         self.z_var = np.zeros_like(self.z, dtype=np.float)
         self.z_invsigcov = np.zeros_like(self.z, dtype=np.complex)
@@ -131,7 +131,7 @@ class TransferFunction:
 
         self.get_n_periods(root_dict)
         for ii, block in enumerate(root_dict["data"]["period"]):
-            self.periods[ii] = float(block["value"])
+            self.period[ii] = float(block["value"])
             self.read_block(block, ii)
             
     def write_block(self, parent, index):
@@ -146,7 +146,7 @@ class TransferFunction:
         """
         
         period_element = et.SubElement(
-            parent, "Period", {"value": self.period[index], "units":"secs"})
+            parent, "Period", {"value": f"{self.period[index]:.6e}", "units":"secs"})
         
         for key in self.array_dict.keys():
             arr = self.array_dict[key][index]
@@ -159,22 +159,42 @@ class TransferFunction:
             except KeyError:
                 pass
             
-            comp_element = et.SubElement(period_element, key, attr_dict)
+            comp_element = et.SubElement(
+                period_element, key.replace("_", ".").upper(), attr_dict
+                )
             idx_dict = self.write_dict[key]
-            for ii in arr.shape[0]:
-                for jj in arr.shape[1]:
-                    ch_out = idx_dict[ii]
-                    ch_in = idx_dict[jj]
+            shape = arr.shape
+            for ii in range(shape[0]):
+                for jj in range(shape[1]):
+                    ch_out = idx_dict["out"][ii]
+                    ch_in = idx_dict["in"][jj]
                     a_dict = {}
                     try:
                         a_dict["name"] = self.name_dict[ch_out + ch_in]
                     except KeyError:
-                        
-                    comp_element = et.SubElement(
-                        comp_element,
-                        "value",
-                        attr_dict)
+                        pass
+                    a_dict["output"] = ch_out
+                    a_dict["input"] = ch_in
                     
+                    ch_element = et.SubElement(comp_element, "value", a_dict)
+                    ch_value = f"{arr[ii, jj].real:.6e}"
+                    if not arr[ii, jj].imag == 0:
+                        ch_value = f"{ch_value} {arr[ii, jj].imag:.6e}"
+                    ch_element.text = ch_value
                     
+        return period_element
+        
+    def write_data(self, parent):
+        """
+        Write data blocks
+        
+        :param parent: DESCRIPTION
+        :type parent: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        for index in range(self.period.size):
+            self.write_block(parent, index)
         
         
