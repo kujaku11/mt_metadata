@@ -409,9 +409,7 @@ class EMTFXML(emtf_xml.EMTF):
         ch_out = self._write_single(section, "output_channels", None)
         for ch in self.site_layout.output_channels:
             self._write_element(ch_out, ch)  
-        
-        
-    
+
     def _read_data(self, root_dict):
         """
         Read data use

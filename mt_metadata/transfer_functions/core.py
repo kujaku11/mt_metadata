@@ -37,13 +37,29 @@ class TF:
         self.station_metadata.run_list[0].hx = Magnetic(component="hx")
         self.station_metadata.run_list[0].hy = Magnetic(component="hy")
         self.station_metadata.run_list[0].hz = Magnetic(component="hz")
-        self.data = {}
+        self._transfer_function = self._initialize_transfer_function()
 
         self._rotation_angle = 0
 
         self.save_dir = Path.cwd()
         self._fn = None
         self.fn = fn
+        
+        self._dataset_attr_dict = {
+            "survey": "survey_metadata.id",
+            "project": "survey_metadata.project",
+            "id": "station_metadata.id",
+            "name": "station_metadata.geographic_name",
+            "latitude": "station_metadata.location.latitude",
+            "longitude": "station_metadata.location.longitude",
+            "elevation": "station_metadata.location.elevation",
+            "declination": "station_metadata.location.declination.value",
+            "datum": "station_metadata.location.datum",
+            "acquired_by": "station_metadata.acquired_by.author",
+            "start": "station_metadata.time_period.start",
+            "end": "station_metadata.time_period.end",
+            "runs_processed": "station_metadata.run_names",
+            }
 
         # provide key words to fill values if an edi file does not exist
         for key in list(kwargs.keys()):
@@ -65,25 +81,20 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
-        if 'z' in self.data.keys():
-            lines.append("\tImpedance:     True")
-        else:
-            lines.append("\tImpedance:     False")
-        if 't' in self.data.keys() is not None:
-            lines.append("\tTipper:        True")
-        else:
-            lines.append("\tTipper:        False")
+        
+        lines.append(f"\tImpedance:     {self.has_impedance()}")
+        lines.append(f"\tTipper:        {self.has_tipper()}")
 
-        if 'period' in self.data.keys():
-            lines.append(f"\tN Periods:     {len(self.data['period'])}")
+        if self.period is not None:
+            lines.append(f"\tN Periods:     {len(self.period)}")
 
             lines.append("\tPeriod Range:")
-            lines.append(f"\t\tMin:   {self.data['period'].min():.5E} s")
-            lines.append(f"\t\tMax:   {self.data['period'].max():.5E} s")
+            lines.append(f"\t\tMin:   {self.period.min():.5E} s")
+            lines.append(f"\t\tMax:   {self.period.max():.5E} s")
 
             lines.append("\tFrequency Range:")
-            lines.append(f"\t\tMin:   {1./self.data['period'].max():.5E} Hz")
-            lines.append(f"\t\tMax:   {1./self.data['period'].min():.5E} Hz")
+            lines.append(f"\t\tMin:   {1./self.period.max():.5E} Hz")
+            lines.append(f"\t\tMax:   {1./self.period.min():.5E} Hz")
 
         return "\n".join(lines)
 
@@ -117,7 +128,35 @@ class TF:
 
     def copy(self):
         return deepcopy(self)
+    
+    def _initialize_transfer_function(self, periods=[1]):
+        """
+        create an empty x array for the data.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
+        # create an empty array for the transfer function
+        tf = xr.DataArray(
+            data=0 + 0j,
+            dims=["period", "output", "input"],
+            coords={"period": periods,
+                    "output": ['ex', 'ey', 'hz'],
+                    "input":["hx", "hy"]},
+            name="transfer_function"
+            )
+        tf_err = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={"period": periods,
+                    "output": ['ex', 'ey', 'hz'],
+                    "input":["hx", "hy"]},
+            name="error"
+            )
+        
+        # will need to add in covariance in some fashion
+        return xr.Dataset({tf.name: tf, tf_err.name: tf_err})
+        
     # ==========================================================================
     # Properties
     # ==========================================================================
@@ -177,70 +216,146 @@ class TF:
         set elevation, should be input as meters
         """
         self.station_metadata.location.elevation = elevation
+        
+    @property
+    def dataset(self):
+        """
+        This will return an xarray dataset with proper metadata
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    # @property
-    # def Z(self):
-    #     """mtpy.core.z.Z object to hole impedance tensor"""
-    #     return self._Z
+        """
+        
+        for key, mkey in self._dataset_attr_dict.items():
+            obj, attr = mkey.split(".", 1)
+            value = getattr(self, obj).get_attr_from_name(attr)
+            
+            self._transfer_function.attrs[key] = value
+        
+        return self._transfer_function
+    
+    def has_impedance(self):
+        """
+        Check to see if the transfer function is not 0 and has 
+        transfer function components
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    # @Z.setter
-    # def Z(self, z_object):
-    #     """
-    #     set z_object
+        """
+        outputs = self._transfer_function.transfer_function.coords["output"].data.tolist()
+        if "ex" in outputs or "ey" in outputs:
+            if np.all(self._transfer_function.transfer_function.sel(input=["hx", "hy"], output=["ex", "ey"]).data == 0):
+                return False
+            return True
+        return False
+    
+    @property    
+    def impedance(self):
+        """
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    #     recalculate phase tensor and invariants, which shouldn't change except
-    #     for strike angle
-    #     """
+        """
+        if self.has_impedance():
+            z = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["ex", "ey"])
+            z.name = "impedance"
+            z_err = self.dataset.error.sel(input=["hx", "hy"], output=["ex", "ey"])
+            z_err.name = "impedance_error"
+        
+            return xr.Dataset({z.name: z, z_err.name: z_err})
+        
+    @impedance.setter
+    def impedance(self, value):
+        """
+        Set the impedance from values
+        
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    #     self._Z = z_object
-    #     self._Z.compute_resistivity_phase()
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            value = np.array(value)
+            if value.shape[0] != self.period.size:
+                self.logger.warning(
+                    "New impedance shape %s not same as old %s, making new dataset.", 
+                    value.shape,  self.impedance.impedance.data.shape)
+            if value.shape[1:] != (2, 2):
+                msg = "Impedance must be have shape (n_periods, 2, 2), not %s"
+                self.logger.error(msg, value.shape)
+                raise ValueError(msg % value.shape)
+                
+        
+    def has_tipper(self):
+        """
+        Check to see if the transfer function is not 0 and has 
+        transfer function components
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    # @property
-    # def Tipper(self):
-    #     """mtpy.core.z.Tipper object to hold tipper information"""
-    #     return self._Tipper
-
-    # @Tipper.setter
-    # def Tipper(self, t_object):
-    #     """
-    #     set tipper object
-
-    #     recalculate tipper angle and magnitude
-    #     """
-
-    #     self._Tipper = t_object
-    #     if self._Tipper is not None:
-    #         self._Tipper.compute_amp_phase()
-    #         self._Tipper.compute_mag_direction()
+        """
+        outputs = self._transfer_function.transfer_function.coords["output"].data.tolist()
+        if "hz" in outputs:
+            if np.all(self._transfer_function.transfer_function.sel(input=["hx", "hy"], output=["hz"]).data == 0):
+                return False
+            return True
+        return False
 
     @property
-    def periods(self):
-        if self.Z is not None:
-            return 1.0 / self.Z.freq
-        elif self.Tipper is not None:
-            return 1.0 / self.Tipper.freq
+    def tipper(self):
+        """
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+    
+        """
+        if self.has_impedance():
+            t = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["hz"])
+            t.name = "tipper"
+            t_err = self.dataset.error.sel(input=["hx", "hy"], output=["hz"])
+            t_err.name = "tipper_error"
+        
+            return xr.Dataset({t.name: t, t_err.name: t_err})
+
+    @property
+    def period(self):
+        if self.has_impedance() or self.has_tipper():
+            return self.dataset.period.data
         return None
 
-    @periods.setter
-    def periods(self, value):
-        self.logger.warning(
-            "Cannot set TF.periods directly," + " set either Z.freq or Tipper.freq"
-        )
+    @period.setter
+    def period(self, value):
+        if self.period is not None:
+            if len(value) != len(self.period):
+                self.logger.warning("New periods are not the same size as old ones, making a new dataset")
+                self._transfer_function = self._initialize_transfer_function(periods=value)
+            else:
+                self.dataset["period"] = value
+        else:
+            self._transfer_function = self._initialize_transfer_function(periods=value)
         return
 
     @property
-    def frequencies(self):
-        if self.Z is not None:
-            return self.Z.freq
-        elif self.Tipper is not None:
-            return self.Tipper.freq
+    def frequency(self):
+        if self.period is not None:
+            return 1./self.period
         return None
 
-    @frequencies.setter
-    def frequencies(self, value):
-        self.logger.warning(
-            "Cannot set TF.frequencies directly," + " set either Z.freq or Tipper.freq"
-        )
+    @frequency.setter
+    def frequency(self, value):
+        if self.period is not None:
+            if len(value) != len(self.period):
+                self.logger.warning("New periods are not the same size as old ones, making a new dataset")
+                self._transfer_function = self._initialize_transfer_function(periods=1./value)
+            else:
+                self.dataset["period"] = 1./value
+        else:
+            self._transfer_function = self._initialize_transfer_function(periods=1./value)
         return
 
     @property
