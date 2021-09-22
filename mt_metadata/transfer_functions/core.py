@@ -601,6 +601,27 @@ class TF:
 
         """
         self._set_data_array(value, "res")
+        
+    def compute_errors_from_covariance(self):
+        """
+        Compute transfer function errors from covariance matrices
+        
+        This will become important when writing edi files.
+        
+        Translated from code written by Ben Murphy.
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        sigma_e = self.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
+        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
+        
+        z_err = np.sqrt(np.real(sigma_e * sigma_s))
+        
+        return z_err
+        
 
     @property
     def period(self):
