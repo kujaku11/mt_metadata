@@ -287,14 +287,41 @@ class TF:
                         value.shape,  self.impedance.impedance.data.shape)
                     
             else:
-                print(f"initializing {value.shape}")
                 self._transfer_function = self._initialize_transfer_function(np.arange(value.shape[0]))
             if value.shape[1:] != (2, 2):
                 msg = "Impedance must be have shape (n_periods, 2, 2), not %s"
                 self.logger.error(msg, value.shape)
                 raise ValueError(msg % value.shape)
             self._transfer_function.transfer_function.data[:, 0:2, 0:2] = value
+            
+        if isinstance(value, xr.DataArray):
+            # should test for shape
+            if "period" not in value.coords.keys() or 'input' not in value.coords.keys():
+                msg = "Coordinates must be period, output, input, not %s"
+                self.logger.error(msg, list(value.coords.keys()))
+                raise ValueError(msg % value.coords.keys())
+            if 'ex' not in value.coords["output"].data.tolist() or \
+                'ey' not in value.coords["output"].data.tolist():
+                msg = "Output dimensions must be 'ex' and 'ey' not %s"
+                self.logger.error(msg, value.coords["output"].data.tolist())
+                raise ValueError(msg % value.coords["output"].data.tolist())
+            if 'hx' not in value.coords["input"].data.tolist() or \
+                'hy' not in value.coords["input"].data.tolist():
+                msg = "Input dimensions must be 'hx' and 'hy' not %s"
+                self.logger.error(msg, value.coords["input"].data.tolist())
+                raise ValueError(msg % value.coords["input"].data.tolist())
+            if self._transfer_function.transfer_function.data.shape[0] == 1 and not self.has_tipper():
+                self._transfer_function = self._initialize_transfer_function(value.period)
+            else:
+                msg = "Reassigning is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
+                self.logger.error(msg)
+                raise TFError(msg)
                 
+            self._transfer_function['transfer_function'].loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = value 
+        else:
+            msg = "Data type %s not supported use a numpy array or xarray.DataArray"
+            self.logger.error(msg, type(value))
+            raise ValueError(msg % type(value))
         
     def has_tipper(self):
         """
