@@ -302,7 +302,7 @@ class TF:
             "impedance": (2, 2),
             "tipper": (1, 2),
             "isp": (2, 2),
-            "res": (3, 2),
+            "res": (3, 3),
         }
 
         shape = shape_dict[atype]
