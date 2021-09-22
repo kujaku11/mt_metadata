@@ -280,14 +280,20 @@ class TF:
         """
         if isinstance(value, (list, tuple, np.ndarray)):
             value = np.array(value)
-            if value.shape[0] != self.period.size:
-                self.logger.warning(
-                    "New impedance shape %s not same as old %s, making new dataset.", 
-                    value.shape,  self.impedance.impedance.data.shape)
+            if self.has_impedance():
+                if value.shape[0] != self.period.size:
+                    self.logger.warning(
+                        "New impedance shape %s not same as old %s, making new dataset.", 
+                        value.shape,  self.impedance.impedance.data.shape)
+                    
+            else:
+                print(f"initializing {value.shape}")
+                self._transfer_function = self._initialize_transfer_function(np.arange(value.shape[0]))
             if value.shape[1:] != (2, 2):
                 msg = "Impedance must be have shape (n_periods, 2, 2), not %s"
                 self.logger.error(msg, value.shape)
                 raise ValueError(msg % value.shape)
+            self._transfer_function.transfer_function.data[:, 0:2, 0:2] = value
                 
         
     def has_tipper(self):
