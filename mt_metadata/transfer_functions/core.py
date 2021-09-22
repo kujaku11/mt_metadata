@@ -131,7 +131,10 @@ class TF:
     
     def _initialize_transfer_function(self, periods=[1]):
         """
-        create an empty x array for the data.
+        create an empty x array for the data.  For now this accommodates
+        a single processed station. 
+        
+        
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -145,6 +148,7 @@ class TF:
                     "input":["hx", "hy"]},
             name="transfer_function"
             )
+        
         tf_err = xr.DataArray(
             data=0,
             dims=["period", "output", "input"],
@@ -152,6 +156,24 @@ class TF:
                     "output": ['ex', 'ey', 'hz'],
                     "input":["hx", "hy"]},
             name="error"
+            )
+        
+        inv_signal_power_matrix = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={"period": periods,
+                    "output": ["hx", "hy"],
+                    "input":["hx", "hy"]},
+            name="inverse_coherent_signal_power"
+            )
+        
+        residual_covariance = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={"period": periods,
+                    "output": ["ex", "ey"],
+                    "input":["ex", "ey"]},
+            name="residual_covariance"
             )
         
         # will need to add in covariance in some fashion
