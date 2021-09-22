@@ -25,5 +25,5 @@ class PeriodRange(Base):
 
         self.min = None
         self.max = None
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)

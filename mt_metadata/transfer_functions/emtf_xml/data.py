@@ -19,7 +19,8 @@ class TransferFunction:
             "complex": complex,
             "real": float,
             "complex128": "complex",
-            "float64": "real"}
+            "float64": "real",
+        }
         self.units_dict = {"z": "[mV/km]/[nT]", "t": "[]"}
         self.name_dict = {
             "exhx": "zxx",
@@ -28,8 +29,7 @@ class TransferFunction:
             "eyhy": "zyy",
             "hzhx": "tx",
             "hzhy": "ty",
-            }
-        
+        }
 
         self.period = None
         self.z = None
@@ -52,14 +52,14 @@ class TransferFunction:
             "t_residcov": self.t_residcov,
         }
         self.write_dict = {
-            "z": {"out": {0: 'ex', 1: "ey"}, "in": {0: "hx", 1: "hy"}},
-            "z_var": {"out": {0: 'ex', 1: "ey"}, "in": {0: "hx", 1: "hy"}},
-            "z_invsigcov": {"out": {0: 'hx', 1: "hy"}, "in": {0: "hx", 1: "hy"}},
-            "z_residcov": {"out": {0: 'ex', 1: "ey"}, "in": {0: "ex", 1: "ey"}},
-            "t": {"out": {0: 'hz'}, "in": {0: "hx", 1: "hy"}},
-            "t_var": {"out": {0: 'hz'}, "in": {0: "hx", 1: "hy"}},
-            "t_invsigcov": {"out": {0: 'hx', 1: "hy"}, "in": {0: "hx", 1: "hy"}},
-            "t_residcov": {"out": {0: 'hz'}, "in": {0: "hz"}},
+            "z": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
+            "z_var": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
+            "z_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
+            "z_residcov": {"out": {0: "ex", 1: "ey"}, "in": {0: "ex", 1: "ey"}},
+            "t": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
+            "t_var": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
+            "t_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
+            "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
 
     def initialize_arrays(self, n_periods):
@@ -133,35 +133,36 @@ class TransferFunction:
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
             self.read_block(block, ii)
-            
+
     def write_block(self, parent, index):
         """
         Write a data block
-        
+
         :param parent: DESCRIPTION
         :type parent: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         period_element = et.SubElement(
-            parent, "Period", {"value": f"{self.period[index]:.6e}", "units":"secs"})
-        
+            parent, "Period", {"value": f"{self.period[index]:.6e}", "units": "secs"}
+        )
+
         for key in self.array_dict.keys():
             arr = self.array_dict[key][index]
             attr_dict = {
-                "type": self.dtype_dict[arr.dtype.name], 
-                "size": str(arr.shape)[1:-1].replace(',', '')
-                }
+                "type": self.dtype_dict[arr.dtype.name],
+                "size": str(arr.shape)[1:-1].replace(",", ""),
+            }
             try:
                 attr_dict["units"] = self.units_dict[key]
             except KeyError:
                 pass
-            
+
             comp_element = et.SubElement(
                 period_element, key.replace("_", ".").upper(), attr_dict
-                )
+            )
             idx_dict = self.write_dict[key]
             shape = arr.shape
             for ii in range(shape[0]):
@@ -175,19 +176,19 @@ class TransferFunction:
                         pass
                     a_dict["output"] = ch_out
                     a_dict["input"] = ch_in
-                    
+
                     ch_element = et.SubElement(comp_element, "value", a_dict)
                     ch_value = f"{arr[ii, jj].real:.6e}"
                     if not arr[ii, jj].imag == 0:
                         ch_value = f"{ch_value} {arr[ii, jj].imag:.6e}"
                     ch_element.text = ch_value
-                    
+
         return period_element
-        
+
     def write_data(self, parent):
         """
         Write data blocks
-        
+
         :param parent: DESCRIPTION
         :type parent: TYPE
         :return: DESCRIPTION
@@ -196,5 +197,3 @@ class TransferFunction:
         """
         for index in range(self.period.size):
             self.write_block(parent, index)
-        
-        

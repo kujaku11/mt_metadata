@@ -422,7 +422,7 @@ def element_to_dict(element):
                     pop = True
                     continue
             meta_dict[element.tag][k] = v
-        
+
         if pop:
             element.attrib.pop("units")
 

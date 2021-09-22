@@ -594,7 +594,10 @@ class Base:
                 value = None
 
             if required:
-                if value not in [None, "1980-01-01T00:00:00+00:00"] or self._attr_dict[name]["required"]:
+                if (
+                    value not in [None, "1980-01-01T00:00:00+00:00"]
+                    or self._attr_dict[name]["required"]
+                ):
                     meta_dict[name] = value
             else:
                 meta_dict[name] = value

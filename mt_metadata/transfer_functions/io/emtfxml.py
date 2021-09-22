@@ -23,6 +23,7 @@ from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run
 from mt_metadata.utils import mttime
+
 meta_classes = dict(
     [
         (validate_attribute(k), v)
@@ -76,7 +77,7 @@ class EMTFXML(emtf_xml.EMTF):
             "data_types",
             "site_layout",
             "data",
-            "period_range"
+            "period_range",
         ]
 
         self._reader_dict = {
@@ -91,7 +92,7 @@ class EMTFXML(emtf_xml.EMTF):
             "data_types": self._read_data_types,
             "data": self._read_data,
         }
-        
+
         self._writer_dict = {
             "description": self._write_single,
             "product_id": self._write_single,
@@ -131,51 +132,56 @@ class EMTFXML(emtf_xml.EMTF):
                 self._reader_dict[element](root_dict)
             else:
                 self._read_element(root_dict, element)
-                
+
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
-                
+
     def write(self, fn):
         """
-        Write an xml 
+        Write an xml
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         emtf_element = et.Element("EM_TF")
-        
-        if self.site.location.x == 0 and self.site.location.x2 == 0 and \
-            self.site.location.y == 0 and self.site.location.y2 == 0 and \
-            self.site.location.z == 0:
+
+        if (
+            self.site.location.x == 0
+            and self.site.location.x2 == 0
+            and self.site.location.y == 0
+            and self.site.location.y2 == 0
+            and self.site.location.z == 0
+        ):
             self.site.location.x = None
             self.site.location.y = None
             self.site.location.z = None
             self.site.location.x2 = None
             self.site.location.y2 = None
-            
-        
+
         for key in self.element_keys:
             value = getattr(self, key)
             if key in self._writer_dict.keys():
                 self._writer_dict[key](emtf_element, key, value)
             else:
-                self._write_element(emtf_element, value, )
-                
+                self._write_element(
+                    emtf_element,
+                    value,
+                )
+
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))
-        
 
     def _read_single(self, root_dict, key):
         try:
             setattr(self, key, root_dict[key])
         except KeyError:
             self.logger.debug("no description in xml")
-            
+
     def _write_single(self, parent, key, value, attributes={}):
-        element = et.SubElement(parent, self._capwords(key), attributes) 
+        element = et.SubElement(parent, self._capwords(key), attributes)
         if value:
             element.text = str(value)
         return element
@@ -189,14 +195,11 @@ class EMTFXML(emtf_xml.EMTF):
     def _read_sub_type(self, root_dict):
         self._read_single(root_dict, "sub_type")
 
-
     def _read_notes(self, root_dict):
         self._read_single(root_dict, "notes")
-    
 
     def _read_tags(self, root_dict):
         self._read_single(root_dict, "tags")
-    
 
     def _read_element(self, root_dict, element_name):
         """
@@ -227,10 +230,10 @@ class EMTFXML(emtf_xml.EMTF):
             except KeyError:
                 print(f"No {element_name} in EMTF XML")
                 self.logger.debug(f"No {element_name} in EMTF XML")
-                
+
     def _write_element(self, parent, value, attributes={}):
         """
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :param parent: DESCRIPTION
@@ -241,7 +244,7 @@ class EMTFXML(emtf_xml.EMTF):
         """
 
         parent.append(self._convert_tag_to_capwords(value.to_xml()))
-        
+
     def _write_provenance(self, parent, value, attributes={}):
         """
         add new creation time and creating application
@@ -258,7 +261,7 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.provenance.creating_application = "mt_metadata 0.1.5"
         self.provenance.create_time = mttime.get_now_utc()
-        
+
         self._write_element(parent, self.provenance)
 
     def _read_field_notes(self, root_dict):
@@ -307,11 +310,10 @@ class EMTFXML(emtf_xml.EMTF):
                 f.dipole.append(m)
 
             self.field_notes.append(f)
-            
+
     def _write_field_notes(self, parent, key, attributes={}):
-        """
-        """
-        
+        """ """
+
         for fn in self.field_notes:
             fn_element = self._convert_tag_to_capwords(fn.to_xml())
             for dp in fn.dipole:
@@ -322,7 +324,6 @@ class EMTFXML(emtf_xml.EMTF):
             for mag in fn.magnetometer:
                 self._write_element(fn_element, mag)
             parent.append(fn_element)
-        
 
     def _read_statistical_estimates(self, root_dict):
         """
@@ -397,18 +398,17 @@ class EMTFXML(emtf_xml.EMTF):
                 pass
 
             setattr(self.site_layout, ch, ch_list)
-            
+
     def _write_site_layout(self, parent, key, attributes={}):
         section = self._write_single(parent, key, None)
-        
+
         ch_in = self._write_single(section, "input_channels", None)
         for ch in self.site_layout.input_channels:
             self._write_element(ch_in, ch)
-    
-        
+
         ch_out = self._write_single(section, "output_channels", None)
         for ch in self.site_layout.output_channels:
-            self._write_element(ch_out, ch)  
+            self._write_element(ch_out, ch)
 
     def _read_data(self, root_dict):
         """
@@ -421,14 +421,15 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.data = emtf_xml.TransferFunction()
         self.data.read_data(root_dict)
-        
+
     def _write_data(self, parent, key, attributes={}):
         """
         write data blocks
         """
-        data_element = self._write_single(parent, "Data", None, {"count": str(self.data.period.size)})
+        data_element = self._write_single(
+            parent, "Data", None, {"count": str(self.data.period.size)}
+        )
         self.data.write_data(data_element)
-        
 
     def _convert_keys_to_lower_case(self, root_dict):
         """
@@ -454,37 +455,36 @@ class EMTFXML(emtf_xml.EMTF):
                 item = self._convert_keys_to_lower_case(item)
                 res.append(item)
         return res
-    
+
     def _capwords(self, value):
         """
         convert to capwords, could use string.capwords, but this seems
         easy enough
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         return value.replace("_", " ").title().replace(" ", "")
-    
+
     def _convert_tag_to_capwords(self, element):
         """
         convert back to capwords representation for the tag
-        
+
         :param element: DESCRIPTION
         :type element: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         for item in element.iter():
             item.tag = self._capwords(item.tag)
-            
-        return element
 
+        return element
 
     @property
     def survey_metadata(self):
@@ -617,13 +617,13 @@ def read_emtfxml(fn):
     emtf.data["z_var"] = obj.tf.z_var
     emtf.data["z_invsigcov"] = obj.tf.z_invsigcov
     emtf.data["z_residcov"] = obj.tf.z_residcov
-    
+
     emtf.data["t"] = obj.tf.t
     emtf.data["t_var"] = obj.tf.t_var
     emtf.data["t_invsigcov"] = obj.tf.t_invsigcov
     emtf.data["t_residcov"] = obj.tf.t_residcov
     emtf.data["period"] = obj.tf.periods
-    
+
     return emtf
 
 
@@ -639,14 +639,14 @@ def write_emtfxml(tf_object, fn=None):
     :rtype: TYPE
 
     """
-    
+
     from mt_metadata.transfer_functions.core import TF
 
     if not isinstance(tf_object, TF):
         raise ValueError(
             "Input must be an mt_metadata.transfer_functions.core.TF object"
-            )
-        
+        )
+
     emtf = EMTFXML()
     emtf.description = "Magnetotelluric transfer functions"
     pass

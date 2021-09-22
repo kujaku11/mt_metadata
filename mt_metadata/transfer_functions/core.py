@@ -37,14 +37,13 @@ class TF:
         self.station_metadata.run_list[0].hx = Magnetic(component="hx")
         self.station_metadata.run_list[0].hy = Magnetic(component="hy")
         self.station_metadata.run_list[0].hz = Magnetic(component="hz")
-        self._transfer_function = self._initialize_transfer_function()
 
         self._rotation_angle = 0
 
         self.save_dir = Path.cwd()
         self._fn = None
         self.fn = fn
-        
+
         self._dataset_attr_dict = {
             "survey": "survey_metadata.id",
             "project": "survey_metadata.project",
@@ -59,19 +58,25 @@ class TF:
             "start": "station_metadata.time_period.start",
             "end": "station_metadata.time_period.end",
             "runs_processed": "station_metadata.run_names",
-            }
-        
-        self._ch_input_dict = {"impedance": ["hx", "hy"],
-                         "tipper": ["hx", "hy"],
-                         "isp": ["hx", "hy"],
-                         "res": ["ex", "ey", "hz"],
-                         "tf": ["hx", "hy"]}
-        
-        self._ch_output_dict = {"impedance": ["ex", "ey"],
-                          "tipper": ["hz"],
-                          "isp": ["hx", "hy"],
-                          "res": ["ex", "ey", "hz"],
-                          "tf": ["ex", "ey", "hz"]}
+        }
+
+        self._ch_input_dict = {
+            "impedance": ["hx", "hy"],
+            "tipper": ["hx", "hy"],
+            "isp": ["hx", "hy"],
+            "res": ["ex", "ey", "hz"],
+            "tf": ["hx", "hy"],
+        }
+
+        self._ch_output_dict = {
+            "impedance": ["ex", "ey"],
+            "tipper": ["hz"],
+            "isp": ["hx", "hy"],
+            "res": ["ex", "ey", "hz"],
+            "tf": ["ex", "ey", "hz"],
+        }
+
+        self._transfer_function = self._initialize_transfer_function()
 
         # provide key words to fill values if an edi file does not exist
         for key in list(kwargs.keys()):
@@ -93,7 +98,7 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
-        
+
         lines.append(f"\tImpedance:     {self.has_impedance()}")
         lines.append(f"\tTipper:        {self.has_tipper()}")
 
@@ -140,13 +145,13 @@ class TF:
 
     def copy(self):
         return deepcopy(self)
-    
+
     def _initialize_transfer_function(self, periods=[1]):
         """
         create an empty x array for the data.  For now this accommodates
-        a single processed station. 
-        
-        
+        a single processed station.
+
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -155,46 +160,57 @@ class TF:
         tf = xr.DataArray(
             data=0 + 0j,
             dims=["period", "output", "input"],
-            coords={"period": periods,
-                    "output": self._ch_output_dict["tf"],
-                    "input":self._ch_input_dict["tf"]},
-            name="transfer_function"
-            )
-        
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="transfer_function",
+        )
+
         tf_err = xr.DataArray(
             data=0,
             dims=["period", "output", "input"],
-            coords={"period": periods,
-                    "output": self._ch_output_dict["tf"],
-                    "input": self._ch_input_dict["tf"]},
-            name="error"
-            )
-        
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="error",
+        )
+
         inv_signal_power = xr.DataArray(
             data=0 + 0j,
             dims=["period", "output", "input"],
-            coords={"period": periods,
-                    "output": self._ch_output_dict["isp"],
-                    "input":self._ch_input_dict["isp"]},
-            name="inverse_signal_power"
-            )
-        
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["isp"],
+                "input": self._ch_input_dict["isp"],
+            },
+            name="inverse_signal_power",
+        )
+
         residual_covariance = xr.DataArray(
             data=0 + 0j,
             dims=["period", "output", "input"],
-            coords={"period": periods,
-                    "output": self._ch_output_dict["res"],
-                    "input":self._ch_input_dict["res"]},
-            name="residual_covariance"
-            )
-        
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["res"],
+                "input": self._ch_input_dict["res"],
+            },
+            name="residual_covariance",
+        )
+
         # will need to add in covariance in some fashion
-        return xr.Dataset({tf.name: tf,
-                           tf_err.name: tf_err,
-                           inv_signal_power.name: inv_signal_power,
-                           residual_covariance.name: residual_covariance})
-    
-        
+        return xr.Dataset(
+            {
+                tf.name: tf,
+                tf_err.name: tf_err,
+                inv_signal_power.name: inv_signal_power,
+                residual_covariance.name: residual_covariance,
+            }
+        )
+
     # ==========================================================================
     # Properties
     # ==========================================================================
@@ -254,25 +270,25 @@ class TF:
         set elevation, should be input as meters
         """
         self.station_metadata.location.elevation = elevation
-        
+
     @property
     def dataset(self):
         """
         This will return an xarray dataset with proper metadata
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         for key, mkey in self._dataset_attr_dict.items():
             obj, attr = mkey.split(".", 1)
             value = getattr(self, obj).get_attr_from_name(attr)
-            
+
             self._transfer_function.attrs[key] = value
-        
+
         return self._transfer_function
-    
+
     def _validate_input_ndarray(self, ndarray, atype="impedance"):
         """
         Validate the input based on array type and component
@@ -282,31 +298,39 @@ class TF:
         :rtype: TYPE
 
         """
-        shape_dict = {'impedance': (2, 2),
-                      "tipper": (1, 2),
-                      "isp": (2, 2),
-                      "res": (3, 2)}
-        
+        shape_dict = {
+            "impedance": (2, 2),
+            "tipper": (1, 2),
+            "isp": (2, 2),
+            "res": (3, 2),
+        }
+
         shape = shape_dict[atype]
         if ndarray.shape[1:] != shape:
             msg = "%s must be have shape (n_periods, %s, %s), not %s"
             self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
             raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
-            
+
         if atype == "impedance":
             if self.has_impedance():
                 if ndarray.shape[0] != self.period.size:
                     msg = "New %s shape %s not same as old %s, suggest creating a new instance."
                     self.logger.error(
-                        msg, atype, ndarray.shape, self.impedance.impedance.data.shape)
-                    raise TFError(msg % (atype, ndarray.shape, self.impedance.impedance.data.shape))
+                        msg, atype, ndarray.shape, self.impedance.impedance.data.shape
+                    )
+                    raise TFError(
+                        msg
+                        % (atype, ndarray.shape, self.impedance.impedance.data.shape)
+                    )
             else:
-                self._transfer_function = self._initialize_transfer_function(np.arange(ndarray.shape[0]))
-    
+                self._transfer_function = self._initialize_transfer_function(
+                    np.arange(ndarray.shape[0])
+                )
+
     def _validate_input_dataarray(self, da, atype="impedance"):
         """
         Validate an input data array
-        
+
         :param da: DESCRIPTION
         :type da: TYPE
         :param atype: DESCRIPTION, defaults to "impedance"
@@ -315,40 +339,46 @@ class TF:
         :rtype: TYPE
 
         """
-        
+
         ch_in = self._ch_input_dict[atype]
         ch_out = self._ch_output_dict[atype]
-        
+
         # should test for shape
-        if "period" not in da.coords.keys() or 'input' not in da.coords.keys():
+        if "period" not in da.coords.keys() or "input" not in da.coords.keys():
             msg = "Coordinates must be period, output, input, not %s"
             self.logger.error(msg, list(da.coords.keys()))
             raise TFError(msg % da.coords.keys())
-        
+
         if ch_out != da.coords["output"].data.tolist():
             msg = "Output dimensions must be %s not %s"
             self.logger.error(msg, ch_out, da.coords["output"].data.tolist())
             raise TFError(msg % (ch_out, da.coords["output"].data.tolist()))
-        
+
         if ch_in != da.coords["input"].data.tolist():
             msg = "Input dimensions must be %s not %s"
             self.logger.error(msg, ch_in, da.coords["input"].data.tolist())
             raise TFError(msg % (ch_in, da.coords["input"].data.tolist()))
-        
-        # if this is the first instantiation then just resize the 
+
+        # if this is the first instantiation then just resize the
         # transfer function to fit the input
-        if self._transfer_function.transfer_function.data.shape[0] == 1 and not self.has_tipper() and not self.has_impedance():
+        if (
+            self._transfer_function.transfer_function.data.shape[0] == 1
+            and not self.has_tipper()
+            and not self.has_impedance()
+        ):
             self._transfer_function = self._initialize_transfer_function(da.period)
-        elif self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]:
-            return 
+        elif (
+            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
+        ):
+            return
         else:
             msg = "Reassigning with a different shape is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
             self.logger.error(msg)
             raise TFError(msg)
-            
+
     def _set_data_array(self, value, atype):
         """
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :param atype: DESCRIPTION
@@ -357,68 +387,79 @@ class TF:
         :rtype: TYPE
 
         """
-        key_dict = {"tf": "transfer_function",
-                     "impedance": "transfer_function",
-                     "tipper": "transfer_function",
-                     "isp": "inverse_signal_power",
-                     "res": "residual_covariance"}
+        key_dict = {
+            "tf": "transfer_function",
+            "impedance": "transfer_function",
+            "tipper": "transfer_function",
+            "isp": "inverse_signal_power",
+            "res": "residual_covariance",
+        }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
         ch_out = self._ch_output_dict[atype]
         comps = dict(input=ch_in, output=ch_out)
-        
+
         if isinstance(value, (list, tuple, np.ndarray)):
             value = np.array(value)
             self._validate_input_ndarray(value, atype=atype)
-            
+
             self._transfer_function[key].loc[comps] = value
-            
+
         elif isinstance(value, xr.DataArray):
             self._validate_input_dataarray(value, atype=atype)
-                
-            self._transfer_function[key].loc[comps] = value 
+
+            self._transfer_function[key].loc[comps] = value
         else:
             msg = "Data type %s not supported use a numpy array or xarray.DataArray"
             self.logger.error(msg, type(value))
             raise TFError(msg % type(value))
-    
+
     def has_impedance(self):
         """
-        Check to see if the transfer function is not 0 and has 
+        Check to see if the transfer function is not 0 and has
         transfer function components
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        outputs = self._transfer_function.transfer_function.coords["output"].data.tolist()
+        outputs = self._transfer_function.transfer_function.coords[
+            "output"
+        ].data.tolist()
         if "ex" in outputs or "ey" in outputs:
-            if np.all(self._transfer_function.transfer_function.sel(input=["hx", "hy"], output=["ex", "ey"]).data == 0):
+            if np.all(
+                self._transfer_function.transfer_function.sel(
+                    input=["hx", "hy"], output=["ex", "ey"]
+                ).data
+                == 0
+            ):
                 return False
             return True
         return False
-    
-    @property    
+
+    @property
     def impedance(self):
         """
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
         if self.has_impedance():
-            z = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["ex", "ey"])
+            z = self.dataset.transfer_function.sel(
+                input=["hx", "hy"], output=["ex", "ey"]
+            )
             z.name = "impedance"
             z_err = self.dataset.error.sel(input=["hx", "hy"], output=["ex", "ey"])
             z_err.name = "impedance_error"
-        
+
             return xr.Dataset({z.name: z, z_err.name: z_err})
-        
+
     @impedance.setter
     def impedance(self, value):
         """
         Set the impedance from values
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
@@ -426,19 +467,26 @@ class TF:
 
         """
         self._set_data_array(value, "impedance")
-        
+
     def has_tipper(self):
         """
-        Check to see if the transfer function is not 0 and has 
+        Check to see if the transfer function is not 0 and has
         transfer function components
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        outputs = self._transfer_function.transfer_function.coords["output"].data.tolist()
+        outputs = self._transfer_function.transfer_function.coords[
+            "output"
+        ].data.tolist()
         if "hz" in outputs:
-            if np.all(self._transfer_function.transfer_function.sel(input=["hx", "hy"], output=["hz"]).data == 0):
+            if np.all(
+                self._transfer_function.transfer_function.sel(
+                    input=["hx", "hy"], output=["hz"]
+                ).data
+                == 0
+            ):
                 return False
             return True
         return False
@@ -446,23 +494,23 @@ class TF:
     @property
     def tipper(self):
         """
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
-    
+
         """
         if self.has_tipper():
             t = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["hz"])
             t.name = "tipper"
             t_err = self.dataset.error.sel(input=["hx", "hy"], output=["hz"])
             t_err.name = "tipper_error"
-        
+
             return xr.Dataset({t.name: t, t_err.name: t_err})
-        
+
     @tipper.setter
     def tipper(self, value):
         """
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
@@ -470,34 +518,41 @@ class TF:
 
         """
         self._set_data_array(value, "tipper")
-   
+
     def has_inverse_signal_power(self):
         """
-        Check to see if the transfer function is not 0 and has 
+        Check to see if the transfer function is not 0 and has
         transfer function components
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
 
-        if np.all(self._transfer_function.inverse_signal_power.sel(input=["hx", "hy"], output=["hx", "hy"]).data == 0):
+        if np.all(
+            self._transfer_function.inverse_signal_power.sel(
+                input=["hx", "hy"], output=["hx", "hy"]
+            ).data
+            == 0
+        ):
             return False
         return True
-   
+
     @property
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
-            return self.dataset.inverse_signal_power.sel(input=["hx", "hy"], output=["hx", "hy"])
-    
+            return self.dataset.inverse_signal_power.sel(
+                input=["hx", "hy"], output=["hx", "hy"]
+            )
+
         return None
-    
+
     @inverse_signal_power.setter
     def inverse_signal_power(self, value):
         """
         Set the inverse signal power
-        
-        
+
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
@@ -505,28 +560,35 @@ class TF:
 
         """
         self._set_data_array(value, "isp")
-            
+
     def has_residual_covariance(self):
         """
-        Check to see if the transfer function is not 0 and has 
+        Check to see if the transfer function is not 0 and has
         transfer function components
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
 
-        if np.all(self._transfer_function.residual_covariance.sel(input=["ex", "ey", "hz"], output=["ex", "ey", "hz"]).data == 0):
+        if np.all(
+            self._transfer_function.residual_covariance.sel(
+                input=["ex", "ey", "hz"], output=["ex", "ey", "hz"]
+            ).data
+            == 0
+        ):
             return False
         return True
-   
+
     @property
     def residual_covariance(self):
         if self.has_residual_covariance():
-            return self.dataset.residual_covariance.sel(input=["ex", "ey", "hz"], output=["ex", "ey", "hz"])
-    
+            return self.dataset.residual_covariance.sel(
+                input=["ex", "ey", "hz"], output=["ex", "ey", "hz"]
+            )
+
         return None
-    
+
     @residual_covariance.setter
     def residual_covariance(self, value):
         """
@@ -548,7 +610,9 @@ class TF:
     def period(self, value):
         if self.period is not None:
             if len(self.period) == 1 and self.period == np.array([1]):
-                self._transfer_function = self._initialize_transfer_function(periods=value)
+                self._transfer_function = self._initialize_transfer_function(
+                    periods=value
+                )
             if len(value) != len(self.period):
                 msg = "New period size %s is not the same size as old ones %s, suggest creating a new instance of TF"
                 self.logger.error(msg, value.size, self.period.size)
@@ -562,12 +626,12 @@ class TF:
     @property
     def frequency(self):
         if self.period is not None:
-            return 1./self.period
+            return 1.0 / self.period
         return None
 
     @frequency.setter
     def frequency(self, value):
-        self.period = 1./value
+        self.period = 1.0 / value
 
     @property
     def station(self):

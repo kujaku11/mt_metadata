@@ -645,9 +645,7 @@ class EDI(object):
         self.Tipper.compute_amp_phase()
         self.Tipper.compute_mag_direction()
 
-    def write(
-        self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"
-    ):
+    def write(self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"):
         """
         Write a new edi file from either an existing .edi file or from data
         input by the user into the attributes of Edi.
