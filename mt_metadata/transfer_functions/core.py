@@ -23,6 +23,16 @@ class TF:
     """
     Generic container to hold information about an electromagnetic
     transfer funtion
+    
+    The thought here is to have a central container TF.dataset which is an 
+    xarray.Dataset that contains the impedance, tipper, errors and covariance
+    values.  There are helper functions to get and set these from the 
+    TF.dataset.  Cause most of the time the user will want just the impedance
+    or the tipper and associated errors.  We are accommodating EMTF style
+    covariances to accurately rotated data errors.  
+    
+    When reading and writing edi files this information will be lost.
+    
     """
 
     def __init__(self, fn=None, **kwargs):
@@ -602,7 +612,7 @@ class TF:
         """
         self._set_data_array(value, "res")
         
-    def compute_errors_from_covariance(self):
+    def _compute_impedance_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
         
@@ -615,12 +625,42 @@ class TF:
 
         """
         
-        sigma_e = self.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
-        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
+        sigma_e = self.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])]
+        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])]
         
-        z_err = np.sqrt(np.real(sigma_e * sigma_s))
+        z_err = np.zeros((self.period.size, 2, 2), dtype=float)
+        z_err[:, 0, 0] = np.real(sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
+        z_err[:, 0, 1] = np.real(sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
+        z_err[:, 1, 0] = np.real(sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
+        z_err[:, 1, 1] = np.real(sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
+        
+        z_err = np.sqrt(np.abs(z_err))
         
         return z_err
+    
+    def _compute_tipper_error_from_covariance(self):
+        """
+        Compute transfer function errors from covariance matrices
+        
+        This will become important when writing edi files.
+        
+        Translated from code written by Ben Murphy.
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        sigma_e = self.residual_covariance.loc[dict(input=["hz"], output=["hz"])]
+        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])]
+        
+        t_err = np.zeros((self.period.size, 1, 2), dtype=float)
+        t_err[:, 0, 0] = np.real(sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
+        t_err[:, 0, 1] = np.real(sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
+
+        t_err = np.sqrt(np.abs(t_err))
+        
+        return t_err
         
 
     @property

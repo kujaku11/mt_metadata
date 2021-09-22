@@ -704,4 +704,8 @@ def write_zmm(mt_object, fn=None):
 
     """
 
+    # need to reorder sigma e to be ex, ey, hz
+    # sigma_e[:, :, [2]] = w.sigma_e[:, :, [0]]
+    # sigma_e[:, :, [1]] = w.sigma_e[:, :, [2]]
+    # sigma_e[:, :, [0]] = w.sigma_e[:, :, [1]]
     raise IOError("write_zmm is not implemented yet.")
