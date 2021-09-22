@@ -158,7 +158,7 @@ class TF:
             name="error"
             )
         
-        inv_signal_power_matrix = xr.DataArray(
+        inv_signal_power = xr.DataArray(
             data=0,
             dims=["period", "output", "input"],
             coords={"period": periods,
@@ -177,7 +177,11 @@ class TF:
             )
         
         # will need to add in covariance in some fashion
-        return xr.Dataset({tf.name: tf, tf_err.name: tf_err})
+        return xr.Dataset({tf.name: tf,
+                           tf_err.name: tf_err,
+                           inv_signal_power.name: inv_signal_power,
+                           residual_covariance.name: residual_covariance})
+    
         
     # ==========================================================================
     # Properties
@@ -257,6 +261,82 @@ class TF:
         
         return self._transfer_function
     
+    def _validate_input_ndarray(self, ndarray, atype="impedance"):
+        """
+        Validate the input based on array type and component
+        :param atype: DESCRIPTION, defaults to "impedance"
+        :type atype: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        shape_dict = {'impedance': (2, 2),
+                      "tipper": (1, 2)}
+        
+        shape = shape_dict[atype]
+        if ndarray.shape[1:] != shape:
+            msg = "%s must be have shape (n_periods, %s, %s), not %s"
+            self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
+            raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
+            
+        if atype == "impedance":
+            if self.has_impedance():
+                if ndarray.shape[0] != self.period.size:
+                    msg = "New %s shape %s not same as old %s, suggest creating a new instance."
+                    self.logger.error(
+                        msg, atype, ndarray.shape, self.impedance.impedance.data.shape)
+                    raise TFError(msg % (atype, ndarray.shape, self.impedance.impedance.data.shape))
+            else:
+                self._transfer_function = self._initialize_transfer_function(np.arange(ndarray.shape[0]))
+    
+    def _validate_input_dataarray(self, da, atype="impedance"):
+        """
+        Validate an input data array
+        
+        :param da: DESCRIPTION
+        :type da: TYPE
+        :param atype: DESCRIPTION, defaults to "impedance"
+        :type atype: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        ch_input_dict = {"impedance": ["hx", "hy"],
+                         "tipper": ["hx", "hy"]}
+        
+        ch_output_dict = {"impedance": ["ex", "ey"],
+                          "tipper": ["hz"]}
+        
+        ch_in = ch_input_dict[atype]
+        ch_out = ch_output_dict[atype]
+        
+        # should test for shape
+        if "period" not in da.coords.keys() or 'input' not in da.coords.keys():
+            msg = "Coordinates must be period, output, input, not %s"
+            self.logger.error(msg, list(da.coords.keys()))
+            raise TFError(msg % da.coords.keys())
+        
+        if ch_out != da.coords["output"].data.tolist():
+            msg = "Output dimensions must be %s not %s"
+            self.logger.error(msg, ch_out, da.coords["output"].data.tolist())
+            raise TFError(msg % (ch_out, da.coords["output"].data.tolist()))
+        
+        if ch_in != da.coords["input"].data.tolist():
+            msg = "Input dimensions must be %s not %s"
+            self.logger.error(msg, ch_in, da.coords["input"].data.tolist())
+            raise TFError(msg % (ch_in, da.coords["input"].data.tolist()))
+        
+        # if this is the first instantiation then just resize the 
+        # transfer function to fit the input
+        if self._transfer_function.transfer_function.data.shape[0] == 1 and not self.has_tipper() and not self.has_impedance():
+            self._transfer_function = self._initialize_transfer_function(da.period)
+        elif self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]:
+            return 
+        else:
+            msg = "Reassigning with a different shape is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
+            self.logger.error(msg)
+            raise TFError(msg)
+    
     def has_impedance(self):
         """
         Check to see if the transfer function is not 0 and has 
@@ -302,42 +382,12 @@ class TF:
         """
         if isinstance(value, (list, tuple, np.ndarray)):
             value = np.array(value)
-            if self.has_impedance():
-                if value.shape[0] != self.period.size:
-                    self.logger.warning(
-                        "New impedance shape %s not same as old %s, making new dataset.", 
-                        value.shape,  self.impedance.impedance.data.shape)
-                    
-            else:
-                self._transfer_function = self._initialize_transfer_function(np.arange(value.shape[0]))
-            if value.shape[1:] != (2, 2):
-                msg = "Impedance must be have shape (n_periods, 2, 2), not %s"
-                self.logger.error(msg, value.shape)
-                raise ValueError(msg % value.shape)
-            self._transfer_function.transfer_function.data[:, 0:2, 0:2] = value
+            self._validate_input_ndarray(value, atype="impedance")
+            
+            self._transfer_function['transfer_function'].loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = value
             
         if isinstance(value, xr.DataArray):
-            # should test for shape
-            if "period" not in value.coords.keys() or 'input' not in value.coords.keys():
-                msg = "Coordinates must be period, output, input, not %s"
-                self.logger.error(msg, list(value.coords.keys()))
-                raise ValueError(msg % value.coords.keys())
-            if 'ex' not in value.coords["output"].data.tolist() or \
-                'ey' not in value.coords["output"].data.tolist():
-                msg = "Output dimensions must be 'ex' and 'ey' not %s"
-                self.logger.error(msg, value.coords["output"].data.tolist())
-                raise ValueError(msg % value.coords["output"].data.tolist())
-            if 'hx' not in value.coords["input"].data.tolist() or \
-                'hy' not in value.coords["input"].data.tolist():
-                msg = "Input dimensions must be 'hx' and 'hy' not %s"
-                self.logger.error(msg, value.coords["input"].data.tolist())
-                raise ValueError(msg % value.coords["input"].data.tolist())
-            if self._transfer_function.transfer_function.data.shape[0] == 1 and not self.has_tipper():
-                self._transfer_function = self._initialize_transfer_function(value.period)
-            else:
-                msg = "Reassigning is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
-                self.logger.error(msg)
-                raise TFError(msg)
+            self._validate_input_dataarray(value, atype="impedance")
                 
             self._transfer_function['transfer_function'].loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = value 
         else:
@@ -369,14 +419,40 @@ class TF:
         :rtype: TYPE
     
         """
-        if self.has_impedance():
+        if self.has_tipper():
             t = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["hz"])
             t.name = "tipper"
             t_err = self.dataset.error.sel(input=["hx", "hy"], output=["hz"])
             t_err.name = "tipper_error"
         
             return xr.Dataset({t.name: t, t_err.name: t_err})
+        
+    @tipper.setter
+    def tipper(self, value):
+        """
+        
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            value = np.array(value)
+            self._validate_input_ndarray(value, atype="tipper")
+            
+            self._transfer_function['transfer_function'].loc[dict(input=["hx", "hy"], output=["hz"])] = value
+            
+        if isinstance(value, xr.DataArray):
+            self._validate_input_dataarray(value, atype="tipper")
+             
+            print("setting tipper")
+            self._transfer_function['transfer_function'].loc[dict(input=["hx", "hy"], output=["hz"])] = value 
+        else:
+            msg = "Data type %s not supported use a numpy array or xarray.DataArray"
+            self.logger.error(msg, type(value))
+            raise ValueError(msg % type(value))
+    
     @property
     def period(self):
         if self.has_impedance() or self.has_tipper():
