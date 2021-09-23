@@ -29,6 +29,16 @@
         "alias": [],
         "example": "mt.guru@em.org"
     },
+	"url": {
+        "type": "string",
+        "required": false,
+        "style": "url",
+        "units": null,
+        "description": "url of the contact person or organization",
+        "options": [],
+        "alias": [],
+        "example": "em.org"
+    },
     "comments": {
         "type": "string",
         "required": false,

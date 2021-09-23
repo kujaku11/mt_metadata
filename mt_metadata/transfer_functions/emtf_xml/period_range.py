@@ -16,15 +16,14 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("orientation", SCHEMA_FN_PATHS)
+attr_dict = get_schema("period_range", SCHEMA_FN_PATHS)
 # =============================================================================
-class Orientation(Base):
+class PeriodRange(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.reference_frame = "geographic"
-        self.method = None
-        self.angle_to_geographic_north = 0.0
-        self.value = None
+
+        self.min = None
+        self.max = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

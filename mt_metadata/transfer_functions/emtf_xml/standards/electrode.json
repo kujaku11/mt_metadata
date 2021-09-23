@@ -16,13 +16,23 @@
         "example": "N"
     },
     "number": {
-        "type": "integer",
+        "type": "string",
         "required": true,
-        "style": "number",
+        "style": "free form",
         "units": null,
         "description": "Electrode ID number",
         "options": [],
         "alias": [],
-        "example": "1"
+        "example": "1a"
+    },
+	"comments": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "comments on the electrode",
+        "options": [],
+        "alias": [],
+        "example": "Ag-AgCl porous pot"
     }
 }

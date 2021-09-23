@@ -28,7 +28,7 @@
         "type": "float",
         "required": true,
         "style": "number",
-        "units": "degrees",
+        "units": "meters",
         "description": "elevation of location in datum specified at survey level",
         "options": [],
         "alias": [

@@ -26,5 +26,31 @@
         ],
         "alias": [],
         "example": "geomagnetic"
+    },
+	"angle_to_geographic_north": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "\"Angle to rotate the data to align with geographic north. If this number is 0 then it is assumed the data are aligned with geographic north in a right handed coordinate system.\"",
+        "options": [
+            "geographic",
+            "geomagnetic"
+        ],
+        "alias": [],
+        "example": "geomagnetic"
+    },
+	"value": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "\"Channel orientation relative to each other\"",
+        "options": [
+            "orthogonal",
+            "other"
+        ],
+        "alias": [],
+        "example": "orthogonal"
     }
 }

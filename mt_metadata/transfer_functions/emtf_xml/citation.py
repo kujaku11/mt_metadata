@@ -28,5 +28,5 @@ class Citation(Base):
         self.volume = None
         self.doi = None
         self.year = None
-        self.survey_doi = None
+        self.survey_d_o_i = None
         super().__init__(attr_dict=attr_dict, **kwargs)

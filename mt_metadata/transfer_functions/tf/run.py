@@ -64,14 +64,14 @@ for ch_dict in [ex_dict, ey_dict]:
     ch_dict.add_dict(electrode_dict, "positive")
     ch_dict.add_dict(electrode_dict, "negative")
     ch_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
-    
-for ch_dict in [ 
-        hx_dict,
-        hy_dict,
-        hz_dict,
-        rrhx_dict,
-        rrhy_dict,
-        ]:
+
+for ch_dict in [
+    hx_dict,
+    hy_dict,
+    hz_dict,
+    rrhx_dict,
+    rrhy_dict,
+]:
     ch_dict.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
     dq_dict = get_schema("data_quality", SCHEMA_FN_PATHS)
     dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
@@ -85,8 +85,8 @@ for ch_dict in [
         "location",
         keys=["latitude", "longitude", "elevation", "x", "y", "z"],
     )
-    
-temperature_dict.add_dict(get_schema("channel", SCHEMA_FN_PATHS)) 
+
+temperature_dict.add_dict(get_schema("channel", SCHEMA_FN_PATHS))
 
 attr_dict.add_dict(ex_dict, "ex")
 attr_dict.add_dict(ey_dict, "ey")

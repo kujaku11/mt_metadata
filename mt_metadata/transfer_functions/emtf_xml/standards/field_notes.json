@@ -18,5 +18,35 @@
         "options": [],
         "alias": [],
         "example": "mt001a"
+    },
+	"sampling_rate": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the run",
+        "options": [],
+        "alias": [],
+        "example": "1"
+    },
+	"start": {
+        "type": "string",
+        "required": true,
+        "style": "date time",
+        "units": null,
+        "description": "Date time when the data collection started",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01T12:00:00"
+    },
+    "end": {
+        "type": "string",
+        "required": true,
+        "style": "date time",
+        "units": null,
+        "description": "Date time when the data collection ended",
+        "options": [],
+        "alias": [],
+        "example": "2020-05-01T12:00:00"
     }
 }

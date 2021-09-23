@@ -411,6 +411,11 @@ class Base:
             "channels_recorded_electric"
             "channels_recorded_magnetic"
             "channels_recorded_auxiliary",
+            "electrode",
+            "estimates_list",
+            "input_channels",
+            "output_channels",
+            "data_types_list",
         ]
 
         if hasattr(self, "_attr_dict"):
@@ -589,7 +594,10 @@ class Base:
                 value = None
 
             if required:
-                if value is not None or self._attr_dict[name]["required"]:
+                if (
+                    value not in [None, "1980-01-01T00:00:00+00:00"]
+                    or self._attr_dict[name]["required"]
+                ):
                     meta_dict[name] = value
             else:
                 meta_dict[name] = value
@@ -651,6 +659,7 @@ class Base:
                     "1980-01-01T00:00:00+00:00",
                 ]:
                     continue
+
             self.set_attr_from_name(name, value)
 
     def to_json(self, nested=False, indent=" " * 4, required=True):

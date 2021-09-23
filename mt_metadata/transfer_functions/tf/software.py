@@ -26,6 +26,7 @@ class Software(Base):
         self.name = None
         self.version = None
         self._author = Person()
+        self.last_updated = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
