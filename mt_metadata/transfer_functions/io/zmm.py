@@ -11,11 +11,10 @@ Translated from code by B. Murphy.
 # ==============================================================================
 from pathlib import Path
 import numpy as np
+import xarray as xr
 
-import mtpy.core.z as mtz
-from mtpy.utils import gis_tools
-from mtpy.utils.mtpy_logger import get_mtpy_logger
 from mt_metadata.transfer_functions import tf as metadata
+from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 class ZMMError(Exception):
@@ -78,14 +77,8 @@ class ZMMHeader(object):
 
     def __init__(self, fn=None, **kwargs):
 
-        self.logger = get_mtpy_logger(f"{__name__}.{self.__class__.__name__}")
-        self.description = None
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.processing_type = None
-        self.station = None
-        self._lat = None
-        self._lon = None
-        self.elevation = 0.0
-        self.declination = None
         self.num_channels = None
         self.num_freq = None
         self._header_count = 0
@@ -97,6 +90,7 @@ class ZMMHeader(object):
         self.hz = None
         self._zfn = None
         self.fn = fn
+        self.station_metadata = metadata.Station()
 
     @property
     def fn(self):
@@ -116,19 +110,35 @@ class ZMMHeader(object):
 
     @property
     def latitude(self):
-        return self._lat
+        return self.station_metadata.location.latitude
 
     @latitude.setter
     def latitude(self, lat):
-        self._lat = gis_tools.assert_lat_value(lat)
+        self.station_metadata.location.latitude = lat
 
     @property
     def longitude(self):
-        return self._lon
+        return self.station_metadata.location.longitude
 
     @longitude.setter
     def longitude(self, lon):
-        self._lon = gis_tools.assert_lon_value(lon)
+        self.station_metadata.location.longitude = lon
+        
+    @property
+    def elevation(self):
+        return self.station_metadata.location.elevation
+
+    @elevation.setter
+    def elevation(self, value):
+        self.station_metadata.location.elevation = value
+        
+    @property
+    def station(self):
+        return self.station_metadata.id
+    
+    @station.setter
+    def station(self, value):
+        self.station_metadata.id = value
 
     def read_header(self, fn=None):
         """
@@ -149,15 +159,15 @@ class ZMMHeader(object):
 
                 line = fid.readline()
 
-        self.description = ""
+        self.station_metadata.comments = ""
         self.station = header_list[3].lower().strip()
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
-                self.description += line.replace("*", "").strip()
+                self.station_metadata.comments += line.replace("*", "").strip()
             elif ii == 2:
                 self.processing_type = line.lower().strip()
             elif "station" in line:
-                self.station = line.split(":")[1].strip()
+                self.station_metadata.id = line.split(":")[1].strip()
             elif "coordinate" in line:
                 line_list = line.strip().split()
                 self.latitude = line_list[1]
@@ -166,7 +176,7 @@ class ZMMHeader(object):
                     lon -= 360
                 self.longitude = lon
 
-                self.declination = float(line_list[-1])
+                self.station_metadata.location.declination.value = float(line_list[-1])
             elif "number" in line:
                 line_list = line.strip().split()
                 self.num_channels = int(line_list[3])
@@ -207,12 +217,29 @@ class ZMM(ZMMHeader):
 
         self.fn = fn
         self._header_count = 0
-        self.Z = mtz.Z()
-        self.Tipper = mtz.Tipper()
         self.transfer_functions = None
         self.sigma_e = None
         self.sigma_s = None
         self.periods = None
+        
+        self._ch_input_dict = {
+            "impedance": ["hx", "hy"],
+            "tipper": ["hx", "hy"],
+            "isp": ["hx", "hy"],
+            "res": ["ex", "ey", "hz"],
+            "tf": ["hx", "hy"],
+        }
+
+        self._ch_output_dict = {
+            "impedance": ["ex", "ey"],
+            "tipper": ["hz"],
+            "isp": ["hx", "hy"],
+            "res": ["ex", "ey", "hz"],
+            "tf": ["ex", "ey", "hz"],
+        }
+
+        self._transfer_function = self._initialize_transfer_function()
+
 
         for key in list(kwargs.keys()):
             setattr(self, key, kwargs[key])
@@ -222,32 +249,32 @@ class ZMM(ZMMHeader):
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
-        lines.append(f"\tSurvey:        {self.survey_metadata.survey_id}")
+        lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
         lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
         lines.append(f"\tLatitude:      {self.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.longitude:.3f}")
         lines.append(f"\tElevation:     {self.elevation:.3f}")
-        if self.Z.z is not None:
-            lines.append("\tImpedance:     True")
-        else:
-            lines.append("\tImpedance:     False")
-        if self.Tipper.tipper is not None:
-            lines.append("\tTipper:        True")
-        else:
-            lines.append("\tTipper:        False")
+        # if self.Z.z is not None:
+        #     lines.append("\tImpedance:     True")
+        # else:
+        #     lines.append("\tImpedance:     False")
+        # if self.Tipper.tipper is not None:
+        #     lines.append("\tTipper:        True")
+        # else:
+        #     lines.append("\tTipper:        False")
 
-        if self.Z.z is not None:
-            lines.append(f"\tN Periods:     {len(self.Z.freq)}")
+        # if self.Z.z is not None:
+        #     lines.append(f"\tN Periods:     {len(self.Z.freq)}")
 
-            lines.append("\tPeriod Range:")
-            lines.append(f"\t\tMin:   {self.periods.min():.5E} s")
-            lines.append(f"\t\tMax:   {self.periods.max():.5E} s")
+        #     lines.append("\tPeriod Range:")
+        #     lines.append(f"\t\tMin:   {self.periods.min():.5E} s")
+        #     lines.append(f"\t\tMax:   {self.periods.max():.5E} s")
 
-            lines.append("\tFrequency Range:")
-            lines.append(f"\t\tMin:   {self.frequencies.max():.5E} Hz")
-            lines.append(f"\t\tMax:   {self.frequencies.min():.5E} Hz")
+        #     lines.append("\tFrequency Range:")
+        #     lines.append(f"\t\tMin:   {self.frequencies.max():.5E} Hz")
+        #     lines.append(f"\t\tMax:   {self.frequencies.min():.5E} Hz")
 
         return "\n".join(lines)
 
@@ -259,6 +286,72 @@ class ZMM(ZMMHeader):
         lines.append(f"elevation={self.elevation:.2f}")
 
         return f"MT( {(', ').join(lines)} )"
+    
+    def _initialize_transfer_function(self, periods=[1]):
+        """
+        create an empty x array for the data.  For now this accommodates
+        a single processed station.
+
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        # create an empty array for the transfer function
+        tf = xr.DataArray(
+            data=0 + 0j,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="transfer_function",
+        )
+
+        tf_err = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="error",
+        )
+
+        inv_signal_power = xr.DataArray(
+            data=0 + 0j,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["isp"],
+                "input": self._ch_input_dict["isp"],
+            },
+            name="inverse_signal_power",
+        )
+
+        residual_covariance = xr.DataArray(
+            data=0 + 0j,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["res"],
+                "input": self._ch_input_dict["res"],
+            },
+            name="residual_covariance",
+        )
+
+        # will need to add in covariance in some fashion
+        return xr.Dataset(
+            {
+                tf.name: tf,
+                tf_err.name: tf_err,
+                inv_signal_power.name: inv_signal_power,
+                residual_covariance.name: residual_covariance,
+            }
+        )
+
 
     @property
     def frequencies(self):
@@ -312,17 +405,39 @@ class ZMM(ZMMHeader):
             self._fill_tf_array_from_block(data_block["tf"], ii)
             self._fill_sig_array_from_block(data_block["sig"], ii)
             self._fill_res_array_from_block(data_block["res"], ii)
+            
+        self.station_metadata.run_list.append(metadata.Run(id=f"{self.station}a"))
+        self.station_metadata.id = self.station
+        self.station_metadata.data_type = "MT"
+        self.station_metadata.channels_recorded = self.channels_recorded
+        # provenance
+        self.station_metadata.provenance.software.name = "EMTF"
+        self.station_metadata.provenance.software.version = "1"
+        self.station_metadata.transfer_function.runs_processed = self.station_metadata.run_names
+        self.station_metadata.transfer_function.software.name = "EMTF"
+        self.station_metadata.transfer_function.software.version = "1"
 
-        ### make Z and Tipper
-        self.Z = self.calculate_impedance()
+        # add information to runs
+        for rr in self.station_metadata.run_list:
+            if self.transfer_functions.shape[1] >= 2:
+                rr.ex = self.ex_metadata
+                rr.ey = self.ey_metadata
+            rr.hx = self.hx_metadata
+            rr.hy = self.hy_metadata
+            if self.hz is not None:
+                rr.hz = self.hz_metadata
 
-        try:
-            self.Tipper = self.calculate_tippers()
-        except ZMMError:
-            self.Tipper = mtz.Tipper()
-            self.logger.debug(
-                f"No HZ found in {self.fn} induction vectors not estimated."
-            )
+
+        # ### make Z and Tipper
+        # self.Z = self.calculate_impedance()
+
+        # try:
+        #     self.Tipper = self.calculate_tippers()
+        # except ZMMError:
+        #     self.Tipper = mtz.Tipper()
+        #     self.logger.debug(
+        #         f"No HZ found in {self.fn} induction vectors not estimated."
+        #     )
 
     def _get_period_blocks(self):
         """
@@ -496,8 +611,7 @@ class ZMM(ZMMHeader):
 
         error = np.sqrt(var)
 
-        z_object = mtz.Z(z, error, self.frequencies)
-        return z_object
+        return z, error
 
     def calculate_tippers(self, angle=0.0):
         """
@@ -555,40 +669,7 @@ class ZMM(ZMMHeader):
         tipper = tipper.reshape((self.num_freq, 1, 2))
         error = error.reshape((self.num_freq, 1, 2))
 
-        tipper_obj = mtz.Tipper(tipper, error, self.frequencies)
-
-        return tipper_obj
-
-    @property
-    def station_metadata(self):
-        sm = metadata.Station()
-        sm.run_list.append(metadata.Run(id=f"{self.station}a"))
-        sm.id = self.station
-        sm.data_type = "MT"
-        sm.channels_recorded = self.channels_recorded
-        # location
-        sm.location.latitude = self.latitude
-        sm.location.longitude = self.longitude
-        sm.location.elevation = self.elevation
-        sm.location.declination.value = self.declination
-        # provenance
-        sm.provenance.software.name = "EMTF"
-        sm.provenance.software.version = "1"
-        sm.transfer_function.runs_processed = sm.run_names
-        sm.transfer_function.software.name = "EMTF"
-        sm.transfer_function.software.version = "1"
-
-        # add information to runs
-        for rr in sm.run_list:
-            if self.Z.z.size > 1:
-                rr.ex = self.ex_metadata
-                rr.ey = self.ey_metadata
-            rr.hx = self.hx_metadata
-            rr.hy = self.hy_metadata
-            if self.Tipper.tipper.size > 1:
-                rr.hz = self.hz_metadata
-
-        return sm
+        return tipper, error
 
     @property
     def survey_metadata(self):
