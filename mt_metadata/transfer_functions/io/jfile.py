@@ -9,6 +9,7 @@
 # ==============================================================================
 from pathlib import Path
 import numpy as np
+from collections import OrderedDict
 
 from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mttime import MTime
@@ -474,26 +475,25 @@ def read_jfile(fn):
 
     """
 
-    from mtpy.core import mt
+    from mt_metadata.transfer_functions.core import TF
 
     j_obj = JFile(fn)
 
-    mt_obj = mt.MT()
-    mt_obj._fn = fn
+    tf_obj = TF()
+    tf_obj._fn = fn
 
-    for attr in [
-        "Z",
-        "Tipper",
-        "survey_metadata",
-        "station_metadata",
-    ]:
-        setattr(mt_obj, attr, getattr(j_obj, attr))
+    k_dict = OrderedDict({
+        "period": "periods",
+        "impedance": "z",
+        "tipper": "t",
+        "survey_metadata": "survey_metadata",
+        "station_metadata": "station_metadata"})
 
-    # need to set latitude to compute UTM coordinates to make sure station
-    # location is estimated for ModEM
-    mt_obj.latitude = j_obj.station_metadata.location.latitude
+    for tf_key, j_key in k_dict.items():
+        print(f"setting {tf_key} with {j_key}")
+        setattr(tf_obj, tf_key, getattr(j_obj, j_key))
 
-    return mt_obj
+    return tf_obj
 
 
 def write_jfile(mt_obj, fn=None):

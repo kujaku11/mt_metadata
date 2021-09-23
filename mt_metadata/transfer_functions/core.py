@@ -52,7 +52,7 @@ class TF:
 
         self.save_dir = Path.cwd()
         self._fn = None
-        self.fn = fn
+        
 
         self._dataset_attr_dict = {
             "survey": "survey_metadata.id",
@@ -87,6 +87,8 @@ class TF:
         }
 
         self._transfer_function = self._initialize_transfer_function()
+        
+        self.fn = fn
 
         # provide key words to fill values if an edi file does not exist
         for key in list(kwargs.keys()):
@@ -324,13 +326,8 @@ class TF:
 
         if ndarray.shape[0] != self.period.size:
             msg = "New %s shape %s not same as old %s, suggest creating a new instance."
-            self.logger.error(
-                msg, atype, ndarray.shape, self.impedance.impedance.data.shape
-            )
-            raise TFError(
-                msg
-                % (atype, ndarray.shape, self.impedance.impedance.data.shape)
-            )
+            self.logger.error(msg, atype, ndarray.shape, shape)
+            raise TFError(msg % (atype, ndarray.shape, shape))
 
     def _validate_input_dataarray(self, da, atype="impedance"):
         """
@@ -839,8 +836,11 @@ class TF:
 
         """
 
-        mt_obj = read_file(fn, file_type=file_type)
-        self.__dict__.update(mt_obj.__dict__)
+        tf_obj = read_file(fn, file_type=file_type)
+        self.__dict__.update(tf_obj.__dict__)
+        
+        
+        
 
 
 # ==============================================================================
