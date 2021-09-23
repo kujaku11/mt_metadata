@@ -321,21 +321,16 @@ class TF:
             self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
             raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
 
-        if atype == "impedance":
-            if self.has_impedance():
-                if ndarray.shape[0] != self.period.size:
-                    msg = "New %s shape %s not same as old %s, suggest creating a new instance."
-                    self.logger.error(
-                        msg, atype, ndarray.shape, self.impedance.impedance.data.shape
-                    )
-                    raise TFError(
-                        msg
-                        % (atype, ndarray.shape, self.impedance.impedance.data.shape)
-                    )
-            else:
-                self._transfer_function = self._initialize_transfer_function(
-                    np.arange(ndarray.shape[0])
-                )
+
+        if ndarray.shape[0] != self.period.size:
+            msg = "New %s shape %s not same as old %s, suggest creating a new instance."
+            self.logger.error(
+                msg, atype, ndarray.shape, self.impedance.impedance.data.shape
+            )
+            raise TFError(
+                msg
+                % (atype, ndarray.shape, self.impedance.impedance.data.shape)
+            )
 
     def _validate_input_dataarray(self, da, atype="impedance"):
         """
@@ -359,16 +354,18 @@ class TF:
             self.logger.error(msg, list(da.coords.keys()))
             raise TFError(msg % da.coords.keys())
 
-        if ch_out != da.coords["output"].data.tolist():
+        if sorted(ch_out) != sorted(da.coords["output"].data.tolist()):
             msg = "Output dimensions must be %s not %s"
             self.logger.error(msg, ch_out, da.coords["output"].data.tolist())
             raise TFError(msg % (ch_out, da.coords["output"].data.tolist()))
 
-        if ch_in != da.coords["input"].data.tolist():
+        if sorted(ch_in) != sorted(da.coords["input"].data.tolist()):
             msg = "Input dimensions must be %s not %s"
             self.logger.error(msg, ch_in, da.coords["input"].data.tolist())
             raise TFError(msg % (ch_in, da.coords["input"].data.tolist()))
 
+        # need to reorder the data array to the expected coordinates
+        da = da.reindex(output=ch_out, input=ch_in)
         # if this is the first instantiation then just resize the
         # transfer function to fit the input
         if (
@@ -377,10 +374,11 @@ class TF:
             and not self.has_impedance()
         ):
             self._transfer_function = self._initialize_transfer_function(da.period)
+            return da
         elif (
             self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
         ):
-            return
+            return da
         else:
             msg = "Reassigning with a different shape is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
             self.logger.error(msg)
@@ -416,9 +414,9 @@ class TF:
             self._transfer_function[key].loc[comps] = value
 
         elif isinstance(value, xr.DataArray):
-            self._validate_input_dataarray(value, atype=atype)
+            nda = self._validate_input_dataarray(value, atype=atype)
 
-            self._transfer_function[key].loc[comps] = value
+            self._transfer_function[key].loc[comps] = nda
         else:
             msg = "Data type %s not supported use a numpy array or xarray.DataArray"
             self.logger.error(msg, type(value))
@@ -570,6 +568,8 @@ class TF:
 
         """
         self._set_data_array(value, "isp")
+        if self.has_residual_covariance():
+            self._compute_error_from_covariance()
 
     def has_residual_covariance(self):
         """
@@ -611,6 +611,8 @@ class TF:
 
         """
         self._set_data_array(value, "res")
+        if self.has_inverse_signal_power():
+            self._compute_error_from_covariance()
         
     def _compute_impedance_error_from_covariance(self):
         """
@@ -636,7 +638,7 @@ class TF:
         
         z_err = np.sqrt(np.abs(z_err))
         
-        return z_err
+        self.dataset.error.loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = z_err
     
     def _compute_tipper_error_from_covariance(self):
         """
@@ -660,9 +662,20 @@ class TF:
 
         t_err = np.sqrt(np.abs(t_err))
         
-        return t_err
+        self.dataset.error.loc[dict(input=["hx", "hy"], output=["hz"])] = t_err
         
+    def _compute_error_from_covariance(self):
+        """
+        convenience method to compute errors from covariance
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
+        self._compute_impedance_error_from_covariance()
+        self._compute_tipper_error_from_covariance()
+        
+        
     @property
     def period(self):
         return self.dataset.period.data
