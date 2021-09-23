@@ -10,11 +10,9 @@
 from pathlib import Path
 import numpy as np
 
-import mtpy.core.z as mtz
-from mtpy.utils.mtpy_logger import get_mtpy_logger
-
 from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 # Class to read j_file
@@ -25,46 +23,48 @@ class JFile(object):
     """
 
     def __init__(self, fn=None):
-        self.logger = get_mtpy_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._jfn = None
         self.fn = fn
         self.header_dict = None
         self.metadata_dict = None
-        self.Z = None
-        self.Tipper = None
         self.station = None
+        self.z = None
+        self.z_err = None
+        self.t = None
+        self.t_err = None
+        self.frequency = None
 
         if self.fn is not None:
             self.read_j_file()
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
-        lines.append(f"\tSurvey:        {self.survey_metadata.survey_id}")
+        lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
         lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.elevation:.3f}")
-        if self.Z.z is not None:
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        if self.z is not None:
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-        if self.Tipper.tipper is not None:
+        
+        if self.t is not None:
             lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
 
-        if self.Z.z is not None:
-            lines.append(f"\tN Periods:     {len(self.Z.freq)}")
-
-            lines.append("\tPeriod Range:")
-            lines.append(f"\t\tMin:   {self.periods.min():.5E} s")
-            lines.append(f"\t\tMax:   {self.periods.max():.5E} s")
-
-            lines.append("\tFrequency Range:")
-            lines.append(f"\t\tMin:   {self.frequencies.max():.5E} Hz")
-            lines.append(f"\t\tMax:   {self.frequencies.min():.5E} Hz")
+        if self.frequency is not None:
+            lines.append(f"\tNumber of periods: {self.frequency.size}")
+            lines.append(
+                f"\t\tPeriod Range:   {1./self.frequency.max():.5E} -- {1./self.frequency.min():.5E} s"
+            )
+            lines.append(
+                f"\t\tFrequency Range {self.frequency.min():.5E} -- {self.frequency.max():.5E} s"
+            )
 
         return "\n".join(lines)
 
@@ -127,17 +127,7 @@ class JFile(object):
 
     @property
     def periods(self):
-        if not np.all(self.Z.z == 0) and self.Z is not None:
-            return 1.0 / self.Z.freq
-        if not np.all(self.Tipper.tipper == 0) and self.Tipper is not None:
-            return 1.0 / self.Tipper.freq
-
-    @property
-    def frequencies(self):
-        if not np.all(self.Z.z == 0) and self.Z is not None:
-            return self.Z.freq
-        if not np.all(self.Tipper.tipper == 0) and self.Tipper is not None:
-            return self.Tipper.freq
+        return 1.0 / self.frequency
 
     def _validate_j_file(self):
         """
@@ -396,11 +386,11 @@ class JFile(object):
         num_per = len(all_periods)
 
         # fill arrays using the period key from all_periods
-        z_arr = np.zeros((num_per, 2, 2), dtype=np.complex)
-        z_err_arr = np.zeros((num_per, 2, 2), dtype=np.float)
+        self.z = np.zeros((num_per, 2, 2), dtype=np.complex)
+        self.z_err = np.zeros((num_per, 2, 2), dtype=np.float)
 
-        t_arr = np.zeros((num_per, 1, 2), dtype=np.complex)
-        t_err_arr = np.zeros((num_per, 1, 2), dtype=np.float)
+        self.t = np.zeros((num_per, 1, 2), dtype=np.complex)
+        self.t_err = np.zeros((num_per, 1, 2), dtype=np.float)
 
         for p_index, per in enumerate(all_periods):
             for z_key in sorted(z_index_dict.keys()):
@@ -408,8 +398,8 @@ class JFile(object):
                 ll = z_index_dict[z_key][1]
                 try:
                     z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
-                    z_arr[p_index, kk, ll] = z_value
-                    z_err_arr[p_index, kk, ll] = z_dict[z_key][per][2]
+                    self.z[p_index, kk, ll] = z_value
+                    self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
                     self.logger.debug(f"No value found for period {per:.4g}")
                     self.logger.debug(f"For component {z_key}")
@@ -419,34 +409,34 @@ class JFile(object):
                     ll = t_index_dict[t_key][1]
                     try:
                         t_value = t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
-                        t_arr[p_index, kk, ll] = t_value
-                        t_err_arr[p_index, kk, ll] = t_dict[t_key][per][2]
+                        self.t[p_index, kk, ll] = t_value
+                        self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
                         self.logger.debug(f"No value found for period {per:.4g}")
                         self.logger.debug(f"For component {t_key}")
 
         # put the results into mtpy objects
-        freq = 1.0 / all_periods
-        z_arr[np.where(z_arr == np.inf)] = 0 + 0j
-        t_arr[np.where(t_arr == np.inf)] = 0 + 0j
-        z_err_arr[np.where(z_err_arr == np.inf)] = 10 ** 6
-        t_err_arr[np.where(t_err_arr == np.inf)] = 10 ** 6
+        self.frequency = 1.0 / all_periods
+        self.z[np.where(self.z == np.inf)] = 0 + 0j
+        self.t[np.where(self.t == np.inf)] = 0 + 0j
+        self.z_err[np.where(self.z_err == np.inf)] = 10 ** 6
+        self.t_err[np.where(self.t_err == np.inf)] = 10 ** 6
 
-        self.Z = mtz.Z(z_arr, z_err_arr, freq)
-        self.Tipper = mtz.Tipper(t_arr, t_err_arr, freq)
+        # self.Z = mtz.Z(self.z, self.z_err, freq)
+        # self.Tipper = mtz.Tipper(self.t, self.t_err, freq)
 
     @property
     def station_metadata(self):
         sm = metadata.Station()
         r1 = metadata.Run(id=f"{self.station}a")
 
-        if not np.all(self.Z.z == 0):
+        if not np.all(self.z == 0):
             r1.ex = metadata.Electric(component="ex", channel_id=1)
             r1.ey = metadata.Electric(component="ey", channel_id=2)
             r1.hx = metadata.Magnetic(component="hx", channel_id=3)
             r1.hy = metadata.Magnetic(component="hy", channel_id=4)
 
-        if not np.all(self.Tipper.tipper == 0):
+        if not np.all(self.t == 0):
             r1.hz = metadata.Magnetic(component="hz", channel_id=5)
 
         sm.run_list.append(r1)
