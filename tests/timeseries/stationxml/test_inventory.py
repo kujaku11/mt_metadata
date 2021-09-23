@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils import STATIONXML_01, STATIONXML_02
+from mt_metadata import STATIONXML_01, STATIONXML_02
 
 # =============================================================================
 

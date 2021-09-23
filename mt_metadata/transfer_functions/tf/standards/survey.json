@@ -1,5 +1,5 @@
 {
-    "survey_id": {
+    "id": {
         "type": "string",
         "required": true,
         "style": "alpha numeric",

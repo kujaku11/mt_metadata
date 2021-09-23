@@ -13,7 +13,7 @@ import unittest
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
-from mt_metadata.utils import STATIONXML_02
+from mt_metadata import STATIONXML_02
 
 
 class TestRunFromXML(unittest.TestCase):

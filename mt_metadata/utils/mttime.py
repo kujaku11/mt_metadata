@@ -384,7 +384,7 @@ class MTime:
 
         # this seems to happen on linux systems
         elif isinstance(dt_object.tzinfo, tzlocal):
-            self.logger.info("Local timezone identified setting to UTC")
+            self.logger.debug("Local timezone identified setting to UTC")
             return dt_object.replace(tzinfo=datetime.timezone.utc)
 
         elif dt_object.tzinfo != datetime.timezone.utc:

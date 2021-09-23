@@ -41,7 +41,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     TimeDelayFilter,
 )
-from mt_metadata.utils import STATIONXML_MAGNETIC
+from mt_metadata import STATIONXML_MAGNETIC
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 

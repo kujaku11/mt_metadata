@@ -16,3 +16,9 @@ Development Lead
 Contributors
 ------------
 
+* Anna Kelbert
+* Karl Kappler
+* Lindsey Heagy
+* Andy Frassetto
+* Tim Ronan
+

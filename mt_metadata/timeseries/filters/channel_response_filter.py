@@ -245,7 +245,7 @@ class ChannelResponseFilter(object):
             sensitivity *= complex_response
         try:
             return np.round(np.abs(sensitivity[0]), 3)
-        except TypeError:
+        except (IndexError, TypeError):
             return np.round(np.abs(sensitivity), 3)
 
     @property

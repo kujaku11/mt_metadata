@@ -15,7 +15,7 @@ Created on Fri Mar 26 08:15:49 2021
 # =============================================================================
 import unittest
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils import STATIONXML_MAGNETIC
+from mt_metadata import STATIONXML_MAGNETIC
 from obspy.core import inventory
 
 # =============================================================================
