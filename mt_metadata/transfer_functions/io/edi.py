@@ -12,25 +12,23 @@
 # ==============================================================================
 #  Imports
 # ==============================================================================
-import os
 import numpy as np
-import logging
 from pathlib import Path
 
-import mtpy.utils.gis_tools as gis_tools
-import mtpy.utils.exceptions as MTex
-import mtpy.utils.filehandling as MTfh
-import mtpy.core.z as MTz
-from mtpy import __version__
-from mtpy.utils.mtpy_logger import get_mtpy_logger
+# import mtpy.utils.gis_tools as gis_tools
+# import mtpy.utils.exceptions as MTex
+# import mtpy.utils.filehandling as MTfh
+# import mtpy.core.z as MTz
+# from mtpy import __version__
+# from mtpy.utils.mtpy_logger import get_mtpy_logger
 
 from mt_metadata.utils.mttime import MTime, get_now_utc
 from mt_metadata.utils.exceptions import MTTimeError
 from mt_metadata.transfer_functions import tf as metadata
+from mt_metadata.utils.mt_logger import setup_logger
 
 import scipy.stats.distributions as ssd
 
-tab = " " * 4
 # ==============================================================================
 # EDI Class
 # ==============================================================================
@@ -105,7 +103,7 @@ class EDI(object):
     """
 
     def __init__(self, fn=None):
-        self.logger = get_mtpy_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._fn = None
         self._edi_lines = None
 
@@ -113,8 +111,13 @@ class EDI(object):
         self.Info = Information()
         self.Measurement = DefineMeasurement()
         self.Data = DataSection()
-        self.Z = MTz.Z()
-        self.Tipper = MTz.Tipper()
+        
+        self.z = None
+        self.z_err = None
+        self.t = None
+        self.t_err = None
+        self.frequency = None
+        self.rotation_angle = None
 
         self._z_labels = [
             ["zxxr", "zxxi", "zxx.var"],
@@ -141,21 +144,26 @@ class EDI(object):
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
         lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.lat:.3f}")
-        lines.append(f"\tLongitude:     {self.lon:.3f}")
-        lines.append(f"\tElevation:     {self.elev:.3f}")
-        if self.Tipper.tipper is not None:
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        if self.z is not None:
+            lines.append("\tImpedance:     True")
+        else:
+            lines.append("\tImpedance:     False")
+        
+        if self.t is not None:
             lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
 
-        if self.Z.z is not None:
-            lines.append(f"\tPeriods: {len(self.Z.freq)}")
+        if self.frequency is not None:
+            lines.append(f"\tNumber of periods: {self.frequency.size}")
             lines.append(
-                f"\t\tPeriod Range:   {1./self.Z.freq.max():.5E}  -- {1./self.Z.freq.min():.5E} s"
+                f"\t\tPeriod Range:   {1./self.frequency.max():.5E} -- {1./self.frequency.min():.5E} s"
             )
             lines.append(
-                f"\t\tFrequency Range {self.Z.freq.min():.5E}  -- {self.Z.freq.max():.5E} s"
+                f"\t\tFrequency Range {self.frequency.min():.5E} -- {self.frequency.max():.5E} s"
             )
 
         return "\n".join(lines)
@@ -172,7 +180,7 @@ class EDI(object):
         if fn is not None:
             self._fn = Path(fn)
             if self._fn.exists():
-                self.read_edi_file()
+                self.read()
 
     def read(self, fn=None):
         """
@@ -207,12 +215,12 @@ class EDI(object):
         if self.fn is None:
             msg = "Must input EDI file to read"
             self.logger.error(msg)
-            raise MTex.MTpyError_EDI(msg)
+            raise IOError(msg)
 
         if not self.fn.exists():
             msg = f"Cannot find EDI file: {self.fn}"
             self.logger.error(msg)
-            raise MTex.MTpyError_EDI(msg)
+            raise IOError(msg)
 
         with open(self.fn, "r") as fid:
             self._edi_lines = _validate_edi_lines(fid.readlines())
@@ -246,11 +254,6 @@ class EDI(object):
         Read either impedance or spectra data depending on what the type is
         in the data section.
         """
-
-        if self.fn is None:
-            raise MTex.MTpyError_EDI("No edi file input, check fn")
-        if self.fn.exists() is False:
-            raise MTex.MTpyError_EDI("No edi file input, check fn")
 
         lines = self._edi_lines[self.Data.line_num :]
 
@@ -311,30 +314,30 @@ class EDI(object):
 
         # fill useful arrays
         freq_arr = np.array(data_dict["freq"], dtype=np.float)
-        z_arr = np.zeros((freq_arr.size, 2, 2), dtype=np.complex)
-        z_err_arr = np.zeros((freq_arr.size, 2, 2), dtype=np.float)
+        self.z = np.zeros((freq_arr.size, 2, 2), dtype=np.complex)
+        self.z_err = np.zeros((freq_arr.size, 2, 2), dtype=np.float)
 
         # fill impedance tensor
         if "zxxr" in data_dict.keys():
-            z_arr[:, 0, 0] = (
+            self.z[:, 0, 0] = (
                 np.array(data_dict["zxxr"]) + np.array(data_dict["zxxi"]) * 1j
             )
-            z_err_arr[:, 0, 0] = np.abs(np.array(data_dict["zxx.var"])) ** 0.5
+            self.z_err[:, 0, 0] = np.abs(np.array(data_dict["zxx.var"])) ** 0.5
         if "zxyr" in data_dict.keys():
-            z_arr[:, 0, 1] = (
+            self.z[:, 0, 1] = (
                 np.array(data_dict["zxyr"]) + np.array(data_dict["zxyi"]) * 1j
             )
-            z_err_arr[:, 0, 1] = np.abs(np.array(data_dict["zxy.var"])) ** 0.5
+            self.z_err[:, 0, 1] = np.abs(np.array(data_dict["zxy.var"])) ** 0.5
         if "zyxr" in data_dict.keys():
-            z_arr[:, 1, 0] = (
+            self.z[:, 1, 0] = (
                 np.array(data_dict["zyxr"]) + np.array(data_dict["zyxi"]) * 1j
             )
-            z_err_arr[:, 1, 0] = np.abs(np.array(data_dict["zyx.var"])) ** 0.5
+            self.z_err[:, 1, 0] = np.abs(np.array(data_dict["zyx.var"])) ** 0.5
         if "zyyr" in data_dict.keys():
-            z_arr[:, 1, 1] = (
+            self.z[:, 1, 1] = (
                 np.array(data_dict["zyyr"]) + np.array(data_dict["zyyi"]) * 1j
             )
-            z_err_arr[:, 1, 1] = np.abs(np.array(data_dict["zyy.var"])) ** 0.5
+            self.z_err[:, 1, 1] = np.abs(np.array(data_dict["zyy.var"])) ** 0.5
 
         # check for order of frequency, we want high togit  low
         if freq_arr[0] < freq_arr[1]:
@@ -342,59 +345,59 @@ class EDI(object):
                 "Ordered arrays to be arranged from high to low frequency"
             )
             freq_arr = freq_arr[::-1]
-            z_arr = z_arr[::-1]
-            z_err_arr = z_err_arr[::-1]
+            self.z = self.z[::-1]
+            self.z_err = self.z_err[::-1]
             flip = True
 
         # set the attributes as private variables to avoid redundant estimation
         # of res and phase
-        self.Z._freq = freq_arr
-        self.Z._z = z_arr
-        self.Z._z_err = z_err_arr
+        self.frequency = freq_arr
+        self.z = self.z
+        self.z_err = self.z_err
 
         try:
-            self.Z.rotation_angle = np.array(data_dict["zrot"])
+            self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
-            self.Z.rotation_angle = np.zeros_like(freq_arr)
+            self.rotation_angle = np.zeros_like(freq_arr)
 
         # compute resistivity and phase
-        self.Z.compute_resistivity_phase()
+        # self.Z.compute_resistivity_phase()
 
         # fill tipper data if there it exists
-        tipper_arr = np.zeros((freq_arr.size, 1, 2), dtype=np.complex)
-        tipper_err_arr = np.zeros((freq_arr.size, 1, 2), dtype=np.float)
+        self.t = np.zeros((freq_arr.size, 1, 2), dtype=np.complex)
+        self.t_err = np.zeros((freq_arr.size, 1, 2), dtype=np.float)
 
-        try:
-            self.Tipper.rotation_angle = np.array(data_dict["trot"])
-        except KeyError:
-            try:
-                self.Tipper.rotation_angle = np.array(data_dict["zrot"])
-            except KeyError:
-                self.Tipper.rotation_angle = np.zeros_like(freq_arr)
+        # try:
+        #     self.Tipper.rotation_angle = np.array(data_dict["trot"])
+        # except KeyError:
+        #     try:
+        #         self.Tipper.rotation_angle = np.array(data_dict["zrot"])
+        #     except KeyError:
+        #         self.Tipper.rotation_angle = np.zeros_like(freq_arr)
 
         if "txr.exp" in list(data_dict.keys()):
-            tipper_arr[:, 0, 0] = (
+            self.t[:, 0, 0] = (
                 np.array(data_dict["txr.exp"]) + np.array(data_dict["txi.exp"]) * 1j
             )
-            tipper_arr[:, 0, 1] = (
+            self.t[:, 0, 1] = (
                 np.array(data_dict["tyr.exp"]) + np.array(data_dict["tyi.exp"]) * 1j
             )
 
-            tipper_err_arr[:, 0, 0] = np.abs(np.array(data_dict["txvar.exp"])) ** 0.5
-            tipper_err_arr[:, 0, 1] = np.abs(np.array(data_dict["tyvar.exp"])) ** 0.5
+            self.t_err[:, 0, 0] = np.abs(np.array(data_dict["txvar.exp"])) ** 0.5
+            self.t_err[:, 0, 1] = np.abs(np.array(data_dict["tyvar.exp"])) ** 0.5
 
             if flip:
-                tipper_arr = tipper_arr[::-1]
-                tipper_err_arr = tipper_err_arr[::-1]
+                self.t = self.t[::-1]
+                self.t_err = self.t_err[::-1]
 
         else:
             self.logger.debug("Could not find any Tipper data.")
 
-        self.Tipper._freq = freq_arr
-        self.Tipper._tipper = tipper_arr
-        self.Tipper._tipper_err = tipper_err_arr
-        self.Tipper.compute_amp_phase()
-        self.Tipper.compute_mag_direction()
+        # self.Tipper._freq = freq_arr
+        # self.Tipper._tipper = tipper_arr
+        # self.Tipper._tipper_err = tipper_err_arr
+        # self.Tipper.compute_amp_phase()
+        # self.Tipper.compute_mag_direction()
 
     def _read_spectra(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
@@ -450,11 +453,11 @@ class EDI(object):
 
         freq_arr = np.array(sorted(list(data_dict.keys()), reverse=True))
 
-        z_arr = np.zeros((len(list(data_dict.keys())), 2, 2), dtype=np.complex)
-        t_arr = np.zeros((len(list(data_dict.keys())), 1, 2), dtype=np.complex)
+        self.z = np.zeros((len(list(data_dict.keys())), 2, 2), dtype=np.complex)
+        self.t = np.zeros((len(list(data_dict.keys())), 1, 2), dtype=np.complex)
 
-        z_err_arr = np.zeros_like(z_arr, dtype=np.float)
-        t_err_arr = np.zeros_like(t_arr, dtype=np.float)
+        self.z_err = np.zeros_like(self.z, dtype=np.float)
+        self.t_err = np.zeros_like(self.t, dtype=np.float)
 
         for kk, key in enumerate(freq_arr):
             spectra_arr = np.reshape(
@@ -488,24 +491,24 @@ class EDI(object):
             #         <Y,Y*>  <Y,Z*>  <Y,En*>  <Y,Ee*>  <Y,Rx*>  <Y,Ry*>
             # .....
 
-            z_arr[kk, 0, 0] = (
+            self.z[kk, 0, 0] = (
                 s_arr[cc.ex, cc.rhx] * s_arr[cc.hy, cc.rhy]
                 - s_arr[cc.ex, cc.rhy] * s_arr[cc.hy, cc.rhx]
             )
-            z_arr[kk, 0, 1] = (
+            self.z[kk, 0, 1] = (
                 s_arr[cc.ex, cc.rhy] * s_arr[cc.hx, cc.rhx]
                 - s_arr[cc.ex, cc.rhx] * s_arr[cc.hx, cc.rhy]
             )
-            z_arr[kk, 1, 0] = (
+            self.z[kk, 1, 0] = (
                 s_arr[cc.ey, cc.rhx] * s_arr[cc.hy, cc.rhy]
                 - s_arr[cc.ey, cc.rhy] * s_arr[cc.hy, cc.rhx]
             )
-            z_arr[kk, 1, 1] = (
+            self.z[kk, 1, 1] = (
                 s_arr[cc.ey, cc.rhy] * s_arr[cc.hx, cc.rhx]
                 - s_arr[cc.ey, cc.rhx] * s_arr[cc.hx, cc.rhy]
             )
 
-            z_arr[kk] /= (
+            self.z[kk] /= (
                 s_arr[cc.hx, cc.rhx] * s_arr[cc.hy, cc.rhy]
                 - s_arr[cc.hx, cc.rhy] * s_arr[cc.hy, cc.rhx]
             )
@@ -546,8 +549,8 @@ class EDI(object):
                 / z_det
                 * s_arr[cc.ex, cc.ex].real
             )
-            z_err_arr[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-            z_err_arr[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
+            self.z_err[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
+            self.z_err[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
 
             # 2) EY
             a = (
@@ -576,21 +579,21 @@ class EDI(object):
                 / z_det
                 * s_arr[cc.ey, cc.ey].real
             )
-            z_err_arr[kk, 1, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-            z_err_arr[kk, 1, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
+            self.z_err[kk, 1, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
+            self.z_err[kk, 1, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
 
             # if HZ information is present:
             if len(comp_list) > 5:
-                t_arr[kk, 0, 0] = (
+                self.t[kk, 0, 0] = (
                     s_arr[cc.hz, cc.rhx] * s_arr[cc.hy, cc.rhy]
                     - s_arr[cc.hz, cc.rhy] * s_arr[cc.hy, cc.rhx]
                 )
-                t_arr[kk, 0, 1] = (
+                self.t[kk, 0, 1] = (
                     s_arr[cc.hz, cc.rhy] * s_arr[cc.hx, cc.rhx]
                     - s_arr[cc.hz, cc.rhx] * s_arr[cc.hx, cc.rhy]
                 )
 
-                t_arr[kk] /= (
+                self.t[kk] /= (
                     s_arr[cc.hx, cc.rhx] * s_arr[cc.hy, cc.rhy]
                     - s_arr[cc.hx, cc.rhy] * s_arr[cc.hy, cc.rhx]
                 )
@@ -621,29 +624,29 @@ class EDI(object):
                     / z_det
                     * s_arr[cc.hz, cc.hz].real
                 )
-                t_err_arr[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-                t_err_arr[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
+                self.t_err[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
+                self.t_err[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
 
         # check for nans
-        z_err_arr = np.nan_to_num(z_err_arr)
-        t_err_arr = np.nan_to_num(t_err_arr)
+        self.z_err = np.nan_to_num(self.z_err)
+        self.t_err = np.nan_to_num(self.t_err)
 
-        z_err_arr[np.where(z_err_arr == 0.0)] = 1.0
-        t_err_arr[np.where(t_err_arr == 0.0)] = 1.0
+        self.z_err[np.where(self.z_err == 0.0)] = 1.0
+        self.t_err[np.where(self.t_err == 0.0)] = 1.0
 
         # be sure to fill attributes
-        self.Z.freq = freq_arr
-        self.Z.z = z_arr
-        self.Z.z_err = z_err_arr
-        self.Z.rotation_angle = np.zeros_like(freq_arr)
-        self.Z.compute_resistivity_phase()
+        # self.Z.freq = freq_arr
+        # self.Z.z = self.z
+        # self.Z.z_err = self.z_err
+        # self.Z.rotation_angle = np.zeros_like(freq_arr)
+        # self.Z.compute_resistivity_phase()
 
-        self.Tipper.tipper = t_arr
-        self.Tipper.tipper_err = t_err_arr
-        self.Tipper.freq = freq_arr
-        self.Tipper.rotation_angle = np.zeros_like(freq_arr)
-        self.Tipper.compute_amp_phase()
-        self.Tipper.compute_mag_direction()
+        # self.Tipper.tipper = self.t
+        # self.Tipper.tipper_err = self.t_err
+        # self.Tipper.freq = freq_arr
+        # self.Tipper.rotation_angle = np.zeros_like(freq_arr)
+        # self.Tipper.compute_amp_phase()
+        # self.Tipper.compute_mag_direction()
 
     def write(self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"):
         """
@@ -679,13 +682,7 @@ class EDI(object):
             if self.fn is not None:
                 new_edi_fn = self.fn
             else:
-                new_edi_fn = os.path.join(
-                    os.getcwd(), "{0}.edi".format(self.Header.dataid)
-                )
-        new_edi_fn = MTfh.make_unique_filename(new_edi_fn)
-
-        if self.Header.dataid is None:
-            self.read_edi_file()
+                new_edi_fn = Path().cwd().joinpath(f"{self.Header.dataid}.edi")
 
         # write lines
         header_lines = self.Header.write_header(
@@ -695,39 +692,39 @@ class EDI(object):
         define_lines = self.Measurement.write_measurement(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
-        dsect_lines = self.Data.write_data(over_dict={"nfreq": len(self.Z.freq)})
+        dsect_lines = self.Data.write_data(over_dict={"nfreq": len(self.frequency)})
 
         # write out frequencies
         freq_lines = [self._data_header_str.format("frequencies".upper())]
-        freq_lines += self._write_data_block(self.Z.freq, "freq")
+        freq_lines += self._write_data_block(self.frequency, "freq")
 
         # write out rotation angles
         zrot_lines = [self._data_header_str.format("impedance rotation angles".upper())]
-        zrot_lines += self._write_data_block(self.Z.rotation_angle, "zrot")
+        zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 
         # write out data only impedance and tipper
         z_data_lines = [self._data_header_str.format("impedances".upper())]
-        self.Z.z = np.nan_to_num(self.Z.z)
-        self.Z.z_err = np.nan_to_num(self.Z.z_err)
-        self.Tipper.tipper = np.nan_to_num(self.Tipper.tipper)
-        self.Tipper.tipper_err = np.nan_to_num(self.Tipper.tipper_err)
+        self.z = np.nan_to_num(self.z)
+        self.z_err = np.nan_to_num(self.z_err)
+        self.t = np.nan_to_num(self.t)
+        self.t_err = np.nan_to_num(self.t_err)
         for ii in range(2):
             for jj in range(2):
                 z_lines_real = self._write_data_block(
-                    self.Z.z[:, ii, jj].real, self._z_labels[2 * ii + jj][0]
+                    self.z[:, ii, jj].real, self._z_labels[2 * ii + jj][0]
                 )
                 z_lines_imag = self._write_data_block(
-                    self.Z.z[:, ii, jj].imag, self._z_labels[2 * ii + jj][1]
+                    self.z[:, ii, jj].imag, self._z_labels[2 * ii + jj][1]
                 )
                 z_lines_var = self._write_data_block(
-                    self.Z.z_err[:, ii, jj] ** 2.0, self._z_labels[2 * ii + jj][2]
+                    self.z_err[:, ii, jj] ** 2.0, self._z_labels[2 * ii + jj][2]
                 )
 
                 z_data_lines += z_lines_real
                 z_data_lines += z_lines_imag
                 z_data_lines += z_lines_var
 
-        if self.Tipper.tipper is not None and np.all(self.Tipper.tipper == 0):
+        if self.t is not None and np.all(self.t == 0):
             trot_lines = [""]
             t_data_lines = [""]
         else:
@@ -736,23 +733,23 @@ class EDI(object):
                 trot_lines = [
                     self._data_header_str.format("tipper rotation angles".upper())
                 ]
-                if isinstance(self.Tipper.rotation_angle, float):
-                    trot = np.repeat(self.Tipper.rotation_angle, self.Tipper.freq.size)
+                if isinstance(self.rotation_angle, float):
+                    trot = np.repeat(self.rotation_angle, self.frequency.size)
                 else:
-                    trot = self.Tipper.rotation_angle
+                    trot = self.rotation_angle
                 trot_lines += self._write_data_block(np.array(trot), "trot")
 
                 # write out tipper lines
                 t_data_lines = [self._data_header_str.format("tipper".upper())]
                 for jj in range(2):
                     t_lines_real = self._write_data_block(
-                        self.Tipper.tipper[:, 0, jj].real, self._t_labels[jj][0]
+                        self.t[:, 0, jj].real, self._t_labels[jj][0]
                     )
                     t_lines_imag = self._write_data_block(
-                        self.Tipper.tipper[:, 0, jj].imag, self._t_labels[jj][1]
+                        self.t[:, 0, jj].imag, self._t_labels[jj][1]
                     )
                     t_lines_var = self._write_data_block(
-                        self.Tipper.tipper_err[:, 0, jj] ** 2.0, self._t_labels[jj][2]
+                        self.t_err[:, 0, jj] ** 2.0, self._t_labels[jj][2]
                     )
 
                     t_data_lines += t_lines_real
@@ -820,7 +817,7 @@ class EDI(object):
             ]
 
         else:
-            raise MTex.MTpyError_EDI("Cannot write block for {0}".format(data_key))
+            raise ValueError("Cannot write block for {0}".format(data_key))
 
         for d_index, d_comp in enumerate(data_comp_arr, 1):
             if d_comp == 0.0 and data_key.lower() not in ["zrot", "trot"]:
@@ -851,7 +848,7 @@ class EDI(object):
     def lat(self, input_lat):
         """set latitude and make sure it is converted to a float"""
 
-        self.Header.lat = gis_tools.assert_lat_value(input_lat)
+        self.Header.lat = input_lat
         self.logger.debug(
             "Converted input latitude to decimal degrees: {0: .6f}".format(
                 self.Header.lat
@@ -867,7 +864,7 @@ class EDI(object):
     @lon.setter
     def lon(self, input_lon):
         """set latitude and make sure it is converted to a float"""
-        self.Header.lon = gis_tools.assert_lon_value(input_lon)
+        self.Header.lon = input_lon
         self.logger.debug(
             "Converted input longitude to decimal degrees: {0: .6f}".format(
                 self.Header.lon
@@ -883,7 +880,7 @@ class EDI(object):
     @elev.setter
     def elev(self, input_elev):
         """set elevation and make sure it is converted to a float"""
-        self.Header.elev = gis_tools.assert_elevation_value(input_elev)
+        self.Header.elev = input_elev
 
     # --> station
     @property
@@ -1257,7 +1254,7 @@ class Header(object):
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._fn = None
         self.fn = fn
         self.edi_lines = None
@@ -1273,9 +1270,9 @@ class Header(object):
         self._elev = None
         self.units = "[mV/km]/[nT]"
         self.empty = 1e32
-        self.progvers = __version__
+        self.progvers = "0.1.4"
         self._progdate = MTime("2020-11-10")
-        self.progname = "MTpy"
+        self.progname = "mt_metadata"
         self.project = None
         self.survey = None
         self.coordinate_system = "Geographic North"
@@ -1344,7 +1341,7 @@ class Header(object):
 
     @lat.setter
     def lat(self, value):
-        self._lat = gis_tools.assert_lat_value(value)
+        self._lat = value
 
     @property
     def lon(self):
@@ -1352,7 +1349,7 @@ class Header(object):
 
     @lon.setter
     def lon(self, value):
-        self._lon = gis_tools.assert_lon_value(value)
+        self._lon = value
 
     @property
     def elev(self):
@@ -1360,7 +1357,7 @@ class Header(object):
 
     @elev.setter
     def elev(self, value):
-        self._elev = gis_tools.assert_elevation_value(value)
+        self._elev = value
 
     @property
     def acqdate(self):
@@ -1373,7 +1370,7 @@ class Header(object):
             return
         try:
             self._acqdate = MTime(value)
-        except MTex.MTTimeError as error:
+        except MTTimeError as error:
             msg = f"Cannot set Header.acqdata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -1389,7 +1386,7 @@ class Header(object):
             return
         try:
             self._enddate = MTime(value)
-        except MTex.MTTimeError as error:
+        except MTTimeError as error:
             msg = f"Cannot set Header.enddate with {value}. {error}"
             self.logger.debug(msg)
 
@@ -1404,7 +1401,7 @@ class Header(object):
             return
         try:
             self._filedate = MTime(value)
-        except MTex.MTTimeError as error:
+        except MTTimeError as error:
             msg = f"Cannot set Header.filedate with {value}. {error}"
             self.logger.debug(msg)
 
@@ -1565,7 +1562,8 @@ class Header(object):
                 if latlon_format.upper() == "DD":
                     value = "%.6f" % value
                 else:
-                    value = gis_tools.convert_position_float2str(value)
+                    # value = gis_tools.convert_position_float2str(value)
+                    value = value
             if key in ["elev", "declination"] and value is not None:
                 try:
                     value = "{0:.3f}".format(value)
@@ -1582,7 +1580,7 @@ class Header(object):
             if isinstance(value, list):
                 value = ",".join(value)
 
-            header_lines.append(f"{tab}{key.upper()}={value}\n")
+            header_lines.append(f"\t{key.upper()}={value}\n")
 
         header_lines.append("\n")
         return header_lines
@@ -1625,7 +1623,7 @@ class Information(object):
     """
 
     def __init__(self, fn=None, edi_lines=None):
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._fn = None
         self.fn = fn
         self.edi_lines = edi_lines
@@ -1670,7 +1668,7 @@ class Information(object):
         phoenix_list_02 = []
 
         if self.fn is not None:
-            if os.path.isfile(self.fn) is False:
+            if self.fn.is_file() is False:
                 msg = f"Could not find EDI file: {self.fn}"
                 self.logger.info(msg)
                 return
@@ -1774,7 +1772,7 @@ class Information(object):
 
         info_lines = [">INFO\n"]
         for line in self.info_list:
-            info_lines.append("{0}{1}\n".format(tab, line))
+            info_lines.append(f"{' '*4}{line}\n")
 
         return info_lines
 
@@ -1871,7 +1869,7 @@ class DefineMeasurement(object):
     """
 
     def __init__(self, fn=None, edi_lines=None):
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._fn = None
         self.fn = fn
         self.edi_lines = edi_lines
@@ -1946,7 +1944,7 @@ class DefineMeasurement(object):
         count = 0
 
         if self.fn is not None:
-            if os.path.isfile(self.fn) is False:
+            if self.fn.is_file() is False:
                 self.logger.info("Could not find {0}, check path".format(self.fn))
                 return
 
@@ -2027,13 +2025,13 @@ class DefineMeasurement(object):
                 value = line_list[1].strip()
                 if key in "reflatitude":
                     key = "reflat"
-                    value = gis_tools.assert_lat_value(value)
+                    value = value
                 elif key in "reflongitude":
                     key = "reflon"
-                    value = gis_tools.assert_lon_value(value)
+                    value = value
                 elif key in "refelevation":
                     key = "refelev"
-                    value = gis_tools.assert_elevation_value(value)
+                    value = value
                 elif key in "maxchannels":
                     key = "maxchan"
                     try:
@@ -2085,13 +2083,15 @@ class DefineMeasurement(object):
                 if latlon_format.upper() == "DD":
                     value = "%.6f" % value
                 else:
-                    value = gis_tools.convert_position_float2str(value)
+                    # value = gis_tools.convert_position_float2str(value)
+                    value = value
             elif key == "refelev":
-                value = "{0:.3f}".format(gis_tools.assert_elevation_value(value))
+                # value = "{0:.3f}".format(gis_tools.assert_elevation_value(value))
+                value = value
             if key.upper() == "REFLON":
                 if longitude_format == "LONG":
                     key += "G"
-            measurement_lines.append("{0}{1}={2}\n".format(tab, key.upper(), value))
+            measurement_lines.append("{' '*4'}{key.upper()}={value}\n")
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number
@@ -2301,7 +2301,7 @@ class EMeasurement(object):
     """
 
     def __init__(self, **kwargs):
-        self._logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self._logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._kw_list = ["id", "chtype", "x", "y", "x2", "y2", "acqchan"]
         self._fmt_list = ["<.10g", "<3", "<4.1f", "<4.1f", "<4.1f", "<4.1f", "<4.0f"]
         for key, fmt in zip(self._kw_list, self._fmt_list):
@@ -2404,7 +2404,7 @@ class DataSection(object):
         :param fn:
         :param edi_lines:
         """
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.fn = fn
         self.edi_lines = edi_lines
 
@@ -2469,14 +2469,14 @@ class DataSection(object):
         """
 
         if self.fn is None and self.edi_lines is None:
-            raise MTex.MTpyError_EDI("No edi file to read. Check fn")
+            raise IOError("No edi file to read. Check fn")
 
         self.data_list = []
         data_find = False
 
         if self.fn is not None:
             if not self.fn.exists:
-                raise MTex.MTpyError_EDI(
+                raise IOError(
                     "Could not find {0}. Check path".format(self.fn)
                 )
             with open(self.fn) as fid:
@@ -2559,7 +2559,7 @@ class DataSection(object):
             data_lines = ["\n>spectrasect\n".upper()]
 
         for key in self._kw_list[0:4]:
-            data_lines.append(f"{tab}{key.upper()}={getattr(self, key)}\n")
+            data_lines.append(f"{' '*4}{key.upper()}={getattr(self, key)}\n")
 
         # need to sort the list so it is descending order by channel number
         ch_list = [
@@ -2577,7 +2577,7 @@ class DataSection(object):
         )
 
         for ch in ch_list2:
-            data_lines.append(f"{tab}{ch[0]}={ch[1]}\n")
+            data_lines.append(f"{' '*4}{ch[0]}={ch[1]}\n")
 
         data_lines.append("\n")
 

@@ -221,6 +221,7 @@ class ZMM(ZMMHeader):
         self.sigma_e = None
         self.sigma_s = None
         self.periods = None
+        self.dataset = None
         
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -396,6 +397,7 @@ class ZMM(ZMMHeader):
 
         self.read_header()
         self.initialize_arrays()
+        self.dataset = self._initialize_transfer_function()
 
         ### read each data block and fill the appropriate array
         for ii, period_block in enumerate(self._get_period_blocks()):
@@ -405,6 +407,8 @@ class ZMM(ZMMHeader):
             self._fill_tf_array_from_block(data_block["tf"], ii)
             self._fill_sig_array_from_block(data_block["sig"], ii)
             self._fill_res_array_from_block(data_block["res"], ii)
+            
+        self._fill_dataset()
             
         self.station_metadata.run_list.append(metadata.Run(id=f"{self.station}a"))
         self.station_metadata.id = self.station
@@ -539,6 +543,23 @@ class ZMM(ZMMHeader):
                 else:
                     self.sigma_e[index, jj, kk] = values[kk]
                     self.sigma_e[index, kk, jj] = values[kk].conjugate()
+                    
+    def _fill_dataset(self):
+        """
+        fill the dataset
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        self.dataset = self._initialize_transfer_function(periods=self.periods)
+        
+        # tf = xr.DataArray(data=self.transfer_functions,
+        #                   dims=["period", "output", "input"],
+        #                   coords={
+        #                       "period": self.periods,
+        #                       "output": []}
 
     def calculate_impedance(self, angle=0.0):
         """
