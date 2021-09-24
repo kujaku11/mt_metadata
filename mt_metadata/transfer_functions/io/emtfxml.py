@@ -51,6 +51,8 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance = emtf_xml.Provenance()
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
+        # not sure why we need to do this, but if you don't FieldNotes end
+        # as a string.
         self.field_notes = []
         self.field_notes.append(emtf_xml.FieldNotes())
         self.processing_info = emtf_xml.ProcessingInfo()
@@ -429,7 +431,7 @@ class EMTFXML(emtf_xml.EMTF):
         write data blocks
         """
         data_element = self._write_single(
-            parent, "Data", None, {"count": str(self.data.period.size)}
+            parent, "Data", None, {"count": str(self.data.n_periods)}
         )
         self.data.write_data(data_element)
 
@@ -707,8 +709,8 @@ def write_emtfxml(tf_object, fn=None):
     emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
     emtf.data.z_residcov = tf_object.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
 
-    emtf.data.t = tf_object.tipper
-    emtf.data.t_var = tf_object.tipper_error
+    emtf.data.t = tf_object.tipper.data
+    emtf.data.t_var = tf_object.tipper_error.data
     emtf.data.t_invsigcov =  tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
     emtf.data.t_residcov = tf_object.residual_covariance.loc[dict(input=["hz"], output=["hz"])].data
     

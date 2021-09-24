@@ -41,16 +41,6 @@ class TransferFunction:
         self.t_invsigcov = None
         self.t_residcov = None
 
-        self.array_dict = {
-            "z": self.z,
-            "z_var": self.z_var,
-            "z_invsigcov": self.z_invsigcov,
-            "z_residcov": self.z_residcov,
-            "t": self.t,
-            "t_var": self.t_var,
-            "t_invsigcov": self.t_invsigcov,
-            "t_residcov": self.t_residcov,
-        }
         self.write_dict = {
             "z": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
             "z_var": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
@@ -73,7 +63,9 @@ class TransferFunction:
         self.t_invsigcov = np.zeros((n_periods, 2, 2), dtype=np.complex)
         self.t_residcov = np.zeros((n_periods, 1, 1), dtype=np.complex)
 
-        self.array_dict = {
+    @property
+    def array_dict(self):
+        return {
             "z": self.z,
             "z_var": self.z_var,
             "z_invsigcov": self.z_invsigcov,
@@ -83,6 +75,12 @@ class TransferFunction:
             "t_invsigcov": self.t_invsigcov,
             "t_residcov": self.t_residcov,
         }
+
+    @property
+    def n_periods(self):
+        if self.period is not None:
+            return self.period.size
+        return 0
 
     def get_n_periods(self, root_dict):
         self.n_periods = int(float((root_dict["data"]["count"].strip())))
