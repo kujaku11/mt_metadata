@@ -315,6 +315,7 @@ class TF:
             "tipper": (1, 2),
             "isp": (2, 2),
             "res": (3, 3),
+            "transfer_function": (3, 2),
         }
 
         shape = shape_dict[atype]
@@ -398,6 +399,7 @@ class TF:
             "tipper": "transfer_function",
             "isp": "inverse_signal_power",
             "res": "residual_covariance",
+            "transfer_function": "transfer_function",
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -418,6 +420,56 @@ class TF:
             msg = "Data type %s not supported use a numpy array or xarray.DataArray"
             self.logger.error(msg, type(value))
             raise TFError(msg % type(value))
+            
+    def has_transfer_function(self):
+        """
+        Check to see if the transfer function is not 0 and has
+        transfer function components
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        outputs = self._transfer_function.transfer_function.coords[
+            "output"
+        ].data.tolist()
+        if "ex" in outputs or "ey" in outputs or "hz" in outputs:
+            if np.all(
+                self._transfer_function.transfer_function.sel(
+                    input=["hx", "hy"], output=["ex", "ey", "hz"]
+                ).data
+                == 0
+            ):
+                return False
+            return True
+        return False
+
+    @property
+    def transfer_function(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_transfer_function():
+            return self.dataset.transfer_function.sel(
+                input=["hx", "hy"], output=["ex", "ey", "hz"]
+            )
+        
+    @transfer_function.setter
+    def transfer_function(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tf")
+
 
     def has_impedance(self):
         """

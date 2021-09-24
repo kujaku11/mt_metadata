@@ -10,6 +10,8 @@ Translated from code by B. Murphy.
 # Imports
 # ==============================================================================
 from pathlib import Path
+from collections import OrderedDict
+
 import numpy as np
 import xarray as xr
 
@@ -197,12 +199,34 @@ class ZMMHeader(object):
 
     @property
     def channels_recorded(self):
-        channels = []
+        channels = {}
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
             ch = getattr(self, cc)
             if ch is not None:
-                channels.append(cc)
-        return channels
+                channels[ch.index] = ch.channel
+        ordered_channels = [channels[k] for k in sorted(channels.keys())]
+        return ordered_channels
+    
+    @property
+    def input_channels(self):
+        return self.channels_recorded[0:2] 
+    
+    @property
+    def output_channels(self):
+        return self.channels_recorded[2:]
+    
+    @property
+    def has_tipper(self):
+        if "hz" in self.channels_recorded:
+            return True
+        return False
+    
+    @property
+    def has_impedance(self):
+        if "ex" in self.channels_recorded and "ey" in self.channels_recorded:
+            return True
+        return False
+    
 
 
 class ZMM(ZMMHeader):
@@ -397,6 +421,24 @@ class ZMM(ZMMHeader):
 
         self.read_header()
         self.initialize_arrays()
+        
+        self._ch_input_dict = {
+            "impedance": self.input_channels,
+            "tipper": self.input_channels,
+            "isp": self.input_channels,
+            "res": self.output_channels,
+            "tf": self.input_channels,
+        }
+
+        self._ch_output_dict = {
+            "impedance": ["ex", "ey"],
+            "tipper": ["hz"],
+            "isp": self.input_channels,
+            "res": self.output_channels,
+            "tf": self.output_channels,
+        }
+
+        self._transfer_function = self._initialize_transfer_function()
         self.dataset = self._initialize_transfer_function()
 
         ### read each data block and fill the appropriate array
@@ -432,16 +474,7 @@ class ZMM(ZMMHeader):
                 rr.hz = self.hz_metadata
 
 
-        # ### make Z and Tipper
-        # self.Z = self.calculate_impedance()
-
-        # try:
-        #     self.Tipper = self.calculate_tippers()
-        # except ZMMError:
-        #     self.Tipper = mtz.Tipper()
-        #     self.logger.debug(
-        #         f"No HZ found in {self.fn} induction vectors not estimated."
-        #     )
+        
 
     def _get_period_blocks(self):
         """
@@ -555,12 +588,11 @@ class ZMM(ZMMHeader):
         
         self.dataset = self._initialize_transfer_function(periods=self.periods)
         
-        # tf = xr.DataArray(data=self.transfer_functions,
-        #                   dims=["period", "output", "input"],
-        #                   coords={
-        #                       "period": self.periods,
-        #                       "output": []}
-
+        self.dataset.transfer_function.loc[dict(input=self.input_channels, output=self.output_channels)] = self.transfer_functions
+        self.dataset.inverse_signal_power.loc[dict(input=self.input_channels, output=self.input_channels)] = self.sigma_s
+        self.dataset.residual_covariance.loc[dict(input=self.output_channels, output=self.output_channels)] = self.sigma_e
+        
+    
     def calculate_impedance(self, angle=0.0):
         """
         calculate the impedances from the transfer functions
@@ -769,36 +801,42 @@ def read_zmm(zmm_fn):
     # need to add this here instead of the top is because of recursive
     # importing.  This may not be the best way to do this but works for now
     # so we don't have to break how MTpy structure is setup now.
-    from mtpy.core import mt
+    from mt_metadata.transfer_functions.core import TF
 
-    mt_obj = mt.MT()
-    mt_obj._fn = zmm_fn
-    mt_obj.logger.debug(f"Reading {zmm_fn} using ZMM class")
+    tf_obj = TF()
+    tf_obj._fn = zmm_fn
+    tf_obj.logger.debug(f"Reading {zmm_fn} using ZMM class")
 
     zmm_obj = ZMM(zmm_fn)
     zmm_obj.read_zmm_file()
 
-    for attr in [
-        "Z",
-        "Tipper",
-        "survey_metadata",
-        "station_metadata",
-    ]:
-        setattr(mt_obj, attr, getattr(zmm_obj, attr))
+    k_dict = OrderedDict({
+        "survey_metadata": "survey_metadata",
+        "station_metadata": "station_metadata"
+        })
 
-    # need to set latitude to compute UTM coordinates to make sure station
-    # location is estimated for ModEM
-    mt_obj.latitude = zmm_obj.station_metadata.location.latitude
+    for tf_key, j_key in k_dict.items():
+        setattr(tf_obj, tf_key, getattr(zmm_obj, j_key))
+        
+    tf_obj.transfer_function = zmm_obj.dataset.transfer_function.sel(
+                input=zmm_obj.input_channels, output=zmm_obj.output_channels
+            )
+    tf_obj.inverse_signal_power = zmm_obj.dataset.inverse_signal_power.sel(
+                input=zmm_obj.input_channels, output=zmm_obj.input_channels
+            )
+    tf_obj.residual_covariance = zmm_obj.dataset.residual_covariance.sel(
+                input=zmm_obj.output_channels, output=zmm_obj.output_channels
+            )
 
-    return mt_obj
+    return tf_obj
 
 
-def write_zmm(mt_object, fn=None):
+def write_zmm(tf_object, fn=None):
     """
     write a zmm file
 
-    :param mt_object: DESCRIPTION
-    :type mt_object: TYPE
+    :param tf_object: DESCRIPTION
+    :type tf_object: TYPE
     :param fn: DESCRIPTION, defaults to None
     :type fn: TYPE, optional
     :return: DESCRIPTION
