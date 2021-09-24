@@ -501,6 +501,19 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.time_period.end = self.site.end
 
         return survey_obj
+    
+    @survey_metadata.setter
+    def survey_metadata(self, sm):
+        """
+        Set metadata and other values in metadata
+        
+        :param sm: DESCRIPTION
+        :type sm: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        pass
 
     @property
     def station_metadata(self):
@@ -593,6 +606,22 @@ class EMTFXML(emtf_xml.EMTF):
                 s.run_list.append(r)
 
         return s
+    
+    @station_metadata.setter
+    def station_metadata(self, sm):
+        """
+        Set metadata and other values in metadata
+        
+        :param sm: DESCRIPTION
+        :type sm: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        pass
+    
+    # gonna need a setter to fill the other objects
+    
 
 
 def read_emtfxml(fn):
@@ -649,4 +678,6 @@ def write_emtfxml(tf_object, fn=None):
 
     emtf = EMTFXML()
     emtf.description = "Magnetotelluric transfer functions"
+    
+    
     pass

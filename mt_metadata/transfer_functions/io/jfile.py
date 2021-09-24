@@ -496,7 +496,7 @@ def read_jfile(fn):
     return tf_obj
 
 
-def write_jfile(mt_obj, fn=None):
+def write_jfile(tf_obj, fn=None):
     """
 
     :param mt_obj: DESCRIPTION

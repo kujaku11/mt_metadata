@@ -694,6 +694,11 @@ class EDI(object):
 
         # write out rotation angles
         zrot_lines = [self._data_header_str.format("impedance rotation angles".upper())]
+        if self.rotation_angle is None:
+            self.rotation_angle = np.zeros(self.frequency.size)
+        elif len(self.rotation_angle) != self.frequency.size:
+            self.rotation_angle = np.repeat(self.rotation_angle[0], self.frequency.size)
+            
         zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 
         # write out data only impedance and tipper
@@ -785,7 +790,6 @@ class EDI(object):
         :returns: list of lines to write to edi file
         :rtype: list
         """
-        print(data_key)
         if data_key.lower().find("z") >= 0 and data_key.lower() not in ["zrot", "trot"]:
             block_lines = [
                 ">{0} ROT=ZROT // {1:.0f}\n".format(
@@ -2086,7 +2090,7 @@ class DefineMeasurement(object):
             if key.upper() == "REFLON":
                 if longitude_format == "LONG":
                     key += "G"
-            measurement_lines.append("{' '*4'}{key.upper()}={value}\n")
+            measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number
