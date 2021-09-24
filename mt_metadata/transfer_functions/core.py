@@ -436,7 +436,7 @@ class TF:
         if "ex" in outputs or "ey" in outputs or "hz" in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=["hx", "hy"], output=["ex", "ey", "hz"]
+                    input=self._ch_input_dict["tf"], output=self._ch_output_dict["tf"]
                 ).data
                 == 0
             ):
@@ -486,7 +486,7 @@ class TF:
         if "ex" in outputs or "ey" in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=["hx", "hy"], output=["ex", "ey"]
+                    input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"]
                 ).data
                 == 0
             ):
@@ -504,16 +504,42 @@ class TF:
         """
         if self.has_impedance():
             z = self.dataset.transfer_function.sel(
-                input=["hx", "hy"], output=["ex", "ey"]
+                input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"]
             )
             z.name = "impedance"
-            z_err = self.dataset.error.sel(input=["hx", "hy"], output=["ex", "ey"])
-            z_err.name = "impedance_error"
 
-            return xr.Dataset({z.name: z, z_err.name: z_err})
+            return z
 
     @impedance.setter
     def impedance(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "impedance")
+        
+    @property
+    def impedance_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_impedance():
+            z_err = self.dataset.error.sel(
+                input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"])
+            z_err.name = "impedance_error"
+
+            return z_err
+
+    @impedance_error.setter
+    def impedance_error(self, value):
         """
         Set the impedance from values
 
@@ -540,7 +566,7 @@ class TF:
         if "hz" in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=["hx", "hy"], output=["hz"]
+                    input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"]
                 ).data
                 == 0
             ):
@@ -557,15 +583,41 @@ class TF:
 
         """
         if self.has_tipper():
-            t = self.dataset.transfer_function.sel(input=["hx", "hy"], output=["hz"])
+            t = self.dataset.transfer_function.sel(
+                input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"])
             t.name = "tipper"
-            t_err = self.dataset.error.sel(input=["hx", "hy"], output=["hz"])
-            t_err.name = "tipper_error"
 
-            return xr.Dataset({t.name: t, t_err.name: t_err})
+            return t
 
     @tipper.setter
     def tipper(self, value):
+        """
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tipper")
+        
+    @property
+    def tipper_err(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_tipper():
+            t = self.dataset.transfer_function.sel(
+                input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"])
+            t.name = "tipper_error"
+
+            return t
+
+    @tipper_err.setter
+    def tipper_err(self, value):
         """
 
         :param value: DESCRIPTION
@@ -588,7 +640,7 @@ class TF:
 
         if np.all(
             self._transfer_function.inverse_signal_power.sel(
-                input=["hx", "hy"], output=["hx", "hy"]
+                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
             ).data
             == 0
         ):
@@ -599,7 +651,7 @@ class TF:
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
             return self.dataset.inverse_signal_power.sel(
-                input=["hx", "hy"], output=["hx", "hy"]
+                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
             )
 
         return None
@@ -632,7 +684,7 @@ class TF:
 
         if np.all(
             self._transfer_function.residual_covariance.sel(
-                input=["ex", "ey", "hz"], output=["ex", "ey", "hz"]
+                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
             ).data
             == 0
         ):
@@ -643,7 +695,7 @@ class TF:
     def residual_covariance(self):
         if self.has_residual_covariance():
             return self.dataset.residual_covariance.sel(
-                input=["ex", "ey", "hz"], output=["ex", "ey", "hz"]
+                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
             )
 
         return None

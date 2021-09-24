@@ -14,13 +14,7 @@
 # ==============================================================================
 import numpy as np
 from pathlib import Path
-
-# import mtpy.utils.gis_tools as gis_tools
-# import mtpy.utils.exceptions as MTex
-# import mtpy.utils.filehandling as MTfh
-# import mtpy.core.z as MTz
-# from mtpy import __version__
-# from mtpy.utils.mtpy_logger import get_mtpy_logger
+from collections import OrderedDict
 
 from mt_metadata.utils.mttime import MTime, get_now_utc
 from mt_metadata.utils.exceptions import MTTimeError
@@ -791,6 +785,7 @@ class EDI(object):
         :returns: list of lines to write to edi file
         :rtype: list
         """
+        print(data_key)
         if data_key.lower().find("z") >= 0 and data_key.lower() not in ["zrot", "trot"]:
             block_lines = [
                 ">{0} ROT=ZROT // {1:.0f}\n".format(
@@ -2688,84 +2683,91 @@ def read_edi(fn):
     # need to add this here instead of the top is because of recursive
     # importing.  This may not be the best way to do this but works for now
     # so we don't have to break how MTpy structure is setup now.
-    from mtpy.core import mt
+    from mt_metadata.transfer_functions.core import TF
 
     st = MTime().now()
 
     edi_obj = EDI()
     edi_obj.read(fn)
 
-    mt_obj = mt.MT()
-    mt_obj._fn = fn
+    tf_obj = TF()
+    tf_obj._fn = fn
+    
+    k_dict = OrderedDict({
+        "period": "periods",
+        "impedance": "z",
+        "impedance_error": "z_err",
+        "tipper": "t",
+        "tipper_error": "t_err",
+        "survey_metadata": "survey_metadata",
+        "station_metadata": "station_metadata"})
 
-    for attr in [
-        "Z",
-        "Tipper",
-        "survey_metadata",
-        "station_metadata",
-    ]:
-        setattr(mt_obj, attr, getattr(edi_obj, attr))
+    for tf_key, edi_key in k_dict.items():
+        setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))
 
     # need to set latitude to compute UTM coordinates to make sure station
     # location is estimated for ModEM
-    mt_obj.latitude = edi_obj.station_metadata.location.latitude
+    tf_obj.latitude = edi_obj.station_metadata.location.latitude
 
     et = MTime().now()
-    mt_obj.logger.debug(
-        f"Reading EDI for {mt_obj.station} and conversion to MT took {et - st:.2f} seconds"
+    tf_obj.logger.debug(
+        f"Reading EDI for {tf_obj.station} and conversion to MT took {et - st:.2f} seconds"
     )
 
-    return mt_obj
+    return tf_obj
 
 
-def write_edi(mt_object, fn=None):
+def write_edi(tf_object, fn=None):
     """
     Write an edi file from an :class:`mtpy.core.mt.MT` object
 
-    :param mt_object: DESCRIPTION
-    :type mt_object: TYPE
+    :param tf_object: DESCRIPTION
+    :type tf_object: TYPE
     :return: DESCRIPTION
     :rtype: TYPE
 
     """
-    from mtpy.core import mt
+    from mt_metadata.transfer_functions.core import TF
 
-    if not isinstance(mt_object, mt.MT):
-        raise ValueError("Input must be an mtpy.core.mt.MT object")
+    if not isinstance(tf_object, TF):
+        raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
 
     edi_obj = EDI()
-    edi_obj.Z = mt_object.Z
-    edi_obj.Tipper = mt_object.Tipper
+    edi_obj.z = tf_object.impedance.data
+    edi_obj.z_err = tf_object.impedance_error.data
+    edi_obj.t = tf_object.tipper.data
+    edi_obj.t_err = tf_object.tipper_err.data
+    edi_obj.frequency = 1./tf_object.period
 
     ### fill header information from survey
-    edi_obj.Header.survey = mt_object.survey_metadata.id
-    edi_obj.Header.project = mt_object.survey_metadata.project
-    edi_obj.Header.loc = mt_object.survey_metadata.geographic_name
-    edi_obj.Header.country = mt_object.survey_metadata.country
+    edi_obj.Header.survey = tf_object.survey_metadata.id
+    edi_obj.Header.project = tf_object.survey_metadata.project
+    edi_obj.Header.loc = tf_object.survey_metadata.geographic_name
+    edi_obj.Header.country = tf_object.survey_metadata.country
 
     ### fill header information from station
-    edi_obj.Header.acqby = mt_object.station_metadata.acquired_by.author
-    edi_obj.Header.acqdate = mt_object.station_metadata.time_period.start_date
+    edi_obj.Header.acqby = tf_object.station_metadata.acquired_by.author
+    edi_obj.Header.acqdate = tf_object.station_metadata.time_period.start_date
     edi_obj.Header.coordinate_system = (
-        mt_object.station_metadata.orientation.reference_frame
+        tf_object.station_metadata.orientation.reference_frame
     )
-    edi_obj.Header.dataid = mt_object.station
-    edi_obj.Header.declination = mt_object.station_metadata.location.declination.value
-    edi_obj.Header.elev = mt_object.elevation
-    edi_obj.Header.fileby = mt_object.station_metadata.provenance.submitter.author
-    edi_obj.Header.filedate = mt_object.station_metadata.provenance.creation_time
-    edi_obj.Header.lat = mt_object.latitude
-    edi_obj.Header.lon = mt_object.longitude
-    edi_obj.Header.datum = mt_object.station_metadata.location.datum
+    edi_obj.Header.dataid = tf_object.station
+    edi_obj.Header.declination = tf_object.station_metadata.location.declination.value
+    edi_obj.Header.elev = tf_object.elevation
+    edi_obj.Header.fileby = tf_object.station_metadata.provenance.submitter.author
+    edi_obj.Header.filedate = tf_object.station_metadata.provenance.creation_time
+    edi_obj.Header.lat = tf_object.latitude
+    edi_obj.Header.lon = tf_object.longitude
+    edi_obj.Header.datum = tf_object.station_metadata.location.datum
     edi_obj.Header.stdvers = "SEG 1.0"
-    edi_obj.Header.units = mt_object.station_metadata.transfer_function.units
+    edi_obj.Header.units = tf_object.station_metadata.transfer_function.units
 
     ### write notes
     # write comments, which would be anything in the info section from an edi
-    if isinstance(mt_object.station_metadata.comments, str):
-        edi_obj.Info.info_list += mt_object.station_metadata.comments.split("\n")
+    if isinstance(tf_object.station_metadata.comments, str):
+        edi_obj.Info.info_list += tf_object.station_metadata.comments.split("\n")
     # write transfer function info first
-    for k, v in mt_object.station_metadata.transfer_function.to_dict(
+    for k, v in tf_object.station_metadata.transfer_function.to_dict(
         single=True
     ).items():
         if not v in [None]:
@@ -2778,12 +2780,12 @@ def write_edi(mt_object, fn=None):
                 edi_obj.Info.info_list.append(f"transfer_function.{k} = {v}")
 
     # write provenance
-    for k, v in mt_object.station_metadata.provenance.to_dict(single=True).items():
+    for k, v in tf_object.station_metadata.provenance.to_dict(single=True).items():
         if not v in [None, "None", "null"]:
             edi_obj.Info.info_list.append(f"provenance.{k} = {v}")
 
     # write field notes
-    for run in mt_object.station_metadata.run_list:
+    for run in tf_object.station_metadata.run_list:
         write_dict = dict(
             [
                 (comp, False)
@@ -2860,21 +2862,21 @@ def write_edi(mt_object, fn=None):
                 edi_obj.Info.info_list.append(f"{run.id}.{rk} = {rv}")
 
     ### fill measurement
-    edi_obj.Measurement.refelev = mt_object.elevation
-    edi_obj.Measurement.reflat = mt_object.latitude
-    edi_obj.Measurement.reflon = mt_object.longitude
-    edi_obj.Measurement.maxchan = len(mt_object.station_metadata.channels_recorded)
+    edi_obj.Measurement.refelev = tf_object.elevation
+    edi_obj.Measurement.reflat = tf_object.latitude
+    edi_obj.Measurement.reflon = tf_object.longitude
+    edi_obj.Measurement.maxchan = len(tf_object.station_metadata.channels_recorded)
     for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
         try:
-            edi_obj.Measurement.from_metadata(getattr(mt_object, f"{comp}_metadata"))
+            edi_obj.Measurement.from_metadata(getattr(tf_object, f"{comp}_metadata"))
         except AttributeError as error:
             edi_obj.logger.info(error)
             edi_obj.logger.debug(f"Did not find information on {comp}")
 
     # input data section
-    edi_obj.Data.data_type = mt_object.station_metadata.data_type
-    edi_obj.Data.nfreq = mt_object.Z.z.shape[0]
-    edi_obj.Data.sectid = mt_object.station
+    edi_obj.Data.data_type = tf_object.station_metadata.data_type
+    edi_obj.Data.nfreq = tf_object.period.size
+    edi_obj.Data.sectid = tf_object.station
     edi_obj.Data.nchan = len(edi_obj.Measurement.channel_ids.keys())
 
     edi_obj.Data.maxblks = 999
