@@ -51,7 +51,8 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance = emtf_xml.Provenance()
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
-        self.field_notes = [emtf_xml.FieldNotes()]
+        self.field_notes = []
+        self.field_notes.append(emtf_xml.FieldNotes())
         self.processing_info = emtf_xml.ProcessingInfo()
         self.statistical_estimates = emtf_xml.StatisticalEstimates()
         self.data_types = emtf_xml.DataTypes()
@@ -315,6 +316,7 @@ class EMTFXML(emtf_xml.EMTF):
         """ """
 
         for fn in self.field_notes:
+            print(fn, type(fn))
             fn_element = self._convert_tag_to_capwords(fn.to_xml())
             for dp in fn.dipole:
                 dp_element = self._convert_tag_to_capwords(dp.to_xml())
@@ -608,7 +610,7 @@ class EMTFXML(emtf_xml.EMTF):
         return s
     
     @station_metadata.setter
-    def station_metadata(self, sm):
+    def station_metadata(self, station_metadata):
         """
         Set metadata and other values in metadata
         
@@ -618,11 +620,28 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        pass
+        sm = station_metadata
     
-    # gonna need a setter to fill the other objects
-    
-
+        # gonna need a setter to fill the other objects
+        self.site.acquired_by = sm.acquired_by.author
+        self.sub_type = f"{sm.data_type.upper()}_TF"
+        self.site.name = sm.geographic_name
+        self.site.id = sm.id
+        self.site.location.from_dict(sm.location.to_dict())
+        self.site.orientation.angle_to_geographic_north = sm.orientation.angle_to_geographic_north
+        
+        self.provenance.creating_application = sm.provenance.software.name 
+        self.provenance.create_time = sm.provenance.creation_time 
+        self.provenance.creator.name = sm.provenance.creator.author 
+        self.provenance.creator.email = sm.provenance.creator.email 
+        self.provenance.creator.org = sm.provenance.creator.organization 
+        self.provenance.creator.org_url = sm.provenance.creator.url 
+        self.provenance.submitter.name = sm.provenance.submitter.author 
+        self.provenance.submitter.email = sm.provenance.submitter.email 
+        self.provenance.submitter.org = sm.provenance.submitter.organization 
+        self.provenance.submitter.org_url = sm.provenance.submitter.url 
+        self.site.start = sm.time_period.start 
+        self.site.end = sm.time_period.end 
 
 def read_emtfxml(fn):
     """
@@ -678,6 +697,21 @@ def write_emtfxml(tf_object, fn=None):
 
     emtf = EMTFXML()
     emtf.description = "Magnetotelluric transfer functions"
+    emtf.survey_metadata = tf_object.survey_metadata
+    emtf.station_metadata = tf_object.station_metadata
     
+    emtf.data.period = tf_object.period
     
-    pass
+    emtf.data.z = tf_object.impedance.data
+    emtf.data.z_var = tf_object.impedance_error.data
+    emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
+    emtf.data.z_residcov = tf_object.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
+
+    emtf.data.t = tf_object.tipper
+    emtf.data.t_var = tf_object.tipper_error
+    emtf.data.t_invsigcov =  tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
+    emtf.data.t_residcov = tf_object.residual_covariance.loc[dict(input=["hz"], output=["hz"])].data
+    
+    # emtf.write(fn=fn)
+
+    return emtf

@@ -602,7 +602,7 @@ class TF:
         self._set_data_array(value, "tipper")
         
     @property
-    def tipper_err(self):
+    def tipper_error(self):
         """
 
         :return: DESCRIPTION
@@ -616,8 +616,8 @@ class TF:
 
             return t
 
-    @tipper_err.setter
-    def tipper_err(self, value):
+    @tipper_error.setter
+    def tipper_error(self, value):
         """
 
         :param value: DESCRIPTION
@@ -908,7 +908,7 @@ class TF:
 
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
-        if file_type not in ["edi", "xml", "j", "zmm", "zrr"]:
+        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr"]:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
