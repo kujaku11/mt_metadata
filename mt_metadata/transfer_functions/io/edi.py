@@ -175,6 +175,12 @@ class EDI(object):
             self._fn = Path(fn)
             if self._fn.exists():
                 self.read()
+                
+    @property
+    def period(self):
+        if self.frequency is not None:
+            return 1./self.frequency
+        return None
 
     def read(self, fn=None):
         """
@@ -885,7 +891,12 @@ class EDI(object):
     @property
     def station(self):
         """station name"""
-        return self.Header.dataid.replace(r"/", "_")
+        if self.Header.dataid is not None:
+            return self.Header.dataid.replace(r"/", "_")
+        elif self.Measurement.refloc is not None:
+            return self.Measurement.refloc.replace('"', '')
+        elif self.Data.sectid is not None:
+            return self.Data.sectid
 
     @station.setter
     def station(self, new_station):
@@ -1882,6 +1893,7 @@ class DefineMeasurement(object):
         self.reflon = None
         self.reftype = "cartesian"
         self.units = "m"
+        self.refloc = None
 
         self._define_meas_keys = [
             "maxchan",
@@ -2080,7 +2092,8 @@ class DefineMeasurement(object):
             value = getattr(self, key)
             if key == "reflat" or key == "reflon":
                 if latlon_format.upper() == "DD":
-                    value = "%.6f" % value
+                    if isinstance(value, (float, int)):
+                        value = f"{float(value):.6f}"
                 else:
                     # value = gis_tools.convert_position_float2str(value)
                     value = value
@@ -2698,7 +2711,7 @@ def read_edi(fn):
     tf_obj._fn = fn
     
     k_dict = OrderedDict({
-        "period": "periods",
+        "period": "period",
         "impedance": "z",
         "impedance_error": "z_err",
         "tipper": "t",

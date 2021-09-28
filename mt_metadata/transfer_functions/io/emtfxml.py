@@ -568,7 +568,7 @@ class EMTFXML(emtf_xml.EMTF):
             for run in self.field_notes:
                 r = Run()
                 r.data_logger.id = run.instrument.id
-                r.data_logger.name = run.instrument.name
+                r.data_logger.type = run.instrument.name
                 r.data_logger.manufacturer = run.instrument.manufacturer
                 r.sample_rate = run.sampling_rate
                 r.time_period.start = run.start
@@ -643,7 +643,68 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance.submitter.org = sm.provenance.submitter.organization 
         self.provenance.submitter.org_url = sm.provenance.submitter.url 
         self.site.start = sm.time_period.start 
-        self.site.end = sm.time_period.end 
+        self.site.end = sm.time_period.end
+        
+        self.processing_info.sign_convention = sm.transfer_function.sign_convention 
+        self.processing_info.processed_by = sm.transfer_function.processed_by  
+        self.processing_info.processing_software.author = sm.transfer_function.software.author 
+        self.processing_info.processing_software.name = sm.transfer_function.software.name
+        self.processing_info.processing_software.last_mod = sm.transfer_function.software.last_updated
+        self.processing_info.processing_tag = sm.transfer_function.remote_references
+        self.site.run_list = sm.transfer_function.runs_processed
+        # not sure there is a place to put processing parameters yet
+        
+        # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
+        #     {"type": self.processing_info.remote_ref.type}
+        # )
+        for r in sm.run_list:
+            fn = emtf_xml.FieldNotes()
+            fn.instrument.id = r.data_logger.id
+            fn.instrument.name = r.data_logger.type
+            fn.instrument.manufacturer = r.data_logger.manufacturer 
+            fn.sampling_rate = r.sample_rate 
+            fn.start = r.time_period.start 
+            fn.end = r.time_period.end
+            
+            
+            for comp in ["hx", "hy", "hz"]:
+                try:
+                    rch = getattr(r, comp)
+                    mag = emtf_xml.Magnetometer()
+                    mag.id = rch.sensor.id 
+                    mag.name = comp.capitalize() 
+                    mag.manufacturer = rch.sensor.manufacturer
+                    mag.azimuth = rch.translated_azimuth
+                    fn.magnetometer.append(mag)
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
+    
+            for comp in ["ex", "ey"]:
+                try:
+                    c = getattr(r, comp)
+                    dp = emtf_xml.Dipole()
+                    dp.name = comp.capitalize()
+                    dp.azimuth = c.translated_azimuth 
+                    dp.length = c.dipole_length
+                    dp.manufacturer = c.positive.manufacture
+                    # fill electrodes
+                    pot_p = emtf_xml.Electrode()
+                    pot_p.number = c.positive.id
+                    pot_p.location = "n" if comp=="ex" else "e"
+                    pot_p.value = c.positive.type 
+                    dp.electrode.append(pot_p)
+                    pot_n = emtf_xml.Electrode()
+                    pot_n.number = c.negative.id 
+                    pot_n.value = c.negative.type 
+                    pot_n.location = "n" if comp=="ex" else "e"
+                    dp.electrode.append(pot_n)
+                    fn.dipole.append(dp)
+                     
+
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
+    
+            self.field_notes.append(fn)
 
 def read_emtfxml(fn):
     """

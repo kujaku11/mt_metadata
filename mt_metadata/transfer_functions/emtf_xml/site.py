@@ -34,7 +34,7 @@ class Site(Base):
     def __init__(self, **kwargs):
         self.project = None
         self.survey = None
-        self.year_collected = None
+        self._year_collected = None
         self.country = None
         self.id = None
         self.name = None
@@ -64,3 +64,14 @@ class Site(Base):
     @end.setter
     def end(self, value):
         self._end_dt.from_str(value)
+        
+    @property
+    def year_collected(self):
+        if self.start != "1980-01-01T00:00:00+00:00":
+            return self._start_dt.year
+        else:
+            return self._year_collected
+        
+    @year_collected.setter
+    def year_collected(self, value):
+        self._year_collected = value
