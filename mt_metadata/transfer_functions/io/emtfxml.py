@@ -837,17 +837,17 @@ class EMTFXML(emtf_xml.EMTF):
                     pot_n = emtf_xml.Electrode()
                     pot_n.number = c.negative.id 
                     pot_n.value = c.negative.type 
-                    pot_n.location = "n" if comp=="ex" else "e"
+                    pot_n.location = "s" if comp=="ex" else "w"
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)
                     
                     ch_out = emtf_xml.Electric()
-                    ch_out.x = c.location.x
-                    ch_out.y = c.location.y
-                    ch_out.z = c.location.z
-                    ch_out.x2 = c.location.x2
-                    ch_out.y2 = c.location.y2
-                    ch_out.z2 = c.location.z2
+                    ch_out.x = c.positive.x2
+                    ch_out.y = c.positive.y2
+                    ch_out.z = c.positive.z2
+                    ch_out.x2 = c.negative.x
+                    ch_out.y2 = c.negative.y
+                    ch_out.z2 = c.negative.z
                     ch_out.name = comp.capitalize()
                     ch_out.orientation = c.translated_azimuth
                     self.site_layout.output_channels.append(ch_out)
@@ -933,6 +933,6 @@ def write_emtfxml(tf_object, fn=None):
         emtf.data.t_invsigcov =  tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
         emtf.data.t_residcov = tf_object.residual_covariance.loc[dict(input=["hz"], output=["hz"])].data
     
-    # emtf.write(fn=fn)
+    emtf.write(fn=fn)
 
     return emtf
