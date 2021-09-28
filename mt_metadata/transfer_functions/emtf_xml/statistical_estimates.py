@@ -37,6 +37,7 @@ class StatisticalEstimates(Base):
     def estimates_list(self, value):
         if not isinstance(value, list):
             value = [value]
+        self._estimates_list = []
         for item in value:
             est = Estimate()
             est.from_dict(item)

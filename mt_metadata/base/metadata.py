@@ -592,7 +592,6 @@ class Base:
                 value = self.get_attr_from_name(name)
             except AttributeError:
                 value = None
-
             if required:
                 if (
                     value not in [None, "1980-01-01T00:00:00+00:00"]

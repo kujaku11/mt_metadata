@@ -73,17 +73,23 @@ class TF:
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
             "tipper": ["hx", "hy"],
+            "impedance_error": ["hx", "hy"],
+            "tipper_error": ["hx", "hy"],
             "isp": ["hx", "hy"],
             "res": ["ex", "ey", "hz"],
             "tf": ["hx", "hy"],
+            "tf_error": ["hx", "hy"],
         }
 
         self._ch_output_dict = {
             "impedance": ["ex", "ey"],
             "tipper": ["hz"],
+            "impedance_error": ["ex", "ey"],
+            "tipper_error": ["hz"],
             "isp": ["hx", "hy"],
             "res": ["ex", "ey", "hz"],
             "tf": ["ex", "ey", "hz"],
+            "tf_error": ["ex", "ey", "hz"],
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -188,7 +194,7 @@ class TF:
                 "output": self._ch_output_dict["tf"],
                 "input": self._ch_input_dict["tf"],
             },
-            name="error",
+            name="transfer_function_error",
         )
 
         inv_signal_power = xr.DataArray(
@@ -313,9 +319,12 @@ class TF:
         shape_dict = {
             "impedance": (2, 2),
             "tipper": (1, 2),
+            "impedance_error": (2, 2),
+            "tipper_error": (1, 2),
             "isp": (2, 2),
             "res": (3, 3),
             "transfer_function": (3, 2),
+            "transfer_function_error": (3, 2),
         }
 
         shape = shape_dict[atype]
@@ -400,6 +409,8 @@ class TF:
             "isp": "inverse_signal_power",
             "res": "residual_covariance",
             "transfer_function": "transfer_function",
+            "impedance_error": "transfer_function_error",
+            "tipper_error": "transfer_function_error"
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -532,7 +543,7 @@ class TF:
 
         """
         if self.has_impedance():
-            z_err = self.dataset.error.sel(
+            z_err = self.dataset.transfer_function_error.sel(
                 input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"])
             z_err.name = "impedance_error"
 
@@ -549,7 +560,7 @@ class TF:
         :rtype: TYPE
 
         """
-        self._set_data_array(value, "impedance")
+        self._set_data_array(value, "impedance_error")
 
     def has_tipper(self):
         """
@@ -610,7 +621,7 @@ class TF:
 
         """
         if self.has_tipper():
-            t = self.dataset.transfer_function.sel(
+            t = self.dataset.transfer_function_error.sel(
                 input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"])
             t.name = "tipper_error"
 
@@ -626,7 +637,7 @@ class TF:
         :rtype: TYPE
 
         """
-        self._set_data_array(value, "tipper")
+        self._set_data_array(value, "tipper_error")
 
     def has_inverse_signal_power(self):
         """
@@ -739,7 +750,7 @@ class TF:
         
         z_err = np.sqrt(np.abs(z_err))
         
-        self.dataset.error.loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = z_err
+        self.dataset.transfer_function_error.loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = z_err
     
     def _compute_tipper_error_from_covariance(self):
         """
@@ -763,7 +774,7 @@ class TF:
 
         t_err = np.sqrt(np.abs(t_err))
         
-        self.dataset.error.loc[dict(input=["hx", "hy"], output=["hz"])] = t_err
+        self.dataset.transfer_function_error.loc[dict(input=["hx", "hy"], output=["hz"])] = t_err
         
     def _compute_error_from_covariance(self):
         """

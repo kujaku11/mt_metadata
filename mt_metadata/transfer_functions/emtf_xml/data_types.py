@@ -37,7 +37,7 @@ class DataTypes(Base):
     def data_types_list(self, value):
         if not isinstance(value, list):
             value = [value]
-
+        self._data_types_list = []
         for item in value:
             dt = DataType()
             dt.from_dict(item)

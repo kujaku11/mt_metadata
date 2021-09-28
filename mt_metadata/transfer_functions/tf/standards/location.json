@@ -97,5 +97,15 @@
         "options": [],
         "alias": [],
         "example": "10.0"
+    },
+	"z2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0"
     }
 }

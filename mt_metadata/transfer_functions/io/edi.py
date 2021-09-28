@@ -451,7 +451,7 @@ class EDI(object):
         # get an object that contains the indices for each component
         cc = index_locator(comp_list)
 
-        freq_arr = np.array(sorted(list(data_dict.keys()), reverse=True))
+        self.frequency = np.array(sorted(list(data_dict.keys()), reverse=True))
 
         self.z = np.zeros((len(list(data_dict.keys())), 2, 2), dtype=np.complex)
         self.t = np.zeros((len(list(data_dict.keys())), 1, 2), dtype=np.complex)
@@ -459,7 +459,7 @@ class EDI(object):
         self.z_err = np.zeros_like(self.z, dtype=np.float)
         self.t_err = np.zeros_like(self.t, dtype=np.float)
 
-        for kk, key in enumerate(freq_arr):
+        for kk, key in enumerate(self.frequency):
             spectra_arr = np.reshape(
                 np.array(data_dict[key]), (len(comp_list), len(comp_list))
             )
@@ -633,6 +633,7 @@ class EDI(object):
 
         self.z_err[np.where(self.z_err == 0.0)] = 1.0
         self.t_err[np.where(self.t_err == 0.0)] = 1.0
+
 
         # be sure to fill attributes
         # self.Z.freq = freq_arr
@@ -1039,6 +1040,7 @@ class EDI(object):
             electric.dipole_length = meas.dipole_length
             electric.channel_id = meas.id
             electric.measurement_azimuth = meas.azimuth
+            electric.translated_azimuth = meas.azimuth
             electric.component = meas.chtype
             electric.channel_number = meas.channel_number
             electric.negative.x = meas.x
@@ -1104,6 +1106,7 @@ class EDI(object):
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")
             magnetic.measurement_azimuth = meas.azm
+            magnetic.translated_azimuth = meas.azm
             magnetic.component = meas.chtype
             magnetic.channel_number = meas.channel_number
             magnetic.channel_id = meas.id

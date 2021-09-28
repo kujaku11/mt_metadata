@@ -82,10 +82,6 @@ class TransferFunction:
             return self.period.size
         return 0
 
-    def get_n_periods(self, root_dict):
-        self.n_periods = int(float((root_dict["data"]["count"].strip())))
-        self.initialize_arrays(self.n_periods)
-
     def read_block(self, block, period_index):
         """
         Read a period block which is root_dict["data"]["period"][ii]
@@ -126,8 +122,8 @@ class TransferFunction:
         :rtype: TYPE
 
         """
-
-        self.get_n_periods(root_dict)
+        n_periods = int(float((root_dict["data"]["count"].strip()))) 
+        self.initialize_arrays(n_periods)
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
             self.read_block(block, ii)
@@ -148,6 +144,8 @@ class TransferFunction:
         )
 
         for key in self.array_dict.keys():
+            if self.array_dict[key] is None:
+                continue
             arr = self.array_dict[key][index]
             attr_dict = {
                 "type": self.dtype_dict[arr.dtype.name],
