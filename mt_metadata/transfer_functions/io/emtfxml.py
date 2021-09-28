@@ -522,92 +522,92 @@ class EMTFXML(emtf_xml.EMTF):
     @property
     def station_metadata(self):
         s = Station()
-        if self._root_dict is not None:
-            s.acquired_by.author = self.site.acquired_by
-            s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [
-                d.name for d in self.site_layout.output_channels
-            ]
-            s.data_type = self.sub_type.lower().split("_")[0]
-            s.geographic_name = self.site.name
-            s.id = self.site.id
-            s.location.from_dict(self.site.location.to_dict())
-            s.orientation.angle_to_geographic_north = (
-                self.site.orientation.angle_to_geographic_north
-            )
-            s.provenance.software.name = self.provenance.creating_application
-            s.provenance.creation_time = self.provenance.create_time
-            s.provenance.creator.author = self.provenance.creator.name
-            s.provenance.creator.email = self.provenance.creator.email
-            s.provenance.creator.organization = self.provenance.creator.org
-            s.provenance.creator.url = self.provenance.creator.org_url
-            s.provenance.submitter.author = self.provenance.submitter.name
-            s.provenance.submitter.email = self.provenance.submitter.email
-            s.provenance.submitter.organization = self.provenance.submitter.org
-            s.provenance.submitter.url = self.provenance.submitter.org_url
-            s.time_period.start = self.site.start
-            s.time_period.end = self.site.end
-            s.transfer_function.sign_convention = self.processing_info.sign_convention
-            s.transfer_function.processed_by = self.processing_info.processed_by
-            s.transfer_function.software.author = (
-                self.processing_info.processing_software.author
-            )
-            s.transfer_function.software.name = (
-                self.processing_info.processing_software.name
-            )
-            s.transfer_function.software.last_updated = (
-                self.processing_info.processing_software.last_mod
-            )
-            s.transfer_function.remote_references = (
-                self.processing_info.processing_tag.split("_")
-            )
-            s.transfer_function.runs_processed = self.site.run_list
-            s.transfer_function.processing_parameters.append(
-                {"type": self.processing_info.remote_ref.type}
-            )
+        # if self._root_dict is not None:
+        s.acquired_by.author = self.site.acquired_by
+        s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [
+            d.name for d in self.site_layout.output_channels
+        ]
+        s.data_type = self.sub_type.lower().split("_")[0]
+        s.geographic_name = self.site.name
+        s.id = self.site.id
+        s.location.from_dict(self.site.location.to_dict())
+        s.orientation.angle_to_geographic_north = (
+            self.site.orientation.angle_to_geographic_north
+        )
+        s.provenance.software.name = self.provenance.creating_application
+        s.provenance.creation_time = self.provenance.create_time
+        s.provenance.creator.author = self.provenance.creator.name
+        s.provenance.creator.email = self.provenance.creator.email
+        s.provenance.creator.organization = self.provenance.creator.org
+        s.provenance.creator.url = self.provenance.creator.org_url
+        s.provenance.submitter.author = self.provenance.submitter.name
+        s.provenance.submitter.email = self.provenance.submitter.email
+        s.provenance.submitter.organization = self.provenance.submitter.org
+        s.provenance.submitter.url = self.provenance.submitter.org_url
+        s.time_period.start = self.site.start
+        s.time_period.end = self.site.end
+        s.transfer_function.sign_convention = self.processing_info.sign_convention
+        s.transfer_function.processed_by = self.processing_info.processed_by
+        s.transfer_function.software.author = (
+            self.processing_info.processing_software.author
+        )
+        s.transfer_function.software.name = (
+            self.processing_info.processing_software.name
+        )
+        s.transfer_function.software.last_updated = (
+            self.processing_info.processing_software.last_mod
+        )
+        s.transfer_function.remote_references = (
+            self.processing_info.processing_tag.split("_")
+        )
+        s.transfer_function.runs_processed = self.site.run_list
+        s.transfer_function.processing_parameters.append(
+            {"type": self.processing_info.remote_ref.type}
+        )
 
-            for run in self.field_notes:
-                r = Run()
-                r.data_logger.id = run.instrument.id
-                r.data_logger.type = run.instrument.name
-                r.data_logger.manufacturer = run.instrument.manufacturer
-                r.sample_rate = run.sampling_rate
-                r.time_period.start = run.start
-                r.time_period.end = run.end
+        for run in self.field_notes:
+            r = Run()
+            r.data_logger.id = run.instrument.id
+            r.data_logger.type = run.instrument.name
+            r.data_logger.manufacturer = run.instrument.manufacturer
+            r.sample_rate = run.sampling_rate
+            r.time_period.start = run.start
+            r.time_period.end = run.end
 
-                if len(run.magnetometer) == 1:
-                    for comp in ["hx", "hy", "hz"]:
-                        c = getattr(r, comp)
-                        c.component = comp
-                        c.sensor.id = run.magnetometer[0].id
-                        c.sensor.name = run.magnetometer[0].name
-                        c.sensor.manufacturer = run.magnetometer[0].manufacturer
-                else:
-                    for mag in run.magnetometer:
-                        comp = mag.name().lower()
-                        c = getattr(r, comp)
-                        c.component = comp
-                        c.sensor.id = mag.id
-                        c.sensor.name = mag.name
-                        c.sensor.manufacturer = mag.manufacturer
-                        c.translated_azimuth = mag.azimuth
-
-                for dp in run.dipole:
-                    comp = dp.name.lower()
+            if len(run.magnetometer) == 1:
+                for comp in ["hx", "hy", "hz"]:
                     c = getattr(r, comp)
                     c.component = comp
-                    c.translated_azimuth = dp.azimuth
-                    c.dipole_length = dp.length
-                    for pot in dp.electrode:
-                        if pot.location.lower() in ["n", "e"]:
-                            c.positive.id = pot.number
-                            c.positive.type = pot.value
-                            c.positive.manufacture = dp.manufacturer
-                        elif pot.location.lower() in ["s", "w"]:
-                            c.negative.id = pot.number
-                            c.negative.type = pot.value
-                            c.negative.manufacture = dp.manufacturer
+                    c.sensor.id = run.magnetometer[0].id
+                    c.sensor.name = run.magnetometer[0].name
+                    c.sensor.manufacturer = run.magnetometer[0].manufacturer
+            else:
+                for mag in run.magnetometer:
+                    comp = mag.name.lower()
+                    c = getattr(r, comp)
+                    c.component = comp
+                    c.sensor.id = mag.id
+                    c.sensor.name = mag.name
+                    c.sensor.manufacturer = mag.manufacturer
+                    c.translated_azimuth = mag.azimuth
 
-                s.run_list.append(r)
+            for dp in run.dipole:
+                comp = dp.name.lower()
+                c = getattr(r, comp)
+                c.component = comp
+                c.translated_azimuth = dp.azimuth
+                c.dipole_length = dp.length
+                for pot in dp.electrode:
+                    if pot.location.lower() in ["n", "e"]:
+                        c.positive.id = pot.number
+                        c.positive.type = pot.value
+                        c.positive.manufacture = dp.manufacturer
+                    elif pot.location.lower() in ["s", "w"]:
+                        c.negative.id = pot.number
+                        c.negative.type = pot.value
+                        c.negative.manufacture = dp.manufacturer
+
+            s.run_list.append(r)
 
         return s
     
@@ -650,15 +650,18 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_software.author = sm.transfer_function.software.author 
         self.processing_info.processing_software.name = sm.transfer_function.software.name
         self.processing_info.processing_software.last_mod = sm.transfer_function.software.last_updated
-        self.processing_info.processing_tag = sm.transfer_function.remote_references
+        self.processing_info.processing_tag = "_".join(sm.transfer_function.remote_references)
         self.site.run_list = sm.transfer_function.runs_processed
         # not sure there is a place to put processing parameters yet
         
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
         #     {"type": self.processing_info.remote_ref.type}
         # )
+        self.field_notes = []
         for r in sm.run_list:
             fn = emtf_xml.FieldNotes()
+            fn.dipole = []
+            fn.magnetometer = []
             fn.instrument.id = r.data_logger.id
             fn.instrument.name = r.data_logger.type
             fn.instrument.manufacturer = r.data_logger.manufacturer 
@@ -686,7 +689,7 @@ class EMTFXML(emtf_xml.EMTF):
                     dp.name = comp.capitalize()
                     dp.azimuth = c.translated_azimuth 
                     dp.length = c.dipole_length
-                    dp.manufacturer = c.positive.manufacture
+                    dp.manufacturer = c.positive.manufacturer
                     # fill electrodes
                     pot_p = emtf_xml.Electrode()
                     pot_p.number = c.positive.id
@@ -699,11 +702,10 @@ class EMTFXML(emtf_xml.EMTF):
                     pot_n.location = "n" if comp=="ex" else "e"
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)
-                     
 
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
-    
+
             self.field_notes.append(fn)
 
 def read_emtfxml(fn):
