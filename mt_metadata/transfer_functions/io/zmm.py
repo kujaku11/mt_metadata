@@ -93,6 +93,9 @@ class ZMMHeader(object):
         self._zfn = None
         self.fn = fn
         self.station_metadata = metadata.Station()
+        self._channel_order = ["hx", "hy", "hz", "ex", "ey"]
+        self._header_lines = ["TRANSFER FUNCTIONS IN MEASUREMENT COORDINATES",
+                            '********* WITH FULL ERROR COVARIANCE ********']
 
     @property
     def fn(self):
@@ -135,6 +138,14 @@ class ZMMHeader(object):
         self.station_metadata.location.elevation = value
         
     @property
+    def declination(self):
+        return self.station_metadata.location.declination.value
+
+    @declination.setter
+    def declination(self, value):
+        self.station_metadata.location.declination.value = value
+        
+    @property
     def station(self):
         return self.station_metadata.id
     
@@ -163,6 +174,9 @@ class ZMMHeader(object):
 
         self.station_metadata.comments = ""
         self.station = header_list[3].lower().strip()
+        self.station_metadata.run_list = []
+        self.station_metadata.run_list.append(metadata.Run(id=f"{self.station}a"))
+        
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
                 self.station_metadata.comments += line.replace("*", "").strip()
@@ -196,6 +210,55 @@ class ZMMHeader(object):
                 if channel_dict["chn_num"] == 0:
                     channel_dict["chn_num"] = self.num_channels
                 setattr(self, comp, Channel(channel_dict))
+                ch = getattr(self.station_metadata.run_list[0], comp)
+                ch.measurement_azimuth = channel_dict["azm"]
+                ch.measurement_tilt = channel_dict["tilt"]
+                ch.translated_azimuth = channel_dict["azm"]
+                ch.translated_tilt = channel_dict["tilt"]
+                ch.channel_number = channel_dict["chn_num"]
+                
+                
+                
+    def write_header(self):
+        """
+        write a zmm header
+        
+        TRANSFER FUNCTIONS IN MEASUREMENT COORDINATES
+        ********** WITH FULL ERROR COVARINCE*********
+                                                                                       
+        300                 
+        coordinate    34.727  -115.735 declination    13.10
+        number of channels   5   number of frequencies  38
+        orientations and tilts of each channel 
+           1     0.00     0.00 300  Hx    
+           2    90.00     0.00 300  Hy    
+           3     0.00     0.00 300  Hz    
+           4     0.00     0.00 300  Ex    
+           5    90.00     0.00 300  Ey 
+        
+        :return: properly formatted string
+        :rtype: string
+
+        """
+        lines = [self._header_lines[0], self._header_lines[1], ""]
+        lines += [f"{self.station}"]
+        lines += [f"coordinate {self.latitude:>9.3f} {self.longitude:>9.3f} declination {self.declination:>8.2f}"]
+        lines += [f"number of channels  {self.num_channels:>3d}  number of frequencies {self.num_freq:>3d}"]
+        lines += [" orientations and tilts of each channel"]
+        for ch in self._channel_order:
+            try:
+                channel = getattr(self.station_metadata.run_list[0], ch)
+            except AttributeError:
+                self.logger.warning(f"Could not find {ch}")
+                continue
+            lines += [(f"{channel.channel_number:>5d} "
+                    f"{channel.translated_azimuth:>8.2f} "
+                    f"{channel.translated_tilt:>8.2f} "
+                    f"{self.station:>3} "
+                    f"{channel.component.capitalize():>3}"
+                    )]
+        
+        return lines
 
     @property
     def channels_recorded(self):
@@ -246,6 +309,7 @@ class ZMM(ZMMHeader):
         self.sigma_s = None
         self.periods = None
         self.dataset = None
+        self.decimation_dict = {}
         
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -270,7 +334,7 @@ class ZMM(ZMMHeader):
             setattr(self, key, kwargs[key])
 
         if self.fn is not None:
-            self.read_zmm_file()
+            self.read()
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
@@ -409,7 +473,7 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read_zmm_file(self, fn=None):
+    def read(self, fn=None):
         """
         Read in Egbert zrr/zmm file
 
@@ -451,8 +515,7 @@ class ZMM(ZMMHeader):
             self._fill_res_array_from_block(data_block["res"], ii)
             
         self._fill_dataset()
-            
-        self.station_metadata.run_list.append(metadata.Run(id=f"{self.station}a"))
+        
         self.station_metadata.id = self.station
         self.station_metadata.data_type = "MT"
         self.station_metadata.channels_recorded = self.channels_recorded
@@ -462,6 +525,8 @@ class ZMM(ZMMHeader):
         self.station_metadata.transfer_function.runs_processed = self.station_metadata.run_names
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
+        self.station_metadata.run_list[0].sample_rate = np.median(
+            np.array([d["df"] for k, d in self.decimation_dict.items()]))
 
         # add information to runs
         for rr in self.station_metadata.run_list:
@@ -473,8 +538,66 @@ class ZMM(ZMMHeader):
             if self.hz is not None:
                 rr.hz = self.hz_metadata
 
-
+    def write(self, fn, decimation_levels=None):
+        """
+        write a zmm file
         
+        decimation_levels should be a dictionary with keys
+        
+            * decimation_level
+            
+        values will be a dictionary with keys
+        
+            * frequency_band, value = (min, max)
+            * n_points, value = int
+            * sampling_freq, value = float
+        """
+        if fn is not None:
+            self.fn = fn
+
+        lines = self.write_header()
+        
+        for p in self.dataset.period.data:
+            a = self.dataset.sel(period=p)
+            try:
+                dec_dict = self.decimation_dict[f"{p:10g}"]
+            except KeyError:
+                dec_dict = {'level': 0, 'bands': (0, 0), 'npts': 0, 'df': self.station_metadata.run_list[0].sample_rate}
+            lines += [(f"period : {p:^18.5f} "
+                    f"decimation level {dec_dict['level']:^8d}"
+                    f"freq. band from {dec_dict['bands'][0]:>5d} to {dec_dict['bands'][1]:>5d}")]
+            lines += [f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['df']} Hz"]
+            # write tf
+            lines += [" Tranfer Functions"]
+            for c_out in self.output_channels:
+                line = ''
+                for c_in in self.input_channels:
+                    tf_element = a.transfer_function.loc[dict(output=c_out, input=c_in)].data
+                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                lines += [line]
+                
+            # write signal power
+            lines += [" Inverse Coherent Signal Power Matrix"]
+            for ii, c_out in enumerate(self.input_channels):
+                line = ''
+                for c_in in self.input_channels[: ii + 1]:
+                    tf_element = a.inverse_signal_power.loc[dict(output=c_out, input=c_in)].data
+                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                lines += [line]
+                
+            # write residual covariance
+            lines += [" Residual Covariance"]
+            for ii, c_out in enumerate(self.output_channels):
+                line = ''
+                for c_in in self.output_channels[: ii + 1]:
+                    tf_element = a.residual_covariance.loc[dict(output=c_out, input=c_in)].data
+                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                lines += [line]
+        
+        with open(self.fn, "w") as fid:
+            fid.write("\n".join(lines))
+            
+        return self.fn
 
     def _get_period_blocks(self):
         """
@@ -508,7 +631,16 @@ class ZMM(ZMMHeader):
         """
 
         period = float(period_block[0].strip().split(":")[1].split()[0].strip())
-
+        level = int(period_block[0].strip().split("level")[1].split()[0].strip())
+        bands = (int(period_block[0].strip().split("from")[1].split()[0].strip()),
+                 int(period_block[0].strip().split("to")[1].split()[0].strip()))
+        
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = int(period_block[1].strip().split("freq.")[1].split()[0].strip())
+        self.decimation_dict[f"{period:.10g}"] = {"level": level,
+                              "bands": bands,
+                              "npts": npts,
+                              "df": sr}
         data_dict = {"period": period, "tf": [], "sig": [], "res": []}
         key = "tf"
         for line in period_block[2:]:
@@ -808,7 +940,7 @@ def read_zmm(zmm_fn):
     tf_obj.logger.debug(f"Reading {zmm_fn} using ZMM class")
 
     zmm_obj = ZMM(zmm_fn)
-    zmm_obj.read_zmm_file()
+    zmm_obj.read()
 
     k_dict = OrderedDict({
         "survey_metadata": "survey_metadata",
