@@ -245,12 +245,18 @@ class ZMMHeader(object):
         lines += [f"coordinate {self.latitude:>9.3f} {self.longitude:>9.3f} declination {self.declination:>8.2f}"]
         lines += [f"number of channels  {self.num_channels:>3d}  number of frequencies {self.num_freq:>3d}"]
         lines += [" orientations and tilts of each channel"]
-        for ch in self._channel_order:
+        for ii, ch in enumerate(self._channel_order):
             try:
                 channel = getattr(self.station_metadata.run_list[0], ch)
+                if channel.channel_number is None:
+                    channel.channel_number = int(ii)
+                    
+                if channel.translated_tilt is None:
+                    channel.translated_tilt = 0.0
             except AttributeError:
                 self.logger.warning(f"Could not find {ch}")
                 continue
+            print(channel.channel_number, channel.translated_azimuth, channel.translated_tilt, self.station, channel.component.capitalize())
             lines += [(f"{channel.channel_number:>5d} "
                     f"{channel.translated_azimuth:>8.2f} "
                     f"{channel.translated_tilt:>8.2f} "
@@ -975,9 +981,28 @@ def write_zmm(tf_object, fn=None):
     :rtype: TYPE
 
     """
-
-    # need to reorder sigma e to be ex, ey, hz
-    # sigma_e[:, :, [2]] = w.sigma_e[:, :, [0]]
-    # sigma_e[:, :, [1]] = w.sigma_e[:, :, [2]]
-    # sigma_e[:, :, [0]] = w.sigma_e[:, :, [1]]
-    raise IOError("write_zmm is not implemented yet.")
+    from mt_metadata.transfer_functions.core import TF
+    
+    if not isinstance(tf_object, TF):
+        raise ValueError("Input must be a TF object")
+    
+    zmm_obj = ZMM()
+    zmm_obj.dataset = tf_object.dataset
+    zmm_obj.station_metadata = tf_object.station_metadata
+    zmm_obj.survey_metadata.update(tf_object.survey_metadata)
+    zmm_obj.num_freq = tf_object.period.size
+    
+    if tf_object.has_tipper():
+        if tf_object.has_impedance():
+            zmm_obj.num_channels = 5
+        else:
+            zmm_obj.num_channels = 3
+    else:
+        if tf_object.has_impedance():
+            zmm_obj.num_channels = 4
+            
+    
+    
+    # zmm_obj.write(fn)
+    
+    return zmm_obj

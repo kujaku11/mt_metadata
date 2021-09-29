@@ -700,7 +700,7 @@ class EMTFXML(emtf_xml.EMTF):
             r.time_period.start = run.start
             r.time_period.end = run.end
 
-            # need to set site layout with the x, y, z postions.
+            # need to set azimuths from site layout with the x, y, z postions.
             if len(run.magnetometer) == 1:
                 for comp in ["hx", "hy", "hz"]:
                     c = getattr(r, comp)
@@ -717,7 +717,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
-                    c.translated_azimuth = mag.azimuth
+            
 
             for dp in run.dipole:
                 comp = dp.name.lower()
@@ -875,17 +875,18 @@ def read_emtfxml(fn):
     emtf = TF()
     emtf.survey_metadata = obj.survey_metadata
     emtf.station_metadata = obj.station_metadata
-    emtf.data["z"] = obj.tf.z
-    emtf.data["z_var"] = obj.tf.z_var
-    emtf.data["z_invsigcov"] = obj.tf.z_invsigcov
-    emtf.data["z_residcov"] = obj.tf.z_residcov
+    
+    emtf.period = obj.data.period
+    emtf.impedance = obj.data.z
+    emtf.impedance_error = np.sqrt(obj.data.z_var)
+    emtf._transfer_function.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])] = obj.data.z_invsigcov
+    emtf._transfer_function.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])]  = obj.data.z_residcov
 
-    emtf.data["t"] = obj.tf.t
-    emtf.data["t_var"] = obj.tf.t_var
-    emtf.data["t_invsigcov"] = obj.tf.t_invsigcov
-    emtf.data["t_residcov"] = obj.tf.t_residcov
-    emtf.data["period"] = obj.tf.periods
-
+    emtf.tipper = obj.data.t
+    emtf.tipper_error = np.sqrt(obj.data.t_var)
+    emtf._transfer_function.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])] = obj.data.t_invsigcov
+    emtf._transfer_function.residual_covariance.loc[dict(input=["hz"], output=["hz"])]  = obj.data.t_residcov
+    
     return emtf
 
 
@@ -920,11 +921,9 @@ def write_emtfxml(tf_object, fn=None):
         
         emtf.data.z = tf_object.impedance.data
         emtf.data.z_var = tf_object.impedance_error.data**2
-        emtf.statistical_estimates.estimates_list.append(estimates_dict["variance"])
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
         emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
         emtf.data.z_residcov = tf_object.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
-        emtf.statistical_estimates.estimates_list.append(estimates_dict["variance"])
     if tf_object.has_tipper():
         emtf.data.t = tf_object.tipper.data
         emtf.data.t_var = tf_object.tipper_error.data
