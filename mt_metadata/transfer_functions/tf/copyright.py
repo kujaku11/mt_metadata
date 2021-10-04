@@ -43,6 +43,6 @@ class Copyright(Base):
                 "included for informational purposes only.",
             ]
         )
-        self.release_license = None
+        self.release_license = "CC-0"
         self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)

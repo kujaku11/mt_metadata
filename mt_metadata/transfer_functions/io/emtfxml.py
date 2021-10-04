@@ -144,6 +144,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance = emtf_xml.Provenance()
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
+        
         # not sure why we need to do this, but if you don't FieldNotes end
         # as a string.
         self.field_notes = []
@@ -644,6 +645,9 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
+            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.title = self.copyright.citation.title
+            survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
             survey_obj.country = self.site.country
             survey_obj.datum = self.site.location.datum
@@ -652,6 +656,9 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.project = self.site.project
             survey_obj.time_period.start = self.site.start
             survey_obj.time_period.end = self.site.end
+            survey_obj.summary = self.description
+            survey_obj.comments = self.copyright.acknowledgement
+            
 
         return survey_obj
 
@@ -666,7 +673,17 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        pass
+        self.description = sm.summary
+        self.site.project = sm.project
+        self.site.survey = sm.geographic_name
+        self.site.country = sm.country
+        self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
+        
+        self.copyright.citation.authors = sm.citation_dataset.author
+        self.copyright.citation.title = sm.citation_dataset.title
+        self.copyright.citation.year = sm.citation_dataset.year
+        self.copyright.acknowledgement = sm.comments
+        
 
     @property
     def station_metadata(self):
@@ -679,6 +696,7 @@ class EMTFXML(emtf_xml.EMTF):
         s.data_type = self.sub_type.lower().split("_")[0]
         s.geographic_name = self.site.name
         s.id = self.site.id
+        s.fdsn.id = self.product_id
         s.location.from_dict(self.site.location.to_dict())
         s.orientation.angle_to_geographic_north = (
             self.site.orientation.angle_to_geographic_north
@@ -693,10 +711,14 @@ class EMTFXML(emtf_xml.EMTF):
         s.provenance.submitter.email = self.provenance.submitter.email
         s.provenance.submitter.organization = self.provenance.submitter.org
         s.provenance.submitter.url = self.provenance.submitter.org_url
+        
+        s.provenance.archive.url = self.external_url.url
+        s.provenance.archive.comments = self.external_url.description
+        
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
         s.transfer_function.sign_convention = self.processing_info.sign_convention
-        s.transfer_function.processed_by = self.processing_info.processed_by
+        s.transfer_function.processed_by.author = self.processing_info.processed_by
         s.transfer_function.software.author = (
             self.processing_info.processing_software.author
         )
@@ -713,7 +735,11 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.processing_parameters.append(
             {"type": self.processing_info.remote_ref.type}
         )
-
+        
+        s.transfer_function.data_quality.good_from_period = self.site.data_quality_notes.good_from_period
+        s.transfer_function.data_quality.good_to_period = self.site.data_quality_notes.good_to_period
+        s.transfer_function.data_quality.rating = self.site.data_quality_notes.rating
+        
         for run in self.field_notes:
             r = Run()
             r.data_logger.id = run.instrument.id
@@ -778,6 +804,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.sub_type = f"{sm.data_type.upper()}_TF"
         self.site.name = sm.geographic_name
         self.site.id = sm.id
+        self.product_id = sm.fdsn.id
         self.site.location.from_dict(sm.location.to_dict())
         self.site.orientation.angle_to_geographic_north = (
             sm.orientation.angle_to_geographic_north
@@ -793,6 +820,10 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance.submitter.email = sm.provenance.submitter.email
         self.provenance.submitter.org = sm.provenance.submitter.organization
         self.provenance.submitter.org_url = sm.provenance.submitter.url
+        
+        self.external_url.url = sm.provenance.archive.url
+        self.external_url.description = sm.provenance.archive.comments
+        
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
 
@@ -811,6 +842,11 @@ class EMTFXML(emtf_xml.EMTF):
             sm.transfer_function.remote_references
         )
         self.site.run_list = sm.transfer_function.runs_processed
+        
+        self.site.data_quality_notes.good_from_period = sm.transfer_function.data_quality.good_from_period
+        self.site.data_quality_notes.good_to_period = sm.transfer_function.data_quality.good_to_period
+        self.site.data_quality_notes.rating = sm.transfer_function.data_quality.rating
+        
         # not sure there is a place to put processing parameters yet
 
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
@@ -954,11 +990,12 @@ def write_emtfxml(tf_object, fn=None):
     emtf.description = "Magnetotelluric transfer functions"
     emtf.survey_metadata = tf_object.survey_metadata
     emtf.station_metadata = tf_object.station_metadata
+    tags = []
 
     emtf.data.period = tf_object.period
 
     if tf_object.has_impedance():
-
+        tags += ["impedance"]
         emtf.data.z = tf_object.impedance.data
         emtf.data.z_var = tf_object.impedance_error.data ** 2
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
@@ -969,6 +1006,7 @@ def write_emtfxml(tf_object, fn=None):
             dict(input=["ex", "ey"], output=["ex", "ey"])
         ].data
     if tf_object.has_tipper():
+        tags += ["tipper"]
         emtf.data.t = tf_object.tipper.data
         emtf.data.t_var = tf_object.tipper_error.data
 
@@ -980,6 +1018,7 @@ def write_emtfxml(tf_object, fn=None):
             dict(input=["hz"], output=["hz"])
         ].data
 
+    emtf.tags = ", ".join(tags)
     emtf.write(fn=fn)
 
     return emtf
