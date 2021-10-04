@@ -2756,7 +2756,7 @@ def write_edi(tf_object, fn=None):
     edi_obj.z = tf_object.impedance.data
     edi_obj.z_err = tf_object.impedance_error.data
     edi_obj.t = tf_object.tipper.data
-    edi_obj.t_err = tf_object.tipper_err.data
+    edi_obj.t_err = tf_object.tipper_error.data
     edi_obj.frequency = 1.0 / tf_object.period
 
     ### fill header information from survey
@@ -2888,7 +2888,7 @@ def write_edi(tf_object, fn=None):
     edi_obj.Measurement.maxchan = len(tf_object.station_metadata.channels_recorded)
     for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
         try:
-            edi_obj.Measurement.from_metadata(getattr(tf_object, f"{comp}_metadata"))
+            edi_obj.Measurement.from_metadata(getattr(tf_object.station_metadata.run_list[0], f"{comp}"))
         except AttributeError as error:
             edi_obj.logger.info(error)
             edi_obj.logger.debug(f"Did not find information on {comp}")

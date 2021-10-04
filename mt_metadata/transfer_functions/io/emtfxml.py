@@ -740,34 +740,35 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.data_quality.good_to_period = self.site.data_quality_notes.good_to_period
         s.transfer_function.data_quality.rating = self.site.data_quality_notes.rating
         
-        for run in self.field_notes:
+        for fn in self.field_notes:
             r = Run()
-            r.data_logger.id = run.instrument.id
-            r.data_logger.type = run.instrument.name
-            r.data_logger.manufacturer = run.instrument.manufacturer
-            r.sample_rate = run.sampling_rate
-            r.time_period.start = run.start
-            r.time_period.end = run.end
+            r.id = fn.run
+            r.data_logger.id = fn.instrument.id
+            r.data_logger.type = fn.instrument.name
+            r.data_logger.manufacturer = fn.instrument.manufacturer
+            r.sample_rate = fn.sampling_rate
+            r.time_period.start = fn.start
+            r.time_period.end = fn.end
 
             # need to set azimuths from site layout with the x, y, z postions.
-            if len(run.magnetometer) == 1:
+            if len(fn.magnetometer) == 1:
                 for comp in ["hx", "hy", "hz"]:
                     c = getattr(r, comp)
                     c.component = comp
-                    c.sensor.id = run.magnetometer[0].id
-                    c.sensor.name = run.magnetometer[0].name
-                    c.sensor.manufacturer = run.magnetometer[0].manufacturer
+                    c.sensor.id = fn.magnetometer[0].id
+                    c.sensor.name = fn.magnetometer[0].name
+                    c.sensor.manufacturer = fn.magnetometer[0].manufacturer
 
             else:
-                for mag in run.magnetometer:
+                for mag in fn.magnetometer:
                     comp = mag.name.lower()
                     c = getattr(r, comp)
                     c.component = comp
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
-                    c.sensor.manufacturer = mag.manufacturer
+                    c.sensor.manufacturer = mag.manufacturer 
 
-            for dp in run.dipole:
+            for dp in fn.dipole:
                 comp = dp.name.lower()
                 c = getattr(r, comp)
                 c.component = comp
@@ -782,6 +783,24 @@ class EMTFXML(emtf_xml.EMTF):
                         c.negative.id = pot.number
                         c.negative.type = pot.value
                         c.negative.manufacture = dp.manufacturer
+            
+            for ch in self.site_layout.input_channels + self.site_layout.output_channels:
+                c = getattr(r, ch.name.lower())
+                if c.component in ["hx", "hy", "hz"]:
+                
+                    c.location.x = ch.x
+                    c.location.y = ch.y
+                    c.location.z = ch.z
+                elif c.component in ["ex", "ey"]:
+                    c.location.x = ch.x
+                    c.location.y = ch.y
+                    c.location.z = ch.z
+                    c.location.x2 = ch.x2
+                    c.location.y2 = ch.y2
+                    c.location.z2 = ch.z2
+                c.measurement_azimuth = ch.orientation
+                c.translated_azimuth = ch.orientation
+            
 
             s.run_list.append(r)
 
