@@ -792,12 +792,12 @@ class EMTFXML(emtf_xml.EMTF):
                     c.location.y = ch.y
                     c.location.z = ch.z
                 elif c.component in ["ex", "ey"]:
-                    c.location.x = ch.x
-                    c.location.y = ch.y
-                    c.location.z = ch.z
-                    c.location.x2 = ch.x2
-                    c.location.y2 = ch.y2
-                    c.location.z2 = ch.z2
+                    c.negative.x = ch.x
+                    c.negative.y = ch.y
+                    c.negative.z = ch.z
+                    c.positive.x2 = ch.x2
+                    c.positive.y2 = ch.y2
+                    c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
             
