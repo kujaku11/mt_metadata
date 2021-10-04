@@ -243,6 +243,21 @@ def flatten_dict(meta_dict, parent_key=None, sep="."):
             items.append((new_key, value))
     return dict(items)
 
+def flatten_list(x_list):
+    """
+    Flatten a nested list
+    flatten = lambda l: [item for sublist in l for item in sublist]
+
+    Returns
+    -------
+    None.
+
+    """
+
+    flat_list = [item for sublist in x_list for item in sublist]
+
+    return flat_list
+
 
 def recursive_split_dict(key, value, remainder, sep="."):
     """
@@ -361,9 +376,9 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
         if units:
             element.set("units", str(units))
 
-        v_type = get_type(base, attr_dict)
-        if v_type:
-            element.set("type", v_type)
+        # v_type = get_type(base, attr_dict)
+        # if v_type:
+        #     element.set("type", v_type)
 
     return element, name
 

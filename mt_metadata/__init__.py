@@ -115,5 +115,3 @@ TF_EDI_PHOENIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0537A_Phoenix.ed
 TF_EDI_METRONIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
 TF_EDI_CGG = TEST_ROOT.joinpath("data/transfer_functions/EGC022_CGG.edi")
 TF_EDI_QUANTEC = TEST_ROOT.joinpath("data/transfer_functions/IEA00184_Qut.edi")
-
-

@@ -38,5 +38,15 @@
         "options": [],
         "alias": [],
         "example": "ex"
+    },
+	"type": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "type of dipole",
+        "options": [],
+        "alias": [],
+        "example": "wire"
     }
 }

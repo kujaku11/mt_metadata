@@ -122,7 +122,7 @@ class TransferFunction:
         :rtype: TYPE
 
         """
-        n_periods = int(float((root_dict["data"]["count"].strip()))) 
+        n_periods = int(float((root_dict["data"]["count"].strip())))
         self.initialize_arrays(n_periods)
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
@@ -167,15 +167,14 @@ class TransferFunction:
                     ch_in = idx_dict["in"][jj]
                     a_dict = {}
                     try:
-                        a_dict["name"] = self.name_dict[ch_out + ch_in]
+                        a_dict["name"] = self.name_dict[ch_out + ch_in].capitalize()
                     except KeyError:
                         pass
-                    a_dict["output"] = ch_out
-                    a_dict["input"] = ch_in
-
+                    a_dict["output"] = ch_out.capitalize()
+                    a_dict["input"] = ch_in.capitalize()
                     ch_element = et.SubElement(comp_element, "value", a_dict)
                     ch_value = f"{arr[ii, jj].real:.6e}"
-                    if not arr[ii, jj].imag == 0:
+                    if attr_dict["type"] in ["complex"]:
                         ch_value = f"{ch_value} {arr[ii, jj].imag:.6e}"
                     ch_element.text = ch_value
 

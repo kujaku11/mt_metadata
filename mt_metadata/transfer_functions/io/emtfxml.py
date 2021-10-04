@@ -37,78 +37,96 @@ meta_classes["instrument"] = Instrument
 # =============================================================================
 
 estimates_dict = {
-    "variance": emtf_xml.Estimate(name="VAR",
-                             type="complex",
-                             description="Variance",
-                             external_url="http://www.iris.edu/dms/products/emtf/variance.html",
-                             intention="error estimate",
-                             tag="variance"),
-    "covariance": emtf_xml.Estimate(name="COV", 
-                             type="complex",
-                            description="Covariance",
-                            external_url="http://www.iris.edu/dms/products/emtf/covariance.html",
-                            intention="error estimate",
-                            tag="covariance"),
-    "residual_covariance": emtf_xml.Estimate(name="RESIDCOV", 
-                             type="complex",
-                            description="residual_covariance (N)",
-                            external_url="http://www.iris.edu/dms/products/emtf/residual_covariance.html",
-                            intention="error estimate",
-                            tag="residual_covariance"),
-    "inverse_signal_power": emtf_xml.Estimate(name="INVSIGCOV", 
-                             type="complex",
-                            description="Inverse Coherent Signal Power Matrix (S)",
-                            external_url="http://www.iris.edu/dms/products/emtf/inverse_signal_covariance.html",
-                            intention="signal power estimate",
-                            tag="inverse_signal_covariance"),
-    "coherence": emtf_xml.Estimate(name="COH", 
-                             type="complex",
-                            description="Coherence",
-                            external_url="http://www.iris.edu/dms/products/emtf/coherence.html",
-                            intention="signal coherence",
-                            tag="coherence"),
-    "predicted_coherence": emtf_xml.Estimate(name="PREDCOH", 
-                             type="complex",
-                            description="Multiple Coherence",
-                            external_url="http://www.iris.edu/dms/products/emtf/multiple_coherence.html",
-                            intention="signal coherence",
-                            tag="multiple_coherence"),
-    "signal_amplidude": emtf_xml.Estimate(name="SIGAMP", 
-                             type="complex",
-                            description="Signal Amplitude",
-                            external_url="http://www.iris.edu/dms/products/emtf/signal_amplitude.html",
-                            intention="signal power estimate",
-                            tag="signal_power"),
-    "signal_noise": emtf_xml.Estimate(name="SIGNOISE", 
-                             type="complex",
-                            description="Signal Noise",
-                            external_url="http://www.iris.edu/dms/products/emtf/signal_noise.html",
-                            intention="error estimate",
-                            tag="signal_noise"),
-    }
+    "variance": emtf_xml.Estimate(
+        name="VAR",
+        type="complex",
+        description="Variance",
+        external_url="http://www.iris.edu/dms/products/emtf/variance.html",
+        intention="error estimate",
+        tag="variance",
+    ),
+    "covariance": emtf_xml.Estimate(
+        name="COV",
+        type="complex",
+        description="Covariance",
+        external_url="http://www.iris.edu/dms/products/emtf/covariance.html",
+        intention="error estimate",
+        tag="covariance",
+    ),
+    "residual_covariance": emtf_xml.Estimate(
+        name="RESIDCOV",
+        type="complex",
+        description="residual_covariance (N)",
+        external_url="http://www.iris.edu/dms/products/emtf/residual_covariance.html",
+        intention="error estimate",
+        tag="residual_covariance",
+    ),
+    "inverse_signal_power": emtf_xml.Estimate(
+        name="INVSIGCOV",
+        type="complex",
+        description="Inverse Coherent Signal Power Matrix (S)",
+        external_url="http://www.iris.edu/dms/products/emtf/inverse_signal_covariance.html",
+        intention="signal power estimate",
+        tag="inverse_signal_covariance",
+    ),
+    "coherence": emtf_xml.Estimate(
+        name="COH",
+        type="complex",
+        description="Coherence",
+        external_url="http://www.iris.edu/dms/products/emtf/coherence.html",
+        intention="signal coherence",
+        tag="coherence",
+    ),
+    "predicted_coherence": emtf_xml.Estimate(
+        name="PREDCOH",
+        type="complex",
+        description="Multiple Coherence",
+        external_url="http://www.iris.edu/dms/products/emtf/multiple_coherence.html",
+        intention="signal coherence",
+        tag="multiple_coherence",
+    ),
+    "signal_amplidude": emtf_xml.Estimate(
+        name="SIGAMP",
+        type="complex",
+        description="Signal Amplitude",
+        external_url="http://www.iris.edu/dms/products/emtf/signal_amplitude.html",
+        intention="signal power estimate",
+        tag="signal_power",
+    ),
+    "signal_noise": emtf_xml.Estimate(
+        name="SIGNOISE",
+        type="complex",
+        description="Signal Noise",
+        external_url="http://www.iris.edu/dms/products/emtf/signal_noise.html",
+        intention="error estimate",
+        tag="signal_noise",
+    ),
+}
 
 data_types_dict = {
     "impedance": emtf_xml.DataType(
-                name="Z",
-                type="complex",
-                output="E",
-                input="H",
-                units="[mV/km]/[nT]",
-                description="MT impedance",
-                external_url="http://www.iris.edu/dms/products/emtf/impedance.html",
-                intention="primary data type",
-                tag="impedance"),
+        name="Z",
+        type="complex",
+        output="E",
+        input="H",
+        units="[mV/km]/[nT]",
+        description="MT impedance",
+        external_url="http://www.iris.edu/dms/products/emtf/impedance.html",
+        intention="primary data type",
+        tag="impedance",
+    ),
     "tipper": emtf_xml.DataType(
-                name="T",
-                type="complex",
-                output="H",
-                input="H",
-                units="[]",
-                description="Vertical Field Transfer Functions (Tipper)",
-                external_url="http://www.iris.edu/dms/products/emtf/tipper.html",
-                intention="primary data type",
-                tag="tipper"),
-    }
+        name="T",
+        type="complex",
+        output="H",
+        input="H",
+        units="[]",
+        description="Vertical Field Transfer Functions (Tipper)",
+        external_url="http://www.iris.edu/dms/products/emtf/tipper.html",
+        intention="primary data type",
+        tag="tipper",
+    ),
+}
 
 
 class EMTFXML(emtf_xml.EMTF):
@@ -213,6 +231,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
+        
 
     def write(self, fn):
         """
@@ -225,10 +244,10 @@ class EMTFXML(emtf_xml.EMTF):
         """
 
         emtf_element = et.Element("EM_TF")
-        
+
         self._get_statistical_estimates()
         self._get_data_types()
-
+         
         if (
             self.site.location.x == 0
             and self.site.location.x2 == 0
@@ -248,13 +267,12 @@ class EMTFXML(emtf_xml.EMTF):
                 self._writer_dict[key](emtf_element, key, value)
             else:
                 self._write_element(
-                    emtf_element,
-                    value,
+                    emtf_element, value,
                 )
 
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))
-            
+
     def _get_statistical_estimates(self):
         """
         Get the appropriate statistical estimates in the file.
@@ -262,32 +280,38 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.statistical_estimates.estimates_list = []
         if self.data.z_var is not None:
-            if not np.all(self.data.z_var == 0.):
+            if not np.all(self.data.z_var == 0.0):
                 self.statistical_estimates.estimates_list.append(
-                    estimates_dict["variance"])
+                    estimates_dict["variance"]
+                )
         elif self.data.t_var is not None:
-            if not np.all(self.data.t_var == 0.):
+            if not np.all(self.data.t_var == 0.0):
                 self.statistical_estimates.estimates_list.append(
-                    estimates_dict["variance"])
-        
+                    estimates_dict["variance"]
+                )
+
         if self.data.z_invsigcov is not None:
-            if not np.all(self.data.z_invsigcov == 0.):
+            if not np.all(self.data.z_invsigcov == 0.0):
                 self.statistical_estimates.estimates_list.append(
-                    estimates_dict["inverse_signal_power"])
+                    estimates_dict["inverse_signal_power"]
+                )
         elif self.data.t_invsigcov is not None:
-            if not np.all(self.data.t_invsigcov == 0.):
+            if not np.all(self.data.t_invsigcov == 0.0):
                 self.statistical_estimates.estimates_list.append(
-                    estimates_dict["inverse_signal_power"])
-                
+                    estimates_dict["inverse_signal_power"]
+                )
+
         if self.data.z_residcov is not None:
-            if not np.all(self.data.z_residcov == 0.):
-                 self.statistical_estimates.estimates_list.append(
-                     estimates_dict["residual_covariance"])
+            if not np.all(self.data.z_residcov == 0.0):
+                self.statistical_estimates.estimates_list.append(
+                    estimates_dict["residual_covariance"]
+                )
         elif self.data.t_residcov is not None:
-            if not np.all(self.data.t_residcov == 0.):
-                 self.statistical_estimates.estimates_list.append(
-                     estimates_dict["residual_covariance"])  
-                 
+            if not np.all(self.data.t_residcov == 0.0):
+                self.statistical_estimates.estimates_list.append(
+                    estimates_dict["residual_covariance"]
+                )
+
     def _get_data_types(self):
         """
         get the appropriate data types for the file
@@ -298,12 +322,11 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.data_types.data_types_list = []
         if self.data.z is not None:
-            if not np.all(self.data.z == 0.):
+            if not np.all(self.data.z == 0.0):
                 self.data_types.data_types_list.append(data_types_dict["impedance"])
         if self.data.t is not None:
-            if not np.all(self.data.t == 0.):
+            if not np.all(self.data.t == 0.0):
                 self.data_types.data_types_list.append(data_types_dict["tipper"])
-        
 
     def _read_single(self, root_dict, key):
         try:
@@ -445,7 +468,7 @@ class EMTFXML(emtf_xml.EMTF):
         """ """
 
         for fn in self.field_notes:
-            fn_element = self._convert_tag_to_capwords(fn.to_xml())
+            fn_element = self._convert_tag_to_capwords(fn.to_xml(required=False))
             for dp in fn.dipole:
                 dp_element = self._convert_tag_to_capwords(dp.to_xml())
                 for electrode in dp.electrode:
@@ -631,7 +654,7 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.time_period.end = self.site.end
 
         return survey_obj
-    
+
     @survey_metadata.setter
     def survey_metadata(self, sm):
         """
@@ -683,8 +706,8 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.software.last_updated = (
             self.processing_info.processing_software.last_mod
         )
-        s.transfer_function.remote_references = (
-            self.processing_info.processing_tag.split("_")
+        s.transfer_function.remote_references = self.processing_info.processing_tag.split(
+            "_"
         )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
@@ -708,7 +731,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = run.magnetometer[0].id
                     c.sensor.name = run.magnetometer[0].name
                     c.sensor.manufacturer = run.magnetometer[0].manufacturer
-                    
+
             else:
                 for mag in run.magnetometer:
                     comp = mag.name.lower()
@@ -717,7 +740,6 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
-            
 
             for dp in run.dipole:
                 comp = dp.name.lower()
@@ -738,7 +760,7 @@ class EMTFXML(emtf_xml.EMTF):
             s.run_list.append(r)
 
         return s
-    
+
     @station_metadata.setter
     def station_metadata(self, station_metadata):
         """
@@ -751,36 +773,46 @@ class EMTFXML(emtf_xml.EMTF):
 
         """
         sm = station_metadata
-    
+
         self.site.acquired_by = sm.acquired_by.author
         self.sub_type = f"{sm.data_type.upper()}_TF"
         self.site.name = sm.geographic_name
         self.site.id = sm.id
         self.site.location.from_dict(sm.location.to_dict())
-        self.site.orientation.angle_to_geographic_north = sm.orientation.angle_to_geographic_north
-        
-        self.provenance.creating_application = sm.provenance.software.name 
-        self.provenance.create_time = sm.provenance.creation_time 
-        self.provenance.creator.name = sm.provenance.creator.author 
-        self.provenance.creator.email = sm.provenance.creator.email 
-        self.provenance.creator.org = sm.provenance.creator.organization 
-        self.provenance.creator.org_url = sm.provenance.creator.url 
-        self.provenance.submitter.name = sm.provenance.submitter.author 
-        self.provenance.submitter.email = sm.provenance.submitter.email 
-        self.provenance.submitter.org = sm.provenance.submitter.organization 
-        self.provenance.submitter.org_url = sm.provenance.submitter.url 
-        self.site.start = sm.time_period.start 
+        self.site.orientation.angle_to_geographic_north = (
+            sm.orientation.angle_to_geographic_north
+        )
+
+        self.provenance.creating_application = sm.provenance.software.name
+        self.provenance.create_time = sm.provenance.creation_time
+        self.provenance.creator.name = sm.provenance.creator.author
+        self.provenance.creator.email = sm.provenance.creator.email
+        self.provenance.creator.org = sm.provenance.creator.organization
+        self.provenance.creator.org_url = sm.provenance.creator.url
+        self.provenance.submitter.name = sm.provenance.submitter.author
+        self.provenance.submitter.email = sm.provenance.submitter.email
+        self.provenance.submitter.org = sm.provenance.submitter.organization
+        self.provenance.submitter.org_url = sm.provenance.submitter.url
+        self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
-        
-        self.processing_info.sign_convention = sm.transfer_function.sign_convention 
-        self.processing_info.processed_by = sm.transfer_function.processed_by.author  
-        self.processing_info.processing_software.author = sm.transfer_function.software.author 
-        self.processing_info.processing_software.name = sm.transfer_function.software.name
-        self.processing_info.processing_software.last_mod = sm.transfer_function.software.last_updated
-        self.processing_info.processing_tag = "_".join(sm.transfer_function.remote_references)
+
+        self.processing_info.sign_convention = sm.transfer_function.sign_convention
+        self.processing_info.processed_by = sm.transfer_function.processed_by.author
+        self.processing_info.processing_software.author = (
+            sm.transfer_function.software.author
+        )
+        self.processing_info.processing_software.name = (
+            sm.transfer_function.software.name
+        )
+        self.processing_info.processing_software.last_mod = (
+            sm.transfer_function.software.last_updated
+        )
+        self.processing_info.processing_tag = "_".join(
+            sm.transfer_function.remote_references
+        )
         self.site.run_list = sm.transfer_function.runs_processed
         # not sure there is a place to put processing parameters yet
-        
+
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
         #     {"type": self.processing_info.remote_ref.type}
         # )
@@ -791,56 +823,55 @@ class EMTFXML(emtf_xml.EMTF):
             fn.magnetometer = []
             fn.instrument.id = r.data_logger.id
             fn.instrument.name = r.data_logger.type
-            fn.instrument.manufacturer = r.data_logger.manufacturer 
-            fn.sampling_rate = r.sample_rate 
-            fn.start = r.time_period.start 
+            fn.instrument.manufacturer = r.data_logger.manufacturer
+            fn.sampling_rate = r.sample_rate
+            fn.start = r.time_period.start
             fn.end = r.time_period.end
-            
-            
+
             for comp in ["hx", "hy", "hz"]:
                 try:
                     rch = getattr(r, comp)
                     mag = emtf_xml.Magnetometer()
-                    mag.id = rch.sensor.id 
-                    mag.name = comp.capitalize() 
+                    mag.id = rch.sensor.id
+                    mag.name = comp.capitalize()
                     mag.manufacturer = rch.sensor.manufacturer
                     fn.magnetometer.append(mag)
-                    
+
                     ch_in = emtf_xml.Magnetic()
                     ch_in.x = rch.location.x
                     ch_in.y = rch.location.y
                     ch_in.z = rch.location.z
                     ch_in.name = comp.capitalize()
                     ch_in.orientation = rch.translated_azimuth
-                    
-                    if comp in ["hx", "hy"]:    
+
+                    if comp in ["hx", "hy"]:
                         self.site_layout.input_channels.append(ch_in)
                     else:
                         self.site_layout.output_channels.append(ch_in)
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
-    
+
             for comp in ["ex", "ey"]:
                 try:
                     c = getattr(r, comp)
                     dp = emtf_xml.Dipole()
                     dp.name = comp.capitalize()
-                    dp.azimuth = c.translated_azimuth 
+                    dp.azimuth = c.translated_azimuth
                     dp.length = c.dipole_length
                     dp.manufacturer = c.positive.manufacturer
                     # fill electrodes
                     pot_p = emtf_xml.Electrode()
                     pot_p.number = c.positive.id
-                    pot_p.location = "n" if comp=="ex" else "e"
-                    pot_p.value = c.positive.type 
+                    pot_p.location = "n" if comp == "ex" else "e"
+                    pot_p.value = c.positive.type
                     dp.electrode.append(pot_p)
                     pot_n = emtf_xml.Electrode()
-                    pot_n.number = c.negative.id 
-                    pot_n.value = c.negative.type 
-                    pot_n.location = "s" if comp=="ex" else "w"
+                    pot_n.number = c.negative.id
+                    pot_n.value = c.negative.type
+                    pot_n.location = "s" if comp == "ex" else "w"
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)
-                    
+
                     ch_out = emtf_xml.Electric()
                     ch_out.x = c.positive.x2
                     ch_out.y = c.positive.y2
@@ -856,6 +887,7 @@ class EMTFXML(emtf_xml.EMTF):
                     self.logger.debug("Did not find %s in run", comp)
 
             self.field_notes.append(fn)
+
 
 def read_emtfxml(fn):
     """
@@ -875,18 +907,26 @@ def read_emtfxml(fn):
     emtf = TF()
     emtf.survey_metadata = obj.survey_metadata
     emtf.station_metadata = obj.station_metadata
-    
+
     emtf.period = obj.data.period
     emtf.impedance = obj.data.z
     emtf.impedance_error = np.sqrt(obj.data.z_var)
-    emtf._transfer_function.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])] = obj.data.z_invsigcov
-    emtf._transfer_function.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])]  = obj.data.z_residcov
+    emtf._transfer_function.inverse_signal_power.loc[
+        dict(input=["hx", "hy"], output=["hx", "hy"])
+    ] = obj.data.z_invsigcov
+    emtf._transfer_function.residual_covariance.loc[
+        dict(input=["ex", "ey"], output=["ex", "ey"])
+    ] = obj.data.z_residcov
 
     emtf.tipper = obj.data.t
     emtf.tipper_error = np.sqrt(obj.data.t_var)
-    emtf._transfer_function.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])] = obj.data.t_invsigcov
-    emtf._transfer_function.residual_covariance.loc[dict(input=["hz"], output=["hz"])]  = obj.data.t_residcov
-    
+    emtf._transfer_function.inverse_signal_power.loc[
+        dict(input=["hx", "hy"], output=["hx", "hy"])
+    ] = obj.data.t_invsigcov
+    emtf._transfer_function.residual_covariance.loc[
+        dict(input=["hz"], output=["hz"])
+    ] = obj.data.t_residcov
+
     return emtf
 
 
@@ -914,24 +954,32 @@ def write_emtfxml(tf_object, fn=None):
     emtf.description = "Magnetotelluric transfer functions"
     emtf.survey_metadata = tf_object.survey_metadata
     emtf.station_metadata = tf_object.station_metadata
-    
+
     emtf.data.period = tf_object.period
-    
+
     if tf_object.has_impedance():
-        
+
         emtf.data.z = tf_object.impedance.data
-        emtf.data.z_var = tf_object.impedance_error.data**2
+        emtf.data.z_var = tf_object.impedance_error.data ** 2
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
-        emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
-        emtf.data.z_residcov = tf_object.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])].data
+        emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ].data
+        emtf.data.z_residcov = tf_object.residual_covariance.loc[
+            dict(input=["ex", "ey"], output=["ex", "ey"])
+        ].data
     if tf_object.has_tipper():
         emtf.data.t = tf_object.tipper.data
         emtf.data.t_var = tf_object.tipper_error.data
-    
+
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
-        emtf.data.t_invsigcov =  tf_object.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])].data
-        emtf.data.t_residcov = tf_object.residual_covariance.loc[dict(input=["hz"], output=["hz"])].data
-    
+        emtf.data.t_invsigcov = tf_object.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ].data
+        emtf.data.t_residcov = tf_object.residual_covariance.loc[
+            dict(input=["hz"], output=["hz"])
+        ].data
+
     emtf.write(fn=fn)
 
     return emtf

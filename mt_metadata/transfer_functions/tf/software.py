@@ -38,7 +38,7 @@ class Software(Base):
     @author.setter
     def author(self, value):
         self._author.author = value
-        
+
     @property
     def last_updated(self):
         return self._last_updated.iso_str

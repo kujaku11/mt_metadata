@@ -43,7 +43,7 @@ class Site(Base):
         self.orientation = Orientation()
         self.data_quality_notes = DataQualityNotes()
         self.data_quality_warnings = DataQualityWarnings()
-        self.run_list = []
+        self._run_list = []
         self._start_dt = MTime()
         self._end_dt = MTime()
 
@@ -64,14 +64,29 @@ class Site(Base):
     @end.setter
     def end(self, value):
         self._end_dt.from_str(value)
-        
+
     @property
     def year_collected(self):
         if self.start != "1980-01-01T00:00:00+00:00":
             return self._start_dt.year
         else:
             return self._year_collected
-        
+
     @year_collected.setter
     def year_collected(self, value):
         self._year_collected = value
+        
+    @property
+    def run_list(self):
+        return ' '.join(self._run_list)
+    
+    @run_list.setter
+    def run_list(self, value):
+        if isinstance(value, (str)):
+            if value.count(',') > 0:
+                delimiter = ','
+            else:
+                delimiter = ' '
+            value = value.split(delimiter)
+            
+        self._run_list = value

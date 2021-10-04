@@ -52,7 +52,7 @@ class JFile(object):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-        
+
         if self.t is not None:
             lines.append("\tTipper:        True")
         else:
@@ -482,12 +482,15 @@ def read_jfile(fn):
     tf_obj = TF()
     tf_obj._fn = fn
 
-    k_dict = OrderedDict({
-        "period": "periods",
-        "impedance": "z",
-        "tipper": "t",
-        "survey_metadata": "survey_metadata",
-        "station_metadata": "station_metadata"})
+    k_dict = OrderedDict(
+        {
+            "period": "periods",
+            "impedance": "z",
+            "tipper": "t",
+            "survey_metadata": "survey_metadata",
+            "station_metadata": "station_metadata",
+        }
+    )
 
     for tf_key, j_key in k_dict.items():
         print(f"setting {tf_key} with {j_key}")

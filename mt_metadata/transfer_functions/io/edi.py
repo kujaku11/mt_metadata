@@ -105,7 +105,7 @@ class EDI(object):
         self.Info = Information()
         self.Measurement = DefineMeasurement()
         self.Data = DataSection()
-        
+
         self.z = None
         self.z_err = None
         self.t = None
@@ -145,7 +145,7 @@ class EDI(object):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-        
+
         if self.t is not None:
             lines.append("\tTipper:        True")
         else:
@@ -175,11 +175,11 @@ class EDI(object):
             self._fn = Path(fn)
             if self._fn.exists():
                 self.read()
-                
+
     @property
     def period(self):
         if self.frequency is not None:
-            return 1./self.frequency
+            return 1.0 / self.frequency
         return None
 
     def read(self, fn=None):
@@ -634,7 +634,6 @@ class EDI(object):
         self.z_err[np.where(self.z_err == 0.0)] = 1.0
         self.t_err[np.where(self.t_err == 0.0)] = 1.0
 
-
         # be sure to fill attributes
         # self.Z.freq = freq_arr
         # self.Z.z = self.z
@@ -705,7 +704,7 @@ class EDI(object):
             self.rotation_angle = np.zeros(self.frequency.size)
         elif len(self.rotation_angle) != self.frequency.size:
             self.rotation_angle = np.repeat(self.rotation_angle[0], self.frequency.size)
-            
+
         zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 
         # write out data only impedance and tipper
@@ -895,7 +894,7 @@ class EDI(object):
         if self.Header.dataid is not None:
             return self.Header.dataid.replace(r"/", "_")
         elif self.Measurement.refloc is not None:
-            return self.Measurement.refloc.replace('"', '')
+            return self.Measurement.refloc.replace('"', "")
         elif self.Data.sectid is not None:
             return self.Data.sectid
 
@@ -2491,9 +2490,7 @@ class DataSection(object):
 
         if self.fn is not None:
             if not self.fn.exists:
-                raise IOError(
-                    "Could not find {0}. Check path".format(self.fn)
-                )
+                raise IOError("Could not find {0}. Check path".format(self.fn))
             with open(self.fn) as fid:
                 self.edi_lines = _validate_edi_lines(fid.readlines())
 
@@ -2712,15 +2709,18 @@ def read_edi(fn):
 
     tf_obj = TF()
     tf_obj._fn = fn
-    
-    k_dict = OrderedDict({
-        "period": "period",
-        "impedance": "z",
-        "impedance_error": "z_err",
-        "tipper": "t",
-        "tipper_error": "t_err",
-        "survey_metadata": "survey_metadata",
-        "station_metadata": "station_metadata"})
+
+    k_dict = OrderedDict(
+        {
+            "period": "period",
+            "impedance": "z",
+            "impedance_error": "z_err",
+            "tipper": "t",
+            "tipper_error": "t_err",
+            "survey_metadata": "survey_metadata",
+            "station_metadata": "station_metadata",
+        }
+    )
 
     for tf_key, edi_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))
@@ -2757,7 +2757,7 @@ def write_edi(tf_object, fn=None):
     edi_obj.z_err = tf_object.impedance_error.data
     edi_obj.t = tf_object.tipper.data
     edi_obj.t_err = tf_object.tipper_err.data
-    edi_obj.frequency = 1./tf_object.period
+    edi_obj.frequency = 1.0 / tf_object.period
 
     ### fill header information from survey
     edi_obj.Header.survey = tf_object.survey_metadata.id

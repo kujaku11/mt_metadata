@@ -52,7 +52,6 @@ class TF:
 
         self.save_dir = Path.cwd()
         self._fn = None
-        
 
         self._dataset_attr_dict = {
             "survey": "survey_metadata.id",
@@ -93,7 +92,7 @@ class TF:
         }
 
         self._transfer_function = self._initialize_transfer_function()
-        
+
         self.fn = fn
 
         # provide key words to fill values if an edi file does not exist
@@ -333,7 +332,6 @@ class TF:
             self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
             raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
 
-
         if ndarray.shape[0] != self.period.size:
             msg = "New %s shape %s not same as old %s, suggest creating a new instance."
             self.logger.error(msg, atype, ndarray.shape, shape)
@@ -410,7 +408,7 @@ class TF:
             "res": "residual_covariance",
             "transfer_function": "transfer_function",
             "impedance_error": "transfer_function_error",
-            "tipper_error": "transfer_function_error"
+            "tipper_error": "transfer_function_error",
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -431,7 +429,7 @@ class TF:
             msg = "Data type %s not supported use a numpy array or xarray.DataArray"
             self.logger.error(msg, type(value))
             raise TFError(msg % type(value))
-            
+
     def has_transfer_function(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -467,7 +465,7 @@ class TF:
             return self.dataset.transfer_function.sel(
                 input=["hx", "hy"], output=["ex", "ey", "hz"]
             )
-        
+
     @transfer_function.setter
     def transfer_function(self, value):
         """
@@ -480,7 +478,6 @@ class TF:
 
         """
         self._set_data_array(value, "tf")
-
 
     def has_impedance(self):
         """
@@ -497,7 +494,8 @@ class TF:
         if "ex" in outputs or "ey" in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"]
+                    input=self._ch_input_dict["impedance"],
+                    output=self._ch_output_dict["impedance"],
                 ).data
                 == 0
             ):
@@ -515,7 +513,8 @@ class TF:
         """
         if self.has_impedance():
             z = self.dataset.transfer_function.sel(
-                input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"]
+                input=self._ch_input_dict["impedance"],
+                output=self._ch_output_dict["impedance"],
             )
             z.name = "impedance"
 
@@ -533,7 +532,7 @@ class TF:
 
         """
         self._set_data_array(value, "impedance")
-        
+
     @property
     def impedance_error(self):
         """
@@ -544,7 +543,9 @@ class TF:
         """
         if self.has_impedance():
             z_err = self.dataset.transfer_function_error.sel(
-                input=self._ch_input_dict["impedance"], output=self._ch_output_dict["impedance"])
+                input=self._ch_input_dict["impedance"],
+                output=self._ch_output_dict["impedance"],
+            )
             z_err.name = "impedance_error"
 
             return z_err
@@ -577,7 +578,8 @@ class TF:
         if "hz" in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"]
+                    input=self._ch_input_dict["tipper"],
+                    output=self._ch_output_dict["tipper"],
                 ).data
                 == 0
             ):
@@ -595,7 +597,9 @@ class TF:
         """
         if self.has_tipper():
             t = self.dataset.transfer_function.sel(
-                input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"])
+                input=self._ch_input_dict["tipper"],
+                output=self._ch_output_dict["tipper"],
+            )
             t.name = "tipper"
 
             return t
@@ -611,7 +615,7 @@ class TF:
 
         """
         self._set_data_array(value, "tipper")
-        
+
     @property
     def tipper_error(self):
         """
@@ -622,7 +626,9 @@ class TF:
         """
         if self.has_tipper():
             t = self.dataset.transfer_function_error.sel(
-                input=self._ch_input_dict["tipper"], output=self._ch_output_dict["tipper"])
+                input=self._ch_input_dict["tipper"],
+                output=self._ch_output_dict["tipper"],
+            )
             t.name = "tipper_error"
 
             return t
@@ -725,7 +731,7 @@ class TF:
         self._set_data_array(value, "res")
         if self.has_inverse_signal_power():
             self._compute_error_from_covariance()
-        
+
     def _compute_impedance_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
@@ -738,20 +744,38 @@ class TF:
         :rtype: TYPE
 
         """
-        
-        sigma_e = self.residual_covariance.loc[dict(input=["ex", "ey"], output=["ex", "ey"])]
-        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])]
-        
+
+        sigma_e = self.residual_covariance.loc[
+            dict(input=["ex", "ey"], output=["ex", "ey"])
+        ]
+        sigma_s = self.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ]
+
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
-        z_err[:, 0, 0] = np.real(sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
-        z_err[:, 0, 1] = np.real(sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
-        z_err[:, 1, 0] = np.real(sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
-        z_err[:, 1, 1] = np.real(sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
-        
+        z_err[:, 0, 0] = np.real(
+            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
+            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+        )
+        z_err[:, 0, 1] = np.real(
+            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
+            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+        )
+        z_err[:, 1, 0] = np.real(
+            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
+            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+        )
+        z_err[:, 1, 1] = np.real(
+            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
+            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+        )
+
         z_err = np.sqrt(np.abs(z_err))
-        
-        self.dataset.transfer_function_error.loc[dict(input=["hx", "hy"], output=["ex", "ey"])] = z_err
-    
+
+        self.dataset.transfer_function_error.loc[
+            dict(input=["hx", "hy"], output=["ex", "ey"])
+        ] = z_err
+
     def _compute_tipper_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
@@ -764,18 +788,28 @@ class TF:
         :rtype: TYPE
 
         """
-        
+
         sigma_e = self.residual_covariance.loc[dict(input=["hz"], output=["hz"])]
-        sigma_s = self.inverse_signal_power.loc[dict(input=["hx", "hy"], output=["hx", "hy"])]
-        
+        sigma_s = self.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ]
+
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
-        t_err[:, 0, 0] = np.real(sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten() * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten())
-        t_err[:, 0, 1] = np.real(sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten() * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten())
+        t_err[:, 0, 0] = np.real(
+            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
+            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+        )
+        t_err[:, 0, 1] = np.real(
+            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
+            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+        )
 
         t_err = np.sqrt(np.abs(t_err))
-        
-        self.dataset.transfer_function_error.loc[dict(input=["hx", "hy"], output=["hz"])] = t_err
-        
+
+        self.dataset.transfer_function_error.loc[
+            dict(input=["hx", "hy"], output=["hz"])
+        ] = t_err
+
     def _compute_error_from_covariance(self):
         """
         convenience method to compute errors from covariance
@@ -786,8 +820,7 @@ class TF:
         """
         self._compute_impedance_error_from_covariance()
         self._compute_tipper_error_from_covariance()
-        
-        
+
     @property
     def period(self):
         return self.dataset.period.data
@@ -953,9 +986,6 @@ class TF:
 
         tf_obj = read_file(fn, file_type=file_type)
         self.__dict__.update(tf_obj.__dict__)
-        
-        
-        
 
 
 # ==============================================================================

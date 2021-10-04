@@ -30,4 +30,5 @@ class Copyright(Base):
         self.conditions_of_use = None
         self.creating_application = None
         self.citation = Citation()
+        self.acknowledgement = None
         super().__init__(attr_dict=attr_dict, **kwargs)
