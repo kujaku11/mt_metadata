@@ -25,8 +25,55 @@ output_filename = "example_station_xml"
 # =============================================================================
 # Useful functions
 # =============================================================================
-def get_station(station: str) -> list:
+class MTML2StationXML(XMLInventoryMTExperiment):
     """
-    Get all mtml xml files for a given station.
+    A class to convert multiple MTML xml files into a stationXML
+    
     """
-    pass
+    
+    def __init__(self, xml_path=None):
+        self.xml_path = xml_path
+        
+        
+    @property
+    def xml_path(self):
+        return self._xml_path
+    
+    @xml_path.setter
+    def xml_path(self, value):
+        if value is None:
+            self._xml_path = None
+        else:
+            self._xml_path = Path(value)
+            
+    def has_xml_path(self):
+        if self.xml_path is not None and self.xml_path.exists():
+            return True
+        return False
+
+    @staticmethod
+    def is_a_station_xml(fn):
+        return fn.count(".") == 1
+    
+    @staticmethod
+    def is_a_run_xml(fn):
+        return fn.count(".") == 2
+    
+    @staticmethod
+    def is_a_channel_xml(fn):
+        return fn.count(".") > 2
+    
+    def get_station_files(self, station: str) -> list:
+        """
+        Get all mtml xml files for a given station.
+        """
+        return list(self.xml_path.glob(f"{station}*"))
+
+
+
+
+fn_list = get_station_files(xml_path, "CAR02")
+
+    
+    
+    
