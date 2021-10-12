@@ -2888,7 +2888,9 @@ def write_edi(tf_object, fn=None):
     edi_obj.Measurement.maxchan = len(tf_object.station_metadata.channels_recorded)
     for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
         try:
-            edi_obj.Measurement.from_metadata(getattr(tf_object.station_metadata.run_list[0], f"{comp}"))
+            edi_obj.Measurement.from_metadata(
+                getattr(tf_object.station_metadata.run_list[0], f"{comp}")
+            )
         except AttributeError as error:
             edi_obj.logger.info(error)
             edi_obj.logger.debug(f"Did not find information on {comp}")

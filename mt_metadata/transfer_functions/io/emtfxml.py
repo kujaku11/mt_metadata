@@ -144,7 +144,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance = emtf_xml.Provenance()
         self.copyright = emtf_xml.Copyright()
         self.site = emtf_xml.Site()
-        
+
         # not sure why we need to do this, but if you don't FieldNotes end
         # as a string.
         self.field_notes = []
@@ -232,7 +232,6 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
-        
 
     def write(self, fn):
         """
@@ -248,7 +247,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         self._get_statistical_estimates()
         self._get_data_types()
-         
+
         if (
             self.site.location.x == 0
             and self.site.location.x2 == 0
@@ -658,7 +657,6 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.time_period.end = self.site.end
             survey_obj.summary = self.description
             survey_obj.comments = self.copyright.acknowledgement
-            
 
         return survey_obj
 
@@ -678,12 +676,11 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.survey = sm.geographic_name
         self.site.country = sm.country
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
-        
+
         self.copyright.citation.authors = sm.citation_dataset.author
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
         self.copyright.acknowledgement = sm.comments
-        
 
     @property
     def station_metadata(self):
@@ -711,10 +708,10 @@ class EMTFXML(emtf_xml.EMTF):
         s.provenance.submitter.email = self.provenance.submitter.email
         s.provenance.submitter.organization = self.provenance.submitter.org
         s.provenance.submitter.url = self.provenance.submitter.org_url
-        
+
         s.provenance.archive.url = self.external_url.url
         s.provenance.archive.comments = self.external_url.description
-        
+
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
         s.transfer_function.sign_convention = self.processing_info.sign_convention
@@ -735,11 +732,15 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.processing_parameters.append(
             {"type": self.processing_info.remote_ref.type}
         )
-        
-        s.transfer_function.data_quality.good_from_period = self.site.data_quality_notes.good_from_period
-        s.transfer_function.data_quality.good_to_period = self.site.data_quality_notes.good_to_period
+
+        s.transfer_function.data_quality.good_from_period = (
+            self.site.data_quality_notes.good_from_period
+        )
+        s.transfer_function.data_quality.good_to_period = (
+            self.site.data_quality_notes.good_to_period
+        )
         s.transfer_function.data_quality.rating = self.site.data_quality_notes.rating
-        
+
         for fn in self.field_notes:
             r = Run()
             r.id = fn.run
@@ -766,7 +767,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.component = comp
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
-                    c.sensor.manufacturer = mag.manufacturer 
+                    c.sensor.manufacturer = mag.manufacturer
 
             for dp in fn.dipole:
                 comp = dp.name.lower()
@@ -783,11 +784,13 @@ class EMTFXML(emtf_xml.EMTF):
                         c.negative.id = pot.number
                         c.negative.type = pot.value
                         c.negative.manufacture = dp.manufacturer
-            
-            for ch in self.site_layout.input_channels + self.site_layout.output_channels:
+
+            for ch in (
+                self.site_layout.input_channels + self.site_layout.output_channels
+            ):
                 c = getattr(r, ch.name.lower())
                 if c.component in ["hx", "hy", "hz"]:
-                
+
                     c.location.x = ch.x
                     c.location.y = ch.y
                     c.location.z = ch.z
@@ -800,7 +803,6 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
-            
 
             s.run_list.append(r)
 
@@ -839,10 +841,10 @@ class EMTFXML(emtf_xml.EMTF):
         self.provenance.submitter.email = sm.provenance.submitter.email
         self.provenance.submitter.org = sm.provenance.submitter.organization
         self.provenance.submitter.org_url = sm.provenance.submitter.url
-        
+
         self.external_url.url = sm.provenance.archive.url
         self.external_url.description = sm.provenance.archive.comments
-        
+
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
 
@@ -861,11 +863,15 @@ class EMTFXML(emtf_xml.EMTF):
             sm.transfer_function.remote_references
         )
         self.site.run_list = sm.transfer_function.runs_processed
-        
-        self.site.data_quality_notes.good_from_period = sm.transfer_function.data_quality.good_from_period
-        self.site.data_quality_notes.good_to_period = sm.transfer_function.data_quality.good_to_period
+
+        self.site.data_quality_notes.good_from_period = (
+            sm.transfer_function.data_quality.good_from_period
+        )
+        self.site.data_quality_notes.good_to_period = (
+            sm.transfer_function.data_quality.good_to_period
+        )
         self.site.data_quality_notes.rating = sm.transfer_function.data_quality.rating
-        
+
         # not sure there is a place to put processing parameters yet
 
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(

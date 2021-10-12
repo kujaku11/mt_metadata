@@ -6,16 +6,19 @@ Created on Thu Oct  7 16:31:55 2021
 """
 
 # =============================================================================
-# Imports 
+# Imports
 # =============================================================================
 from pathlib import Path
 import pandas as pd
 from xml.etree import cElementTree as et
 
-from mt_metadata.timeseries import (Experiment, Survey, Station, Run, 
-                                    Electric, Magnetic)
-from mt_metadata.timeseries.filters import (PoleZeroFilter, CoefficientFilter,
-                                            TimeDelayFilter, FIRFilter)
+from mt_metadata.timeseries import Experiment, Survey, Station, Run, Electric, Magnetic
+from mt_metadata.timeseries.filters import (
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+    FIRFilter,
+)
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 
 # =============================================================================
@@ -33,17 +36,16 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     A class to convert multiple MTML xml files into a stationXML
     
     """
-    
+
     def __init__(self, xml_path=None):
         self.xml_path = xml_path
-        
+
         super().__init__()
-        
-        
+
     @property
     def xml_path(self):
         return self._xml_path
-    
+
     @xml_path.setter
     def xml_path(self, value):
         if value is None:
@@ -51,7 +53,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         else:
             self._xml_path = Path(value)
             self.make_df()
-            
+
     def has_xml_path(self):
         if self.xml_path is not None and self.xml_path.exists():
             return True
@@ -60,25 +62,25 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     @staticmethod
     def is_a_filter_xml(fn):
         return fn.stem in ["filters"]
-    
+
     @staticmethod
     def is_a_survey_xml(fn):
         return fn.stem in ["survey"]
-    
+
     @staticmethod
     def is_a_station_xml(fn):
         if fn.stem not in ["filters", "survey"]:
             return fn.stem.count(".") == 0
         return False
-    
+
     @staticmethod
     def is_a_run_xml(fn):
         return fn.stem.count(".") == 1
-    
+
     @staticmethod
     def is_a_channel_xml(fn):
         return fn.stem.count(".") > 1
-    
+
     def get_xml_files(self) -> list:
         """
         Get all mtml xml files for a given station.
@@ -86,7 +88,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         if self.has_xml_path():
             return list(self.xml_path.rglob("*.xml"))
         raise ValueError("self.xml_path must be set")
-        
+
     def make_df(self):
         """
         Make a pandas data frame for easier querying
@@ -96,20 +98,20 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         df_dict = {
-            "fn":[],
+            "fn": [],
             "station": [],
             "run": [],
             "is_station": [],
             "is_run": [],
             "is_channel": [],
-            "is_filters": [], 
-            "is_survey": []
-            }
+            "is_filters": [],
+            "is_survey": [],
+        }
         for fn in self.get_xml_files():
             df_dict["fn"].append(fn)
-            df_dict["station"].append(fn.stem.split('.')[0])
+            df_dict["station"].append(fn.stem.split(".")[0])
             if self.is_a_run_xml(fn) or self.is_a_channel_xml(fn):
-                df_dict["run"].append(fn.stem.split('.')[1])
+                df_dict["run"].append(fn.stem.split(".")[1])
             else:
                 df_dict["run"].append(None)
             df_dict["is_station"].append(self.is_a_station_xml(fn))
@@ -119,25 +121,25 @@ class MTML2StationXML(XMLInventoryMTExperiment):
             df_dict["is_survey"].append(self.is_a_survey_xml(fn))
 
         self.df = pd.DataFrame(df_dict)
-       
+
     @property
     def stations(self):
         if self.has_xml_path():
             return list(self.df[self.df.is_station == True].station)
         return None
-    
+
     @property
     def survey(self):
         if self.has_xml_path():
             return self.df[self.df.is_survey == True].fn.values[0]
         return None
-    
+
     @property
     def filters(self):
         if self.has_xml_path():
             return self.df[self.df.is_filters == True].fn.values[0]
         return None
-    
+
     def _get_runs(self, station):
         """
         Get runs from the dataframe for a given station
@@ -149,8 +151,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         return self.df[(self.df.station == station) & (self.df.is_run == True)]
-        
-    
+
     def _get_channels(self, station, run):
         """
         Get runs from the dataframe for a given station
@@ -161,8 +162,14 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        return list(self.df[(self.df.station == station) & (self.df.run == run) & (self.df.is_channel == True)].fn)
-        
+        return list(
+            self.df[
+                (self.df.station == station)
+                & (self.df.run == run)
+                & (self.df.is_channel == True)
+            ].fn
+        )
+
     def sort_by_station(self, stations=None):
         """
         sort the file into station, runs and channels
@@ -181,17 +188,21 @@ class MTML2StationXML(XMLInventoryMTExperiment):
                 raise ValueError("stations must be a list of stations")
             station_iterator = stations
         for station in station_iterator:
-            station_dict = {"fn": self.df[(self.df.station == station) & (self.df.is_station==True)].fn.values[0],
-                            "runs": []}
+            station_dict = {
+                "fn": self.df[
+                    (self.df.station == station) & (self.df.is_station == True)
+                ].fn.values[0],
+                "runs": [],
+            }
             for run in self._get_runs(station).itertuples():
                 run_dict = {}
                 run_dict["fn"] = run.fn
                 run_dict["channels"] = self._get_channels(station, run.run)
                 station_dict["runs"].append(run_dict)
             fn_dict["stations"].append(station_dict)
-            
+
         return fn_dict
-    
+
     @staticmethod
     def read_xml_file(xml_file):
         """
@@ -203,9 +214,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        
+
         return et.parse(xml_file).getroot()
-    
+
     def _make_channel(self, channel_fn):
         """
         Make a :class:`mt_metadata.timeseries.Channel` object from an 
@@ -220,14 +231,14 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         ch_type = channel_fn.stem.split(".")[2].lower()
         if ch_type in ["electric"]:
             ch = Electric()
-        
+
         elif ch_type in ["magnetic"]:
             ch = Magnetic()
-            
+
         ch.from_xml(self.read_xml_file(channel_fn))
-        
+
         return ch
-    
+
     def _make_run(self, run_dict):
         """
         Make a :class:`mt_metadata.timeseries.Run` object from information
@@ -245,9 +256,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         r.from_xml(self.read_xml_file(run_dict["fn"]))
         for ch_fn in run_dict["channels"]:
             r.channels.append(self._make_channel(ch_fn))
-        
+
         return r
-    
+
     def _make_station(self, station_dict):
         """
         Make a station object from a station dictionary
@@ -267,13 +278,13 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         s = Station()
         s.from_xml(self.read_xml_file(station_dict["fn"]))
         # < need to reset the runs, otherwise there are empty runs and double
-        # the ammount of runs because the run_list is input. > 
+        # the ammount of runs because the run_list is input. >
         s.runs = []
         for run_dict in station_dict["runs"]:
             s.runs.append(self._make_run(run_dict))
-        
+
         return s
-    
+
     def _make_survey(self, survey_dict):
         """
         Make a :class:`mt_metadata.timeseries.Survey` object 
@@ -301,9 +312,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         s.stations = []
         for station_dict in survey_dict["stations"]:
             s.stations.append(self._make_station(station_dict))
-            
+
         return s
-    
+
     def _make_filters_dict(self, filters_xml_file):
         """
         Make a filter dictionary from a filter file with all the filters in it
@@ -314,9 +325,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        
+
         element = self.read_xml_file(filters_xml_file)
-        
+
         f_dict = {}
         for f in element.iter(tag="filter"):
             f_type = [y.text for y in f.findall("type")][0]
@@ -330,10 +341,10 @@ class MTML2StationXML(XMLInventoryMTExperiment):
                 mt_filter = FIRFilter()
             else:
                 raise ValueError(f"No support for {f_type} currently.")
-            
+
             mt_filter.from_xml(f)
             f_dict[mt_filter.name] = mt_filter
-            
+
         return f_dict
 
     def make_experiment(self, stations=None):
@@ -344,17 +355,12 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         mtex = Experiment()
-        
+
         mtex.surveys.append(self._make_survey(self.sort_by_station(stations)))
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         return mtex
-        
+
 
 a = MTML2StationXML(xml_path)
 mtex = a.make_experiment(stations="TTX11")
 inv = a.mt_to_xml(mtex, stationxml_fn=r"c:\Users\jpeacock\test_stationxml_TTX11.xml")
-
-
-    
-    
-    

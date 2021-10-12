@@ -75,18 +75,18 @@ class Site(Base):
     @year_collected.setter
     def year_collected(self, value):
         self._year_collected = value
-        
+
     @property
     def run_list(self):
-        return ' '.join(self._run_list)
-    
+        return " ".join(self._run_list)
+
     @run_list.setter
     def run_list(self, value):
         if isinstance(value, (str)):
-            if value.count(',') > 0:
-                delimiter = ','
+            if value.count(",") > 0:
+                delimiter = ","
             else:
-                delimiter = ' '
+                delimiter = " "
             value = value.split(delimiter)
-            
+
         self._run_list = value

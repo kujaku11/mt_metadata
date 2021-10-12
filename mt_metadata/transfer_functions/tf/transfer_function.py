@@ -38,7 +38,6 @@ class TransferFunction(Base):
         self._processed_date = MTime()
         self.coordinate_system = "geographic"
         self.data_quality = DataQuality()
-        
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

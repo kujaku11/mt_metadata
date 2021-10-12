@@ -99,7 +99,7 @@ units_names = {
     "celsius": "C",
     "ohms": "Ohm",
     "ohm meters": "Ohm-m",
-    "counts": "digital counts"
+    "counts": "digital counts",
 }
 
 

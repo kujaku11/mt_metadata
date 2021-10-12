@@ -243,6 +243,7 @@ def flatten_dict(meta_dict, parent_key=None, sep="."):
             items.append((new_key, value))
     return dict(items)
 
+
 def flatten_list(x_list):
     """
     Flatten a nested list
