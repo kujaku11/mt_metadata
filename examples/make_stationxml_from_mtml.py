@@ -163,7 +163,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         """
         return list(self.df[(self.df.station == station) & (self.df.run == run) & (self.df.is_channel == True)].fn)
         
-    def sort_by_station(self):
+    def sort_by_station(self, stations=None):
         """
         sort the file into station, runs and channels
 
@@ -172,8 +172,15 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         fn_dict = {"survey": self.survey, "filters": self.filters, "stations": []}
-        
-        for station in self.stations:
+        if stations in [None, []]:
+            station_iterator = self.stations
+        else:
+            if isinstance(stations, str):
+                stations = [stations]
+            if not isinstance(stations, list):
+                raise ValueError("stations must be a list of stations")
+            station_iterator = stations
+        for station in station_iterator:
             station_dict = {"fn": self.df[(self.df.station == station) & (self.df.is_station==True)].fn.values[0],
                             "runs": []}
             for run in self._get_runs(station).itertuples():
@@ -329,7 +336,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
             
         return f_dict
 
-    def make_experiment(self):
+    def make_experiment(self, stations=None):
         """
         Create an MTML experiment from the a directory of xml files 
         :return: DESCRIPTION
@@ -337,18 +344,16 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         mtex = Experiment()
-        mtex.surveys.append(self._make_survey(self.sort_by_station()))
+        
+        mtex.surveys.append(self._make_survey(self.sort_by_station(stations)))
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         return mtex
         
 
 a = MTML2StationXML(xml_path)
-mtex = a.make_experiment()
-inv = a.mt_to_xml(mtex, stationxml_fn=r"c:\Users\jpeacock\test_stationxml.xml")
+mtex = a.make_experiment(stations="TTX11")
+inv = a.mt_to_xml(mtex, stationxml_fn=r"c:\Users\jpeacock\test_stationxml_TTX11.xml")
 
-# a.make_df()
-# fn_list = a.get_xml_files()
-# stations = a.get_stations(fn_list)
 
     
     
