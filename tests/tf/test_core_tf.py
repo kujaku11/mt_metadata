@@ -71,10 +71,10 @@ class TestTFImpedanceInput(unittest.TestCase):
         self.assertTrue(self.tf.has_impedance())
 
     def test_shape(self):
-        self.assertEqual(self.tf.impedance.impedance.data.shape, (self.n_period, 2, 2))
+        self.assertEqual(self.tf.impedance.data.shape, (self.n_period, 2, 2))
 
     def test_xarray(self):
-        self.assertEqual(self.tf.impedance, self.test_z)
+        self.assertTrue(np.all(self.tf.impedance == self.test_z))
 
     def test_fail(self):
         def set_value(value):
@@ -84,7 +84,7 @@ class TestTFImpedanceInput(unittest.TestCase):
 
     def test_set_from_array(self):
         self.tf.impedance = self.new_z
-        self.assertTrue(np.all(self.tf.impedance.impedance.data == self.new_z) == True)
+        self.assertTrue(np.all(self.tf.impedance.data == self.new_z))
 
 
 class TestTFTipperInput(unittest.TestCase):
@@ -119,10 +119,10 @@ class TestTFTipperInput(unittest.TestCase):
         self.assertTrue(self.tf.has_tipper())
 
     def test_shape(self):
-        self.assertEqual(self.tf.tipper.tipper.data.shape, (self.n_period, 1, 2))
+        self.assertEqual(self.tf.tipper.data.shape, (self.n_period, 1, 2))
 
     def test_xarray(self):
-        self.assertEqual(self.tf.tipper, self.test_t)
+        self.assertTrue(np.all(self.tf.tipper == self.test_t))
 
     def test_fail(self):
         def set_value(value):
@@ -132,7 +132,7 @@ class TestTFTipperInput(unittest.TestCase):
 
     def test_set_from_array(self):
         self.tf.tipper = self.new_t
-        self.assertTrue(np.all(self.tf.tipper.tipper.data == self.new_t) == True)
+        self.assertTrue(np.all(self.tf.tipper.data == self.new_t))
 
 
 class TestTFISPInput(unittest.TestCase):
