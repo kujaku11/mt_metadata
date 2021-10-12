@@ -17,6 +17,7 @@ requirements = [
     "pyyaml",
     "obspy",
     "matplotlib",
+    "xarray",
 ]
 
 setup_requirements = [
