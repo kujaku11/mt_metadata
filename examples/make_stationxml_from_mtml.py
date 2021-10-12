@@ -14,6 +14,8 @@ from xml.etree import cElementTree as et
 
 from mt_metadata.timeseries import (Experiment, Survey, Station, Run, 
                                     Electric, Magnetic)
+from mt_metadata.timeseries.filters import (PoleZeroFilter, CoefficientFilter,
+                                            TimeDelayFilter, FIRFilter)
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 
 # =============================================================================
@@ -34,6 +36,8 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     
     def __init__(self, xml_path=None):
         self.xml_path = xml_path
+        
+        super().__init__()
         
         
     @property
@@ -292,6 +296,38 @@ class MTML2StationXML(XMLInventoryMTExperiment):
             s.stations.append(self._make_station(station_dict))
             
         return s
+    
+    def _make_filters_dict(self, filters_xml_file):
+        """
+        Make a filter dictionary from a filter file with all the filters in it
+        
+        :param filters_xml_file: DESCRIPTION
+        :type filters_xml_file: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        element = self.read_xml_file(filters_xml_file)
+        
+        f_dict = {}
+        for f in element.iter(tag="filter"):
+            f_type = [y.text for y in f.findall("type")][0]
+            if f_type in ["zpk"]:
+                mt_filter = PoleZeroFilter()
+            elif f_type in ["coefficient"]:
+                mt_filter = CoefficientFilter()
+            elif f_type in ["time delay"]:
+                mt_filter = TimeDelayFilter()
+            elif f_type in ["fir"]:
+                mt_filter = FIRFilter()
+            else:
+                raise ValueError(f"No support for {f_type} currently.")
+            
+            mt_filter.from_xml(f)
+            f_dict[mt_filter.name] = mt_filter
+            
+        return f_dict
 
     def make_experiment(self):
         """
@@ -302,10 +338,14 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         """
         mtex = Experiment()
         mtex.surveys.append(self._make_survey(self.sort_by_station()))
+        mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         return mtex
         
 
 a = MTML2StationXML(xml_path)
+mtex = a.make_experiment()
+inv = a.mt_to_xml(mtex, stationxml_fn=r"c:\Users\jpeacock\test_stationxml.xml")
+
 # a.make_df()
 # fn_list = a.get_xml_files()
 # stations = a.get_stations(fn_list)

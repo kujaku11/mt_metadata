@@ -218,7 +218,7 @@ class PoleZeroFilter(FilterBase):
             if np.isclose(df_passband, df_0).all():
                 pass
             else:
-                self.logger.warning("Passband appears discontinuous")
+                self.logger.debug("Passband appears discontinuous")
         pass_band = np.array([pass_band.min(), pass_band.max()])
         return pass_band
 

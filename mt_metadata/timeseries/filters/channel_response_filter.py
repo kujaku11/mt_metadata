@@ -135,15 +135,19 @@ class ChannelResponseFilter(object):
                     continue
                 pb.append((f_pb.min(), f_pb.max()))
 
-        pb = np.array(pb)
-        return np.array([pb[:, 0].max(), pb[:, 1].min()])
+        if pb is not []:
+            pb = np.array(pb)
+            return np.array([pb[:, 0].max(), pb[:, 1].min()])
+        return None
 
     @property
     def normalization_frequency(self):
         """get normalization frequency from ZPK or FAP filter"""
 
         if self._normalization_frequency is None:
-            return np.round(self.pass_band.mean(), decimals=3)
+            if self.pass_band is not None:
+                return np.round(self.pass_band.mean(), decimals=3)
+            return None
 
         return self._normalization_frequency
 

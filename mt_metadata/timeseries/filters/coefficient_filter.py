@@ -101,4 +101,4 @@ class CoefficientFilter(FilterBase):
         """
         if isinstance(frequencies, (float, int)):
             frequencies = np.array([frequencies])
-        return self.gain * np.ones(len(frequencies))
+        return self.gain * np.ones(len(frequencies), dtype=complex)
