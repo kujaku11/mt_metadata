@@ -49,4 +49,5 @@ obspy_units_descriptions = {
     "millivolt per kilometer": "milliVolt per kilometer",
     "volt per meter": "Volt per meter",
     "volt": "Volt",
+    "nanotesla": "nanoTesla",
 }
