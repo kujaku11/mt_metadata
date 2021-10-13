@@ -22,14 +22,7 @@ from mt_metadata.timeseries.filters import (
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 
 # =============================================================================
-# Input Parameters
-# =============================================================================
-xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\mt_array_xmls")
-
-output_filename = "example_station_xml"
-
-# =============================================================================
-# Useful functions
+# Useful Class
 # =============================================================================
 class MTML2StationXML(XMLInventoryMTExperiment):
     """
@@ -360,7 +353,23 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         return mtex
 
+# =============================================================================
+# Working code
+# =============================================================================
+# Input Parameters
+xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\mt_array_xmls")
+output_path = Path(r"c:\Users\jpeacock")
 
+# make an instance of MTML2StationXML where the input is the path to the folder
+# containing the MTML.xml files
 a = MTML2StationXML(xml_path)
-mtex = a.make_experiment(stations="TTX11")
-inv = a.mt_to_xml(mtex, stationxml_fn=r"c:\Users\jpeacock\test_stationxml_TTX11.xml")
+
+# if you want to make one stationxml per station then you can loop over
+# stations
+for station in a.stations:
+    mtex = a.make_experiment(stations=station)
+    inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml"))
+    
+# if you want to make a complete stationxml
+# mtex = a.make_experiment()
+# inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath("full_stationxml.xml"))
