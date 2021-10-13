@@ -39,7 +39,7 @@ leap_second_dict = {
     15: {"min": datetime.date(2009, 1, 1), "max": datetime.date(2012, 6, 30)},
     16: {"min": datetime.date(2012, 7, 1), "max": datetime.date(2015, 7, 1)},
     17: {"min": datetime.date(2015, 7, 1), "max": datetime.date(2017, 1, 1)},
-    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2021, 7, 1)},
+    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2022, 7, 1)},
 }
 
 
@@ -366,6 +366,11 @@ class MTime:
                 )
                 self.logger.error(msg)
                 raise MTTimeError(msg)
+
+            except TypeError as error:
+                msg = "%s input is type(%s), %s"
+                self.logger.error(msg, error, type(dt_str), dt_str)
+                raise MTTimeError(msg % (error, type(dt_str), dt_str))
 
         self.dt_object = self.validate_tzinfo(parsed_str)
 

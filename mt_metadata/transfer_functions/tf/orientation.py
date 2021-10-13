@@ -24,5 +24,7 @@ class Orientation(Base):
     def __init__(self, **kwargs):
         self.reference_frame = "geographic"
         self.method = None
+        self.angle_to_geographic_north = 0.0
+        self.value = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

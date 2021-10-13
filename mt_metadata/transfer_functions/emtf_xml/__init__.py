@@ -31,8 +31,10 @@ from .data_quality_warnings import DataQualityWarnings
 from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
+from .magnetometer import Magnetometer
 from .field_notes import FieldNotes
 from .software import Software
+from .remote_ref import RemoteRef
 from .processing_info import ProcessingInfo
 from .estimate import Estimate
 from .statistical_estimates import StatisticalEstimates
@@ -42,6 +44,9 @@ from .magnetic import Magnetic
 from .electric import Electric
 from .channels import Channels
 from .site_layout import SiteLayout
+from .period_range import PeriodRange
+from .data import TransferFunction
+from .emtf import EMTF
 
 
 __all__ = [
@@ -52,13 +57,16 @@ __all__ = [
     "Provenance",
     "Citation",
     "Copyright",
+    "Comment",
     "DataQualityNotes",
     "DataQualityWarnings",
     "Site",
     "Electrode",
     "Dipole",
+    "Magnetometer",
     "FieldNotes",
     "Software",
+    "RemoteRef",
     "ProcessingInfo",
     "Estimate",
     "StatisticalEstimates",
@@ -67,5 +75,8 @@ __all__ = [
     "Magnetic",
     "Electric",
     "Channels",
-    "Layout",
+    "SiteLayout",
+    "PeriodRange",
+    "TransferFunction",
+    "EMTF",
 ]

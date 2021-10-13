@@ -25,7 +25,7 @@ class Comment(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.comment = None
+        self.value = None
         self.author = None
         self._dt = MTime()
         super().__init__(attr_dict=attr_dict, **kwargs)

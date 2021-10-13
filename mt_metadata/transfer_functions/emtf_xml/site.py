@@ -15,12 +15,18 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location, Orientation
+from mt_metadata.transfer_functions.emtf_xml import (
+    DataQualityNotes,
+    DataQualityWarnings,
+)
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
 attr_dict = get_schema("site", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Location()._attr_dict, "location")
 attr_dict.add_dict(Orientation()._attr_dict, "orientation")
+attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
+attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
 # =============================================================================
 class Site(Base):
     __doc__ = write_lines(attr_dict)
@@ -28,14 +34,16 @@ class Site(Base):
     def __init__(self, **kwargs):
         self.project = None
         self.survey = None
-        self.year_collected = None
+        self._year_collected = None
         self.country = None
         self.id = None
         self.name = None
         self.acquired_by = None
         self.location = Location()
         self.orientation = Orientation()
-        self.run_list = []
+        self.data_quality_notes = DataQualityNotes()
+        self.data_quality_warnings = DataQualityWarnings()
+        self._run_list = []
         self._start_dt = MTime()
         self._end_dt = MTime()
 
@@ -56,3 +64,29 @@ class Site(Base):
     @end.setter
     def end(self, value):
         self._end_dt.from_str(value)
+
+    @property
+    def year_collected(self):
+        if self.start != "1980-01-01T00:00:00+00:00":
+            return self._start_dt.year
+        else:
+            return self._year_collected
+
+    @year_collected.setter
+    def year_collected(self, value):
+        self._year_collected = value
+
+    @property
+    def run_list(self):
+        return " ".join(self._run_list)
+
+    @run_list.setter
+    def run_list(self, value):
+        if isinstance(value, (str)):
+            if value.count(",") > 0:
+                delimiter = ","
+            else:
+                delimiter = " "
+            value = value.split(delimiter)
+
+        self._run_list = value

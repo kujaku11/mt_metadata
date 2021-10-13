@@ -249,27 +249,27 @@ class XMLInventoryMTExperiment:
         """
 
         if xml_channel_01.code != xml_channel_02.code:
-            self.logger.info(f"{xml_channel_01.code} != {xml_channel_02.code}")
+            self.logger.debug(f"{xml_channel_01.code} != {xml_channel_02.code}")
             return False
 
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
-            self.logger.info(
+            self.logger.debug(
                 f"{xml_channel_01.sample_rate} != {xml_channel_02.sample_rate}"
             )
             return False
 
         if xml_channel_01.sensor != xml_channel_02.sensor:
-            self.logger.info(f"{xml_channel_01.sensor} != {xml_channel_02.sensor}")
+            self.logger.debug(f"{xml_channel_01.sensor} != {xml_channel_02.sensor}")
             return False
 
         if round(xml_channel_01.latitude, 3) != round(xml_channel_02.latitude, 3):
-            self.logger.info(
+            self.logger.debug(
                 f"{round(xml_channel_01.latitude, 3)} != {round(xml_channel_02.latitude, 3)}"
             )
             return False
 
         if round(xml_channel_01.longitude, 3) != round(xml_channel_02.longitude, 3):
-            self.logger.info(
+            self.logger.debug(
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
             )
             return False

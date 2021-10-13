@@ -21,5 +21,15 @@
         ],
         "alias": [],
         "example": "unrestricted release"
+    },
+	"acknowledgement": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any acknowledgments the transfer function should have.",
+        "options": [],
+        "alias": [],
+        "example": "This project was funded by x."
     }
 }

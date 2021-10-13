@@ -15,6 +15,13 @@ ABBREVIATIONS = {
     "nanotesla": "nT",
     "tesla": "T",
     "volts": "V",
+    "millivolt per kilometer": "mV/km",
+    "millivolts per kilometer": "mV/km",
+    "volt per meter": "V/m",
+    "volts per meter": "V/m",
+    "microvolt per meter": "uV/m",
+    "microvolts per meter": "uV/m",
+    "celsius": "C",
 }
 
 PLOT_AXES_LABELS = {
@@ -34,8 +41,13 @@ obspy_units_descriptions = {
     "V": "Volts",
     "mV": "milliVolts",
     "count": "digital counts",
+    "counts": "digital counts",
     "V/m": "Volts per meter",
     "mV/km": "milliVolts per kilometer",
     "m": "meters",
     "COUNTS": "digital counts",
+    "millivolt per kilometer": "milliVolt per kilometer",
+    "volt per meter": "Volt per meter",
+    "volt": "Volt",
+    "nanotesla": "nanoTesla",
 }

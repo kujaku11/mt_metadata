@@ -28,7 +28,7 @@
         "type": "float",
         "required": true,
         "style": "number",
-        "units": "degrees",
+        "units": "meters",
         "description": "elevation of location in datum specified at survey level",
         "options": [],
         "alias": [
@@ -89,6 +89,16 @@
         "example": "10.0"
     },
     "z": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0"
+    },
+	"z2": {
         "type": "float",
         "required": false,
         "style": "number",

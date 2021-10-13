@@ -107,3 +107,11 @@ MT_EXPERIMENT_SINGLE_STATION = TEST_ROOT.joinpath(
 )
 STATIONXML_FAP = TEST_ROOT.joinpath("data/stationxml/station_xml_with_fap_example.xml")
 STATIONXML_FIR = TEST_ROOT.joinpath("data/stationxml/station_xml_with_fir_example.xml")
+
+TF_ZMM = TEST_ROOT.joinpath("data/transfer_functions/example_emtf.zmm")
+TF_JFILE = TEST_ROOT.joinpath("data/transfer_functions/example_birrp.j")
+TF_XML = TEST_ROOT.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
+TF_EDI_PHOENIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi")
+TF_EDI_METRONIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
+TF_EDI_CGG = TEST_ROOT.joinpath("data/transfer_functions/EGC022_CGG.edi")
+TF_EDI_QUANTEC = TEST_ROOT.joinpath("data/transfer_functions/IEA00184_Qut.edi")

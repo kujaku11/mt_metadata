@@ -18,6 +18,7 @@ from . import Comment
 
 # =============================================================================
 attr_dict = get_schema("data_quality_notes", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
 # =============================================================================
 
 

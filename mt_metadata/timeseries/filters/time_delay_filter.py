@@ -97,7 +97,7 @@ class TimeDelayFilter(FilterBase):
         In general, delay corrections should be applied in time domain before spectral processing.
 
         """
-        self.logger.warning(
+        self.logger.debug(
             "USING FREQUENCY DOMAIN VERSION OF TIME DELAY FILTER NOT RECOMMENDED FOR MT PROCESSING"
         )
 

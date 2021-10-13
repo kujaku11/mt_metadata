@@ -21,7 +21,7 @@
         "alias": [],
         "example": "2020-01-21"
     },
-    "comment": {
+    "value": {
         "type": "string",
         "required": false,
         "style": "free form",

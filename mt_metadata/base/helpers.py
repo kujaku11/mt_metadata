@@ -244,6 +244,22 @@ def flatten_dict(meta_dict, parent_key=None, sep="."):
     return dict(items)
 
 
+def flatten_list(x_list):
+    """
+    Flatten a nested list
+    flatten = lambda l: [item for sublist in l for item in sublist]
+
+    Returns
+    -------
+    None.
+
+    """
+
+    flat_list = [item for sublist in x_list for item in sublist]
+
+    return flat_list
+
+
 def recursive_split_dict(key, value, remainder, sep="."):
     """
     recursively split a dictionary
@@ -361,9 +377,9 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
         if units:
             element.set("units", str(units))
 
-        v_type = get_type(base, attr_dict)
-        if v_type:
-            element.set("type", v_type)
+        # v_type = get_type(base, attr_dict)
+        # if v_type:
+        #     element.set("type", v_type)
 
     return element, name
 
@@ -414,15 +430,26 @@ def element_to_dict(element):
 
     # going to skip attributes for now, later can check them against
     # standards
-    # if element.attrib:
-    #     meta_dict['attr_dict'][element.tag] = dict([(k, v)
-    #                                   for k, v in element.attrib.items()])
+    if element.attrib:
+        pop = False
+        for k, v in element.attrib.items():
+            if k in ["units"]:
+                if len(element.attrib.keys()) <= 2:
+                    pop = True
+                    continue
+            meta_dict[element.tag][k] = v
+
+        if pop:
+            element.attrib.pop("units")
 
     if element.text:
         text = element.text.strip()
         if children or element.attrib:
             if text:
-                meta_dict[element.tag] = text
+                if len(element.attrib.keys()) > 0:
+                    meta_dict[element.tag]["value"] = text
+                else:
+                    meta_dict[element.tag] = text
         else:
             meta_dict[element.tag] = text
 
