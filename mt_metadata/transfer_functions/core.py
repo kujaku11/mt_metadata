@@ -23,16 +23,16 @@ class TF:
     """
     Generic container to hold information about an electromagnetic
     transfer funtion
-    
-    The thought here is to have a central container TF.dataset which is an 
+
+    The thought here is to have a central container TF.dataset which is an
     xarray.Dataset that contains the impedance, tipper, errors and covariance
-    values.  There are helper functions to get and set these from the 
+    values.  There are helper functions to get and set these from the
     TF.dataset.  Cause most of the time the user will want just the impedance
     or the tipper and associated errors.  We are accommodating EMTF style
-    covariances to accurately rotated data errors.  
-    
+    covariances to accurately rotated data errors.
+
     When reading and writing edi files this information will be lost.
-    
+
     """
 
     def __init__(self, fn=None, **kwargs):
@@ -735,11 +735,11 @@ class TF:
     def _compute_impedance_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
-        
+
         This will become important when writing edi files.
-        
+
         Translated from code written by Ben Murphy.
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -779,11 +779,11 @@ class TF:
     def _compute_tipper_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
-        
+
         This will become important when writing edi files.
-        
+
         Translated from code written by Ben Murphy.
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -813,7 +813,7 @@ class TF:
     def _compute_error_from_covariance(self):
         """
         convenience method to compute errors from covariance
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 

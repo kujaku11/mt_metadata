@@ -27,7 +27,7 @@ from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 class MTML2StationXML(XMLInventoryMTExperiment):
     """
     A class to convert multiple MTML xml files into a stationXML
-    
+
     """
 
     def __init__(self, xml_path=None):
@@ -85,7 +85,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def make_df(self):
         """
         Make a pandas data frame for easier querying
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -136,7 +136,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def _get_runs(self, station):
         """
         Get runs from the dataframe for a given station
-        
+
         :param station: DESCRIPTION
         :type station: TYPE
         :return: DESCRIPTION
@@ -148,7 +148,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def _get_channels(self, station, run):
         """
         Get runs from the dataframe for a given station
-        
+
         :param station: DESCRIPTION
         :type station: TYPE
         :return: DESCRIPTION
@@ -200,7 +200,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def read_xml_file(xml_file):
         """
         read an xml file an return an xml element
-        
+
         :param xml_file: DESCRIPTION
         :type xml_file: TYPE
         :return: DESCRIPTION
@@ -212,9 +212,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
     def _make_channel(self, channel_fn):
         """
-        Make a :class:`mt_metadata.timeseries.Channel` object from an 
+        Make a :class:`mt_metadata.timeseries.Channel` object from an
         xml file
-        
+
         :param channel_fn: DESCRIPTION
         :type channel_fn: TYPE
         :return: DESCRIPTION
@@ -236,7 +236,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         """
         Make a :class:`mt_metadata.timeseries.Run` object from information
         in a run dictionary
-        
+
         run_dict = {'fn': xml_file_name, 'channels': [list of xml file names]}
 
         :param run_dict: DESCRIPTION
@@ -255,13 +255,13 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def _make_station(self, station_dict):
         """
         Make a station object from a station dictionary
-        
+
         station_dict = {
             'fn': xml_file_name,
             'runs': [{'fn': run_xml_file_name,
                      'channels': [list of xml file names]}]
             }
-        
+
         :param station_dict: DESCRIPTION
         :type station_dict: TYPE
         :return: DESCRIPTION
@@ -280,8 +280,8 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
     def _make_survey(self, survey_dict):
         """
-        Make a :class:`mt_metadata.timeseries.Survey` object 
-        
+        Make a :class:`mt_metadata.timeseries.Survey` object
+
         survey_dict = {
             'survey': survey_xml_file,
             'filters': filter_xml_file,
@@ -311,7 +311,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
     def _make_filters_dict(self, filters_xml_file):
         """
         Make a filter dictionary from a filter file with all the filters in it
-        
+
         :param filters_xml_file: DESCRIPTION
         :type filters_xml_file: TYPE
         :return: DESCRIPTION
@@ -342,7 +342,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
     def make_experiment(self, stations=None):
         """
-        Create an MTML experiment from the a directory of xml files 
+        Create an MTML experiment from the a directory of xml files
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -352,6 +352,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         mtex.surveys.append(self._make_survey(self.sort_by_station(stations)))
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         return mtex
+
 
 # =============================================================================
 # Working code
@@ -368,8 +369,10 @@ a = MTML2StationXML(xml_path)
 # stations
 for station in a.stations:
     mtex = a.make_experiment(stations=station)
-    inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml"))
-    
+    inv = a.mt_to_xml(
+        mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml")
+    )
+
 # if you want to make a complete stationxml
 # mtex = a.make_experiment()
 # inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath("full_stationxml.xml"))

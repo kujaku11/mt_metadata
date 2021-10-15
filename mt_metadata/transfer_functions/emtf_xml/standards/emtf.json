@@ -36,7 +36,9 @@
         "units": null,
         "description": "subject data type",
         "options": [
-            "MT_TF"
+            "MT_TF",
+			"LPMT_TF",
+			"ohter"
         ],
         "alias": [],
         "example": "MT_TF"

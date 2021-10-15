@@ -222,20 +222,20 @@ class ZMMHeader(object):
     def write_header(self):
         """
         write a zmm header
-        
+
         TRANSFER FUNCTIONS IN MEASUREMENT COORDINATES
         ********** WITH FULL ERROR COVARINCE*********
-                                                                                       
-        300                 
+
+        300
         coordinate    34.727  -115.735 declination    13.10
         number of channels   5   number of frequencies  38
-        orientations and tilts of each channel 
-           1     0.00     0.00 300  Hx    
-           2    90.00     0.00 300  Hy    
-           3     0.00     0.00 300  Hz    
-           4     0.00     0.00 300  Ex    
-           5    90.00     0.00 300  Ey 
-        
+        orientations and tilts of each channel
+           1     0.00     0.00 300  Hx
+           2    90.00     0.00 300  Hy
+           3     0.00     0.00 300  Hz
+           4     0.00     0.00 300  Ex
+           5    90.00     0.00 300  Ey
+
         :return: properly formatted string
         :rtype: string
 
@@ -553,13 +553,13 @@ class ZMM(ZMMHeader):
     def write(self, fn, decimation_levels=None):
         """
         write a zmm file
-        
+
         decimation_levels should be a dictionary with keys
-        
+
             * decimation_level
-            
+
         values will be a dictionary with keys
-        
+
             * frequency_band, value = (min, max)
             * n_points, value = int
             * sampling_freq, value = float
@@ -745,7 +745,7 @@ class ZMM(ZMMHeader):
     def _fill_dataset(self):
         """
         fill the dataset
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 

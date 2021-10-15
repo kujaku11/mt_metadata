@@ -125,7 +125,6 @@ class Base:
 
         for k, v in other.to_dict(single=True).items():
             if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-
                 self.set_attr_from_name(k, v)
 
     @property

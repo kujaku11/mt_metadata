@@ -267,7 +267,8 @@ class EMTFXML(emtf_xml.EMTF):
                 self._writer_dict[key](emtf_element, key, value)
             else:
                 self._write_element(
-                    emtf_element, value,
+                    emtf_element,
+                    value,
                 )
 
         with open(fn, "w") as fid:
@@ -276,7 +277,7 @@ class EMTFXML(emtf_xml.EMTF):
     def _get_statistical_estimates(self):
         """
         Get the appropriate statistical estimates in the file.
-        
+
         """
         self.statistical_estimates.estimates_list = []
         if self.data.z_var is not None:
@@ -315,7 +316,7 @@ class EMTFXML(emtf_xml.EMTF):
     def _get_data_types(self):
         """
         get the appropriate data types for the file
-        
+
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -664,7 +665,7 @@ class EMTFXML(emtf_xml.EMTF):
     def survey_metadata(self, sm):
         """
         Set metadata and other values in metadata
-        
+
         :param sm: DESCRIPTION
         :type sm: TYPE
         :return: DESCRIPTION
@@ -725,8 +726,8 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.software.last_updated = (
             self.processing_info.processing_software.last_mod
         )
-        s.transfer_function.remote_references = self.processing_info.processing_tag.split(
-            "_"
+        s.transfer_function.remote_references = (
+            self.processing_info.processing_tag.split("_")
         )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
@@ -812,7 +813,7 @@ class EMTFXML(emtf_xml.EMTF):
     def station_metadata(self, station_metadata):
         """
         Set metadata and other values in metadata
-        
+
         :param sm: DESCRIPTION
         :type sm: TYPE
         :return: DESCRIPTION
