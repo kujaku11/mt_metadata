@@ -1048,6 +1048,8 @@ def write_emtfxml(tf_object, fn=None):
         ].data
 
     emtf.tags = ", ".join(tags)
+    emtf.period_range.min = emtf.data.period.min()
+    emtf.period_range.max = emtf.data.period.max()
     emtf.write(fn=fn)
 
     return emtf
