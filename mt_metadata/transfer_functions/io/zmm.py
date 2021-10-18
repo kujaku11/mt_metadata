@@ -176,8 +176,8 @@ class ZMMHeader(object):
 
         self.station_metadata.comments = ""
         self.station = header_list[3].lower().strip()
-        self.station_metadata.run_list = []
-        self.station_metadata.run_list.append(metadata.Run(id=f"{self.station}a"))
+        self.station_metadata._runs = []
+        self.station_metadata.add_run(metadata.Run(id=f"{self.station}a"))
 
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
@@ -212,7 +212,7 @@ class ZMMHeader(object):
                 if channel_dict["chn_num"] == 0:
                     channel_dict["chn_num"] = self.num_channels
                 setattr(self, comp, Channel(channel_dict))
-                ch = getattr(self.station_metadata.run_list[0], comp)
+                ch = getattr(self.station_metadata.runs[0], comp)
                 ch.measurement_azimuth = channel_dict["azm"]
                 ch.measurement_tilt = channel_dict["tilt"]
                 ch.translated_azimuth = channel_dict["azm"]
@@ -251,7 +251,7 @@ class ZMMHeader(object):
         lines += [" orientations and tilts of each channel"]
         for ii, ch in enumerate(self._channel_order):
             try:
-                channel = getattr(self.station_metadata.run_list[0], ch)
+                channel = getattr(self.station_metadata.runs[0], ch)
                 if channel.channel_number is None:
                     channel.channel_number = int(ii)
 
@@ -532,16 +532,16 @@ class ZMM(ZMMHeader):
         self.station_metadata.provenance.software.name = "EMTF"
         self.station_metadata.provenance.software.version = "1"
         self.station_metadata.transfer_function.runs_processed = (
-            self.station_metadata.run_names
+            self.station_metadata.run_list
         )
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
-        self.station_metadata.run_list[0].sample_rate = np.median(
+        self.station_metadata.runs[0].sample_rate = np.median(
             np.array([d["df"] for k, d in self.decimation_dict.items()])
         )
 
         # add information to runs
-        for rr in self.station_metadata.run_list:
+        for rr in self.station_metadata.runs:
             if self.transfer_functions.shape[1] >= 2:
                 rr.ex = self.ex_metadata
                 rr.ey = self.ey_metadata
@@ -578,7 +578,7 @@ class ZMM(ZMMHeader):
                     "level": 0,
                     "bands": (0, 0),
                     "npts": 0,
-                    "df": self.station_metadata.run_list[0].sample_rate,
+                    "df": self.station_metadata.runs[0].sample_rate,
                 }
             lines += [
                 (
