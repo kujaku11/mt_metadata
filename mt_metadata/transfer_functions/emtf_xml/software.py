@@ -26,6 +26,7 @@ class Software(Base):
 
     def __init__(self, **kwargs):
         self.author = None
+        self.name = None
         self._last_mod_dt = MTime()
         self.remote_ref = None
 

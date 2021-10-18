@@ -155,6 +155,8 @@ class EMTFXML(emtf_xml.EMTF):
         self.site_layout = emtf_xml.SiteLayout()
         self.data = emtf_xml.TransferFunction()
         self.period_range = emtf_xml.PeriodRange()
+        
+        self.fn = None
 
         self.element_keys = [
             "description",
@@ -203,8 +205,25 @@ class EMTFXML(emtf_xml.EMTF):
             "site_layout": self._write_site_layout,
             "data": self._write_data,
         }
+        
+    @property
+    def fn(self):
+        return self._fn
+    
+    @fn.setter
+    def fn(self, value):
+        if value is not None:
+            self._fn = Path(value)
+        else:
+            self._fn = None
+            
+    @property
+    def save_dir(self):
+        if self.fn is not None:
+            return self.fn.parent
+        return None
 
-    def read(self, fn):
+    def read(self, fn=None):
         """
         Read xml file
 
@@ -214,9 +233,13 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        fn = Path(fn)
-        if not fn.exists():
-            raise IOError(f"Cannot find: {fn}")
+        if fn is not None:
+            self.fn = fn
+        if self.fn is not None:
+            if not self.fn.exists():
+                raise IOError(f"Cannot find: {fn}")
+        else:
+            raise IOError("Input file name is None, that is bad.")
 
         root = et.parse(fn).getroot()
         root_dict = helpers.element_to_dict(root)
@@ -232,6 +255,11 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
+        
+        # apparently sometimes the run list will come out as None from an 
+        # empty emtfxml.
+        if self.site._run_list is None:
+            self.site._run_list = []
 
     def write(self, fn):
         """
@@ -273,6 +301,9 @@ class EMTFXML(emtf_xml.EMTF):
 
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))
+        
+        self.fn = fn
+        
 
     def _get_statistical_estimates(self):
         """
@@ -430,7 +461,12 @@ class EMTFXML(emtf_xml.EMTF):
 
         """
         self.field_notes = []
-        for run in root_dict["field_notes"]:
+        if not isinstance(root_dict["field_notes"], list):
+            field_notes = [root_dict["field_notes"]]
+        else:
+            field_notes = root_dict["field_notes"]
+            
+        for run in field_notes:
             f = meta_classes["field_notes"]()
             f.run = run["run"]
             f.instrument.from_dict({"instrument": run["instrument"]})
@@ -645,7 +681,7 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.author = self.copyright.citation.author
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
@@ -726,9 +762,10 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.software.last_updated = (
             self.processing_info.processing_software.last_mod
         )
-        s.transfer_function.remote_references = (
-            self.processing_info.processing_tag.split("_")
-        )
+        if self.processing_info.processing_tag is not None:
+            s.transfer_function.remote_references = (
+                self.processing_info.processing_tag.split("_")
+            )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
             {"type": self.processing_info.remote_ref.type}

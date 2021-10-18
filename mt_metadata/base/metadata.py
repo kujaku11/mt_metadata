@@ -415,6 +415,7 @@ class Base:
             "input_channels",
             "output_channels",
             "data_types_list",
+            "fn",
         ]
 
         if hasattr(self, "_attr_dict"):

@@ -439,7 +439,7 @@ def element_to_dict(element):
                     pop_units = True
                     continue
             if k in ["type"]:
-                if len(element.attrib.keys()) <= 2:
+                if len(element.attrib.keys()) <= 1:
                     pop_type = True
                     continue 
             meta_dict[element.tag][k] = v
