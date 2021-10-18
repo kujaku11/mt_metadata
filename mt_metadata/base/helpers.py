@@ -429,18 +429,25 @@ def element_to_dict(element):
             meta_dict[element.tag] = meta_dict[element.tag]["item"]
 
     # going to skip attributes for now, later can check them against
-    # standards
+    # standards, neet to skip units and type
     if element.attrib:
-        pop = False
+        pop_units = False
+        pop_type = False
         for k, v in element.attrib.items():
             if k in ["units"]:
                 if len(element.attrib.keys()) <= 2:
-                    pop = True
+                    pop_units = True
                     continue
+            if k in ["type"]:
+                if len(element.attrib.keys()) <= 2:
+                    pop_type = True
+                    continue 
             meta_dict[element.tag][k] = v
 
-        if pop:
+        if pop_units:
             element.attrib.pop("units")
+        if pop_type:
+            element.attrib.pop("type")
 
     if element.text:
         text = element.text.strip()
