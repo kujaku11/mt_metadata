@@ -41,12 +41,12 @@ class TF:
         # set metadata for the station
         self.survey_metadata = Survey()
         self.station_metadata = Station()
-        self.station_metadata.run_list.append(Run())
-        self.station_metadata.run_list[0].ex = Electric(component="ex")
-        self.station_metadata.run_list[0].ey = Electric(component="ey")
-        self.station_metadata.run_list[0].hx = Magnetic(component="hx")
-        self.station_metadata.run_list[0].hy = Magnetic(component="hy")
-        self.station_metadata.run_list[0].hz = Magnetic(component="hz")
+        self.station_metadata.add_run(Run())
+        self.station_metadata.runs[0].ex = Electric(component="ex")
+        self.station_metadata.runs[0].ey = Electric(component="ey")
+        self.station_metadata.runs[0].hx = Magnetic(component="hx")
+        self.station_metadata.runs[0].hy = Magnetic(component="hy")
+        self.station_metadata.runs[0].hz = Magnetic(component="hz")
 
         self._rotation_angle = 0
 
@@ -66,7 +66,7 @@ class TF:
             "acquired_by": "station_metadata.acquired_by.author",
             "start": "station_metadata.time_period.start",
             "end": "station_metadata.time_period.end",
-            "runs_processed": "station_metadata.run_names",
+            "runs_processed": "station_metadata.run_list",
         }
 
         self._ch_input_dict = {

@@ -585,6 +585,7 @@ class Base:
                          non-None values
 
         """
+
         meta_dict = {}
         for name in list(self._attr_dict.keys()):
             try:

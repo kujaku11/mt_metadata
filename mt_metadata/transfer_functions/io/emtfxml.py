@@ -805,7 +805,7 @@ class EMTFXML(emtf_xml.EMTF):
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
 
-            s.run_list.append(r)
+            s.add_run(r)
 
         return s
 
@@ -823,7 +823,10 @@ class EMTFXML(emtf_xml.EMTF):
         sm = station_metadata
 
         self.site.acquired_by = sm.acquired_by.author
-        self.sub_type = f"{sm.data_type.upper()}_TF"
+        if sm.data_type is not None:
+            self.sub_type = f"{sm.data_type.upper()}_TF"
+        else:
+            self.sub_type = "MT_TF"
         self.site.name = sm.geographic_name
         self.site.id = sm.id
         self.product_id = sm.fdsn.id
@@ -871,7 +874,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.data_quality_notes.good_to_period = (
             sm.transfer_function.data_quality.good_to_period
         )
-        self.site.data_quality_notes.rating = sm.transfer_function.data_quality.rating
+        self.site.data_quality_notes.rating = sm.transfer_function.data_quality.rating.value
 
         # not sure there is a place to put processing parameters yet
 
@@ -879,7 +882,7 @@ class EMTFXML(emtf_xml.EMTF):
         #     {"type": self.processing_info.remote_ref.type}
         # )
         self.field_notes = []
-        for r in sm.run_list:
+        for r in sm.runs:
             fn = emtf_xml.FieldNotes()
             fn.dipole = []
             fn.magnetometer = []
