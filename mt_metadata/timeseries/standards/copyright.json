@@ -12,7 +12,14 @@
 			"CC BY-ND",
 			"CC BY-NC",
 			"CC BY-NC-SA",
-			"CC BY-NC-NC"
+			"CC BY-NC-NC",
+			"CC-0",
+			"CC-BY",
+			"CC-BY-SA",
+			"CC-BY-ND",
+			"CC-BY-NC",
+			"CC-BY-NC-SA",
+			"CC-BY-NC-NC"
         ],
         "alias": [],
         "example": "CC BY"

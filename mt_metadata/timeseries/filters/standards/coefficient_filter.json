@@ -1,7 +1,7 @@
 {
     "gain": {
         "type": "float",
-        "required": false,
+        "required": true,
         "style": "number",
         "units": null,
         "description": "Scale factor for a simple coefficient filter.",

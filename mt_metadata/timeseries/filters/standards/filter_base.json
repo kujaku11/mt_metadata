@@ -26,7 +26,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "Type of filter.",
+        "description": "Type of filter, must be one of the available filters.",
         "options": [
             "fap_table",
             "zpk",
