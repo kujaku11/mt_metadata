@@ -6,12 +6,6 @@
         "units": null,
         "description": "How the data can be used. The options are based on Creative Commons licenses. For details visit https://creativecommons.org/licenses/",
         "options": [
-            "CC-0",
-            "CC-BY",
-            "CC-BY-SA",
-            "CC-BY-ND",
-            "CC-BY-NC-SA",
-            "CC-BY-NC-ND",
 			"CC0",
 			"CC BY",
 			"CC BY-SA",
@@ -21,6 +15,6 @@
 			"CC BY-NC-NC"
         ],
         "alias": [],
-        "example": "CC-0"
+        "example": "CC BY"
     }
 }
