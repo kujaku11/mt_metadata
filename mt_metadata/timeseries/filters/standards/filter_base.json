@@ -2,12 +2,12 @@
     "name": {
         "type": "string",
         "required": true,
-        "style": "name list",
+        "style": "name",
         "units": null,
         "description": "Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
         "options": [],
         "alias": [],
-        "example": "\"[counts2mv, lowpass_magnetic]\""
+        "example": "\"lowpass_magnetic\""
     },
 
     "comments": {
@@ -28,15 +28,15 @@
         "units": null,
         "description": "Type of filter.",
         "options": [
-            "table",
+            "fap_table",
             "zpk",
-            "conversion",
-            "gain",
             "time_delay",
+			"coefficient",
+			"fir",
             "other"
         ],
         "alias": [],
-        "example": "table"
+        "example": "fap_table"
     },
 
     "units_in": {
