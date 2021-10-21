@@ -117,14 +117,6 @@ class ChannelResponseFilter(object):
         return return_list
 
     @property
-    def total_delay(self):
-        delay_filters = self.delay_filters
-        total_delay = 0.0
-        for delay_filter in delay_filters:
-            total_delay += delay_filter.delay
-        return total_delay
-
-    @property
     def pass_band(self):
         """estimate pass band for all filters in frequency"""
         pb = []
@@ -246,7 +238,7 @@ class ChannelResponseFilter(object):
         sensitivity = 1.0
         for mt_filter in self.filters_list:
             complex_response = mt_filter.complex_response(self.normalization_frequency)
-            sensitivity *= complex_response
+            sensitivity *= complex_response.astype(complex)
         try:
             return np.round(np.abs(sensitivity[0]), 3)
         except (IndexError, TypeError):
