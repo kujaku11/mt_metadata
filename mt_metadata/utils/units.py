@@ -12,7 +12,7 @@ case strings.
 UNITS = {"digital counts": {"abbreviation": "cnts",
                             "description": "digital counts",
                             "obspy": "counts",
-                            "plot_label": description.capitalize()},
+                            "plot_label": "Digital Counts"},
          "":""}
 
 ABBREVIATIONS = {
