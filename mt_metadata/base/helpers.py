@@ -435,6 +435,8 @@ def element_to_dict(element):
         pop_type = False
         for k, v in element.attrib.items():
             if k in ["units"]:
+                if "type" in element.attrib.keys():
+                    pop_type = True
                 if len(element.attrib.keys()) <= 2:
                     pop_units = True
                     continue
