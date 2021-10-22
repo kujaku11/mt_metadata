@@ -9,6 +9,12 @@ case strings.
 
 """
 
+UNITS = {"digital counts": {"abbreviation": "cnts",
+                            "description": "digital counts",
+                            "obspy": "counts",
+                            "plot_label": description.capitalize()},
+         "":""}
+
 ABBREVIATIONS = {
     "digital counts": "cts",
     "millivolts": "mV",
@@ -19,8 +25,8 @@ ABBREVIATIONS = {
     "millivolts per kilometer": "mV/km",
     "volt per meter": "V/m",
     "volts per meter": "V/m",
-    "microvolt per meter": "uV/m",
-    "microvolts per meter": "uV/m",
+    "microvolt per meter": "\u03BCV/m",
+    "microvolts per meter": "\u03BCV/m",
     "celsius": "C",
 }
 
