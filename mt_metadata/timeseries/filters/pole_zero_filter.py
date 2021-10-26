@@ -39,7 +39,12 @@ class PoleZeroFilter(FilterBase):
         self.poles = None
         self.zeros = None
         self.normalization_factor = 1.0
-
+        # this is a hack for now until we sort out the order of inheritance
+        # if not then the normalization factor is a string and causes an error
+        try:
+            kwargs["normalization_factor"]
+        except KeyError:
+            kwargs["normalization_factor"] = 1.0
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
