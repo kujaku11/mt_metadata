@@ -13,7 +13,11 @@ UNITS = {"digital counts": {"abbreviation": "cnts",
                             "description": "digital counts",
                             "obspy": "counts",
                             "plot_label": "Digital Counts"},
-         "":""}
+         "volts": {"abbreviation": "V",
+                   "description": "volts - measurement of electric potential",
+                   "obspy": "volts",
+                   "plot_label": "Volts"},
+         }
 
 ABBREVIATIONS = {
     "digital counts": "cts",
