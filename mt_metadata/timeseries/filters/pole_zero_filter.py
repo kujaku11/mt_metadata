@@ -45,6 +45,7 @@ class PoleZeroFilter(FilterBase):
             kwargs["normalization_factor"]
         except KeyError:
             kwargs["normalization_factor"] = 1.0
+            
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
