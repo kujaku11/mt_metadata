@@ -33,10 +33,7 @@ class TestRun(unittest.TestCase):
                     ("channels_recorded_electric", ["ex", "ey"]),
                     ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
                     ("data_logger.firmware.author", None),
-                    (
-                        "data_logger.firmware.last_updated",
-                        "1980-01-01T00:00:00+00:00",
-                    ),
+                    ("data_logger.firmware.last_updated", "1980-01-01T00:00:00+00:00",),
                     ("data_logger.firmware.name", None),
                     ("data_logger.firmware.version", None),
                     ("data_logger.id", None),

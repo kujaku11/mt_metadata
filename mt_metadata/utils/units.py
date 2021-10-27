@@ -9,15 +9,26 @@ case strings.
 
 """
 
-UNITS = {"digital counts": {"abbreviation": "cnts",
-                            "description": "digital counts",
-                            "obspy": "counts",
-                            "plot_label": "Digital Counts"},
-         "volts": {"abbreviation": "V",
-                   "description": "volts - measurement of electric potential",
-                   "obspy": "volts",
-                   "plot_label": "Volts"},
-         }
+UNITS = {
+    "digital counts": {
+        "abbreviation": "cnts",
+        "description": "digital counts",
+        "obspy": "counts",
+        "plot_label": "Digital Counts",
+    },
+    "volts": {
+        "abbreviation": "V",
+        "description": "volts - measurement of electric potential",
+        "obspy": "volts",
+        "plot_label": "Volts",
+    },
+    "millivolts": {
+        "abbreviation": "mV",
+        "description": "millivolts - measurement of electric potential",
+        "obspy": "milliVolts",
+        "plot_label": "milliVolts",
+    },
+}
 
 ABBREVIATIONS = {
     "digital counts": "cts",
