@@ -126,6 +126,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         value = self.flip_dict(release_dict)[value]
 
                 mt_survey.set_attr_from_name(mt_key, value)
+                
+        if mt_survey.id is None:
+            mt_survey.id = mt_survey.fdsn.id
 
         return mt_survey
 
