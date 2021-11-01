@@ -134,7 +134,7 @@ class Experiment(Base):
     @property
     def survey_names(self):
         """Return names of surveys in experiment"""
-        return [ss.survey_id for ss in self.surveys]
+        return [ss.id for ss in self.surveys]
 
     def to_xml(self, fn=None, required=True):
         """
