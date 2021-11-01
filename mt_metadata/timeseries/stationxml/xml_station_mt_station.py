@@ -109,7 +109,11 @@ class XMLStationMTStation(BaseTranslator):
                         run_comments.append({key: value})
                         continue
 
-                    key = key.split("mt.station.")[1]
+                    try:
+                        key = key.split("mt.station.")[1]
+                    except IndexError:
+                        pass
+                    
                     if "summary" in key:
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:

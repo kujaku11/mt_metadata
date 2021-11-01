@@ -75,8 +75,10 @@ class BaseTranslator:
         by a comma.
 
         """
-
-        key = comment.subject.strip().replace(" ", "_").lower()
+        if comment.subject is not None:
+            key = comment.subject.strip().replace(" ", "_").lower()
+        else: 
+            key = 'mt'
 
         def parse(comment_string, filled={}):
             """

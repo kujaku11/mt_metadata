@@ -17,6 +17,10 @@ UNITS = {"digital counts": {"abbreviation": "cnts",
                    "description": "volts - measurement of electric potential",
                    "obspy": "volts",
                    "plot_label": "Volts"},
+         "millivolts": {"abbreviation": "mV",
+                   "description": "10E-3 volts - measurement of electric potential",
+                   "obspy": "millivolts",
+                   "plot_label": "milliVolts"},
          }
 
 ABBREVIATIONS = {
