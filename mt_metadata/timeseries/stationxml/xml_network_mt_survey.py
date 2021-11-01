@@ -128,7 +128,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 mt_survey.set_attr_from_name(mt_key, value)
                 
         if mt_survey.id is None:
-            mt_survey.id = mt_survey.fdsn.id
+            mt_survey.id = mt_survey.fdsn.network
 
         return mt_survey
 
