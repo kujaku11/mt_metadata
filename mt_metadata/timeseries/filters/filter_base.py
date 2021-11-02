@@ -136,7 +136,7 @@ import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.base.helpers import filter_descriptions
-from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
+from mt_metadata.utils.units import UNITS
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
@@ -228,7 +228,7 @@ class FilterBase(Base):
 
     @staticmethod
     def get_unit_description(units):
-        return units_descriptions[units]
+        return UNITS[units]
 
     def get_filter_description(self):
         """

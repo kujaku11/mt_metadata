@@ -9,54 +9,103 @@ case strings.
 
 """
 
-UNITS = {'digital counts': {'description': 'digital counts from data logger',
+import pandas as pd
+
+UNITS_LIST = [{'unit': 'digital counts',
+  'description': 'digital counts from data logger',
   'abbreviation': 'cnts',
   'plot_label': 'Digital Counts'},
- 'volts': {'description': 'electric potential',
+ {'unit': 'volts',
+  'description': 'electric potential',
   'abbreviation': 'V',
   'plot_label': 'Volts'},
- 'millivolts': {'description': 'electric potential',
+ {'unit': 'millivolts',
+  'description': 'electric potential',
   'abbreviation': 'mV',
   'plot_label': 'milliVolts'},
- 'microvolts': {'description': 'electric potential',
+ {'unit': 'microvolts',
+  'description': 'electric potential',
   'abbreviation': 'mircoV',
   'plot_label': 'microVolts'},
- 'tesla': {'description': 'magnetic field',
+ {'unit': 'tesla',
+  'description': 'magnetic field',
   'abbreviation': 'T',
   'plot_label': 'Tesla'},
- 'millitesla': {'description': 'magnetic field',
+ {'unit': 'millitesla',
+  'description': 'magnetic field',
   'abbreviation': 'mT',
   'plot_label': 'milliTesla'},
- 'microtesla': {'description': 'magnetic field',
+ {'unit': 'microtesla',
+  'description': 'magnetic field',
   'abbreviation': 'microT',
   'plot_label': 'microTesla'},
- 'nanotesla': {'description': 'magnetic field',
+ {'unit': 'nanotesla',
+  'description': 'magnetic field',
   'abbreviation': 'nT',
   'plot_label': 'nanoTesla'},
- 'volts per meter': {'description': 'electric field',
+ {'unit': 'volts per meter',
+  'description': 'electric field',
   'abbreviation': 'V/m',
   'plot_label': 'Volts per Meter'},
- 'millivolts per kilometer': {'description': 'electric field',
+ {'unit': 'millivolts per kilometer',
+  'description': 'electric field',
   'abbreviation': 'mV/km',
   'plot_label': 'milliVolts per Kilometer'},
- 'microvolts per meter': {'description': 'electric field',
+ {'unit': 'microvolts per meter',
+  'description': 'electric field',
   'abbreviation': 'microV/m',
   'plot_label': 'microVolts per Meter'},
- 'millivolts per kilometer per nanotesla': {'description': 'EM transfer function',
+ {'unit': 'millivolts per kilometer per nanotesla',
+  'description': 'EM transfer function',
   'abbreviation': 'mV/km/nT',
   'plot_label': '[mV/km]/[nT]'},
- 'volts per meter per tesla': {'description': 'EM transfer function',
+ {'unit': 'volts per meter per tesla',
+  'description': 'EM transfer function',
   'abbreviation': 'V/m/T',
   'plot_label': '[V/m]/[T]'},
- 'meter': {'description': 'length',
+ {'unit': 'meter',
+  'description': 'length',
   'abbreviation': 'm',
   'plot_label': 'Meter'},
- 'kilometer': {'description': 'length',
+ {'unit': 'kilometer',
+  'description': 'length',
   'abbreviation': 'km',
   'plot_label': 'Kilometer'},
- 'celsius': {'description': 'temperature',
+ {'unit': 'celsius',
+  'description': 'temperature',
   'abbreviation': 'C',
-  'plot_label': 'Celsius'}}
+  'plot_label': 'Celsius'}]
+
+UNITS_DF = pd.DataFrame(UNITS_LIST)
+
+# def get_units(value, unit_type="name"):
+#     """
+    
+#     :param value: unit value
+#     :type value: string
+#     :param unit_type: how the unit is represented [ name | abbreviation ],
+#     defaults to "name"
+#     :type unit_type: string, optional
+#     :return: unit dictionary
+#     :rtype: dict
+
+#     """
+    
+#     if unit_type == "name":
+#         try:
+#             unit_dict = UNITS[value]
+#         except KeyError:
+#             msg = f"{value} is not in the units dictionary, acceptable units are {list(UNITS.keys())}"
+#             raise KeyError(msg)
+            
+#     elif unit_type == "abbreviation":
+#         for key, unit_dict in UNITS.items():
+#             if unit_dict["abbreviation"] == value:
+#                 return unit_dict
+#         raise KeyError(f"{value} is not in the units dictionary, acceptable abbreviations are {list(UNITS.keys())}")
+
+            
+#     return unit_dict
 
 ABBREVIATIONS = {
     "digital counts": "cts",

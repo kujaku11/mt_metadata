@@ -48,9 +48,9 @@ class Experiment(Base):
     """
 
     def __init__(self, surveys=[]):
-        
+
         super().__init__()
-        
+
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.surveys = surveys
 

@@ -126,7 +126,7 @@ class Base:
         for k, v in other.to_dict(single=True).items():
             if isinstance(v, np.ndarray):
                 if v.size > 0:
-                   self.set_attr_from_name(k, v) 
+                    self.set_attr_from_name(k, v)
             elif v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
                 self.set_attr_from_name(k, v)
 

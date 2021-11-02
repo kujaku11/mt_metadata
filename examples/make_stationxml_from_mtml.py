@@ -143,7 +143,9 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        return self.df[(self.df.station == station) & (self.df.is_run == True)].sort_values("run")
+        return self.df[
+            (self.df.station == station) & (self.df.is_run == True)
+        ].sort_values("run")
 
     def _get_channels(self, station, run):
         """

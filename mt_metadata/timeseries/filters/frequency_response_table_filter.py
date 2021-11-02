@@ -128,7 +128,10 @@ class FrequencyResponseTableFilter(FilterBase):
         return self._empirical_frequencies.max()
 
     def to_obspy(
-        self, stage_number=1, normalization_frequency=1, sample_rate=1,
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         Convert to an obspy stage

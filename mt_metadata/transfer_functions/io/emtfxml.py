@@ -295,7 +295,8 @@ class EMTFXML(emtf_xml.EMTF):
                 self._writer_dict[key](emtf_element, key, value)
             else:
                 self._write_element(
-                    emtf_element, value,
+                    emtf_element,
+                    value,
                 )
 
         with open(fn, "w") as fid:
@@ -761,8 +762,8 @@ class EMTFXML(emtf_xml.EMTF):
             self.processing_info.processing_software.last_mod
         )
         if self.processing_info.processing_tag is not None:
-            s.transfer_function.remote_references = self.processing_info.processing_tag.split(
-                "_"
+            s.transfer_function.remote_references = (
+                self.processing_info.processing_tag.split("_")
             )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
