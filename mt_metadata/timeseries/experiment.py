@@ -37,17 +37,20 @@ from .filters import (
     FrequencyResponseTableFilter,
 )
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.base import helpers
+from mt_metadata.base import Base, helpers
 
 # =============================================================================
 
 
-class Experiment:
+class Experiment(Base):
     """
     Top level of the metadata
     """
 
     def __init__(self, surveys=[]):
+        
+        super().__init__()
+        
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.surveys = surveys
 
@@ -131,7 +134,7 @@ class Experiment:
     @property
     def survey_names(self):
         """Return names of surveys in experiment"""
-        return [ss.survey_id for ss in self.surveys]
+        return [ss.id for ss in self.surveys]
 
     def to_xml(self, fn=None, required=True):
         """

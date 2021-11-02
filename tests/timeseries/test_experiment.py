@@ -42,11 +42,13 @@ class TestExperiment(unittest.TestCase):
         self.assertRaises(TypeError, set_surveys, [Survey(), Station()])
 
     def test_add_experiments(self):
-        ex2 = Experiment([Survey(survey_id="two")])
-        self.experiment.surveys.append(Survey(survey_id="one"))
+        ex2 = Experiment([Survey(id="two")])
+        self.experiment.surveys.append(Survey(id="one"))
         self.experiment += ex2
-        self.assertEqual(len(self.experiment), 2)
-        self.assertListEqual(["one", "two"], self.experiment.survey_names)
+        with self.subTest(name="length"):
+            self.assertEqual(len(self.experiment), 2)
+        with self.subTest(name="name equal"):
+            self.assertListEqual(["one", "two"], self.experiment.survey_names)
 
 
 class TestBuildExperiment(unittest.TestCase):

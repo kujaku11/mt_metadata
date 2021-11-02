@@ -143,7 +143,7 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        return self.df[(self.df.station == station) & (self.df.is_run == True)]
+        return self.df[(self.df.station == station) & (self.df.is_run == True)].sort_values("run")
 
     def _get_channels(self, station, run):
         """
@@ -367,7 +367,7 @@ a = MTML2StationXML(xml_path)
 
 # if you want to make one stationxml per station then you can loop over
 # stations
-for station in a.stations:
+for station in a.stations[0:1]:
     mtex = a.make_experiment(stations=station)
     inv = a.mt_to_xml(
         mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml")
