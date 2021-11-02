@@ -63,25 +63,32 @@ UNITS_LIST = [
         "alias": "counts",
     },
     {
-        "name": "volts",
+        "name": "digital counts",
+        "description": "digital counts from data logger",
+        "abbreviation": "cnts",
+        "plot_label": "Digital Counts",
+        "alias": "count",
+    },
+    {
+        "name": "volt",
         "description": "electric potential",
         "abbreviation": "V",
-        "plot_label": "Volts",
-        "alias": "volt",
+        "plot_label": "Volt",
+        "alias": "volts",
     },
     {
-        "name": "millivolts",
+        "name": "millivolt",
         "description": "electric potential",
         "abbreviation": "mV",
-        "plot_label": "milliVolts",
-        "alias": "millivolt",
+        "plot_label": "milliVolt",
+        "alias": "millivolts",
     },
     {
-        "name": "microvolts",
+        "name": "microvolt",
         "description": "electric potential",
         "abbreviation": "\u03BCV",
-        "plot_label": "microVolts",
-        "alias": "microvolt",
+        "plot_label": "microVolt",
+        "alias": "microvolts",
     },
     {
         "name": "tesla",
@@ -112,39 +119,39 @@ UNITS_LIST = [
         "alias": "",
     },
     {
-        "name": "volts per meter",
+        "name": "volt per meter",
         "description": "electric field",
         "abbreviation": "V/m",
-        "plot_label": "Volts per Meter",
-        "alias": "volt per meter",   
+        "plot_label": "Volt per Meter",
+        "alias": "volts per meter",   
     },
     {
-        "name": "millivolts per kilometer",
+        "name": "millivolt per kilometer",
         "description": "electric field",
         "abbreviation": "mV/km",
-        "plot_label": "milliVolts per Kilometer",
-        "alias": "millivolt per kilometer",
+        "plot_label": "milliVolt per Kilometer",
+        "alias": "millivolts per kilometer",
     },
     {
-        "name": "microvolts per meter",
+        "name": "microvolt per meter",
         "description": "electric field",
         "abbreviation": "\u03BCV/m",
-        "plot_label": "microVolts per Meter",
-        "alias": "microvolt per meter",
+        "plot_label": "microVolt per Meter",
+        "alias": "microvolts per meter",
     },
     {
-        "name": "millivolts per kilometer per nanotesla",
+        "name": "millivolt per kilometer per nanotesla",
         "description": "EM transfer function",
         "abbreviation": "mV/km/nT",
         "plot_label": "[mV/km]/[nT]",
         "alias": "millivolts per kilometer per nanotesla",
     },
     {
-        "name": "volts per meter per tesla",
+        "name": "volt per meter per tesla",
         "description": "EM transfer function",
         "abbreviation": "V/m/T",
         "plot_label": "[V/m]/[T]",
-        "alias": "volt per meter per tesla",
+        "alias": "volts per meter per tesla",
     },
     {
         "name": "meter",
@@ -189,6 +196,11 @@ def get_unit_object(unit):
             
         unit_df = UNITS_DF[UNITS_DF[col] == value]
         if len(unit_df) == 1:
+            unit_dict = unit_df.to_dict("records")[0]
+            return Unit(**unit_dict)
+        
+        # counts has to entries, should figure out a better way than this
+        elif len(unit_df) == 2:
             unit_dict = unit_df.to_dict("records")[0]
             return Unit(**unit_dict)
         

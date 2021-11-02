@@ -144,8 +144,8 @@ class PoleZeroFilter(FilterBase):
             name=self.name,
             normalization_factor=self.normalization_factor,
             description=self.get_filter_description(),
-            input_units_description=self.get_unit_description(self.units_in),
-            output_units_description=self.get_unit_description(self.units_out),
+            input_units_description=self._units_in_obj.name,
+            output_units_description=self._units_out_obj.name,
         )
 
         return rs
