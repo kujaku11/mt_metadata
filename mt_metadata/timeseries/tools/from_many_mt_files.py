@@ -313,18 +313,33 @@ class MT2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        s = Station()
-        s.from_xml(self.read_xml_file(station_dict["fn"]))
+        station = Station()
+        station.from_xml(self.read_xml_file(station_dict["fn"]))
         # < need to reset the runs, otherwise there are empty runs and double
         # the ammount of runs because the run_list is input. >
-        s.runs = []
+        station.runs = []
         dp_filters = {}
         for run_dict in station_dict["runs"]:
             r, dp = self._make_run(run_dict)
-            s.runs.append(r)
+            for channel in r.channels:
+                if channel.type in ["electric"]:
+                    if (channel.positive.latitude == 0 and 
+                        channel.positive.longitude == 0 and
+                        channel.positive.elevation == 0):
+                        channel.positive.latitude = station.location.latitude
+                        channel.positive.longitude = station.location.longitude
+                        channel.positive.elevation = station.location.elevation
+                else:
+                    if (channel.location.latitude == 0 and 
+                        channel.location.longitude == 0 and
+                        channel.location.elevation == 0):
+                        channel.location.latitude = station.location.latitude
+                        channel.location.longitude = station.location.longitude
+                        channel.location.elevation = station.location.elevation
+            station.runs.append(r)
             dp_filters.update(dp)
 
-        return s, dp_filters
+        return station, dp_filters
 
     def _make_survey(self, survey_dict):
         """

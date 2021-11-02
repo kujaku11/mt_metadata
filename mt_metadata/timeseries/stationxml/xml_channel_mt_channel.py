@@ -217,6 +217,7 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.sensor.manufacturer = sensor.manufacturer
             mt_channel.sensor.model = f"{sensor.model} {sensor.description}"
             mt_channel.sensor.type = sensor.type
+            mt_channel.sensor.description = sensor.name
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
@@ -294,6 +295,7 @@ class XMLChannelMTChannel(BaseTranslator):
                     pass
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
+            s.description = mt_channel.sensor.name
 
         else:
             s.type = mt_channel.sensor.type
