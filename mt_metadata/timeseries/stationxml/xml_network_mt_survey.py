@@ -54,7 +54,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "citation_journal.doi",
             "id",
             "project",
-            "acquired_by.author",
+            "acquired_by.name",
             "acquired_by.comments",
         ]
 
@@ -159,9 +159,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     operator = inventory.Operator(
                         agency=survey.project_lead.organization
                     )
-                    if survey.project_lead.author:
+                    if survey.project_lead.name:
                         person = inventory.Person(
-                            names=[survey.project_lead.author],
+                            names=[survey.project_lead.name],
                             emails=[survey.project_lead.email],
                         )
                         operator.contacts = [person]
