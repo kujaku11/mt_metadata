@@ -38,5 +38,25 @@
         "options": [],
         "alias": [],
         "example": "False"
+    },
+    "alternate_code": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Alternate Code",
+        "options": [],
+        "alias": [],
+        "example": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA"
+    },
+    "alternate_network_code": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Alternate Network Code",
+        "options": [],
+        "alias": [],
+        "example": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA"
     }
 }

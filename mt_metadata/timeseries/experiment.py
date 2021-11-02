@@ -162,6 +162,21 @@ class Experiment(Base):
                     run.update_time_period()
                     run_element = run.to_xml(required=required)
                     for channel in run.channels:
+                        if channel.type in ["electric"]:
+                            if (channel.positive.latitude == 0 and 
+                                channel.positive.longitude == 0 and
+                                channel.positive.elevation == 0):
+                                channel.positive.latitude = station.location.latitude
+                                channel.positive.longitude = station.location.longitude
+                                channel.positive.elevation = station.location.elevation
+                        else:
+                            if (channel.location.latitude == 0 and 
+                                channel.location.longitude == 0 and
+                                channel.location.elevation == 0):
+                                channel.location.latitude = station.location.latitude
+                                channel.location.longitude = station.location.longitude
+                                channel.location.elevation = station.location.elevation
+                                
                         run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
                 survey_element.append(station_element)

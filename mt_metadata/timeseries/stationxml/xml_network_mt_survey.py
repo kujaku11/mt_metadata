@@ -39,6 +39,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 "operators": "special",
                 "code": "fdsn.network",
                 "identifiers": "citation_dataset.doi",
+                "alternate_code": "id"
             }
         )
 

@@ -87,21 +87,6 @@ mt_components_dict = {"electric": "e", "magnetic": "h", "temperature": "temperat
 
 mt_orientation_dict = {"N": "x", "E": "y", "Z": "z", "1": "x", "2": "y", "3": "z"}
 
-# SI units short name
-units_names = {
-    "millivolts per kilometer": "mV/km",
-    "volts": "V",
-    "millivolts": "mV",
-    "volts per meter": "V/m",
-    "millivolts per kilometer": "mV/km",
-    "nanotesla": "nT",
-    "tesla": "T",
-    "celsius": "C",
-    "ohms": "Ohm",
-    "ohm meters": "Ohm-m",
-    "counts": "digital counts",
-}
-
 
 def create_location_code(channel_obj):
     """

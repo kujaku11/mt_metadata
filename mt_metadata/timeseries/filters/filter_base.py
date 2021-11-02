@@ -242,11 +242,6 @@ class FilterBase(Base):
     def units_out(self, value):
         self._units_out_obj = get_unit_object(value)
 
-    @staticmethod
-    def get_unit_description(unit):
-        unit_object = get_unit_object(unit)
-        return unit_object.name
-
     def get_filter_description(self):
         """
 
