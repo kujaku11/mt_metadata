@@ -1,10 +1,10 @@
 {
-    "author": {
+    "name": {
         "type": "string",
         "required": true,
         "style": "free form",
         "units": null,
-        "description": "Author name, should be full first and last name.",
+        "description": "Persons name, should be full first and last name.",
         "options": [],
         "alias": [],
         "example": "person name"
