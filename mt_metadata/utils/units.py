@@ -8,144 +8,246 @@ The dictionaries (ABBREVIATIONS & PLOT_AXES_LABELS ) are keyed by these lower
 case strings.
 
 """
-
+# =============================================================================
+# Import
+# =============================================================================
 import pandas as pd
 
-UNITS_LIST = [{'unit': 'digital counts',
-  'description': 'digital counts from data logger',
-  'abbreviation': 'cnts',
-  'plot_label': 'Digital Counts'},
- {'unit': 'volts',
-  'description': 'electric potential',
-  'abbreviation': 'V',
-  'plot_label': 'Volts'},
- {'unit': 'millivolts',
-  'description': 'electric potential',
-  'abbreviation': 'mV',
-  'plot_label': 'milliVolts'},
- {'unit': 'microvolts',
-  'description': 'electric potential',
-  'abbreviation': 'mircoV',
-  'plot_label': 'microVolts'},
- {'unit': 'tesla',
-  'description': 'magnetic field',
-  'abbreviation': 'T',
-  'plot_label': 'Tesla'},
- {'unit': 'millitesla',
-  'description': 'magnetic field',
-  'abbreviation': 'mT',
-  'plot_label': 'milliTesla'},
- {'unit': 'microtesla',
-  'description': 'magnetic field',
-  'abbreviation': 'microT',
-  'plot_label': 'microTesla'},
- {'unit': 'nanotesla',
-  'description': 'magnetic field',
-  'abbreviation': 'nT',
-  'plot_label': 'nanoTesla'},
- {'unit': 'volts per meter',
-  'description': 'electric field',
-  'abbreviation': 'V/m',
-  'plot_label': 'Volts per Meter'},
- {'unit': 'millivolts per kilometer',
-  'description': 'electric field',
-  'abbreviation': 'mV/km',
-  'plot_label': 'milliVolts per Kilometer'},
- {'unit': 'microvolts per meter',
-  'description': 'electric field',
-  'abbreviation': 'microV/m',
-  'plot_label': 'microVolts per Meter'},
- {'unit': 'millivolts per kilometer per nanotesla',
-  'description': 'EM transfer function',
-  'abbreviation': 'mV/km/nT',
-  'plot_label': '[mV/km]/[nT]'},
- {'unit': 'volts per meter per tesla',
-  'description': 'EM transfer function',
-  'abbreviation': 'V/m/T',
-  'plot_label': '[V/m]/[T]'},
- {'unit': 'meter',
-  'description': 'length',
-  'abbreviation': 'm',
-  'plot_label': 'Meter'},
- {'unit': 'kilometer',
-  'description': 'length',
-  'abbreviation': 'km',
-  'plot_label': 'Kilometer'},
- {'unit': 'celsius',
-  'description': 'temperature',
-  'abbreviation': 'C',
-  'plot_label': 'Celsius'}]
+# =============================================================================
 
+class Unit():
+    def __init__(self, **kwargs):
+        self.name = None
+        self.description = None
+        self.abbreviation = None
+        self.plot_label = None
+        self.alias = None
+        
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+    
+    def __str__(self):
+        lines = [
+            f"name:         {self.name}",
+            f"description:  {self.description}",
+            f"abbreviation: {self.abbreviation}",
+            f"plot_label:   {self.plot_label}",
+            f"alias:        {self.alias}"
+            ]
+        return "\n".join(lines)
+    
+    def __repr__(self):
+        return self.__str__()
+    
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "abbreviation": self.abbreviation,
+            "plot_label": self.plot_label,
+            "alias": self.alias,
+            }
+    
+    def from_dict(self, value):
+        for k, v in value.items():
+            setattr(self, k, v)
+        
+            
+# List of available units
+UNITS_LIST = [
+    {
+        "name": "digital counts",
+        "description": "digital counts from data logger",
+        "abbreviation": "cnts",
+        "plot_label": "Digital Counts",
+        "alias": "counts",
+    },
+    {
+        "name": "volts",
+        "description": "electric potential",
+        "abbreviation": "V",
+        "plot_label": "Volts",
+        "alias": "volt",
+    },
+    {
+        "name": "millivolts",
+        "description": "electric potential",
+        "abbreviation": "mV",
+        "plot_label": "milliVolts",
+        "alias": "millivolt",
+    },
+    {
+        "name": "microvolts",
+        "description": "electric potential",
+        "abbreviation": "\u03BCV",
+        "plot_label": "microVolts",
+        "alias": "microvolt",
+    },
+    {
+        "name": "tesla",
+        "description": "magnetic field",
+        "abbreviation": "T",
+        "plot_label": "Tesla",
+        "alias": "",
+    },
+    {
+        "name": "millitesla",
+        "description": "magnetic field",
+        "abbreviation": "mT",
+        "plot_label": "milliTesla",
+        "alias": "",
+    },
+    {
+        "name": "microtesla",
+        "description": "magnetic field",
+        "abbreviation": "\u03BCT",
+        "plot_label": "microTesla",
+        "alias": "",
+    },
+    {
+        "name": "nanotesla",
+        "description": "magnetic field",
+        "abbreviation": "nT",
+        "plot_label": "nanoTesla",
+        "alias": "",
+    },
+    {
+        "name": "volts per meter",
+        "description": "electric field",
+        "abbreviation": "V/m",
+        "plot_label": "Volts per Meter",
+        "alias": "volt per meter",   
+    },
+    {
+        "name": "millivolts per kilometer",
+        "description": "electric field",
+        "abbreviation": "mV/km",
+        "plot_label": "milliVolts per Kilometer",
+        "alias": "millivolt per kilometer",
+    },
+    {
+        "name": "microvolts per meter",
+        "description": "electric field",
+        "abbreviation": "\u03BCV/m",
+        "plot_label": "microVolts per Meter",
+        "alias": "microvolt per meter",
+    },
+    {
+        "name": "millivolts per kilometer per nanotesla",
+        "description": "EM transfer function",
+        "abbreviation": "mV/km/nT",
+        "plot_label": "[mV/km]/[nT]",
+        "alias": "millivolts per kilometer per nanotesla",
+    },
+    {
+        "name": "volts per meter per tesla",
+        "description": "EM transfer function",
+        "abbreviation": "V/m/T",
+        "plot_label": "[V/m]/[T]",
+        "alias": "volt per meter per tesla",
+    },
+    {
+        "name": "meter",
+        "description": "length",
+        "abbreviation": "m",
+        "plot_label": "Meter",
+        "alias": "meters",
+    },
+    {
+        "name": "kilometer",
+        "description": "length",
+        "abbreviation": "km",
+        "plot_label": "Kilometer",
+        "alias": "kilometers",
+    },
+    {
+        "name": "celsius",
+        "description": "temperature",
+        "abbreviation": "C",
+        "plot_label": "Celsius",
+        "alias": ""
+    },
+]
+
+# put the units into a data frame for easier searching
 UNITS_DF = pd.DataFrame(UNITS_LIST)
 
-# def get_units(value, unit_type="name"):
-#     """
-    
-#     :param value: unit value
-#     :type value: string
-#     :param unit_type: how the unit is represented [ name | abbreviation ],
-#     defaults to "name"
-#     :type unit_type: string, optional
-#     :return: unit dictionary
-#     :rtype: dict
+def get_unit_object(unit):
+    """
 
-#     """
-    
-#     if unit_type == "name":
-#         try:
-#             unit_dict = UNITS[value]
-#         except KeyError:
-#             msg = f"{value} is not in the units dictionary, acceptable units are {list(UNITS.keys())}"
-#             raise KeyError(msg)
+    :param unit: unit name or abbreviation
+    :type value: string
+    :return: unit dictionary
+    :rtype: dict
+
+    """
+
+    # try to find in name first
+    def get_df(col, value):
+        if col == "name":
+            value = value.lower()
             
-#     elif unit_type == "abbreviation":
-#         for key, unit_dict in UNITS.items():
-#             if unit_dict["abbreviation"] == value:
-#                 return unit_dict
-#         raise KeyError(f"{value} is not in the units dictionary, acceptable abbreviations are {list(UNITS.keys())}")
+        unit_df = UNITS_DF[UNITS_DF[col] == value]
+        if len(unit_df) == 1:
+            unit_dict = unit_df.to_dict("records")[0]
+            return Unit(**unit_dict)
+        
+        elif len(unit_df) == 0:
+            return None
+    
+    for col in ["name", "abbreviation", "alias"]:
+        unit_df = get_df(col, unit)
+        if unit_df is not None:
+            return unit_df
+    
+    if unit_df is None:
+        raise KeyError(
+            f"Could not find {unit} in accetable units.  "
+            "See mt_metadata.utils.units.py for more information")
+   
 
-            
-#     return unit_dict
 
-ABBREVIATIONS = {
-    "digital counts": "cts",
-    "millivolts": "mV",
-    "nanotesla": "nT",
-    "tesla": "T",
-    "volts": "V",
-    "millivolt per kilometer": "mV/km",
-    "millivolts per kilometer": "mV/km",
-    "volt per meter": "V/m",
-    "volts per meter": "V/m",
-    "microvolt per meter": "\u03BCV/m",
-    "microvolts per meter": "\u03BCV/m",
-    "celsius": "C",
-}
 
-PLOT_AXES_LABELS = {
-    "digital counts": "digital counts",
-    "millivolts": "milliVolts",
-    "tesla": "Tesla",
-    "nanotesla": "nanoTesla",
-    "volts": "Volts",
-}
 
-# =============================================================================
-# Unit conversions
-# =============================================================================
-obspy_units_descriptions = {
-    "T": "Tesla",
-    "nT": "nanoTesla",
-    "V": "Volts",
-    "mV": "milliVolts",
-    "count": "digital counts",
-    "counts": "digital counts",
-    "V/m": "Volts per meter",
-    "mV/km": "milliVolts per kilometer",
-    "m": "meters",
-    "COUNTS": "digital counts",
-    "millivolt per kilometer": "milliVolt per kilometer",
-    "volt per meter": "Volt per meter",
-    "volt": "Volt",
-    "nanotesla": "nanoTesla",
-}
+# ABBREVIATIONS = {
+#     "digital counts": "cts",
+#     "millivolts": "mV",
+#     "nanotesla": "nT",
+#     "tesla": "T",
+#     "volts": "V",
+#     "millivolt per kilometer": "mV/km",
+#     "millivolts per kilometer": "mV/km",
+#     "volt per meter": "V/m",
+#     "volts per meter": "V/m",
+#     "microvolt per meter": "\u03BCV/m",
+#     "microvolts per meter": "\u03BCV/m",
+#     "celsius": "C",
+# }
+
+# PLOT_AXES_LABELS = {
+#     "digital counts": "digital counts",
+#     "millivolts": "milliVolts",
+#     "tesla": "Tesla",
+#     "nanotesla": "nanoTesla",
+#     "volts": "Volts",
+# }
+
+# # =============================================================================
+# # Unit conversions
+# # =============================================================================
+# obspy_units_descriptions = {
+#     "T": "Tesla",
+#     "nT": "nanoTesla",
+#     "V": "Volts",
+#     "mV": "milliVolts",
+#     "count": "digital counts",
+#     "counts": "digital counts",
+#     "V/m": "Volts per meter",
+#     "mV/km": "milliVolts per kilometer",
+#     "m": "meters",
+#     "COUNTS": "digital counts",
+#     "millivolt per kilometer": "milliVolt per kilometer",
+#     "volt per meter": "Volt per meter",
+#     "volt": "Volt",
+#     "nanotesla": "nanoTesla",
+# }

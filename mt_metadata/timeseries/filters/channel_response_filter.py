@@ -22,7 +22,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     FIRFilter,
 )
-from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
+from mt_metadata.utils.units import get_unit_object
 from obspy.core import inventory
 
 # =============================================================================
@@ -288,14 +288,17 @@ class ChannelResponseFilter(object):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
+        units_in_obj = get_unit_object(self.units_in)
+        units_out_obj = get_unit_object(self.units_out)
+        
         total_response = inventory.Response()
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
             total_sensitivity,
             self.normalization_frequency,
-            self.units_in,
-            self.units_out,
-            input_units_description=units_descriptions[self.units_in],
-            output_units_description=units_descriptions[self.units_out],
+            units_in_obj.abbreviation,
+            units_out_obj.abbreviation,
+            input_units_description=units_in_obj.name,
+            output_units_description=units_out_obj.name,
         )
 
         for ii, f in enumerate(self.filters_list, 1):

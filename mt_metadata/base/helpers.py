@@ -22,7 +22,7 @@ from xml.etree import cElementTree as et
 from xml.dom import minidom
 from operator import itemgetter
 
-from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
+# from mt_metadata.utils.units import get_unit_object
 
 
 filter_descriptions = {
