@@ -302,12 +302,32 @@ class ChannelResponseFilter(object):
         )
 
         for ii, f in enumerate(self.filters_list, 1):
-            total_response.response_stages.append(
-                f.to_obspy(
-                    stage_number=ii,
-                    normalization_frequency=self.normalization_frequency,
-                    sample_rate=sample_rate,
+            if f.type in ["coefficient"]:
+                if f.units_out not in ["count"]:
+                    print("converting coefficient to PZ", f)
+                    pz = PoleZeroFilter()
+                    pz.gain = f.gain
+                    pz.units_in = f.units_in
+                    pz.units_out = f.units_out
+                    pz.comments = f.comments
+                    pz.name = f.name
+                else:
+                    pz = f
+            
+                total_response.response_stages.append(
+                    pz.to_obspy(
+                        stage_number=ii,
+                        normalization_frequency=self.normalization_frequency,
+                        sample_rate=sample_rate,
+                    )
                 )
-            )
+            else:
+                total_response.response_stages.append(
+                    f.to_obspy(
+                        stage_number=ii,
+                        normalization_frequency=self.normalization_frequency,
+                        sample_rate=sample_rate,
+                    )
+                )
 
         return total_response
