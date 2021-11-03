@@ -9,6 +9,16 @@
         "alias": [],
         "example": "person name"
     },
+    "author": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Persons name, should be full first and last name.",
+        "options": [],
+        "alias": [],
+        "example": "person name"
+    },
     "organization": {
         "type": "string",
         "required": true,

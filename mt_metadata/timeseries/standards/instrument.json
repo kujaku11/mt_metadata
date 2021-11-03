@@ -40,5 +40,15 @@
         "options": [],
         "alias": [],
         "example": "falcon5"
+    },
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Standard marketing name of the instrument.",
+        "options": [],
+        "alias": [],
+        "example": "falcon5"
     }
 }

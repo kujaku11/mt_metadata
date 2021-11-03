@@ -303,7 +303,7 @@ class XMLChannelMTChannel(BaseTranslator):
             s.model = mt_channel.sensor.model
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
-            s.description = mt_channel.sensor.model
+            s.description = mt_channel.sensor.name
 
         return s
 
@@ -446,8 +446,8 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
-        name = xml_channel.response.response_stages[0].output_units
-        description = xml_channel.response.response_stages[0].output_units_description
+        name = xml_channel.response.response_stages[-1].output_units
+        description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description

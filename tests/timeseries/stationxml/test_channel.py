@@ -118,11 +118,12 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("sensor.id", "2593"),
                         ("sensor.manufacturer", "Barry Narod"),
                         ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.name", "NIMS"),
                         ("sensor.type", "Magnetometer"),
                         ("time_period.end", "2020-07-13T21:46:12+00:00"),
                         ("time_period.start", "2020-06-02T18:41:43+00:00"),
                         ("type", "magnetic"),
-                        ("units", "nanotesla"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -172,7 +173,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("time_period.end", "2020-07-13T21:46:12+00:00"),
                         ("time_period.start", "2020-06-02T18:41:43+00:00"),
                         ("type", "electric"),
-                        ("units", "millivolts per kilometer"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -234,11 +235,12 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("sensor.id", "1303-01"),
                         ("sensor.manufacturer", "Barry Narod"),
                         ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.name", "NIMS"),
                         ("sensor.type", "Magnetometer"),
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
                         ("type", "magnetic"),
-                        ("units", "nanotesla"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -274,11 +276,12 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("sensor.id", "1303-01"),
                         ("sensor.manufacturer", "Barry Narod"),
                         ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.name", "NIMS"),
                         ("sensor.type", "Magnetometer"),
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
                         ("type", "magnetic"),
-                        ("units", "nanotesla"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -314,11 +317,12 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("sensor.id", "1303-01"),
                         ("sensor.manufacturer", "Barry Narod"),
                         ("sensor.model", "fluxgate NIMS"),
+                        ("sensor.name", "NIMS"),
                         ("sensor.type", "Magnetometer"),
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
                         ("type", "magnetic"),
-                        ("units", "nanotesla"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -368,7 +372,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
                         ("type", "electric"),
-                        ("units", "millivolts per kilometer"),
+                        ("units", "digital counts"),
                     ]
                 )
             },
@@ -418,7 +422,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
                         ("time_period.start", "2020-06-08T22:57:13+00:00"),
                         ("type", "electric"),
-                        ("units", "millivolts per kilometer"),
+                        ("units", "digital counts"),
                     ]
                 )
             },

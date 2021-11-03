@@ -27,4 +27,5 @@ class Person(Base):
         self.name = None
         self.organization = None
         self.comments = None
+        self.author = None
         super().__init__(attr_dict=attr_dict, **kwargs)
