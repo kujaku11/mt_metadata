@@ -78,17 +78,17 @@ class XMLNetworkMTSurvey(BaseTranslator):
 
         for mt_key, xml_key in self.mt_translator.items():
             if mt_key == "project_lead":
-                author = []
+                name = []
                 email = []
                 org = []
                 for operator in network.operators:
                     org.append(operator.agency)
                     for person in operator.contacts:
-                        author.append(", ".join(person.names))
+                        name.append(", ".join(person.names))
                         email.append(", ".join(person.emails))
-                if author:
+                if name:
                     mt_survey.set_attr_from_name(
-                        "project_lead.author", ", ".join(author)
+                        "project_lead.name", ", ".join(name)
                     )
                 if email:
                     mt_survey.set_attr_from_name("project_lead.email", ", ".join(email))

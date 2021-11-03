@@ -217,7 +217,8 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.sensor.manufacturer = sensor.manufacturer
             mt_channel.sensor.model = f"{sensor.model} {sensor.description}"
             mt_channel.sensor.type = sensor.type
-            mt_channel.sensor.description = sensor.name
+            mt_channel.sensor.name = sensor.description
+            
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
@@ -445,8 +446,8 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
-        name = xml_channel.response.stages[0].units_out.name
-        description = xml_channel.response.stages[0].units_out.description
+        name = xml_channel.response.response_stages[0].output_units
+        description = xml_channel.response.response_stages[0].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
