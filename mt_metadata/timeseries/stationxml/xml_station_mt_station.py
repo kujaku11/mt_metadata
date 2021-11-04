@@ -113,7 +113,7 @@ class XMLStationMTStation(BaseTranslator):
                         key = key.split("mt.station.")[1]
                     except IndexError:
                         pass
-                    
+
                     if "summary" in key:
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:
@@ -190,13 +190,13 @@ class XMLStationMTStation(BaseTranslator):
                 continue
 
             if xml_key == "operators":
-                if mt_station.acquired_by.author is not None:
+                if mt_station.acquired_by.name:
                     if mt_station.acquired_by.organization is None:
                         mt_station.acquired_by.organization = " "
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
-                    person = inventory.Person(names=[mt_station.acquired_by.author])
+                    person = inventory.Person(names=[mt_station.acquired_by.name])
                     operator.contacts = [person]
                     xml_station.operators = [operator]
 

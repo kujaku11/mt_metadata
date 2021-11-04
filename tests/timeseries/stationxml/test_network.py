@@ -60,7 +60,7 @@ class TestNetwork02(unittest.TestCase):
         self.survey = self.converter.xml_to_mt(self.network)
 
     def test_comments_acquired_by(self):
-        self.assertEqual(self.survey.acquired_by.author, "Pellerin, L.")
+        self.assertEqual(self.survey.acquired_by.name, "Pellerin, L.")
 
     def test_comments_id(self):
         self.assertEqual(self.survey.id, "CONUS South-USGS")
@@ -78,7 +78,7 @@ class TestNetwork02(unittest.TestCase):
         )
 
     def test_comments_project_lead(self):
-        self.assertEqual(self.survey.project_lead.author, "Schultz, A.")
+        self.assertEqual(self.survey.project_lead.name, "Schultz, A.")
         self.assertEqual(self.survey.project_lead.email, "Adam.Schultz@oregonstate.edu")
         self.assertEqual(
             self.survey.project_lead.organization, "Oregon State University"
@@ -153,10 +153,10 @@ class TestSurveyToNetwork(unittest.TestCase):
 
     def test_comment_acquired_by(self):
         c1 = self.converter.get_comment(
-            self.original_network.comments, "mt.survey.acquired_by.author"
+            self.original_network.comments, "mt.survey.acquired_by.name"
         ).value
         c2 = self.converter.get_comment(
-            self.test_network.comments, "mt.survey.acquired_by.author"
+            self.test_network.comments, "mt.survey.acquired_by.name"
         ).value
         self.assertEqual(c1, c2)
 

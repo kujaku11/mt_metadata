@@ -22,7 +22,7 @@ from xml.etree import cElementTree as et
 from xml.dom import minidom
 from operator import itemgetter
 
-from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
+# from mt_metadata.utils.units import get_unit_object
 
 
 filter_descriptions = {
@@ -443,7 +443,7 @@ def element_to_dict(element):
             if k in ["type"]:
                 if len(element.attrib.keys()) <= 1:
                     pop_type = True
-                    continue 
+                    continue
             meta_dict[element.tag][k] = v
 
         if pop_units:

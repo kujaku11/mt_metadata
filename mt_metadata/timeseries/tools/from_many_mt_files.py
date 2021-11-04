@@ -24,9 +24,22 @@ from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 # =============================================================================
 # Useful Class
 # =============================================================================
-class MTML2StationXML(XMLInventoryMTExperiment):
+class MT2StationXML(XMLInventoryMTExperiment):
     """
-    A class to convert multiple MTML xml files into a stationXML
+    A class to convert multiple MT xml files into a stationXML (MTML)
+    
+    This is for a use case of A. Kelbert who places each level of metadata
+    into a single XML file.  This class collects all those files and puts
+    them into the proper order.  
+    
+    She has the files named as follows
+    
+    survey.xml               --> Survey metadata `mt_metadata.timeseries.Survey`
+    filters.xml              --> All filters
+    station.xml              --> Station metadata `mt_metadata.timeseries.Station`
+    station.run.xml          --> Run metadata `mt_metadata.timeseries.Run`
+    station.run.channel.xml  --> Channel metadata `mt_metadata.timeseries.Channel`
+    
 
     """
 
@@ -143,9 +156,11 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        return self.df[(self.df.station == station) & (self.df.is_run == True)]
+        return self.df[
+            (self.df.station == station) & (self.df.is_run == True)
+        ].sort_values("run")
 
-    def _get_channels(self, station, run):
+    def _get_channels(self, station, run, order=["hx", "hy", "hz", "ex", "ey"]):
         """
         Get runs from the dataframe for a given station
 
@@ -155,13 +170,22 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        return list(
-            self.df[
-                (self.df.station == station)
-                & (self.df.run == run)
-                & (self.df.is_channel == True)
-            ].fn
-        )
+        rdf = list(
+                self.df[
+                    (self.df.station == station)
+                    & (self.df.run == run)
+                    & (self.df.is_channel == True)
+                ].fn
+            )
+        
+        channels_list = []
+        for ch in order:
+            for fn in rdf:
+                if ch in fn.name.lower():
+                    channels_list.append(fn)
+                    break
+
+        return channels_list
 
     def sort_by_station(self, stations=None):
         """
@@ -230,7 +254,24 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         ch.from_xml(self.read_xml_file(channel_fn))
 
-        return ch
+        dp_filter = None
+        if ch.filter.name is not None:
+            find = False
+            for ii, filter_name in enumerate(ch.filter.name):
+                # create a dipole pole zero filter
+                if "dipole_length" in filter_name:
+                    find = True
+                    dp_filter = PoleZeroFilter()
+                    dp_filter.units_in = "V/m"
+                    dp_filter.units_out = "V"
+                    dp_filter.gain = ch.dipole_length
+                    dp_filter.name = f"electric_dipole_{ch.dipole_length:.3f}"
+                    dp_filter.comments = "electric dipole for electric field"
+                    break
+            if find:
+                ch.filter.name[ii] = dp_filter.name 
+
+        return ch, dp_filter
 
     def _make_run(self, run_dict):
         """
@@ -247,10 +288,14 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         """
         r = Run()
         r.from_xml(self.read_xml_file(run_dict["fn"]))
+        dp_filters = {}
         for ch_fn in run_dict["channels"]:
-            r.channels.append(self._make_channel(ch_fn))
+            ch, dp_filter = self._make_channel(ch_fn)
+            r.channels.append(ch)
+            if dp_filter is not None:
+                dp_filters[dp_filter.name] = dp_filter
 
-        return r
+        return r, dp_filters
 
     def _make_station(self, station_dict):
         """
@@ -268,15 +313,33 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        s = Station()
-        s.from_xml(self.read_xml_file(station_dict["fn"]))
+        station = Station()
+        station.from_xml(self.read_xml_file(station_dict["fn"]))
         # < need to reset the runs, otherwise there are empty runs and double
         # the ammount of runs because the run_list is input. >
-        s.runs = []
+        station.runs = []
+        dp_filters = {}
         for run_dict in station_dict["runs"]:
-            s.runs.append(self._make_run(run_dict))
+            r, dp = self._make_run(run_dict)
+            for channel in r.channels:
+                if channel.type in ["electric"]:
+                    if (channel.positive.latitude == 0 and 
+                        channel.positive.longitude == 0 and
+                        channel.positive.elevation == 0):
+                        channel.positive.latitude = station.location.latitude
+                        channel.positive.longitude = station.location.longitude
+                        channel.positive.elevation = station.location.elevation
+                else:
+                    if (channel.location.latitude == 0 and 
+                        channel.location.longitude == 0 and
+                        channel.location.elevation == 0):
+                        channel.location.latitude = station.location.latitude
+                        channel.location.longitude = station.location.longitude
+                        channel.location.elevation = station.location.elevation
+            station.runs.append(r)
+            dp_filters.update(dp)
 
-        return s
+        return station, dp_filters
 
     def _make_survey(self, survey_dict):
         """
@@ -303,10 +366,13 @@ class MTML2StationXML(XMLInventoryMTExperiment):
         s = Survey()
         s.from_xml(self.read_xml_file(survey_dict["survey"]))
         s.stations = []
+        dp_filters = {}
         for station_dict in survey_dict["stations"]:
-            s.stations.append(self._make_station(station_dict))
+            station, dp = self._make_station(station_dict)
+            s.stations.append(station)
+            dp_filters.update(dp)
 
-        return s
+        return s, dp_filters
 
     def _make_filters_dict(self, filters_xml_file):
         """
@@ -348,31 +414,26 @@ class MTML2StationXML(XMLInventoryMTExperiment):
 
         """
         mtex = Experiment()
-
-        mtex.surveys.append(self._make_survey(self.sort_by_station(stations)))
+        
+        survey, dp_filters = self._make_survey(self.sort_by_station(stations))
+        mtex.surveys.append(survey)
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
+        mtex.surveys[0].filters.update(dp_filters)
+
         return mtex
-
-
-# =============================================================================
-# Working code
-# =============================================================================
-# Input Parameters
-xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\mt_array_xmls")
-output_path = Path(r"c:\Users\jpeacock")
-
-# make an instance of MTML2StationXML where the input is the path to the folder
-# containing the MTML.xml files
-a = MTML2StationXML(xml_path)
-
-# if you want to make one stationxml per station then you can loop over
-# stations
-for station in a.stations:
-    mtex = a.make_experiment(stations=station)
-    inv = a.mt_to_xml(
-        mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml")
-    )
-
-# if you want to make a complete stationxml
-# mtex = a.make_experiment()
-# inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath("full_stationxml.xml"))
+    
+    def get_mt_channel(self, ch_fn, filters_fn):
+        """
+        have a look at an mt channel
+        """
+        
+        mt_channel, dp_filter = self._make_channel(ch_fn)
+        
+        filter_dict = self._make_filters_dict(filters_fn)
+        if dp_filter is not None:
+            filter_dict.update({dp_filter.name, dp_filter})
+        
+        channel_response = mt_channel.channel_response(filter_dict)
+        
+        return mt_channel, channel_response
+        

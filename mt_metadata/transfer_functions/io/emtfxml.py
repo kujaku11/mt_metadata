@@ -155,7 +155,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.site_layout = emtf_xml.SiteLayout()
         self.data = emtf_xml.TransferFunction()
         self.period_range = emtf_xml.PeriodRange()
-        
+
         self.fn = None
 
         self.element_keys = [
@@ -205,18 +205,18 @@ class EMTFXML(emtf_xml.EMTF):
             "site_layout": self._write_site_layout,
             "data": self._write_data,
         }
-        
+
     @property
     def fn(self):
         return self._fn
-    
+
     @fn.setter
     def fn(self, value):
         if value is not None:
             self._fn = Path(value)
         else:
             self._fn = None
-            
+
     @property
     def save_dir(self):
         if self.fn is not None:
@@ -255,8 +255,8 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
-        
-        # apparently sometimes the run list will come out as None from an 
+
+        # apparently sometimes the run list will come out as None from an
         # empty emtfxml.
         if self.site._run_list is None:
             self.site._run_list = []
@@ -301,9 +301,8 @@ class EMTFXML(emtf_xml.EMTF):
 
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))
-        
+
         self.fn = fn
-        
 
     def _get_statistical_estimates(self):
         """
@@ -465,7 +464,7 @@ class EMTFXML(emtf_xml.EMTF):
             field_notes = [root_dict["field_notes"]]
         else:
             field_notes = root_dict["field_notes"]
-            
+
         for run in field_notes:
             f = meta_classes["field_notes"]()
             f.run = run["run"]
@@ -911,7 +910,9 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.data_quality_notes.good_to_period = (
             sm.transfer_function.data_quality.good_to_period
         )
-        self.site.data_quality_notes.rating = sm.transfer_function.data_quality.rating.value
+        self.site.data_quality_notes.rating = (
+            sm.transfer_function.data_quality.rating.value
+        )
 
         # not sure there is a place to put processing parameters yet
 

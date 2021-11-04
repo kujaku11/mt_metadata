@@ -45,7 +45,7 @@ class PoleZeroFilter(FilterBase):
             kwargs["normalization_factor"]
         except KeyError:
             kwargs["normalization_factor"] = 1.0
-            
+
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
 
         self.obspy_mapping = obspy_mapping
@@ -144,8 +144,8 @@ class PoleZeroFilter(FilterBase):
             name=self.name,
             normalization_factor=self.normalization_factor,
             description=self.get_filter_description(),
-            input_units_description=self.get_unit_description(self.units_in),
-            output_units_description=self.get_unit_description(self.units_out),
+            input_units_description=self._units_in_obj.name,
+            output_units_description=self._units_out_obj.name,
         )
 
         return rs

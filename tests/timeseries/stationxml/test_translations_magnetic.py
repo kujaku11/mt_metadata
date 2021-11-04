@@ -273,7 +273,8 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
             if isinstance(attr_0, str):
                 attr_0 = attr_0.lower()
                 attr_1 = attr_1.lower()
-            self.assertEqual(attr_0, attr_1)
+            with self.subTest(name=key):
+                self.assertEqual(attr_0, attr_1)
 
     def test_response_coefficient_filter(self):
         f_0 = self.response_0.response_stages[1]

@@ -136,7 +136,7 @@ import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.base.helpers import filter_descriptions
-from mt_metadata.utils.units import obspy_units_descriptions as units_descriptions
+from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
@@ -176,8 +176,8 @@ class FilterBase(Base):
 
         self.name = None
         self.type = None
-        self.units_in = None
-        self.units_out = None
+        self._units_in_obj = Unit()
+        self._units_out_obj = Unit()
 
         self._calibration_dt = MTime()
         self.comments = None
@@ -225,10 +225,22 @@ class FilterBase(Base):
     @property
     def total_gain(self):
         return self.gain
-
-    @staticmethod
-    def get_unit_description(units):
-        return units_descriptions[units]
+    
+    @property
+    def units_in(self):
+        return self._units_in_obj.abbreviation
+    
+    @units_in.setter
+    def units_in(self, value):
+        self._units_in_obj = get_unit_object(value)
+    
+    @property
+    def units_out(self):
+        return self._units_out_obj.abbreviation
+    
+    @units_out.setter
+    def units_out(self, value):
+        self._units_out_obj = get_unit_object(value)
 
     def get_filter_description(self):
         """

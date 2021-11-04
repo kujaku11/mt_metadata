@@ -15,13 +15,13 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     release_dict,
     read_channel_code,
     make_channel_code,
-    units_names,
     create_mt_component,
 )
 
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
+from mt_metadata.utils.units import get_unit_object
 
 from obspy.core import inventory
 
@@ -62,7 +62,6 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # StationXML to MT Survey
         self.mt_translator = self.flip_dict(self.xml_translator)
-        self.mt_translator["units"] = "calibration_units_description"
 
         self.mt_comments_list = ["run.id"]
         self.run_list = None
@@ -169,7 +168,7 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
         xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
-        xml_channel.response = self._mt_to_xml_response(mt_channel, filters_dict)
+        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -186,12 +185,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
             else:
                 setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
-                if mt_key == "units":
-                    setattr(
-                        xml_channel,
-                        "calibration_units",
-                        units_names[mt_channel.get_attr_from_name(mt_key).lower()],
-                    )
+                
 
         return xml_channel
 
@@ -223,6 +217,8 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.sensor.manufacturer = sensor.manufacturer
             mt_channel.sensor.model = f"{sensor.model} {sensor.description}"
             mt_channel.sensor.type = sensor.type
+            mt_channel.sensor.name = sensor.description
+            
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
@@ -300,13 +296,14 @@ class XMLChannelMTChannel(BaseTranslator):
                     pass
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
+            s.description = mt_channel.sensor.name
 
         else:
             s.type = mt_channel.sensor.type
             s.model = mt_channel.sensor.model
             s.serial_number = mt_channel.sensor.id
             s.manufacturer = mt_channel.sensor.manufacturer
-            s.description = mt_channel.sensor.model
+            s.description = mt_channel.sensor.name
 
         return s
 
@@ -449,8 +446,8 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
-        name = getattr(xml_channel, "calibration_units")
-        description = getattr(xml_channel, "calibration_units_description")
+        name = xml_channel.response.response_stages[-1].output_units
+        description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
@@ -508,7 +505,7 @@ class XMLChannelMTChannel(BaseTranslator):
         except ValueError:
             return 0
 
-    def _mt_to_xml_response(self, mt_channel, filters_dict):
+    def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
         """
         Translate MT filters into Obspy Response
 
@@ -524,5 +521,12 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         mt_channel_response = mt_channel.channel_response(filters_dict)
-
-        return mt_channel_response.to_obspy(sample_rate=mt_channel.sample_rate)
+        xml_channel.response = mt_channel_response.to_obspy(
+            sample_rate=mt_channel.sample_rate)
+        
+        unit_obj = get_unit_object(mt_channel_response.units_in)
+        
+        xml_channel.calibration_units = unit_obj.abbreviation
+        xml_channel.calibration_units_description = unit_obj.name
+        
+        return xml_channel

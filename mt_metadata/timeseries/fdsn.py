@@ -26,5 +26,7 @@ class Fdsn(Base):
         self.network = None
         self.channel_code = None
         self.new_epoch = None
+        self.alternate_code = None
+        self.alternate_network_code = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

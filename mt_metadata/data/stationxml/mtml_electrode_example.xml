@@ -7,7 +7,7 @@
   <Network code="XX" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
     <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
     <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
-    <Comment subject="mt.survey.acquired_by.author">
+    <Comment subject="mt.survey.acquired_by.name">
       <Value>Bedrosian, P. A.</Value>
     </Comment>
     <Comment subject="mt.survey.citation_journal.doi">
@@ -122,7 +122,7 @@
         <SampleRate unit="SAMPLES/S">8.0</SampleRate>
         <CalibrationUnits>
           <Name>mV/km</Name>
-          <Description>millivolts per kilometer</Description>
+          <Description>millivolt per kilometer</Description>
         </CalibrationUnits>
         <Sensor>
           <Type>dipole</Type>
@@ -137,7 +137,7 @@
             <Frequency>0.305</Frequency>
             <InputUnits>
               <Name>mV/km</Name>
-              <Description>milliVolts per kilometer</Description>
+              <Description>milliVolt per kilometer</Description>
             </InputUnits>
             <OutputUnits>
               <Name>count</Name>
@@ -149,11 +149,11 @@
               <Description>butterworth filter</Description>
               <InputUnits>
                 <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
+                <Description>milliVolt per kilometer</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
+                <Description>milliVolt per kilometer</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
               <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -189,11 +189,11 @@
               <Description>butterworth filter</Description>
               <InputUnits>
                 <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
+                <Description>milliVolt per kilometer</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
+                <Description>milliVolt per kilometer</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
               <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -217,11 +217,11 @@
               <Description>unit conversion</Description>
               <InputUnits>
                 <Name>mV/km</Name>
-                <Description>milliVolts per kilometer</Description>
+                <Description>milliVolt per kilometer</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>V/m</Name>
-                <Description>Volts per meter</Description>
+                <Description>Volt per meter</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
               <NormalizationFactor>1.0</NormalizationFactor>
@@ -237,11 +237,11 @@
               <Description>electric dipole</Description>
               <InputUnits>
                 <Name>V/m</Name>
-                <Description>Volts per meter</Description>
+                <Description>Volt per meter</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>V</Name>
-                <Description>Volts</Description>
+                <Description>Volt</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
               <NormalizationFactor>1.0</NormalizationFactor>
@@ -257,7 +257,7 @@
               <Description>analog to digital conversion</Description>
               <InputUnits>
                 <Name>V</Name>
-                <Description>Volts</Description>
+                <Description>Volt</Description>
               </InputUnits>
               <OutputUnits>
                 <Name>count</Name>

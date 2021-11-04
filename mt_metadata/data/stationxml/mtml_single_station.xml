@@ -33,7 +33,7 @@
       <Comment subject="mt.survey.comments">
          <Value/>
       </Comment>
-      <Comment subject="mt.survey.acquired_by.author">
+      <Comment subject="mt.survey.acquired_by.name">
          <Value>Pellerin, L.</Value>
       </Comment>
       <Comment subject="mt.survey.acquired_by.comments">
@@ -585,7 +585,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -600,7 +600,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -612,11 +612,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -652,11 +652,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -680,7 +680,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>
@@ -789,7 +789,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -804,7 +804,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -816,11 +816,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -856,11 +856,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -884,7 +884,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>
@@ -1365,7 +1365,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -1380,7 +1380,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -1392,11 +1392,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -1432,11 +1432,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -1460,7 +1460,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>
@@ -1566,7 +1566,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -1581,7 +1581,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -1593,11 +1593,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -1633,11 +1633,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -1661,7 +1661,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>
@@ -2154,7 +2154,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -2169,7 +2169,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -2181,11 +2181,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -2221,11 +2221,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -2249,7 +2249,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>
@@ -2358,7 +2358,7 @@
             <ClockDrift>0</ClockDrift>
             <CalibrationUnits>
                <Name>mV/km</Name>
-               <Description>millivolts per kilometer</Description>
+               <Description>millivolt per kilometer</Description>
             </CalibrationUnits>
             <Sensor>
                <Type>dipole</Type>
@@ -2373,7 +2373,7 @@
                   <Frequency>0.01</Frequency>
                   <InputUnits>
                      <Name>mV/km</Name>
-                     <Description>millivolts per kilometer</Description>
+                     <Description>millivolt per kilometer</Description>
                   </InputUnits>
                   <OutputUnits>
                      <Name>counts</Name>
@@ -2385,11 +2385,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>313383.601119193</NormalizationFactor>
@@ -2425,11 +2425,11 @@
                      <Description>butterworth filter</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </OutputUnits>
                      <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
                      <NormalizationFactor>1.00000351809047</NormalizationFactor>
@@ -2453,7 +2453,7 @@
                      <Description>unit conversion</Description>
                      <InputUnits>
                         <Name>mV/km</Name>
-                        <Description>millivolts per kilometer</Description>
+                        <Description>millivolt per kilometer</Description>
                      </InputUnits>
                      <OutputUnits>
                         <Name>V/m</Name>

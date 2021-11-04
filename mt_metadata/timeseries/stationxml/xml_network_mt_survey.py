@@ -39,6 +39,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 "operators": "special",
                 "code": "fdsn.network",
                 "identifiers": "citation_dataset.doi",
+                "alternate_code": "id"
             }
         )
 
@@ -53,7 +54,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
             "citation_journal.doi",
             "id",
             "project",
-            "acquired_by.author",
+            "acquired_by.name",
             "acquired_by.comments",
         ]
 
@@ -77,17 +78,17 @@ class XMLNetworkMTSurvey(BaseTranslator):
 
         for mt_key, xml_key in self.mt_translator.items():
             if mt_key == "project_lead":
-                author = []
+                name = []
                 email = []
                 org = []
                 for operator in network.operators:
                     org.append(operator.agency)
                     for person in operator.contacts:
-                        author.append(", ".join(person.names))
+                        name.append(", ".join(person.names))
                         email.append(", ".join(person.emails))
-                if author:
+                if name:
                     mt_survey.set_attr_from_name(
-                        "project_lead.author", ", ".join(author)
+                        "project_lead.name", ", ".join(name)
                     )
                 if email:
                     mt_survey.set_attr_from_name("project_lead.email", ", ".join(email))
@@ -126,7 +127,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         value = self.flip_dict(release_dict)[value]
 
                 mt_survey.set_attr_from_name(mt_key, value)
-                
+
         if mt_survey.id is None:
             mt_survey.id = mt_survey.fdsn.network
 
@@ -158,9 +159,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     operator = inventory.Operator(
                         agency=survey.project_lead.organization
                     )
-                    if survey.project_lead.author:
+                    if survey.project_lead.name:
                         person = inventory.Person(
-                            names=[survey.project_lead.author],
+                            names=[survey.project_lead.name],
                             emails=[survey.project_lead.email],
                         )
                         operator.contacts = [person]
