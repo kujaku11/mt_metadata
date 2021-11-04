@@ -13,7 +13,6 @@ things can happen.
 # Imports
 # =============================================================================
 import numpy as np
-import scipy.signal as signal
 
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
@@ -23,6 +22,7 @@ from mt_metadata.timeseries.filters import (
     FIRFilter,
 )
 from mt_metadata.utils.units import get_unit_object
+from mt_metadata.utils.mt_logger import setup_logger
 from obspy.core import inventory
 
 # =============================================================================
@@ -39,6 +39,7 @@ class ChannelResponseFilter(object):
     def __init__(self, **kwargs):
         self.filters_list = []
         self.normalization_frequency = None
+        self.logger = setup_logger(f"{self.__class__}.{self.__class__.__name__}")
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -100,8 +101,9 @@ class ChannelResponseFilter(object):
             return []
 
         if not isinstance(filters_list, list):
-            msg = f"Input filters list must be a list not {type(filters_list)}"
-            raise TypeError(msg)
+            msg = "Input filters list must be a list not %s"
+            self.logger.error(msg, type(filters_list))
+            raise TypeError(msg % type(filters_list))
 
         fails = []
         return_list = []
@@ -304,7 +306,8 @@ class ChannelResponseFilter(object):
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
                 if f.units_out not in ["count"]:
-                    print("converting coefficient to PZ", f)
+                    self.logger.debug("converting CoefficientFilter %s to PZ",
+                                      f.name)
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
                     pz.units_in = f.units_in

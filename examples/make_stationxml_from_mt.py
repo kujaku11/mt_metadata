@@ -11,7 +11,6 @@ Created on Thu Oct  7 16:31:55 2021
 from pathlib import Path
 from mt_metadata.timeseries.tools import MT2StationXML
 
-
 # =============================================================================
 # Input Parameters
 # =============================================================================
