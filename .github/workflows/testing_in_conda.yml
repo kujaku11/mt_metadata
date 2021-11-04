@@ -32,7 +32,6 @@ jobs:
         python --version
         conda create -n mtmetadata-test
         source activate mtmetadata-test
-        conda config --add channels conda-forge
         conda install pytest
         conda install pytest-cov
         
