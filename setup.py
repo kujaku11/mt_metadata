@@ -31,7 +31,7 @@ test_requirements = [
 setup(
     author="Jared Peacock",
     author_email="jpeacock@usgs.gov",
-    python_requires=">=3.5, !=3.9.*, !=3.10.*",
+    python_requires=">=3.5",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
