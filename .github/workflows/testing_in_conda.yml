@@ -22,7 +22,7 @@ jobs:
     - name: Setup Conda
       uses: s-weigand/setup-conda@v1
       with:
-        update-conda: true
+        update-conda: false
         conda-channels: conda-forge
         python-version: ${{ matrix.python-version }}
 
