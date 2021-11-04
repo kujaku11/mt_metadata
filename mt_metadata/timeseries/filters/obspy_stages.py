@@ -119,6 +119,13 @@ def create_filter_from_stage(stage):
     """
 
     if isinstance(stage, obspy.core.inventory.response.PolesZerosResponseStage):
+        if stage.poles == [] and stage.zeros == []:
+            if ("counts" not in stage.input_units.lower() and 
+                "counts" not in stage.output_units.lower()):
+                print(f"Converting {stage.name} to a CoefficientFilter")
+                return create_coefficent_filter_from_stage(stage)
+            
+                
         return create_pole_zero_filter_from_stage(stage)
 
     elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):

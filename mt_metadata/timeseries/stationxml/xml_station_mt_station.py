@@ -190,7 +190,7 @@ class XMLStationMTStation(BaseTranslator):
                 continue
 
             if xml_key == "operators":
-                if mt_station.acquired_by.name is not None:
+                if mt_station.acquired_by.name:
                     if mt_station.acquired_by.organization is None:
                         mt_station.acquired_by.organization = " "
                     operator = inventory.Operator(

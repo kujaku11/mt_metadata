@@ -27,5 +27,13 @@ class Person(Base):
         self.name = None
         self.organization = None
         self.comments = None
-        self.author = None
         super().__init__(attr_dict=attr_dict, **kwargs)
+        
+    @property
+    def author(self):
+        return self.name
+    
+    @author.setter
+    def author(self, value):
+        self.name = value
+        
