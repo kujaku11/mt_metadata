@@ -29,7 +29,7 @@ jobs:
       shell: bash
       run: |
         python --version
-        conda create -n mtmetadata-test python=--version setuptools=58.3
+        conda create -n mtmetadata-test python=${{ matrix.python-version }} setuptools=58.3
         source activate mtmetadata-test
         conda install pytest
         conda install pytest-cov
