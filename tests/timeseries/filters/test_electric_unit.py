@@ -114,7 +114,7 @@ class TestFilterElectric(unittest.TestCase):
         self.assertIsInstance(f2, CoefficientFilter)
         self.assertEqual(f2.name, "mv per km to v per m".lower())
         self.assertEqual(f2.type, "coefficient")
-        self.assertAlmostEqual(f2.gain, 1E-6, 2)
+        self.assertAlmostEqual(f2.gain, 1e-6, 2)
         self.assertEqual(f2.units_in, "mV/km")
         self.assertEqual(f2.units_out, "V/m")
 

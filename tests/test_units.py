@@ -9,27 +9,28 @@ import unittest
 
 from mt_metadata.utils.units import UNITS_LIST, get_unit_object
 
+
 class TestUnits(unittest.TestCase):
     def test_get_unit(self):
         for item in UNITS_LIST:
             with self.subTest(name=f"name_{item['name']}"):
                 self.assertDictEqual(item, get_unit_object(item["name"]).to_dict())
-            
+
             with self.subTest(name=f"abbreviation_{item['abbreviation']}"):
-                self.assertDictEqual(item, get_unit_object(item["abbreviation"]).to_dict())
-            
+                self.assertDictEqual(
+                    item, get_unit_object(item["abbreviation"]).to_dict()
+                )
+
             if item["alias"] not in [""]:
                 with self.subTest(name=f"alias_{item['alias']}"):
                     self.assertDictEqual(item, get_unit_object(item["alias"]).to_dict())
-                
+
     def test_get_unit_fail(self):
         self.assertRaises(KeyError, get_unit_object, "bad_unit")
-        
-                
+
 
 # =============================================================================
 # run
 # =============================================================================
 if __name__ == "__main__":
     unittest.main()
-
