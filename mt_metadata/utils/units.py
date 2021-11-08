@@ -60,13 +60,6 @@ UNITS_LIST = [
         "description": "digital counts from data logger",
         "abbreviation": "count",
         "plot_label": "Digital Counts",
-        "alias": "counts",
-    },
-    {
-        "name": "digital counts",
-        "description": "digital counts from data logger",
-        "abbreviation": "count",
-        "plot_label": "Digital Counts",
         "alias": "count",
     },
     {

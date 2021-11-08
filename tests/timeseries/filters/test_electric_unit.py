@@ -109,24 +109,21 @@ class TestFilterElectric(unittest.TestCase):
         self.assertListEqual(list(f2.zeros), [0j])
 
     def test_stage_03(self):
+        # a no pole, no zero filter converts to a coefficient filter
         f2 = create_filter_from_stage(self.stages[2])
-        self.assertIsInstance(f2, PoleZeroFilter)
+        self.assertIsInstance(f2, CoefficientFilter)
         self.assertEqual(f2.name, "mv per km to v per m".lower())
-        self.assertEqual(f2.type, "zpk")
-        self.assertAlmostEqual(f2.normalization_factor, 1, 2)
-        self.assertEqual(f2.n_poles, 0)
-        self.assertEqual(f2.n_zeros, 0)
+        self.assertEqual(f2.type, "coefficient")
+        self.assertAlmostEqual(f2.gain, 1E-6, 2)
         self.assertEqual(f2.units_in, "mV/km")
         self.assertEqual(f2.units_out, "V/m")
 
     def test_stage_04(self):
         f2 = create_filter_from_stage(self.stages[3])
-        self.assertIsInstance(f2, PoleZeroFilter)
+        self.assertIsInstance(f2, CoefficientFilter)
         self.assertEqual(f2.name, "v per m to v".lower())
-        self.assertEqual(f2.type, "zpk")
-        self.assertAlmostEqual(f2.normalization_factor, 1, 2)
-        self.assertEqual(f2.n_poles, 0)
-        self.assertEqual(f2.n_zeros, 0)
+        self.assertEqual(f2.type, "coefficient")
+        self.assertAlmostEqual(f2.gain, 84.5, 2)
         self.assertEqual(f2.units_in, "V/m")
         self.assertEqual(f2.units_out, "V")
 
