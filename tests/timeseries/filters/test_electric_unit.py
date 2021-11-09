@@ -21,16 +21,6 @@ Notes:
     3. Obspy contributions?  Do we want to contribute fap table readers for StationXML to obspy?
 
 
-ToDo: 
--test ZerosPolesGainContinuous vs ZerosPolesGainDiscrete
-(in one case we add a 'dt' as a kwarg)
-
-20210216:
-1. Revisit base class
-2. continue on implementation
-3. Set a call With Anna
-
-
 """
 import unittest
 from obspy.core import inventory

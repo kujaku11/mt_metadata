@@ -56,6 +56,13 @@ class Unit():
 # List of available units
 UNITS_LIST = [
     {
+        "name": "unknown",
+        "description": "unknown",
+        "abbreviation": "unknown",
+        "plot_label": "Unknown",
+        "alias": "unknown",
+    },
+    {
         "name": "digital counts",
         "description": "digital counts from data logger",
         "abbreviation": "count",
@@ -172,7 +179,7 @@ UNITS_LIST = [
 # put the units into a data frame for easier searching
 UNITS_DF = pd.DataFrame(UNITS_LIST)
 
-def get_unit_object(unit):
+def get_unit_object(unit, allow_none=True):
     """
 
     :param unit: unit name or abbreviation
@@ -185,15 +192,15 @@ def get_unit_object(unit):
     # try to find in name first
     def get_df(col, value):
         if col == "name":
+            if value is None:
+                if allow_none:
+                    value = "unknown" 
+                else:
+                    return None
             value = value.lower()
             
         unit_df = UNITS_DF[UNITS_DF[col] == value]
         if len(unit_df) == 1:
-            unit_dict = unit_df.to_dict("records")[0]
-            return Unit(**unit_dict)
-        
-        # counts has to entries, should figure out a better way than this
-        elif len(unit_df) == 2:
             unit_dict = unit_df.to_dict("records")[0]
             return Unit(**unit_dict)
         
@@ -204,6 +211,7 @@ def get_unit_object(unit):
         unit_df = get_df(col, unit)
         if unit_df is not None:
             return unit_df
+    
     
     if unit_df is None:
         raise KeyError(
