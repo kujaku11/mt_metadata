@@ -67,7 +67,7 @@ UNITS_LIST = [
         "description": "digital counts from data logger",
         "abbreviation": "count",
         "plot_label": "Digital Counts",
-        "alias": "count",
+        "alias": "counts",
     },
     {
         "name": "volt",
@@ -133,6 +133,13 @@ UNITS_LIST = [
         "alias": "millivolts per kilometer",
     },
     {
+        "name": "millivolt per meter",
+        "description": "electric field",
+        "abbreviation": "mV/m",
+        "plot_label": "milliVolt per meter",
+        "alias": "millivolts per meter",
+    },
+    {
         "name": "microvolt per meter",
         "description": "electric field",
         "abbreviation": "\u03BCV/m",
@@ -191,15 +198,13 @@ def get_unit_object(unit, allow_none=True):
 
     # try to find in name first
     def get_df(col, value):
-        if col == "name":
-            if value is None:
-                if allow_none:
-                    value = "unknown" 
-                else:
-                    return None
-            value = value.lower()
+        if value is None:
+            if allow_none:
+                value = "unknown" 
+            else:
+                return None
             
-        unit_df = UNITS_DF[UNITS_DF[col] == value]
+        unit_df = UNITS_DF[UNITS_DF[col].str.lower() == value.lower()]
         if len(unit_df) == 1:
             unit_dict = unit_df.to_dict("records")[0]
             return Unit(**unit_dict)
