@@ -8,11 +8,18 @@ Idea here is to add logic to interrogate stage filters received from StationXML
 import numpy as np
 import obspy
 
-from mt_metadata.timeseries.filters import (CoefficientFilter, FIRFilter, FrequencyResponseTableFilter, TimeDelayFilter, PoleZeroFilter)
+from mt_metadata.timeseries.filters import (
+    CoefficientFilter,
+    FIRFilter,
+    FrequencyResponseTableFilter,
+    TimeDelayFilter,
+    PoleZeroFilter,
+)
 from mt_metadata.utils.mt_logger import setup_logger
 
 logger = setup_logger("obspy_stages")
 # =============================================================================
+
 
 def create_time_delay_filter_from_stage(stage):
     time_delay_filter = TimeDelayFilter()
@@ -120,14 +127,16 @@ def create_filter_from_stage(stage):
 
     if isinstance(stage, obspy.core.inventory.response.PolesZerosResponseStage):
         if stage.poles == [] and stage.zeros == []:
-            if ("counts" not in stage.input_units.lower() and 
-                "counts" not in stage.output_units.lower()):
+            if (
+                "counts" not in stage.input_units.lower()
+                and "counts" not in stage.output_units.lower()
+            ):
                 logger.info(
                     "Converting PoleZerosResponseStage %s to a CoefficientFilter",
-                    stage.name)
+                    stage.name,
+                )
                 return create_coefficent_filter_from_stage(stage)
-            
-                
+
         return create_pole_zero_filter_from_stage(stage)
 
     elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):
@@ -165,4 +174,3 @@ def create_filter_from_stage(stage):
         msg = "Filter Stage of type %s not known, or supported"
         logger.info(msg, type(stage))
         raise TypeError(msg % type(stage))
-        

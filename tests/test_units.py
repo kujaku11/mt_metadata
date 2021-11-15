@@ -27,14 +27,14 @@ class TestUnits(unittest.TestCase):
 
     def test_get_unit_fail(self):
         self.assertRaises(KeyError, get_unit_object, "bad_unit")
-        
+
     def test_get_unit_none(self):
         self.assertRaises(KeyError, get_unit_object, None, False)
-    
+
     def test_get_unit_allow_none(self):
         self.assertDictEqual(
-            get_unit_object('unknown', allow_none=True).to_dict(),
-            get_unit_object(None, allow_none=True).to_dict()
+            get_unit_object("unknown", allow_none=True).to_dict(),
+            get_unit_object(None, allow_none=True).to_dict(),
         )
 
 

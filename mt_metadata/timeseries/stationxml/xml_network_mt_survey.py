@@ -39,7 +39,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 "operators": "special",
                 "code": "fdsn.network",
                 "identifiers": "citation_dataset.doi",
-                "alternate_code": "id"
+                "alternate_code": "id",
             }
         )
 
@@ -87,9 +87,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         name.append(", ".join(person.names))
                         email.append(", ".join(person.emails))
                 if name:
-                    mt_survey.set_attr_from_name(
-                        "project_lead.name", ", ".join(name)
-                    )
+                    mt_survey.set_attr_from_name("project_lead.name", ", ".join(name))
                 if email:
                     mt_survey.set_attr_from_name("project_lead.email", ", ".join(email))
                 if org:

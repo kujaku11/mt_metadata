@@ -225,19 +225,19 @@ class FilterBase(Base):
     @property
     def total_gain(self):
         return self.gain
-    
+
     @property
     def units_in(self):
         return self._units_in_obj.abbreviation
-    
+
     @units_in.setter
     def units_in(self, value):
         self._units_in_obj = get_unit_object(value)
-    
+
     @property
     def units_out(self):
         return self._units_out_obj.abbreviation
-    
+
     @units_out.setter
     def units_out(self, value):
         self._units_out_obj = get_unit_object(value)
