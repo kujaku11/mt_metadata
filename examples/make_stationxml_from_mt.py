@@ -16,8 +16,8 @@ from mt_metadata.timeseries.tools import MT2StationXML
 # =============================================================================
 
 # path to the folder where all the xmls are
-xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\mth5")
-output_path = Path(r"c:\Users\jpeacock")
+xml_path = Path(r"mt_metadata_files")
+output_path = Path()
 
 # make an instance of MTML2StationXML where the input is the path to the folder
 # containing the MTML.xml files

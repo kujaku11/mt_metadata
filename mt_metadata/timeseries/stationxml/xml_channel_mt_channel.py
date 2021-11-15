@@ -112,7 +112,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return mt_channel, mt_filters
 
-    def mt_to_xml(self, mt_channel, filters_dict):
+    def mt_to_xml(self, mt_channel, filters_dict, hard_code=True):
         """
         Translate :class:`mt_metadata.timeseries.Channel` to
         :class:`obspy.core.inventory.Channel`
@@ -133,17 +133,26 @@ class XMLChannelMTChannel(BaseTranslator):
             raise TypeError(msg)
 
         # location_code = get_location_code(mt_channel)
-        alignement = "horizontal"
-        if "z" in mt_channel.component.lower():
-            alignement = "vertical"
-
-        channel_code = make_channel_code(
-            mt_channel.sample_rate,
-            mt_channel.type,
-            mt_channel.measurement_azimuth,
-            orientation=alignement,
-        )
-
+        if not hard_code:
+            alignement = "horizontal"
+            if "z" in mt_channel.component.lower():
+                alignement = "vertical"
+    
+            channel_code = make_channel_code(
+                mt_channel.sample_rate,
+                mt_channel.type,
+                mt_channel.measurement_azimuth,
+                orientation=alignement,
+            )
+        # this assumes the last character of the component is the orientation
+        # direction
+        elif hard_code:
+            channel_code = make_channel_code(
+                mt_channel.sample_rate,
+                mt_channel.type,
+                mt_channel.component[-1].lower()
+            )
+            
         is_electric = mt_channel.type in ["electric"]
         if is_electric:
             xml_channel = inventory.Channel(
