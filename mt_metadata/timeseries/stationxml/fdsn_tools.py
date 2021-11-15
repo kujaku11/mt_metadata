@@ -207,7 +207,10 @@ def make_channel_code(sample_rate, measurement_type, azimuth, orientation="horiz
 
     period_code = get_period_code(sample_rate)
     sensor_code = get_measurement_code(measurement_type)
-    orientation_code = get_orientation_code(azimuth, orientation=orientation)
+    if isinstance(azimuth, (float, int)):
+        orientation_code = get_orientation_code(azimuth, orientation=orientation)
+    elif isinstance(azimuth, (str)):
+        orientation_code = get_orientation_code(direction=azimuth)
 
     channel_code = f"{period_code}{sensor_code}{orientation_code}"
 
