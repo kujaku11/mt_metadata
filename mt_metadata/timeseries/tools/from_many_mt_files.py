@@ -27,19 +27,19 @@ from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 class MT2StationXML(XMLInventoryMTExperiment):
     """
     A class to convert multiple MT xml files into a stationXML (MTML)
-    
+
     This is for a use case of A. Kelbert who places each level of metadata
     into a single XML file.  This class collects all those files and puts
-    them into the proper order.  
-    
+    them into the proper order.
+
     She has the files named as follows
-    
+
     survey.xml               --> Survey metadata `mt_metadata.timeseries.Survey`
     filters.xml              --> All filters
     station.xml              --> Station metadata `mt_metadata.timeseries.Station`
     station.run.xml          --> Run metadata `mt_metadata.timeseries.Run`
     station.run.channel.xml  --> Channel metadata `mt_metadata.timeseries.Channel`
-    
+
 
     """
 
@@ -171,13 +171,13 @@ class MT2StationXML(XMLInventoryMTExperiment):
 
         """
         rdf = list(
-                self.df[
-                    (self.df.station == station)
-                    & (self.df.run == run)
-                    & (self.df.is_channel == True)
-                ].fn
-            )
-        
+            self.df[
+                (self.df.station == station)
+                & (self.df.run == run)
+                & (self.df.is_channel == True)
+            ].fn
+        )
+
         channels_list = []
         for ch in order:
             for fn in rdf:
@@ -269,7 +269,7 @@ class MT2StationXML(XMLInventoryMTExperiment):
                     dp_filter.comments = "electric dipole for electric field"
                     break
             if find:
-                ch.filter.name[ii] = dp_filter.name 
+                ch.filter.name[ii] = dp_filter.name
 
         return ch, dp_filter
 
@@ -323,16 +323,20 @@ class MT2StationXML(XMLInventoryMTExperiment):
             r, dp = self._make_run(run_dict)
             for channel in r.channels:
                 if channel.type in ["electric"]:
-                    if (channel.positive.latitude == 0 and 
-                        channel.positive.longitude == 0 and
-                        channel.positive.elevation == 0):
+                    if (
+                        channel.positive.latitude == 0
+                        and channel.positive.longitude == 0
+                        and channel.positive.elevation == 0
+                    ):
                         channel.positive.latitude = station.location.latitude
                         channel.positive.longitude = station.location.longitude
                         channel.positive.elevation = station.location.elevation
                 else:
-                    if (channel.location.latitude == 0 and 
-                        channel.location.longitude == 0 and
-                        channel.location.elevation == 0):
+                    if (
+                        channel.location.latitude == 0
+                        and channel.location.longitude == 0
+                        and channel.location.elevation == 0
+                    ):
                         channel.location.latitude = station.location.latitude
                         channel.location.longitude = station.location.longitude
                         channel.location.elevation = station.location.elevation
@@ -414,26 +418,25 @@ class MT2StationXML(XMLInventoryMTExperiment):
 
         """
         mtex = Experiment()
-        
+
         survey, dp_filters = self._make_survey(self.sort_by_station(stations))
         mtex.surveys.append(survey)
         mtex.surveys[0].filters = self._make_filters_dict(self.filters)
         mtex.surveys[0].filters.update(dp_filters)
 
         return mtex
-    
+
     def get_mt_channel(self, ch_fn, filters_fn):
         """
         have a look at an mt channel
         """
-        
+
         mt_channel, dp_filter = self._make_channel(ch_fn)
-        
+
         filter_dict = self._make_filters_dict(filters_fn)
         if dp_filter is not None:
             filter_dict.update({dp_filter.name, dp_filter})
-        
+
         channel_response = mt_channel.channel_response(filter_dict)
-        
+
         return mt_channel, channel_response
-        

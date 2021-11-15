@@ -15,30 +15,31 @@ import pandas as pd
 
 # =============================================================================
 
-class Unit():
+
+class Unit:
     def __init__(self, **kwargs):
         self.name = None
         self.description = None
         self.abbreviation = None
         self.plot_label = None
         self.alias = None
-        
+
         for k, v in kwargs.items():
             setattr(self, k, v)
-    
+
     def __str__(self):
         lines = [
             f"name:         {self.name}",
             f"description:  {self.description}",
             f"abbreviation: {self.abbreviation}",
             f"plot_label:   {self.plot_label}",
-            f"alias:        {self.alias}"
-            ]
+            f"alias:        {self.alias}",
+        ]
         return "\n".join(lines)
-    
+
     def __repr__(self):
         return self.__str__()
-    
+
     def to_dict(self):
         return {
             "name": self.name,
@@ -46,13 +47,13 @@ class Unit():
             "abbreviation": self.abbreviation,
             "plot_label": self.plot_label,
             "alias": self.alias,
-            }
-    
+        }
+
     def from_dict(self, value):
         for k, v in value.items():
             setattr(self, k, v)
-        
-            
+
+
 # List of available units
 UNITS_LIST = [
     {
@@ -123,7 +124,7 @@ UNITS_LIST = [
         "description": "electric field",
         "abbreviation": "V/m",
         "plot_label": "Volt per Meter",
-        "alias": "volts per meter",   
+        "alias": "volts per meter",
     },
     {
         "name": "millivolt per kilometer",
@@ -186,6 +187,7 @@ UNITS_LIST = [
 # put the units into a data frame for easier searching
 UNITS_DF = pd.DataFrame(UNITS_LIST)
 
+
 def get_unit_object(unit, allow_none=True):
     """
 
@@ -200,26 +202,25 @@ def get_unit_object(unit, allow_none=True):
     def get_df(col, value):
         if value is None:
             if allow_none:
-                value = "unknown" 
+                value = "unknown"
             else:
                 return None
-            
+
         unit_df = UNITS_DF[UNITS_DF[col].str.lower() == value.lower()]
         if len(unit_df) == 1:
             unit_dict = unit_df.to_dict("records")[0]
             return Unit(**unit_dict)
-        
+
         elif len(unit_df) == 0:
             return None
-    
+
     for col in ["name", "abbreviation", "alias"]:
         unit_df = get_df(col, unit)
         if unit_df is not None:
             return unit_df
-    
-    
+
     if unit_df is None:
         raise KeyError(
             f"Could not find {unit} in accetable units.  "
-            "See mt_metadata.utils.units.py for more information")
-   
+            "See mt_metadata.utils.units.py for more information"
+        )

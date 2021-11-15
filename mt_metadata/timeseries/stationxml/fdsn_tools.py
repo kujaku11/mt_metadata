@@ -162,9 +162,9 @@ def get_orientation_code(azimuth=None, direction=None, orientation="horizontal")
     if azimuth is not None:
         # angles are only from 0 to 360
         azimuth = azimuth % 360
-    
+
         value = abs(np.cos(np.deg2rad(azimuth)))
-    
+
         if orientation == "horizontal":
             if value >= angle(15):
                 return "N"
@@ -174,19 +174,20 @@ def get_orientation_code(azimuth=None, direction=None, orientation="horizontal")
                 return "1"
             elif (value < angle(45)) and (value >= angle(105)):
                 return "2"
-    
+
         elif orientation == "vertical":
             if value >= angle(15):
                 return "Z"
             else:
                 return "3"
-            
+
     elif direction is not None:
-       try:
-           return forced_orientation[direction.lower()]
-       except KeyError:
-           raise ValueError(f"Could not match {direction} with allowed direction (x, y, z)")
-           
+        try:
+            return forced_orientation[direction.lower()]
+        except KeyError:
+            raise ValueError(
+                f"Could not match {direction} with allowed direction (x, y, z)"
+            )
 
 
 def make_channel_code(sample_rate, measurement_type, azimuth, orientation="horizontal"):

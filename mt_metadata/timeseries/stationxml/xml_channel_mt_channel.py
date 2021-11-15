@@ -137,7 +137,7 @@ class XMLChannelMTChannel(BaseTranslator):
             alignement = "horizontal"
             if "z" in mt_channel.component.lower():
                 alignement = "vertical"
-    
+
             channel_code = make_channel_code(
                 mt_channel.sample_rate,
                 mt_channel.type,
@@ -150,9 +150,9 @@ class XMLChannelMTChannel(BaseTranslator):
             channel_code = make_channel_code(
                 mt_channel.sample_rate,
                 mt_channel.type,
-                mt_channel.component[-1].lower()
+                mt_channel.component[-1].lower(),
             )
-            
+
         is_electric = mt_channel.type in ["electric"]
         if is_electric:
             xml_channel = inventory.Channel(
@@ -194,7 +194,6 @@ class XMLChannelMTChannel(BaseTranslator):
 
             else:
                 setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
-                
 
         return xml_channel
 
@@ -227,7 +226,7 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.sensor.model = f"{sensor.model} {sensor.description}"
             mt_channel.sensor.type = sensor.type
             mt_channel.sensor.name = sensor.description
-            
+
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
@@ -531,11 +530,12 @@ class XMLChannelMTChannel(BaseTranslator):
 
         mt_channel_response = mt_channel.channel_response(filters_dict)
         xml_channel.response = mt_channel_response.to_obspy(
-            sample_rate=mt_channel.sample_rate)
-        
+            sample_rate=mt_channel.sample_rate
+        )
+
         unit_obj = get_unit_object(mt_channel_response.units_in)
-        
+
         xml_channel.calibration_units = unit_obj.abbreviation
         xml_channel.calibration_units_description = unit_obj.name
-        
+
         return xml_channel

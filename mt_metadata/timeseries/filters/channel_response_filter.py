@@ -292,7 +292,7 @@ class ChannelResponseFilter(object):
 
         units_in_obj = get_unit_object(self.units_in)
         units_out_obj = get_unit_object(self.units_out)
-        
+
         total_response = inventory.Response()
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
             total_sensitivity,
@@ -306,8 +306,7 @@ class ChannelResponseFilter(object):
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
                 if f.units_out not in ["count"]:
-                    self.logger.debug("converting CoefficientFilter %s to PZ",
-                                      f.name)
+                    self.logger.debug("converting CoefficientFilter %s to PZ", f.name)
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
                     pz.units_in = f.units_in
@@ -316,7 +315,7 @@ class ChannelResponseFilter(object):
                     pz.name = f.name
                 else:
                     pz = f
-            
+
                 total_response.response_stages.append(
                     pz.to_obspy(
                         stage_number=ii,
