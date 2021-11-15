@@ -87,6 +87,8 @@ mt_components_dict = {"electric": "e", "magnetic": "h", "temperature": "temperat
 
 mt_orientation_dict = {"N": "x", "E": "y", "Z": "z", "1": "x", "2": "y", "3": "z"}
 
+forced_orientation = {"x": "N", "y": "E", "z": "Z"}
+
 
 def create_location_code(channel_obj):
     """
@@ -145,37 +147,46 @@ def get_measurement_code(measurement):
     return sensor_code
 
 
-def get_orientation_code(azimuth, orientation="horizontal"):
+def get_orientation_code(azimuth=None, direction=None, orientation="horizontal"):
     """
     Get orientation code given angle and orientation.  This is a general
     code and the true azimuth is stored in channel
 
     :param azimuth: angel assuming 0 is north, 90 is east, 0 is vertical down
     :type azimuth: float
+    :param direction: character nominated direction [ x | y | z ]
     :return: single character SEED orientation code
     :rtype: string
 
     """
-    # angles are only from 0 to 360
-    azimuth = azimuth % 360
-
-    value = abs(np.cos(np.deg2rad(azimuth)))
-
-    if orientation == "horizontal":
-        if value >= angle(15):
-            return "N"
-        elif value <= angle(105):
-            return "E"
-        elif (value < angle(15)) and (value >= angle(45)):
-            return "1"
-        elif (value < angle(45)) and (value >= angle(105)):
-            return "2"
-
-    elif orientation == "vertical":
-        if value >= angle(15):
-            return "Z"
-        else:
-            return "3"
+    if azimuth is not None:
+        # angles are only from 0 to 360
+        azimuth = azimuth % 360
+    
+        value = abs(np.cos(np.deg2rad(azimuth)))
+    
+        if orientation == "horizontal":
+            if value >= angle(15):
+                return "N"
+            elif value <= angle(105):
+                return "E"
+            elif (value < angle(15)) and (value >= angle(45)):
+                return "1"
+            elif (value < angle(45)) and (value >= angle(105)):
+                return "2"
+    
+        elif orientation == "vertical":
+            if value >= angle(15):
+                return "Z"
+            else:
+                return "3"
+            
+    elif direction is not None:
+       try:
+           return forced_orientation[direction.lower()]
+       except KeyError:
+           raise ValueError(f"Could not match {direction} with allowed direction (x, y, z)")
+           
 
 
 def make_channel_code(sample_rate, measurement_type, azimuth, orientation="horizontal"):

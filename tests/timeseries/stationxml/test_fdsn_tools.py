@@ -65,6 +65,18 @@ class TestOrientationCode(unittest.TestCase):
     def test_three(self):
         self.assertEqual(fdsn_tools.get_orientation_code(self.three, "vertical"), "3")
 
+    def test_x_direction(self):
+        self.assertEqual(fdsn_tools.get_orientation_code(direction="x"), "N")
+    
+    def test_y_direction(self):
+        self.assertEqual(fdsn_tools.get_orientation_code(direction="y"), "E")
+        
+    def test_z_direction(self):
+        self.assertEqual(fdsn_tools.get_orientation_code(direction="z"), "Z")
+        
+    def test_direction_fail(self):
+        self.assertRaises(ValueError, fdsn_tools.get_orientation_code, {"direction": "k"})
+        
 
 class TestChannelCode(unittest.TestCase):
     """
