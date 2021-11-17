@@ -21,12 +21,18 @@ logger = logging.getLogger(__name__)
 
 release_dict = {
     "CC-0": "open",
-    "CC-BY": "partial",
+    "CC-BY": "open",
     "CC-BY-SA": "partial",
     "CC-BY-ND": "partial",
     "CC-BY-NC-SA": "partial",
     "CC-BY-NC-NC": "closed",
     None: "open",
+    "CC 0": "open",
+    "CC BY": "open",
+    "CC BY-SA": "partial",
+    "CC BY-ND": "partial",
+    "CC BY-NC-SA": "partial",
+    "CC BY-NC-NC": "closed",
 }
 
 period_code_dict = {
