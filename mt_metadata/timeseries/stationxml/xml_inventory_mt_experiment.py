@@ -124,13 +124,20 @@ class XMLInventoryMTExperiment:
 
         return mt_experiment
 
-    def mt_to_xml(self, mt_experiment, mt_fn=None, stationxml_fn=None):
+    def mt_to_xml(self, mt_experiment, mt_fn=None, stationxml_fn=None, ns_dict=None):
         """
         Convert from MT :class:`mt_metadata.timeseries.Experiment` to
         :class:`obspy.core.inventory.Inventory`
-
+        
         :param mt_experiment: DESCRIPTION
         :type mt_experiment: TYPE
+        :param mt_fn: DESCRIPTION, defaults to None
+        :type mt_fn: TYPE, optional
+        :param stationxml_fn: DESCRIPTION, defaults to None
+        :type stationxml_fn: TYPE, optional
+        :param ns_dict: DESCRIPTION, defaults to None
+        :type ns_dict: TYPE, optional
+        :raises ValueError: DESCRIPTION
         :return: DESCRIPTION
         :rtype: TYPE
 
@@ -159,7 +166,7 @@ class XMLInventoryMTExperiment:
         if stationxml_fn:
             if isinstance(stationxml_fn, Path):
                 stationxml_fn = stationxml_fn.as_posix()
-            xml_inventory.write(stationxml_fn, "stationxml")
+            xml_inventory.write(stationxml_fn, "stationxml", nsmap=ns_dict)
 
         return xml_inventory
 

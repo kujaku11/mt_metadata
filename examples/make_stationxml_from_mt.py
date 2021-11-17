@@ -10,13 +10,19 @@ Created on Thu Oct  7 16:31:55 2021
 # =============================================================================
 from pathlib import Path
 from mt_metadata.timeseries.tools import MT2StationXML
+# =============================================================================
 
+# name space maping
+ns_dict = {
+    "iris": r"http://www.fdsn.org/xml/station/1/iris",
+    "mt": r"http://emiw.org/xmlns/mt/1.0",
+    "xsi": r"http://www.w3.org/2001/XMLSchema-instance",
+    }
 # =============================================================================
 # Input Parameters
 # =============================================================================
-
 # path to the folder where all the xmls are
-xml_path = Path(r"mt_metadata_files")
+xml_path = Path("mt_metadata_files")
 output_path = Path()
 
 # make an instance of MTML2StationXML where the input is the path to the folder
@@ -28,7 +34,9 @@ a = MT2StationXML(xml_path)
 for station in a.stations[0:1]:
     mtex = a.make_experiment(stations=station)
     inv = a.mt_to_xml(
-        mtex, stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml")
+        mtex, 
+        stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml"),
+        ns_dict=ns_dict,
     )
 
 # if you want to make a complete stationxml
