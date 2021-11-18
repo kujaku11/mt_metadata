@@ -67,15 +67,15 @@ class MT2StationXML(XMLInventoryMTExperiment):
 
     @staticmethod
     def is_a_filter_xml(fn):
-        return fn.stem in ["filters"]
+        return fn.stem in ["filters", "_filters"]
 
     @staticmethod
     def is_a_survey_xml(fn):
-        return fn.stem in ["survey"]
+        return fn.stem in ["survey", "_survey"]
 
     @staticmethod
     def is_a_station_xml(fn):
-        if fn.stem not in ["filters", "survey"]:
+        if fn.stem not in ["filters", "_filters", "_survey", "survey"]:
             return fn.stem.count(".") == 0
         return False
 
@@ -259,7 +259,7 @@ class MT2StationXML(XMLInventoryMTExperiment):
             find = False
             for ii, filter_name in enumerate(ch.filter.name):
                 # create a dipole pole zero filter
-                if "dipole_length" in filter_name:
+                if "dipole" in filter_name:
                     find = True
                     dp_filter = PoleZeroFilter()
                     dp_filter.units_in = "V/m"
