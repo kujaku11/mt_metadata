@@ -87,7 +87,7 @@ class CoefficientFilter(FilterBase):
 
         return stage
 
-    def complex_response(self, frequencies):
+    def complex_response(self, frequencies, **kwargs):
         """
 
         Parameters

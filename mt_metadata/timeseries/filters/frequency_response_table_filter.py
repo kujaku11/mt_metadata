@@ -172,7 +172,7 @@ class FrequencyResponseTableFilter(FilterBase):
         return self._total_response_function(frequencies)
 
 
-    def complex_response(self, frequencies, kind="slinear", k=3, ext=2):
+    def complex_response(self, frequencies, interpolation_method="slinear"):
         """
 
         Parameters
@@ -192,23 +192,17 @@ class FrequencyResponseTableFilter(FilterBase):
         if np.max(frequencies) > self.max_frequency:
             self.logger.warning("Extrapolation warning ")
         
-        
-        # phase_response = InterpolatedUnivariateSpline(
-        #     self.frequencies, self.phases, k=k, ext=ext
-        # )
-        # amplitude_response = InterpolatedUnivariateSpline(
-        #     self.frequencies, self.amplitudes, k=k, ext=ext
-        # )
+        print(f"using interpolation method {interpolation_method}")
         phase_response = interp1d(
             self.frequencies,
             self.phases,
-            kind=kind,
+            kind=interpolation_method,
             fill_value="extrapolate",
         )
         amplitude_response = interp1d(
             self.frequencies,
             self.amplitudes,
-            kind=kind,
+            kind=interpolation_method,
             fill_value="extrapolate",
         )
         total_response_function = lambda f: amplitude_response(f) * np.exp(
@@ -216,3 +210,4 @@ class FrequencyResponseTableFilter(FilterBase):
         )
 
         return self.gain * total_response_function(frequencies)
+    

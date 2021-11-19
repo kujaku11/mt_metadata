@@ -359,14 +359,16 @@ class FilterBase(Base):
         frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
-    def plot_response(self, frequencies, x_units="period", unwrap=True, pb_tol=1e-1):
+    def plot_response(self, frequencies, x_units="period", unwrap=True,
+                      pb_tol=1e-1, interpolation_method="slinear"):
         if frequencies is None:
             frequencies = self.generate_frequency_axis(10.0, 1000)
             x_units = "frequency"
             
         kwargs = {"title": self.name, "unwrap": unwrap, "x_units": x_units}
 
-        complex_response = self.complex_response(frequencies)
+        complex_response = self.complex_response(
+            frequencies, **{"interpolation_method": interpolation_method})
         if hasattr(self, "poles"):
             kwargs["poles"] = self.poles
             kwargs["zeros"] = self.zeros

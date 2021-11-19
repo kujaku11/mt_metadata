@@ -183,7 +183,7 @@ class FIRFilter(FilterBase):
         )
         return h
 
-    def complex_response(self, frequencies):
+    def complex_response(self, frequencies, **kwargs):
         """
 
         Parameters

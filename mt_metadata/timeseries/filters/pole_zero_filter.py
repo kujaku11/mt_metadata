@@ -150,7 +150,7 @@ class PoleZeroFilter(FilterBase):
 
         return rs
 
-    def complex_response(self, frequencies):
+    def complex_response(self, frequencies, **kwargs):
         """
 
         Parameters
