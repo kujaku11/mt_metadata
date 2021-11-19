@@ -63,7 +63,6 @@ def plot_response(
     -------
 
     """
-    x_values = cast_angular_frequency_to_period_or_hertz(frequencies, x_units)
     
     fig = plt.figure(figsize=(14, 4))
     if title is not None:
@@ -85,7 +84,7 @@ def plot_response(
         ax_amp.set_ylim([0.9 * response_amplitude[0], 1.1 * response_amplitude[0]])
     
     ax_amp.plot(
-        x_values,
+        frequencies,
         response_amplitude,
         color="tab:blue",
         linewidth=1.5,
@@ -93,7 +92,7 @@ def plot_response(
         label="True",
     )
     ax_phs.plot(
-        x_values,
+        frequencies,
         np.angle(complex_response, deg=True),
         color="tab:blue",
         linewidth=1.5,
