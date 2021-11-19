@@ -153,8 +153,8 @@ def plot_response(
     ax_amp.set_yscale("log")
     ax_amp.set_ylabel("Amplitude Response")
     ax_amp.grid()
-    ax_amp.set_ylim([10**np.floor(np.log10(response_amplitude.min())),
-                     10**np.ceil(np.log10(response_amplitude.max()))])
+    ax_amp.set_ylim([10**(np.floor(np.log10(response_amplitude.min())-1)),
+                     10**(np.ceil(np.log10(response_amplitude.max()))+1)])
     
 
     if not unwrap:
