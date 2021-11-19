@@ -171,62 +171,6 @@ class FrequencyResponseTableFilter(FilterBase):
     def total_response_function(self, frequencies):
         return self._total_response_function(frequencies)
 
-    def pass_band(self, frequencies=None, window_len=5, tol=1e-1):
-        """
-
-        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
-        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
-
-        Try to estimate pass band of the filter from the flattest spots in
-        the amplitude.
-
-        The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std.
-
-        ..note:: This only works for simple filters with
-        on flat pass band.
-
-        :param window_len: length of sliding window in points
-        :type window_len: integer
-
-        :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
-        :type tol: float
-
-        :return: pass band frequencies
-        :rtype: np.ndarray
-
-        """
-
-        if self.amplitudes is None and self.phases is None:
-            return np.nan
-
-        if np.all(self.amplitudes == self.amplitudes[0]):
-            return np.array([self.frequencies.min(), self.frequencies.max()])
-
-        pass_band = []
-        for ii in range(0, self.frequencies.size - window_len, 1):
-            cr_window = np.array(self.amplitudes[ii : ii + window_len])# / self.amplitudes.max()
-            test = abs(1 - np.log10(abs(cr_window.min()))/np.log10(abs(cr_window.max())))
-            if test <= tol:
-                pass_band.append(self.frequencies[int(ii)])
-                pass_band.append(self.frequencies[int(ii + window_len)])
-
-        # Check for discontinuities in the pass band
-        pass_band = np.array(pass_band)
-        if len(pass_band) > 1:
-            df_passband = np.diff(np.log(pass_band))
-            df_0 = np.log(self.frequencies[1]) - np.log(self.frequencies[0])
-            if np.isclose(df_passband, df_0).all():
-                pass
-            else:
-                self.logger.warning("Passband appears discontinuous")
-        try:
-            pass_band = np.array([pass_band.min(), pass_band.max()])
-            return pass_band
-        except ValueError:
-            raise ValueError("No pass band could be found within the given frequency range")
-                    
 
     def complex_response(self, frequencies, kind="slinear", k=3, ext=2):
         """

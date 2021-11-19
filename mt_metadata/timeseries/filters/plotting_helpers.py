@@ -112,15 +112,16 @@ def plot_response(
     if pass_band is not None:
         ax_amp.fill_between(
             pass_band,
-            [response_amplitude.min() * 10, response_amplitude.min() * 10],
-            [response_amplitude.max() * 10, response_amplitude.max() * 10],
+            [10E-10, 10E-10],
+            [10E10, 10E10],
             color=(.7, .7, .7),
             alpha=.7,
             zorder=1)
+        
         ax_phs.fill_between(
             pass_band,
-            [response_phase.min() * 10, response_phase.min() * 10],
-            [response_phase.max() * 10, response_phase.max() * 10],
+            [-1000, -1000],
+            [1000, 1000],
             color=(.7, .7, .7),
             alpha=.7,
             zorder=1)
@@ -188,5 +189,7 @@ def plot_response(
         ax_pz.set_xlim([-1.25 * max_lim, 1.25 * max_lim])
         ax_pz.grid()
         ax_pz.legend()
+        
+    plt.tight_layout()
 
     plt.show()
