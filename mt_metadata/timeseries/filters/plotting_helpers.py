@@ -136,7 +136,7 @@ def plot_response(
     if x_units.lower() == "period":
         x_label = "Period (s)"
     elif x_units.lower() == "frequency":
-        x_label = "Frequency (Hz)"
+        x_label = "Angular Frequency (Hz)"
     ax_phs.set_xlabel(x_label)
     ax_phs.grid()
 
