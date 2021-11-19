@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from matplotlib.gridspec import GridSpec
-from scipy import signal
 
 
 def is_flat_amplitude(array):
@@ -41,6 +40,8 @@ def plot_response(
     xlim=None,
     title=None,
     x_units="Period",
+    unwrap=True,
+    pass_band=None,
 ):
     """
     This function was contributed by Ben Murphy at USGS
@@ -83,6 +84,12 @@ def plot_response(
         response_amplitude[:] = response_amplitude[0]
         ax_amp.set_ylim([0.9 * response_amplitude[0], 1.1 * response_amplitude[0]])
     
+    if unwrap:
+        response_phase = np.rad2deg(np.unwrap(np.angle(complex_response, deg=False)))
+    else:
+        response_phase = np.angle(complex_response, deg=True)
+    
+    # plot amplitude
     ax_amp.plot(
         frequencies,
         response_amplitude,
@@ -91,13 +98,33 @@ def plot_response(
         linestyle="-",
         label="True",
     )
+    
+    # plot phase
     ax_phs.plot(
         frequencies,
-        np.angle(complex_response, deg=True),
+        response_phase,
         color="tab:blue",
         linewidth=1.5,
         linestyle="-",
     )
+        
+    # plot pass band
+    if pass_band is not None:
+        ax_amp.fill_between(
+            pass_band,
+            [response_amplitude.min() * 10, response_amplitude.min() * 10],
+            [response_amplitude.max() * 10, response_amplitude.max() * 10],
+            color=(.7, .7, .7),
+            alpha=.7,
+            zorder=1)
+        ax_phs.fill_between(
+            pass_band,
+            [response_phase.min() * 10, response_phase.min() * 10],
+            [response_phase.max() * 10, response_phase.max() * 10],
+            color=(.7, .7, .7),
+            alpha=.7,
+            zorder=1)
+        
     if poles is not None:
         ax_pz.scatter(
             np.real(poles),
@@ -126,9 +153,15 @@ def plot_response(
     ax_amp.set_yscale("log")
     ax_amp.set_ylabel("Amplitude Response")
     ax_amp.grid()
-    ax_amp.legend()
+    ax_amp.set_ylim([10**np.floor(np.log10(response_amplitude.min())),
+                     10**np.ceil(np.log10(response_amplitude.max()))])
+    
 
-    ax_phs.set_ylim([-200.0, 200.0])
+    if not unwrap:
+        ax_phs.set_ylim([-200.0, 200.0])
+        
+    else:
+        ax_phs.set_ylim([response_phase.min() - 10, response_phase.max() + 10])
     ax_phs.set_xscale("log")
     ax_phs.set_ylabel("Phase Response")
     
@@ -136,6 +169,7 @@ def plot_response(
         x_label = "Period (s)"
     elif x_units.lower() == "frequency":
         x_label = "Angular Frequency (Hz)"
+        
     ax_phs.set_xlabel(x_label)
     ax_phs.grid()
 

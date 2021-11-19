@@ -174,7 +174,7 @@ class PoleZeroFilter(FilterBase):
         w = 2.0 * np.pi * frequency_axis
         plot_response(zpk_obs=zpg, w_values=w, title=self.name)
 
-    def pass_band(self, window_len=7, tol=1e-4):
+    def pass_band(self, frequencies, window_len=5, tol=1e-1):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -203,18 +203,22 @@ class PoleZeroFilter(FilterBase):
 
         if self.poles is None and self.zeros is None:
             return np.nan
-        f = np.logspace(-5, 5, num=50 * window_len)  # freq Hz
+        f = frequencies  # freq Hz
         cr = self.complex_response(f)
         amp = np.abs(cr)
         if np.all(cr == cr[0]):
             return np.array([f.min(), f.max()])
+        
         pass_band = []
-        for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = np.array(amp[ii : ii + window_len])
-            cr_window /= cr_window.max()
-
-            if cr_window.std() <= tol and cr_window.std() > 0:
-                pass_band.append(f[ii])
+        for ii in range(0, f.size - window_len, 1):
+            cr_window = np.array(amp[ii : ii + window_len])# / self.amplitudes.max()
+            test = abs(1 - np.log10(cr_window.min())/np.log10(cr_window.max()))
+            
+            if cr_window.std() == 0:
+                continue
+            elif test <= tol:
+                pass_band.append(f[int(ii)])
+                pass_band.append(f[int(ii + window_len)])
 
         # Check for discontinuities in the pass band
         pass_band = np.array(pass_band)
@@ -225,8 +229,12 @@ class PoleZeroFilter(FilterBase):
                 pass
             else:
                 self.logger.debug("Passband appears discontinuous")
-        pass_band = np.array([pass_band.min(), pass_band.max()])
-        return pass_band
+        try:
+            pass_band = np.array([pass_band.min(), pass_band.max()])
+            return pass_band
+        except ValueError:
+            raise ValueError("No pass band could be found within the given frequency range")
+            
 
     def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):
         """

@@ -301,25 +301,23 @@ class FilterBase(Base):
         frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
-    def plot_response(self, frequencies, x_units="period"):
+    def plot_response(self, frequencies, x_units="period", unwrap=True):
         if frequencies is None:
             frequencies = self.generate_frequency_axis(10.0, 1000)
             x_units = "frequency"
+            
+        kwargs = {"title": self.name, "unwrap": unwrap, "x_units": x_units}
 
         complex_response = self.complex_response(frequencies)
         if hasattr(self, "poles"):
-            plot_response(
-                frequencies, 
-                complex_response,
-                poles=self.poles,
-                zeros=self.zeros,
-                title=self.name,
-                x_units=x_units
-            )
-        else:
-            plot_response(
-                frequencies, complex_response, title=self.name, x_units=x_units
-            )
+            kwargs["poles"] = self.poles
+            kwargs["zeros"] = self.zeros
+            
+        if hasattr(self, "pass_band"):
+            kwargs["pass_band"] = self.pass_band(frequencies)
+            
+        plot_response(frequencies, complex_response, **kwargs)
+
 
     @property
     def decimation_active(self):

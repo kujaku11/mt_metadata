@@ -14,7 +14,7 @@ The table should have default outputs, suggested frequency, amplitude, phase (de
 """
 import copy
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline
+from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
 
 from obspy.core.inventory.response import ResponseListResponseStage, ResponseListElement
 
@@ -171,7 +171,7 @@ class FrequencyResponseTableFilter(FilterBase):
     def total_response_function(self, frequencies):
         return self._total_response_function(frequencies)
 
-    def pass_band(self, window_len=7, tol=1e-2):
+    def pass_band(self, frequencies=None, window_len=5, tol=1e-1):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -205,12 +205,12 @@ class FrequencyResponseTableFilter(FilterBase):
             return np.array([self.frequencies.min(), self.frequencies.max()])
 
         pass_band = []
-        for ii in range(window_len, self.frequencies.size - window_len, 1):
-            cr_window = np.array(self.amplitudes[ii : ii + window_len])
-            cr_window /= cr_window.max()
-
-            if cr_window.std() <= tol:
-                pass_band.append(self.frequencies[ii])
+        for ii in range(0, self.frequencies.size - window_len, 1):
+            cr_window = np.array(self.amplitudes[ii : ii + window_len])# / self.amplitudes.max()
+            test = abs(1 - np.log10(abs(cr_window.min()))/np.log10(abs(cr_window.max())))
+            if test <= tol:
+                pass_band.append(self.frequencies[int(ii)])
+                pass_band.append(self.frequencies[int(ii + window_len)])
 
         # Check for discontinuities in the pass band
         pass_band = np.array(pass_band)
@@ -221,10 +221,14 @@ class FrequencyResponseTableFilter(FilterBase):
                 pass
             else:
                 self.logger.warning("Passband appears discontinuous")
-        pass_band = np.array([pass_band.min(), pass_band.max()])
-        return pass_band
+        try:
+            pass_band = np.array([pass_band.min(), pass_band.max()])
+            return pass_band
+        except ValueError:
+            raise ValueError("No pass band could be found within the given frequency range")
+                    
 
-    def complex_response(self, frequencies, k=3, ext=2):
+    def complex_response(self, frequencies, kind="slinear", k=3, ext=2):
         """
 
         Parameters
@@ -243,11 +247,25 @@ class FrequencyResponseTableFilter(FilterBase):
 
         if np.max(frequencies) > self.max_frequency:
             self.logger.warning("Extrapolation warning ")
-        phase_response = InterpolatedUnivariateSpline(
-            self.frequencies, self.phases, k=k, ext=ext
+        
+        
+        # phase_response = InterpolatedUnivariateSpline(
+        #     self.frequencies, self.phases, k=k, ext=ext
+        # )
+        # amplitude_response = InterpolatedUnivariateSpline(
+        #     self.frequencies, self.amplitudes, k=k, ext=ext
+        # )
+        phase_response = interp1d(
+            self.frequencies,
+            self.phases,
+            kind=kind,
+            fill_value="extrapolate",
         )
-        amplitude_response = InterpolatedUnivariateSpline(
-            self.frequencies, self.amplitudes, k=k, ext=ext
+        amplitude_response = interp1d(
+            self.frequencies,
+            self.amplitudes,
+            kind=kind,
+            fill_value="extrapolate",
         )
         total_response_function = lambda f: amplitude_response(f) * np.exp(
             1.0j * phase_response(f)

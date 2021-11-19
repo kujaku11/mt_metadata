@@ -206,7 +206,7 @@ class FIRFilter(FilterBase):
 
         return h
 
-    def pass_band(self, window_len=7, tol=1e-4):
+    def pass_band(self, frequencies, window_len=5, tol=1e-1):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -233,21 +233,23 @@ class FIRFilter(FilterBase):
 
         """
 
-        f = np.logspace(-5, 5, num=50 * window_len)  # freq Hz
-        cr = self.unscaled_complex_response(f)
+        f = frequencies
+        cr = self.complex_response(f)
         amp = np.abs(cr)
         if np.all(cr == cr[0]):
             return np.array([f.min(), f.max()])
+        
         pass_band = []
-        for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = amp[ii : ii + window_len]
-            cr_window /= cr_window.max()
+        for ii in range(0, f.size - window_len, 1):
+            cr_window = np.array(amp[ii : ii + window_len])# / self.amplitudes.max()
+            test = abs(1 - np.log10(cr_window.min())/np.log10(cr_window.max()))
 
+            print(test, test <= tol, f[int(ii)] , f[int(ii + window_len)])
             if cr_window.std() == 0:
                 continue
-
-            if cr_window.std() <= tol:
-                pass_band.append(f[ii])
+            elif test <= tol:
+                pass_band.append(f[int(ii)])
+                pass_band.append(f[int(ii + window_len)])
 
         # Check for discontinuities in the pass band
         pass_band = np.array(pass_band)
@@ -258,5 +260,9 @@ class FIRFilter(FilterBase):
                 pass
             else:
                 self.logger.warning("Passband appears discontinuous")
-        pass_band = np.array([pass_band.min(), pass_band.max()])
-        return pass_band
+        try:
+            pass_band = np.array([pass_band.min(), pass_band.max()])
+            return pass_band
+        except ValueError:
+            raise ValueError("No pass band could be found within the given frequency range")
+                    
