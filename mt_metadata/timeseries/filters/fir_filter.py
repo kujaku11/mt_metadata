@@ -7,7 +7,6 @@ import scipy.signal as signal
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
-from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
@@ -36,25 +35,23 @@ class FIRFilter(FilterBase):
         super().__init__()
         self.type = "fir"
         self.coefficients = None
+        self.symmetry = "NONE"
+        self.gain_frequency = 0.0
+        self.decimation_factor = 1.0
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        if isinstance(self.gain_frequency, str):
+            self.gain_frequency = float(self.gain_frequency)
 
         self.obspy_mapping = obspy_mapping
-
-    # @property
-    # def symmetry(self):
-    #     # if self._symmetry == "NONE":
-    #     #     return None
-    #     # else:
-    #         return self._symmetry
-
-    @property
-    def coefficients(self):
-        return self._coefficients
 
     @property
     def output_sampling_rate(self):
         return self.decimation_input_sample_rate / self.decimation_factor
+
+    @property
+    def coefficients(self):
+        return self._coefficients
 
     @coefficients.setter
     def coefficients(self, value):
@@ -75,15 +72,6 @@ class FIRFilter(FilterBase):
         else:
             self._coefficients = np.empty(0)
 
-    # @property
-    # def full_coefficients(self):
-    #     coeffs = self.symmetry_corrected_coefficients.copy()
-    #     pass_band_center_frequency = self.pass_band().mean()
-    #     raw_gain = np.abs(self.complex_response(pass_band_center_frequency))
-    #     expected_gain = self.gain
-    #     corrective_scalar = expected_gain * raw_gain
-    #     print(f"corrective_scalar: {corrective_scalar}")
-    #     return coeffs * corrective_scalar
 
     @property
     def symmetry_corrected_coefficients(self):
@@ -187,6 +175,7 @@ class FIRFilter(FilterBase):
         :param frequencies:
         :return:
         """
+        angular_frequencies = 2 * np.pi * frequencies
         w, h = signal.freqz(
             self.symmetry_corrected_coefficients,
             worN=angular_frequencies,

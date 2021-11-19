@@ -301,27 +301,25 @@ class FilterBase(Base):
         frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
-    def plot_response(self, frequency_axis, x_units="period"):
-        if frequency_axis is None:
-            frequency_axis = self.generate_frequency_axis(10.0, 1000)
+    def plot_response(self, frequencies, x_units="period"):
+        if frequencies is None:
+            frequencies = self.generate_frequency_axis(10.0, 1000)
             x_units = "frequency"
 
-        w = 2.0 * np.pi * frequency_axis
-        complex_response = self.complex_response(frequency_axis)
-        plot_response(
-            w_obs=w, resp_obs=complex_response, title=self.name, x_units=x_units
-        )
-        # if isinstance(self, mt_metadata.timeseries.filters.pole_zero_filter.PoleZeroFilter):
-        #     plot_response(zpk_obs=zpg, w_values=w, title=pz_filter.name)
-        # else:
-        #     print("we dont yet have a custom plotter for filter of type {}".format(type(self)))
-
-    # Removed reference to iris_mt_scratch; Delete after issue #37 closed.
-    # def plot_complex_response(self, frequency_axis, **kwargs):
-    #     from iris_mt_scratch.sandbox.plot_helpers import plot_complex_response
-    #
-    #     complex_response = self.complex_response(frequency_axis)
-    #     plot_complex_response(frequency_axis, complex_response)
+        complex_response = self.complex_response(frequencies)
+        if hasattr(self, "poles"):
+            plot_response(
+                frequencies, 
+                complex_response,
+                poles=self.poles,
+                zeros=self.zeros,
+                title=self.name,
+                x_units=x_units
+            )
+        else:
+            plot_response(
+                frequencies, complex_response, title=self.name, x_units=x_units
+            )
 
     @property
     def decimation_active(self):
