@@ -295,7 +295,7 @@ class FilterBase(Base):
         print("Filter Base class does not have a complex response defined")
         return None
     
-    def pass_band(self, frequencies, window_len=5, tol=.5):
+    def pass_band(self, frequencies, window_len=5, tol=.5, **kwargs):
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -323,7 +323,7 @@ class FilterBase(Base):
         """
         
         f = frequencies
-        cr = self.complex_response(f)
+        cr = self.complex_response(f, **kwargs)
         amp = np.abs(cr)
         if np.all(cr == cr[0]):
             return np.array([f.min(), f.max()])
@@ -346,12 +346,14 @@ class FilterBase(Base):
         # pick the longest
         try:
             longest = np.argmax(np.diff(pb_zones, axis=1))
+            if pb_zones[longest, 1] >= f.size:
+                pb_zones[longest, 1] = f.size - 1
         except ValueError:
             self.logger.warning(
                 "No pass band could be found within the given frequency range. Returning None")
             return None
         
-        return [f[pb_zones[longest, 0]], f[pb_zones[longest, 1]]]
+        return np.array([f[pb_zones[longest, 0]], f[pb_zones[longest, 1]]])
 
     def generate_frequency_axis(self, sampling_rate, n_observations):
         dt = 1.0 / sampling_rate
@@ -365,7 +367,8 @@ class FilterBase(Base):
             frequencies = self.generate_frequency_axis(10.0, 1000)
             x_units = "frequency"
             
-        kwargs = {"title": self.name, "unwrap": unwrap, "x_units": x_units}
+        kwargs = {"title": self.name, "unwrap": unwrap, "x_units": x_units,
+                  "label": self.name}
 
         complex_response = self.complex_response(
             frequencies, **{"interpolation_method": interpolation_method})
@@ -374,7 +377,11 @@ class FilterBase(Base):
             kwargs["zeros"] = self.zeros
             
         if hasattr(self, "pass_band"):
-            kwargs["pass_band"] = self.pass_band(frequencies, tol=pb_tol)
+            kwargs["pass_band"] = self.pass_band(
+                frequencies,
+                tol=pb_tol,
+                **{"interpolation_method": interpolation_method}
+                )
             
         plot_response(frequencies, complex_response, **kwargs)
 

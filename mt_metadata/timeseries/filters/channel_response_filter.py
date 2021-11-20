@@ -23,6 +23,7 @@ from mt_metadata.timeseries.filters import (
 )
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.utils.mt_logger import setup_logger
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from obspy.core import inventory
 
 # =============================================================================
@@ -38,6 +39,7 @@ class ChannelResponseFilter(object):
 
     def __init__(self, **kwargs):
         self.filters_list = []
+        self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
         self.logger = setup_logger(f"{self.__class__}.{self.__class__.__name__}")
 
@@ -64,6 +66,33 @@ class ChannelResponseFilter(object):
     def filters_list(self, filters_list):
         """set the filters list and validate the list"""
         self._filters_list = self._validate_filters_list(filters_list)
+        
+    @property
+    def frequencies(self):
+        """ frequencies to estimate filters """
+        return self._frequencies
+    
+    @frequencies.setter
+    def frequencies(self, value):
+        """
+        Set the frequencies, make sure the input is validated
+
+        Linear frequencies
+        :param value: Linear Frequencies
+        :type value: iterable
+
+        """
+        if value is None:
+            self._frequencies = None
+            
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._frequencies = np.array(value, dtype=float)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
 
     @property
     def names(self):
@@ -121,11 +150,14 @@ class ChannelResponseFilter(object):
     @property
     def pass_band(self):
         """estimate pass band for all filters in frequency"""
+        if self.frequencies is None:
+            raise ValueError(
+                "frequencies are None, must be input to calculate pass band")
         pb = []
         for f in self.filters_list:
             if hasattr(f, "pass_band"):
-                f_pb = f.pass_band()
-                if f_pb is np.nan:
+                f_pb = f.pass_band(self.frequencies)
+                if f_pb is None:
                     continue
                 pb.append((f_pb.min(), f_pb.max()))
 
@@ -188,7 +220,12 @@ class ChannelResponseFilter(object):
         return total_delay
 
     def complex_response(
-        self, frequencies, include_delay=False, normalize=False, include_decimation=True
+        self, 
+        frequencies=None, 
+        include_delay=False,
+        normalize=False,
+        include_decimation=True,
+        **kwargs,
     ):
         """
 
@@ -201,7 +238,8 @@ class ChannelResponseFilter(object):
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
         """
-        frequencies = np.array(frequencies)
+        if frequencies is not None:
+            self.frequencies = frequencies
 
         if include_delay:
             filters_list = self.filters_list
@@ -216,10 +254,10 @@ class ChannelResponseFilter(object):
             return np.ones(len(frequencies))
 
         filter_stage = filters_list.pop(0)
-        result = filter_stage.complex_response(frequencies)
+        result = filter_stage.complex_response(frequencies, **kwargs)
         while len(filters_list):
             filter_stage = filters_list.pop(0)
-            result *= filter_stage.complex_response(frequencies)
+            result *= filter_stage.complex_response(frequencies, **kwargs)
 
         if normalize:
             result /= np.max(np.abs(result))
@@ -333,3 +371,26 @@ class ChannelResponseFilter(object):
                 )
 
         return total_response
+    
+    def plot_response(self, frequencies=None, x_units="period", unwrap=True,
+                      pb_tol=1e-1, interpolation_method="slinear"):
+            
+        if frequencies is not None:
+            self.frequencies = frequencies
+        
+        cr_kwargs = {"interpolation_method": interpolation_method}
+
+        complex_response = self.complex_response(self.frequencies, **cr_kwargs)
+            
+        cr_list = [f.complex_response(self.frequencies, **cr_kwargs) for f in self.filters_list]
+        cr_list.append(complex_response)
+        labels = [f.name for f in self.filters_list] + ["Total Response"]
+       
+        kwargs = {
+            "title": f"Channel Response: [{', '.join([f.name for f in self.filters_list])}]",
+            "unwrap": unwrap,
+            "x_units": x_units,
+            "pass_band": self.pass_band,
+            "label": labels}
+        
+        plot_response(self.frequencies, cr_list, **kwargs)

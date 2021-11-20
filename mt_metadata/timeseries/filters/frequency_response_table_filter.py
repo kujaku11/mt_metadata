@@ -192,7 +192,6 @@ class FrequencyResponseTableFilter(FilterBase):
         if np.max(frequencies) > self.max_frequency:
             self.logger.warning("Extrapolation warning ")
         
-        print(f"using interpolation method {interpolation_method}")
         phase_response = interp1d(
             self.frequencies,
             self.phases,

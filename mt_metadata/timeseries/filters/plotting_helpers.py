@@ -42,6 +42,7 @@ def plot_response(
     x_units="Period",
     unwrap=True,
     pass_band=None,
+    label=None,
 ):
     """
     This function was contributed by Ben Murphy at USGS
@@ -66,8 +67,6 @@ def plot_response(
     """
     
     fig = plt.figure(figsize=(14, 4))
-    if title is not None:
-        fig.suptitle(title)
         
     if poles is not None or zeros is not None:
         gs = GridSpec(2, 3)
@@ -78,74 +77,93 @@ def plot_response(
         gs = GridSpec(2, 2)
         ax_amp = fig.add_subplot(gs[0, :2])
         ax_phs = fig.add_subplot(gs[1, :2], sharex=ax_amp)
+        
+    if not isinstance(complex_response, list):
+        complex_response = [complex_response]
+    
+    if not isinstance(label, list):
+        label = [label]
+    
+    assert len(label) == len(complex_response) 
+    
 
-    response_amplitude = np.absolute(complex_response)
-    if is_flat_amplitude(complex_response):
-        response_amplitude[:] = response_amplitude[0]
-        ax_amp.set_ylim([0.9 * response_amplitude[0], 1.1 * response_amplitude[0]])
     
-    if unwrap:
-        response_phase = np.rad2deg(np.unwrap(np.angle(complex_response, deg=False)))
-    else:
-        response_phase = np.angle(complex_response, deg=True)
-    
-    # plot amplitude
-    ax_amp.plot(
-        frequencies,
-        response_amplitude,
-        color="tab:blue",
-        linewidth=1.5,
-        linestyle="-",
-        label="True",
-    )
-    
-    # plot phase
-    ax_phs.plot(
-        frequencies,
-        response_phase,
-        color="tab:blue",
-        linewidth=1.5,
-        linestyle="-",
-    )
+    amp_min = []
+    amp_max = []
+    phase_min = []
+    phase_max = []
+    lines = []
+    for name, cr in zip(label, complex_response):
+        response_amplitude = np.absolute(cr)
+        if is_flat_amplitude(cr):
+            response_amplitude[:] = response_amplitude[0]
         
-    # plot pass band
-    if pass_band is not None:
-        ax_amp.fill_between(
-            pass_band,
-            [10E-10, 10E-10],
-            [10E10, 10E10],
-            color=(.7, .7, .7),
-            alpha=.7,
-            zorder=1)
+        if unwrap:
+            response_phase = np.rad2deg(np.unwrap(np.angle(cr, deg=False)))
+        else:
+            response_phase = np.angle(cr, deg=True)
+            
+        amp_min.append(response_amplitude.min())
+        amp_max.append(response_amplitude.max())
+        phase_min.append(response_phase.min())
+        phase_max.append(response_phase.max())
         
-        ax_phs.fill_between(
-            pass_band,
-            [-1000, -1000],
-            [1000, 1000],
-            color=(.7, .7, .7),
-            alpha=.7,
-            zorder=1)
-        
-    if poles is not None:
-        ax_pz.scatter(
-            np.real(poles),
-            np.imag(poles),
-            s=75,
-            marker="x",
-            ec="tab:blue",
-            fc="tab:blue",
-            label="Poles",
+        # plot amplitude
+        l1, = ax_amp.plot(
+            frequencies,
+            response_amplitude,
+            linewidth=1.5,
+            linestyle="-",
+            label=name,
         )
-    if zeros is not None:
-        ax_pz.scatter(
-            np.real(zeros),
-            np.imag(zeros),
-            s=75,
-            marker="o",
-            ec="tab:blue",
-            fc='w',
-            label="Zeros",
+        lines.append(l1)
+        
+        # plot phase
+        ax_phs.plot(
+            frequencies,
+            response_phase,
+            linewidth=1.5,
+            linestyle="-",
         )
+            
+        # plot pass band
+        if pass_band is not None:
+            ax_amp.fill_between(
+                pass_band,
+                [10E-15, 10E-15],
+                [10E10, 10E10],
+                color=(.7, .7, .7),
+                alpha=.7,
+                zorder=1)
+            
+            ax_phs.fill_between(
+                pass_band,
+                [-100000, -100000],
+                [100000, 100000],
+                color=(.7, .7, .7),
+                alpha=.7,
+                zorder=1)
+            
+        if poles is not None:
+            ax_pz.scatter(
+                np.real(poles),
+                np.imag(poles),
+                s=75,
+                marker="x",
+                ec="tab:blue",
+                fc="tab:blue",
+                label="Poles",
+            )
+        if zeros is not None:
+            ax_pz.scatter(
+                np.real(zeros),
+                np.imag(zeros),
+                s=75,
+                marker="o",
+                ec="tab:blue",
+                fc='w',
+                label="Zeros",
+            )
 
     if xlim is not None:
         ax_amp.set_xlim(xlim)
@@ -154,15 +172,16 @@ def plot_response(
     ax_amp.set_yscale("log")
     ax_amp.set_ylabel("Amplitude Response")
     ax_amp.grid()
-    ax_amp.set_ylim([10**(np.floor(np.log10(response_amplitude.min())-1)),
-                     10**(np.ceil(np.log10(response_amplitude.max()))+1)])
+    ax_amp.set_ylim([10**(np.floor(np.log10(min(amp_min)))-1),
+                     10**(np.ceil(np.log10(max(amp_max)))+1)])
     
 
     if not unwrap:
         ax_phs.set_ylim([-200.0, 200.0])
         
     else:
-        ax_phs.set_ylim([response_phase.min() - 10, response_phase.max() + 10])
+        ax_phs.set_ylim([min(phase_min) - 10, max(phase_max) + 10])
+        
     ax_phs.set_xscale("log")
     ax_phs.set_ylabel("Phase Response")
     
@@ -189,7 +208,11 @@ def plot_response(
         ax_pz.set_xlim([-1.25 * max_lim, 1.25 * max_lim])
         ax_pz.grid()
         ax_pz.legend()
-        
+      
+    if len(label) > 1:
+        fig.legend(lines, label, ncol=len(label))
+    else:
+        fig.suptitle(title)
     plt.tight_layout()
 
     plt.show()
