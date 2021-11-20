@@ -186,12 +186,9 @@ class FrequencyResponseTableFilter(FilterBase):
         #I would like a separate step that calculates self._total_response_function
         and stores it but the validator doesn't seem to like when I assign that attribute
         """
-        if np.min(frequencies) < self.min_frequency:
+        if np.min(frequencies) < self.min_frequency or np.max(frequencies) > self.max_frequency:
             self.logger.warning("Extrapolation warning ")
 
-        if np.max(frequencies) > self.max_frequency:
-            self.logger.warning("Extrapolation warning ")
-        
         phase_response = interp1d(
             self.frequencies,
             self.phases,

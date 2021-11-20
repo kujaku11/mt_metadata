@@ -12,6 +12,7 @@ things can happen.
 # =============================================================================
 # Imports
 # =============================================================================
+from copy import deepcopy
 import numpy as np
 
 from mt_metadata.timeseries.filters import (
@@ -171,9 +172,7 @@ class ChannelResponseFilter(object):
         """get normalization frequency from ZPK or FAP filter"""
 
         if self._normalization_frequency is None:
-            if self.pass_band is not None:
-                return np.round(self.pass_band.mean(), decimals=3)
-            return None
+            return np.round(10**np.mean(np.log10(self.pass_band)), 3)
 
         return self._normalization_frequency
 
@@ -242,22 +241,22 @@ class ChannelResponseFilter(object):
             self.frequencies = frequencies
 
         if include_delay:
-            filters_list = self.filters_list
+            filters_list = deepcopy(self.filters_list)
         else:
-            filters_list = self.non_delay_filters
+            filters_list = deepcopy(self.non_delay_filters)
 
         if not include_decimation:
-            filters_list = [x for x in filters_list if not x.decimation_active]
+            filters_list = deepcopy([x for x in filters_list if not x.decimation_active])
 
         if len(filters_list) == 0:
             # warn that there are no filters associated with channel?
-            return np.ones(len(frequencies))
+            return np.ones(len(self.frequencies))
 
         filter_stage = filters_list.pop(0)
-        result = filter_stage.complex_response(frequencies, **kwargs)
+        result = filter_stage.complex_response(self.frequencies, **kwargs)
         while len(filters_list):
             filter_stage = filters_list.pop(0)
-            result *= filter_stage.complex_response(frequencies, **kwargs)
+            result *= filter_stage.complex_response(self.frequencies, **kwargs)
 
         if normalize:
             result /= np.max(np.abs(result))
@@ -373,24 +372,41 @@ class ChannelResponseFilter(object):
         return total_response
     
     def plot_response(self, frequencies=None, x_units="period", unwrap=True,
-                      pb_tol=1e-1, interpolation_method="slinear"):
+                      pb_tol=1e-1, interpolation_method="slinear", include_delay=False,
+                      include_decimation=True):
             
         if frequencies is not None:
             self.frequencies = frequencies
         
-        cr_kwargs = {"interpolation_method": interpolation_method}
+        # get only the filters desired
+        if include_delay:
+            filters_list = deepcopy(self.filters_list)
+        else:
+            filters_list = deepcopy(self.non_delay_filters)
 
+        if not include_decimation:
+            filters_list = deepcopy([x for x in filters_list if not x.decimation_active])
+
+        cr_kwargs = {"interpolation_method": interpolation_method}
+        
+        # get response of individual filters
+        cr_list = [f.complex_response(self.frequencies, **cr_kwargs) for f in filters_list]
+        
+        # compute total response
+        cr_kwargs["include_delay"] = include_delay
+        cr_kwargs["include_decimation"] = include_decimation
         complex_response = self.complex_response(self.frequencies, **cr_kwargs)
-            
-        cr_list = [f.complex_response(self.frequencies, **cr_kwargs) for f in self.filters_list]
-        cr_list.append(complex_response)
-        labels = [f.name for f in self.filters_list] + ["Total Response"]
        
+        cr_list.append(complex_response)
+        labels = [f.name for f in filters_list] + ["Total Response"]
+        
+        # plot with proper attributes.
         kwargs = {
-            "title": f"Channel Response: [{', '.join([f.name for f in self.filters_list])}]",
+            "title": f"Channel Response: [{', '.join([f.name for f in filters_list])}]",
             "unwrap": unwrap,
             "x_units": x_units,
             "pass_band": self.pass_band,
-            "label": labels}
+            "label": labels,
+            "normalization_frequency": self.normalization_frequency}
         
         plot_response(self.frequencies, cr_list, **kwargs)

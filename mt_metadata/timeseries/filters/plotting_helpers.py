@@ -43,6 +43,7 @@ def plot_response(
     unwrap=True,
     pass_band=None,
     label=None,
+    normalization_frequency=None,
 ):
     """
     This function was contributed by Ben Murphy at USGS
@@ -130,7 +131,7 @@ def plot_response(
         if pass_band is not None:
             ax_amp.fill_between(
                 pass_band,
-                [10E-15, 10E-15],
+                [10E-20, 10E-20],
                 [10E10, 10E10],
                 color=(.7, .7, .7),
                 alpha=.7,
@@ -164,9 +165,21 @@ def plot_response(
                 fc='w',
                 label="Zeros",
             )
+            
+    if normalization_frequency is not None:
+        ax_amp.plot([normalization_frequency, normalization_frequency],
+                    [10E-20, 10E10], 
+                    color='k',
+                    lw=2)
+        ax_phs.plot([normalization_frequency, normalization_frequency],
+                    [-10000, 10000], 
+                    color='k',
+                    lw=2)
 
     if xlim is not None:
         ax_amp.set_xlim(xlim)
+    else:
+        ax_amp.set_xlim([frequencies.min(), frequencies.max()])
 
     ax_amp.set_xscale("log")
     ax_amp.set_yscale("log")
@@ -210,7 +223,13 @@ def plot_response(
         ax_pz.legend()
       
     if len(label) > 1:
-        fig.legend(lines, label, ncol=len(label))
+        fig.legend(
+            lines,
+            label, 
+            ncol=len(label),
+            loc="upper center",
+            borderaxespad=-.5,
+            )
     else:
         fig.suptitle(title)
     plt.tight_layout()

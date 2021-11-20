@@ -325,7 +325,8 @@ class FilterBase(Base):
         f = frequencies
         cr = self.complex_response(f, **kwargs)
         amp = np.abs(cr)
-        if np.all(cr == cr[0]):
+        # precision is apparently an important variable here
+        if np.round(amp, 6).all() == np.round(amp.mean(), 6):
             return np.array([f.min(), f.max()])
         
         f_true = np.zeros_like(frequencies)
