@@ -187,7 +187,7 @@ class FrequencyResponseTableFilter(FilterBase):
         and stores it but the validator doesn't seem to like when I assign that attribute
         """
         if np.min(frequencies) < self.min_frequency or np.max(frequencies) > self.max_frequency:
-            self.logger.warning("Extrapolatng, use values outside calibration frequencies with caution")
+            self.logger.warning("Extrapolating, use values outside calibration frequencies with caution")
 
         phase_response = interp1d(
             self.frequencies,
