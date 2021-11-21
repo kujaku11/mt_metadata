@@ -14,9 +14,9 @@ from mt_metadata.utils.exceptions import MTSchemaError
 
 from obspy.core.inventory.response import CoefficientsTypeResponseStage
 
-class TestCoefficientFilter(unittest.TestCase):
+class TestTimeDelayFilter(unittest.TestCase):
     """
-    Test a coefficient filter, this one is pretty basic, just a gain value.
+    Test a time delay filter, this one is pretty basic, just a delay value
     """
     
     def setUp(self):
@@ -25,7 +25,7 @@ class TestCoefficientFilter(unittest.TestCase):
             )
         self.f = np.logspace(-5, 5, 100)
         
-    def test_gain(self):
+    def test_delay(self):
         with self.subTest(msg="string input"):
             self.td.delay = "-.25"
             self.assertEqual(-.25, self.td.delay)
@@ -55,6 +55,13 @@ class TestCoefficientFilter(unittest.TestCase):
             cr_phase = np.angle(cr, deg=True)
             phase = np.repeat(0, self.f.size)
             self.assertFalse(np.isclose(cr_phase, phase).all() == True)
+            
+    def test_pass_band(self):
+        pb = self.td.pass_band(self.f)
+        self.assertTrue(
+            np.isclose(pb, np.array([self.f.min(), self.f.max()])).all()
+            )
+        
             
     def test_to_obspy_stage(self):
         stage = self.td.to_obspy(2, sample_rate=10, normalization_frequency=1)
@@ -88,6 +95,9 @@ class TestCoefficientFilter(unittest.TestCase):
             
         with self.subTest("test name"):
             self.assertEqual(stage.name, self.td.name)
+            
+        with self.subTest("test type"):
+            self.assertIsInstance(stage, CoefficientsTypeResponseStage)
         
             
         

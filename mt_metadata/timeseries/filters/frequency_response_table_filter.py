@@ -14,7 +14,7 @@ The table should have default outputs, suggested frequency, amplitude, phase (de
 """
 import copy
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline, interp1d
+from scipy.interpolate import interp1d
 
 from obspy.core.inventory.response import ResponseListResponseStage, ResponseListElement
 
