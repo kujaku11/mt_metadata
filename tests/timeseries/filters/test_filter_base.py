@@ -17,6 +17,7 @@ class TestFilterBase(unittest.TestCase):
         self.fb = FilterBase()
         
     def test_units_in(self):
+        
         with self.subTest(msg="Input short name"):
             self.fb.units_in = "V"
             self.assertEqual("V", self.fb.units_in)
