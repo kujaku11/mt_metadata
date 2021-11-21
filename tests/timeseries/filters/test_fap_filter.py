@@ -12,7 +12,7 @@ import numpy as np
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.utils.exceptions import MTSchemaError
 
-from obspy.core.inventory.response import ResponseListElement
+from obspy.core.inventory.response import ResponseListResponseStage
 
 class TestFAPFilter(unittest.TestCase):
     """
@@ -108,7 +108,7 @@ class TestFAPFilter(unittest.TestCase):
         with self.subTest(msg="test amplitude"):
             cr_amp = np.abs(cr)
             self.assertTrue(np.isclose(np.abs(self.fap.amplitudes), 
-                                       np.abs(cr)).all())
+                                       cr_amp).all())
             
         with self.subTest(msg="test phase"):
             cr_phase = np.unwrap(np.angle(cr, deg=False))
@@ -120,6 +120,9 @@ class TestFAPFilter(unittest.TestCase):
     def test_to_obspy_stage(self):
         stage = self.fap.to_obspy(2, sample_rate=10, normalization_frequency=1)
         
+        with self.subTest("test instance"):
+            self.assertIsInstance(stage, ResponseListResponseStage)
+            
         with self.subTest("test stage number"):
             self.assertEqual(stage.stage_sequence_number, 2)
         
@@ -130,11 +133,11 @@ class TestFAPFilter(unittest.TestCase):
             amp = np.array([r.amplitude for r in stage.response_list_elements])
             self.assertTrue(np.isclose(amp, self.fap.amplitudes).all())
                             
-        with self.subTest("test amplitude"):
+        with self.subTest("test phase"):
             phase = np.array([r.phase for r in stage.response_list_elements])
             self.assertTrue(np.isclose(phase, self.fap.phases).all())
                             
-        with self.subTest("test amplitude"):
+        with self.subTest("test frequency"):
             f = np.array([r.frequency for r in stage.response_list_elements])
             self.assertTrue(np.isclose(f, self.fap.frequencies).all())
             

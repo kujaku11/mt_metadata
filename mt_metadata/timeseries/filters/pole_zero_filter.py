@@ -168,12 +168,6 @@ class PoleZeroFilter(FilterBase):
         )
         return h
 
-    def plot_pole_zero_response(self):
-        zpg = self.zero_pole_gain_representation()
-        frequency_axis = np.logspace(-5, 5, num=100)
-        w = 2.0 * np.pi * frequency_axis
-        plot_response(zpk_obs=zpg, w_values=w, title=self.name)
-
     def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):
         """
         Try to estimate the normalization frequency in the pass band
