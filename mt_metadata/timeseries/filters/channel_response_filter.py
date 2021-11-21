@@ -67,7 +67,7 @@ class ChannelResponseFilter(object):
     def filters_list(self, filters_list):
         """set the filters list and validate the list"""
         self._filters_list = self._validate_filters_list(filters_list)
-        self.check_consistency_of_units()
+        self._check_consistency_of_units()
         
     @property
     def frequencies(self):
@@ -298,21 +298,22 @@ class ChannelResponseFilter(object):
         """
         return self.filters_list[-1].units_out
 
-    @property
-    def check_consistency_of_units(self):
+    def _check_consistency_of_units(self):
         """
         confirms that the input and output units of each filter state are consistent
         """
-        previous_units = self.filters_list[0].units_out
-        for mt_filter in self.filters_list[1:]:
-            if mt_filter.units_in != previous_units:
-                msg = (
-                    "Unit consistency is incorrect. "
-                    "The input units for {mt_filter.name} should be "
-                    f"{previous_units} != {mt_filter.units_in}"
-                )
-                raise ValueError(msg)
-            previous_units = mt_filter.units_out
+        if len(self._filters_list) > 1: 
+            previous_units = self._filters_list[0].units_out
+            for mt_filter in self._filters_list[1:]:
+                if mt_filter.units_in != previous_units:
+                    msg = (
+                        "Unit consistency is incorrect. "
+                        f"The input units for {mt_filter.name} should be "
+                        f"{previous_units} not {mt_filter.units_in}"
+                    )
+                    self.logger.error(msg)
+                    raise ValueError(msg)
+                previous_units = mt_filter.units_out
 
         return True
 

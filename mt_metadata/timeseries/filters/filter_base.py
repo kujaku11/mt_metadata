@@ -340,7 +340,7 @@ class FilterBase(Base):
         pb_zones = np.reshape(np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2))
 
         if pb_zones.shape[0] > 1:
-            self.logger.warning(
+            self.logger.debug(
                 f"Found {pb_zones.shape[0]} possible pass bands, using the longest. "
                 "Use the estimated pass band with caution."
                 )
