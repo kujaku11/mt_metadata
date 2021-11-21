@@ -44,6 +44,7 @@ extensions = [
     "sphinx.ext.inheritance_diagram",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
+    "nbsphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -169,7 +170,7 @@ texinfo_documents = [
         "mt_metadata",
         "MT Metadata Documentation",
         author,
-        "mth5",
+        "mt_metadata",
         "One line description of project.",
         "Miscellaneous",
     ),
