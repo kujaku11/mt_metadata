@@ -263,7 +263,7 @@ class ChannelResponseFilter(object):
             result /= np.max(np.abs(result))
         return result
 
-    def compute_instrument_sensitivity(self, normalization_frequency=None):
+    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=6):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
 
@@ -280,10 +280,12 @@ class ChannelResponseFilter(object):
             complex_response = mt_filter.complex_response(self.normalization_frequency)
             sensitivity *= complex_response.astype(complex)
         try:
-            return np.abs(sensitivity[0])
+            sensitivity = np.abs(sensitivity[0])
         except (IndexError, TypeError):
-            return np.abs(sensitivity)
+            sensitivity = np.abs(sensitivity)
 
+        return round(sensitivity, 
+                     sig_figs-int(np.floor(np.log10(abs(sensitivity)))))
     @property
     def units_in(self):
         """
