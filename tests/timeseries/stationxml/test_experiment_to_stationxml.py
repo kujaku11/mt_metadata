@@ -14,20 +14,21 @@ Created on Tue Feb 23 23:13:19 2021
 import unittest
 from collections import OrderedDict
 
-from obspy import read_inventory
+from mt_metadata.timeseries import Experiment
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 from mt_metadata import MT_EXPERIMENT_MULTIPLE_RUNS
 
 # =============================================================================
 
 
-class TestInventory01(unittest.TestCase):
+class TestExperiment2StationXML(unittest.TestCase):
     def setUp(self):
-        self.inventory = read_inventory(STATIONXML_01.as_posix())
+        self.experiment = Experiment()
+        self.experiment.from_xml(fn=MT_EXPERIMENT_MULTIPLE_RUNS.as_posix())
         self.translator = XMLInventoryMTExperiment()
         self.maxDiff = None
 
-        self.experiment = self.translator.xml_to_mt(self.inventory)
+        self.inventory = self.translator.mt_to_xml(self.experiment)
 
     def test_num_networks(self):
         self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
@@ -41,31 +42,8 @@ class TestInventory01(unittest.TestCase):
     def test_num_channels(self):
         self.assertEqual(
             len(self.inventory.networks[0].stations[0].channels),
-            len(self.experiment.surveys[0].stations[0].runs[0].channels),
+            len(self.experiment.surveys[0].stations[0].runs[0].channels) + 3,
         )
-
-
-class TestInventory02(unittest.TestCase):
-    def setUp(self):
-        self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.translator = XMLInventoryMTExperiment()
-        self.maxDiff = None
-
-        self.experiment = self.translator.xml_to_mt(self.inventory)
-
-    def test_num_networks(self):
-        self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
-
-    def test_num_stations(self):
-        self.assertEqual(
-            len(self.inventory.networks[0].stations),
-            len(self.experiment.surveys[0].stations),
-        )
-
-    # def test_num_channels(self):
-    #     self.assertEqual(len(self.inventory.networks[0].stations[0].channels),
-    #                      len(self.experiment.surveys[0].stations[0].runs) *
-    #                      len(self.experiment.surveys[0].stations[0].channels))
 
 
 # =============================================================================

@@ -111,7 +111,7 @@ MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
 MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath(
-    "data/mt_xml/single_station_mt_experiment.xml"
+    "data/mt_xml/multi_run_experiment.xml"
 )
 
 
