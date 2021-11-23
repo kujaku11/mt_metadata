@@ -38,7 +38,7 @@ for station in a.stations[-2:-1]:
     mtex = a.make_experiment(stations=station)
     inv = a.mt_to_xml(
         mtex,
-        stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml"),
+        stationxml_fn=output_path.joinpath(f"{mtex.surveys[0].fdsn.network}_{mtex.surveys[0].time_period._start_dt.year}_{station}.xml"),
         ns_dict=deepcopy(ns_dict),
     )
 
