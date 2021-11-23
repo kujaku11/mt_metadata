@@ -280,9 +280,9 @@ class ChannelResponseFilter(object):
             complex_response = mt_filter.complex_response(self.normalization_frequency)
             sensitivity *= complex_response.astype(complex)
         try:
-            return np.round(np.abs(sensitivity[0]), 3)
+            return np.abs(sensitivity[0])
         except (IndexError, TypeError):
-            return np.round(np.abs(sensitivity), 3)
+            return np.abs(sensitivity)
 
     @property
     def units_in(self):

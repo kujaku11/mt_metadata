@@ -14,6 +14,7 @@ from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
     ChannelResponseFilter,
+    TimeDelayFilter,
     )
 from mt_metadata.utils.exceptions import MTSchemaError
 
@@ -25,6 +26,9 @@ class TestFAPFilter(unittest.TestCase):
     """
     
     def setUp(self):
+        
+        self.td = TimeDelayFilter(units_in="volts", units_out="volts", delay=-.25,
+                             name="example_time_delay")
         self.fap = FrequencyResponseTableFilter(
             units_in="volts", units_out="volts", name="example_fap")
 
@@ -88,10 +92,10 @@ class TestFAPFilter(unittest.TestCase):
         self.pz.normalization_factor = 2002.269
         
         self.cf = CoefficientFilter(
-            units_in="v", units_out="v", name="coefficient", gain=1E-6,
+            units_in="v", units_out="v", name="example_coefficient", gain=10,
             )
         
-        self.cr = ChannelResponseFilter(filters_list=[self.pz, self.fap, self.cf])
+        self.cr = ChannelResponseFilter(filters_list=[self.pz, self.fap, self.cf, self.td])
         self.cr.frequencies = np.logspace(-5, 5, 500)
             
     def test_pass_band(self):
@@ -118,6 +122,50 @@ class TestFAPFilter(unittest.TestCase):
             cr_phase = np.unwrap(np.angle(cr, deg=False))
             slope = (cr_phase[index_1] - cr_phase[index_0]) / np.log10(self.cr.frequencies[index_1] / self.cr.frequencies[index_0])
             self.assertTrue(abs(slope) < np.pi)
+            
+    def test_unit_fail(self):
+        cr1 = CoefficientFilter(units_in="volts", units_out="mv")
+        cr2 = CoefficientFilter(units_in="nanotesla", units_out="counts")
+        
+        def set_filters_list(cr1, cr2):
+            self.cr.filters_list = [cr1, cr2]
+        
+        self.assertRaises(ValueError, set_filters_list, cr1, cr2)
+        
+    def test_delay_filters(self):
+        delay_names = [f.name for f in self.cr.delay_filters]
+        self.assertListEqual(delay_names, [self.td.name])
+        
+    def test_non_delay_filters(self):
+        non_delay_names = [f.name for f in self.cr.non_delay_filters]
+        self.assertListEqual(non_delay_names, 
+                             [self.pz.name, self.fap.name, self.cf.name])
+        
+    def test_names(self):
+        self.assertListEqual(self.cr.names,
+                             [self.pz.name, self.fap.name, self.cf.name, self.td.name])
+        
+    def test_total_delay(self):
+        self.assertEqual(self.cr.total_delay, self.td.delay)
+        
+    def test_normalization_frequency(self):
+        self.assertEqual(np.round(self.cr.normalization_frequency, 3), 0.323)
+        
+    def test_instrument_sensitivity(self):
+        self.assertEqual(np.round(self.cr.compute_instrument_sensitivity(), 3), 62.012)
+        
+    def test_units_in(self):
+        self.assertEqual(self.cr.units_in, self.pz.units_in)
+        
+    def test_units_out(self):
+        self.assertEqual(self.cr.units_out, self.td.units_out)
+        
+        
+        
+        
+        
+        
+    
             
     # def test_to_obspy_stage(self):
     #     stage = cr.frequenciesap.to_obspy(2, sample_rate=10, normalization_frequency=1)
