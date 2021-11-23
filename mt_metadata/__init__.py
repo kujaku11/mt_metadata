@@ -94,24 +94,32 @@ error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
 
 # test data files
 # assume tests is on the root level of mt_metadata
-TEST_ROOT = Path(__file__).absolute().parent
+DATA_DIR = Path(__file__).absolute().parent
 
-STATIONXML_01 = TEST_ROOT.joinpath("data/stationxml/fdsn_no_mt_info.xml")
-STATIONXML_02 = TEST_ROOT.joinpath("data/stationxml/mtml_single_station.xml")
-STATIONXML_MAGNETIC = TEST_ROOT.joinpath(
+### Station XML files
+STATIONXML_01 = DATA_DIR.joinpath("data/stationxml/fdsn_no_mt_info.xml")
+STATIONXML_02 = DATA_DIR.joinpath("data/stationxml/mtml_single_station.xml")
+STATIONXML_MAGNETIC = DATA_DIR.joinpath(
     "data/stationxml/mtml_magnetometer_example.xml"
 )
-STATIONXML_ELECTRIC = TEST_ROOT.joinpath("data/stationxml/mtml_electrode_example.xml")
-MT_EXPERIMENT_SINGLE_STATION = TEST_ROOT.joinpath(
+STATIONXML_ELECTRIC = DATA_DIR.joinpath("data/stationxml/mtml_electrode_example.xml")
+STATIONXML_FAP = DATA_DIR.joinpath("data/stationxml/station_xml_with_fap_example.xml")
+STATIONXML_FIR = DATA_DIR.joinpath("data/stationxml/station_xml_with_fir_example.xml")
+
+### MT EXPERIMENT files
+MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
-STATIONXML_FAP = TEST_ROOT.joinpath("data/stationxml/station_xml_with_fap_example.xml")
-STATIONXML_FIR = TEST_ROOT.joinpath("data/stationxml/station_xml_with_fir_example.xml")
+MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath(
+    "data/mt_xml/single_station_mt_experiment.xml"
+)
 
-TF_ZMM = TEST_ROOT.joinpath("data/transfer_functions/example_emtf.zmm")
-TF_JFILE = TEST_ROOT.joinpath("data/transfer_functions/example_birrp.j")
-TF_XML = TEST_ROOT.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
-TF_EDI_PHOENIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi")
-TF_EDI_METRONIX = TEST_ROOT.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
-TF_EDI_CGG = TEST_ROOT.joinpath("data/transfer_functions/EGC022_CGG.edi")
-TF_EDI_QUANTEC = TEST_ROOT.joinpath("data/transfer_functions/IEA00184_Qut.edi")
+
+### Transfer function files
+TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/example_emtf.zmm")
+TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/example_birrp.j")
+TF_XML = DATA_DIR.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
+TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi")
+TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
+TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
+TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")

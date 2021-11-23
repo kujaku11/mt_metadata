@@ -1,0 +1,1199 @@
+<?xml version="1.0" ?>
+<Experiment>
+    <survey>
+        <acquired_by>
+            <author>National Geoelectromagnetic Facility</author>
+        </acquired_by>
+        <citation_dataset>
+            <doi>https://doi.org/10.7914/SN/8P_2020</doi>
+        </citation_dataset>
+        <citation_journal>
+            <doi>None</doi>
+        </citation_journal>
+        <country>USA</country>
+        <datum>WGS84</datum>
+        <fdsn>
+            <network>8P</network>
+        </fdsn>
+        <geographic_name>Southwestern United States</geographic_name>
+        <id>CONUS South</id>
+        <name>USMTArray South Magnetotelluric Time Series</name>
+        <northwest_corner>
+            <latitude units="degrees">37.5631983333333</latitude>
+            <longitude units="degrees">-113.3016625</longitude>
+        </northwest_corner>
+        <project>USMTArray</project>
+        <project_lead>
+            <author>Jade Crosbie, Paul Bedrosian and Anna Kelbert</author>
+            <organization>U.S. Geological Survey</organization>
+            <email>pbedrosian@usgs.gov</email>
+        </project_lead>
+        <release_license>CC-BY</release_license>
+        <southeast_corner>
+            <latitude units="degrees">37.5631983333333</latitude>
+            <longitude units="degrees">-113.3016625</longitude>
+        </southeast_corner>
+        <summary>None</summary>
+        <time_period>
+            <end_date>2020-07-28</end_date>
+            <start_date>2020-07-05</start_date>
+        </time_period>
+        <filters>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>practical to SI unit conversion</comments>
+                <gain>1e-06</gain>
+                <name>electric_si_units</name>
+                <type>coefficient</type>
+                <units_in>mV/km</units_in>
+                <units_out>V/m</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>electric field to voltage (multiply by dipole length)</comments>
+                <gain>100.0</gain>
+                <name>electric_dipole</name>
+                <type>coefficient</type>
+                <units_in>V/m</units_in>
+                <units_out>V</units_out>
+            </coefficient_filter>
+            <pole_zero_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>NIMS electric field 1 pole Butterworth high pass (analog)</comments>
+                <gain>1.0</gain>
+                <name>electric_butterworth_high_pass</name>
+                <normalization_factor>1.00000000378188</normalization_factor>
+                <poles>
+                    <item>(-0.000167+0j)</item>
+                </poles>
+                <type>zpk</type>
+                <units_in>V</units_in>
+                <units_out>V</units_out>
+                <zeros>
+                    <item>0j</item>
+                </zeros>
+            </pole_zero_filter>
+            <pole_zero_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>NIMS electric field 5 pole Butterworth 0.5 low pass (analog)</comments>
+                <gain>1.0</gain>
+                <name>electric_butterworth_low_pass</name>
+                <normalization_factor>313383.493219835</normalization_factor>
+                <poles>
+                    <item>(-3.883009+11.951875j)</item>
+                    <item>(-3.883009-11.951875j)</item>
+                    <item>(-10.166194+7.386513j)</item>
+                    <item>(-10.166194-7.386513j)</item>
+                    <item>(-12.566371+0j)</item>
+                </poles>
+                <type>zpk</type>
+                <units_in>V</units_in>
+                <units_out>V</units_out>
+                <zeros/>
+            </pole_zero_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>analog to digital conversion (electric)</comments>
+                <gain>409600000.0</gain>
+                <name>electric_analog_to_digital</name>
+                <type>coefficient</type>
+                <units_in>V</units_in>
+                <units_out>count</units_out>
+            </coefficient_filter>
+            <time_delay_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>time offset in seconds (digital)</comments>
+                <delay units="second">-0.285</delay>
+                <gain>1.0</gain>
+                <name>electric_time_offset</name>
+                <type>time delay</type>
+                <units_in>count</units_in>
+                <units_out>count</units_out>
+            </time_delay_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>Digital to Analog Conversion</comments>
+                <gain>2.44141221047903e-09</gain>
+                <name>electric_digital_to_analog</name>
+                <type>coefficient</type>
+                <units_in>count</units_in>
+                <units_out>V</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>back to practical units</comments>
+                <gain>1000000.0</gain>
+                <name>electric_practical_units</name>
+                <type>coefficient</type>
+                <units_in>V/m</units_in>
+                <units_out>mV/km</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>practical to SI unit conversion</comments>
+                <gain>1e-09</gain>
+                <name>magnetic_si_units</name>
+                <type>coefficient</type>
+                <units_in>nT</units_in>
+                <units_out>T</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>unit conversion (magnetic)</comments>
+                <gain>100000000000.0</gain>
+                <name>magnetic_tesla_to_counts</name>
+                <type>coefficient</type>
+                <units_in>T</units_in>
+                <units_out>count</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>unit conversion (magnetic)</comments>
+                <gain>100.0</gain>
+                <name>magnetic_nanotesla_to_counts</name>
+                <type>coefficient</type>
+                <units_in>nT</units_in>
+                <units_out>count</units_out>
+            </coefficient_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>analog to digital conversion (magnetic)</comments>
+                <gain>100.0</gain>
+                <name>magnetic_analog_to_digital</name>
+                <type>coefficient</type>
+                <units_in>V</units_in>
+                <units_out>count</units_out>
+            </coefficient_filter>
+            <pole_zero_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>NIMS magnetic field 3 pole Butterworth 0.5 low pass (analog)</comments>
+                <gain>1.0</gain>
+                <name>magnetic_butterworth_low_pass</name>
+                <normalization_factor>2002.26936395594</normalization_factor>
+                <poles>
+                    <item>(-6.283185+10.882477j)</item>
+                    <item>(-6.283185-10.882477j)</item>
+                    <item>(-12.566371+0j)</item>
+                </poles>
+                <type>zpk</type>
+                <units_in>nT</units_in>
+                <units_out>V</units_out>
+                <zeros/>
+            </pole_zero_filter>
+            <time_delay_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>time offset in seconds (digital)</comments>
+                <delay units="second">-0.192</delay>
+                <gain>1.0</gain>
+                <name>hx_time_offset</name>
+                <type>time delay</type>
+                <units_in>count</units_in>
+                <units_out>count</units_out>
+            </time_delay_filter>
+            <time_delay_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>time offset in seconds (digital)</comments>
+                <delay units="second">-0.201</delay>
+                <gain>1.0</gain>
+                <name>hy_time_offset</name>
+                <type>time delay</type>
+                <units_in>count</units_in>
+                <units_out>count</units_out>
+            </time_delay_filter>
+            <time_delay_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>time offset in seconds (digital)</comments>
+                <delay units="second">-0.21</delay>
+                <gain>1.0</gain>
+                <name>hz_time_offset</name>
+                <type>time delay</type>
+                <units_in>count</units_in>
+                <units_out>count</units_out>
+            </time_delay_filter>
+            <coefficient_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>unit conversion (magnetic)</comments>
+                <gain>0.01</gain>
+                <name>magnetic_counts_to_nanotesla</name>
+                <type>coefficient</type>
+                <units_in>count</units_in>
+                <units_out>nT</units_out>
+            </coefficient_filter>
+            <pole_zero_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>electric dipole for electric field</comments>
+                <gain>95.0</gain>
+                <name>electric_dipole_95.000</name>
+                <normalization_factor>1.0</normalization_factor>
+                <poles/>
+                <type>zpk</type>
+                <units_in>V/m</units_in>
+                <units_out>V</units_out>
+                <zeros/>
+            </pole_zero_filter>
+            <pole_zero_filter>
+                <calibration_date>1980-01-01</calibration_date>
+                <comments>electric dipole for electric field</comments>
+                <gain>92.0</gain>
+                <name>electric_dipole_92.000</name>
+                <normalization_factor>1.0</normalization_factor>
+                <poles/>
+                <type>zpk</type>
+                <units_in>V/m</units_in>
+                <units_out>V</units_out>
+                <zeros/>
+            </pole_zero_filter>
+        </filters>
+        <station>
+            <channels_recorded>
+                <item>Hx</item>
+                <item>Hy</item>
+                <item>Hz</item>
+                <item>Ex</item>
+                <item>Ey</item>
+            </channels_recorded>
+            <data_type>MT</data_type>
+            <fdsn>
+                <id>UTS14</id>
+            </fdsn>
+            <geographic_name>Harmony Mountains, UT, USA</geographic_name>
+            <id>UTS14</id>
+            <location>
+                <latitude units="degrees">37.5631983333333</latitude>
+                <longitude units="degrees">-113.3016625</longitude>
+                <elevation units="meters">2490.775</elevation>
+                <declination>
+                    <comments>igrf.m by Drew Compston</comments>
+                    <model>IGRF-13</model>
+                    <value units="degrees">11.1933661139742</value>
+                </declination>
+            </location>
+            <orientation>
+                <method>compass</method>
+                <reference_frame>geographic</reference_frame>
+            </orientation>
+            <provenance>
+                <creation_time>2021-11-18T21:26:14+00:00</creation_time>
+                <software>
+                    <author>Anna Kelbert, USGS</author>
+                    <version>2021-11-18</version>
+                    <name>mth5_metadata.m</name>
+                </software>
+                <submitter>
+                    <author>Anna Kelbert, USGS</author>
+                    <organization>USGS Geomagnetism Program</organization>
+                    <email>akelbert@usgs.gov</email>
+                </submitter>
+            </provenance>
+            <run_list>
+                <item>a</item>
+                <item>b</item>
+                <item>c</item>
+            </run_list>
+            <time_period>
+                <end>2020-07-28T16:38:25+00:00</end>
+                <start>2020-07-05T23:19:41+00:00</start>
+            </time_period>
+            <run>
+                <acquired_by>
+                    <author>Natalie Hummel</author>
+                    <comments>Dirt road 100 meters east. Warm breezy day. The ground is soil and cobbles. Top of a ridge. SIgns of</comments>
+                </acquired_by>
+                <channels_recorded_auxiliary/>
+                <channels_recorded_electric>
+                    <item>ex</item>
+                    <item>ey</item>
+                </channels_recorded_electric>
+                <channels_recorded_magnetic>
+                    <item>hx</item>
+                    <item>hy</item>
+                    <item>hz</item>
+                </channels_recorded_magnetic>
+                <comments>NIMS file declination 13.1 replaced with IGRF declination 11.1934. Start time may be late by 1 second. Please check.</comments>
+                <data_logger>
+                    <id>2406-13</id>
+                    <manufacturer>Barry Narod</manufacturer>
+                    <type>None</type>
+                    <model>NIMS</model>
+                    <timing_system>
+                        <drift units="seconds">0.0</drift>
+                        <type>GPS</type>
+                        <uncertainty units="seconds">1.0</uncertainty>
+                    </timing_system>
+                    <firmware>
+                        <author>Barry Narod</author>
+                        <version>None</version>
+                        <name>None</name>
+                    </firmware>
+                    <power_source>
+                        <type>battery</type>
+                        <comments>voltage measurements not recorded</comments>
+                    </power_source>
+                </data_logger>
+                <data_type>BB, LP</data_type>
+                <fdsn>
+                    <new_epoch>True</new_epoch>
+                </fdsn>
+                <id>a</id>
+                <metadata_by>
+                    <author>Jade Crosbie</author>
+                </metadata_by>
+                <sample_rate units="samples per second">1.0</sample_rate>
+                <time_period>
+                    <end>2020-07-06T00:11:55+00:00</end>
+                    <start>2020-07-05T23:19:41+00:00</start>
+                </time_period>
+                <magnetic>
+                    <channel_number>1</channel_number>
+                    <comments>x 0.01 to get nT, Hx base shift 0 nT</comments>
+                    <component>hx</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFN</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hx_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">11.193361509102</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>261208</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-06T00:11:55+00:00</end>
+                        <start>2020-07-05T23:19:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>2</channel_number>
+                    <comments>x 0.01 to get nT, Hy base shift 0 nT</comments>
+                    <component>hy</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFE</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hy_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">101.193361509102</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>261208</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-06T00:11:55+00:00</end>
+                        <start>2020-07-05T23:19:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>3</channel_number>
+                    <comments>x 0.01 to get nT, Hz base shift 0 nT</comments>
+                    <component>hz</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFZ</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hz_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">0.0</measurement_azimuth>
+                    <measurement_tilt units="degrees">90.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>261208</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-06T00:11:55+00:00</end>
+                        <start>2020-07-05T23:19:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <electric>
+                    <channel_number>4</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ex</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">95.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_95.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">11.193361509102</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004068</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004067</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-06T00:11:55+00:00</end>
+                        <start>2020-07-05T23:19:41+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+                <electric>
+                    <channel_number>5</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ey</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">92.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_92.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">101.193361509102</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004066</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004064</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-06T00:11:55+00:00</end>
+                        <start>2020-07-05T23:19:41+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+            </run>
+            <run>
+                <acquired_by>
+                    <author>Natalie Hummel</author>
+                    <comments>Dirt road 100 meters east. Warm breezyday. The ground is soil and cobbles. Top of a ridg</comments>
+                </acquired_by>
+                <channels_recorded_auxiliary/>
+                <channels_recorded_electric>
+                    <item>ex</item>
+                    <item>ey</item>
+                </channels_recorded_electric>
+                <channels_recorded_magnetic>
+                    <item>hx</item>
+                    <item>hy</item>
+                    <item>hz</item>
+                </channels_recorded_magnetic>
+                <comments>NIMS file declination 13.1 replaced with IGRF declination 11.1934.</comments>
+                <data_logger>
+                    <id>2406-13</id>
+                    <manufacturer>Barry Narod</manufacturer>
+                    <type>None</type>
+                    <model>NIMS</model>
+                    <timing_system>
+                        <drift units="seconds">0.0</drift>
+                        <type>GPS</type>
+                        <uncertainty units="seconds">1.0</uncertainty>
+                    </timing_system>
+                    <firmware>
+                        <author>Barry Narod</author>
+                        <version>None</version>
+                        <name>None</name>
+                    </firmware>
+                    <power_source>
+                        <type>battery</type>
+                        <comments>voltage measurements not recorded</comments>
+                    </power_source>
+                </data_logger>
+                <data_type>BB, LP</data_type>
+                <fdsn>
+                    <new_epoch>False</new_epoch>
+                </fdsn>
+                <id>b</id>
+                <metadata_by>
+                    <author>Jade Crosbie</author>
+                </metadata_by>
+                <sample_rate units="samples per second">1.0</sample_rate>
+                <time_period>
+                    <end>2020-07-20T17:43:45+00:00</end>
+                    <start>2020-07-06T00:32:41+00:00</start>
+                </time_period>
+                <magnetic>
+                    <channel_number>1</channel_number>
+                    <comments>x 0.01 to get nT, Hx base shift 0 nT</comments>
+                    <component>hx</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFN</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hx_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">11.193368243534</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-20T17:43:45+00:00</end>
+                        <start>2020-07-06T00:32:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>2</channel_number>
+                    <comments>x 0.01 to get nT, Hy base shift 0 nT</comments>
+                    <component>hy</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFE</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hy_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">101.193368243534</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-20T17:43:45+00:00</end>
+                        <start>2020-07-06T00:32:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>3</channel_number>
+                    <comments>x 0.01 to get nT, Hz base shift 0 nT</comments>
+                    <component>hz</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFZ</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hz_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">0.0</measurement_azimuth>
+                    <measurement_tilt units="degrees">90.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-20T17:43:45+00:00</end>
+                        <start>2020-07-06T00:32:41+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <electric>
+                    <channel_number>4</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ex</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">95.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_95.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">11.193368243534</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004068</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004067</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-20T17:43:45+00:00</end>
+                        <start>2020-07-06T00:32:41+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+                <electric>
+                    <channel_number>5</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ey</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">92.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_92.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">101.193368243534</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004066</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004064</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-20T17:43:45+00:00</end>
+                        <start>2020-07-06T00:32:41+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+            </run>
+            <run>
+                <acquired_by>
+                    <author>Natalie Hummel</author>
+                    <comments>Dirt road 100 meters eastv. Warm breezy day. The ground is soil and cobbles. Top of a ridge. SIgns of cattle. Rewatered W electrode, which is very shallow</comments>
+                </acquired_by>
+                <channels_recorded_auxiliary/>
+                <channels_recorded_electric>
+                    <item>ex</item>
+                    <item>ey</item>
+                </channels_recorded_electric>
+                <channels_recorded_magnetic>
+                    <item>hx</item>
+                    <item>hy</item>
+                    <item>hz</item>
+                </channels_recorded_magnetic>
+                <comments>NIMS file declination 13.1 replaced with IGRF declination 11.1934.</comments>
+                <data_logger>
+                    <id>2406-13</id>
+                    <manufacturer>Barry Narod</manufacturer>
+                    <type>None</type>
+                    <model>NIMS</model>
+                    <timing_system>
+                        <drift units="seconds">0.0</drift>
+                        <type>GPS</type>
+                        <uncertainty units="seconds">1.0</uncertainty>
+                    </timing_system>
+                    <firmware>
+                        <author>Barry Narod</author>
+                        <version>None</version>
+                        <name>None</name>
+                    </firmware>
+                    <power_source>
+                        <type>battery</type>
+                        <comments>voltage measurements not recorded</comments>
+                    </power_source>
+                </data_logger>
+                <data_type>BB, LP</data_type>
+                <fdsn>
+                    <new_epoch>False</new_epoch>
+                </fdsn>
+                <id>c</id>
+                <metadata_by>
+                    <author>Jade Crosbie</author>
+                </metadata_by>
+                <sample_rate units="samples per second">1.0</sample_rate>
+                <time_period>
+                    <end>2020-07-28T16:38:25+00:00</end>
+                    <start>2020-07-20T18:54:26+00:00</start>
+                </time_period>
+                <magnetic>
+                    <channel_number>1</channel_number>
+                    <comments>x 0.01 to get nT, Hx base shift 0 nT</comments>
+                    <component>hx</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFN</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hx_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">11.1933673516305</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-28T16:38:25+00:00</end>
+                        <start>2020-07-20T18:54:26+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>2</channel_number>
+                    <comments>x 0.01 to get nT, Hy base shift 0 nT</comments>
+                    <component>hy</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFE</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hy_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">101.19336735163</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-28T16:38:25+00:00</end>
+                        <start>2020-07-20T18:54:26+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <magnetic>
+                    <channel_number>3</channel_number>
+                    <comments>x 0.01 to get nT, Hz base shift 0 nT</comments>
+                    <component>hz</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <fdsn>
+                        <id>LFZ</id>
+                    </fdsn>
+                    <filter>
+                        <name>
+                            <item>magnetic_butterworth_low_pass</item>
+                            <item>magnetic_analog_to_digital</item>
+                            <item>hz_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <location>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </location>
+                    <measurement_azimuth units="degrees">0.0</measurement_azimuth>
+                    <measurement_tilt units="degrees">90.0</measurement_tilt>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <sensor>
+                        <id>2612-08</id>
+                        <manufacturer>Barry Narod</manufacturer>
+                        <type>Magnetometer</type>
+                        <model>fluxgate</model>
+                        <name>NIMS</name>
+                    </sensor>
+                    <time_period>
+                        <end>2020-07-28T16:38:25+00:00</end>
+                        <start>2020-07-20T18:54:26+00:00</start>
+                    </time_period>
+                    <type>magnetic</type>
+                    <units>counts</units>
+                </magnetic>
+                <electric>
+                    <channel_number>4</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ex</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">95.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_95.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">11.1933673516305</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004068</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004067</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-28T16:38:25+00:00</end>
+                        <start>2020-07-20T18:54:26+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+                <electric>
+                    <channel_number>5</channel_number>
+                    <comments>x 2.4414e-06 to get mv, Gain 1</comments>
+                    <component>ey</component>
+                    <data_quality>
+                        <rating>
+                            <value>0</value>
+                        </rating>
+                    </data_quality>
+                    <dipole_length units="meters">92.0</dipole_length>
+                    <filter>
+                        <name>
+                            <item>electric_si_units</item>
+                            <item>electric_dipole_92.000</item>
+                            <item>electric_butterworth_low_pass</item>
+                            <item>electric_butterworth_high_pass</item>
+                            <item>electric_analog_to_digital</item>
+                            <item>electric_time_offset</item>
+                        </name>
+                        <applied>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                            <item>True</item>
+                        </applied>
+                    </filter>
+                    <measurement_azimuth units="degrees">101.19336735163</measurement_azimuth>
+                    <measurement_tilt units="degrees">0.0</measurement_tilt>
+                    <negative>
+                        <id>2004066</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">0.0</latitude>
+                        <longitude units="degrees">0.0</longitude>
+                        <elevation units="meters">0.0</elevation>
+                    </negative>
+                    <positive>
+                        <id>2004064</id>
+                        <manufacturer>Oregon State University</manufacturer>
+                        <type>Electrode</type>
+                        <model>Pb-PbCl2 kaolin gel Petiau 2 chamber type</model>
+                        <latitude units="degrees">37.5631983333333</latitude>
+                        <longitude units="degrees">-113.3016625</longitude>
+                        <elevation units="meters">2490.775</elevation>
+                    </positive>
+                    <sample_rate units="samples per second">1.0</sample_rate>
+                    <time_period>
+                        <end>2020-07-28T16:38:25+00:00</end>
+                        <start>2020-07-20T18:54:26+00:00</start>
+                    </time_period>
+                    <type>electric</type>
+                    <units>counts</units>
+                </electric>
+            </run>
+        </station>
+    </survey>
+</Experiment>
