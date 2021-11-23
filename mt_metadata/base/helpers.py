@@ -31,6 +31,7 @@ filter_descriptions = {
     "time delay": "time delay filter",
     "fir": "finite impaulse response filter",
     "fap": "frequency amplitude phase lookup table",
+    "frequency response table": "frequency amplitude phase lookup table",
 }
 
 # =============================================================================

@@ -72,7 +72,6 @@ class FIRFilter(FilterBase):
         else:
             self._coefficients = np.empty(0)
 
-
     @property
     def symmetry_corrected_coefficients(self):
         if self.symmetry == "EVEN":
@@ -183,7 +182,7 @@ class FIRFilter(FilterBase):
         )
         return h
 
-    def complex_response(self, frequencies):
+    def complex_response(self, frequencies, **kwargs):
         """
 
         Parameters
@@ -205,58 +204,3 @@ class FIRFilter(FilterBase):
         h /= self.corrective_scalar
 
         return h
-
-    def pass_band(self, window_len=7, tol=1e-4):
-        """
-
-        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
-        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
-
-        Try to estimate pass band of the filter from the flattest spots in
-        the amplitude.
-
-        The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std.
-
-        ..note:: This only works for simple filters with
-        on flat pass band.
-
-        :param window_len: length of sliding window in points
-        :type window_len: integer
-
-        :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
-        :type tol: float
-
-        :return: pass band frequencies
-        :rtype: np.ndarray
-
-        """
-
-        f = np.logspace(-5, 5, num=50 * window_len)  # freq Hz
-        cr = self.unscaled_complex_response(f)
-        amp = np.abs(cr)
-        if np.all(cr == cr[0]):
-            return np.array([f.min(), f.max()])
-        pass_band = []
-        for ii in range(window_len, len(cr) - window_len, 1):
-            cr_window = amp[ii : ii + window_len]
-            cr_window /= cr_window.max()
-
-            if cr_window.std() == 0:
-                continue
-
-            if cr_window.std() <= tol:
-                pass_band.append(f[ii])
-
-        # Check for discontinuities in the pass band
-        pass_band = np.array(pass_band)
-        if len(pass_band) > 1:
-            df_passband = np.diff(np.log(pass_band))
-            df_0 = np.log(f[1]) - np.log(f[0])
-            if np.isclose(df_passband, df_0).all():
-                pass
-            else:
-                self.logger.warning("Passband appears discontinuous")
-        pass_band = np.array([pass_band.min(), pass_band.max()])
-        return pass_band

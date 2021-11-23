@@ -14,7 +14,7 @@ The table should have default outputs, suggested frequency, amplitude, phase (de
 """
 import copy
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline
+from scipy.interpolate import interp1d
 
 from obspy.core.inventory.response import ResponseListResponseStage, ResponseListElement
 
@@ -171,60 +171,7 @@ class FrequencyResponseTableFilter(FilterBase):
     def total_response_function(self, frequencies):
         return self._total_response_function(frequencies)
 
-    def pass_band(self, window_len=7, tol=1e-2):
-        """
-
-        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
-        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
-
-        Try to estimate pass band of the filter from the flattest spots in
-        the amplitude.
-
-        The flattest spot is determined by calculating a sliding window
-        with length `window_len` and estimating normalized std.
-
-        ..note:: This only works for simple filters with
-        on flat pass band.
-
-        :param window_len: length of sliding window in points
-        :type window_len: integer
-
-        :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
-        :type tol: float
-
-        :return: pass band frequencies
-        :rtype: np.ndarray
-
-        """
-
-        if self.amplitudes is None and self.phases is None:
-            return np.nan
-
-        if np.all(self.amplitudes == self.amplitudes[0]):
-            return np.array([self.frequencies.min(), self.frequencies.max()])
-
-        pass_band = []
-        for ii in range(window_len, self.frequencies.size - window_len, 1):
-            cr_window = np.array(self.amplitudes[ii : ii + window_len])
-            cr_window /= cr_window.max()
-
-            if cr_window.std() <= tol:
-                pass_band.append(self.frequencies[ii])
-
-        # Check for discontinuities in the pass band
-        pass_band = np.array(pass_band)
-        if len(pass_band) > 1:
-            df_passband = np.diff(np.log(pass_band))
-            df_0 = np.log(self.frequencies[1]) - np.log(self.frequencies[0])
-            if np.isclose(df_passband, df_0).all():
-                pass
-            else:
-                self.logger.warning("Passband appears discontinuous")
-        pass_band = np.array([pass_band.min(), pass_band.max()])
-        return pass_band
-
-    def complex_response(self, frequencies, k=3, ext=2):
+    def complex_response(self, frequencies, interpolation_method="slinear"):
         """
 
         Parameters
@@ -238,16 +185,25 @@ class FrequencyResponseTableFilter(FilterBase):
         #I would like a separate step that calculates self._total_response_function
         and stores it but the validator doesn't seem to like when I assign that attribute
         """
-        if np.min(frequencies) < self.min_frequency:
-            self.logger.warning("Extrapolation warning ")
+        if (
+            np.min(frequencies) < self.min_frequency
+            or np.max(frequencies) > self.max_frequency
+        ):
+            self.logger.warning(
+                "Extrapolating, use values outside calibration frequencies with caution"
+            )
 
-        if np.max(frequencies) > self.max_frequency:
-            self.logger.warning("Extrapolation warning ")
-        phase_response = InterpolatedUnivariateSpline(
-            self.frequencies, self.phases, k=k, ext=ext
+        phase_response = interp1d(
+            self.frequencies,
+            self.phases,
+            kind=interpolation_method,
+            fill_value="extrapolate",
         )
-        amplitude_response = InterpolatedUnivariateSpline(
-            self.frequencies, self.amplitudes, k=k, ext=ext
+        amplitude_response = interp1d(
+            self.frequencies,
+            self.amplitudes,
+            kind=interpolation_method,
+            fill_value="extrapolate",
         )
         total_response_function = lambda f: amplitude_response(f) * np.exp(
             1.0j * phase_response(f)

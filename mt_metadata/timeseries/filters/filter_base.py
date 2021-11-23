@@ -295,31 +295,108 @@ class FilterBase(Base):
         print("Filter Base class does not have a complex response defined")
         return None
 
+    def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
+        """
+
+        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
+        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
+
+        Try to estimate pass band of the filter from the flattest spots in
+        the amplitude.
+
+        The flattest spot is determined by calculating a sliding window
+        with length `window_len` and estimating normalized std.
+
+        ..note:: This only works for simple filters with
+        on flat pass band.
+
+        :param window_len: length of sliding window in points
+        :type window_len: integer
+
+        :param tol: the ratio of the mean/std should be around 1
+        tol is the range around 1 to find the flat part of the curve.
+        :type tol: float
+
+        :return: pass band frequencies
+        :rtype: np.ndarray
+
+        """
+
+        f = frequencies
+        cr = self.complex_response(f, **kwargs)
+        amp = np.abs(cr)
+        # precision is apparently an important variable here
+        if np.round(amp, 6).all() == np.round(amp.mean(), 6):
+            return np.array([f.min(), f.max()])
+
+        f_true = np.zeros_like(frequencies)
+        for ii in range(0, f.size - window_len, 1):
+            cr_window = np.array(amp[ii : ii + window_len])  # / self.amplitudes.max()
+            test = abs(1 - np.log10(cr_window.min()) / np.log10(cr_window.max()))
+
+            if test <= tol:
+                f_true[(f >= f[ii]) & (f <= f[ii + window_len])] = 1
+
+        pb_zones = np.reshape(np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2))
+
+        if pb_zones.shape[0] > 1:
+            self.logger.debug(
+                f"Found {pb_zones.shape[0]} possible pass bands, using the longest. "
+                "Use the estimated pass band with caution."
+            )
+        # pick the longest
+        try:
+            longest = np.argmax(np.diff(pb_zones, axis=1))
+            if pb_zones[longest, 1] >= f.size:
+                pb_zones[longest, 1] = f.size - 1
+        except ValueError:
+            self.logger.warning(
+                "No pass band could be found within the given frequency range. Returning None"
+            )
+            return None
+
+        return np.array([f[pb_zones[longest, 0]], f[pb_zones[longest, 1]]])
+
     def generate_frequency_axis(self, sampling_rate, n_observations):
         dt = 1.0 / sampling_rate
         frequency_axis = np.fft.fftfreq(n_observations, d=dt)
         frequency_axis = np.fft.fftshift(frequency_axis)
         return frequency_axis
 
-    def plot_response(self, frequencies, x_units="period"):
+    def plot_response(
+        self,
+        frequencies,
+        x_units="period",
+        unwrap=True,
+        pb_tol=1e-1,
+        interpolation_method="slinear",
+    ):
         if frequencies is None:
             frequencies = self.generate_frequency_axis(10.0, 1000)
             x_units = "frequency"
 
-        complex_response = self.complex_response(frequencies)
+        kwargs = {
+            "title": self.name,
+            "unwrap": unwrap,
+            "x_units": x_units,
+            "label": self.name,
+        }
+
+        complex_response = self.complex_response(
+            frequencies, **{"interpolation_method": interpolation_method}
+        )
         if hasattr(self, "poles"):
-            plot_response(
-                frequencies, 
-                complex_response,
-                poles=self.poles,
-                zeros=self.zeros,
-                title=self.name,
-                x_units=x_units
+            kwargs["poles"] = self.poles
+            kwargs["zeros"] = self.zeros
+
+        if hasattr(self, "pass_band"):
+            kwargs["pass_band"] = self.pass_band(
+                frequencies,
+                tol=pb_tol,
+                **{"interpolation_method": interpolation_method},
             )
-        else:
-            plot_response(
-                frequencies, complex_response, title=self.name, x_units=x_units
-            )
+
+        plot_response(frequencies, complex_response, **kwargs)
 
     @property
     def decimation_active(self):

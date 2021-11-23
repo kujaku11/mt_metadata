@@ -26,6 +26,7 @@ MT Metadata is meant to be a tool to standardize both time series and transfer f
 	:caption: Time Series Metadata Standards
 
 	source/ts_metadata_guide
+    source/notebooks/filters_example.ipynb
 	
 .. toctree::
 	:maxdepth: 1

@@ -1,6 +1,5 @@
 import copy
 import numpy as np
-import scipy.signal as signal
 from obspy.core import inventory
 
 from mt_metadata.base import get_schema
@@ -60,7 +59,7 @@ class TimeDelayFilter(FilterBase):
 
         stage = inventory.CoefficientsTypeResponseStage(
             stage_number,
-            1,
+            self.gain,
             normalization_frequency,
             self.units_in,
             self.units_out,
@@ -80,7 +79,7 @@ class TimeDelayFilter(FilterBase):
 
         return stage
 
-    def complex_response(self, frequencies):
+    def complex_response(self, frequencies, **kwargs):
         """
 
         Parameters

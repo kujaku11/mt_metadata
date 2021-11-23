@@ -466,11 +466,11 @@ class TestMTChannelToXML01HY(unittest.TestCase):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
-                self.base_xml_channel.alternate_code, 
-                self.test_xml_channel.alternate_code
+                self.base_xml_channel.alternate_code,
+                self.test_xml_channel.alternate_code,
             )
 
     def test_code_unforced(self):
@@ -481,11 +481,10 @@ class TestMTChannelToXML01HY(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
-                self.base_xml_channel.alternate_code, 
-                xml_channel.alternate_code
+                self.base_xml_channel.alternate_code, xml_channel.alternate_code
             )
 
     def test_sensor(self):
@@ -570,7 +569,7 @@ class TestMTChannelToXML01EX(unittest.TestCase):
         self.assertNotEqual(
             self.base_xml_channel.alternate_code, self.test_xml_channel.alternate_code
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -579,11 +578,10 @@ class TestMTChannelToXML01EX(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
-                self.base_xml_channel.alternate_code, 
-                xml_channel.alternate_code
+                self.base_xml_channel.alternate_code, xml_channel.alternate_code
             )
 
     def test_sensor(self):
@@ -669,7 +667,7 @@ class TestMTChannelToXML02HX(unittest.TestCase):
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -678,10 +676,10 @@ class TestMTChannelToXML02HX(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertEqual(
-                self.base_xml_channel.alternate_code.lower(), 
+                self.base_xml_channel.alternate_code.lower(),
                 xml_channel.alternate_code.lower(),
             )
 
@@ -775,7 +773,7 @@ class TestMTChannelToXML02HY(unittest.TestCase):
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -784,10 +782,10 @@ class TestMTChannelToXML02HY(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertEqual(
-                self.base_xml_channel.alternate_code.lower(), 
+                self.base_xml_channel.alternate_code.lower(),
                 xml_channel.alternate_code.lower(),
             )
 
@@ -881,7 +879,7 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -890,10 +888,10 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertEqual(
-                self.base_xml_channel.alternate_code.lower(), 
+                self.base_xml_channel.alternate_code.lower(),
                 xml_channel.alternate_code.lower(),
             )
 
@@ -987,7 +985,7 @@ class TestMTChannelToXML02EX(unittest.TestCase):
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -996,11 +994,11 @@ class TestMTChannelToXML02EX(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertEqual(
-                self.base_xml_channel.alternate_code.lower(), 
-                xml_channel.alternate_code.lower()
+                self.base_xml_channel.alternate_code.lower(),
+                xml_channel.alternate_code.lower(),
             )
 
     def test_sensor(self):
@@ -1093,7 +1091,7 @@ class TestMTChannelToXML02EY(unittest.TestCase):
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
         )
-        
+
     def test_code_unforced(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         xml_channel = self.converter.mt_to_xml(
@@ -1102,10 +1100,10 @@ class TestMTChannelToXML02EY(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Code"):
             self.assertEqual(self.base_xml_channel.code, xml_channel.code)
-        
+
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertEqual(
-                self.base_xml_channel.alternate_code.lower(), 
+                self.base_xml_channel.alternate_code.lower(),
                 xml_channel.alternate_code.lower(),
             )
 
