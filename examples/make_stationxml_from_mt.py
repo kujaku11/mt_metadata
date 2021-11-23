@@ -34,7 +34,7 @@ a = MT2StationXML(xml_path)
 
 # if you want to make one stationxml per station then you can loop over
 # stations
-for station in a.stations[0:4]:
+for station in a.stations[-2:-1]:
     mtex = a.make_experiment(stations=station)
     inv = a.mt_to_xml(
         mtex,
