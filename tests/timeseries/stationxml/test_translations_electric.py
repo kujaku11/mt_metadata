@@ -238,7 +238,8 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertAlmostEqual(
             self.response_0.instrument_sensitivity.value,
             mt_response.compute_instrument_sensitivity(
-                self.response_0.instrument_sensitivity.frequency
+                self.response_0.instrument_sensitivity.frequency,
+                sig_figs=6
             ),
             -6,
         )
