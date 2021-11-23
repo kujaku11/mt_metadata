@@ -80,19 +80,22 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         )
 
     def test_network_operator(self):
-        self.assertEqual(
-            self.network_0.operators[0].agency, self.network_1.operators[0].agency
-        )
+        with self.subTest(msg="test ogency"):
+            self.assertEqual(
+                self.network_0.operators[0].agency, self.network_1.operators[0].agency
+            )
 
-        self.assertListEqual(
-            self.network_0.operators[0].contacts[0].names,
-            self.network_1.operators[0].contacts[0].names,
-        )
+        with self.subTest(msg="test names"):
+            self.assertListEqual(
+                self.network_0.operators[0].contacts[0].names,
+                self.network_1.operators[0].contacts[0].names,
+            )
 
-        self.assertListEqual(
-            self.network_0.operators[0].contacts[0].emails,
-            self.network_1.operators[0].contacts[0].emails,
-        )
+        with self.subTest(msg="test emails"):
+            self.assertListEqual(
+                self.network_0.operators[0].contacts[0].emails,
+                self.network_1.operators[0].contacts[0].emails,
+            )
 
     def test_station_start(self):
         self.assertEqual(self.station_0.start_date, self.station_1.start_date)
@@ -138,22 +141,22 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         )
 
     def test_station_location(self):
-        self.assertAlmostEqual(self.station_0.latitude, self.station_1.latitude, 4)
-        self.assertAlmostEqual(self.station_0.longitude, self.station_1.longitude, 4)
-        self.assertAlmostEqual(self.station_0.elevation, self.station_1.elevation, 4)
+        with self.subTest(msg="latitude"):
+            self.assertAlmostEqual(self.station_0.latitude, self.station_1.latitude, 4)
+        with self.subTest(msg="longitude"):
+            self.assertAlmostEqual(self.station_0.longitude, self.station_1.longitude, 4)
+        with self.subTest(msg="elevation"):
+            self.assertAlmostEqual(self.station_0.elevation, self.station_1.elevation, 4)
 
     def test_station_site(self):
         self.assertEqual(self.station_0.site.name, self.station_1.site.name)
 
     def test_station_equipment(self):
         for eq_0, eq_1 in zip(self.station_0.equipments, self.station_1.equipments):
-            self.assertEqual(eq_0.resource_id, eq_1.resource_id)
-            self.assertEqual(eq_0.type, eq_1.type)
-            self.assertEqual(eq_0.manufacturer, eq_1.manufacturer)
-            self.assertEqual(eq_0.model, eq_1.model)
-            self.assertEqual(eq_0.serial_number, eq_1.serial_number)
-            self.assertEqual(eq_0.installation_date, eq_1.installation_date)
-            self.assertEqual(eq_0.removal_date, eq_1.removal_date)
+            for attr in ["resource_id", "type", "manufacturer", "model", 
+                         "serial_number", "installation_date", "removal_date"]:
+                with self.subTest(msg=attr):
+                    self.assertEqual(getattr(eq_0, attr), getattr(eq_1, attr))
 
     def test_channel_start(self):
         self.assertEqual(self.channel_0.start_date, self.channel_1.start_date)
@@ -196,14 +199,20 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertDictEqual(original_comment_dict, new_comment_dict)
 
     def test_channel_location(self):
-        self.assertAlmostEqual(self.channel_0.latitude, self.channel_1.latitude, 4)
-        self.assertAlmostEqual(self.channel_0.longitude, self.channel_1.longitude, 4)
-        self.assertAlmostEqual(self.channel_0.elevation, self.channel_1.elevation, 4)
+        with self.subTest(msg="latitude"):
+            self.assertAlmostEqual(self.channel_0.latitude, self.channel_1.latitude, 4)
+        with self.subTest(msg="longitude"):
+            self.assertAlmostEqual(self.channel_0.longitude, self.channel_1.longitude, 4)
+        with self.subTest(msg="elevation"):
+            self.assertAlmostEqual(self.channel_0.elevation, self.channel_1.elevation, 4)
 
     def test_channel_orientation(self):
-        self.assertAlmostEqual(self.channel_0.azimuth, self.channel_1.azimuth, 4)
-        self.assertAlmostEqual(self.channel_0.dip, self.channel_1.dip, 4)
-        self.assertAlmostEqual(self.channel_0.depth, self.channel_1.depth, 4)
+        with self.subTest(msg="azimuth"):
+            self.assertAlmostEqual(self.channel_0.azimuth, self.channel_1.azimuth, 4)
+        with self.subTest(msg="dip"):
+            self.assertAlmostEqual(self.channel_0.dip, self.channel_1.dip, 4)
+        with self.subTest(msg="depth"):
+            self.assertAlmostEqual(self.channel_0.depth, self.channel_1.depth, 4)
 
     def test_channel_sample_rate(self):
         self.assertEqual(self.channel_0.sample_rate, self.channel_1.sample_rate)
@@ -214,33 +223,31 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         )
 
     def test_channel_sensor(self):
-        self.assertEqual(self.channel_0.sensor.type, self.channel_1.sensor.type)
-        self.assertEqual(
-            self.channel_0.sensor.description, self.channel_1.sensor.description
-        )
-        self.assertEqual(
-            self.channel_0.sensor.manufacturer, self.channel_1.sensor.manufacturer
-        )
-        self.assertEqual(self.channel_0.sensor.model, self.channel_1.sensor.model)
-        self.assertEqual(
-            self.channel_0.sensor.serial_number, self.channel_1.sensor.serial_number
-        )
+        for attr in ["type", "description", "manufacturer", "model", "serial_number"]:
+            with self.subTest(msg=attr):
+                self.assertEqual(getattr(getattr(self.channel_0, "sensor"), attr),
+                                 getattr(getattr(self.channel_1, "sensor"), attr))
 
     def test_response_sensitivity(self):
-        self.assertAlmostEqual(
-            self.response_0.instrument_sensitivity.value,
-            self.response_1.instrument_sensitivity.value,
-        )
+        with self.subTest(msg="test sensitivity"):
+            self.assertAlmostEqual(
+                self.response_0.instrument_sensitivity.value,
+                self.response_1.instrument_sensitivity.value,
+                delta=1E-3,
+                
+            )
 
-        self.assertEqual(
-            self.response_0.instrument_sensitivity.input_units,
-            self.response_1.instrument_sensitivity.input_units,
-        )
+        with self.subTest(msg="test input_units"):
+            self.assertEqual(
+                self.response_0.instrument_sensitivity.input_units,
+                self.response_1.instrument_sensitivity.input_units,
+            )
 
-        self.assertEqual(
-            self.response_0.instrument_sensitivity.output_units,
-            self.response_1.instrument_sensitivity.output_units,
-        )
+        with self.subTest(msg="test output_units"):
+            self.assertEqual(
+                self.response_0.instrument_sensitivity.output_units,
+                self.response_1.instrument_sensitivity.output_units,
+            )
 
     def test_response_zpk(self):
         zpk_0 = self.response_0.response_stages[0]
