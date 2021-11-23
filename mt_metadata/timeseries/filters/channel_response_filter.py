@@ -68,12 +68,12 @@ class ChannelResponseFilter(object):
         """set the filters list and validate the list"""
         self._filters_list = self._validate_filters_list(filters_list)
         self._check_consistency_of_units()
-        
+
     @property
     def frequencies(self):
-        """ frequencies to estimate filters """
+        """frequencies to estimate filters"""
         return self._frequencies
-    
+
     @frequencies.setter
     def frequencies(self, value):
         """
@@ -86,7 +86,7 @@ class ChannelResponseFilter(object):
         """
         if value is None:
             self._frequencies = None
-            
+
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._frequencies = np.array(value, dtype=float)
         else:
@@ -154,7 +154,8 @@ class ChannelResponseFilter(object):
         """estimate pass band for all filters in frequency"""
         if self.frequencies is None:
             raise ValueError(
-                "frequencies are None, must be input to calculate pass band")
+                "frequencies are None, must be input to calculate pass band"
+            )
         pb = []
         for f in self.filters_list:
             if hasattr(f, "pass_band"):
@@ -173,7 +174,7 @@ class ChannelResponseFilter(object):
         """get normalization frequency from ZPK or FAP filter"""
 
         if self._normalization_frequency is None:
-            return np.round(10**np.mean(np.log10(self.pass_band)), 3)
+            return np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
 
         return self._normalization_frequency
 
@@ -220,8 +221,8 @@ class ChannelResponseFilter(object):
         return total_delay
 
     def complex_response(
-        self, 
-        frequencies=None, 
+        self,
+        frequencies=None,
         include_delay=False,
         normalize=False,
         include_decimation=True,
@@ -247,7 +248,9 @@ class ChannelResponseFilter(object):
             filters_list = deepcopy(self.non_delay_filters)
 
         if not include_decimation:
-            filters_list = deepcopy([x for x in filters_list if not x.decimation_active])
+            filters_list = deepcopy(
+                [x for x in filters_list if not x.decimation_active]
+            )
 
         if len(filters_list) == 0:
             # warn that there are no filters associated with channel?
@@ -284,8 +287,8 @@ class ChannelResponseFilter(object):
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
-        return round(sensitivity, 
-                     sig_figs-int(np.floor(np.log10(abs(sensitivity)))))
+        return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
+
     @property
     def units_in(self):
         """
@@ -304,7 +307,7 @@ class ChannelResponseFilter(object):
         """
         confirms that the input and output units of each filter state are consistent
         """
-        if len(self._filters_list) > 1: 
+        if len(self._filters_list) > 1:
             previous_units = self._filters_list[0].units_out
             for mt_filter in self._filters_list[1:]:
                 if mt_filter.units_in != previous_units:
@@ -375,14 +378,21 @@ class ChannelResponseFilter(object):
                 )
 
         return total_response
-    
-    def plot_response(self, frequencies=None, x_units="period", unwrap=True,
-                      pb_tol=1e-1, interpolation_method="slinear", include_delay=False,
-                      include_decimation=True):
-            
+
+    def plot_response(
+        self,
+        frequencies=None,
+        x_units="period",
+        unwrap=True,
+        pb_tol=1e-1,
+        interpolation_method="slinear",
+        include_delay=False,
+        include_decimation=True,
+    ):
+
         if frequencies is not None:
             self.frequencies = frequencies
-        
+
         # get only the filters desired
         if include_delay:
             filters_list = deepcopy(self.filters_list)
@@ -390,21 +400,25 @@ class ChannelResponseFilter(object):
             filters_list = deepcopy(self.non_delay_filters)
 
         if not include_decimation:
-            filters_list = deepcopy([x for x in filters_list if not x.decimation_active])
+            filters_list = deepcopy(
+                [x for x in filters_list if not x.decimation_active]
+            )
 
         cr_kwargs = {"interpolation_method": interpolation_method}
-        
+
         # get response of individual filters
-        cr_list = [f.complex_response(self.frequencies, **cr_kwargs) for f in filters_list]
-        
+        cr_list = [
+            f.complex_response(self.frequencies, **cr_kwargs) for f in filters_list
+        ]
+
         # compute total response
         cr_kwargs["include_delay"] = include_delay
         cr_kwargs["include_decimation"] = include_decimation
         complex_response = self.complex_response(self.frequencies, **cr_kwargs)
-       
+
         cr_list.append(complex_response)
         labels = [f.name for f in filters_list] + ["Total Response"]
-        
+
         # plot with proper attributes.
         kwargs = {
             "title": f"Channel Response: [{', '.join([f.name for f in filters_list])}]",
@@ -412,6 +426,7 @@ class ChannelResponseFilter(object):
             "x_units": x_units,
             "pass_band": self.pass_band,
             "label": labels,
-            "normalization_frequency": self.normalization_frequency}
-        
+            "normalization_frequency": self.normalization_frequency,
+        }
+
         plot_response(self.frequencies, cr_list, **kwargs)

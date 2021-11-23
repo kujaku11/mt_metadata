@@ -60,7 +60,9 @@ class TestFilterElectric(unittest.TestCase):
         cr = ChannelResponseFilter(filters_list=filters_list)
 
         self.assertAlmostEqual(
-            cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency, 12),
+            cr.compute_instrument_sensitivity(
+                self.instrument_sensitivity.frequency, 12
+            ),
             self.instrument_sensitivity.value,
             0,
         )

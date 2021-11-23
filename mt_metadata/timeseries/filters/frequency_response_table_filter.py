@@ -171,7 +171,6 @@ class FrequencyResponseTableFilter(FilterBase):
     def total_response_function(self, frequencies):
         return self._total_response_function(frequencies)
 
-
     def complex_response(self, frequencies, interpolation_method="slinear"):
         """
 
@@ -186,8 +185,13 @@ class FrequencyResponseTableFilter(FilterBase):
         #I would like a separate step that calculates self._total_response_function
         and stores it but the validator doesn't seem to like when I assign that attribute
         """
-        if np.min(frequencies) < self.min_frequency or np.max(frequencies) > self.max_frequency:
-            self.logger.warning("Extrapolating, use values outside calibration frequencies with caution")
+        if (
+            np.min(frequencies) < self.min_frequency
+            or np.max(frequencies) > self.max_frequency
+        ):
+            self.logger.warning(
+                "Extrapolating, use values outside calibration frequencies with caution"
+            )
 
         phase_response = interp1d(
             self.frequencies,
@@ -206,4 +210,3 @@ class FrequencyResponseTableFilter(FilterBase):
         )
 
         return self.gain * total_response_function(frequencies)
-    

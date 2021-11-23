@@ -72,7 +72,6 @@ class FIRFilter(FilterBase):
         else:
             self._coefficients = np.empty(0)
 
-
     @property
     def symmetry_corrected_coefficients(self):
         if self.symmetry == "EVEN":

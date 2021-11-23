@@ -128,7 +128,7 @@ class XMLInventoryMTExperiment:
         """
         Convert from MT :class:`mt_metadata.timeseries.Experiment` to
         :class:`obspy.core.inventory.Inventory`
-        
+
         :param mt_experiment: DESCRIPTION
         :type mt_experiment: TYPE
         :param mt_fn: DESCRIPTION, defaults to None

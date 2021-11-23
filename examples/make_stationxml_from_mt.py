@@ -11,6 +11,7 @@ Created on Thu Oct  7 16:31:55 2021
 from pathlib import Path
 from mt_metadata.timeseries.tools import MT2StationXML
 from copy import deepcopy
+
 # =============================================================================
 
 # name space maping
@@ -18,7 +19,7 @@ ns_dict = {
     "iris": r"http://www.fdsn.org/xml/station/1/iris",
     "mt": r"http://emiw.org/xmlns/mt/1.0",
     "xsi": r"http://www.w3.org/2001/XMLSchema-instance",
-    }
+}
 # ns_dict = None
 # =============================================================================
 # Input Parameters
@@ -36,7 +37,7 @@ a = MT2StationXML(xml_path)
 for station in a.stations[0:4]:
     mtex = a.make_experiment(stations=station)
     inv = a.mt_to_xml(
-        mtex, 
+        mtex,
         stationxml_fn=output_path.joinpath(f"{station}_stationxml.xml"),
         ns_dict=deepcopy(ns_dict),
     )

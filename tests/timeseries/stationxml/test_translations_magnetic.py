@@ -144,17 +144,28 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         with self.subTest(msg="latitude"):
             self.assertAlmostEqual(self.station_0.latitude, self.station_1.latitude, 4)
         with self.subTest(msg="longitude"):
-            self.assertAlmostEqual(self.station_0.longitude, self.station_1.longitude, 4)
+            self.assertAlmostEqual(
+                self.station_0.longitude, self.station_1.longitude, 4
+            )
         with self.subTest(msg="elevation"):
-            self.assertAlmostEqual(self.station_0.elevation, self.station_1.elevation, 4)
+            self.assertAlmostEqual(
+                self.station_0.elevation, self.station_1.elevation, 4
+            )
 
     def test_station_site(self):
         self.assertEqual(self.station_0.site.name, self.station_1.site.name)
 
     def test_station_equipment(self):
         for eq_0, eq_1 in zip(self.station_0.equipments, self.station_1.equipments):
-            for attr in ["resource_id", "type", "manufacturer", "model", 
-                         "serial_number", "installation_date", "removal_date"]:
+            for attr in [
+                "resource_id",
+                "type",
+                "manufacturer",
+                "model",
+                "serial_number",
+                "installation_date",
+                "removal_date",
+            ]:
                 with self.subTest(msg=attr):
                     self.assertEqual(getattr(eq_0, attr), getattr(eq_1, attr))
 
@@ -202,9 +213,13 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         with self.subTest(msg="latitude"):
             self.assertAlmostEqual(self.channel_0.latitude, self.channel_1.latitude, 4)
         with self.subTest(msg="longitude"):
-            self.assertAlmostEqual(self.channel_0.longitude, self.channel_1.longitude, 4)
+            self.assertAlmostEqual(
+                self.channel_0.longitude, self.channel_1.longitude, 4
+            )
         with self.subTest(msg="elevation"):
-            self.assertAlmostEqual(self.channel_0.elevation, self.channel_1.elevation, 4)
+            self.assertAlmostEqual(
+                self.channel_0.elevation, self.channel_1.elevation, 4
+            )
 
     def test_channel_orientation(self):
         with self.subTest(msg="azimuth"):
@@ -225,16 +240,17 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
     def test_channel_sensor(self):
         for attr in ["type", "description", "manufacturer", "model", "serial_number"]:
             with self.subTest(msg=attr):
-                self.assertEqual(getattr(getattr(self.channel_0, "sensor"), attr),
-                                 getattr(getattr(self.channel_1, "sensor"), attr))
+                self.assertEqual(
+                    getattr(getattr(self.channel_0, "sensor"), attr),
+                    getattr(getattr(self.channel_1, "sensor"), attr),
+                )
 
     def test_response_sensitivity(self):
         with self.subTest(msg="test sensitivity"):
             self.assertAlmostEqual(
                 self.response_0.instrument_sensitivity.value,
                 self.response_1.instrument_sensitivity.value,
-                delta=1E-3,
-                
+                delta=1e-3,
             )
 
         with self.subTest(msg="test input_units"):
