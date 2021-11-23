@@ -40,6 +40,7 @@ class TestExperiment2StationXML(unittest.TestCase):
         )
 
     def test_num_channels(self):
+        # the length is 8 because the h-sensor id's are not the same.
         self.assertEqual(
             len(self.inventory.networks[0].stations[0].channels),
             len(self.experiment.surveys[0].stations[0].runs[0].channels) + 3,
