@@ -195,7 +195,9 @@ class XMLInventoryMTExperiment:
                     run_list = [c.value for c in existing_channel.comments]
                     # Compare channel metadata if matches just add run.id if its
                     # not already there.
-                    self.logger.debug("Comparing %s to %s", xml_channel.code, existing_channel.code)
+                    self.logger.debug(
+                        "Comparing %s to %s", xml_channel.code, existing_channel.code
+                    )
                     if self.compare_xml_channel(xml_channel, existing_channel):
                         find = True
                         self.logger.debug(
@@ -216,7 +218,7 @@ class XMLInventoryMTExperiment:
                         if xml_channel.end_date > existing_channel.end_date:
                             self.logger.debug("Changed ending time")
                             existing_channel.end_date = xml_channel.end_date
-                            
+
                         continue
 
                 if not find:
@@ -225,17 +227,13 @@ class XMLInventoryMTExperiment:
                     )
                     run_list = [c.value for c in xml_channel.comments]
                     if not mt_run.id in run_list:
-                        self.logger.debug(
-                            f"adding run id {mt_run.id} to {run_list}"
-                        )
+                        self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
                         xml_channel.comments.append(
                             inventory.Comment(mt_run.id, subject="mt.run.id")
                         )
                     xml_station.channels.append(xml_channel)
             else:
-                self.logger.debug(
-                    f"no existing channels for {xml_channel.code}"
-                )
+                self.logger.debug(f"no existing channels for {xml_channel.code}")
                 run_list = [c.value for c in xml_channel.comments]
                 if not mt_run.id in run_list:
                     self.logger.debug(f"adding run id {mt_run.id} to {run_list}")

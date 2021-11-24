@@ -40,14 +40,17 @@ today = f"{now.year}{now.month:02}{now.day:02}"
 # stations
 for station in a.stations[-2:-1]:
     mtex = a.make_experiment(stations=station)
-    
+
     # name the file as network_year_station_today.xml
-    xml_fn = "_".join([
-        f"{mtex.surveys[0].fdsn.network}",
-        f"{mtex.surveys[0].time_period._start_dt.year}",
-        f"{station}",
-        f"{today}.xml"]) 
-    
+    xml_fn = "_".join(
+        [
+            f"{mtex.surveys[0].fdsn.network}",
+            f"{mtex.surveys[0].time_period._start_dt.year}",
+            f"{station}",
+            f"{today}.xml",
+        ]
+    )
+
     # create an inventory object and write stationxml
     inv = a.mt_to_xml(
         mtex,

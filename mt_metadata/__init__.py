@@ -99,9 +99,7 @@ DATA_DIR = Path(__file__).absolute().parent
 ### Station XML files
 STATIONXML_01 = DATA_DIR.joinpath("data/stationxml/fdsn_no_mt_info.xml")
 STATIONXML_02 = DATA_DIR.joinpath("data/stationxml/mtml_single_station.xml")
-STATIONXML_MAGNETIC = DATA_DIR.joinpath(
-    "data/stationxml/mtml_magnetometer_example.xml"
-)
+STATIONXML_MAGNETIC = DATA_DIR.joinpath("data/stationxml/mtml_magnetometer_example.xml")
 STATIONXML_ELECTRIC = DATA_DIR.joinpath("data/stationxml/mtml_electrode_example.xml")
 STATIONXML_FAP = DATA_DIR.joinpath("data/stationxml/station_xml_with_fap_example.xml")
 STATIONXML_FIR = DATA_DIR.joinpath("data/stationxml/station_xml_with_fir_example.xml")
@@ -110,9 +108,7 @@ STATIONXML_FIR = DATA_DIR.joinpath("data/stationxml/station_xml_with_fir_example
 MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
-MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath(
-    "data/mt_xml/multi_run_experiment.xml"
-)
+MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath("data/mt_xml/multi_run_experiment.xml")
 
 
 ### Transfer function files
