@@ -190,11 +190,14 @@ class XMLInventoryMTExperiment:
             xml_channel = self.channel_translator.mt_to_xml(mt_channel, filters_dict)
             existing_channels = xml_station.select(channel=xml_channel.code).channels
             if existing_channels:
+                find = False
                 for existing_channel in existing_channels:
-                    find = False
                     run_list = [c.value for c in existing_channel.comments]
                     # Compare channel metadata if matches just add run.id if its
                     # not already there.
+                    self.logger.debug(
+                        "Comparing %s to %s", xml_channel.code, existing_channel.code
+                    )
                     if self.compare_xml_channel(xml_channel, existing_channel):
                         find = True
                         self.logger.debug(
@@ -216,23 +219,21 @@ class XMLInventoryMTExperiment:
                             self.logger.debug("Changed ending time")
                             existing_channel.end_date = xml_channel.end_date
 
-                    if not find:
-                        self.logger.debug(
-                            f"xxx Unmatched {xml_channel.code}!={existing_channel.code}"
+                        continue
+
+                if not find:
+                    self.logger.debug(
+                        f"xxx Unmatched {xml_channel.code}!={existing_channel.code}"
+                    )
+                    run_list = [c.value for c in xml_channel.comments]
+                    if not mt_run.id in run_list:
+                        self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
+                        xml_channel.comments.append(
+                            inventory.Comment(mt_run.id, subject="mt.run.id")
                         )
-                        run_list = [c.value for c in xml_channel.comments]
-                        if not mt_run.id in run_list:
-                            self.logger.debug(
-                                f"adding run id {mt_run.id} to {run_list}"
-                            )
-                            xml_channel.comments.append(
-                                inventory.Comment(mt_run.id, subject="mt.run.id")
-                            )
-                        xml_station.channels.append(xml_channel)
+                    xml_station.channels.append(xml_channel)
             else:
-                self.logger.debug(
-                    f"no existing channels for {xml_channel.code}, adding {mt_run.id}"
-                )
+                self.logger.debug(f"no existing channels for {xml_channel.code}")
                 run_list = [c.value for c in xml_channel.comments]
                 if not mt_run.id in run_list:
                     self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
