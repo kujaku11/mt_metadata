@@ -12,7 +12,10 @@ from pathlib import Path
 import pandas as pd
 from xml.etree import cElementTree as et
 
-from mt_metadata.timeseries import Experiment, Survey, Station, Run, Electric, Magnetic
+from mt_metadata.timeseries import (
+    Experiment, Survey, Station, Run, Electric, Magnetic
+    )
+
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
