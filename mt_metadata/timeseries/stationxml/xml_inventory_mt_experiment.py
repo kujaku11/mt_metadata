@@ -189,37 +189,41 @@ class XMLInventoryMTExperiment:
         for mt_channel in mt_run.channels:
             xml_channel = self.channel_translator.mt_to_xml(mt_channel, filters_dict)
             existing_channels = xml_station.select(channel=xml_channel.code).channels
+            
             if existing_channels:
                 find = False
-                for existing_channel in existing_channels:
-                    run_list = [c.value for c in existing_channel.comments]
-                    # Compare channel metadata if matches just add run.id if its
-                    # not already there.
+                start_list = [c.start_date for c in existing_channels]
+                existing_channel = existing_channels[start_list.index(max(start_list))]
+                # should only compare the last channel
+                # for existing_channel in existing_channels:
+                run_list = [c.value for c in existing_channel.comments]
+                # Compare channel metadata if matches just add run.id if its
+                # not already there.
+                self.logger.debug(
+                    "Comparing %s to %s", xml_channel.code, existing_channel.code
+                )
+                if self.compare_xml_channel(xml_channel, existing_channel):
+                    find = True
                     self.logger.debug(
-                        "Comparing %s to %s", xml_channel.code, existing_channel.code
+                        f"Matched {xml_channel.code}={existing_channel.code}"
                     )
-                    if self.compare_xml_channel(xml_channel, existing_channel):
-                        find = True
+                    if not mt_run.id in run_list:
                         self.logger.debug(
-                            f"Matched {xml_channel.code}={existing_channel.code}"
+                            f"adding run id {mt_run.id} to {run_list}"
                         )
-                        if not mt_run.id in run_list:
-                            self.logger.debug(
-                                f"adding run id {mt_run.id} to {run_list}"
-                            )
-                            existing_channel.comments.append(
-                                inventory.Comment(mt_run.id, subject="mt.run.id")
-                            )
+                        existing_channel.comments.append(
+                            inventory.Comment(mt_run.id, subject="mt.run.id")
+                        )
 
-                        if xml_channel.start_date < existing_channel.start_date:
-                            self.logger.debug("Changed starting time")
-                            existing_channel.start_date = xml_channel.start_date
+                    if xml_channel.start_date < existing_channel.start_date:
+                        self.logger.debug("Changed starting time")
+                        existing_channel.start_date = xml_channel.start_date
 
-                        if xml_channel.end_date > existing_channel.end_date:
-                            self.logger.debug("Changed ending time")
-                            existing_channel.end_date = xml_channel.end_date
+                    if xml_channel.end_date > existing_channel.end_date:
+                        self.logger.debug("Changed ending time")
+                        existing_channel.end_date = xml_channel.end_date
 
-                        continue
+                    # continue
 
                 if not find:
                     self.logger.debug(
@@ -280,6 +284,18 @@ class XMLInventoryMTExperiment:
         if round(xml_channel_01.longitude, 3) != round(xml_channel_02.longitude, 3):
             self.logger.debug(
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
+            )
+            return False
+        
+        if round(xml_channel_01.azimuth, 2) != round(xml_channel_02.azimuth, 2):
+            self.logger.debug(
+                f"{round(xml_channel_01.azimuth, 2)} != {round(xml_channel_02.azimuth, 2)}"
+            )
+            return False
+        
+        if round(xml_channel_01.dip, 2) != round(xml_channel_02.dip, 2):
+            self.logger.debug(
+                f"{round(xml_channel_01.dip, 2)} != {round(xml_channel_02.dip, 2)}"
             )
             return False
 

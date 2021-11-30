@@ -27,7 +27,7 @@ ns_dict = {
 # Input Parameters
 # =============================================================================
 # path to the folder where all the xmls are
-xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\mth5_newer")
+xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\mth5")
 output_path = Path(r"c:\Users\jpeacock")
 
 # make an instance of MTML2StationXML where the input is the path to the folder
@@ -38,7 +38,7 @@ now = MTime(get_now_utc())
 today = f"{now.year}{now.month:02}{now.day:02}"
 # if you want to make one stationxml per station then you can loop over
 # stations
-for station in a.stations[-2:-1]:
+for station in ["CAZ09"]:
     mtex = a.make_experiment(stations=station)
 
     # name the file as network_year_station_today.xml

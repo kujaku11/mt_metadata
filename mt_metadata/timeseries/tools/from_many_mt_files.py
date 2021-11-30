@@ -345,6 +345,8 @@ class MT2StationXML(XMLInventoryMTExperiment):
                         channel.location.elevation = station.location.elevation
             station.runs.append(r)
             dp_filters.update(dp)
+            
+        station.update_time_period()
 
         return station, dp_filters
 
@@ -378,6 +380,9 @@ class MT2StationXML(XMLInventoryMTExperiment):
             station, dp = self._make_station(station_dict)
             s.stations.append(station)
             dp_filters.update(dp)
+        
+        s.update_bounding_box()
+        s.update_time_period()
 
         return s, dp_filters
 
