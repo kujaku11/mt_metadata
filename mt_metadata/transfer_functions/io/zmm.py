@@ -257,18 +257,21 @@ class ZMMHeader(object):
 
                 if channel.translated_tilt is None:
                     channel.translated_tilt = 0.0
-            except AttributeError:
+                    
+                lines += [
+                     (
+                         f"{channel.channel_number:>5d} "
+                         f"{channel.translated_azimuth:>8.2f} "
+                         f"{channel.translated_tilt:>8.2f} "
+                         f"{self.station:>3} "
+                         f"{channel.component.capitalize():>3}"
+                     )
+                 ]
+                
+            except (AttributeError, TypeError):
                 self.logger.warning(f"Could not find {ch}")
                 continue
-            lines += [
-                (
-                    f"{channel.channel_number:>5d} "
-                    f"{channel.translated_azimuth:>8.2f} "
-                    f"{channel.translated_tilt:>8.2f} "
-                    f"{self.station:>3} "
-                    f"{channel.component.capitalize():>3}"
-                )
-            ]
+           
 
         return lines
 
@@ -1019,6 +1022,7 @@ def write_zmm(tf_object, fn=None):
 
     zmm_obj = ZMM()
     zmm_obj.dataset = tf_object.dataset
+    # need to fill in z metadata when station metadata is set.
     zmm_obj.station_metadata = tf_object.station_metadata
     zmm_obj.survey_metadata.update(tf_object.survey_metadata)
     zmm_obj.num_freq = tf_object.period.size
@@ -1032,6 +1036,6 @@ def write_zmm(tf_object, fn=None):
         if tf_object.has_impedance():
             zmm_obj.num_channels = 4
 
-    # zmm_obj.write(fn)
+    zmm_obj.write(fn)
 
     return zmm_obj

@@ -2805,7 +2805,7 @@ def write_edi(tf_object, fn=None):
             edi_obj.Info.info_list.append(f"provenance.{k} = {v}")
 
     # write field notes
-    for run in tf_object.station_metadata.run_list:
+    for run in tf_object.station_metadata.runs:
         write_dict = dict(
             [
                 (comp, False)
