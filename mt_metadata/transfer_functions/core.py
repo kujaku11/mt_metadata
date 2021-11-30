@@ -958,6 +958,7 @@ class TF:
             raise TFError(msg)
 
         fn = self.save_dir.joinpath(fn_basename)
+        print(fn)
 
         return write_file(self, fn, file_type=file_type)
 
