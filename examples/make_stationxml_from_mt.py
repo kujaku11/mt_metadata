@@ -38,7 +38,8 @@ now = MTime(get_now_utc())
 today = f"{now.year}{now.month:02}{now.day:02}"
 # if you want to make one stationxml per station then you can loop over
 # stations
-for station in ["CAZ09"]:
+# for station in a.stations:
+for station in ["CAR05"]:
     mtex = a.make_experiment(stations=station)
 
     # name the file as network_year_station_today.xml
