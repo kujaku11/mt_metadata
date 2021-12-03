@@ -930,6 +930,29 @@ class EDI(object):
                 sm.id = value
 
         return sm
+    
+    @survey_metadata.setter
+    def survey_metadata(self, survey):
+        """
+        Update metadata from a survey metadata object
+        
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        if not isinstance(survey, metadata.Survey):
+            raise TypeError(
+                "Input must be a mt_metadata.transfer_function.Survey object"
+                f" not {type(survey)}"
+                )
+            
+        self.Header.survey = survey.id
+        self.Header.project = survey.project
+        self.Header.loc = survey.geographic_name
+        self.Header.country = survey.country
 
     @property
     def station_metadata(self):
@@ -1025,6 +1048,147 @@ class EDI(object):
                 rr.rrhy = self.rrhy_metadata
 
         return sm
+    
+    @station_metadata.setter
+    def station_metadata(self, sm):
+        """
+        Set metadata from station metadata object
+        
+        :param sm: DESCRIPTION
+        :type sm: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        ### fill header information from station
+        self.Header.acqby = sm.acquired_by.author
+        self.Header.acqdate = sm.time_period.start_date
+        self.Header.coordinate_system = (
+            sm.orientation.reference_frame
+        )
+        self.Header.dataid = sm.id
+        self.Header.declination = sm.location.declination.value
+        self.Header.elev = sm.location.elevation
+        self.Header.fileby = sm.provenance.submitter.author
+        self.Header.filedate = sm.provenance.creation_time
+        self.Header.lat = sm.location.latitude
+        self.Header.lon = sm.location.longitude
+        self.Header.datum = sm.location.datum
+        self.Header.units = sm.transfer_function.units
+
+        ### write notes
+        # write comments, which would be anything in the info section from an edi
+        if isinstance(sm.comments, str):
+            self.Info.info_list += sm.comments.split("\n")
+        # write transfer function info first
+        for k, v in sm.transfer_function.to_dict(
+            single=True
+        ).items():
+            if not v in [None]:
+                if k in ["processing_parameters"]:
+                    for item in v:
+                        self.Info.info_list.append(
+                            f"processing_parameters.{item.replace('=', ' = ')}"
+                        )
+                else:
+                    self.Info.info_list.append(f"transfer_function.{k} = {v}")
+
+        # write provenance
+        for k, v in sm.provenance.to_dict(single=True).items():
+            if not v in [None, "None", "null"]:
+                self.Info.info_list.append(f"provenance.{k} = {v}")
+
+        # write field notes
+        for run in sm.runs:
+            write_dict = dict(
+                [
+                    (comp, False)
+                    for comp in [
+                        "ex",
+                        "ey",
+                        "hx",
+                        "hy",
+                        "hz",
+                        "temperature",
+                        "rrhx",
+                        "rrhy",
+                    ]
+                ]
+            )
+            for cc in write_dict.keys():
+                if getattr(run, cc).component is not None:
+                    write_dict[cc] = True
+
+            r_dict = run.to_dict(single=True)
+
+            for rk, rv in r_dict.items():
+                if rv in [None, "1980-01-01T00:00:00+00:00"]:
+                    continue
+                if rk[0:2] in ["ex", "ey", "hx", "hy", "hz", "te", "rr"]:
+                    if rk[0:2] == "te":
+                        comp = "temperature"
+                    elif rk[0:2] == "rr":
+                        comp = rk[0:4]
+                    else:
+                        comp = rk[0:2]
+                    if write_dict[comp] is False:
+                        continue
+                    skip_list = [
+                        f"{comp}.{ff}"
+                        for ff in [
+                            "filter.name",
+                            "filter.applied",
+                            "time_period.start",
+                            "time_period.end",
+                            "location.elevation",
+                            "location.latitude",
+                            "location.longitude",
+                            "location.x",
+                            "location.y",
+                            "location.z",
+                            "positive.latitude",
+                            "positive.longitude",
+                            "positive.elevation",
+                            "positive.x",
+                            "positive.x2",
+                            "positive.y",
+                            "positive.y2",
+                            "positive.z",
+                            "positive.z2",
+                            "negative.latitude",
+                            "negative.longitude",
+                            "negative.elevation",
+                            "negative.x",
+                            "negative.x2",
+                            "negative.y",
+                            "negative.y2",
+                            "negative.z",
+                            "negative.z2",
+                            "sample_rate",
+                            "data_quality.rating.value",
+                            "data_quality.flag",
+                        ]
+                    ]
+
+                    if rk not in skip_list:
+                        self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
+                else:
+                    self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
+                    
+            ### fill measurement
+            self.Measurement.refelev = sm.location.elevation
+            self.Measurement.reflat = sm.location.latitude
+            self.Measurement.reflon = sm.location.longitude
+            self.Measurement.maxchan = len(sm.channels_recorded)
+            for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
+                try:
+                    self.Measurement.from_metadata(
+                        getattr(sm.runs[0], f"{comp}")
+                    )
+                except AttributeError as error:
+                    self.logger.info(error)
+                    self.logger.debug(f"Did not find information on {comp}")
 
     def _get_electric_metadata(self, comp):
         """
@@ -1272,7 +1436,7 @@ class Header(object):
         self.edi_lines = None
         self.dataid = None
         self.acqby = None
-        self.fileby = "MTpy"
+        self.fileby = "mt_metadata"
         self._acqdate = MTime()
         self._enddate = None
         self._filedate = MTime()
@@ -1282,7 +1446,7 @@ class Header(object):
         self._elev = None
         self.units = "[mV/km]/[nT]"
         self.empty = 1e32
-        self.progvers = "0.1.4"
+        self.progvers = "0.1.6"
         self._progdate = MTime("2020-11-10")
         self.progname = "mt_metadata"
         self.project = None
@@ -2758,142 +2922,13 @@ def write_edi(tf_object, fn=None):
     edi_obj.t = tf_object.tipper.data
     edi_obj.t_err = tf_object.tipper_error.data
     edi_obj.frequency = 1.0 / tf_object.period
+    
+    # fill from survey metadata
+    edi_obj.survey_metadata = tf_object.survey_metadata
+    
+    # fill from station metadata
+    edi_obj.station_metadata = tf_object.station_metadata
 
-    ### fill header information from survey
-    edi_obj.Header.survey = tf_object.survey_metadata.id
-    edi_obj.Header.project = tf_object.survey_metadata.project
-    edi_obj.Header.loc = tf_object.survey_metadata.geographic_name
-    edi_obj.Header.country = tf_object.survey_metadata.country
-
-    ### fill header information from station
-    edi_obj.Header.acqby = tf_object.station_metadata.acquired_by.author
-    edi_obj.Header.acqdate = tf_object.station_metadata.time_period.start_date
-    edi_obj.Header.coordinate_system = (
-        tf_object.station_metadata.orientation.reference_frame
-    )
-    edi_obj.Header.dataid = tf_object.station
-    edi_obj.Header.declination = tf_object.station_metadata.location.declination.value
-    edi_obj.Header.elev = tf_object.elevation
-    edi_obj.Header.fileby = tf_object.station_metadata.provenance.submitter.author
-    edi_obj.Header.filedate = tf_object.station_metadata.provenance.creation_time
-    edi_obj.Header.lat = tf_object.latitude
-    edi_obj.Header.lon = tf_object.longitude
-    edi_obj.Header.datum = tf_object.station_metadata.location.datum
-    edi_obj.Header.stdvers = "SEG 1.0"
-    edi_obj.Header.units = tf_object.station_metadata.transfer_function.units
-
-    ### write notes
-    # write comments, which would be anything in the info section from an edi
-    if isinstance(tf_object.station_metadata.comments, str):
-        edi_obj.Info.info_list += tf_object.station_metadata.comments.split("\n")
-    # write transfer function info first
-    for k, v in tf_object.station_metadata.transfer_function.to_dict(
-        single=True
-    ).items():
-        if not v in [None]:
-            if k in ["processing_parameters"]:
-                for item in v:
-                    edi_obj.Info.info_list.append(
-                        f"processing_parameters.{item.replace('=', ' = ')}"
-                    )
-            else:
-                edi_obj.Info.info_list.append(f"transfer_function.{k} = {v}")
-
-    # write provenance
-    for k, v in tf_object.station_metadata.provenance.to_dict(single=True).items():
-        if not v in [None, "None", "null"]:
-            edi_obj.Info.info_list.append(f"provenance.{k} = {v}")
-
-    # write field notes
-    for run in tf_object.station_metadata.runs:
-        write_dict = dict(
-            [
-                (comp, False)
-                for comp in [
-                    "ex",
-                    "ey",
-                    "hx",
-                    "hy",
-                    "hz",
-                    "temperature",
-                    "rrhx",
-                    "rrhy",
-                ]
-            ]
-        )
-        for cc in write_dict.keys():
-            if getattr(run, cc).component is not None:
-                write_dict[cc] = True
-
-        r_dict = run.to_dict(single=True)
-
-        for rk, rv in r_dict.items():
-            if rv in [None, "1980-01-01T00:00:00+00:00"]:
-                continue
-            if rk[0:2] in ["ex", "ey", "hx", "hy", "hz", "te", "rr"]:
-                if rk[0:2] == "te":
-                    comp = "temperature"
-                elif rk[0:2] == "rr":
-                    comp = rk[0:4]
-                else:
-                    comp = rk[0:2]
-                if write_dict[comp] is False:
-                    continue
-                skip_list = [
-                    f"{comp}.{ff}"
-                    for ff in [
-                        "filter.name",
-                        "filter.applied",
-                        "time_period.start",
-                        "time_period.end",
-                        "location.elevation",
-                        "location.latitude",
-                        "location.longitude",
-                        "location.x",
-                        "location.y",
-                        "location.z",
-                        "positive.latitude",
-                        "positive.longitude",
-                        "positive.elevation",
-                        "positive.x",
-                        "positive.x2",
-                        "positive.y",
-                        "positive.y2",
-                        "positive.z",
-                        "positive.z2",
-                        "negative.latitude",
-                        "negative.longitude",
-                        "negative.elevation",
-                        "negative.x",
-                        "negative.x2",
-                        "negative.y",
-                        "negative.y2",
-                        "negative.z",
-                        "negative.z2",
-                        "sample_rate",
-                        "data_quality.rating.value",
-                        "data_quality.flag",
-                    ]
-                ]
-
-                if rk not in skip_list:
-                    edi_obj.Info.info_list.append(f"{run.id}.{rk} = {rv}")
-            else:
-                edi_obj.Info.info_list.append(f"{run.id}.{rk} = {rv}")
-
-    ### fill measurement
-    edi_obj.Measurement.refelev = tf_object.elevation
-    edi_obj.Measurement.reflat = tf_object.latitude
-    edi_obj.Measurement.reflon = tf_object.longitude
-    edi_obj.Measurement.maxchan = len(tf_object.station_metadata.channels_recorded)
-    for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
-        try:
-            edi_obj.Measurement.from_metadata(
-                getattr(tf_object.station_metadata.run_list[0], f"{comp}")
-            )
-        except AttributeError as error:
-            edi_obj.logger.info(error)
-            edi_obj.logger.debug(f"Did not find information on {comp}")
 
     # input data section
     edi_obj.Data.data_type = tf_object.station_metadata.data_type
