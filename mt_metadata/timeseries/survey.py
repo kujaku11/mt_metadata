@@ -189,5 +189,7 @@ class Survey(Base):
             start.append(station.time_period.start)
             end.append(station.time_period.end)
 
-        self.time_period.start = min(start)
-        self.time_period.end = max(end)
+        if self.time_period.start > min(start):
+            self.time_period.start = min(start)
+        if self.time_period.end < max(end):
+            self.time_period.end = max(end)
