@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec  4 14:13:37 2021
+
+@author: jpeacock
+"""
+
+from mt_metadata.utils.mt_logger import setup_logger
+
+# ==============================================================================
+# Info object
+# ==============================================================================
+class Information(object):
+    """
+    Contain, read, and write info section of .edi file
+
+    not much to really do here, but just keep it in the same format that it is
+    read in as, except if it is in phoenix format then split the two paragraphs
+    up so they are sequential.
+
+    """
+
+    def __init__(self, fn=None, edi_lines=None):
+        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+
+        self.info_list = []
+        self.info_dict = {}
+        self.phoenix_col_width = 32
+
+
+
+    def __str__(self):
+        return "".join(self.write_info())
+
+    def __repr__(self):
+        return self.__str__()
+
+    def get_info_list(self, edi_lines):
+        """
+        get a list of lines from the info section
+        
+        :param edi_lines: DESCRIPTION
+        :type edi_lines: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        self.info_list = []
+        info_find = False
+        phoenix_file = False
+        phoenix_list_02 = []
+        
+        for line in edi_lines:
+            if ">" in line and "info" in line.lower():
+                info_find = True
+            elif ">" in line:
+                # need to check for xml type formating
+                if "<" in line:
+                    pass
+                else:
+                    if info_find is True:
+                        break
+                    else:
+                        pass
+            elif info_find:
+                line = line.strip()
+                if line.lower().find("run information") >= 0:
+                    phoenix_file = True
+                if phoenix_file and len(line) > self.phoenix_col_width:
+                    self.info_list.append(line[0 : self.phoenix_col_width].strip())
+                    phoenix_list_02.append(line[self.phoenix_col_width :].strip())
+                else:
+                    if len(line) > 1:
+                        self.info_list.append(line)
+
+        self.info_list += phoenix_list_02
+        # validate the information list
+        self.info_list = self._validate_info_list(self.info_list)
+
+    def read_info(self, edi_lines):
+        """
+        read information section of the .edi file
+        """
+
+        self.info_dict = {}
+        # make info items attributes of Information
+        for ll in self.get_info_list(edi_lines):
+            l_list = [None, ""]
+            # phoenix has lat an lon information in the notes but separated by
+            # a space instead of an = or :
+            if "lat" in ll.lower() or "lon" in ll.lower() or "lng" in ll.lower():
+                l_list = ll.split()
+                if len(l_list) == 2:
+                    self.info_dict[l_list[0]] = l_list[1]
+                    continue
+                elif len(l_list) == 4:
+                    self.info_dict[l_list[0]] = l_list[1]
+                    self.info_dict[l_list[2]] = l_list[3]
+                    continue
+                elif len(l_list) == 6:
+                    self.info_dict[l_list[0]] = l_list[1] + l_list[2]
+                    self.info_dict[l_list[3]] = l_list[4] + l_list[5]
+                    continue
+
+            # need to check if there is an = or : seperator, which ever
+            # comes first is assumed to be the delimiter
+            sep = None
+            if ll.find(":") > -1 and ll.find(":") > -1:
+                if ll.find(":") < ll.find("="):
+                    sep = ":"
+                else:
+                    sep = "="
+
+            if ll.count(":") == 1:
+                sep = ":"
+                # colon_find = ll.find(":")
+            if ll.count("=") == 1:
+                sep = "="
+            if sep:
+                l_list = ll.split(sep, 1)
+                if len(l_list) == 2:
+                    l_key = l_list[0].strip()
+                    l_value = l_list[1].strip().replace('"', "")
+                    self.info_dict[l_key] = l_value
+
+            else:
+                self.info_dict[l_list[0]] = None
+
+        if self.info_list is None:
+            self.logger.info("Could not read information")
+            return
+
+    def write_info(self, info_list=None):
+        """
+        write out information
+        """
+
+        if info_list is not None:
+            self.info_list = self._validate_info_list(info_list)
+
+        info_lines = [">INFO\n"]
+        for line in self.info_list:
+            info_lines.append(f"{' '*4}{line}\n")
+
+        return info_lines
+
+    def _validate_info_list(self, info_list):
+        """
+        check to make sure the info list input is valid, really just checking
+        for Phoenix format where they put two columns in the file and remove
+        any blank lines and the >info line
+        """
+
+        new_info_list = []
+        for line in info_list:
+            # get rid of empty lines
+            lt = str(line).strip()
+            if len(lt) > 1:
+                if ">" in line:
+                    pass
+                else:
+                    new_info_list.append(line.strip())
+
+        return new_info_list

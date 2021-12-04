@@ -40,6 +40,7 @@ class Header(Location):
         self.progname = "mt_metadata"
         self.project = None
         self.survey = None
+        self.loc = None
         self.coordinate_system = "geographic"
         self.declination = None
         self.stdvers = "SEG 1.0"
