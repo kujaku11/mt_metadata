@@ -12,9 +12,7 @@ from pathlib import Path
 import pandas as pd
 from xml.etree import cElementTree as et
 
-from mt_metadata.timeseries import (
-    Experiment, Survey, Station, Run, Electric, Magnetic
-    )
+from mt_metadata.timeseries import Experiment, Survey, Station, Run, Electric, Magnetic
 
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
@@ -345,7 +343,7 @@ class MT2StationXML(XMLInventoryMTExperiment):
                         channel.location.elevation = station.location.elevation
             station.runs.append(r)
             dp_filters.update(dp)
-            
+
         station.update_time_period()
 
         return station, dp_filters
@@ -380,7 +378,7 @@ class MT2StationXML(XMLInventoryMTExperiment):
             station, dp = self._make_station(station_dict)
             s.stations.append(station)
             dp_filters.update(dp)
-        
+
         s.update_bounding_box()
         s.update_time_period()
 

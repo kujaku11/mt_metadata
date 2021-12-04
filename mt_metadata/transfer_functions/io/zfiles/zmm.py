@@ -257,21 +257,20 @@ class ZMMHeader(object):
 
                 if channel.translated_tilt is None:
                     channel.translated_tilt = 0.0
-                    
+
                 lines += [
-                     (
-                         f"{channel.channel_number:>5d} "
-                         f"{channel.translated_azimuth:>8.2f} "
-                         f"{channel.translated_tilt:>8.2f} "
-                         f"{self.station:>3} "
-                         f"{channel.component.capitalize():>3}"
-                     )
-                 ]
-                
+                    (
+                        f"{channel.channel_number:>5d} "
+                        f"{channel.translated_azimuth:>8.2f} "
+                        f"{channel.translated_tilt:>8.2f} "
+                        f"{self.station:>3} "
+                        f"{channel.component.capitalize():>3}"
+                    )
+                ]
+
             except (AttributeError, TypeError):
                 self.logger.warning(f"Could not find {ch}")
                 continue
-           
 
         return lines
 

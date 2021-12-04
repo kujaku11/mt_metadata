@@ -27,8 +27,6 @@ class Information(object):
         self.info_dict = {}
         self.phoenix_col_width = 32
 
-
-
     def __str__(self):
         return "".join(self.write_info())
 
@@ -38,7 +36,7 @@ class Information(object):
     def get_info_list(self, edi_lines):
         """
         get a list of lines from the info section
-        
+
         :param edi_lines: DESCRIPTION
         :type edi_lines: TYPE
         :return: DESCRIPTION
@@ -46,15 +44,18 @@ class Information(object):
 
         """
 
-        self.info_list = []
+        info_list = []
         info_find = False
         phoenix_file = False
         phoenix_list_02 = []
-        
+
         for line in edi_lines:
-            if ">" in line and "info" in line.lower():
+            if ">info" in line.lower():
                 info_find = True
-            elif ">" in line:
+                if len(line.strip().split()) > 1:
+                    info_list.append(line.strip().split()[1])
+
+            elif ">" in line[0:2]:
                 # need to check for xml type formating
                 if "<" in line:
                     pass
@@ -63,6 +64,7 @@ class Information(object):
                         break
                     else:
                         pass
+
             elif info_find:
                 line = line.strip()
                 if line.lower().find("run information") >= 0:
@@ -74,9 +76,11 @@ class Information(object):
                     if len(line) > 1:
                         self.info_list.append(line)
 
-        self.info_list += phoenix_list_02
+        info_list += phoenix_list_02
         # validate the information list
-        self.info_list = self._validate_info_list(self.info_list)
+        info_list = self._validate_info_list(info_list)
+
+        return info_list
 
     def read_info(self, edi_lines):
         """
@@ -84,8 +88,9 @@ class Information(object):
         """
 
         self.info_dict = {}
+        self.info_list = self.get_info_list(edi_lines)
         # make info items attributes of Information
-        for ll in self.get_info_list(edi_lines):
+        for ll in self.info_list:
             l_list = [None, ""]
             # phoenix has lat an lon information in the notes but separated by
             # a space instead of an = or :

@@ -22,8 +22,8 @@ attr_dict = get_schema("header", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Location()._attr_dict)
 # =============================================================================
 
-class Header(Location):
 
+class Header(Location):
     def __init__(self, **kwargs):
 
         super().__init__()
@@ -47,9 +47,9 @@ class Header(Location):
         self.state = None
         self.country = None
         self.phoenix_edi = False
-        
+
         self._attr_dict.add_dict(attr_dict)
-        
+
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -74,7 +74,7 @@ class Header(Location):
     @lon.setter
     def lon(self, value):
         self.longitude = value
-        
+
     @property
     def long(self):
         return self.longitude
@@ -144,7 +144,7 @@ class Header(Location):
         """
         Get the header information from the .edi file in the form of a list,
         where each item is a line in the header section.
-        
+
         :param edi_lines: DESCRIPTION
         :type edi_lines: TYPE
         :return: DESCRIPTION
@@ -184,7 +184,7 @@ class Header(Location):
         """
         read a header information from a list of lines
         containing header information.
-        
+
         :param edi_lines: DESCRIPTION
         :type edi_lines: TYPE
         :return: DESCRIPTION
@@ -204,7 +204,10 @@ class Header(Location):
             setattr(self, key, value)
 
     def write_header(
-        self, longitude_format="LON", latlon_format="dms", required=True,
+        self,
+        longitude_format="LON",
+        latlon_format="dms",
+        required=True,
     ):
         """
         Write header information to a list of lines.
@@ -236,7 +239,7 @@ class Header(Location):
         for key, value in self.to_dict(single=True, required=required).items():
             if key in ["x", "x2", "y", "y2", "z", "z2"]:
                 continue
-            
+
             if key in ["latitude"]:
                 key = "lat"
             elif key in ["longitude"]:
@@ -246,7 +249,7 @@ class Header(Location):
             if "declination" in key:
                 if value is None:
                     continue
-            
+
             if key in ["lat", "lon", "long"] and value is not None:
                 if latlon_format.lower() == "dd":
                     value = f"{value:.6f}"

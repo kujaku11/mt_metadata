@@ -189,7 +189,7 @@ class XMLInventoryMTExperiment:
         for mt_channel in mt_run.channels:
             xml_channel = self.channel_translator.mt_to_xml(mt_channel, filters_dict)
             existing_channels = xml_station.select(channel=xml_channel.code).channels
-            
+
             if existing_channels:
                 find = False
                 start_list = [c.start_date for c in existing_channels]
@@ -208,9 +208,7 @@ class XMLInventoryMTExperiment:
                         f"Matched {xml_channel.code}={existing_channel.code}"
                     )
                     if not mt_run.id in run_list:
-                        self.logger.debug(
-                            f"adding run id {mt_run.id} to {run_list}"
-                        )
+                        self.logger.debug(f"adding run id {mt_run.id} to {run_list}")
                         existing_channel.comments.append(
                             inventory.Comment(mt_run.id, subject="mt.run.id")
                         )
@@ -286,13 +284,13 @@ class XMLInventoryMTExperiment:
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
             )
             return False
-        
+
         if round(xml_channel_01.azimuth, 2) != round(xml_channel_02.azimuth, 2):
             self.logger.debug(
                 f"{round(xml_channel_01.azimuth, 2)} != {round(xml_channel_02.azimuth, 2)}"
             )
             return False
-        
+
         if round(xml_channel_01.dip, 2) != round(xml_channel_02.dip, 2):
             self.logger.debug(
                 f"{round(xml_channel_01.dip, 2)} != {round(xml_channel_02.dip, 2)}"

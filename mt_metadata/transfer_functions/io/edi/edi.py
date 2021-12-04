@@ -16,8 +16,7 @@ import numpy as np
 from pathlib import Path
 from collections import OrderedDict
 
-from mt_metadata.transfer_functions.io.edi.metadata import (
-    Header, Information)
+from mt_metadata.transfer_functions.io.edi.metadata import Header, Information
 from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mt_logger import setup_logger
 
@@ -930,25 +929,25 @@ class EDI(object):
                 sm.id = value
 
         return sm
-    
+
     @survey_metadata.setter
     def survey_metadata(self, survey):
         """
         Update metadata from a survey metadata object
-        
+
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         if not isinstance(survey, metadata.Survey):
             raise TypeError(
                 "Input must be a mt_metadata.transfer_function.Survey object"
                 f" not {type(survey)}"
-                )
-            
+            )
+
         self.Header.survey = survey.id
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
@@ -1048,25 +1047,23 @@ class EDI(object):
                 rr.rrhy = self.rrhy_metadata
 
         return sm
-    
+
     @station_metadata.setter
     def station_metadata(self, sm):
         """
         Set metadata from station metadata object
-        
+
         :param sm: DESCRIPTION
         :type sm: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         ### fill header information from station
         self.Header.acqby = sm.acquired_by.author
         self.Header.acqdate = sm.time_period.start_date
-        self.Header.coordinate_system = (
-            sm.orientation.reference_frame
-        )
+        self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id
         self.Header.declination = sm.location.declination.value
         self.Header.elev = sm.location.elevation
@@ -1082,9 +1079,7 @@ class EDI(object):
         if isinstance(sm.comments, str):
             self.Info.info_list += sm.comments.split("\n")
         # write transfer function info first
-        for k, v in sm.transfer_function.to_dict(
-            single=True
-        ).items():
+        for k, v in sm.transfer_function.to_dict(single=True).items():
             if not v in [None]:
                 if k in ["processing_parameters"]:
                     for item in v:
@@ -1175,7 +1170,7 @@ class EDI(object):
                         self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
                 else:
                     self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
-                    
+
             ### fill measurement
             self.Measurement.refelev = sm.location.elevation
             self.Measurement.reflat = sm.location.latitude
@@ -1183,9 +1178,7 @@ class EDI(object):
             self.Measurement.maxchan = len(sm.channels_recorded)
             for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
                 try:
-                    self.Measurement.from_metadata(
-                        getattr(sm.runs[0], f"{comp}")
-                    )
+                    self.Measurement.from_metadata(getattr(sm.runs[0], f"{comp}"))
                 except AttributeError as error:
                     self.logger.info(error)
                     self.logger.debug(f"Did not find information on {comp}")
@@ -1331,12 +1324,6 @@ class index_locator(object):
             self.rhx = self.hx
         if self.rhy is None:
             self.rhy = self.hy
-
-
-
-
-
-
 
 
 # ==============================================================================
@@ -2289,13 +2276,12 @@ def write_edi(tf_object, fn=None):
     edi_obj.t = tf_object.tipper.data
     edi_obj.t_err = tf_object.tipper_error.data
     edi_obj.frequency = 1.0 / tf_object.period
-    
+
     # fill from survey metadata
     edi_obj.survey_metadata = tf_object.survey_metadata
-    
+
     # fill from station metadata
     edi_obj.station_metadata = tf_object.station_metadata
-
 
     # input data section
     edi_obj.Data.data_type = tf_object.station_metadata.data_type
