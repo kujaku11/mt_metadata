@@ -1,5 +1,5 @@
 # package file
 
-from mt_metadata.transfer_functions.io.edi.metadata.header import Header
+from .edi import EDI
 
-__all__ = ["Header"]
+__all__ = ["EDI"]

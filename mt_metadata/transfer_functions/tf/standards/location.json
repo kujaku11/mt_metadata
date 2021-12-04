@@ -36,6 +36,16 @@
         ],
         "example": "123.4"
     },
+	"datum": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Datum of the location values.  Usually a well known datum like WGS84.",
+        "options": ["WGS84", "NAD83", "other"],
+        "alias": [],
+        "example": "WGS84"
+    },
     "x": {
         "type": "float",
         "required": false,
