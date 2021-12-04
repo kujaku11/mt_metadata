@@ -1,0 +1,42 @@
+{
+    "author": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "author of the software",
+        "options": [],
+        "alias": [],
+        "example": "nerd alert"
+    },
+    "version": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "software version",
+        "options": [],
+        "alias": [],
+        "example": "12.01a"
+    },
+	"last_updated": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "Most recent date the software was updated.  Prefer to use version, but this works for non-versioned software.",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01"
+    },
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "software name",
+        "options": [],
+        "alias": [],
+        "example": "mtrules"
+    }
+}

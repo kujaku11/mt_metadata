@@ -1336,7 +1336,7 @@ class index_locator(object):
 # ==============================================================================
 #  Header object
 # ==============================================================================
-class Header(object):
+class Header(metadata.Location):
     """
     Header class contains all the information in the header section of the .edi
     file. A typical header block looks like::
@@ -1440,10 +1440,6 @@ class Header(object):
         self._acqdate = MTime()
         self._enddate = None
         self._filedate = MTime()
-        self.loc = None
-        self._lat = None
-        self._lon = None
-        self._elev = None
         self.units = "[mV/km]/[nT]"
         self.empty = 1e32
         self.progvers = "0.1.6"
@@ -1513,27 +1509,27 @@ class Header(object):
 
     @property
     def lat(self):
-        return self._lat
+        return self.latitude
 
     @lat.setter
     def lat(self, value):
-        self._lat = value
+        self.latitude = value
 
     @property
     def lon(self):
-        return self._lon
+        return self.longitude
 
     @lon.setter
     def lon(self, value):
-        self._lon = value
+        self.longitude = value
 
     @property
     def elev(self):
-        return self._elev
+        return self.elevation
 
     @elev.setter
     def elev(self, value):
-        self._elev = value
+        self.elevation = value
 
     @property
     def acqdate(self):
