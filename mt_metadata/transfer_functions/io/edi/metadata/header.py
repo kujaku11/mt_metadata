@@ -9,7 +9,7 @@ Created on Sat Dec  4 12:09:13 2021
 # Imports
 # =============================================================================
 
-from mt_metadata.base import get_schema
+from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
@@ -18,7 +18,7 @@ from mt_metadata import __version__
 
 # =============================================================================
 attr_dict = get_schema("header", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Location()._attr_dict)
+attr_dict.add_dict(Location()._attr_dict.copy())
 # =============================================================================
 
 
@@ -41,7 +41,6 @@ class Header(Location):
         self.survey = None
         self.loc = None
         self.coordinate_system = "geographic"
-        self.declination = None
         self.stdvers = "SEG 1.0"
         self.state = None
         self.country = None
@@ -51,6 +50,7 @@ class Header(Location):
 
         for k, v in kwargs.items():
             setattr(self, k, v)
+        
 
     def __str__(self):
         return "".join(self.write_header())

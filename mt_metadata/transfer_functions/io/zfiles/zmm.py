@@ -15,62 +15,15 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-from mt_metadata.transfer_functions import tf as metadata
+from mt_metadata.transfer_functions.tf import (
+    Survey, Station, Run, Electric, Magnetic
+    )
+from .metadata import Channel
 from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 class ZMMError(Exception):
-    pass
-
-
-class Channel(object):
-    """
-    class to hold channel information
-    """
-
-    def __init__(self, channel_dict=None):
-        self.number = None
-        self.azimuth = None
-        self.tilt = None
-        self.dl = None
-        self.channel = None
-
-        if channel_dict is not None:
-            self.from_dict(channel_dict)
-
-    def __str__(self):
-        lines = ["Channel Metadata:"]
-        for key in ["channel", "number", "dl", "azimuth", "tilt"]:
-            lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
-        return "\n".join(lines)
-
-    def __repr__(self):
-        return self.__str__()
-
-    @property
-    def index(self):
-        if self.number is not None:
-            return self.number - 1
-        else:
-            return None
-
-    def from_dict(self, channel_dict):
-        """
-        fill attributes from a dictionary
-        """
-
-        for key, value in channel_dict.items():
-            if key in ["azm", "azimuth"]:
-                self.azimuth = value
-            elif key in ["chn_num", "number"]:
-                self.number = value
-            elif key in ["tilt"]:
-                self.tilt = value
-            elif key in ["dl"]:
-                self.dl = value
-            elif key in ["channel"]:
-                self.channel = value
-
+    pass  
 
 class ZMMHeader(object):
     """
@@ -92,7 +45,7 @@ class ZMMHeader(object):
         self.hz = None
         self._zfn = None
         self.fn = fn
-        self.station_metadata = metadata.Station()
+        self.station_metadata = Station()
         self._channel_order = ["hx", "hy", "hz", "ex", "ey"]
         self._header_lines = [
             "TRANSFER FUNCTIONS IN MEASUREMENT COORDINATES",
@@ -177,7 +130,7 @@ class ZMMHeader(object):
         self.station_metadata.comments = ""
         self.station = header_list[3].lower().strip()
         self.station_metadata._runs = []
-        self.station_metadata.add_run(metadata.Run(id=f"{self.station}a"))
+        self.station_metadata.add_run(Run(id=f"{self.station}a"))
 
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
@@ -357,26 +310,24 @@ class ZMM(ZMMHeader):
         lines.append(f"\tLatitude:      {self.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.longitude:.3f}")
         lines.append(f"\tElevation:     {self.elevation:.3f}")
-        # if self.Z.z is not None:
-        #     lines.append("\tImpedance:     True")
-        # else:
-        #     lines.append("\tImpedance:     False")
-        # if self.Tipper.tipper is not None:
-        #     lines.append("\tTipper:        True")
-        # else:
-        #     lines.append("\tTipper:        False")
-
-        # if self.Z.z is not None:
-        #     lines.append(f"\tN Periods:     {len(self.Z.freq)}")
-
-        #     lines.append("\tPeriod Range:")
-        #     lines.append(f"\t\tMin:   {self.periods.min():.5E} s")
-        #     lines.append(f"\t\tMax:   {self.periods.max():.5E} s")
-
-        #     lines.append("\tFrequency Range:")
-        #     lines.append(f"\t\tMin:   {self.frequencies.max():.5E} Hz")
-        #     lines.append(f"\t\tMax:   {self.frequencies.min():.5E} Hz")
-
+        if "ex" in self.output_channels:
+            lines.append("\tImpedance:     True")
+        else:
+            lines.append("\tImpedance:     False")
+        
+        if "hz" in self.output_channels:
+            lines.append("\tTipper:        True")
+        else:
+            lines.append("\tTipper:        False")
+        
+        if self.periods is not None:
+            lines.append(f"\tNumber of periods: {self.periods.size}")
+            lines.append(
+                f"\t\tPeriod Range:   {self.periods.min():.5E} -- {self.periods.max():.5E} s"
+            )
+            lines.append(
+                f"\t\tFrequency Range {1./self.periods.max():.5E} -- {1./self.periods.min():.5E} s"
+            )
         return "\n".join(lines)
 
     def __repr__(self):
@@ -898,16 +849,16 @@ class ZMM(ZMMHeader):
 
     @property
     def survey_metadata(self):
-        sm = metadata.Survey()
+        sm = Survey()
 
         return sm
-
+    
     def _get_electric_metadata(self, comp):
         """
         get electric information from the various metadata
         """
         comp = comp.lower()
-        electric = metadata.Electric()
+        electric = Electric()
         electric.positive.type = "electric"
         electric.negative.type = "electric"
         if hasattr(self, comp):
@@ -941,7 +892,7 @@ class ZMM(ZMMHeader):
         """
 
         comp = comp.lower()
-        magnetic = metadata.Magnetic()
+        magnetic = Magnetic()
         if hasattr(self, comp):
             meas = getattr(self, comp)
             magnetic.measurement_azimuth = meas.azimuth
@@ -1023,6 +974,16 @@ def write_zmm(tf_object, fn=None):
     zmm_obj.dataset = tf_object.dataset
     # need to fill in z metadata when station metadata is set.
     zmm_obj.station_metadata = tf_object.station_metadata
+    number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex":4, "ey":5}
+    for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
+        if "rr" in comp:
+            continue
+        
+        ch = getattr(tf_object.station_metadata.runs[0], comp)
+        c = Channel()
+        c.from_dict(ch.to_dict(single=True))
+        c.number = number_dict[c.channel]
+        setattr(zmm_obj, c.channel, c)
     zmm_obj.survey_metadata.update(tf_object.survey_metadata)
     zmm_obj.num_freq = tf_object.period.size
 

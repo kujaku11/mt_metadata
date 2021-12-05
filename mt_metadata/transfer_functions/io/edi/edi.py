@@ -946,7 +946,7 @@ class EDI(object):
         sm.location.longitude = self.lon
         sm.location.elevation = self.elev
         sm.location.datum = self.Header.datum
-        sm.location.declination.value = self.Header.declination
+        sm.location.declination.value = self.Header.declination.value
         sm.orientation.reference_frame = self.Header.coordinate_system.split()[0]
         # provenance
         sm.acquired_by.author = self.Header.acqby

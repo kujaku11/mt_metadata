@@ -864,33 +864,6 @@ class TF:
         """
         self.station_metadata.id = station_name
 
-    # def plot_mt_response(self, **kwargs):
-    #     """
-    #     Returns a mtpy.imaging.plotresponse.PlotResponse object
-
-    #     :Plot Response: ::
-
-    #         >>> mt_obj = mt.TF(edi_file)
-    #         >>> pr = mt.plot_mt_response()
-    #         >>> # if you need more info on plot_mt_response
-    #         >>> help(pr)
-
-    #     """
-
-    #     from mtpy.imaging import plot_mt_response
-
-    #     # todo change this to the format of the new imaging API
-    #     plot_obj = plot_mt_response.PlotMTResponse(
-    #         z_object=self.Z,
-    #         t_object=self.Tipper,
-    #         pt_obj=self.pt,
-    #         station=self.station,
-    #         **kwargs,
-    #     )
-
-    # return plot_obj
-    # # raise NotImplementedError
-
     def write_tf_file(
         self,
         fn=None,
