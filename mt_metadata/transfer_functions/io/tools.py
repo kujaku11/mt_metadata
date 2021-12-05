@@ -49,3 +49,45 @@ def _validate_str_with_equals(input_string):
     ]
 
     return line_list
+
+# ==============================================================================
+# Index finder
+# ==============================================================================
+class index_locator(object):
+    def __init__(self, component_list):
+        self.ex = None
+        self.ey = None
+        self.hx = None
+        self.hy = None
+        self.hz = None
+        self.rhx = None
+        self.rhy = None
+        self.rhz = None
+        for ii, comp in enumerate(component_list):
+            setattr(self, comp, ii)
+        if self.rhx is None:
+            self.rhx = self.hx
+        if self.rhy is None:
+            self.rhy = self.hy
+            
+def _validate_edi_lines(edi_lines):
+    """
+    check for carriage returns or hard returns
+
+    :param edi_lines: list of edi lines
+    :type edi_lines: list
+
+    :returns: list of edi lines
+    :rtype: list
+    """
+
+    if len(edi_lines) == 1:
+        edi_lines = edi_lines[0].replace("\r", "\n").split("\n")
+        if len(edi_lines) > 1:
+            return edi_lines
+        else:
+            raise ValueError("*** EDI format not correct check file ***")
+    else:
+        return edi_lines
+
+

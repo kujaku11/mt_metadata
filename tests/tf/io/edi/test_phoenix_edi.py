@@ -217,6 +217,8 @@ class TestPhoenixEDI(unittest.TestCase):
             
         with self.subTest("refelev"):
             self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
+
+
 # =============================================================================
 # run
 # =============================================================================

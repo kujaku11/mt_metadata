@@ -17,10 +17,11 @@ from pathlib import Path
 from collections import OrderedDict
 
 from mt_metadata.transfer_functions.io.edi.metadata import (
-    Header, Information, DefineMeasurement)
+    Header, Information, DefineMeasurement, DataSection)
 from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
+from mt_metadata.transfer_functions.io.tools import (
+    _validate_str_with_equals, index_locator, _validate_edi_lines)
 
 import scipy.stats.distributions as ssd
 
@@ -229,7 +230,7 @@ class EDI(object):
         self.Header.read_header(self._edi_lines)
         self.Info.read_info(self._edi_lines)
         self.Measurement.read_measurement(self._edi_lines)
-        self.Data = DataSection(edi_lines=self._edi_lines)
+        self.Data.read_data(self._edi_lines)
         self.Data.match_channels(self.Measurement.channel_ids)
 
         self._read_data()
@@ -256,7 +257,7 @@ class EDI(object):
         in the data section.
         """
 
-        lines = self._edi_lines[self.Data.line_num :]
+        lines = self._edi_lines[self.Data._line_num:]
 
         if self.Data.data_type_in == "spectra":
             self.logger.debug("Converting Spectra to Impedance and Tipper")
@@ -1305,300 +1306,6 @@ class EDI(object):
     @property
     def rrhy_metadata(self):
         return self._get_magnetic_metadata("rrhy")
-
-
-# ==============================================================================
-# Index finder
-# ==============================================================================
-class index_locator(object):
-    def __init__(self, component_list):
-        self.ex = None
-        self.ey = None
-        self.hx = None
-        self.hy = None
-        self.hz = None
-        self.rhx = None
-        self.rhy = None
-        self.rhz = None
-        for ii, comp in enumerate(component_list):
-            setattr(self, comp, ii)
-        if self.rhx is None:
-            self.rhx = self.hx
-        if self.rhy is None:
-            self.rhy = self.hy
-
-
-
-# ==============================================================================
-# data section
-# ==============================================================================
-class DataSection(object):
-    """
-    DataSection contains the small metadata block that describes which channel
-    is which.  A typical block looks like::
-
-        >=MTSECT
-
-            ex=1004.001
-            ey=1005.001
-            hx=1001.001
-            hy=1002.001
-            hz=1003.001
-            nfreq=14
-            sectid=par28ew
-            nchan=None
-            maxblks=None
-
-
-    :param fn: full path to .edi file to read in.
-    :type fn: string
-
-
-    ================= ==================================== ======== ===========
-    Attributes        Description                          Default  In .edi
-    ================= ==================================== ======== ===========
-    ex                ex channel id number                 None     yes
-    ey                ey channel id number                 None     yes
-    hx                hx channel id number                 None     yes
-    hy                hy channel id number                 None     yes
-    hz                hz channel id number                 None     yes
-    nfreq             number of frequencies                None     yes
-    sectid            section id, should be the same
-                      as the station name -> Header.dataid None     yes
-    maxblks           maximum number of data blocks        None     yes
-    nchan             number of channels                   None     yes
-    _kw_list          list of key words to put in metadata [1]_     no
-    ================= ==================================== ======== ===========
-
-    .. [1] Changes these values to change what is written to edi file
-    """
-
-    def __init__(self, fn=None, edi_lines=None):
-        """
-        writing the EDI files MTSECT
-        :param fn:
-        :param edi_lines:
-        """
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
-        self.fn = fn
-        self.edi_lines = edi_lines
-
-        self.data_type_out = "z"
-        self.data_type_in = "z"
-        self.line_num = 0
-        self.data_list = None
-
-        self.nfreq = None
-        self.sectid = None
-        self.nchan = None
-        self.maxblks = 999
-        self.ex = None
-        self.ey = None
-        self.hx = None
-        self.hy = None
-        self.hz = None
-        self.rrhx = None
-        self.rrhy = None
-        self.channel_ids = []
-
-        self._kw_list = [
-            "nfreq",
-            "sectid",
-            "nchan",
-            "maxblks",
-            "ex",
-            "ey",
-            "hx",
-            "hy",
-            "hz",
-            "rrhx",
-            "rrhy",
-        ]
-
-        if self.fn is not None or self.edi_lines is not None:
-            self.read_data()
-
-    def __str__(self):
-        return "".join(self.write_data())
-
-    def __repr__(self):
-        return self.__str__()
-
-    @property
-    def fn(self):
-        return self._fn
-
-    @fn.setter
-    def fn(self, value):
-        if value is None:
-            self._fn = None
-            return
-        self._fn = Path(value)
-        if self._fn.exists():
-            self.read_data()
-
-    def get_data(self):
-        """
-        read in the data of the file, will detect if reading spectra or
-        impedance.
-        """
-
-        if self.fn is None and self.edi_lines is None:
-            raise IOError("No edi file to read. Check fn")
-
-        self.data_list = []
-        data_find = False
-
-        if self.fn is not None:
-            if not self.fn.exists:
-                raise IOError("Could not find {0}. Check path".format(self.fn))
-            with open(self.fn) as fid:
-                self.edi_lines = _validate_edi_lines(fid.readlines())
-
-        for ii, line in enumerate(self.edi_lines):
-            if ">=" in line and "sect" in line.lower():
-                data_find = True
-                self.line_num = ii
-                if "spect" in line.lower():
-                    self.data_type_in = "spectra"
-                elif "mt" in line.lower():
-                    self.data_type_in = "z"
-            elif ">" in line and data_find is True:
-                self.line_num = ii
-                break
-
-            elif data_find:
-                if len(line.strip()) > 2:
-                    self.data_list.append(line.strip())
-
-    def read_data(self, data_list=None):
-        """
-        read data section
-        """
-
-        if data_list is not None:
-            self.data_list = data_list
-
-        elif self.fn is not None or self.edi_lines is not None:
-            self.get_data()
-
-        channels = False
-        self.channel_ids = []
-        for d_line in self.data_list:
-            d_list = d_line.split("=")
-            if len(d_list) > 1:
-                key = d_list[0].lower()
-                value = d_list[1].strip().replace('"', "")
-                if key not in ["sectid"]:
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        pass
-                setattr(self, key, value)
-            else:
-                if "//" in d_line:
-                    channels = True
-                    continue
-                if channels:
-                    if len(d_line) > 10:
-                        self.channel_ids += d_line.strip().split()
-                    else:
-                        self.channel_ids.append(d_line)
-        if self.channel_ids == []:
-            for comp in self._kw_list[4:]:
-                ch_id = getattr(self, comp)
-                if ch_id is not None:
-                    self.channel_ids.append(ch_id)
-
-    def write_data(self, data_list=None, over_dict=None):
-        """
-        write a data section
-        """
-
-        # FZ: need to modify the nfreq (number of freqs),
-        # when re-writing effective EDI files)
-        if over_dict is not None:
-            for akey in list(over_dict.keys()):
-                self.__setattr__(akey, over_dict[akey])
-
-        if data_list is not None:
-            self.read_data(data_list)
-
-        self.logger.debug("Writing out data a impedances")
-
-        if self.data_type_out == "z":
-            data_lines = ["\n>=mtsect\n".upper()]
-        elif self.data_type_out == "spectra":
-            data_lines = ["\n>spectrasect\n".upper()]
-
-        for key in self._kw_list[0:4]:
-            data_lines.append(f"{' '*4}{key.upper()}={getattr(self, key)}\n")
-
-        # need to sort the list so it is descending order by channel number
-        ch_list = [
-            (key.upper(), getattr(self, key))
-            for key in self._kw_list[4:-2]
-            if getattr(self, key) is not None
-        ]
-        rr_ch_list = [
-            (key.upper(), getattr(self, key))
-            for key in self._kw_list[-2:]
-            if getattr(self, key) is not None
-        ]
-        ch_list2 = sorted(ch_list, key=lambda x: x[1]) + sorted(
-            rr_ch_list, key=lambda x: x[1]
-        )
-
-        for ch in ch_list2:
-            data_lines.append(f"{' '*4}{ch[0]}={ch[1]}\n")
-
-        data_lines.append("\n")
-
-        return data_lines
-
-    def match_channels(self, ch_ids):
-        """
-
-
-        Parameters
-        ----------
-        ch_ids : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-
-        for ch_id in self.channel_ids:
-            for key, value in ch_ids.items():
-                if ch_id == str(value):
-                    setattr(self, key.lower(), value)
-
-
-
-
-
-def _validate_edi_lines(edi_lines):
-    """
-    check for carriage returns or hard returns
-
-    :param edi_lines: list of edi lines
-    :type edi_lines: list
-
-    :returns: list of edi lines
-    :rtype: list
-    """
-
-    if len(edi_lines) == 1:
-        edi_lines = edi_lines[0].replace("\r", "\n").split("\n")
-        if len(edi_lines) > 1:
-            return edi_lines
-        else:
-            raise ValueError("*** EDI format not correct check file ***")
-    else:
-        return edi_lines
 
 
 # =============================================================================
