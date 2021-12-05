@@ -58,7 +58,11 @@ logger = setup_logger(__name__)
 # generic reader for any file type
 # =============================================================================
 plugins = {
-    "edi": {"file_types": ["edi"], "reader": read_edi, "writer": write_edi},
+    "edi": {
+        "file_types": ["edi"],
+        "reader": read_edi,
+        "writer": write_edi
+    },
     "zmm": {
         "file_types": ["zmm", "zrr", "zss"],
         "reader": read_zmm,

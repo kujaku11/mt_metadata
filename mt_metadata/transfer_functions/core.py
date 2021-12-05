@@ -938,6 +938,9 @@ class TF:
             new_fn = Path(fn)
             self.save_dir = new_fn.parent
             fn_basename = new_fn.name
+            file_type = new_fn.suffix.lower()[1:]
+            if file_type in ["xml"]:
+                file_type = "emtfxml"
 
         if save_dir is not None:
             self.save_dir = Path(save_dir)
@@ -952,6 +955,7 @@ class TF:
 
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
+
         if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr"]:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
