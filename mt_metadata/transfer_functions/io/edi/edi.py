@@ -23,6 +23,8 @@ from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.tools import (
     _validate_str_with_equals, index_locator, _validate_edi_lines)
 
+from mt_metadata import __version__
+
 import scipy.stats.distributions as ssd
 
 # ==============================================================================
@@ -687,14 +689,29 @@ class EDI(object):
                 new_edi_fn = Path().cwd().joinpath(f"{self.Header.dataid}.edi")
 
         # write lines
+        extra_info = []
+        if self.Header.progname != "mt_metadata":
+            extra_info.append(f"\toriginal_program.name={self.Header.progname}\n")
+        if self.Header.progvers != __version__:
+            extra_info.append(f"\toriginal_program.version={self.Header.progvers}\n")
+        if self.Header.progdate != "2021-12-01":
+            extra_info.append(f"\toriginal_program.date={self.Header.progdate}\n")
+            
+        print(extra_info)
+        self.Header.progvers = __version__
+        self.Header.progname = "mt_metadata"
+        self.Header.progdate = "2021-12-01"
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
         info_lines = self.Info.write_info()
+        info_lines += extra_info
+        
         define_lines = self.Measurement.write_measurement(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
-        dsect_lines = self.Data.write_data(over_dict={"nfreq": len(self.frequency)})
+        self.Data.nfreq = len(self.frequency)
+        dsect_lines = self.Data.write_data()
 
         # write out frequencies
         freq_lines = [self._data_header_str.format("frequencies".upper())]

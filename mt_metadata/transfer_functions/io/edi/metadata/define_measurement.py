@@ -300,15 +300,12 @@ class DefineMeasurement(Base):
         measurement_lines = ["\n>=DEFINEMEAS\n"]
         for key in self._define_meas_keys:
             value = getattr(self, key)
-            if key == "reflat" or key == "reflon":
-                if latlon_format.upper() == "DD":
-                    if isinstance(value, (float, int)):
+            if key in ["reflat", "reflon", "reflong"]:
+                if latlon_format.lower() == "dd":
                         value = f"{float(value):.6f}"
                 else:
-                    # value = gis_tools.convert_position_float2str(value)
-                    value = value
+                    value = self._location._convert_position_float2str(value)
             elif key == "refelev":
-                # value = "{0:.3f}".format(gis_tools.assert_elevation_value(value))
                 value = value
             if key.upper() == "REFLON":
                 if longitude_format == "LONG":
