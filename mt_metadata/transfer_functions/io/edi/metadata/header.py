@@ -78,7 +78,7 @@ class Header(Location):
     def long(self):
         return self.longitude
 
-    @lon.setter
+    @long.setter
     def long(self, value):
         self.longitude = value
 
@@ -233,7 +233,12 @@ class Header(Location):
                                 metadata.
 
         """
-
+        
+        self.filedate = get_now_utc()
+        self.progvers = __version__
+        self.progname = "mt_metadata"
+        self.progdate = "2021-12-01"
+        
         header_lines = [">HEAD\n"]
         for key, value in self.to_dict(single=True, required=required).items():
             if key in ["x", "x2", "y", "y2", "z", "z2"]:
@@ -257,8 +262,6 @@ class Header(Location):
             if key in ["elev", "declination"] and value is not None:
                 value = "{0:.3f}".format(value)
 
-            if key in ["filedate"]:
-                value = get_now_utc()
             if isinstance(value, list):
                 value = ",".join(value)
 

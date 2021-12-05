@@ -22,7 +22,7 @@ from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.tools import (
     _validate_str_with_equals, index_locator, _validate_edi_lines)
-
+from mt_metadata.utils.mttime import MTime
 from mt_metadata import __version__
 
 import scipy.stats.distributions as ssd
@@ -214,7 +214,7 @@ class EDI(object):
         """
 
         if fn is not None:
-            self.fn = fn
+            self._fn = Path(fn)
 
         if self.fn is None:
             msg = "Must input EDI file to read"
@@ -364,20 +364,9 @@ class EDI(object):
         except KeyError:
             self.rotation_angle = np.zeros_like(freq_arr)
 
-        # compute resistivity and phase
-        # self.Z.compute_resistivity_phase()
-
         # fill tipper data if there it exists
         self.t = np.zeros((freq_arr.size, 1, 2), dtype=complex)
         self.t_err = np.zeros((freq_arr.size, 1, 2), dtype=float)
-
-        # try:
-        #     self.Tipper.rotation_angle = np.array(data_dict["trot"])
-        # except KeyError:
-        #     try:
-        #         self.Tipper.rotation_angle = np.array(data_dict["zrot"])
-        #     except KeyError:
-        #         self.Tipper.rotation_angle = np.zeros_like(freq_arr)
 
         if "txr.exp" in list(data_dict.keys()):
             self.t[:, 0, 0] = (
@@ -397,11 +386,6 @@ class EDI(object):
         else:
             self.logger.debug("Could not find any Tipper data.")
 
-        # self.Tipper._freq = freq_arr
-        # self.Tipper._tipper = tipper_arr
-        # self.Tipper._tipper_err = tipper_err_arr
-        # self.Tipper.compute_amp_phase()
-        # self.Tipper.compute_mag_direction()
 
     def _read_spectra(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
@@ -638,20 +622,6 @@ class EDI(object):
         self.z_err[np.where(self.z_err == 0.0)] = 1.0
         self.t_err[np.where(self.t_err == 0.0)] = 1.0
 
-        # be sure to fill attributes
-        # self.Z.freq = freq_arr
-        # self.Z.z = self.z
-        # self.Z.z_err = self.z_err
-        # self.Z.rotation_angle = np.zeros_like(freq_arr)
-        # self.Z.compute_resistivity_phase()
-
-        # self.Tipper.tipper = self.t
-        # self.Tipper.tipper_err = self.t_err
-        # self.Tipper.freq = freq_arr
-        # self.Tipper.rotation_angle = np.zeros_like(freq_arr)
-        # self.Tipper.compute_amp_phase()
-        # self.Tipper.compute_mag_direction()
-
     def write(self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"):
         """
         Write a new edi file from either an existing .edi file or from data
@@ -689,27 +659,28 @@ class EDI(object):
                 new_edi_fn = Path().cwd().joinpath(f"{self.Header.dataid}.edi")
 
         # write lines
-        extra_info = []
+        extra_lines = []
         if self.Header.progname != "mt_metadata":
-            extra_info.append(f"\toriginal_program.name={self.Header.progname}\n")
+            extra_lines.append(f"\toriginal_program.name={self.Header.progname}\n")
         if self.Header.progvers != __version__:
-            extra_info.append(f"\toriginal_program.version={self.Header.progvers}\n")
+            extra_lines.append(f"\toriginal_program.version={self.Header.progvers}\n")
         if self.Header.progdate != "2021-12-01":
-            extra_info.append(f"\toriginal_program.date={self.Header.progdate}\n")
+            extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
+        if self.Header.fileby != "1980-01-01":
+            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
             
-        print(extra_info)
-        self.Header.progvers = __version__
-        self.Header.progname = "mt_metadata"
-        self.Header.progdate = "2021-12-01"
+        
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
+        
         info_lines = self.Info.write_info()
-        info_lines += extra_info
+        info_lines.insert(1, "".join(extra_lines))
         
         define_lines = self.Measurement.write_measurement(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
+        
         self.Data.nfreq = len(self.frequency)
         dsect_lines = self.Data.write_data()
 
@@ -871,13 +842,8 @@ class EDI(object):
     @lat.setter
     def lat(self, input_lat):
         """set latitude and make sure it is converted to a float"""
-
         self.Header.lat = input_lat
-        self.logger.debug(
-            "Converted input latitude to decimal degrees: {0: .6f}".format(
-                self.Header.lat
-            )
-        )
+
 
     # --> Longitude
     @property
@@ -889,11 +855,6 @@ class EDI(object):
     def lon(self, input_lon):
         """set latitude and make sure it is converted to a float"""
         self.Header.lon = input_lon
-        self.logger.debug(
-            "Converted input longitude to decimal degrees: {0: .6f}".format(
-                self.Header.lon
-            )
-        )
 
     # --> Elevation
     @property

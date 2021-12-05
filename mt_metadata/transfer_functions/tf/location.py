@@ -177,7 +177,7 @@ class Location(Base):
             deg += 1
             minutes = 0
 
-        position_str = "{0}:{1:02.0f}:{2:05.2f}".format(
+        position_str = "{0}:{1:02.0f}:{2:05.4f}".format(
             sign * int(deg), int(minutes), sec
         )
         self.logger.debug("Converted {0} to {1}".format(position, position_str))

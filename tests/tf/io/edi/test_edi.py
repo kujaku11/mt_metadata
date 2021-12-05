@@ -10,7 +10,9 @@ Created on Fri Dec  3 11:42:55 2021
 import unittest
 
 from collections import OrderedDict
-from mt_metadata.transfer_functions.io.edi.metadata import Header
+from mt_metadata.transfer_functions.io.edi.metadata import (
+    Header, EMeasurement, HMeasurement)
+
 
 # =============================================================================
 
@@ -39,6 +41,31 @@ class TestHeader(unittest.TestCase):
             self.assertEqual(10.9, self.header.elev)
         with self.subTest("elevation"):
             self.assertEqual(10.9, self.header.elevation)
+            
+class TestEMeasurement(unittest.TestCase):
+    def setUp(self):
+        self.e_dict = {'id': '14.001', 'chtype': 'EX', 'x': -50., 
+                       'y': 0., 'x2': 50., 'y2': 0.}
+        
+        self.ex = EMeasurement(**self.e_dict)
+        
+    def test_attr(self):
+        for k, v in self.e_dict.items():
+            self.assertEqual(v, getattr(self.ex, k))
+            
+class TestHMeasurement(unittest.TestCase):
+    def setUp(self):
+        self.h_dict = {'id': '12.001', 'chtype': 'HY', 'x': 0., 
+                       'y': 0., 'azm': 90}
+        
+        self.hy = HMeasurement(**self.h_dict)
+        
+    def test_attr(self):
+        for k, v in self.h_dict.items():
+            self.assertEqual(v, getattr(self.hy, k))
+            
+        
+    
 
 # =============================================================================
 # run

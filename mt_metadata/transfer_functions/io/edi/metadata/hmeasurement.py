@@ -24,14 +24,14 @@ class HMeasurement(Base):
     def __init__(self, **kwargs):
 
         self._fmt_dict = {
-            'id': '<.10g',
-            'chtype': '<3',
-            'x': '<4.1f',
-            'y': '<4.1f',
-            'z': '<4.1f',
-            'azm': '<4.1f',
-            'dip': '<4.1f',
-            'acqchan': '<4.0f',
+            'id': '<',
+            'chtype': '<',
+            'x': '<.2f',
+            'y': '<.2f',
+            'z': '<.2f',
+            'azm': '<.2f',
+            'dip': '<.2f',
+            'acqchan': '<',
             }
         
         self.id = None
@@ -41,7 +41,7 @@ class HMeasurement(Base):
         self.z = 0.
         self.azm = 0.0
         self.dip = 0.0
-        self.acqchan = 0
+        self.acqchan = '0'
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         

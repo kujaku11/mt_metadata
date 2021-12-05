@@ -177,6 +177,8 @@ class TestQuantecEDI(unittest.TestCase):
            with self.subTest(ch):
                self.assertEqual(d_list[ii], 
                                 getattr(self.edi_obj.Data, ch))
+               
+    
 
 
         

@@ -26,15 +26,15 @@ class EMeasurement(Base):
     def __init__(self, **kwargs):
 
         self._fmt_dict = {
-            'id': '<.10g',
-            'chtype': '<3',
-            'x': '<4.1f',
-            'y': '<4.1f',
-            'z': '<4.1f',
-            'x2': '<4.1f',
-            'y2': '<4.1f',
-            'z2': '<4.1f',
-            'acqchan': '<4.0f',
+            'id': '<',
+            'chtype': '<',
+            'x': '<.2f',
+            'y': '<.2f',
+            'z': '<.2f',
+            'x2': '<.2f',
+            'y2': '<.2f',
+            'z2': '<.2f',
+            'acqchan': '<',
             }
         
         self.id = None
@@ -45,7 +45,7 @@ class EMeasurement(Base):
         self.x2 = 0.
         self.y2 = 0.
         self.z2 = 0.
-        self.acqchan = 0
+        self.acqchan = '0'
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         

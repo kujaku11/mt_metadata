@@ -274,10 +274,11 @@ class DefineMeasurement(Base):
                 setattr(self, key, value)
 
             elif isinstance(line, dict):
+                #print(line)
                 key = "meas_{0}".format(line["chtype"].lower())
-                if key[4:].find("h") >= 0:
+                if line["chtype"].lower().find("h") >= 0:
                     value = HMeasurement(**line)
-                elif key[4:].find("e") >= 0:
+                elif line["chtype"].lower().find("e") >= 0:
                     value = EMeasurement(**line)
                 if hasattr(self, key):
                     key = key.replace("_", "_rr")
@@ -293,9 +294,6 @@ class DefineMeasurement(Base):
         """
         write the define measurement block as a list of strings
         """
-
-        if measurement_list is not None:
-            self.read_measurement(measurement_list=measurement_list)
 
         measurement_lines = ["\n>=DEFINEMEAS\n"]
         for key in self._define_meas_keys:
@@ -342,18 +340,13 @@ class DefineMeasurement(Base):
 
                 for mkey, mfmt in m_obj._fmt_dict.items():
                     if mkey == "acqchan":
-                        if (
-                            getattr(m_obj, mkey) is None
-                            or getattr(m_obj, mkey) == "None"
-                        ):
+                        if getattr(m_obj, mkey) == '0':
                             setattr(m_obj, mkey, chn_count)
                             chn_count += 1
 
                     try:
                         m_list.append(
-                            " {0}={1:{2}}".format(
-                                mkey.upper(), getattr(m_obj, mkey), mfmt
-                            )
+                            f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
                         )
                     except ValueError:
                         m_list.append(" {0}={1:{2}}".format(mkey.upper(), 0.0, mfmt))
