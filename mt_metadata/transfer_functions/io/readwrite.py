@@ -49,28 +49,30 @@ Created on Wed Aug 26 10:32:45 2020
 from pathlib import Path
 
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.transfer_functions.io import edi, zmm, jfile, emtfxml
+from mt_metadata.transfer_functions.io import (
+    read_edi, write_edi, read_zmm, write_zmm, read_jfile, write_jfile, 
+    read_emtfxml, write_emtfxml)
 
 logger = setup_logger(__name__)
 # =============================================================================
 # generic reader for any file type
 # =============================================================================
 plugins = {
-    "edi": {"file_types": ["edi"], "reader": edi.read_edi, "writer": edi.write_edi},
+    "edi": {"file_types": ["edi"], "reader": read_edi, "writer": write_edi},
     "zmm": {
         "file_types": ["zmm", "zrr", "zss"],
-        "reader": zmm.read_zmm,
-        "writer": zmm.write_zmm,
+        "reader": read_zmm,
+        "writer": write_zmm,
     },
     "j": {
         "file_types": ["j"],
-        "reader": jfile.read_jfile,
-        "writer": jfile.write_jfile,
+        "reader": read_jfile,
+        "writer": write_jfile,
     },
     "emtfxml": {
         "file_types": ["xml"],
-        "reader": emtfxml.read_emtfxml,
-        "writer": emtfxml.write_emtfxml,
+        "reader": read_emtfxml,
+        "writer": write_emtfxml,
     },
 }
 

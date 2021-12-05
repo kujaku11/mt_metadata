@@ -277,7 +277,7 @@ class ZongeMTAvg:
         self._fill_z()
         self._fill_t()
 
-        print("Read file {0}".format(avg_fn))
+        print("Read file {0}".format(self.fn))
 
     def convert2complex(self, zmag, zphase):
         """

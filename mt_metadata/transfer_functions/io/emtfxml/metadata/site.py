@@ -15,7 +15,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location, Orientation
-from mt_metadata.transfer_functions.emtf_xml import (
+from . import (
     DataQualityNotes,
     DataQualityWarnings,
 )

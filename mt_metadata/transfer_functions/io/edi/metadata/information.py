@@ -66,7 +66,8 @@ class Information(object):
                         pass
 
             elif info_find:
-                
+                if "maxinfo" in line.lower():
+                    continue
                 if line.lower().find("run information") >= 0:
                     phoenix_file = True
                 if phoenix_file and len(line) > self.phoenix_col_width:

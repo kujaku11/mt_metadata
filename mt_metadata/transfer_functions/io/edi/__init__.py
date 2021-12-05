@@ -1,5 +1,5 @@
 # package file
 
-from .edi import EDI
+from .edi import read_edi, write_edi
 
-__all__ = ["EDI"]
+__all__ = ["read_edi", "write_edi"]

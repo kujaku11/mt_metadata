@@ -18,7 +18,7 @@ from collections import OrderedDict
 from xml.etree import cElementTree as et
 import numpy as np
 
-from mt_metadata.transfer_functions import emtf_xml
+import mt_metadata.transfer_functions.io.emtfxml.metadata as emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
