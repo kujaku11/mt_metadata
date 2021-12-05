@@ -8,14 +8,13 @@ Created on Sat Dec  4 12:09:13 2021
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
+
+from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
 from mt_metadata.utils.exceptions import MTTimeError
 from mt_metadata import __version__
-
 
 # =============================================================================
 attr_dict = get_schema("header", SCHEMA_FN_PATHS)

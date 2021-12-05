@@ -40,15 +40,6 @@ class TestHeader(unittest.TestCase):
         with self.subTest("elevation"):
             self.assertEqual(10.9, self.header.elevation)
 
-
-
-
-
-
-
-        
-
-
 # =============================================================================
 # run
 # =============================================================================

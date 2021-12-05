@@ -190,6 +190,8 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('z', 0.0)])
         
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_rrhy.to_dict(single=True))
+        
+        
 # =============================================================================
 # run
 # =============================================================================

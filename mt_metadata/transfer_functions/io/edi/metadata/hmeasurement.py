@@ -41,7 +41,7 @@ class HMeasurement(Base):
         self.z = 0.
         self.azm = 0.0
         self.dip = 0.0
-        self.acqchan = None
+        self.acqchan = 0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         

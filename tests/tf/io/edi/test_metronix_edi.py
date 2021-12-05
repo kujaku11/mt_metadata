@@ -58,7 +58,7 @@ class TestMetronixEDI(unittest.TestCase):
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
         
     def test_measurement_ex(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('chtype', 'EX'),
                      ('id', '1000.0001'),
                      ('x', -50.0),
@@ -72,7 +72,7 @@ class TestMetronixEDI(unittest.TestCase):
                              self.edi_obj.Measurement.meas_ex.to_dict(single=True))
         
     def test_measurement_ey(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('chtype', 'EY'),
                      ('id', '1001.0001'),
                      ('x', 0.0),
@@ -85,7 +85,7 @@ class TestMetronixEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
         
     def test_measurement_hx(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
@@ -97,7 +97,7 @@ class TestMetronixEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
         
     def test_measurement_hy(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
@@ -109,7 +109,7 @@ class TestMetronixEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
         
     def test_measurement_hz(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
@@ -120,6 +120,31 @@ class TestMetronixEDI(unittest.TestCase):
         
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
         
+    def test_measurement(self):
+        m_list = ['MAXCHAN=9',
+         'MAXRUN=999',
+         'MAXMEAS=1000',
+         'REFTYPE=CART',
+         'REFLOC=Braunschweig',
+         'REFLAT=22:41:28.962',
+         'REFLONG=139:42:18.144',
+         'REFELEV=181',]
+        
+        self.assertListEqual(
+            m_list, 
+            self.edi_obj.Measurement.measurement_list[0:len(m_list)])
+        
+        with self.subTest("reflat"):
+            self.assertAlmostEqual(22.6913783, self.edi_obj.Measurement.reflat, 5)
+            
+        with self.subTest("reflon"):
+            self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflon, 5)
+            
+        with self.subTest("reflong"):
+            self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflong, 5)
+            
+        with self.subTest("refelev"):
+            self.assertAlmostEqual(181.0, self.edi_obj.Measurement.refelev, 2)
 
 # =============================================================================
 # run

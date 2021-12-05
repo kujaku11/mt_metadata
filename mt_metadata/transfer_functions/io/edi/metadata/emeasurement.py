@@ -8,6 +8,8 @@ Created on Sat Dec  4 16:21:06 2021
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -43,7 +45,7 @@ class EMeasurement(Base):
         self.x2 = 0.
         self.y2 = 0.
         self.z2 = 0.
-        self.acqchan = None
+        self.acqchan = 0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
