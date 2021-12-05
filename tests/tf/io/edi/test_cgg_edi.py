@@ -51,7 +51,7 @@ class TestCGGEDI(unittest.TestCase):
             )
 
     def test_info(self):
-        info_list = ['MAXINFO=31',
+        info_list = [
          '/*',
          'SITE INFO:',
          'OPERATOR=MOOMBARRIGA',

@@ -53,7 +53,7 @@ class TestMetronixEDI(unittest.TestCase):
             self.assertEqual(self.edi_obj.Header._enddate, MTime("08/17/14 20:03"))
 
     def test_info(self):
-        info_list = ["MAXINFO=1000"] 
+        info_list = [] 
         
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
         

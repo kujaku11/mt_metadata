@@ -6,11 +6,10 @@ Created on Mon Sep 27 16:28:09 2021
 """
 
 import unittest
-import xarray as xr
 import numpy as np
 
-from mt_metadata.transfer_functions.core import TF, TFError
-from mt_metadata.transfer_functions.io import zmm
+from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions.io.zfiles import zmm
 from mt_metadata import TF_ZMM
 
 
