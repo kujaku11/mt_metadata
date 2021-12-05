@@ -192,6 +192,31 @@ class TestPhoenixEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_rrhy.to_dict(single=True))
         
         
+    def test_measurement(self):
+        m_list = ['MAXCHAN=7',
+         'MAXRUN=999',
+         'MAXMEAS=7',
+         'UNITS=M',
+         'REFTYPE=CART',
+         'REFLAT=-22:49:25.4',
+         'REFLONG=139:17:40.9',
+         'REFELEV=158',]
+        
+        self.assertListEqual(
+            m_list, 
+            self.edi_obj.Measurement.measurement_list[0:len(m_list)])
+        
+        with self.subTest("reflat"):
+            self.assertAlmostEqual(-22.82372, self.edi_obj.Measurement.reflat, 5)
+            
+        with self.subTest("reflon"):
+            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflon, 5)
+            
+        with self.subTest("reflong"):
+            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflong, 5)
+            
+        with self.subTest("refelev"):
+            self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
 # =============================================================================
 # run
 # =============================================================================

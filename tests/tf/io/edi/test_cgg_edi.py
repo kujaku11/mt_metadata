@@ -82,7 +82,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
         
     def test_measurement_ex(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('chtype', 'EX'),
                      ('id', '1004.001'),
                      ('x', 0.0),
@@ -96,7 +96,7 @@ class TestCGGEDI(unittest.TestCase):
                              self.edi_obj.Measurement.meas_ex.to_dict(single=True))
         
     def test_measurement_ey(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('chtype', 'EY'),
                      ('id', '1005.001'),
                      ('x', 0.0),
@@ -109,7 +109,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
         
     def test_measurement_hx(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
@@ -121,7 +121,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
         
     def test_measurement_hy(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 90.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
@@ -133,7 +133,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
         
     def test_measurement_hz(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
@@ -145,7 +145,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
         
     def test_measurement_rrhx(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 0.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
@@ -157,7 +157,7 @@ class TestCGGEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_rrhx.to_dict(single=True))
         
     def test_measurement_rrhy(self):
-        ch = OrderedDict([('acqchan', None),
+        ch = OrderedDict([('acqchan', '0'),
                      ('azm', 90.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),
@@ -167,6 +167,31 @@ class TestCGGEDI(unittest.TestCase):
                      ('z', 0.0)])
         
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_rrhy.to_dict(single=True))
+
+    def test_measurement(self):
+        m_list = ['REFLOC="EGC022"',
+         'REFLAT=-30:55:49.026',
+         'REFLONG=+127:13:45.228',
+         'REFELEV=175.27',
+         'UNITS=M',]
+        
+        self.assertListEqual(
+            m_list, 
+            self.edi_obj.Measurement.measurement_list[0:len(m_list)])
+        
+        with self.subTest("reflat"):
+            self.assertAlmostEqual(-30.930285, self.edi_obj.Measurement.reflat, 5)
+            
+        with self.subTest("reflon"):
+            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflon, 5)
+            
+        with self.subTest("reflong"):
+            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflong, 5)
+            
+        with self.subTest("refelev"):
+            self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)
+
+        
 
 # =============================================================================
 # run
