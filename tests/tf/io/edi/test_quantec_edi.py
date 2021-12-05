@@ -162,7 +162,21 @@ class TestQuantecEDI(unittest.TestCase):
         with self.subTest("refelev"):
             self.assertAlmostEqual(122.0, self.edi_obj.Measurement.refelev, 2)
             
-                             
+    def test_data_section(self):
+        d_list = ['SECTID="IEA00184"',
+         'NCHAN=7',
+         'NFREQ=41',
+         'MAXBLKS=100',
+         '//7',
+         '11.001    12.001    13.001    14.001    15.001    11.001    12.001']
+        
+        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        
+        d_list = d_list[-1].split()
+        for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]):
+           with self.subTest(ch):
+               self.assertEqual(d_list[ii], 
+                                getattr(self.edi_obj.Data, ch))
 
 
         

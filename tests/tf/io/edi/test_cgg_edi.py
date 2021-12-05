@@ -191,6 +191,11 @@ class TestCGGEDI(unittest.TestCase):
         with self.subTest("refelev"):
             self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)
 
+    def test_data_section(self):
+        d_list = ['NFREQ=73']
+        
+        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        
         
 
 # =============================================================================

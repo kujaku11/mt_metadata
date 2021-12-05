@@ -145,6 +145,24 @@ class TestMetronixEDI(unittest.TestCase):
             
         with self.subTest("refelev"):
             self.assertAlmostEqual(181.0, self.edi_obj.Measurement.refelev, 2)
+            
+    def test_data_section(self):
+        d_list = ['SECTID=GEO858',
+         'NFREQ=73',
+         'EX=1000.0001',
+         'EY=1001.0001',
+         'HX=1002.0001',
+         'HY=1003.0001',
+         'HZ=1004.0001']
+        
+        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        
+        for ii, ch in enumerate([ "ex", "ey", "hx", "hy", "hz"], 2):
+           with self.subTest(ch):
+               self.assertEqual(d_list[ii].split("=")[1], 
+                                getattr(self.edi_obj.Data, ch))
+               
+               
 
 # =============================================================================
 # run

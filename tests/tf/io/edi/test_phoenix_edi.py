@@ -218,6 +218,28 @@ class TestPhoenixEDI(unittest.TestCase):
         with self.subTest("refelev"):
             self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
 
+    def test_data_section(self):
+        d_list = ['SECTID="14-IEB0537A"',
+         'NCHAN=7',
+         'NFREQ=80',
+         'MAXBLKS=80',
+         '// 7',
+         '05371.0537',
+         '05372.0537',
+         '05373.0537',
+         '05374.0537',
+         '05375.0537',
+         '05376.0537',
+         '05377.0537']
+        
+        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        
+        for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5):
+           with self.subTest(ch):
+               self.assertEqual(d_list[ii], getattr(self.edi_obj.Data, ch))
+               
+           
+            
 
 # =============================================================================
 # run
