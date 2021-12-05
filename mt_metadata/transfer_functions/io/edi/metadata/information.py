@@ -25,7 +25,7 @@ class Information(object):
 
         self.info_list = []
         self.info_dict = {}
-        self.phoenix_col_width = 32
+        self.phoenix_col_width = 38
 
     def __str__(self):
         return "".join(self.write_info())
@@ -66,15 +66,16 @@ class Information(object):
                         pass
 
             elif info_find:
-                line = line.strip()
+                
                 if line.lower().find("run information") >= 0:
                     phoenix_file = True
                 if phoenix_file and len(line) > self.phoenix_col_width:
-                    self.info_list.append(line[0 : self.phoenix_col_width].strip())
+                    info_list.append(line[0 : self.phoenix_col_width].strip())
                     phoenix_list_02.append(line[self.phoenix_col_width :].strip())
                 else:
+                    line = line.strip()
                     if len(line) > 1:
-                        self.info_list.append(line)
+                        info_list.append(line)
 
         info_list += phoenix_list_02
         # validate the information list
