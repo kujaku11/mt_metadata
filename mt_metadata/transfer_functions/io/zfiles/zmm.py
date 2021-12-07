@@ -918,7 +918,13 @@ class ZMM(ZMMHeader):
 
 def read_zmm(zmm_fn):
     """
-    read zmm file
+    Write a Z file 
+    
+    :param zmm_fn: full path to file to be read in 
+    :type zmm_fn: str :class:`pathlib.Path`
+    :return: Returns a TF object
+    :rtype: :class:`mt_metadata.transfer_functions.tf.core.TF`
+
     """
 
     # need to add this here instead of the top is because of recursive
@@ -957,12 +963,12 @@ def write_zmm(tf_object, fn=None):
     """
     write a zmm file
 
-    :param tf_object: DESCRIPTION
-    :type tf_object: TYPE
-    :param fn: DESCRIPTION, defaults to None
-    :type fn: TYPE, optional
-    :return: DESCRIPTION
-    :rtype: TYPE
+    :param tf_object: TF object
+    :type tf_object: :class:`mt_metadata.transfer_functions.core.TF`
+    :param fn: full path to new file, defaults to None
+    :type fn: str or :class:`pathlib.Path`, optional
+    :return: ZMM object
+    :rtype: `mt_metadata.transfer_functions.io.ZMM`
 
     """
     from mt_metadata.transfer_functions.core import TF
@@ -972,9 +978,23 @@ def write_zmm(tf_object, fn=None):
 
     zmm_obj = ZMM()
     zmm_obj.dataset = tf_object.dataset
-    # need to fill in z metadata when station metadata is set.
     zmm_obj.station_metadata = tf_object.station_metadata
-    number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex":4, "ey":5}
+    
+    
+    # need to set the channel numbers according to the z-file format
+    # with input channels (h's) and output channels (hz, e's).
+    if tf_object.has_tipper():
+        if tf_object.has_impedance():
+            zmm_obj.num_channels = 5
+            number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex":4, "ey":5}
+        else:
+            zmm_obj.num_channels = 3
+            number_dict = {"hx": 1, "hy": 2, "hz": 3}
+    else:
+        if tf_object.has_impedance():
+            zmm_obj.num_channels = 4
+            number_dict = {"hx": 1, "hy": 2, "ex":4, "ey":5}
+
     for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
         if "rr" in comp:
             continue
@@ -987,14 +1007,7 @@ def write_zmm(tf_object, fn=None):
     zmm_obj.survey_metadata.update(tf_object.survey_metadata)
     zmm_obj.num_freq = tf_object.period.size
 
-    if tf_object.has_tipper():
-        if tf_object.has_impedance():
-            zmm_obj.num_channels = 5
-        else:
-            zmm_obj.num_channels = 3
-    else:
-        if tf_object.has_impedance():
-            zmm_obj.num_channels = 4
+
 
     zmm_obj.write(fn)
 

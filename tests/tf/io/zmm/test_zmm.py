@@ -17,6 +17,7 @@ class TestTranslateZmm(unittest.TestCase):
     def setUp(self):
         self.tf_obj = TF(TF_ZMM)
         self.zmm_obj = zmm.ZMM(TF_ZMM)
+        self.maxDiff = None
 
     def test_latitude(self):
         self.assertEqual(self.tf_obj.latitude, self.zmm_obj.latitude)
@@ -110,6 +111,21 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("testing dtype", i=2):
             self.assertEqual(self.zmm_obj.sigma_e.dtype.type, np.complex64)
 
+    def test_has_impedance(self):
+        self.assertTrue(self.tf_obj.has_impedance())
+        
+    def test_has_tipper(self):
+        self.assertTrue(self.tf_obj.has_tipper())
+        
+    def test_station_metadata(self):
+        self.assertTrue(self.tf_obj.station_metadata, 
+                        self.zmm_obj.station_metadata)
+        
+    def test_survey_metadata(self):
+        self.assertTrue(self.tf_obj.survey_metadata, 
+                        self.zmm_obj.survey_metadata)
+        
+    
 
 # =============================================================================
 # run

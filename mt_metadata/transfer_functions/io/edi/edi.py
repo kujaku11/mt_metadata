@@ -1032,12 +1032,10 @@ class EDI(object):
     @station_metadata.setter
     def station_metadata(self, sm):
         """
-        Set metadata from station metadata object
+        Set EDI metadata from station metadata object
 
-        :param sm: DESCRIPTION
-        :type sm: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param sm: Station object to pull metadata from
+        :type sm: :class:`mt_metadata.transfer_functions.tf.Station`
 
         """
 
