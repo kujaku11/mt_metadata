@@ -44,6 +44,7 @@ class Channel(Base):
         self.sensor = Instrument()
         self.fdsn = Fdsn()
         self._ch_pattern = r"\w+"
+        self._component = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

@@ -96,7 +96,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
             {
                 "magnetic": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: []"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
@@ -136,7 +136,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
             {
                 "electric": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: []"),
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
@@ -213,7 +213,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
             {
                 "magnetic": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hx"),
                         ("data_quality.rating.value", 0),
@@ -254,7 +254,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
             {
                 "magnetic": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
@@ -295,7 +295,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
             {
                 "magnetic": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hz"),
                         ("data_quality.rating.value", 0),
@@ -335,7 +335,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
             {
                 "electric": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
                         ("component", "ex"),
                         ("data_quality.rating.value", 0),
@@ -385,7 +385,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
             {
                 "electric": OrderedDict(
                     [
-                        ("channel_number", None),
+                        ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
