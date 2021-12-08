@@ -45,7 +45,7 @@
 
     "symmetry": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "controlled vocabulary",
         "units": null,
         "description": "Symmetry of FIR coefficients",
