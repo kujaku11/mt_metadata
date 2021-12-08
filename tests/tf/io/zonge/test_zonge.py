@@ -13,8 +13,12 @@ Created on Wed Dec  8 11:29:57 2021
 # =============================================================================
 import unittest
 
+import numpy as np
+
 from mt_metadata import TF_AVG
 from mt_metadata.transfer_functions.io.zonge.metadata import Header
+from mt_metadata.transfer_functions.io.zonge import ZongeMTAvg
+# =============================================================================
 
 class TestAVGHeader(unittest.TestCase):
     
@@ -80,6 +84,39 @@ class TestAVGHeader(unittest.TestCase):
             self.assertAlmostEqual(self.header.longitude, -107.08305667, 5)
             
       
+class TestAVG(unittest.TestCase):
+    def setUp(self):
+        
+        self.avg = ZongeMTAvg(fn=TF_AVG)
+        
+    def test_z(self):
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.avg.z.shape, (28, 2, 2))
+            
+        with self.subTest("type"):
+            self.assertEqual(self.avg.z.dtype.type, np.complex128)
+        
+        with self.subTest("non zero"):
+            self.assertTrue(self.avg.z.all() != 0)
+            
+    def test_z_err(self):
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.avg.z_err.shape, (28, 2, 2))
+            
+        with self.subTest("type"):
+            self.assertEqual(self.avg.z_err.dtype.type, np.float64)
+        
+        with self.subTest("non zero"):
+            self.assertTrue(self.avg.z_err.all() != 0)
+            
+    def test_frequency(self):
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.avg.frequency.shape, (28,))
+            
+    def test_tipper(self):
+        with self.subTest("non existant"):
+            self.assertTrue(self.avg.t == None)
+            
         
             
         

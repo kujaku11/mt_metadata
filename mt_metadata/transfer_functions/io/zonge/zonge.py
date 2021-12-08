@@ -84,9 +84,10 @@ class ZongeMTAvg():
                                   copy_path=r"/home/mt/edi_files")
     """
 
-    def __init__(self):
+    def __init__(self, fn=None):
 
         self.header = Header()
+        
 
         self.info_keys = [
             "Skp",
@@ -103,18 +104,18 @@ class ZongeMTAvg():
             "FC.NTry",
         ]
         self.info_type = [
-            np.int,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.float,
-            np.int,
-            np.int,
+            int,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            int,
+            int,
         ]
         self.info_dtype = np.dtype(
             [(kk.lower(), tt) for kk, tt in zip(self.info_keys, self.info_type)]
@@ -151,6 +152,8 @@ class ZongeMTAvg():
         self.freq_dict_y = None
         self.avg_dict = {"ex": "4", "ey": "5"}
         self.z_coordinate = "down"
+        
+        self.fn = fn
 
     @property
     def fn(self):
@@ -306,7 +309,7 @@ class ZongeMTAvg():
             self.freq_dict = new_freq_dict
             # fill z according to index values
             self.frequency = sorted(new_freq_dict.keys())
-            self.z = np.zeros((new_nz, 2, 2), dtype="complex")
+            self.z = np.zeros((new_nz, 2, 2), dtype=complex)
             self.z_err = np.ones((new_nz, 2, 2))
             nzx, nzy, nzz = self.z.shape
 
@@ -403,7 +406,7 @@ class ZongeMTAvg():
 
             new_nz = len(list(new_freq_dict.keys()))
             # fill z according to index values
-            self.tipper = np.zeros((new_nz, 1, 2), dtype="complex")
+            self.tipper = np.zeros((new_nz, 1, 2), dtype=complex)
             self.tipper_err = np.ones((new_nz, 1, 2))
 
             self.freq_dict = new_freq_dict
