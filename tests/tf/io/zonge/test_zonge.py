@@ -63,6 +63,9 @@ class TestAVGHeader(unittest.TestCase):
         with self.subTest("length"):
             self.assertEqual(self.header.rx.length, 100.)
             
+        with self.subTest("station"):
+            self.assertEqual(self.header.station, "24")
+            
     def test_gps(self):
         with self.subTest("lat"):
             self.assertAlmostEqual(self.header.g_p_s.lat, 32.83331167, 5)
@@ -70,7 +73,14 @@ class TestAVGHeader(unittest.TestCase):
         with self.subTest("lon"):
             self.assertAlmostEqual(self.header.g_p_s.lon, -107.08305667, 5)
             
+        with self.subTest("latitude"):
+            self.assertAlmostEqual(self.header.latitude, 32.83331167, 5)
             
+        with self.subTest("longitude"):
+            self.assertAlmostEqual(self.header.longitude, -107.08305667, 5)
+            
+      
+        
             
         
             

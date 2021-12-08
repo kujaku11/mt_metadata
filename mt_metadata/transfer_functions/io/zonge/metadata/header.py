@@ -74,5 +74,31 @@ class Header(Base):
             
         return lines [ii:]
     
+    @property
+    def latitude(self):
+        return self.g_p_s.lat
+    
+    @latitude.setter
+    def latitude(self, value):
+        self.g_p_s.lat = value
+        
+    @property
+    def longitude(self):
+        return self.g_p_s.lon
+    
+    @longitude.setter
+    def longitude(self, value):
+        self.g_p_s.lon = value
+        
+    @property
+    def station(self):
+        return self.rx.gdp_stn
+    
+    @station.setter
+    def station(self, value):
+        self.rx.gdp_stn = value
+        
+        
+    
     
 
