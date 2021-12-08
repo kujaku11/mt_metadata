@@ -121,3 +121,4 @@ TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi
 TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")
+TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
