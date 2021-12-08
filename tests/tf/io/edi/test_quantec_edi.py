@@ -54,7 +54,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
         
     def test_measurement_ex(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EX'),
                      ('id', '14.001'),
                      ('x', -50.0),
@@ -68,7 +68,7 @@ class TestQuantecEDI(unittest.TestCase):
                              self.edi_obj.Measurement.meas_ex.to_dict(single=True))
         
     def test_measurement_ey(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EY'),
                      ('id', '15.001'),
                      ('x', 0.0),
@@ -81,7 +81,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
         
     def test_measurement_hx(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
@@ -93,7 +93,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
         
     def test_measurement_hy(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('azm', 90.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
@@ -105,7 +105,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
         
     def test_measurement_hz(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
@@ -117,7 +117,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
         
     def test_measurement_rrhx(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('azm', 0.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
@@ -129,7 +129,7 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_rrhx.to_dict(single=True))
         
     def test_measurement_rrhy(self):
-        ch = OrderedDict([('acqchan', '0'),
+        ch = OrderedDict([('acqchan', None),
                      ('azm', 90.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),

@@ -9,7 +9,7 @@ Created on Sat Dec  4 12:09:13 2021
 # Imports
 # =============================================================================
 
-from mt_metadata.base import get_schema, Base
+from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
@@ -24,32 +24,25 @@ attr_dict.add_dict(Location()._attr_dict.copy())
 
 class Header(Location):
     def __init__(self, **kwargs):
+        
 
-        super().__init__()
-        self.dataid = None
-        self.acqby = None
-        self.fileby = "mt_metadata"
         self._acqdate = MTime()
         self._enddate = MTime()
         self._filedate = MTime()
+        self._progdate = MTime("2020-11-10")
+
+        self.phoenix_edi = False
+
+        super(Location, self).__init__(attr_dict=attr_dict)
+        
         self.units = "millivolts_per_kilometer_per_nanotesla"
         self.empty = 1e32
         self.progvers = __version__
-        self._progdate = MTime("2020-11-10")
         self.progname = "mt_metadata"
-        self.project = None
-        self.survey = None
-        self.loc = None
-        self.coordinate_system = "geographic"
-        self.stdvers = "SEG 1.0"
-        self.state = None
-        self.country = None
-        self.phoenix_edi = False
-
-        self._attr_dict.add_dict(attr_dict)
+        self.datum = "WGS84"
 
         for k, v in kwargs.items():
-            setattr(self, k, v)
+            self.set_attr_from_name(k, v)
         
 
     def __str__(self):

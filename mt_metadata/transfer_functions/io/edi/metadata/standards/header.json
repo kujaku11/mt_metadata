@@ -172,10 +172,10 @@
 	"stdvers": {
         "type": "string",
         "required": true,
-        "style": "date",
+        "style": "controlled vocabulary",
         "units": null,
         "description": "EDI standards version SEG 1.0",
-        "options": ["SEG 1.0", "other"],
+        "options": ["SEG 1.0", "1.0"],
         "alias": [],
         "example": "SEG 1.0"
     },
