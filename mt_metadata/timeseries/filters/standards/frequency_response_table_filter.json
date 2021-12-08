@@ -1,6 +1,6 @@
 {
     "frequencies": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": null,
@@ -12,7 +12,7 @@
 
 
     "amplitudes": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": null,
@@ -23,7 +23,7 @@
     },
 
     "phases": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": "degrees",
@@ -35,11 +35,11 @@
 
 	"instrument_type": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "controlled vocabulary",
         "units": null,
         "description": "The type of instrument the FAP table is associated with. ",
-        "options": [],
+        "options": ["other"],
         "alias": [],
         "example": "fluxgate magnetometer"
     }

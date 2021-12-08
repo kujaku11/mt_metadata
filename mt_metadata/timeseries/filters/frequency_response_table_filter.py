@@ -39,15 +39,13 @@ obspy_mapping["phases"] = "_empirical_phases"
 class FrequencyResponseTableFilter(FilterBase):
     def __init__(self, **kwargs):
         super().__init__()
-        self.type = "frequency response table"
-        self.instrument_type = None  # FGM or FBC or other?
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-
+        self.type = "frequency response table"
         self.obspy_mapping = obspy_mapping
-        self.amplitude_response = None
-        self.phase_response = None
-        self._total_response_function = None
+        
+        if self.gain == 0.0:
+            self.gain = 1.0
 
     @property
     def frequencies(self):
@@ -168,9 +166,6 @@ class FrequencyResponseTableFilter(FilterBase):
 
         return rs
 
-    def total_response_function(self, frequencies):
-        return self._total_response_function(frequencies)
-
     def complex_response(self, frequencies, interpolation_method="slinear"):
         """
 
@@ -182,8 +177,6 @@ class FrequencyResponseTableFilter(FilterBase):
         -------
         h : numpy array of (possibly complex-valued) frequency response at the input frequencies
 
-        #I would like a separate step that calculates self._total_response_function
-        and stores it but the validator doesn't seem to like when I assign that attribute
         """
         if (
             np.min(frequencies) < self.min_frequency

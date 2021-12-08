@@ -1,6 +1,6 @@
 {
     "coefficients": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": null,
@@ -11,7 +11,7 @@
     },
 
     "decimation_factor": {
-        "type": "int",
+        "type": "integer",
         "required": false,
         "style": "number",
         "units": null,

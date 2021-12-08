@@ -69,7 +69,7 @@ class Base:
                 if "list" in d["style"]:
                     value = []
                 elif "date" in d["style"] or "time" in d["style"]:
-                    value = "1980-01-01T00:00:00"
+                    value = "1980-01-01T00:00:00+00:00"
                 elif "controlled" in d["style"]:
                     if "other" in d["options"]:
                         value = None
@@ -84,7 +84,11 @@ class Base:
                         value = False
                     
             else:
-                value = None   
+                if "date" in d["style"] or "time" in d["style"]:
+                    value = "1980-01-01T00:00:00+00:00"
+                else:
+                    value = None  
+
             setattr(self, k, value)
 
     def __str__(self):

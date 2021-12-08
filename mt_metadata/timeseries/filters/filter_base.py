@@ -174,8 +174,6 @@ class FilterBase(Base):
 
         """
 
-        self.name = None
-        self.type = None
         self._units_in_obj = Unit()
         self._units_out_obj = Unit()
 
@@ -185,6 +183,9 @@ class FilterBase(Base):
         self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        
+        if self.gain == 0.0:
+            self.gain = 1.0
 
     @property
     def obspy_mapping(self):
