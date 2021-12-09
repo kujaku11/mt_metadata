@@ -33,6 +33,7 @@ class Header(Location):
 
         self.phoenix_edi = False
 
+        super().__init__()
         super(Location, self).__init__(attr_dict=attr_dict)
         
         self.units = "millivolts_per_kilometer_per_nanotesla"

@@ -703,23 +703,27 @@ class EDI(object):
         self.z_err = np.nan_to_num(self.z_err)
         self.t = np.nan_to_num(self.t)
         self.t_err = np.nan_to_num(self.t_err)
-        for ii in range(2):
-            for jj in range(2):
-                z_lines_real = self._write_data_block(
-                    self.z[:, ii, jj].real, self._z_labels[2 * ii + jj][0]
-                )
-                z_lines_imag = self._write_data_block(
-                    self.z[:, ii, jj].imag, self._z_labels[2 * ii + jj][1]
-                )
-                z_lines_var = self._write_data_block(
-                    self.z_err[:, ii, jj] ** 2.0, self._z_labels[2 * ii + jj][2]
-                )
+        if self.z is not None:
+            for ii in range(2):
+                for jj in range(2):
+                    z_lines_real = self._write_data_block(
+                        self.z[:, ii, jj].real, self._z_labels[2 * ii + jj][0]
+                    )
+                    z_lines_imag = self._write_data_block(
+                        self.z[:, ii, jj].imag, self._z_labels[2 * ii + jj][1]
+                    )
+                    z_lines_var = self._write_data_block(
+                        self.z_err[:, ii, jj] ** 2.0, self._z_labels[2 * ii + jj][2]
+                    )
+    
+                    z_data_lines += z_lines_real
+                    z_data_lines += z_lines_imag
+                    z_data_lines += z_lines_var
 
-                z_data_lines += z_lines_real
-                z_data_lines += z_lines_imag
-                z_data_lines += z_lines_var
-
-        if self.t is not None and np.all(self.t == 0):
+        if self.t is None:
+            trot_lines = [""]
+            t_data_lines = [""]
+        elif np.all(self.t == 0):
             trot_lines = [""]
             t_data_lines = [""]
         else:
@@ -1150,11 +1154,12 @@ class EDI(object):
                 else:
                     self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
 
-            ### fill measurement
-            self.Measurement.refelev = sm.location.elevation
-            self.Measurement.reflat = sm.location.latitude
-            self.Measurement.reflon = sm.location.longitude
-            self.Measurement.maxchan = len(sm.channels_recorded)
+        ### fill measurement
+        self.Measurement.refelev = sm.location.elevation
+        self.Measurement.reflat = sm.location.latitude
+        self.Measurement.reflon = sm.location.longitude
+        self.Measurement.maxchan = len(sm.channels_recorded)
+        if len(sm.channels_recorded) > 0:
             for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
                 try:
                     self.Measurement.from_metadata(getattr(sm.runs[0], f"{comp}"))
@@ -1354,10 +1359,12 @@ def write_edi(tf_object, fn=None):
         raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
 
     edi_obj = EDI()
-    edi_obj.z = tf_object.impedance.data
-    edi_obj.z_err = tf_object.impedance_error.data
-    edi_obj.t = tf_object.tipper.data
-    edi_obj.t_err = tf_object.tipper_error.data
+    if tf_object.has_impedance():
+        edi_obj.z = tf_object.impedance.data
+        edi_obj.z_err = tf_object.impedance_error.data
+    if tf_object.has_tipper():
+        edi_obj.t = tf_object.tipper.data
+        edi_obj.t_err = tf_object.tipper_error.data
     edi_obj.frequency = 1.0 / tf_object.period
 
     # fill from survey metadata

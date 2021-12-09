@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from .metadata import Header
+from mt_metadata.transfer_functions.tf import Survey, Station
 
 # ==============================================================================
 # deal with avg files output from mtedit
@@ -482,3 +483,52 @@ class ZongeMTAvg():
 
         self.tipper = np.nan_to_num(self.tipper)
         self.tipper_err = np.nan_to_num(self.tipper_err)
+        
+    @property
+    def station_metadata(self):
+        sm = Station()
+        
+        sm.id = self.header.station
+        sm.location.latitude = self.header.latitude
+        sm.location.longitude = self.header.longitude
+        
+        sm.transfer_function.software.author = "Zonge International"
+        sm.transfer_function.software.name = "MTEdit"
+        sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
+        sm.transfer_function.software.last_updated = self.header.m_t_edit.version.split()[-1]
+        
+        for key, value in self.header.m_t_edit.to_dict(single=True).items():
+            if "version" in key:
+                continue
+            sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
+        
+        sm.data_type = self.header.survey.type
+        
+        return sm
+    
+    @property
+    def survey_metadata(self):
+        return Survey()
+    
+# =============================================================================
+# Read
+# =============================================================================
+   
+def read_avg(fn): 
+    from mt_metadata.transfer_functions.core import TF
+    
+    obj = ZongeMTAvg(fn=fn)
+    
+    tf_object = TF()
+    tf_object.survey_metadata = obj.survey_metadata
+    tf_object.station_metadata = obj.station_metadata
+    
+    tf_object.period = 1./obj.frequency
+    tf_object.impedance = obj.z
+    tf_object.impedance_error = obj.z_err
+    
+    if obj.t is not None:
+        tf_object.tipper = obj.t
+        tf_object.tipper_error = obj.t_err
+    
+    return tf_object
