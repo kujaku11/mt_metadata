@@ -348,8 +348,8 @@ class DefineMeasurement(Base):
                         m_list.append(
                             f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
                         )
-                    except ValueError:
-                        m_list.append(" {0}={1:{2}}".format(mkey.upper(), 0.0, mfmt))
+                    except (ValueError, TypeError):
+                        m_list.append(f" {mkey.upper()}={0.0:{mfmt}}")
 
                 m_list.append("\n")
                 measurement_lines.append("".join(m_list))

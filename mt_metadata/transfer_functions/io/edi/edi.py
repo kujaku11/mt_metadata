@@ -502,14 +502,14 @@ class EDI(object):
             # from A. Kelbert's EMTF
             # cross spectra matrices
             # input channels
-            rh = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
-            rr = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
-            hh = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
+            rh = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
+            rr = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
+            hh = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
             
             # output channels
-            re = np.matrix(np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex))
-            he = np.matrix(np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex))
-            ee = np.matrix(np.zeros((cc.n_outputs, cc.n_outputs), dtype=complex))
+            re = np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex)
+            he = np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex)
+            ee =np.zeros((cc.n_outputs, cc.n_outputs), dtype=complex)
             
             # fill in cross powers for input channels
             rh[0, 0] = s_arr[cc.rhx, cc.hx]
@@ -584,11 +584,11 @@ class EDI(object):
                     f"spectral matrix determinant is too small for period {key}. "
                     "Results may be inaccurate")
             
-            tfh = np.matmul(rh.I, re)
-            tf = tfh.H
+            tfh = np.matmul(np.linalg.inv(rh), re)
+            tf = tfh.conj().T
             
-            sig = np.matmul(rh.I, np.matmul(rr, rh.H.I))
-            res = (ee - np.matmul(tf, he) - np.matmul(he.H, tfh) + 
+            sig = np.matmul(np.linalg.inv(rh), np.matmul(rr, np.linalg.inv(rh.conj().T)))
+            res = (ee - np.matmul(tf, he) - np.matmul(he.conj().T, tfh) + 
                    np.matmul(tf, np.matmul(hh, tfh))) / avgt_dict[key]
             
             variance = np.zeros((cc.n_outputs, cc.n_inputs), dtype=complex)
