@@ -70,6 +70,25 @@ class index_locator(object):
         if self.rhy is None:
             self.rhy = self.hy
             
+    def __str__(self):
+        lines = ["Index Values"]
+        for k, v in self.__dict__.items():
+            if v is not None:
+                lines.append(f"\t{k} = {v}")
+        return "\n".join(lines)
+    
+    def __repr__(self):
+        return self.__str__()
+    
+    @property
+    def n_channels(self):
+        count = 0
+        for k, v in self.__dict__.items():
+            if v is not None:
+                count += 1
+                
+        return count
+            
 def _validate_edi_lines(edi_lines):
     """
     check for carriage returns or hard returns

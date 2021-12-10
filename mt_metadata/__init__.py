@@ -122,3 +122,5 @@ TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/IEB0858A_metronix.e
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
+TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
+TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath("data/transfer_functions/spectra_out.edi")

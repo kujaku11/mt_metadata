@@ -116,6 +116,8 @@ class EDI(object):
         self.t_err = None
         self.frequency = None
         self.rotation_angle = None
+        self.residual_covariance = None
+        self.signal_inverse_power = None
 
         self._z_labels = [
             ["zxxr", "zxxi", "zxx.var"],
@@ -438,6 +440,7 @@ class EDI(object):
 
         # get an object that contains the indices for each component
         cc = index_locator(comp_list)
+        print(cc)
 
         self.frequency = np.array(sorted(list(data_dict.keys()), reverse=True))
 
