@@ -188,7 +188,7 @@ class EDI(object):
             return 1.0 / self.frequency
         return None
 
-    def read(self, fn=None):
+    def read(self, fn=None, old=False):
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
@@ -237,7 +237,7 @@ class EDI(object):
         self.Data.read_data(self._edi_lines)
         self.Data.match_channels(self.Measurement.channel_ids)
 
-        self._read_data()
+        self._read_data(old=old)
 
         if self.Header.lat is None:
             self.Header.lat = self.Measurement.reflat
@@ -255,7 +255,7 @@ class EDI(object):
                 "Got elevation from refelev for {0}".format(self.Header.dataid)
             )
 
-    def _read_data(self):
+    def _read_data(self, old=False):
         """
         Read either impedance or spectra data depending on what the type is
         in the data section.
@@ -276,7 +276,10 @@ class EDI(object):
                 c_list = ["hx", "hy", "ex", "ey", "rhx", "rhy"]
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-            self._read_spectra(lines, comp_list=c_list)
+            if old:
+                self._read_spectra_old(lines, comp_list=c_list)
+            else: 
+                self._read_spectra_new(lines, comp_list=c_list)
 
         elif self.Data.data_type_in == "z":
             self._read_mt(lines)
@@ -389,7 +392,7 @@ class EDI(object):
             self.logger.debug("Could not find any Tipper data.")
 
 
-    def _read_spectra(
+    def _read_spectra_new(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
     ):
         """
@@ -403,6 +406,7 @@ class EDI(object):
         :type comp_list: list
         """
 
+        print("Reading spectra with new method")
         data_dict = {}
         avgt_dict = {}
         data_find = False
@@ -440,17 +444,25 @@ class EDI(object):
 
         # get an object that contains the indices for each component
         cc = index_locator(comp_list)
-        print(cc)
 
         self.frequency = np.array(sorted(list(data_dict.keys()), reverse=True))
 
-        self.z = np.zeros((len(list(data_dict.keys())), 2, 2), dtype=complex)
-        self.t = np.zeros((len(list(data_dict.keys())), 1, 2), dtype=complex)
+        self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
+        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
 
         self.z_err = np.zeros_like(self.z, dtype=float)
         self.t_err = np.zeros_like(self.t, dtype=float)
+        
+        self.residual_covariance = np.zeros((self.frequency.size, cc.n_outputs, cc.n_outputs),
+                                            dtype=complex)
+        self.signal_inverse_power = np.zeros((self.frequency.size, cc.n_inputs, cc.n_inputs),
+                                            dtype=complex)
+
+        self.tf = np.zeros((self.frequency.size, cc.n_outputs, cc.n_inputs), dtype=complex)
+        self.tf_var = np.zeros_like(self.tf, dtype=float)
 
         for kk, key in enumerate(self.frequency):
+            # read in spectra  as an (n_channel x n_channel) array
             spectra_arr = np.reshape(
                 np.array(data_dict[key]), (len(comp_list), len(comp_list))
             )
@@ -475,6 +487,211 @@ class EDI(object):
                         s_arr[jj, ii] = complex(
                             spectra_arr[jj, ii], spectra_arr[ii, jj]
                         )
+            
+            # from A. Kelbert's EMTF
+            # cross spectra matrices
+            # input channels
+            rh = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
+            rr = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
+            hh = np.matrix(np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex))
+            
+            # output channels
+            re = np.matrix(np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex))
+            he = np.matrix(np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex))
+            ee = np.matrix(np.zeros((cc.n_outputs, cc.n_outputs), dtype=complex))
+            
+            # fill in cross powers for input channels
+            rh[0, 0] = s_arr[cc.rhx, cc.hx]
+            rh[0, 1] = s_arr[cc.rhx, cc.hy]
+            rh[1, 0] = s_arr[cc.rhy, cc.hx]
+            rh[1, 1] = s_arr[cc.rhy, cc.hy]
+            
+            rr[0, 0] = s_arr[cc.rhx, cc.rhx]
+            rr[0, 1] = s_arr[cc.rhx, cc.rhy]
+            rr[1, 0] = s_arr[cc.rhy, cc.rhx]
+            rr[1, 1] = s_arr[cc.rhy, cc.rhy]
+            
+            hh[0, 0] = s_arr[cc.hx, cc.hx]
+            hh[0, 1] = s_arr[cc.hx, cc.hy]
+            hh[1, 0] = s_arr[cc.hy, cc.hx]
+            hh[1, 1] = s_arr[cc.hy, cc.hy]
+            
+            # fill in cross powers for output channels
+            if cc.has_tipper and cc.has_electric:
+                re[0, 0] = s_arr[cc.rhx, cc.hz]
+                re[0, 1] = s_arr[cc.rhx, cc.ex]
+                re[0, 2] = s_arr[cc.rhx, cc.ey]
+                re[1, 0] = s_arr[cc.rhy, cc.hz]
+                re[1, 1] = s_arr[cc.rhy, cc.ex]
+                re[1, 2] = s_arr[cc.rhy, cc.ey]
+                
+                he[0, 0] = s_arr[cc.hx, cc.hz]
+                he[0, 1] = s_arr[cc.hx, cc.ex]
+                he[0, 2] = s_arr[cc.hx, cc.ey]
+                he[1, 0] = s_arr[cc.hy, cc.hz]
+                he[1, 1] = s_arr[cc.hy, cc.ex]
+                he[1, 2] = s_arr[cc.hy, cc.ey]
+                
+                ee[0, 0] = s_arr[cc.hz, cc.hz]
+                ee[0, 1] = s_arr[cc.hz, cc.ex]
+                ee[0, 2] = s_arr[cc.hz, cc.ey]
+                ee[1, 0] = s_arr[cc.ex, cc.hz]
+                ee[1, 1] = s_arr[cc.ex, cc.ex]
+                ee[1, 2] = s_arr[cc.ex, cc.ey]
+                ee[2, 0] = s_arr[cc.ey, cc.hz]
+                ee[2, 1] = s_arr[cc.ey, cc.ex]
+                ee[2, 2] = s_arr[cc.ey, cc.ey]
+                
+            elif not cc.has_tipper and cc.has_electric:
+                re[0, 0] = s_arr[cc.rhx, cc.ex]
+                re[0, 1] = s_arr[cc.rhx, cc.ey]
+                re[1, 0] = s_arr[cc.rhy, cc.ex]
+                re[1, 0] = s_arr[cc.rhy, cc.ey]
+                
+                he[0, 0] = s_arr[cc.hx, cc.ex]
+                he[0, 1] = s_arr[cc.hx, cc.ey]
+                he[0, 1] = s_arr[cc.hy, cc.ex]
+                he[1, 1] = s_arr[cc.hy, cc.ey]
+                
+                ee[0, 0] = s_arr[cc.ex, cc.ex]
+                ee[0, 1] = s_arr[cc.ex, cc.ey]
+                ee[1, 0] = s_arr[cc.ey, cc.ex]
+                ee[1, 1] = s_arr[cc.ey, cc.ey]
+                
+            elif cc.has_tipper and not cc.has_electric:
+                re[0, 0] = s_arr[cc.rhx, cc.hz]
+                re[1, 0] = s_arr[cc.rhy, cc.hz]
+                
+                he[0, 0] = s_arr[cc.hx, cc.hz]
+                he[1, 0] = s_arr[cc.hy, cc.hz]
+                
+                ee[0, 0] = s_arr[cc.hz, cc.hz]
+                
+            # check to make sure the values are legit for accurate results
+            if abs(np.linalg.det(rh)) <  rh.real.min():
+                self.logger.warning(
+                    f"spectral matrix determinant is too small for period {key}. "
+                    "Results may be inaccurate")
+            
+            tfh = np.matmul(rh.I, re)
+            tf = tfh.H
+            
+            sig = np.matmul(rh.I, np.matmul(rr, rh.H.I))
+            res = (ee - np.matmul(tf, he) - np.matmul(he.H, tfh) + 
+                   np.matmul(tf, np.matmul(hh, tfh))) / avgt_dict[key]
+            
+            variance = np.zeros((cc.n_outputs, cc.n_inputs), dtype=complex)
+            for nn in range(cc.n_outputs):
+                for mm in range(cc.n_inputs):
+                    variance[nn, mm] = res[nn, nn] * sig[mm, mm]
+            
+            self.tf[kk, :, :] = tf
+            self.tf_var[kk, :, :] = np.abs(variance)
+            self.signal_inverse_power[kk, :, :] = sig
+            self.residual_covariance[kk, :, :] = res
+        
+            if cc.has_tipper and cc.has_electric:
+                self.z[kk, :, :] = tf[1:, :]
+                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[1:, :]))
+                self.t[kk, :, :] = tf[0, :]
+                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[0, :].real))
+                
+            elif not cc.has_tipper and cc.has_electric:
+                self.z[kk, :, :] = tf[:, :]
+                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[:, :]))
+                
+            elif cc.has_tipper and not cc.has_electric:
+                self.t[kk, :, :] = tf[:, :]
+                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[:, :].real))
+
+                             
+    def _read_spectra_old(
+        self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
+    ):
+        """
+        Read in spectra data and convert to impedance and Tipper.
+    
+        :param data_lines: list of lines from edi file
+        :type data_lines: list
+    
+        :param comp_list: list of components that correspond to the columns
+                          of the spectra data.
+        :type comp_list: list
+        """
+        print("Reading spectra with old method")
+        data_dict = {}
+        avgt_dict = {}
+        data_find = False
+        for line in data_lines:
+            if line.lower().find(">spectra") == 0 and line.find("!") == -1:
+                line_list = _validate_str_with_equals(line)
+                data_find = True
+    
+                # frequency will be the key
+                try:
+                    key = float(
+                        [
+                            ss.split("=")[1]
+                            for ss in line_list
+                            if ss.lower().find("freq") == 0
+                        ][0]
+                    )
+                    data_dict[key] = []
+                    avgt = float(
+                        [
+                            ss.split("=")[1]
+                            for ss in line_list
+                            if ss.lower().find("avgt") == 0
+                        ][0]
+                    )
+                    avgt_dict[key] = avgt
+                except ValueError:
+                    self.logger.debug("did not find frequency key")
+    
+            elif data_find and line.find(">") == -1 and line.find("!") == -1:
+                data_dict[key] += [float(ll) for ll in line.strip().split()]
+    
+            elif line.find(">spectra") == -1:
+                data_find = False
+    
+        # get an object that contains the indices for each component
+        cc = index_locator(comp_list)
+    
+        self.frequency = np.array(sorted(list(data_dict.keys()), reverse=True))
+    
+        self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
+        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
+    
+        self.z_err = np.zeros_like(self.z, dtype=float)
+        self.t_err = np.zeros_like(self.t, dtype=float)
+        
+        for kk, key in enumerate(self.frequency):
+            # read in spectra  as an (n_channel x n_channel) array
+            spectra_arr = np.reshape(
+                np.array(data_dict[key]), (len(comp_list), len(comp_list))
+            )
+    
+            # compute cross powers
+            s_arr = np.zeros_like(spectra_arr, dtype=complex)
+            for ii in range(s_arr.shape[0]):
+                for jj in range(ii, s_arr.shape[0]):
+                    if ii == jj:
+                        s_arr[ii, jj] = spectra_arr[ii, jj]
+                    else:
+                        # minus sign for complex conjugation
+                        # original spectra data are of form <A,B*>, but we need
+                        # the order <B,A*>...
+                        # this is achieved by complex conjugation of the
+                        # original entries
+                        s_arr[ii, jj] = complex(
+                            spectra_arr[jj, ii], -spectra_arr[ii, jj]
+                        )
+                        # keep complex conjugated entries in the lower
+                        # triangular matrix:
+                        s_arr[jj, ii] = complex(
+                            spectra_arr[jj, ii], spectra_arr[ii, jj]
+                        )                      
+         
 
             # use formulas from Bahr/Simpson to convert the Spectra into Z
             # the entries of S are sorted like

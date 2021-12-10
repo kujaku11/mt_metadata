@@ -84,10 +84,45 @@ class index_locator(object):
     def n_channels(self):
         count = 0
         for k, v in self.__dict__.items():
+            if "r" in k:
+                continue
             if v is not None:
                 count += 1
                 
         return count
+    
+    @property
+    def has_tipper(self):
+        if self.hz is not None:
+            return True
+        return False
+    
+    @property
+    def has_electric(self):
+        if self.ex != None or self.ey != None:
+            return True
+        return False
+    
+    @property
+    def input_channels(self):
+        return [self.hx, self.hy]
+    
+    @property
+    def output_channels(self):
+        if self.has_tipper:
+            if self.has_electric:
+                return [self.hz, self.ex, self.ey]
+            return [self.hz]
+        return [self.ex, self.ey]
+    
+    @property
+    def n_inputs(self):
+        return len(self.input_channels)
+    
+    @property
+    def n_outputs(self):
+        return len(self.output_channels)
+    
             
 def _validate_edi_lines(edi_lines):
     """
