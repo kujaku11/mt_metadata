@@ -179,6 +179,16 @@
         "alias": [],
         "example": "SEG 1.0"
     },
+	"survey": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the survey",
+        "options": [],
+        "alias": [],
+        "example": "CONUS"
+    },
     "units": {
         "type": "string",
         "required": true,

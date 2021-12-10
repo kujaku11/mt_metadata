@@ -397,6 +397,8 @@ class EDI(object):
     ):
         """
         Read in spectra data and convert to impedance and Tipper.
+        
+        Translated from A. Kelbert's EMTF fortran module
 
         :param data_lines: list of lines from edi file
         :type data_lines: list
@@ -406,7 +408,6 @@ class EDI(object):
         :type comp_list: list
         """
 
-        print("Reading spectra with new method")
         data_dict = {}
         avgt_dict = {}
         data_find = False
@@ -437,7 +438,7 @@ class EDI(object):
                     self.logger.debug("did not find frequency key")
 
             elif data_find and line.find(">") == -1 and line.find("!") == -1:
-                data_dict[key] += [float(ll) for ll in line.strip().split()]
+                data_dict[key] += [float(ll) for ll in line.strip().replace(self.Header.empty, "0.0").split()]
 
             elif line.find(">spectra") == -1:
                 data_find = False
@@ -487,6 +488,16 @@ class EDI(object):
                         s_arr[jj, ii] = complex(
                             spectra_arr[jj, ii], spectra_arr[ii, jj]
                         )
+                        
+            # check for empty values
+            s_arr[s_arr == 0] = np.nan
+            try:
+                s_arr[s_arr == float(self.Header.empty)] = np.nan
+            except ValueError:
+                self.logger.warning(
+                    f"Empty value {self.Header.empty} is not a float, "
+                    f"it is {type(self.Header.empty)} "
+                    "and could not be used to find empty values")
             
             # from A. Kelbert's EMTF
             # cross spectra matrices
@@ -595,252 +606,19 @@ class EDI(object):
                 self.z_err[kk, :, :] = np.sqrt(np.abs(variance[1:, :]))
                 self.t[kk, :, :] = tf[0, :]
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[0, :].real))
+                self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
+                self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
                 
             elif not cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[:, :]
                 self.z_err[kk, :, :] = np.sqrt(np.abs(variance[:, :]))
+                self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
+                
                 
             elif cc.has_tipper and not cc.has_electric:
                 self.t[kk, :, :] = tf[:, :]
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[:, :].real))
-
-                             
-    def _read_spectra_old(
-        self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-    ):
-        """
-        Read in spectra data and convert to impedance and Tipper.
-    
-        :param data_lines: list of lines from edi file
-        :type data_lines: list
-    
-        :param comp_list: list of components that correspond to the columns
-                          of the spectra data.
-        :type comp_list: list
-        """
-        print("Reading spectra with old method")
-        data_dict = {}
-        avgt_dict = {}
-        data_find = False
-        for line in data_lines:
-            if line.lower().find(">spectra") == 0 and line.find("!") == -1:
-                line_list = _validate_str_with_equals(line)
-                data_find = True
-    
-                # frequency will be the key
-                try:
-                    key = float(
-                        [
-                            ss.split("=")[1]
-                            for ss in line_list
-                            if ss.lower().find("freq") == 0
-                        ][0]
-                    )
-                    data_dict[key] = []
-                    avgt = float(
-                        [
-                            ss.split("=")[1]
-                            for ss in line_list
-                            if ss.lower().find("avgt") == 0
-                        ][0]
-                    )
-                    avgt_dict[key] = avgt
-                except ValueError:
-                    self.logger.debug("did not find frequency key")
-    
-            elif data_find and line.find(">") == -1 and line.find("!") == -1:
-                data_dict[key] += [float(ll) for ll in line.strip().split()]
-    
-            elif line.find(">spectra") == -1:
-                data_find = False
-    
-        # get an object that contains the indices for each component
-        cc = index_locator(comp_list)
-    
-        self.frequency = np.array(sorted(list(data_dict.keys()), reverse=True))
-    
-        self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
-        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
-    
-        self.z_err = np.zeros_like(self.z, dtype=float)
-        self.t_err = np.zeros_like(self.t, dtype=float)
-        
-        for kk, key in enumerate(self.frequency):
-            # read in spectra  as an (n_channel x n_channel) array
-            spectra_arr = np.reshape(
-                np.array(data_dict[key]), (len(comp_list), len(comp_list))
-            )
-    
-            # compute cross powers
-            s_arr = np.zeros_like(spectra_arr, dtype=complex)
-            for ii in range(s_arr.shape[0]):
-                for jj in range(ii, s_arr.shape[0]):
-                    if ii == jj:
-                        s_arr[ii, jj] = spectra_arr[ii, jj]
-                    else:
-                        # minus sign for complex conjugation
-                        # original spectra data are of form <A,B*>, but we need
-                        # the order <B,A*>...
-                        # this is achieved by complex conjugation of the
-                        # original entries
-                        s_arr[ii, jj] = complex(
-                            spectra_arr[jj, ii], -spectra_arr[ii, jj]
-                        )
-                        # keep complex conjugated entries in the lower
-                        # triangular matrix:
-                        s_arr[jj, ii] = complex(
-                            spectra_arr[jj, ii], spectra_arr[ii, jj]
-                        )                      
-         
-
-            # use formulas from Bahr/Simpson to convert the Spectra into Z
-            # the entries of S are sorted like
-            # <X,X*>  <X,Y*>  <X,Z*>  <X,En*>  <X,Ee*>  <X,Rx*>  <X,Ry*>
-            #         <Y,Y*>  <Y,Z*>  <Y,En*>  <Y,Ee*>  <Y,Rx*>  <Y,Ry*>
-            # .....
-
-            self.z[kk, 0, 0] = (
-                s_arr[cc.ex, cc.rhx] * s_arr[cc.hy, cc.rhy]
-                - s_arr[cc.ex, cc.rhy] * s_arr[cc.hy, cc.rhx]
-            )
-            self.z[kk, 0, 1] = (
-                s_arr[cc.ex, cc.rhy] * s_arr[cc.hx, cc.rhx]
-                - s_arr[cc.ex, cc.rhx] * s_arr[cc.hx, cc.rhy]
-            )
-            self.z[kk, 1, 0] = (
-                s_arr[cc.ey, cc.rhx] * s_arr[cc.hy, cc.rhy]
-                - s_arr[cc.ey, cc.rhy] * s_arr[cc.hy, cc.rhx]
-            )
-            self.z[kk, 1, 1] = (
-                s_arr[cc.ey, cc.rhy] * s_arr[cc.hx, cc.rhx]
-                - s_arr[cc.ey, cc.rhx] * s_arr[cc.hx, cc.rhy]
-            )
-
-            self.z[kk] /= (
-                s_arr[cc.hx, cc.rhx] * s_arr[cc.hy, cc.rhy]
-                - s_arr[cc.hx, cc.rhy] * s_arr[cc.hy, cc.rhx]
-            )
-
-            # compute error only if scipy package exists
-            # 68% Quantil of the Fisher distribution:
-            z_det = np.real(
-                s_arr[cc.hx, cc.hx] * s_arr[cc.hy, cc.hy]
-                - np.abs(s_arr[cc.hx, cc.hy] ** 2)
-            )
-
-            sigma_quantil = ssd.f.ppf(0.68, 4, avgt_dict[key] - 4)
-
-            ## 1) Ex
-            a = (
-                s_arr[cc.ex, cc.hx] * s_arr[cc.hy, cc.hy]
-                - s_arr[cc.ex, cc.hy] * s_arr[cc.hy, cc.hx]
-            )
-            b = (
-                s_arr[cc.ex, cc.hy] * s_arr[cc.hx, cc.hx]
-                - s_arr[cc.ex, cc.hx] * s_arr[cc.hx, cc.hy]
-            )
-            a /= z_det
-            b /= z_det
-
-            psi_squared = np.real(
-                1.0
-                / s_arr[cc.ex, cc.ex].real
-                * (a * s_arr[cc.hx, cc.ex] + b * s_arr[cc.hy, cc.ex])
-            )
-            epsilon_squared = 1.0 - psi_squared
-
-            scaling = (
-                sigma_quantil
-                * 4
-                / (avgt_dict[key] - 4.0)
-                * epsilon_squared
-                / z_det
-                * s_arr[cc.ex, cc.ex].real
-            )
-            self.z_err[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-            self.z_err[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
-
-            # 2) EY
-            a = (
-                s_arr[cc.ey, cc.hx] * s_arr[cc.hy, cc.hy]
-                - s_arr[cc.ey, cc.hy] * s_arr[cc.hy, cc.hx]
-            )
-            b = (
-                s_arr[cc.ey, cc.hy] * s_arr[cc.hx, cc.hx]
-                - s_arr[cc.ey, cc.hx] * s_arr[cc.hx, cc.hy]
-            )
-            a /= z_det
-            b /= z_det
-
-            psi_squared = np.real(
-                1.0
-                / np.real(s_arr[cc.ey, cc.ey])
-                * (a * s_arr[cc.hx, cc.ey] + b * s_arr[cc.hy, cc.ey])
-            )
-            epsilon_squared = 1.0 - psi_squared
-
-            scaling = (
-                sigma_quantil
-                * 4
-                / (avgt_dict[key] - 4.0)
-                * epsilon_squared
-                / z_det
-                * s_arr[cc.ey, cc.ey].real
-            )
-            self.z_err[kk, 1, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-            self.z_err[kk, 1, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
-
-            # if HZ information is present:
-            if len(comp_list) > 5:
-                self.t[kk, 0, 0] = (
-                    s_arr[cc.hz, cc.rhx] * s_arr[cc.hy, cc.rhy]
-                    - s_arr[cc.hz, cc.rhy] * s_arr[cc.hy, cc.rhx]
-                )
-                self.t[kk, 0, 1] = (
-                    s_arr[cc.hz, cc.rhy] * s_arr[cc.hx, cc.rhx]
-                    - s_arr[cc.hz, cc.rhx] * s_arr[cc.hx, cc.rhy]
-                )
-
-                self.t[kk] /= (
-                    s_arr[cc.hx, cc.rhx] * s_arr[cc.hy, cc.rhy]
-                    - s_arr[cc.hx, cc.rhy] * s_arr[cc.hy, cc.rhx]
-                )
-
-                a = (
-                    s_arr[cc.hz, cc.hx] * s_arr[cc.hy, cc.hy]
-                    - s_arr[cc.hz, cc.hy] * s_arr[cc.hy, cc.hx]
-                )
-                b = (
-                    s_arr[cc.hz, cc.hy] * s_arr[cc.hx, cc.hx]
-                    - s_arr[cc.hz, cc.hx] * s_arr[cc.hx, cc.hy]
-                )
-                a /= z_det
-                b /= z_det
-
-                psi_squared = np.real(
-                    1.0
-                    / s_arr[cc.hz, cc.hz].real
-                    * (a * s_arr[cc.hx, cc.hz] + b * s_arr[cc.hy, cc.hz])
-                )
-                epsilon_squared = 1.0 - psi_squared
-
-                scaling = (
-                    sigma_quantil
-                    * 4
-                    / (avgt_dict[key] - 4.0)
-                    * epsilon_squared
-                    / z_det
-                    * s_arr[cc.hz, cc.hz].real
-                )
-                self.t_err[kk, 0, 0] = np.sqrt(abs(scaling * s_arr[cc.hy, cc.hy].real))
-                self.t_err[kk, 0, 1] = np.sqrt(abs(scaling * s_arr[cc.hx, cc.hx].real))
-
-        # check for nans
-        self.z_err = np.nan_to_num(self.z_err)
-        self.t_err = np.nan_to_num(self.t_err)
-
-        self.z_err[np.where(self.z_err == 0.0)] = 1.0
-        self.t_err[np.where(self.t_err == 0.0)] = 1.0
+                self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
 
     def write(self, new_edi_fn=None, longitude_format="LON", latlon_format="dms"):
         """

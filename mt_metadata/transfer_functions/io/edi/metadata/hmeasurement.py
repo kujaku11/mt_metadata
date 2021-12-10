@@ -56,9 +56,11 @@ class HMeasurement(Base):
 
     @property
     def channel_number(self):
-        if not isinstance(self.acqchan, (int, float)):
-            try:
-                return [int("".join(i for i in self.acqchan if i.isdigit()))][0]
-            except (IndexError, ValueError):
-                return 0
-        return self.acqchan
+        if self.acqchan != None:
+            if not isinstance(self.acqchan, (int, float)):
+                try:
+                    return [int("".join(i for i in self.acqchan if i.isdigit()))][0]
+                except (IndexError, ValueError):
+                    return 0
+            return self.acqchan
+        return 0
