@@ -118,6 +118,8 @@ class EDI(object):
         self.rotation_angle = None
         self.residual_covariance = None
         self.signal_inverse_power = None
+        self.tf = None
+        self.tf_err = None
 
         self._z_labels = [
             ["zxxr", "zxxi", "zxx.var"],
@@ -460,7 +462,7 @@ class EDI(object):
                                             dtype=complex)
 
         self.tf = np.zeros((self.frequency.size, cc.n_outputs, cc.n_inputs), dtype=complex)
-        self.tf_var = np.zeros_like(self.tf, dtype=float)
+        self.tf_err = np.zeros_like(self.tf, dtype=float)
 
         for kk, key in enumerate(self.frequency):
             # read in spectra  as an (n_channel x n_channel) array
@@ -597,7 +599,7 @@ class EDI(object):
                     variance[nn, mm] = res[nn, nn] * sig[mm, mm]
             
             self.tf[kk, :, :] = tf
-            self.tf_var[kk, :, :] = np.abs(variance)
+            self.tf_err[kk, :, :] = np.sqrt(np.abs(variance))
             self.signal_inverse_power[kk, :, :] = sig
             self.residual_covariance[kk, :, :] = res
         
@@ -1314,17 +1316,30 @@ def read_edi(fn):
     tf_obj = TF()
     tf_obj._fn = fn
 
-    k_dict = OrderedDict(
-        {
-            "period": "period",
-            "impedance": "z",
-            "impedance_error": "z_err",
-            "tipper": "t",
-            "tipper_error": "t_err",
-            "survey_metadata": "survey_metadata",
-            "station_metadata": "station_metadata",
-        }
-    )
+    if edi_obj.tf is not None:
+        k_dict = OrderedDict(
+            {
+                "period": "period",
+                "transfer_function": "tf",
+                "transfer_function_error": "tf_err",
+                "isp": "signal_inverse_power",
+                "res": "residual_covariance",
+                "survey_metadata": "survey_metadata",
+                "station_metadata": "station_metadata",
+            }
+        )
+    else:
+        k_dict = OrderedDict(
+            {
+                "period": "period",
+                "impedance": "z",
+                "impedance_error": "z_err",
+                "tipper": "t",
+                "tipper_error": "t_err",
+                "survey_metadata": "survey_metadata",
+                "station_metadata": "station_metadata",
+            }
+        )
 
     for tf_key, edi_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))

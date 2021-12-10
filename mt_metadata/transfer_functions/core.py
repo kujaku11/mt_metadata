@@ -239,13 +239,17 @@ class TF:
     @fn.setter
     def fn(self, value):
         """set file name"""
+        if value is None:
+            self._fn = None
+            return
         try:
             self._fn = Path(value)
             if self._fn.exists():
                 self.read_tf_file(self._fn)
             else:
                 self.logger.warning(f"Could not find {self._fn} skip reading.")
-        except TypeError:
+        except TypeError as error:
+            self.logger.exception(error)
             self._fn = None
 
     @property
@@ -324,6 +328,8 @@ class TF:
             "res": (3, 3),
             "transfer_function": (3, 2),
             "transfer_function_error": (3, 2),
+            "tf": (3, 2),
+            "tf_error": (3, 2),
         }
 
         shape = shape_dict[atype]
@@ -409,6 +415,9 @@ class TF:
             "transfer_function": "transfer_function",
             "impedance_error": "transfer_function_error",
             "tipper_error": "transfer_function_error",
+            "tf_error": "transfer_function_error",
+            "transfer_function_error": "transfer_function_error",
+            
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -478,6 +487,32 @@ class TF:
 
         """
         self._set_data_array(value, "tf")
+        
+    @property
+    def transfer_function_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_transfer_function():
+            return self.dataset.transfer_function_error.sel(
+                input=["hx", "hy"], output=["ex", "ey", "hz"]
+            )
+
+    @transfer_function_error.setter
+    def transfer_function_error(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tf_error")
 
     def has_impedance(self):
         """
