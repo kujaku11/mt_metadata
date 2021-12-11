@@ -12,17 +12,18 @@ import unittest
 import numpy as np
 
 from collections import OrderedDict
-from mt_metadata.transfer_functions.io import edi
+from mt_metadata.transfer_functions.io.edi import EDI
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import TF_EDI_SPECTRA, TF_EDI_SPECTRA_OUT
+from mt_metadata.transfer_functions.core import TF
 
 # =============================================================================
 # CGG
 # =============================================================================
 class TestSpectraEDI(unittest.TestCase):
     def setUp(self):
-        self.edi_spectra = edi.EDI(fn=TF_EDI_SPECTRA)
-        self.edi_z = edi.EDI(fn=TF_EDI_SPECTRA_OUT)
+        self.edi_spectra = EDI(fn=TF_EDI_SPECTRA)
+        self.edi_z = EDI(fn=TF_EDI_SPECTRA_OUT)
         self.maxDiff = None
 
     def test_header(self):
@@ -188,6 +189,35 @@ class TestSpectraEDI(unittest.TestCase):
         
     def test_t_err(self):
         self.assertTrue(np.isclose(self.edi_spectra.t_err, self.edi_z.t_err).all())
+        
+class TestToTF(unittest.TestCase):
+    def setUp(self):
+        self.edi = EDI(fn=TF_EDI_SPECTRA)
+        self.tf = TF(fn=TF_EDI_SPECTRA)
+        
+    def test_station_metadata(self):
+        self.assertTrue(self.edi.station_metadata == self.tf.station_metadata)
+        
+    def test_survey_metadata(self):
+        self.assertTrue(self.edi.survey_metadata == self.tf.survey_metadata)
+        
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+        
+    def test_has_tipper(self):
+        self.assertTrue(self.tf.has_tipper())
+        
+    def test_has_isp(self):
+        self.assertTrue(self.tf.has_inverse_signal_power())
+        
+    def test_has_residual_covariance(self):
+        self.assertTrue(self.tf.has_residual_covariance())
+        
+        
+        
+        
+        
+        
     
         
         

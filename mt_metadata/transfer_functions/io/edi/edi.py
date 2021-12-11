@@ -1322,8 +1322,8 @@ def read_edi(fn):
                 "period": "period",
                 "transfer_function": "tf",
                 "transfer_function_error": "tf_err",
-                "isp": "signal_inverse_power",
-                "res": "residual_covariance",
+                "inverse_signal_power": "signal_inverse_power",
+                "residual_covariance": "residual_covariance",
                 "survey_metadata": "survey_metadata",
                 "station_metadata": "station_metadata",
             }
