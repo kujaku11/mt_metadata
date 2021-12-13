@@ -274,7 +274,7 @@ class EDI(object):
                     # component
                     try:
                         d_lines[ii] = float(dd)
-                        if d_lines[ii] == self.header.empty:
+                        if d_lines[ii] == self.Header.empty:
                             d_lines[ii] = 0.0
                             
                     except ValueError:
@@ -398,7 +398,7 @@ class EDI(object):
                     self.logger.debug("did not find frequency key")
 
             elif data_find and line.find(">") == -1 and line.find("!") == -1:
-                data_dict[key] += [float(ll) for ll in line.strip().replace(self.Header.empty, "0.0").split()]
+                data_dict[key] += [float(ll) for ll in line.strip().split()]
 
             elif line.find(">spectra") == -1:
                 data_find = False

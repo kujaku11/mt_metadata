@@ -30,7 +30,7 @@ class TestCGGEDI(unittest.TestCase):
             "DATAID": None,
             "DATUM": "WGS84",
             "ELEV": 175.270,
-            "EMPTY": "1.000000e+032",
+            "EMPTY": 1.000000e+32,
             "FILEBY": None,
             "LAT": -30.930285,
             "LOC": "Australia",
@@ -195,6 +195,35 @@ class TestCGGEDI(unittest.TestCase):
         d_list = ['NFREQ=73']
         
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        
+    def test_impedance(self):
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.edi_obj.z.shape, (73, 2, 2))
+            
+        with self.subTest("err shape"):
+            self.assertTupleEqual(self.edi_obj.z_err.shape, (73, 2, 2))
+            
+        with self.subTest("has zero"):
+            self.assertEqual(self.edi_obj.z[0, 0, 0], 0+0j)
+            
+        with self.subTest("not zero"):
+            self.assertNotEqual(self.edi_obj.z[1, 0, 0], 0+0j)
+
+
+    def test_tipper(self):
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.edi_obj.t.shape, (73, 1, 2))
+        with self.subTest("err shape"):
+            self.assertTupleEqual(self.edi_obj.t_err.shape, (73, 1, 2))
+            
+    def test_rotation_angle(self):
+        with self.subTest("all zeros"):
+            self.assertTrue((self.edi_obj.rotation_angle == 0).all())
+            
+        with self.subTest("shape"):
+            self.assertTupleEqual(self.edi_obj.rotation_angle.shape, (73,))
+            
+            
         
         
 

@@ -33,7 +33,7 @@ class TestSpectraEDI(unittest.TestCase):
             "DATAID": "SAGE_2005",
             "DATUM": "WGS84",
             "ELEV": 0.,
-            "EMPTY": "1e+32",
+            "EMPTY": 1e+32,
             "FILEBY": "Quantec Consulting",
             "LAT": 35.55,
             "LON": -106.28333333333333,
