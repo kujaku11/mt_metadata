@@ -118,6 +118,20 @@ class ZongeMTAvg():
             int,
             int,
         ]
+        
+        self.info_fmt = ['<1.0f',
+                         '<.4g',
+                         '<.4e',
+                         '<.4e',
+                         '<.4e',
+                         '<.1f',
+                         '<.4e',
+                         '<.1f',
+                         '<.1f',
+                         '<.3f',
+                         '<.0f',
+                         '<.0f']
+        
         self.info_dtype = np.dtype(
             [(kk.lower(), tt) for kk, tt in zip(self.info_keys, self.info_type)]
         )
@@ -557,10 +571,32 @@ class ZongeMTAvg():
 
         """
         
+        header_lines = self.header.write_header()
         
-    
-    
-    
+        header_lines.append(
+            "Skp,Freq,      E.mag,      B.mag,      Z.mag,      Z.phz,   "
+            "ARes.mag,   ARes.%err,Z.perr,  Coher,   FC.NUse,FC.NTry")
+        
+        for key in self.comp_dict.keys():
+            header_lines.append(f"$Rx.comp = {key.capitalize()}")
+            value_array = self.comp_dict[key]
+            for ii in range(value_array.size):
+                line = []
+                for jj, ikey, fmt in zip(range(len(self.info_keys)), self.info_keys, self.info_fmt):
+                    value = value_array[ikey.lower()][ii]
+                    s = f"{value:{fmt}},"
+                    if jj == 0:
+                        line.append(f"{s:<1}")
+                    elif jj > 0 and jj < 8: 
+                        line.append(f"{s:<10}")
+                    else:
+                        line.append(f"{s:<7}")
+                header_lines.append(" ".join(line))
+                
+        with open(fn, "w") as fid:
+            fid.write("\n".join(header_lines))
+            
+
 # =============================================================================
 # Read
 # =============================================================================
