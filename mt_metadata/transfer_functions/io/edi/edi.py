@@ -7,6 +7,9 @@
              section are attributes for easy access.
 
 .. moduleauthor:: Jared Peacock <jpeacock@usgs.gov>
+
+Updated 2021 to used mt_metadata type metadata and how spectra are read.
+
 """
 
 # ==============================================================================
@@ -25,8 +28,6 @@ from mt_metadata.transfer_functions.io.tools import (
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import __version__
 
-import scipy.stats.distributions as ssd
-
 # ==============================================================================
 # EDI Class
 # ==============================================================================
@@ -44,60 +45,15 @@ class EDI(object):
     :param fn: full path to .edi file to be read in.
                   *default* is None. If an .edi file is input, it is
                   automatically read in and attributes of Edi are filled
-    :type fn: string
-
-    ===================== =====================================================
-    Methods               Description
-    ===================== =====================================================
-    read_edi_file         Reads in an edi file and populates the associated
-                          classes and attributes.
-    write_edi_file        Writes an .edi file following the EDI format given
-                          the apporpriate attributes are filled.  Writes out
-                          in impedance and Tipper format.
-    _read_data            Reads in the impedance and Tipper blocks, if the
-                          .edi file is in 'spectra' format, read_data converts
-                          the data to impedance and Tipper.
-    _read_mt              Reads impedance and tipper data from the appropriate
-                          blocks of the .edi file.
-    _read_spectra         Reads in spectra data and converts it to impedance
-                          and Tipper data.
-    ===================== =====================================================
-
-    ===================== ========================================== ==========
-    Attributes            Description                                default
-    ===================== ========================================== ==========
-    Data             DataSection class, contains basic
-                          information on the data collected and in
-                          whether the data is in impedance or
-                          spectra.
-    Measurement    DefineMeasurement class, contains
-                          information on how the data was
-                          collected.
-    fn                full path to edi file read in              None
-    Header                Header class, contains metadata on
-                          where, when, and who collected the data
-    Info                  Information class, contains information
-                          on how the data was processed and how the
-                          transfer functions where estimated.
-    Tipper                mtpy.core.z.Tipper class, contains the
-                          tipper data
-    Z                     mtpy.core.z.Z class, contains the
-                          impedance data
-    _block_len            number of data in one line.                6
-    _data_header_str      header string for each of the data         '>!****{0}****!'
-                          section
-    _num_format           string format of data.                     ' 15.6e'
-    _t_labels             labels for tipper blocks
-    _z_labels             labels for impedance blocks
-    ===================== ========================================== ==========
+    :type fn: string or :class:`pathlib.Path`
 
     :Change Latitude: ::
 
-        >>> import mtpy.core.edi as mtedi
-        >>> edi_obj = mtedi.Edi(fn=r"/home/mt/mt01.edi")
+        >>> from mt_metadata.transfer_functions.io.edi import EDI
+        >>> edi_obj = EDI(fn=r"/home/mt/mt01.edi")
         >>> # change the latitude
-        >>> edi_obj.header.lat = 45.7869
-        >>> new_edi_fn = edi_obj.write_edi_file()
+        >>> edi_obj.lat = 45.7869
+        >>> new_edi_fn = edi_obj.write()
     """
 
     def __init__(self, fn=None):
@@ -194,12 +150,13 @@ class EDI(object):
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
+            
             * Header
             * Info
             * Measurement
             * Data
-            * Z
-            * Tipper
+            * z, z_err
+            * t, t_err
 
             .. note:: Automatically detects if data is in spectra format.  All
                   data read in is converted to impedance and Tipper.
@@ -211,9 +168,9 @@ class EDI(object):
 
         :Example: ::
 
-            >>> import mtpy.core.Edi as mtedi
-            >>> edi_obj = mtedi.Edi()
-            >>> edi_obj.read_edi_file(fn=r"/home/mt/mt01.edi")
+            >>> from mt_metadata.transfer_functions.io.edi import EDI
+            >>> edi_obj = EDI
+            >>> edi_obj.read(fn=r"/home/mt/mt01.edi")
 
         """
 
@@ -317,8 +274,9 @@ class EDI(object):
                     # component
                     try:
                         d_lines[ii] = float(dd)
-                        if d_lines[ii] == 1.0e32:
+                        if d_lines[ii] == self.header.empty:
                             d_lines[ii] = 0.0
+                            
                     except ValueError:
                         d_lines[ii] = 0.0
                 data_dict[key] += d_lines
@@ -493,13 +451,8 @@ class EDI(object):
                         
             # check for empty values
             s_arr[s_arr == 0] = np.nan
-            try:
-                s_arr[s_arr == float(self.Header.empty)] = np.nan
-            except ValueError:
-                self.logger.warning(
-                    f"Empty value {self.Header.empty} is not a float, "
-                    f"it is {type(self.Header.empty)} "
-                    "and could not be used to find empty values")
+            s_arr[s_arr == self.Header.empty] = np.nan
+
             
             # from A. Kelbert's EMTF
             # cross spectra matrices
@@ -820,7 +773,7 @@ class EDI(object):
 
         for d_index, d_comp in enumerate(data_comp_arr, 1):
             if d_comp == 0.0 and data_key.lower() not in ["zrot", "trot"]:
-                d_comp = float(self.Header.empty)
+                d_comp = self.Header.empty
             # write the string in the specified format
             num_str = "{0:{1}}".format(d_comp, self._num_format)
 

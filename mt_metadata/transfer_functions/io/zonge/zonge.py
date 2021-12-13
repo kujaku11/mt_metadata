@@ -629,7 +629,7 @@ def read_avg(fn):
     
     return tf_object
 
-def write_avg(fn):
+def write_avg(tf_object, fn=None):
     """
     write an .avg file.
     
@@ -639,3 +639,20 @@ def write_avg(fn):
     :rtype: TYPE
 
     """
+    
+    raise AttributeError("Writing an AVG file does not exist yet.")
+    
+    # from mt_metadata.transfer_functions.core import TF
+
+    # if not isinstance(tf_object, TF):
+    #     raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
+
+    
+    # zavg = ZongeMTAvg()
+    # zavg.station_metadata = tf_object.station_metadata
+    
+    # zavg.comp_dict = zavg._make_comp_dict(tf_object.period.size)
+    # if tf_object.has_impedance():
+    #     for key in ["zxx", "zxy", "zyx", "zyy"]:
+            
+    

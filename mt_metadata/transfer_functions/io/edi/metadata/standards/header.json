@@ -70,11 +70,11 @@
         "example": "2020-01-01"
     },
 	"empty": {
-        "type": "string",
+        "type": "float",
         "required": true,
-        "style": "free form",
+        "style": "number",
         "units": null,
-        "description": "null data values, usually a large number or NaN",
+        "description": "null data values, usually a large number",
         "options": [],
         "alias": [],
         "example": "1E+32"
