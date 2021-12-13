@@ -44,6 +44,22 @@ class Header(Base):
         self.unit = Unit()
         super().__init__(attr_dict=attr_dict, **kwargs)
         
+        self._header_keys = [
+            "survey.type",
+            "survey.array",
+            "tx.type",
+            "m_t_edit.version",
+            "m_t_edit.auto.phase_flip",
+            "m_t_edit.phase_slope.smooth",
+            "m_t_edit.phase_slope.to_z_mag",
+            "m_t_edit.d_plus.use",
+            "rx.gdp_stn",
+            "rx.length",
+            "rx.h_p_r",
+            "g_p_s.lat",
+            "g_p_s.lon",
+            "unit.length"]
+        
         
     def read_header(self, lines):
         """
@@ -72,7 +88,7 @@ class Header(Base):
             elif line[0] == "S":
                 break
             
-        return lines [ii:]
+        return lines[ii:]
     
     @property
     def latitude(self):
@@ -97,6 +113,34 @@ class Header(Base):
     @station.setter
     def station(self, value):
         self.rx.gdp_stn = value
+        
+    def write_header(self):
+        """
+        Write .avg header lines
+        
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        lines = [""]
+        
+        for key in self._header_keys:
+            value = self.get_attr_from_name(key)
+            if isinstance(value, list):
+                value = ",".join([f"{v:.1f}" for v in value])
+            elif isinstance(value, (float)):
+                value = f"{value:.7f}"
+            elif isinstance(value, (int)):
+                value = f"{value:.0f}"
+            
+            key = key.replace("_", " ").title().replace(" ", "").replace("MTEdit.", "MTEdit:")
+            
+            lines.append(f"${key}={value.capitalize()}")
+            
+        return lines
+        
+        
+    
         
         
     

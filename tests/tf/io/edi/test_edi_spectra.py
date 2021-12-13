@@ -184,7 +184,7 @@ class TestSpectraEDI(unittest.TestCase):
     def test_z_err(self):
         self.assertTrue(np.isclose(self.edi_spectra.z_err, self.edi_z.z_err).all())
         
-    def test_t_err(self):
+    def test_t(self):
         self.assertTrue(np.isclose(self.edi_spectra.t, self.edi_z.t).all()) 
         
     def test_t_err(self):

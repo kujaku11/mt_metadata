@@ -151,7 +151,6 @@ class ZongeMTAvg():
         self.freq_dict = None
         self.freq_dict_x = None
         self.freq_dict_y = None
-        self.avg_dict = {"ex": "4", "ey": "5"}
         self.z_coordinate = "down"
         
         self.fn = fn
@@ -179,23 +178,26 @@ class ZongeMTAvg():
         :rtype: TYPE
 
         """
-        # check to see if all 4 components are in the .avg file
-        if len(lines) > 140:
-            comp_dict = dict(
-                [
-                    (ckey, np.zeros(int(len(lines) / 4), dtype=self.info_dtype))
-                    for ckey in list(self.comp_flag.keys())
-                ]
-            )
-        # if there are only 2
-        else:
-            comp_dict = dict(
-                [
-                    (ckey, np.zeros(int(len(lines) / 2), dtype=self.info_dtype))
-                    for ckey in list(self.comp_flag.keys())
-                ]
-            )
-        return comp_dict
+        avg_str = "".join(lines)
+        
+        index_0 = avg_str.find("$")
+        index_1 = avg_str.find("$", index_0 + 1)
+        
+        n_values = int(round((index_1 - index_0) / index_0))
+        
+        return self._make_comp_dict(n_values)
+    
+    def _make_comp_dict(self, n_values):
+        """
+        
+        """
+        
+        return dict(
+            [
+                (ckey, np.zeros(n_values, dtype=self.info_dtype))
+                for ckey in list(self.comp_flag.keys())
+            ]
+        )
 
     def read_avg_file(self, fn=None):
         """
@@ -251,14 +253,14 @@ class ZongeMTAvg():
 
         self.header.logger.info("Read file {0}".format(self.fn))
 
-    def convert2complex(self, zmag, zphase):
+    def to_complex(self, zmag, zphase):
         """
         outputs of mtedit are magnitude and phase of z, convert to real and
         imaginary parts, phase is in milliradians
 
         """
 
-        if type(zmag) is np.ndarray:
+        if isinstance(zmag, np.ndarray):
             assert len(zmag) == len(zphase)
 
         if self.z_coordinate == "up":
@@ -269,6 +271,32 @@ class ZongeMTAvg():
             zimag = zmag * np.sin((zphase / 1000))
 
         return zreal, zimag
+    
+    def to_amp_phase(self, zreal, zimag):
+        """
+        Convert to amplitude and phase from real and imaginary
+        
+        :param zreal: DESCRIPTION
+        :type zreal: TYPE
+        :param zimag: DESCRIPTION
+        :type zimag: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        if isinstance(zreal, np.ndarray):
+            assert len(zreal) == len(zimag)
+
+        if self.z_coordinate == "up":
+            zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
+            
+            
+        else:
+            zphase = np.arctan2(zimag, zreal) * 1000
+        zmag = np.sqrt(zreal**2 + zimag**2)
+        
+        return zmag, zphase
 
     def _match_freq(self, freq_list1, freq_list2):
         """
@@ -276,14 +304,12 @@ class ZongeMTAvg():
         values are index of where that frequency should be in the array of z
         and tipper
         """
-        #
-        #        if set(freq_list1).issubset(freq_list2) == True:
-        #            return dict([(freq, ff) for ff, freq in enumerate(freq_list1)])
-        #        else:
+
         comb_freq_list = list(set(freq_list1).intersection(freq_list2)) + list(
             set(freq_list1).symmetric_difference(freq_list2)
         )
         comb_freq_list.sort()
+        
         return dict([(freq, ff) for ff, freq in enumerate(comb_freq_list)])
 
     def _fill_z(self):
@@ -339,7 +365,7 @@ class ZongeMTAvg():
             for ikey in self.comp_lst_z:
                 ii, jj = self.comp_index[ikey]
 
-                zr, zi = self.convert2complex(
+                zr, zi = self.to_complex(
                     self.comp_dict[ikey]["z.mag"][:nz].copy(),
                     self.comp_dict[ikey]["z.phz"][:nz].copy(),
                 )
@@ -364,7 +390,7 @@ class ZongeMTAvg():
             for ikey in self.comp_lst_z:
                 ii, jj = self.comp_index[ikey]
 
-                zr, zi = self.convert2complex(
+                zr, zi = self.to_complex(
                     self.comp_dict[ikey]["z.mag"][:nz].copy(),
                     self.comp_dict[ikey]["z.phz"][:nz].copy(),
                 )
@@ -389,7 +415,7 @@ class ZongeMTAvg():
         """
 
         if self.comp_flag["tzy"] == False and self.comp_flag["tzx"] == False:
-            print("No Tipper found")
+            self.header.logger.info("No Tipper found in %s", self.fn.name)
             return
 
         flst = np.array(
@@ -434,7 +460,7 @@ class ZongeMTAvg():
             for ikey in self.comp_lst_tip:
                 ii, jj = self.comp_index[ikey]
 
-                tr, ti = self.convert2complex(
+                tr, ti = self.to_complex(
                     self.comp_dict[ikey]["z.mag"][:nz],
                     self.comp_dict[ikey]["z.phz"][:nz],
                 )
@@ -462,7 +488,7 @@ class ZongeMTAvg():
             for ikey in self.comp_lst_tip:
                 ii, jj = self.comp_index[ikey]
 
-                tzr, tzi = self.convert2complex(
+                tzr, tzi = self.to_complex(
                     self.comp_dict[ikey]["z.mag"][:nz],
                     self.comp_dict[ikey]["z.phz"][:nz],
                 )
@@ -506,15 +532,49 @@ class ZongeMTAvg():
         
         return sm
     
+    @station_metadata.setter
+    def station_metadata(self, sm):
+        self.header.station = sm.id
+        self.header.latitdude = sm.location.latitude
+        self.header.longitude = sm.location.longitude
+        
+        if hasattr(sm.run[0].ex):
+            self.header.rx.length = sm.run[0].ex.dipole_length
+        
+    
     @property
     def survey_metadata(self):
         return Survey()
+    
+    def write(self, fn):
+        """
+        Write an .avg file
+        
+        :param fn: DESCRIPTION
+        :type fn: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        
+        
+    
+    
     
 # =============================================================================
 # Read
 # =============================================================================
    
-def read_avg(fn): 
+def read_avg(fn):
+    """
+    Read an .avg file output by MTEdit developed by Zonge International.
+    
+    :param fn: full path to .avg file to be read
+    :type fn: string or :class:`pathlib.Path`
+    :return: Transfer Function object
+    :rtype: :class:`mt_metadata.transfer_functions.core.TF`
+
+    """
     from mt_metadata.transfer_functions.core import TF
     
     obj = ZongeMTAvg(fn=fn)
@@ -532,3 +592,14 @@ def read_avg(fn):
         tf_object.tipper_error = obj.t_err
     
     return tf_object
+
+def write_avg(fn):
+    """
+    write an .avg file.
+    
+    :param fn: DESCRIPTION
+    :type fn: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
