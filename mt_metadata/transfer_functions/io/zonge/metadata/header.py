@@ -43,8 +43,7 @@ class Header(Base):
         self.g_p_s = GPS()
         self.unit = Unit()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        if self.empty == 0:
-            self.empty = 1E32
+
         
         self._header_keys = [
             "survey.type",
