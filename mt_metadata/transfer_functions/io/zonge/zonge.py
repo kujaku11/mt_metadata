@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from .metadata import Header
-from mt_metadata.transfer_functions.tf import Survey, Station
+from mt_metadata.transfer_functions.tf import Survey, Station, Run
 
 # ==============================================================================
 # deal with avg files output from mtedit
@@ -429,7 +429,7 @@ class ZongeMTAvg():
         """
 
         if self.comp_flag["tzy"] == False and self.comp_flag["tzx"] == False:
-            self.header.logger.info("No Tipper found in %s", self.fn.name)
+            self.header.logger.debug("No Tipper found in %s", self.fn.name)
             return
 
         flst = np.array(
@@ -543,7 +543,40 @@ class ZongeMTAvg():
             sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
         
         sm.data_type = self.header.survey.type
-        
+        sm.runs.append(Run(id="001"))
+        for comp in self.comp_lst_z + self.comp_lst_tip:
+            if "zx" in comp:
+                sm.runs[0]._ex.component = "ex"
+                sm.runs[0]._ex.dipole_length = self.header.rx.length
+                sm.runs[0]._ex.measurement_azimuth = self.header.rx.h_p_r[0]
+                sm.runs[0]._ex.translated_azimuth = self.header.rx.h_p_r[0]
+                sm.runs[0]._ex.channel_id = 1
+                
+            elif "zy" in comp:
+                sm.runs[0]._ey.component = "ey"
+                sm.runs[0]._ey.dipole_length = self.header.rx.length
+                sm.runs[0]._ey.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                sm.runs[0]._ey.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                sm.runs[0]._ey.channel_id = 2
+            if comp[-1] == "x":
+                sm.runs[0]._hx.component = "hx"
+                sm.runs[0]._hx.measurement_azimuth = self.header.rx.h_p_r[0]
+                sm.runs[0]._hx.translated_azimuth = self.header.rx.h_p_r[0]
+                sm.runs[0]._hx.channel_id = 3
+                
+            elif comp[-1] == "y":
+                sm.runs[0]._hy.component = "hy"
+                sm.runs[0]._hy.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                sm.runs[0]._hy.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                sm.runs[0]._hy.channel_id = 4
+                
+            if comp[1] == "z":
+                sm.runs[0]._hz.component = "hz"
+                sm.runs[0]._hz.measurement_tilt = self.header.rx.h_p_r[-1]
+                sm.runs[0]._hz.translated_tilt = self.header.rx.h_p_r[-1]
+                sm.runs[0]._hz.translated_azimuth = self.header.rx.h_p_r[0]
+                sm.runs[0]._hz.channel_id = 5
+
         return sm
     
     @station_metadata.setter

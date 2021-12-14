@@ -33,7 +33,7 @@ class Electric(Channel):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.dipole_length = 0.0
+        self._dipole_length = 0.0
         self.positive = Electrode()
         self.negative = Electrode()
         self.contact_resistance = Diagnostic()
@@ -46,3 +46,18 @@ class Electric(Channel):
         # descriptions and throw an error
         Channel.__init__(self, **kwargs)
         self._attr_dict = attr_dict
+        
+    
+    @property
+    def dipole_length(self):
+        return self._dipole_length
+    
+    @dipole_length.setter
+    def dipole_length(self, value):
+        try:
+            value = float(value)
+        except ValueError:
+            raise ValueError("Input dipole length must be a float")
+            
+        
+        

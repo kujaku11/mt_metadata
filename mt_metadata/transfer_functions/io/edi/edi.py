@@ -1001,7 +1001,7 @@ class EDI(object):
         self.Header.acqdate = sm.time_period.start_date
         self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id
-        self.Header.declination = sm.location.declination.value
+        self.Header.declination = sm.location.declination
         self.Header.elev = sm.location.elevation
         self.Header.fileby = sm.provenance.submitter.author
         self.Header.filedate = sm.provenance.creation_time
@@ -1117,7 +1117,7 @@ class EDI(object):
                 try:
                     self.Measurement.from_metadata(getattr(sm.runs[0], f"{comp}"))
                 except AttributeError as error:
-                    self.logger.info(error)
+                    self.logger.exception(error)
                     self.logger.debug(f"Did not find information on {comp}")
 
     def _get_electric_metadata(self, comp):
@@ -1309,7 +1309,7 @@ def read_edi(fn):
     return tf_obj
 
 
-def write_edi(tf_object, fn=None):
+def write_edi(tf_object, fn=None, **kwargs):
     """
     Write an edi file from an :class:`mtpy.core.mt.MT` object
 
@@ -1350,7 +1350,7 @@ def write_edi(tf_object, fn=None):
         if hasattr(edi_obj.Measurement, f"meas_{comp}"):
             setattr(edi_obj.Data, comp, getattr(edi_obj.Measurement, f"meas_{comp}").id)
 
-    new_edi_fn = edi_obj.write(new_edi_fn=fn)
+    new_edi_fn = edi_obj.write(new_edi_fn=fn, **kwargs)
     edi_obj._fn = new_edi_fn
 
     return edi_obj

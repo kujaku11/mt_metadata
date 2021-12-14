@@ -33,15 +33,6 @@ class HMeasurement(Base):
             'dip': '<.2f',
             'acqchan': '<',
             }
-        
-        self.id = None
-        self.chtype = None
-        self.x = 0.
-        self.y = 0.
-        self.z = 0.
-        self.azm = 0.0
-        self.dip = 0.0
-        self.acqchan = '0'
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         

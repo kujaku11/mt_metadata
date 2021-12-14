@@ -382,6 +382,7 @@ class DefineMeasurement(Base):
 
         if channel.component is None:
             return
+        
         if "e" in channel.component:
             meas = EMeasurement(
                 **{
@@ -395,8 +396,9 @@ class DefineMeasurement(Base):
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)
+            print(f"meas_{channel.component.lower()}")
 
-        if "h" in channel.component:
+        elif "h" in channel.component:
             azm = channel.measurement_azimuth
             if azm != channel.translated_azimuth:
                 azm = channel.translated_azimuth
@@ -411,6 +413,7 @@ class DefineMeasurement(Base):
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)
+            print(f"meas_{channel.component.lower()}")
 
     @property
     def channels_recorded(self):

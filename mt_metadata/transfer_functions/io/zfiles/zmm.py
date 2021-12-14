@@ -205,11 +205,14 @@ class ZMMHeader(object):
         for ii, ch in enumerate(self._channel_order):
             try:
                 channel = getattr(self.station_metadata.runs[0], ch)
-                if channel.channel_number is None:
+                if channel.channel_number == None:
                     channel.channel_number = int(ii)
 
                 if channel.translated_tilt is None:
                     channel.translated_tilt = 0.0
+                    
+                if channel.translated_azimuth is None:
+                    channel.translated_azimuth = 0.0
 
                 lines += [
                     (
@@ -1006,8 +1009,6 @@ def write_zmm(tf_object, fn=None):
         setattr(zmm_obj, c.channel, c)
     zmm_obj.survey_metadata.update(tf_object.survey_metadata)
     zmm_obj.num_freq = tf_object.period.size
-
-
 
     zmm_obj.write(fn)
 

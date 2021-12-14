@@ -51,7 +51,7 @@ from pathlib import Path
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io import (
     read_edi, write_edi, read_zmm, write_zmm, read_jfile, write_jfile, 
-    read_emtfxml, write_emtfxml)
+    read_emtfxml, write_emtfxml, read_avg, write_avg)
 
 logger = setup_logger(__name__)
 # =============================================================================
@@ -77,6 +77,11 @@ plugins = {
         "file_types": ["xml"],
         "reader": read_emtfxml,
         "writer": write_emtfxml,
+    },
+    "avg": {
+        "file_types": ["avg"],
+        "reader": read_avg,
+        "writer": write_avg,
     },
 }
 
@@ -158,14 +163,7 @@ def read_file(fn, file_type=None):
     return file_reader(fn)
 
 
-def write_file(
-    mt_object,
-    fn,
-    file_type=None,
-    longitude_format="lon",
-    latlon_format="dms",
-    overwrite=False,
-):
+def write_file(mt_object, fn, file_type=None, **kwargs):
     """
     write a file based on extension or file type
 
@@ -175,15 +173,15 @@ def write_file(
     :type file_type: TYPE, optional
     :return: DESCRIPTION
     :rtype: TYPE
+    
+    longitude_format="lon",
+    latlon_format="dms",
+    overwrite=False,
 
     """
 
     if not isinstance(fn, Path):
         fn = Path(fn)
-
-    # if fn.exists():
-    #     if not overwrite:
-    #         fn = MTfh.make_unique_filename(fn)
 
     if file_type is not None:
         try:
@@ -197,5 +195,8 @@ def write_file(
             raise KeyError(msg)
     else:
         file_type, file_writer = get_writer(fn.suffix.replace(".", ""))
+        
+    new_obj = file_writer(mt_object, fn, **kwargs)
+    logger.info("Wrote %s", fn)
 
-    return file_writer(mt_object, fn)
+    return new_obj

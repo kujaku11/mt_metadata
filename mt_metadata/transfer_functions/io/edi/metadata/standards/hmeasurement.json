@@ -1,13 +1,13 @@
 {
     "id": {
-        "type": "string",
+        "type": "float",
         "required": true,
-        "style": "free form",
+        "style": "number",
         "units": null,
-        "description": "Name of the channel",
+        "description": "Channel number, could be location.channel_number.",
         "options": [],
         "alias": [],
-        "example": "ex"
+        "example": "1"
     },
 	"chtype": {
         "type": "string",

@@ -60,7 +60,7 @@ class Station(Base):
         self.geographic_name = None
         self.datum = None
         self.num_channels = None
-        self.channels_recorded = []
+        self._channels_recorded = []
         self.run_list = []
         self.channel_layout = None
         self.comments = None
@@ -205,3 +205,22 @@ class Station(Base):
 
             run = run.replace("'", "").replace('"', "")
             self.runs.append(Run(id=run))
+            
+    @property
+    def channels_recorded(self):
+        recorded_list = []
+        for run in self.runs:
+            recorded_list += run.channels_recorded_all
+        
+        self._recorded_channels = list(set(recorded_list))
+            
+        return self._recorded_channels
+    
+    @channels_recorded.setter
+    def channels_recorded(self, value):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError("Input channels must be a list")
+            
+        self._recorded_channels = value
+        
+        

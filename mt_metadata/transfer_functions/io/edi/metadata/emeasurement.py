@@ -36,16 +36,6 @@ class EMeasurement(Base):
             'z2': '<.2f',
             'acqchan': '<',
             }
-        
-        self.id = None
-        self.chtype = None
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-        self.x2 = 0.
-        self.y2 = 0.
-        self.z2 = 0.
-        self.acqchan = '0'
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         
