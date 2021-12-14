@@ -230,5 +230,5 @@ class DataSection(Base):
 
         for ch_id in self.channel_ids:
             for key, value in ch_ids.items():
-                if ch_id == str(value):
+                if float(ch_id) == value:
                     setattr(self, key.lower(), value)

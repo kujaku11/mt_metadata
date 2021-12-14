@@ -107,7 +107,7 @@ class TestPhoenixEDI(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict([('acqchan', 'CH1'),
                      ('chtype', 'EX'),
-                     ('id', '05374.0537'),
+                     ('id', 5374.0537),
                      ('x', -50.0),
                      ('x2', 50.0),
                      ('y', -0.0),
@@ -121,7 +121,7 @@ class TestPhoenixEDI(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict([('acqchan', 'CH2'),
                      ('chtype', 'EY'),
-                     ('id', '05375.0537'),
+                     ('id', 5375.0537),
                      ('x', 22.4),
                      ('x2', -22.4),
                      ('y', -44.7),
@@ -136,7 +136,7 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
-                     ('id', '05371.0537'),
+                     ('id', 5371.0537),
                      ('x', 8.5),
                      ('y', 8.5),
                      ('z', 0.0)])
@@ -148,7 +148,7 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
-                     ('id', '05372.0537'),
+                     ('id', 5372.0537),
                      ('x', -8.5),
                      ('y', 8.5),
                      ('z', 0.0)])
@@ -160,7 +160,7 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
-                     ('id', '05373.0537'),
+                     ('id', 5373.0537),
                      ('x', 21.2),
                      ('y', -21.2),
                      ('z', 0.0)])
@@ -172,7 +172,7 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
-                     ('id', '05376.0537'),
+                     ('id', 5376.0537),
                      ('x', 8.5),
                      ('y', 45008.5),
                      ('z', 0.0)])
@@ -184,7 +184,7 @@ class TestPhoenixEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),
-                     ('id', '05377.0537'),
+                     ('id', 5377.0537),
                      ('x', -8.5),
                      ('y', 45008.5),
                      ('z', 0.0)])
@@ -235,8 +235,8 @@ class TestPhoenixEDI(unittest.TestCase):
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
         
         for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5):
-           with self.subTest(ch):
-               self.assertEqual(d_list[ii], getattr(self.edi_obj.Data, ch))
+           with self.subTest(msg=ch):
+               self.assertEqual(str(float(d_list[ii])), getattr(self.edi_obj.Data, ch))
                
            
             

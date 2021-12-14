@@ -84,7 +84,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EX'),
-                     ('id', '1004.001'),
+                     ('id', 1004.001),
                      ('x', 0.0),
                      ('x2', 0.0),
                      ('y', 0.0),
@@ -98,7 +98,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EY'),
-                     ('id', '1005.001'),
+                     ('id', 1005.001),
                      ('x', 0.0),
                      ('x2', 0.0),
                      ('y', 0.0),
@@ -113,7 +113,7 @@ class TestCGGEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
-                     ('id', '1001.001'),
+                     ('id', 1001.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -125,7 +125,7 @@ class TestCGGEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
-                     ('id', '1002.001'),
+                     ('id', 1002.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -137,7 +137,7 @@ class TestCGGEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
-                     ('id', '1003.001'),
+                     ('id', 1003.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -149,7 +149,7 @@ class TestCGGEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
-                     ('id', '1006.001'),
+                     ('id', 1006.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -161,7 +161,7 @@ class TestCGGEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),
-                     ('id', '1007.001'),
+                     ('id', 1007.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])

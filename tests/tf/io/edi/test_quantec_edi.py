@@ -56,7 +56,7 @@ class TestQuantecEDI(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EX'),
-                     ('id', '14.001'),
+                     ('id', 14.001),
                      ('x', -50.0),
                      ('x2', 50.0),
                      ('y', 0.0),
@@ -70,7 +70,7 @@ class TestQuantecEDI(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EY'),
-                     ('id', '15.001'),
+                     ('id', 15.001),
                      ('x', 0.0),
                      ('x2', 0.0),
                      ('y', -50.0),
@@ -85,7 +85,7 @@ class TestQuantecEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
-                     ('id', '11.001'),
+                     ('id', 11.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -97,7 +97,7 @@ class TestQuantecEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
-                     ('id', '12.001'),
+                     ('id', 12.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -109,7 +109,7 @@ class TestQuantecEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
-                     ('id', '13.001'),
+                     ('id', 13.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -121,7 +121,7 @@ class TestQuantecEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
-                     ('id', '11.001'),
+                     ('id', 11.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])
@@ -133,7 +133,7 @@ class TestQuantecEDI(unittest.TestCase):
                      ('azm', 90.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),
-                     ('id', '12.001'),
+                     ('id', 12.001),
                      ('x', 0.0),
                      ('y', 0.0),
                      ('z', 0.0)])

@@ -60,7 +60,7 @@ class TestSpectraEDI(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EX'),
-                     ('id', '14.001'),
+                     ('id', 14.001),
                      ('x', 4872.0),
                      ('x2', 4843.0),
                      ('y', -3577.0),
@@ -74,7 +74,7 @@ class TestSpectraEDI(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict([('acqchan', None),
                      ('chtype', 'EY'),
-                     ('id', '15.001'),
+                     ('id', 15.001),
                      ('x', 4906.0),
                      ('x2', 4810.0),
                      ('y', -3515.0),
@@ -89,7 +89,7 @@ class TestSpectraEDI(unittest.TestCase):
                      ('azm', 107.0),
                      ('chtype', 'HX'),
                      ('dip', 0.0),
-                     ('id', '11.001'),
+                     ('id', 11.001),
                      ('x', 4858.0),
                      ('y', -3530.0),
                      ('z', 0.0)])
@@ -101,7 +101,7 @@ class TestSpectraEDI(unittest.TestCase):
                      ('azm', -163.0),
                      ('chtype', 'HY'),
                      ('dip', 0.0),
-                     ('id', '12.001'),
+                     ('id', 12.001),
                      ('x', 4858.0),
                      ('y', -3530.0),
                      ('z', 0.0)])
@@ -113,7 +113,7 @@ class TestSpectraEDI(unittest.TestCase):
                      ('azm', 0.0),
                      ('chtype', 'HZ'),
                      ('dip', 0.0),
-                     ('id', '13.001'),
+                     ('id', 13.001),
                      ('x', 4858.0),
                      ('y', -3530.0),
                      ('z', 0.0)])
@@ -125,7 +125,7 @@ class TestSpectraEDI(unittest.TestCase):
                      ('azm', 107.0),
                      ('chtype', 'RRHX'),
                      ('dip', 0.0),
-                     ('id', '11.001'),
+                     ('id', 11.001),
                      ('x', 4858.0),
                      ('y', -3530.0),
                      ('z', 0.0)])
@@ -137,7 +137,7 @@ class TestSpectraEDI(unittest.TestCase):
                      ('azm', -163.0),
                      ('chtype', 'RRHY'),
                      ('dip', 0.0),
-                     ('id', '12.001'),
+                     ('id', 12.001),
                      ('x', 4858.0),
                      ('y', -3530.0),
                      ('z', 0.0)])

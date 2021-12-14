@@ -11,6 +11,8 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
@@ -59,5 +61,13 @@ class Electric(Channel):
         except ValueError:
             raise ValueError("Input dipole length must be a float")
             
+        self._dipole_length = value
+        
+        if self.translated_azimuth != None:
+            self.positive.x2 = value * np.cos(np.deg2rad(self.translated_azimuth))
+            self.positive.y2 = value * np.sin(np.deg2rad(self.translated_azimuth))
+        else:
+            self.positive.x2 = value * np.cos(np.deg2rad(self.measurement_azimuth))
+            self.positive.y2 = value * np.sin(np.deg2rad(self.measurement_azimuth))
         
         

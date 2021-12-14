@@ -534,9 +534,10 @@ class EDI(object):
                 ee[0, 0] = s_arr[cc.hz, cc.hz]
                 
             # check to make sure the values are legit for accurate results
-            if abs(np.linalg.det(rh)) <  rh.real.min():
+            if abs(np.linalg.det(rh)) <  np.finfo(float).eps:
                 self.logger.warning(
-                    f"spectral matrix determinant is too small for period {key}. "
+                    "spectral matrix determinant is too small "
+                    f"{abs(np.linalg.det(rh))} for period {key}. "
                     "Results may be inaccurate")
             
             tfh = np.matmul(np.linalg.inv(rh), re)

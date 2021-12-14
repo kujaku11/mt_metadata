@@ -44,7 +44,7 @@ class TestHeader(unittest.TestCase):
             
 class TestEMeasurement(unittest.TestCase):
     def setUp(self):
-        self.e_dict = {'id': '14.001', 'chtype': 'EX', 'x': -50., 
+        self.e_dict = {'id': 14.001, 'chtype': 'EX', 'x': -50., 
                        'y': 0., 'x2': 50., 'y2': 0.}
         
         self.ex = EMeasurement(**self.e_dict)
@@ -55,7 +55,7 @@ class TestEMeasurement(unittest.TestCase):
             
 class TestHMeasurement(unittest.TestCase):
     def setUp(self):
-        self.h_dict = {'id': '12.001', 'chtype': 'HY', 'x': 0., 
+        self.h_dict = {'id': 12.001, 'chtype': 'HY', 'x': 0., 
                        'y': 0., 'azm': 90}
         
         self.hy = HMeasurement(**self.h_dict)

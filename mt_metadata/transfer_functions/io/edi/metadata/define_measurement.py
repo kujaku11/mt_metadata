@@ -166,7 +166,7 @@ class DefineMeasurement(Base):
                 m = getattr(self, f"meas_{comp}")
                 # if there are remote references that are the same as the
                 # h channels skip them.
-                ch_ids[m.chtype] = str(m.id)
+                ch_ids[m.chtype] = m.id
             except AttributeError:
                 continue
 
@@ -396,7 +396,6 @@ class DefineMeasurement(Base):
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)
-            print(f"meas_{channel.component.lower()}")
 
         elif "h" in channel.component:
             azm = channel.measurement_azimuth
@@ -413,7 +412,6 @@ class DefineMeasurement(Base):
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)
-            print(f"meas_{channel.component.lower()}")
 
     @property
     def channels_recorded(self):

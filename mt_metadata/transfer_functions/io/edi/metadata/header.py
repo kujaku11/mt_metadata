@@ -245,7 +245,7 @@ class Header(Location):
             elif key in ["elevation"]:
                 key = "elev"
             if "declination" in key:
-                if value is None:
+                if self.declination.value == 0.0:
                     continue
 
             if key in ["lat", "lon", "long"] and value is not None:
@@ -253,8 +253,9 @@ class Header(Location):
                     value = f"{value:.6f}"
                 else:
                     value = self._convert_position_float2str(value)
-            if key in ["elev", "declination"] and value is not None:
+            if key in ["elev"] and value is not None:
                 value = "{0:.3f}".format(value)
+            
 
             if isinstance(value, list):
                 value = ",".join(value)
