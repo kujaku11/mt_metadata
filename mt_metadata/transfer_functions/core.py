@@ -67,6 +67,7 @@ class TF:
             "start": "station_metadata.time_period.start",
             "end": "station_metadata.time_period.end",
             "runs_processed": "station_metadata.run_list",
+            "coordinate_system": "station_metadata.orientation.reference_frame",
         }
 
         self._ch_input_dict = {
@@ -101,13 +102,13 @@ class TF:
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
-        lines.append(f"\tSurvey:        {self.survey_metadata.id}")
-        lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.elevation:.3f}")
+        lines.append(f"\tSurvey:            {self.survey_metadata.id}")
+        lines.append(f"\tProject:           {self.survey_metadata.project}")
+        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date:     {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tLatitude:          {self.latitude:.3f}")
+        lines.append(f"\tLongitude:         {self.longitude:.3f}")
+        lines.append(f"\tElevation:         {self.elevation:.3f}")
         lines.append("\tDeclination:   ")
         lines.append(
             f"\t\tValue:     {self.station_metadata.location.declination.value}"
@@ -115,9 +116,10 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
+        lines.append(f"\tCoordinate System: {self.station_metadata.orientation.reference_frame}")
 
-        lines.append(f"\tImpedance:     {self.has_impedance()}")
-        lines.append(f"\tTipper:        {self.has_tipper()}")
+        lines.append(f"\tImpedance:         {self.has_impedance()}")
+        lines.append(f"\tTipper:            {self.has_tipper()}")
 
         if self.period is not None:
             lines.append(f"\tN Periods:     {len(self.period)}")
