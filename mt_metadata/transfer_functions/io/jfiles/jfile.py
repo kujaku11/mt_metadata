@@ -234,7 +234,7 @@ class JFile:
                 all_periods.append(f_key)
 
         if len(list(t_dict["tzx"].keys())) == 0:
-            self.logger.info(f"Could not find any Tipper data in {self.fn}")
+            self.logger.debug(f"Could not find any Tipper data in {self.fn}")
             find_tipper = False
 
         else:
@@ -288,19 +288,23 @@ class JFile:
     def station_metadata(self):
         sm = Station()
         r1 = Run(id="001")
+        if self.header.birrp_parameters.deltat < 0:
+            r1.sample_rate = abs(self.header.birrp_parameters.deltat)
+        else:
+            r1.sample_rate = 1./(self.header.birrp_parameters.deltat)
 
         if not np.all(self.z == 0):
             r1._ex.component = "ex"
             r1._ex.channel_id = 1
 
             r1._ey.component = "ey"
-            r1._ey.channel_id = 1
+            r1._ey.channel_id = 2
 
             r1._hx.component = "hx"
-            r1._hx.channel_id = 1
+            r1._hx.channel_id = 3
 
             r1._hy.component = "hy"
-            r1._hy.channel_id = 1
+            r1._hy.channel_id = 4
 
         if not np.all(self.t == 0):
             r1._hz.component = "hz"

@@ -742,7 +742,6 @@ class EDI(object):
         with open(new_edi_fn, "w") as fid:
             fid.write("".join(edi_lines))
 
-        self.logger.info("Wrote {0}".format(new_edi_fn))
         return new_edi_fn
 
     def _write_data_block(self, data_comp_arr, data_key):
