@@ -54,14 +54,14 @@ class TransferFunction:
 
     def initialize_arrays(self, n_periods):
         self.period = np.zeros(n_periods)
-        self.z = np.zeros((n_periods, 2, 2), dtype=np.complex)
+        self.z = np.zeros((n_periods, 2, 2), dtype=complex)
         self.z_var = np.zeros_like(self.z, dtype=np.float)
-        self.z_invsigcov = np.zeros_like(self.z, dtype=np.complex)
-        self.z_residcov = np.zeros_like(self.z, dtype=np.complex)
-        self.t = np.zeros((n_periods, 1, 2), dtype=np.complex)
+        self.z_invsigcov = np.zeros_like(self.z, dtype=complex)
+        self.z_residcov = np.zeros_like(self.z, dtype=complex)
+        self.t = np.zeros((n_periods, 1, 2), dtype=complex)
         self.t_var = np.zeros_like(self.t, dtype=np.float)
-        self.t_invsigcov = np.zeros((n_periods, 2, 2), dtype=np.complex)
-        self.t_residcov = np.zeros((n_periods, 1, 1), dtype=np.complex)
+        self.t_invsigcov = np.zeros((n_periods, 2, 2), dtype=complex)
+        self.t_residcov = np.zeros((n_periods, 1, 1), dtype=complex)
 
     @property
     def array_dict(self):
