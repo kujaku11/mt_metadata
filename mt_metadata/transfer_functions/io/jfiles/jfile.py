@@ -11,25 +11,27 @@ from pathlib import Path
 import numpy as np
 from collections import OrderedDict
 
-from mt_metadata.transfer_functions import tf as metadata
+from mt_metadata.transfer_functions.tf import Survey, Station, Run
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.mt_logger import setup_logger
+from .metadata import Header
 
 # ==============================================================================
 # Class to read j_file
 # ==============================================================================
-class JFile(object):
+class JFile:
     """
     be able to read and write a j-file
     """
 
     def __init__(self, fn=None):
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.header = Header()
+    
+        
         self._jfn = None
         self.fn = fn
-        self.header_dict = None
-        self.metadata_dict = None
-        self.station = None
+
         self.z = None
         self.z_err = None
         self.t = None
@@ -40,7 +42,7 @@ class JFile(object):
             self.read_j_file()
 
     def __str__(self):
-        lines = [f"Station: {self.station}", "-" * 50]
+        lines = [f"Station: {self.header.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
@@ -49,12 +51,18 @@ class JFile(object):
         lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
         lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
         if self.z is not None:
-            lines.append("\tImpedance:     True")
+            if (self.z == 0).all():
+                lines.append("\tImpedance:     False")
+            else:
+                lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
 
         if self.t is not None:
-            lines.append("\tTipper:        True")
+            if (self.t == 0).all():
+                lines.append("\tTipper:        False")
+            else:
+                lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
 
@@ -71,12 +79,12 @@ class JFile(object):
 
     def __repr__(self):
         lines = []
-        lines.append(f"station='{self.station}'")
-        lines.append(f"latitude={self.latitude:.2f}")
-        lines.append(f"longitude={self.longitude:.2f}")
-        lines.append(f"elevation={self.elevation:.2f}")
+        lines.append(f"station='{self.header.station}'")
+        lines.append(f"latitude={self.header.latitude:.2f}")
+        lines.append(f"longitude={self.header.longitude:.2f}")
+        lines.append(f"elevation={self.header.elevation:.2f}")
 
-        return f"MT( {(', ').join(lines)} )"
+        return f"JFile({(', ').join(lines)})"
 
     @property
     def fn(self):
@@ -101,30 +109,6 @@ class JFile(object):
             msg = f"Input file must be a *.j file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
-
-    @property
-    def latitude(self):
-        return self.metadata_dict["latitude"]
-
-    @latitude.setter
-    def latitude(self, value):
-        self.metadata_dict["latitude"] = value
-
-    @property
-    def longitude(self):
-        return self.metadata_dict["longitude"]
-
-    @longitude.setter
-    def longitude(self, value):
-        self.metadata_dict["longitude"] = value
-
-    @property
-    def elevation(self):
-        return self.metadata_dict["elevation"]
-
-    @elevation.setter
-    def elevation(self, value):
-        self.metadata_dict["elevation"] = value
 
     @property
     def periods(self):
@@ -158,127 +142,6 @@ class JFile(object):
 
         return j_lines
 
-    def _read_header_line(self, line):
-        """
-        read a header line
-        """
-        line = " ".join(line[1:].strip().split())
-
-        new_line = ""
-
-        # need to restructure the string so its readable, at least the way
-        # that birrp outputs the file
-        e_find = 0
-        for ii in range(len(line)):
-            if line[ii] == "=":
-                e_find = ii
-                new_line += line[ii]
-            elif line[ii] == " ":
-                if abs(e_find - ii) == 1:
-                    pass
-                else:
-                    new_line += ","
-            else:
-                new_line += line[ii]
-
-        # now that we have a useful line, split it into its parts
-        line_list = new_line.split(",")
-
-        # try to split up the parts into a key=value setup
-        # and try to make the values floats if they can be
-        l_dict = {}
-        key = "null"
-        for ll in line_list:
-            ll_list = ll.split("=")
-            if len(ll_list) == 1:
-                continue
-
-            # some times there is just a list of numbers, need a way to read
-            # that.
-            if len(ll_list) != 2:
-                if type(l_dict[key]) is not list:
-                    l_dict[key] = list([l_dict[key]])
-                try:
-                    l_dict[key].append(float(ll))
-                except ValueError:
-                    l_dict[key].append(ll)
-            else:
-                key = ll_list[0]
-                try:
-                    value = float(ll_list[1])
-                except ValueError:
-                    value = ll_list[1]
-
-                l_dict[key] = value
-
-        return l_dict
-
-    def read_header(self, j_lines=None):
-        """
-        Parsing the header lines of a j-file to extract processing information.
-
-        Input:
-        - j-file as list of lines (output of readlines())
-
-        Output:
-        - Dictionary with all parameters found
-
-        """
-        if j_lines is None:
-            j_lines = self._validate_j_file()
-        header_lines = [j_line for j_line in j_lines if "#" in j_line]
-        header_dict = {"title": header_lines[0][1:].strip()}
-
-        fn_count = 0
-        theta_count = 0
-        # put the information into a dictionary
-        for h_line in header_lines[1:]:
-            h_dict = self._read_header_line(h_line)
-            for key in list(h_dict.keys()):
-                if key == "filnam":
-                    h_key = "{0}_{1:02}".format(key, fn_count)
-                    fn_count += 1
-                elif key == "nskip" or key == "nread":
-                    h_key = "{0}_{1:02}".format(key, fn_count - 1)
-
-                # if its the line of angles, put them all in a list with a unique key
-                elif key == "theta1":
-                    h_key = "{0}_{1:02}".format(key, theta_count)
-                    theta_count += 1
-
-                elif key == "theta2" or key == "phi":
-                    h_key = "{0}_{1:02}".format(key, theta_count - 1)
-                else:
-                    h_key = key
-
-                header_dict[h_key] = h_dict[key]
-
-        self.header_dict = header_dict
-
-    def read_metadata(self, j_lines=None, fn=None):
-        """
-        read in the metadata of the station, or information of station
-        logistics like: lat, lon, elevation
-
-        Not really needed for a birrp output since all values are nan's
-        """
-        if j_lines is None:
-            j_lines = self._validate_j_file()
-
-        metadata_lines = [j_line for j_line in j_lines if ">" in j_line]
-
-        metadata_dict = {}
-        for m_line in metadata_lines:
-            m_list = m_line.strip().split("=")
-            m_key = m_list[0][1:].strip().lower()
-            try:
-                m_value = float(m_list[0].strip())
-            except ValueError:
-                m_value = 0.0
-
-            metadata_dict[m_key] = m_value
-
-        self.metadata_dict = metadata_dict
 
     def read_j_file(self, fn=None):
         """
@@ -305,14 +168,14 @@ class JFile(object):
 
         j_line_list = self._validate_j_file()
 
-        self.read_header(j_lines=j_line_list)
-        self.read_metadata(j_lines=j_line_list)
+        self.header.read_header(j_line_list)
+        self.header.read_metadata(j_line_list)
 
         data_lines = [
             j_line for j_line in j_line_list if not ">" in j_line and not "#" in j_line
         ][:]
 
-        self.station = data_lines[0].strip()
+        self.header.station = data_lines[0].strip()
 
         # sometimes birrp outputs some missing periods, so the best way to deal with
         # this that I could come up with was to get things into dictionaries with
@@ -387,11 +250,11 @@ class JFile(object):
         num_per = len(all_periods)
 
         # fill arrays using the period key from all_periods
-        self.z = np.zeros((num_per, 2, 2), dtype=np.complex)
-        self.z_err = np.zeros((num_per, 2, 2), dtype=np.float)
+        self.z = np.zeros((num_per, 2, 2), dtype=complex)
+        self.z_err = np.zeros((num_per, 2, 2), dtype=float)
 
-        self.t = np.zeros((num_per, 1, 2), dtype=np.complex)
-        self.t_err = np.zeros((num_per, 1, 2), dtype=np.float)
+        self.t = np.zeros((num_per, 1, 2), dtype=complex)
+        self.t_err = np.zeros((num_per, 1, 2), dtype=float)
 
         for p_index, per in enumerate(all_periods):
             for z_key in sorted(z_index_dict.keys()):
@@ -423,45 +286,51 @@ class JFile(object):
         self.z_err[np.where(self.z_err == np.inf)] = 10 ** 6
         self.t_err[np.where(self.t_err == np.inf)] = 10 ** 6
 
-        # self.Z = mtz.Z(self.z, self.z_err, freq)
-        # self.Tipper = mtz.Tipper(self.t, self.t_err, freq)
 
     @property
     def station_metadata(self):
-        sm = metadata.Station()
-        r1 = metadata.Run(id=f"{self.station}a")
+        sm = Station()
+        r1 = Run(id="001")
 
         if not np.all(self.z == 0):
-            r1.ex = metadata.Electric(component="ex", channel_id=1)
-            r1.ey = metadata.Electric(component="ey", channel_id=2)
-            r1.hx = metadata.Magnetic(component="hx", channel_id=3)
-            r1.hy = metadata.Magnetic(component="hy", channel_id=4)
+            r1._ex.component = "ex"
+            r1._ex.channel_id = 1
+            
+            r1._ey.component = "ey"
+            r1._ey.channel_id = 1
+            
+            r1._hx.component = "hx"
+            r1._hx.channel_id = 1
+            
+            r1._hy.component = "hy"
+            r1._hy.channel_id = 1
 
         if not np.all(self.t == 0):
-            r1.hz = metadata.Magnetic(component="hz", channel_id=5)
+            r1._hz.component = "hz"
+            r1._hz.channel_id = 5
 
-        sm.run_list.append(r1)
-        sm.id = self.station
+        sm.runs.append(r1)
+        sm.id = self.header.station
         sm.data_type = "MT"
 
-        sm.location.latitude = self.metadata_dict["latitude"]
-        sm.location.longitude = self.metadata_dict["longitude"]
-        sm.location.elevation = self.metadata_dict["elevation"]
+        sm.location.latitude = self.header.latitude
+        sm.location.longitude = self.header.longitude
+        sm.location.elevation = self.header.elevation
 
         # provenance
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
         sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
-        sm.transfer_function.runs_processed = sm.run_names
+        sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
-        for key, value in self.header_dict.items():
+        for key, value in self.header.birrp_parameters.to_dict(single=True).items():
             sm.transfer_function.processing_parameters.append(f"{key} = {value}")
 
         return sm
 
     @property
     def survey_metadata(self):
-        sm = metadata.Survey()
+        sm = Survey()
 
         return sm
 
@@ -493,7 +362,6 @@ def read_jfile(fn):
     )
 
     for tf_key, j_key in k_dict.items():
-        print(f"setting {tf_key} with {j_key}")
         setattr(tf_obj, tf_key, getattr(j_obj, j_key))
 
     return tf_obj
