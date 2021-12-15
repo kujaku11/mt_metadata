@@ -33,6 +33,7 @@ MT Metadata is meant to be a tool to standardize both time series and transfer f
     :caption: Transfer Functions
     
     source/tf_structure
+    source/notebooks/tf_example.ipynb
 	
 .. toctree::
     :maxdepth: 1
