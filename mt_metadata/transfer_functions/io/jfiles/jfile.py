@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-.. module:: JFile
-   :synopsis: Deal with J-Files of the format propsed by Alan Jones 
+.. py:module:: JFile
+    :synopsis: Deal with J-Files of the format propsed by Alan Jones 
 
-.. moduleauthor:: Jared Peacock <jpeacock@usgs.gov>
+.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
+
 """
 
 # ==============================================================================

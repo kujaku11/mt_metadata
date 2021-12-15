@@ -1,15 +1,10 @@
+# -*- coding: utf-8 -*-
 """
-20210323: Considerations:
-Input units will typically be Volts and outputs nT, but this is configurable.
+.. py:module:: Frequency Response Table
+    :synopsis: Deal with frequency look-up tables 
 
-This could be populated by frequency or Period and phase could have units of radians or degrees.
-Rather than build all the possible conversions/cases into the class, suggest fix the class
-so that it takes as input frequency - amplitude - phase (radians) "FAP" format.
-We can than use a FAPFormatter() class to address casting received tables into the desired formats.
-
-The table should have default outputs, suggested frequency, amplitude, phase (degrees)
-
-.. todo:: Need to add to/from obspy methods
+.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
+.. codeauthor:: Karl Kappler
 
 """
 import copy
@@ -49,6 +44,12 @@ class FrequencyResponseTableFilter(FilterBase):
 
     @property
     def frequencies(self):
+        """
+        
+        :return: calibration frequencies
+        :rtype: np.ndarray
+
+        """
         return self._empirical_frequencies
 
     @frequencies.setter
@@ -72,16 +73,20 @@ class FrequencyResponseTableFilter(FilterBase):
 
     @property
     def amplitudes(self):
+        """
+        
+        :return: calibrated amplitudes
+        :rtype: np.ndarray
+
+        """
         return self._empirical_amplitudes
 
     @amplitudes.setter
     def amplitudes(self, value):
         """
         Set the amplitudes, make sure the input is validated
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: calibrated amplitudes
+        :type value: np.ndarray, list, tuple
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
@@ -96,16 +101,20 @@ class FrequencyResponseTableFilter(FilterBase):
 
     @property
     def phases(self):
+        """
+        
+        :return: calibrated phases
+        :rtype: np.ndarray
+
+        """
         return self._empirical_phases
 
     @phases.setter
     def phases(self, value):
         """
         Set the amplitudes, make sure the input is validated
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: calibrated phases
+        :type value: np.ndarray
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
@@ -119,10 +128,22 @@ class FrequencyResponseTableFilter(FilterBase):
 
     @property
     def min_frequency(self):
+        """
+
+        :return: minimum frequency
+        :rtype: float
+
+        """
         return self._empirical_frequencies.min()
 
     @property
     def max_frequency(self):
+        """
+
+        :return: maximum frequency
+        :rtype: float
+
+        """
         return self._empirical_frequencies.max()
 
     def to_obspy(
@@ -134,16 +155,14 @@ class FrequencyResponseTableFilter(FilterBase):
         """
         Convert to an obspy stage
 
-        :param stage_number: DESCRIPTION, defaults to 1
-        :type stage_number: TYPE, optional
-        :param normalization_frequency: DESCRIPTION, defaults to 1
-        :type normalization_frequency: TYPE, optional
-        :param sample_rate: DESCRIPTION, defaults to 1
-        :type sample_rate: TYPE, optional
-        :param : DESCRIPTION
-        :type : TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param stage_number: sequential stage number, defaults to 1
+        :type stage_number: integer, optional
+        :param normalization_frequency: Normalization frequency, defaults to 1
+        :type normalization_frequency: float, optional
+        :param sample_rate: sample rate, defaults to 1
+        :type sample_rate: float, optional
+        :return: Obspy stage filter
+        :rtype: :class:`obspy.core.inventory.ResponseListResponseStage` 
 
         """
         response_elements = []
@@ -168,14 +187,12 @@ class FrequencyResponseTableFilter(FilterBase):
 
     def complex_response(self, frequencies, interpolation_method="slinear"):
         """
+        Computes complex response for given frequency range
+        :param frequencies: array of frequencies to estimate the response
+        :type frequencies: np.ndarray
 
-        Parameters
-        ----------
-        frequencies: numpy array of frequencies, expected in Hz
-
-        Returns
-        -------
-        h : numpy array of (possibly complex-valued) frequency response at the input frequencies
+        :return: complex response
+        :rtype: np.ndarray
 
         """
         if (
