@@ -32,13 +32,7 @@ class Site(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.project = None
-        self.survey = None
         self._year_collected = None
-        self.country = None
-        self.id = None
-        self.name = None
-        self.acquired_by = None
         self.location = Location()
         self.orientation = Orientation()
         self.data_quality_notes = DataQualityNotes()
@@ -82,6 +76,8 @@ class Site(Base):
 
     @run_list.setter
     def run_list(self, value):
+        if value is None:
+            return 
         if isinstance(value, (str)):
             if value.count(",") > 0:
                 delimiter = ","

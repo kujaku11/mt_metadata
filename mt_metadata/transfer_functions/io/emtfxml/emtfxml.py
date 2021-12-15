@@ -134,7 +134,7 @@ class EMTFXML(emtf_xml.EMTF):
     This is meant to follow Anna's XML schema for transfer functions
     """
 
-    def __init__(self):
+    def __init__(self, fn=None):
         super().__init__()
         self._root_dict = None
         self.logger = setup_logger(self.__class__.__name__)
@@ -156,7 +156,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.data = emtf_xml.TransferFunction()
         self.period_range = emtf_xml.PeriodRange()
 
-        self.fn = None
+        self.fn = fn
 
         self.element_keys = [
             "description",
@@ -205,6 +205,58 @@ class EMTFXML(emtf_xml.EMTF):
             "site_layout": self._write_site_layout,
             "data": self._write_data,
         }
+        
+        if self.fn != None:
+            self.read()
+            
+    def __str__(self):
+        lines = [f"Station: {self.station_metadata.id}", "-" * 50]
+        lines.append(f"\tSurvey:        {self.survey_metadata.id}")
+        lines.append(f"\tProject:       {self.survey_metadata.project}")
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        lines.append("\tDeclination:   ")
+        lines.append(
+            f"\t\tValue:     {self.station_metadata.location.declination.value}"
+        )
+        lines.append(
+            f"\t\tModel:     {self.station_metadata.location.declination.model}"
+        )
+
+        if self.data.z is not None:
+            lines.append("\tImpedance:     True")
+        else:
+            lines.append("\tImpedance:     False")
+            
+        if self.data.t is not None:
+            lines.append("\ttipper:        True")
+        else:
+            lines.append("\tTipper:        False")
+
+        if self.data.period is not None:
+            lines.append(f"\tN Periods:     {len(self.data.period)}")
+
+            lines.append("\tPeriod Range:")
+            lines.append(f"\t\tMin:   {self.data.period.min():.5E} s")
+            lines.append(f"\t\tMax:   {self.data.period.max():.5E} s")
+
+            lines.append("\tFrequency Range:")
+            lines.append(f"\t\tMin:   {1./self.data.period.max():.5E} Hz")
+            lines.append(f"\t\tMax:   {1./self.data.period.min():.5E} Hz")
+
+        return "\n".join(lines)
+
+    def __repr__(self):
+        lines = []
+        lines.append(f"station='{self.station_metadata.id}'")
+        lines.append(f"latitude={self.station_metadata.location.latitude:.2f}")
+        lines.append(f"longitude={self.station_metadata.location.longitude:.2f}")
+        lines.append(f"elevation={self.station_metadata.location.elevation:.2f}")
+
+        return f"EMTFXML({(', ').join(lines)})"
 
     @property
     def fn(self):
@@ -241,7 +293,7 @@ class EMTFXML(emtf_xml.EMTF):
         else:
             raise IOError("Input file name is None, that is bad.")
 
-        root = et.parse(fn).getroot()
+        root = et.parse(self.fn).getroot()
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
         root_dict = self._convert_keys_to_lower_case(root_dict)
