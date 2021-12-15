@@ -22,20 +22,21 @@ MT Metadata is meant to be a tool to standardize both time series and transfer f
 	source/structure
 	
 .. toctree::
-	:maxdepth: 1
-	:caption: Time Series Metadata Standards
+    :maxdepth: 1
+    :caption: Time Series
 
-	source/ts_metadata_guide
+    source/ts_metadata_guide
     source/notebooks/filters_example.ipynb
 	
 .. toctree::
-	:maxdepth: 1
-	:caption: Transfer Function Metadata Standards
+    :maxdepth: 1
+    :caption: Transfer Functions
+    
+    source/tf_structure
 	
-
 .. toctree::
     :maxdepth: 1
-    :caption: Packages
+    :caption: API Reference
 	
     source/modules
 	

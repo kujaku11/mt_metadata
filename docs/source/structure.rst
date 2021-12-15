@@ -2,8 +2,6 @@
 MT Metadata Structure
 ======================
 
-.. contents::  :local:
-
 Metadata Validation
 ---------------------
 

@@ -244,7 +244,6 @@ mt\_metadata.transfer\_functions.tf.transfer\_function module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

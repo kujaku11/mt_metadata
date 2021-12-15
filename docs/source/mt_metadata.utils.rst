@@ -28,6 +28,21 @@ mt\_metadata.utils.mttime module
    :undoc-members:
    :show-inheritance:
 
+mt\_metadata.utils.summarize module
+-----------------------------------
+
+.. automodule:: mt_metadata.utils.summarize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+mt\_metadata.utils.units module
+-------------------------------
+
+.. automodule:: mt_metadata.utils.units
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 mt\_metadata.utils.validators module
 ------------------------------------
@@ -36,7 +51,6 @@ mt\_metadata.utils.validators module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

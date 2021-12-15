@@ -28,7 +28,6 @@ mt\_metadata.base.schema module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

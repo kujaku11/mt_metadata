@@ -7,7 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   mt_metadata.timeseries.filters
    mt_metadata.timeseries.standards
+   mt_metadata.timeseries.stationxml
+   mt_metadata.timeseries.tools
 
 Submodules
 ----------
@@ -100,6 +103,14 @@ mt\_metadata.timeseries.electrode module
    :undoc-members:
    :show-inheritance:
 
+mt\_metadata.timeseries.experiment module
+-----------------------------------------
+
+.. automodule:: mt_metadata.timeseries.experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 mt\_metadata.timeseries.fdsn module
 -----------------------------------
 
@@ -107,15 +118,6 @@ mt\_metadata.timeseries.fdsn module
    :members:
    :undoc-members:
    :show-inheritance:
-
-mt\_metadata.timeseries.filter module
--------------------------------------
-
-.. automodule:: mt_metadata.timeseries.filters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 mt\_metadata.timeseries.instrument module
 -----------------------------------------
@@ -220,7 +222,6 @@ mt\_metadata.timeseries.timing\_system module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------
