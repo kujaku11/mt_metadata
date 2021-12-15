@@ -36,9 +36,39 @@ Supported Formats
       - Yes
       - No
 	  
-Structure
--------------
+Purpose
+----------------
 
 Modules exists for each supported format, but should only be used under the hood.  Instead, the `transfer_functions` module was set up to have a common container for any transfer function.  This is the :class:`mt_metadata.transfer_functions.core.TF` object.  It can read any supported format and write those that have write methods.  
 
-The :class:`mt_metadata.transfer_functions.core.TF` object contains standard metadata and the data are stored in an :class:`xarray.DataSet` for generalization and easy access to elements.  
+The :class:`mt_metadata.transfer_functions.core.TF` object contains standard metadata and the data are stored in an :class:`xarray.DataSet` for generalization and easy access to elements.
+
+Module Structure
+------------------
+
+The module structure for `mt_metadata.transfer_functions` is setup to be plug-in like.  Each transfer function file format has its own module in `mt_metadata.transfer_functions.io`.  For example EDI files are in the module `mt_metadata.transfer_functions.io.edi`.  Under each module there is a `metadata` folder and a `metadata/standards` folder to accommodate format specific metadata and standardize data types for those metadata.
+
+mt_metadata.transfer_functions.io
+    |- edi
+       |- metadata
+           |- standards
+               |- *.json standard files		   
+    |- zfiles
+       |- metadata
+           |- standards
+               |- *.json standard files
+    |- jfiles
+       |- metadata
+           |- standards
+               |- *.json standard files
+    |- zonge
+       |- metadata
+           |- standards
+               |- *.json standard files
+    |- emtfxml
+       |- metadata
+           |- standards
+               |- *.json standard files
+			   
+Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :function:`mt_metadata.transfer_functions.io.readwrite.read` and :function:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :function:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :function:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
+  
