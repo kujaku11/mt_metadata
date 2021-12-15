@@ -15,15 +15,14 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
-from mt_metadata.transfer_functions.tf import (
-    Survey, Station, Run, Electric, Magnetic
-    )
+from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
 from .metadata import Channel
 from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 class ZMMError(Exception):
-    pass  
+    pass
+
 
 class ZMMHeader(object):
     """
@@ -210,7 +209,7 @@ class ZMMHeader(object):
 
                 if channel.translated_tilt is None:
                     channel.translated_tilt = 0.0
-                    
+
                 if channel.translated_azimuth is None:
                     channel.translated_azimuth = 0.0
 
@@ -317,12 +316,12 @@ class ZMM(ZMMHeader):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-        
+
         if "hz" in self.output_channels:
             lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
-        
+
         if self.periods is not None:
             lines.append(f"\tNumber of periods: {self.periods.size}")
             lines.append(
@@ -855,7 +854,7 @@ class ZMM(ZMMHeader):
         sm = Survey()
 
         return sm
-    
+
     def _get_electric_metadata(self, comp):
         """
         get electric information from the various metadata
@@ -921,9 +920,9 @@ class ZMM(ZMMHeader):
 
 def read_zmm(zmm_fn):
     """
-    Write a Z file 
-    
-    :param zmm_fn: full path to file to be read in 
+    Write a Z file
+
+    :param zmm_fn: full path to file to be read in
     :type zmm_fn: str :class:`pathlib.Path`
     :return: Returns a TF object
     :rtype: :class:`mt_metadata.transfer_functions.tf.core.TF`
@@ -982,26 +981,25 @@ def write_zmm(tf_object, fn=None):
     zmm_obj = ZMM()
     zmm_obj.dataset = tf_object.dataset
     zmm_obj.station_metadata = tf_object.station_metadata
-    
-    
+
     # need to set the channel numbers according to the z-file format
     # with input channels (h's) and output channels (hz, e's).
     if tf_object.has_tipper():
         if tf_object.has_impedance():
             zmm_obj.num_channels = 5
-            number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex":4, "ey":5}
+            number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
         else:
             zmm_obj.num_channels = 3
             number_dict = {"hx": 1, "hy": 2, "hz": 3}
     else:
         if tf_object.has_impedance():
             zmm_obj.num_channels = 4
-            number_dict = {"hx": 1, "hy": 2, "ex":4, "ey":5}
+            number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
 
     for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
         if "rr" in comp:
             continue
-        
+
         ch = getattr(tf_object.station_metadata.runs[0], comp)
         c = Channel()
         c.from_dict(ch.to_dict(single=True))

@@ -82,7 +82,7 @@ class DataSection(Base):
         self.rrhx = None
         self.rrhy = None
         self.channel_ids = []
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         self._kw_list = [
@@ -99,7 +99,6 @@ class DataSection(Base):
             "rrhy",
         ]
 
-
     def __str__(self):
         return "".join(self.write_data())
 
@@ -111,7 +110,6 @@ class DataSection(Base):
         read in the data of the file, will detect if reading spectra or
         impedance.
         """
-
 
         self.data_list = []
         data_find = False
@@ -138,7 +136,7 @@ class DataSection(Base):
         """
 
         self.get_data(edi_lines)
-        
+
         channels = False
         self.channel_ids = []
         for d_line in self.data_list:

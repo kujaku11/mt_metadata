@@ -14,11 +14,11 @@ from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
 from . import HMeasurement, EMeasurement
+
 # =============================================================================
 attr_dict = get_schema("define_measurement", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Location()._attr_dict)
 # =============================================================================
-
 
 
 # ==============================================================================
@@ -105,7 +105,6 @@ class DefineMeasurement(Base):
         self.reftype = "cartesian"
         self.units = "m"
         self.refloc = None
-        
 
         self._define_meas_keys = [
             "maxchan",
@@ -129,23 +128,23 @@ class DefineMeasurement(Base):
     @property
     def reflat(self):
         return self._location.latitude
-    
+
     @reflat.setter
     def reflat(self, value):
         self._location.latitude = value
-        
+
     @property
     def reflon(self):
         return self._location.longitude
-    
+
     @reflon.setter
     def reflon(self, value):
         self._location.longitude = value
-        
+
     @property
     def reflong(self):
         return self._location.longitude
-    
+
     @reflong.setter
     def reflong(self, value):
         self._location.longitude = value
@@ -153,11 +152,11 @@ class DefineMeasurement(Base):
     @property
     def refelev(self):
         return self._location.elevation
-    
+
     @refelev.setter
     def refelev(self, value):
         self._location.elevation = value
-        
+
     @property
     def channel_ids(self):
         ch_ids = {}
@@ -274,7 +273,7 @@ class DefineMeasurement(Base):
                 setattr(self, key, value)
 
             elif isinstance(line, dict):
-                #print(line)
+                # print(line)
                 key = "meas_{0}".format(line["chtype"].lower())
                 if line["chtype"].lower().find("h") >= 0:
                     value = HMeasurement(**line)
@@ -300,7 +299,7 @@ class DefineMeasurement(Base):
             value = getattr(self, key)
             if key in ["reflat", "reflon", "reflong"]:
                 if latlon_format.lower() == "dd":
-                        value = f"{float(value):.6f}"
+                    value = f"{float(value):.6f}"
                 else:
                     value = self._location._convert_position_float2str(value)
             elif key == "refelev":
@@ -340,14 +339,12 @@ class DefineMeasurement(Base):
 
                 for mkey, mfmt in m_obj._fmt_dict.items():
                     if mkey == "acqchan":
-                        if getattr(m_obj, mkey) == '0':
+                        if getattr(m_obj, mkey) == "0":
                             setattr(m_obj, mkey, chn_count)
                             chn_count += 1
 
                     try:
-                        m_list.append(
-                            f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
-                        )
+                        m_list.append(f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}")
                     except (ValueError, TypeError):
                         m_list.append(f" {mkey.upper()}={0.0:{mfmt}}")
 
@@ -382,7 +379,7 @@ class DefineMeasurement(Base):
 
         if channel.component is None:
             return
-        
+
         if "e" in channel.component:
             meas = EMeasurement(
                 **{
@@ -418,4 +415,3 @@ class DefineMeasurement(Base):
         """Get the channels recorded"""
 
         return [cc.lower() for cc in self.get_measurement_dict().keys()]
-

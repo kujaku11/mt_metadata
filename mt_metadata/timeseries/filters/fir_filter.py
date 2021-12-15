@@ -34,7 +34,6 @@ class FIRFilter(FilterBase):
     def __init__(self, **kwargs):
         super().__init__()
 
-
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "fir"
         if self.decimation_factor == 0:

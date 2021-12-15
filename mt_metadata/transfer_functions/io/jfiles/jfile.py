@@ -27,8 +27,7 @@ class JFile:
     def __init__(self, fn=None):
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.header = Header()
-    
-        
+
         self._jfn = None
         self.fn = fn
 
@@ -141,7 +140,6 @@ class JFile:
                     break
 
         return j_lines
-
 
     def read_j_file(self, fn=None):
         """
@@ -286,7 +284,6 @@ class JFile:
         self.z_err[np.where(self.z_err == np.inf)] = 10 ** 6
         self.t_err[np.where(self.t_err == np.inf)] = 10 ** 6
 
-
     @property
     def station_metadata(self):
         sm = Station()
@@ -295,13 +292,13 @@ class JFile:
         if not np.all(self.z == 0):
             r1._ex.component = "ex"
             r1._ex.channel_id = 1
-            
+
             r1._ey.component = "ey"
             r1._ey.channel_id = 1
-            
+
             r1._hx.component = "hx"
             r1._hx.channel_id = 1
-            
+
             r1._hy.component = "hy"
             r1._hy.channel_id = 1
 

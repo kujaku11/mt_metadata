@@ -23,18 +23,16 @@ attr_dict.add_dict(Location()._attr_dict.copy())
 
 class Header(Location):
     def __init__(self, **kwargs):
-        
+
         self.birrp_parameters = BirrpParameters()
         self.data_blocks = []
         self.angles = []
         super().__init__()
         super(Location, self).__init__(attr_dict=attr_dict)
-        
 
         for k, v in kwargs.items():
             self.set_attr_from_name(k, v)
 
-   
     def _read_header_line(self, line):
         """
         read a header line
@@ -119,7 +117,6 @@ class Header(Location):
                     if len(self.data_blocks) != fn_count + 1:
                         self.data_blocks.append(BirrpBlock())
                     self.data_blocks[fn_count].set_attr_from_name(key, value)
-                    
 
                 # if its the line of angles, put them all in a list with a unique key
                 elif key in ["theta1", "theta2", "phi"]:

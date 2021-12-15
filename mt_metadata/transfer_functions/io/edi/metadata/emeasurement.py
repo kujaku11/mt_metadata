@@ -26,24 +26,21 @@ class EMeasurement(Base):
     def __init__(self, **kwargs):
 
         self._fmt_dict = {
-            'id': '<',
-            'chtype': '<',
-            'x': '<.2f',
-            'y': '<.2f',
-            'z': '<.2f',
-            'x2': '<.2f',
-            'y2': '<.2f',
-            'z2': '<.2f',
-            'acqchan': '<',
-            }
+            "id": "<",
+            "chtype": "<",
+            "x": "<.2f",
+            "y": "<.2f",
+            "z": "<.2f",
+            "x2": "<.2f",
+            "y2": "<.2f",
+            "z2": "<.2f",
+            "acqchan": "<",
+        }
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
 
     def __str__(self):
-        return "\n".join(
-            [f"{k} = {v}" for k, v in self.to_dict(single=True).items()]
-        )
+        return "\n".join([f"{k} = {v}" for k, v in self.to_dict(single=True).items()])
 
     def __repr__(self):
         return self.__str__()

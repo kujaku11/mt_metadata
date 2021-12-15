@@ -22,7 +22,7 @@ from mt_metadata.transfer_functions.tf import Survey, Station, Run
 # ==============================================================================
 # deal with avg files output from mtedit
 # ==============================================================================
-class ZongeMTAvg():
+class ZongeMTAvg:
     """
     deal with avg files output from mtedit and makes an .edi file.
     
@@ -88,7 +88,6 @@ class ZongeMTAvg():
     def __init__(self, fn=None):
 
         self.header = Header()
-        
 
         self.info_keys = [
             "Skp",
@@ -118,20 +117,22 @@ class ZongeMTAvg():
             int,
             int,
         ]
-        
-        self.info_fmt = ['<1.0f',
-                         '<.4g',
-                         '<.4e',
-                         '<.4e',
-                         '<.4e',
-                         '<.1f',
-                         '<.4e',
-                         '<.1f',
-                         '<.1f',
-                         '<.3f',
-                         '<.0f',
-                         '<.0f']
-        
+
+        self.info_fmt = [
+            "<1.0f",
+            "<.4g",
+            "<.4e",
+            "<.4e",
+            "<.4e",
+            "<.1f",
+            "<.4e",
+            "<.1f",
+            "<.1f",
+            "<.3f",
+            "<.0f",
+            "<.0f",
+        ]
+
         self.info_dtype = np.dtype(
             [(kk.lower(), tt) for kk, tt in zip(self.info_keys, self.info_type)]
         )
@@ -166,7 +167,7 @@ class ZongeMTAvg():
         self.freq_dict_x = None
         self.freq_dict_y = None
         self.z_coordinate = "down"
-        
+
         self.fn = fn
 
     @property
@@ -193,19 +194,17 @@ class ZongeMTAvg():
 
         """
         avg_str = "".join(lines)
-        
+
         index_0 = avg_str.find("$")
         index_1 = avg_str.find("$", index_0 + 1)
-        
+
         n_values = int(round((index_1 - index_0) / index_0))
-        
+
         return self._make_comp_dict(n_values)
-    
+
     def _make_comp_dict(self, n_values):
-        """
-        
-        """
-        
+        """ """
+
         return dict(
             [
                 (ckey, np.zeros(n_values, dtype=self.info_dtype))
@@ -223,7 +222,7 @@ class ZongeMTAvg():
         self.comp = self.fn.stem[0]
         with open(self.fn, "r") as fid:
             alines = fid.readlines()
-            
+
         # read header
         alines = self.header.read_header(alines)
 
@@ -285,11 +284,11 @@ class ZongeMTAvg():
             zimag = zmag * np.sin((zphase / 1000))
 
         return zreal, zimag
-    
+
     def to_amp_phase(self, zreal, zimag):
         """
         Convert to amplitude and phase from real and imaginary
-        
+
         :param zreal: DESCRIPTION
         :type zreal: TYPE
         :param zimag: DESCRIPTION
@@ -298,18 +297,17 @@ class ZongeMTAvg():
         :rtype: TYPE
 
         """
-        
+
         if isinstance(zreal, np.ndarray):
             assert len(zreal) == len(zimag)
 
         if self.z_coordinate == "up":
             zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
-            
-            
+
         else:
             zphase = np.arctan2(zimag, zreal) * 1000
-        zmag = np.sqrt(zreal**2 + zimag**2)
-        
+        zmag = np.sqrt(zreal ** 2 + zimag ** 2)
+
         return zmag, zphase
 
     def _match_freq(self, freq_list1, freq_list2):
@@ -323,7 +321,7 @@ class ZongeMTAvg():
             set(freq_list1).symmetric_difference(freq_list2)
         )
         comb_freq_list.sort()
-        
+
         return dict([(freq, ff) for ff, freq in enumerate(comb_freq_list)])
 
     def _fill_z(self):
@@ -523,25 +521,27 @@ class ZongeMTAvg():
 
         self.tipper = np.nan_to_num(self.tipper)
         self.tipper_err = np.nan_to_num(self.tipper_err)
-        
+
     @property
     def station_metadata(self):
         sm = Station()
-        
+
         sm.id = self.header.station
         sm.location.latitude = self.header.latitude
         sm.location.longitude = self.header.longitude
-        
+
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
         sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
-        sm.transfer_function.software.last_updated = self.header.m_t_edit.version.split()[-1]
-        
+        sm.transfer_function.software.last_updated = (
+            self.header.m_t_edit.version.split()[-1]
+        )
+
         for key, value in self.header.m_t_edit.to_dict(single=True).items():
             if "version" in key:
                 continue
             sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
-        
+
         sm.data_type = self.header.survey.type
         sm.runs.append(Run(id="001"))
         for comp in self.comp_lst_z + self.comp_lst_tip:
@@ -551,7 +551,7 @@ class ZongeMTAvg():
                 sm.runs[0]._ex.measurement_azimuth = self.header.rx.h_p_r[0]
                 sm.runs[0]._ex.translated_azimuth = self.header.rx.h_p_r[0]
                 sm.runs[0]._ex.channel_id = 1
-                
+
             elif "zy" in comp:
                 sm.runs[0]._ey.component = "ey"
                 sm.runs[0]._ey.dipole_length = self.header.rx.length
@@ -563,13 +563,13 @@ class ZongeMTAvg():
                 sm.runs[0]._hx.measurement_azimuth = self.header.rx.h_p_r[0]
                 sm.runs[0]._hx.translated_azimuth = self.header.rx.h_p_r[0]
                 sm.runs[0]._hx.channel_id = 3
-                
+
             elif comp[-1] == "y":
                 sm.runs[0]._hy.component = "hy"
                 sm.runs[0]._hy.measurement_azimuth = self.header.rx.h_p_r[0] + 90
                 sm.runs[0]._hy.translated_azimuth = self.header.rx.h_p_r[0] + 90
                 sm.runs[0]._hy.channel_id = 4
-                
+
             if comp[1] == "z":
                 sm.runs[0]._hz.component = "hz"
                 sm.runs[0]._hz.measurement_tilt = self.header.rx.h_p_r[-1]
@@ -578,66 +578,69 @@ class ZongeMTAvg():
                 sm.runs[0]._hz.channel_id = 5
 
         return sm
-    
+
     @station_metadata.setter
     def station_metadata(self, sm):
         self.header.station = sm.id
         self.header.latitdude = sm.location.latitude
         self.header.longitude = sm.location.longitude
-        
+
         if hasattr(sm.run[0].ex):
             self.header.rx.length = sm.run[0].ex.dipole_length
-        
-    
+
     @property
     def survey_metadata(self):
         return Survey()
-    
+
     def write(self, fn):
         """
         Write an .avg file
-        
+
         :param fn: DESCRIPTION
         :type fn: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         header_lines = self.header.write_header()
-        
+
         header_lines.append(
             "Skp,Freq,      E.mag,      B.mag,      Z.mag,      Z.phz,   "
-            "ARes.mag,   ARes.%err,Z.perr,  Coher,   FC.NUse,FC.NTry")
-        
+            "ARes.mag,   ARes.%err,Z.perr,  Coher,   FC.NUse,FC.NTry"
+        )
+
         for key in self.comp_dict.keys():
             header_lines.append(f"$Rx.comp = {key.capitalize()}")
             value_array = self.comp_dict[key]
             for ii in range(value_array.size):
                 line = []
-                for jj, ikey, fmt in zip(range(len(self.info_keys)), self.info_keys, self.info_fmt):
+                for jj, ikey, fmt in zip(
+                    range(len(self.info_keys)), self.info_keys, self.info_fmt
+                ):
                     value = value_array[ikey.lower()][ii]
                     s = f"{value:{fmt}},"
                     if jj == 0:
                         line.append(f"{s:<1}")
-                    elif jj > 0 and jj < 8: 
+                    elif jj > 0 and jj < 8:
                         line.append(f"{s:<10}")
                     else:
                         line.append(f"{s:<7}")
                 header_lines.append(" ".join(line))
-                
+
         with open(fn, "w") as fid:
             fid.write("\n".join(header_lines))
-            
+
 
 # =============================================================================
 # Read
 # =============================================================================
-   
+
+
 def read_avg(fn):
     """
     Read an .avg file output by MTEdit developed by Zonge International.
-    
+
     :param fn: full path to .avg file to be read
     :type fn: string or :class:`pathlib.Path`
     :return: Transfer Function object
@@ -645,47 +648,45 @@ def read_avg(fn):
 
     """
     from mt_metadata.transfer_functions.core import TF
-    
+
     obj = ZongeMTAvg(fn=fn)
-    
+
     tf_object = TF()
     tf_object.survey_metadata = obj.survey_metadata
     tf_object.station_metadata = obj.station_metadata
-    
-    tf_object.period = 1./obj.frequency
+
+    tf_object.period = 1.0 / obj.frequency
     tf_object.impedance = obj.z
     tf_object.impedance_error = obj.z_err
-    
+
     if obj.t is not None:
         tf_object.tipper = obj.t
         tf_object.tipper_error = obj.t_err
-    
+
     return tf_object
+
 
 def write_avg(tf_object, fn=None):
     """
     write an .avg file.
-    
+
     :param fn: DESCRIPTION
     :type fn: TYPE
     :return: DESCRIPTION
     :rtype: TYPE
 
     """
-    
+
     raise AttributeError("Writing an AVG file does not exist yet.")
-    
+
     # from mt_metadata.transfer_functions.core import TF
 
     # if not isinstance(tf_object, TF):
     #     raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
 
-    
     # zavg = ZongeMTAvg()
     # zavg.station_metadata = tf_object.station_metadata
-    
+
     # zavg.comp_dict = zavg._make_comp_dict(tf_object.period.size)
     # if tf_object.has_impedance():
     #     for key in ["zxx", "zxy", "zyx", "zyy"]:
-            
-    

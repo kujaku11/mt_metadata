@@ -45,25 +45,25 @@ class Base:
 
         self.logger = setup_logger(f"{__name__}.{self._class_name}", level=LOG_LEVEL)
         self._debug = False
-        
+
         self._set_attr_dict(attr_dict)
 
         for name, value in kwargs.items():
             self.set_attr_from_name(name, value)
-            
+
     def _set_attr_dict(self, attr_dict):
         """
         Set attribute dictionary and variables
-        
+
         :param attr_dict: DESCRIPTION
         :type attr_dict: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        
+
         self._attr_dict = attr_dict
-        
+
         for k, d in attr_dict.items():
             if d["required"]:
                 if "list" in d["style"]:
@@ -82,12 +82,12 @@ class Base:
                         value = "none"
                     elif d["type"] in ["bool"]:
                         value = False
-                    
+
             else:
                 if "date" in d["style"] or "time" in d["style"]:
                     value = "1980-01-01T00:00:00+00:00"
                 else:
-                    value = None  
+                    value = None
 
             setattr(self, k, value)
 

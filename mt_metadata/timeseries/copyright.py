@@ -25,7 +25,7 @@ class Copyright(Base):
     def __init__(self, **kwargs):
         self.citation = Citation()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
+
         if self.conditions_of_use == None:
             self.conditions_of_use = "".join(
                 [

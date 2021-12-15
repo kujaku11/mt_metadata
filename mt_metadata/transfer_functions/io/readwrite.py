@@ -50,19 +50,24 @@ from pathlib import Path
 
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io import (
-    read_edi, write_edi, read_zmm, write_zmm, read_jfile, write_jfile, 
-    read_emtfxml, write_emtfxml, read_avg, write_avg)
+    read_edi,
+    write_edi,
+    read_zmm,
+    write_zmm,
+    read_jfile,
+    write_jfile,
+    read_emtfxml,
+    write_emtfxml,
+    read_avg,
+    write_avg,
+)
 
 logger = setup_logger(__name__)
 # =============================================================================
 # generic reader for any file type
 # =============================================================================
 plugins = {
-    "edi": {
-        "file_types": ["edi"],
-        "reader": read_edi,
-        "writer": write_edi
-    },
+    "edi": {"file_types": ["edi"], "reader": read_edi, "writer": write_edi},
     "zmm": {
         "file_types": ["zmm", "zrr", "zss"],
         "reader": read_zmm,
@@ -173,7 +178,7 @@ def write_file(mt_object, fn, file_type=None, **kwargs):
     :type file_type: TYPE, optional
     :return: DESCRIPTION
     :rtype: TYPE
-    
+
     longitude_format="lon",
     latlon_format="dms",
     overwrite=False,
@@ -195,7 +200,7 @@ def write_file(mt_object, fn, file_type=None, **kwargs):
             raise KeyError(msg)
     else:
         file_type, file_writer = get_writer(fn.suffix.replace(".", ""))
-        
+
     new_obj = file_writer(mt_object, fn, **kwargs)
     logger.info("Wrote %s", fn)
 

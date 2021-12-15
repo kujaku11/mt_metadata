@@ -24,7 +24,6 @@ attr_dict.add_dict(Location()._attr_dict.copy())
 
 class Header(Location):
     def __init__(self, **kwargs):
-        
 
         self._acqdate = MTime()
         self._enddate = MTime()
@@ -35,7 +34,7 @@ class Header(Location):
 
         super().__init__()
         super(Location, self).__init__(attr_dict=attr_dict)
-        
+
         self.units = "millivolts_per_kilometer_per_nanotesla"
         self.empty = 1e32
         self.progvers = __version__
@@ -44,7 +43,6 @@ class Header(Location):
 
         for k, v in kwargs.items():
             self.set_attr_from_name(k, v)
-        
 
     def __str__(self):
         return "".join(self.write_header())
@@ -227,12 +225,12 @@ class Header(Location):
                                 metadata.
 
         """
-        
+
         self.filedate = get_now_utc()
         self.progvers = __version__
         self.progname = "mt_metadata"
         self.progdate = "2021-12-01"
-        
+
         header_lines = [">HEAD\n"]
         for key, value in self.to_dict(single=True, required=required).items():
             if key in ["x", "x2", "y", "y2", "z", "z2"]:
@@ -255,7 +253,6 @@ class Header(Location):
                     value = self._convert_position_float2str(value)
             if key in ["elev"] and value is not None:
                 value = "{0:.3f}".format(value)
-            
 
             if isinstance(value, list):
                 value = ",".join(value)

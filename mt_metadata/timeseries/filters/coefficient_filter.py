@@ -25,7 +25,7 @@ class CoefficientFilter(FilterBase):
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "coefficient"
         self.obspy_mapping = obspy_mapping
-        
+
         if self.gain == 0.0:
             self.gain = 1.0
 

@@ -5,6 +5,7 @@ Created on Sat Dec  4 17:44:51 2021
 @author: jpeacock
 """
 
+
 def _validate_str_with_equals(input_string):
     """
     make sure an input string is of the format {0}={1} {2}={3} {4}={5} ...
@@ -50,6 +51,7 @@ def _validate_str_with_equals(input_string):
 
     return line_list
 
+
 # ==============================================================================
 # Index finder
 # ==============================================================================
@@ -69,17 +71,17 @@ class index_locator(object):
             self.rhx = self.hx
         if self.rhy is None:
             self.rhy = self.hy
-            
+
     def __str__(self):
         lines = ["Index Values"]
         for k, v in self.__dict__.items():
             if v is not None:
                 lines.append(f"\t{k} = {v}")
         return "\n".join(lines)
-    
+
     def __repr__(self):
         return self.__str__()
-    
+
     @property
     def n_channels(self):
         count = 0
@@ -88,25 +90,25 @@ class index_locator(object):
                 continue
             if v is not None:
                 count += 1
-                
+
         return count
-    
+
     @property
     def has_tipper(self):
         if self.hz is not None:
             return True
         return False
-    
+
     @property
     def has_electric(self):
         if self.ex != None or self.ey != None:
             return True
         return False
-    
+
     @property
     def input_channels(self):
         return [self.hx, self.hy]
-    
+
     @property
     def output_channels(self):
         if self.has_tipper:
@@ -114,16 +116,16 @@ class index_locator(object):
                 return [self.hz, self.ex, self.ey]
             return [self.hz]
         return [self.ex, self.ey]
-    
+
     @property
     def n_inputs(self):
         return len(self.input_channels)
-    
+
     @property
     def n_outputs(self):
         return len(self.output_channels)
-    
-            
+
+
 def _validate_edi_lines(edi_lines):
     """
     check for carriage returns or hard returns
@@ -143,5 +145,3 @@ def _validate_edi_lines(edi_lines):
             raise ValueError("*** EDI format not correct check file ***")
     else:
         return edi_lines
-
-

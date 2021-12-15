@@ -20,11 +20,18 @@ from pathlib import Path
 from collections import OrderedDict
 
 from mt_metadata.transfer_functions.io.edi.metadata import (
-    Header, Information, DefineMeasurement, DataSection)
+    Header,
+    Information,
+    DefineMeasurement,
+    DataSection,
+)
 from mt_metadata.transfer_functions import tf as metadata
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.tools import (
-    _validate_str_with_equals, index_locator, _validate_edi_lines)
+    _validate_str_with_equals,
+    index_locator,
+    _validate_edi_lines,
+)
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import __version__
 
@@ -150,7 +157,7 @@ class EDI(object):
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
-            
+
             * Header
             * Info
             * Measurement
@@ -220,7 +227,7 @@ class EDI(object):
         in the data section.
         """
 
-        lines = self._edi_lines[self.Data._line_num:]
+        lines = self._edi_lines[self.Data._line_num :]
 
         if self.Data.data_type_in == "spectra":
             self.logger.debug("Converting Spectra to Impedance and Tipper")
@@ -237,7 +244,7 @@ class EDI(object):
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
             if old:
                 self._read_spectra_old(lines, comp_list=c_list)
-            else: 
+            else:
                 self._read_spectra_new(lines, comp_list=c_list)
 
         elif self.Data.data_type_in == "z":
@@ -276,7 +283,7 @@ class EDI(object):
                         d_lines[ii] = float(dd)
                         if d_lines[ii] == self.Header.empty:
                             d_lines[ii] = 0.0
-                            
+
                     except ValueError:
                         d_lines[ii] = 0.0
                 data_dict[key] += d_lines
@@ -351,13 +358,12 @@ class EDI(object):
         else:
             self.logger.debug("Could not find any Tipper data.")
 
-
     def _read_spectra_new(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
     ):
         """
         Read in spectra data and convert to impedance and Tipper.
-        
+
         Translated from A. Kelbert's EMTF fortran module
 
         :param data_lines: list of lines from edi file
@@ -413,13 +419,17 @@ class EDI(object):
 
         self.z_err = np.zeros_like(self.z, dtype=float)
         self.t_err = np.zeros_like(self.t, dtype=float)
-        
-        self.residual_covariance = np.zeros((self.frequency.size, cc.n_outputs, cc.n_outputs),
-                                            dtype=complex)
-        self.signal_inverse_power = np.zeros((self.frequency.size, cc.n_inputs, cc.n_inputs),
-                                            dtype=complex)
 
-        self.tf = np.zeros((self.frequency.size, cc.n_outputs, cc.n_inputs), dtype=complex)
+        self.residual_covariance = np.zeros(
+            (self.frequency.size, cc.n_outputs, cc.n_outputs), dtype=complex
+        )
+        self.signal_inverse_power = np.zeros(
+            (self.frequency.size, cc.n_inputs, cc.n_inputs), dtype=complex
+        )
+
+        self.tf = np.zeros(
+            (self.frequency.size, cc.n_outputs, cc.n_inputs), dtype=complex
+        )
         self.tf_err = np.zeros_like(self.tf, dtype=float)
 
         for kk, key in enumerate(self.frequency):
@@ -448,40 +458,39 @@ class EDI(object):
                         s_arr[jj, ii] = complex(
                             spectra_arr[jj, ii], spectra_arr[ii, jj]
                         )
-                        
+
             # check for empty values
             s_arr[s_arr == 0] = np.nan
             s_arr[s_arr == self.Header.empty] = np.nan
 
-            
             # from A. Kelbert's EMTF
             # cross spectra matrices
             # input channels
             rh = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
             rr = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
             hh = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
-            
+
             # output channels
             re = np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex)
             he = np.zeros((cc.n_inputs, cc.n_outputs), dtype=complex)
-            ee =np.zeros((cc.n_outputs, cc.n_outputs), dtype=complex)
-            
+            ee = np.zeros((cc.n_outputs, cc.n_outputs), dtype=complex)
+
             # fill in cross powers for input channels
             rh[0, 0] = s_arr[cc.rhx, cc.hx]
             rh[0, 1] = s_arr[cc.rhx, cc.hy]
             rh[1, 0] = s_arr[cc.rhy, cc.hx]
             rh[1, 1] = s_arr[cc.rhy, cc.hy]
-            
+
             rr[0, 0] = s_arr[cc.rhx, cc.rhx]
             rr[0, 1] = s_arr[cc.rhx, cc.rhy]
             rr[1, 0] = s_arr[cc.rhy, cc.rhx]
             rr[1, 1] = s_arr[cc.rhy, cc.rhy]
-            
+
             hh[0, 0] = s_arr[cc.hx, cc.hx]
             hh[0, 1] = s_arr[cc.hx, cc.hy]
             hh[1, 0] = s_arr[cc.hy, cc.hx]
             hh[1, 1] = s_arr[cc.hy, cc.hy]
-            
+
             # fill in cross powers for output channels
             if cc.has_tipper and cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.hz]
@@ -490,14 +499,14 @@ class EDI(object):
                 re[1, 0] = s_arr[cc.rhy, cc.hz]
                 re[1, 1] = s_arr[cc.rhy, cc.ex]
                 re[1, 2] = s_arr[cc.rhy, cc.ey]
-                
+
                 he[0, 0] = s_arr[cc.hx, cc.hz]
                 he[0, 1] = s_arr[cc.hx, cc.ex]
                 he[0, 2] = s_arr[cc.hx, cc.ey]
                 he[1, 0] = s_arr[cc.hy, cc.hz]
                 he[1, 1] = s_arr[cc.hy, cc.ex]
                 he[1, 2] = s_arr[cc.hy, cc.ey]
-                
+
                 ee[0, 0] = s_arr[cc.hz, cc.hz]
                 ee[0, 1] = s_arr[cc.hz, cc.ex]
                 ee[0, 2] = s_arr[cc.hz, cc.ey]
@@ -507,56 +516,63 @@ class EDI(object):
                 ee[2, 0] = s_arr[cc.ey, cc.hz]
                 ee[2, 1] = s_arr[cc.ey, cc.ex]
                 ee[2, 2] = s_arr[cc.ey, cc.ey]
-                
+
             elif not cc.has_tipper and cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.ex]
                 re[0, 1] = s_arr[cc.rhx, cc.ey]
                 re[1, 0] = s_arr[cc.rhy, cc.ex]
                 re[1, 0] = s_arr[cc.rhy, cc.ey]
-                
+
                 he[0, 0] = s_arr[cc.hx, cc.ex]
                 he[0, 1] = s_arr[cc.hx, cc.ey]
                 he[0, 1] = s_arr[cc.hy, cc.ex]
                 he[1, 1] = s_arr[cc.hy, cc.ey]
-                
+
                 ee[0, 0] = s_arr[cc.ex, cc.ex]
                 ee[0, 1] = s_arr[cc.ex, cc.ey]
                 ee[1, 0] = s_arr[cc.ey, cc.ex]
                 ee[1, 1] = s_arr[cc.ey, cc.ey]
-                
+
             elif cc.has_tipper and not cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.hz]
                 re[1, 0] = s_arr[cc.rhy, cc.hz]
-                
+
                 he[0, 0] = s_arr[cc.hx, cc.hz]
                 he[1, 0] = s_arr[cc.hy, cc.hz]
-                
+
                 ee[0, 0] = s_arr[cc.hz, cc.hz]
-                
+
             # check to make sure the values are legit for accurate results
-            if abs(np.linalg.det(rh)) <  np.finfo(float).eps:
+            if abs(np.linalg.det(rh)) < np.finfo(float).eps:
                 self.logger.warning(
                     "spectral matrix determinant is too small "
                     f"{abs(np.linalg.det(rh))} for period {key}. "
-                    "Results may be inaccurate")
-            
+                    "Results may be inaccurate"
+                )
+
             tfh = np.matmul(np.linalg.inv(rh), re)
             tf = tfh.conj().T
-            
-            sig = np.matmul(np.linalg.inv(rh), np.matmul(rr, np.linalg.inv(rh.conj().T)))
-            res = (ee - np.matmul(tf, he) - np.matmul(he.conj().T, tfh) + 
-                   np.matmul(tf, np.matmul(hh, tfh))) / avgt_dict[key]
-            
+
+            sig = np.matmul(
+                np.linalg.inv(rh), np.matmul(rr, np.linalg.inv(rh.conj().T))
+            )
+            res = (
+                ee
+                - np.matmul(tf, he)
+                - np.matmul(he.conj().T, tfh)
+                + np.matmul(tf, np.matmul(hh, tfh))
+            ) / avgt_dict[key]
+
             variance = np.zeros((cc.n_outputs, cc.n_inputs), dtype=complex)
             for nn in range(cc.n_outputs):
                 for mm in range(cc.n_inputs):
                     variance[nn, mm] = res[nn, nn] * sig[mm, mm]
-            
+
             self.tf[kk, :, :] = tf
             self.tf_err[kk, :, :] = np.sqrt(np.abs(variance))
             self.signal_inverse_power[kk, :, :] = sig
             self.residual_covariance[kk, :, :] = res
-        
+
             if cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[1:, :]
                 self.z_err[kk, :, :] = np.sqrt(np.abs(variance[1:, :]))
@@ -564,13 +580,12 @@ class EDI(object):
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[0, :].real))
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
-                
+
             elif not cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[:, :]
                 self.z_err[kk, :, :] = np.sqrt(np.abs(variance[:, :]))
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
-                
-                
+
             elif cc.has_tipper and not cc.has_electric:
                 self.t[kk, :, :] = tf[:, :]
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[:, :].real))
@@ -622,19 +637,18 @@ class EDI(object):
             extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.fileby != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
-            
-        
+
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
-        
+
         info_lines = self.Info.write_info()
         info_lines.insert(1, "".join(extra_lines))
-        
+
         define_lines = self.Measurement.write_measurement(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
-        
+
         self.Data.nfreq = len(self.frequency)
         dsect_lines = self.Data.write_data()
 
@@ -669,7 +683,7 @@ class EDI(object):
                     z_lines_var = self._write_data_block(
                         self.z_err[:, ii, jj] ** 2.0, self._z_labels[2 * ii + jj][2]
                     )
-    
+
                     z_data_lines += z_lines_real
                     z_data_lines += z_lines_imag
                     z_data_lines += z_lines_var
@@ -801,7 +815,6 @@ class EDI(object):
     def lat(self, input_lat):
         """set latitude and make sure it is converted to a float"""
         self.Header.lat = input_lat
-
 
     # --> Longitude
     @property

@@ -353,11 +353,11 @@ class MTime:
 
 
         """
-        
+
         if dt_str is None:
             self.logger.warning("Time string is None, setting to 1980-01-01:00:00:00")
             dt_str = "1980-01-01T00:00:00"
-            
+
         try:
             parsed_str = dtparser.isoparser(dt_str)
         except ValueError:

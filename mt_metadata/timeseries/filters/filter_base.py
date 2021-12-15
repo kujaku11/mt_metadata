@@ -183,7 +183,7 @@ class FilterBase(Base):
         self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
+
         if self.gain == 0.0:
             self.gain = 1.0
 

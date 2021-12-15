@@ -60,7 +60,7 @@ class TestBase(unittest.TestCase):
             self.assertEqual(self.base_object.extra_attribute, "10")
 
     def test_validate_type(self):
-          
+
         with self.subTest("float"):
             self.assertEqual(10.0, self.base_object._validate_type("10", "float"))
         with self.subTest("integer"):
@@ -71,7 +71,7 @@ class TestBase(unittest.TestCase):
             self.assertEqual(True, self.base_object._validate_type("true", bool))
 
     def test_list_validation_type(self):
-        
+
         number_list = [10, "11", 12.6, "13.3"]
         with self.subTest("int"):
             self.assertEqual(

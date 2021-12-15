@@ -9,11 +9,12 @@ from .zonge import read_avg, write_avg
 __all__ = [
     "read_edi",
     "write_edi",
-    "read_zmm", 
+    "read_zmm",
     "write_zmm",
     "read_jfile",
     "write_jfile",
     "read_emtfxml",
     "write_emtfxml",
     "read_avg",
-    "write_avg"]
+    "write_avg",
+]

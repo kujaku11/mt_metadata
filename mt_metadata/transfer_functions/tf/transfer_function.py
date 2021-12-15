@@ -40,10 +40,9 @@ class TransferFunction(Base):
         self.remote_references = []
         self.processing_parameters = []
         self.coordinate_system = "geographic"
-        
+
         for key, value in kwargs.items():
             self.set_attr_from_name(key, value)
-            
 
     @property
     def processed_date(self):

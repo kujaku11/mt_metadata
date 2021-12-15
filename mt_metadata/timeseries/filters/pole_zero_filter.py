@@ -41,7 +41,7 @@ class PoleZeroFilter(FilterBase):
         if self.normalization_factor == 0:
             self.normalization_factor = 1.0
         if self.gain == 0:
-            self.gain = 1.
+            self.gain = 1.0
 
         self.obspy_mapping = obspy_mapping
 

@@ -53,116 +53,139 @@ class TestMetronixEDI(unittest.TestCase):
             self.assertEqual(self.edi_obj.Header._enddate, MTime("08/17/14 20:03"))
 
     def test_info(self):
-        info_list = [] 
-        
+        info_list = []
+
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
-        
+
     def test_measurement_ex(self):
-        ch = OrderedDict([('acqchan', None),
-                     ('chtype', 'EX'),
-                     ('id', 1000.0001),
-                     ('x', -50.0),
-                     ('x2', 50.0),
-                     ('y', 0.0),
-                     ('y2', 0.0),
-                     ('z', 0.0),
-                     ('z2', 0.0)])
-        
-        self.assertDictEqual(ch, 
-                             self.edi_obj.Measurement.meas_ex.to_dict(single=True))
-        
+        ch = OrderedDict(
+            [
+                ("acqchan", None),
+                ("chtype", "EX"),
+                ("id", 1000.0001),
+                ("x", -50.0),
+                ("x2", 50.0),
+                ("y", 0.0),
+                ("y2", 0.0),
+                ("z", 0.0),
+                ("z2", 0.0),
+            ]
+        )
+
+        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+
     def test_measurement_ey(self):
-        ch = OrderedDict([('acqchan', None),
-                     ('chtype', 'EY'),
-                     ('id', 1001.0001),
-                     ('x', 0.0),
-                     ('x2', 0.0),
-                     ('y', -50.0),
-                     ('y2', 50.0),
-                     ('z', 0.0),
-                     ('z2', 0.0)])
-        
+        ch = OrderedDict(
+            [
+                ("acqchan", None),
+                ("chtype", "EY"),
+                ("id", 1001.0001),
+                ("x", 0.0),
+                ("x2", 0.0),
+                ("y", -50.0),
+                ("y2", 50.0),
+                ("z", 0.0),
+                ("z2", 0.0),
+            ]
+        )
+
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
-        
+
     def test_measurement_hx(self):
-        ch = OrderedDict([('acqchan', None),
-                     ('azm', 0.0),
-                     ('chtype', 'HX'),
-                     ('dip', 0.0),
-                     ('id', 1002.0001),
-                     ('x', 0.0),
-                     ('y', 0.0),
-                     ('z', 0.0)])
-        
+        ch = OrderedDict(
+            [
+                ("acqchan", None),
+                ("azm", 0.0),
+                ("chtype", "HX"),
+                ("dip", 0.0),
+                ("id", 1002.0001),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+            ]
+        )
+
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
-        
+
     def test_measurement_hy(self):
-        ch = OrderedDict([('acqchan', None),
-                     ('azm', 0.0),
-                     ('chtype', 'HY'),
-                     ('dip', 0.0),
-                     ('id', 1003.0001),
-                     ('x', 0.0),
-                     ('y', 0.0),
-                     ('z', 0.0)])
-        
+        ch = OrderedDict(
+            [
+                ("acqchan", None),
+                ("azm", 0.0),
+                ("chtype", "HY"),
+                ("dip", 0.0),
+                ("id", 1003.0001),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+            ]
+        )
+
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
-        
+
     def test_measurement_hz(self):
-        ch = OrderedDict([('acqchan', None),
-                     ('azm', 0.0),
-                     ('chtype', 'HZ'),
-                     ('dip', 0.0),
-                     ('id', 1004.0001),
-                     ('x', 0.0),
-                     ('y', 0.0),
-                     ('z', 0.0)])
-        
+        ch = OrderedDict(
+            [
+                ("acqchan", None),
+                ("azm", 0.0),
+                ("chtype", "HZ"),
+                ("dip", 0.0),
+                ("id", 1004.0001),
+                ("x", 0.0),
+                ("y", 0.0),
+                ("z", 0.0),
+            ]
+        )
+
         self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
-        
+
     def test_measurement(self):
-        m_list = ['MAXCHAN=9',
-         'MAXRUN=999',
-         'MAXMEAS=1000',
-         'REFTYPE=CART',
-         'REFLOC=Braunschweig',
-         'REFLAT=22:41:28.962',
-         'REFLONG=139:42:18.144',
-         'REFELEV=181',]
-        
+        m_list = [
+            "MAXCHAN=9",
+            "MAXRUN=999",
+            "MAXMEAS=1000",
+            "REFTYPE=CART",
+            "REFLOC=Braunschweig",
+            "REFLAT=22:41:28.962",
+            "REFLONG=139:42:18.144",
+            "REFELEV=181",
+        ]
+
         self.assertListEqual(
-            m_list, 
-            self.edi_obj.Measurement.measurement_list[0:len(m_list)])
-        
+            m_list, self.edi_obj.Measurement.measurement_list[0 : len(m_list)]
+        )
+
         with self.subTest("reflat"):
             self.assertAlmostEqual(22.6913783, self.edi_obj.Measurement.reflat, 5)
-            
+
         with self.subTest("reflon"):
             self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflon, 5)
-            
+
         with self.subTest("reflong"):
             self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflong, 5)
-            
+
         with self.subTest("refelev"):
             self.assertAlmostEqual(181.0, self.edi_obj.Measurement.refelev, 2)
-            
+
     def test_data_section(self):
-        d_list = ['SECTID=GEO858',
-         'NFREQ=73',
-         'EX=1000.0001',
-         'EY=1001.0001',
-         'HX=1002.0001',
-         'HY=1003.0001',
-         'HZ=1004.0001']
-        
+        d_list = [
+            "SECTID=GEO858",
+            "NFREQ=73",
+            "EX=1000.0001",
+            "EY=1001.0001",
+            "HX=1002.0001",
+            "HY=1003.0001",
+            "HZ=1004.0001",
+        ]
+
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
-        
-        for ii, ch in enumerate([ "ex", "ey", "hx", "hy", "hz"], 2):
-           with self.subTest(ch):
-               self.assertEqual(d_list[ii].split("=")[1], 
-                                getattr(self.edi_obj.Data, ch))
-               
-               
+
+        for ii, ch in enumerate(["ex", "ey", "hx", "hy", "hz"], 2):
+            with self.subTest(ch):
+                self.assertEqual(
+                    d_list[ii].split("=")[1], getattr(self.edi_obj.Data, ch)
+                )
+
 
 # =============================================================================
 # run

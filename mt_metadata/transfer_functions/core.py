@@ -417,7 +417,6 @@ class TF:
             "tipper_error": "transfer_function_error",
             "tf_error": "transfer_function_error",
             "transfer_function_error": "transfer_function_error",
-            
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -487,7 +486,7 @@ class TF:
 
         """
         self._set_data_array(value, "tf")
-        
+
     @property
     def transfer_function_error(self):
         """

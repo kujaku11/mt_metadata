@@ -27,33 +27,33 @@ class Channel(Base):
         self.tilt = 0
         self.dl = 0
         self.channel = None
-    
+
         super().__init__(attr_dict=attr_dict)
-        
+
         if channel_dict is not None:
             self.from_dict(channel_dict)
-    
+
     def __str__(self):
         lines = ["Channel Metadata:"]
         for key in ["channel", "number", "dl", "azimuth", "tilt"]:
             lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
         return "\n".join(lines)
-    
+
     def __repr__(self):
         return self.__str__()
-    
+
     @property
     def index(self):
         if self.number is not None:
             return self.number - 1
         else:
             return None
-    
+
     def from_dict(self, channel_dict):
         """
         fill attributes from a dictionary
         """
-    
+
         for key, value in channel_dict.items():
             if key in ["azm", "azimuth", "measurement_azimuth"]:
                 self.azimuth = value
