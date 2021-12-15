@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-.. py:module:: Time Delay Filter
+.. py:module:: time_delay_filter
     :synopsis: Time delay filter
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>

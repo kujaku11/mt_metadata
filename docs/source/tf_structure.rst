@@ -70,5 +70,5 @@ mt_metadata.transfer_functions.io
            |- standards
                |- *.json standard files
 			   
-Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :function:`mt_metadata.transfer_functions.io.readwrite.read` and :function:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :function:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :function:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
+Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :func:`mt_metadata.transfer_functions.io.readwrite.read` and :func:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :func:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :func:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
   

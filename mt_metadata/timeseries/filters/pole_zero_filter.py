@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-.. py:module:: Pole Zero Filter
+.. py:module:: pole_zero_filter
     :synopsis: Deal with Pole Zero Filters 
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
@@ -212,7 +212,7 @@ class PoleZeroFilter(FilterBase):
         :type window_len: integer
 
         :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
+         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
 
         :return: estimated normalization frequency Hz

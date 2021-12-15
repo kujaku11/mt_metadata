@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-.. py:module:: Frequency Response Table
+.. py:module:: frequency_response_table_filter
     :synopsis: Deal with frequency look-up tables 
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
@@ -190,7 +190,6 @@ class FrequencyResponseTableFilter(FilterBase):
         Computes complex response for given frequency range
         :param frequencies: array of frequencies to estimate the response
         :type frequencies: np.ndarray
-
         :return: complex response
         :rtype: np.ndarray
 

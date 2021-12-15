@@ -6,8 +6,8 @@ Channel Response Filter
 Combines all filters for a given channel into a total response that can be used in 
 the frequency domain.
 
-.. note:: Time Delay filters should be applied in the time domain otherwise bad
-things can happen.   
+.. note:: Time Delay filters should be applied in the time domain 
+    otherwise bad things can happen.   
 """
 # =============================================================================
 # Imports
@@ -226,20 +226,19 @@ class ChannelResponseFilter(object):
     ):
         """
         
-        :param frequencies: DESCRIPTION, defaults to None
-        :type frequencies: TYPE, optional
-        :param include_delay: DESCRIPTION, defaults to False
-        :type include_delay: TYPE, optional
-        :param normalize: DESCRIPTION, defaults to False
-        :type normalize: TYPE, optional
-        :param include_decimation: DESCRIPTION, defaults to True
-        :type include_decimation: TYPE, optional
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :param : DESCRIPTION
-        :type : TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param frequencies: frequencies to compute complex response,
+         defaults to None
+        :type frequencies: np.ndarray, optional
+        :param include_delay: include delay in complex response,
+         defaults to False
+        :type include_delay: bool, optional
+        :param normalize: normalize the response to 1, defaults to False
+        :type normalize: bool, optional
+        :param include_decimation: Include decimation in response,
+         defaults to True
+        :type include_decimation: bool, optional
+        :return: complex response along give frequency array
+        :rtype: np.ndarray
 
         """
         
@@ -396,24 +395,22 @@ class ChannelResponseFilter(object):
         """
         Plot the response
         
-        :param frequencies: DESCRIPTION, defaults to None
-        :type frequencies: TYPE, optional
-        :param x_units: DESCRIPTION, defaults to "period"
-        :type x_units: TYPE, optional
-        :param unwrap: DESCRIPTION, defaults to True
-        :type unwrap: TYPE, optional
-        :param pb_tol: DESCRIPTION, defaults to 1e-1
-        :type pb_tol: TYPE, optional
-        :param interpolation_method: DESCRIPTION, defaults to "slinear"
-        :type interpolation_method: TYPE, optional
-        :param include_delay: DESCRIPTION, defaults to False
-        :type include_delay: TYPE, optional
-        :param include_decimation: DESCRIPTION, defaults to True
-        :type include_decimation: TYPE, optional
-        :param : DESCRIPTION
-        :type : TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param frequencies: frequencies to compute response, defaults to None
+        :type frequencies: np.ndarray, optional
+        :param x_units: [ period | frequency ], defaults to "period"
+        :type x_units: string, optional
+        :param unwrap: Unwrap phase, defaults to True
+        :type unwrap: bool, optional
+        :param pb_tol: pass band tolerance, defaults to 1e-1
+        :type pb_tol: float, optional
+        :param interpolation_method: Interpolation method see scipy.signal.interpolate
+        [ slinear | nearest | cubic | quadratic | ], defaults to "slinear"
+        :type interpolation_method: string, optional
+        :param include_delay: include delays in response, defaults to False
+        :type include_delay: bool, optional
+        :param include_decimation: Include decimation in response, 
+        defaults to True
+        :type include_decimation: bool, optional
 
         """
 

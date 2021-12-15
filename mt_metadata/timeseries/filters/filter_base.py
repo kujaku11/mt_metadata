@@ -214,7 +214,7 @@ class FilterBase(Base):
         :param stage: Obspy stage filter
         :type stage: :class:`obspy.inventory.response.ResponseStage`
         :param mapping: dictionary for mapping from an obspy stage,
-        defaults to None
+         defaults to None
         :type mapping: dict, optional
         :raises TypeError: If stage is not a 
         :class:`obspy.inventory.response.ResponseStage` 
@@ -257,13 +257,13 @@ class FilterBase(Base):
         with length `window_len` and estimating normalized std.
 
         ..note:: This only works for simple filters with
-        on flat pass band.
+         on flat pass band.
 
         :param window_len: length of sliding window in points
         :type window_len: integer
 
         :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
+         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
 
         :return: pass band frequencies
