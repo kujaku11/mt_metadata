@@ -1085,7 +1085,7 @@ def read_emtfxml(fn):
     return emtf
 
 
-def write_emtfxml(tf_object, fn=None):
+def write_emtfxml(tf_object, fn=None, **kwargs):
     """
     Write an XML file from a TF object
 

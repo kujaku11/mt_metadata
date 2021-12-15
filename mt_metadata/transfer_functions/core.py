@@ -472,9 +472,15 @@ class TF:
 
         """
         if self.has_transfer_function():
-            return self.dataset.transfer_function.sel(
+            ds = self.dataset.transfer_function.sel(
                 input=["hx", "hy"], output=["ex", "ey", "hz"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
 
     @transfer_function.setter
     def transfer_function(self, value):
@@ -498,9 +504,15 @@ class TF:
 
         """
         if self.has_transfer_function():
-            return self.dataset.transfer_function_error.sel(
+            ds = self.dataset.transfer_function_error.sel(
                 input=["hx", "hy"], output=["ex", "ey", "hz"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+    
+                ds.attrs[key] = value
+            return ds
 
     @transfer_function_error.setter
     def transfer_function_error(self, value):
@@ -553,7 +565,11 @@ class TF:
                 output=self._ch_output_dict["impedance"],
             )
             z.name = "impedance"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                z.attrs[key] = value
             return z
 
     @impedance.setter
@@ -583,7 +599,12 @@ class TF:
                 output=self._ch_output_dict["impedance"],
             )
             z_err.name = "impedance_error"
+            
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                z_err.attrs[key] = value
             return z_err
 
     @impedance_error.setter
@@ -637,7 +658,12 @@ class TF:
                 output=self._ch_output_dict["tipper"],
             )
             t.name = "tipper"
+            
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                t.attrs[key] = value
             return t
 
     @tipper.setter
@@ -666,6 +692,11 @@ class TF:
                 output=self._ch_output_dict["tipper"],
             )
             t.name = "tipper_error"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                t.attrs[key] = value
 
             return t
 
@@ -703,9 +734,15 @@ class TF:
     @property
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
-            return self.dataset.inverse_signal_power.sel(
+            ds =  self.dataset.inverse_signal_power.sel(
                 input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
 
         return None
 
@@ -747,10 +784,17 @@ class TF:
     @property
     def residual_covariance(self):
         if self.has_residual_covariance():
-            return self.dataset.residual_covariance.sel(
+            ds =  self.dataset.residual_covariance.sel(
                 input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                ds.attrs[key] = value
+
+            return ds
+        
         return None
 
     @residual_covariance.setter
@@ -906,13 +950,12 @@ class TF:
         save_dir=None,
         fn_basename=None,
         file_type="edi",
-        longitude_format="longitude",
-        latlon_format="dms",
+        **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
 
-        .. todo:: jtype and Gary Egberts z format
+        .. todo:: j-files and avg files
 
         :param fn: full path to file to save to
         :type fn: :class:`pathlib.Path` or string
@@ -923,8 +966,10 @@ class TF:
         :param fn_basename: name of file with or without extension
         :type fn_basename: string
 
-        :param file_type: [ 'edi' | 'xml' ]
+        :param file_type: [ 'edi' | 'xml' | "zmm" ]
         :type file_type: string
+        
+        keyword arguments include
 
         :param longitude_format:  whether to write longitude as longitude or LONG.
                                   options are 'longitude' or 'LONG', default 'longitude'
@@ -972,7 +1017,7 @@ class TF:
 
         fn = self.save_dir.joinpath(fn_basename)
 
-        return write_file(self, fn, file_type=file_type)
+        return write_file(self, fn, file_type=file_type, **kwargs)
 
     def read_tf_file(self, fn, file_type=None):
         """

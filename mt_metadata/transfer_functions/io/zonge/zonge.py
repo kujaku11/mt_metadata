@@ -666,7 +666,7 @@ def read_avg(fn):
     return tf_object
 
 
-def write_avg(tf_object, fn=None):
+def write_avg(tf_object, fn=None, **kwargs):
     """
     write an .avg file.
 
