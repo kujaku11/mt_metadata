@@ -49,26 +49,26 @@ Module Structure
 The module structure for `mt_metadata.transfer_functions` is setup to be plug-in like.  Each transfer function file format has its own module in `mt_metadata.transfer_functions.io`.  For example EDI files are in the module `mt_metadata.transfer_functions.io.edi`.  Under each module there is a `metadata` folder and a `metadata/standards` folder to accommodate format specific metadata and standardize data types for those metadata.
 
 mt_metadata.transfer_functions.io
-    |- edi
-       |- metadata
-           |- standards
-               |- *.json standard files		   
-    |- zfiles
-       |- metadata
-           |- standards
-               |- *.json standard files
-    |- jfiles
-       |- metadata
-           |- standards
-               |- *.json standard files
-    |- zonge
-       |- metadata
-           |- standards
-               |- *.json standard files
-    |- emtfxml
-       |- metadata
-           |- standards
-               |- *.json standard files
+    - edi
+       - metadata
+           - standards
+               - .json standard files		   
+    - zfiles
+       - metadata
+           - standards
+               - .json standard files
+    - jfiles
+       - metadata
+           - standards
+               - .json standard files
+    - zonge
+       - metadata
+           - standards
+               - .json standard files
+    - emtfxml
+       - metadata
+           - standards
+              - .json standard files
 			   
 Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :func:`mt_metadata.transfer_functions.io.readwrite.read` and :func:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :func:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :func:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
   
