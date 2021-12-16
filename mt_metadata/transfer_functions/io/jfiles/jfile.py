@@ -142,18 +142,12 @@ class JFile:
 
         return j_lines
 
-    def read_j_file(self, fn=None):
+    def read(self, fn=None):
         """
-        read_j_file will read in a *.j file output by BIRRP (better than reading lots of *.<k>r<l>.rf files)
-
-        Input:
-        j-filename
-
-        Output: 4-tuple
-        - periods : N-array
-        - Z_array : 2-tuple - values and errors
-        - tipper_array : 2-tuple - values and errors
-        - processing_dict : parsed processing parameters from j-file header
+        Read data from a j file
+        
+        :param fn: full path to j-file to read, defaults to None
+        :type fn: string or pathlib.Path, optional
 
         """
         # read data
