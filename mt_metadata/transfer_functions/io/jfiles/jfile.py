@@ -39,7 +39,7 @@ class JFile:
         self.frequency = None
 
         if self.fn is not None:
-            self.read_j_file()
+            self.read()
 
     def __str__(self):
         lines = [f"Station: {self.header.station}", "-" * 50]
