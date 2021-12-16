@@ -2,7 +2,7 @@
 Usage
 =====
 
-.. contents::  :local:
+.. _usage:
 
 **mt_metadata** is written to make read/writing magnetotelluric (MT) metadata easier.
 

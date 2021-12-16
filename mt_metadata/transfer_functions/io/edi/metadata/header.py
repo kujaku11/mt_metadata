@@ -216,13 +216,6 @@ class Header(Location):
         :type latlon_format:  string
 
         :returns header_lines: list of lines containing header information
-                               will be of the form::
-
-                               ['>HEAD\n',
-                                '    key_01=value_01\n']
-                                if None is input then reads from input .edi
-                                file or uses attribute information to write
-                                metadata.
 
         """
 

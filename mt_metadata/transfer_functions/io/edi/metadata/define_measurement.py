@@ -219,6 +219,7 @@ class DefineMeasurement(Base):
         read the define measurment section of the edi file
 
         should be a list with lines for:
+            
             - maxchan
             - maxmeas
             - maxrun
@@ -228,6 +229,7 @@ class DefineMeasurement(Base):
             - reftype
             - units
             - dictionaries for >XMEAS with keys:
+                
                 - id
                 - chtype
                 - x
