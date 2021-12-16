@@ -139,7 +139,6 @@ class Header(Location):
 
         metadata_lines = [j_line for j_line in j_lines if ">" in j_line]
 
-        metadata_dict = {}
         for m_line in metadata_lines:
             m_list = m_line.strip().split("=")
             m_key = m_list[0][1:].strip().lower()

@@ -38,7 +38,8 @@ MT Metadata is meant to be a tool to standardize both time series and transfer f
     source/notebooks/tf_emtfxml_example.ipynb
     source/notebooks/tf_zfile_example.ipynb
     source/notebooks/tf_jfile_example.ipynb	
-	
+    source/notebooks/tf_avg_example.ipynb	
+
 .. toctree::
     :maxdepth: 1
     :caption: API Reference

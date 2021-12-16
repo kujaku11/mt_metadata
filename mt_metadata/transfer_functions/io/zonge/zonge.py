@@ -24,65 +24,7 @@ from mt_metadata.transfer_functions.tf import Survey, Station, Run
 # ==============================================================================
 class ZongeMTAvg:
     """
-    deal with avg files output from mtedit and makes an .edi file.
-    
-    
-    =============================== ===========================================
-    Attributes                       Description     
-    =============================== ===========================================
-     MTEdit3Auto_PhaseFlip          [ yes | no ] flip phase automatically
-     MTEdit3DPlus_Use               [ yes | no ] use D+ smoothing
-     MTEdit3PhaseSlope_Smooth       [ yes | no ] smooth data using phase
-     MTEdit3PhaseSlope_toMag        [ yes | no ] use phase to predict mag
-     MTEdit3Version                 version of mtedit
-     Rx_GdpStn                      station name
-     Rx_HPR                         station rotation (N, E, Z)
-     Rx_Length                      dipole lenghts
-     Survey_Array                   survey array
-     Survey_Type                    survey type (MT)
-     Tipper                         mtpy.core.z.Tipper object
-     Tx_Type                        Transmitter type
-     Unit_Length                    units of length (m) 
-     Z                              mtpy.core.z.Z object
-     avg_dict                       dictionary of all meta data for MTAvg 
-     comp                           components
-     comp_dict                      dictionary of components
-     comp_flag                      component flag
-     comp_index                     index of component
-     comp_lst_tip                   list of tipper information
-     comp_lst_z                     list of z information
-     freq_dict                      dictionary of frequencies
-     freq_dict_x                    dictionary of frequencies in x direction
-     freq_dict_y                    dictionary of frequencies in y direction
-     header_dict                    dictionary of header information
-     info_dtype                     numpy.dtype for information 
-     info_keys                      keys for information
-     info_type                      keys type
-     nfreq                          number of frequencies
-     nfreq_tipper                   number of frequencies for tipper
-     z_coordinate                   coordinate of z
-    =============================== ===========================================
-    
-    =============================== ===========================================
-    Methods                         Description
-    =============================== ===========================================
-    convert2complex                 convert res/phase to Z          
-    fill_Tipper                     fill tipper data in to Tipper             
-    fill_Z                          fill z data to Z
-    read_avg_file                   read in .avg file output by MTEdit 
-    write_edi                       write .edi from .avg file   
-    =============================== ===========================================
-    
-    
-    :Example: ::
-        
-        >>> import mtpy.usgs.zonge as zonge
-        >>> zm = zonge.ZongeMTAvg(r"/home/mt01/Merged"\
-                                  'mt01', \
-                                  survey_cfg_file=r"/home/mt/survey.cfg",\
-                                  mtft_cfg_file=r"/home/mt/mt01/Merged/mtft24.cfg"\,
-                                  mtedit_cfg_file=r"/home/bin/mtedit.cfg",\
-                                  copy_path=r"/home/mt/edi_files")
+    deal with avg files output from mtedit 
     """
 
     def __init__(self, fn=None):
@@ -179,7 +121,7 @@ class ZongeMTAvg:
         if value is not None:
             self._fn = Path(value)
             if self._fn.exists():
-                self.read_avg_file()
+                self.read()
         else:
             self._fn = None
 
@@ -212,7 +154,7 @@ class ZongeMTAvg:
             ]
         )
 
-    def read_avg_file(self, fn=None):
+    def read(self, fn=None):
         """
         read in average file
         """
@@ -264,7 +206,6 @@ class ZongeMTAvg:
         self._fill_z()
         self._fill_t()
 
-        self.header.logger.info("Read file {0}".format(self.fn))
 
     def to_complex(self, zmag, zphase):
         """
