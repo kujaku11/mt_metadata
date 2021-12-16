@@ -72,6 +72,7 @@ def validate_attribute(name):
     """
     validate the name to conform to the standards
     name must be:
+        
         * all lower case {a-z; 1-9}
         * must start with a letter
         * categories are separated by '.'

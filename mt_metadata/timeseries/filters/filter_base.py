@@ -195,7 +195,7 @@ class FilterBase(Base):
         """
 
         :return: predetermined filter description based on the
-        type of filter
+            type of filter
         :rtype: string
 
         """
@@ -214,10 +214,10 @@ class FilterBase(Base):
         :param stage: Obspy stage filter
         :type stage: :class:`obspy.inventory.response.ResponseStage`
         :param mapping: dictionary for mapping from an obspy stage,
-         defaults to None
+            defaults to None
         :type mapping: dict, optional
         :raises TypeError: If stage is not a 
-        :class:`obspy.inventory.response.ResponseStage` 
+            :class:`obspy.inventory.response.ResponseStage` 
         :return: the appropriate mt_metadata.timeseries.filter object
         :rtype: mt_metadata.timeseries.filter object
 
