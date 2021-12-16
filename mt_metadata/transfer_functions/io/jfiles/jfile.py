@@ -357,7 +357,9 @@ def read_jfile(fn):
         {
             "period": "periods",
             "impedance": "z",
+            "impedance_error": "z_err",
             "tipper": "t",
+            "tipper_error": "t_err",
             "survey_metadata": "survey_metadata",
             "station_metadata": "station_metadata",
         }
