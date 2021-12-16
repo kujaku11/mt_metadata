@@ -404,12 +404,12 @@ class ChannelResponseFilter(object):
         :param pb_tol: pass band tolerance, defaults to 1e-1
         :type pb_tol: float, optional
         :param interpolation_method: Interpolation method see scipy.signal.interpolate
-        [ slinear | nearest | cubic | quadratic | ], defaults to "slinear"
+         [ slinear | nearest | cubic | quadratic | ], defaults to "slinear"
         :type interpolation_method: string, optional
         :param include_delay: include delays in response, defaults to False
         :type include_delay: bool, optional
         :param include_decimation: Include decimation in response, 
-        defaults to True
+         defaults to True
         :type include_decimation: bool, optional
 
         """
