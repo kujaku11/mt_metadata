@@ -26,6 +26,31 @@ class Information(object):
         self.info_list = []
         self.info_dict = {}
         self.phoenix_col_width = 38
+        
+        self.translation_dict = {
+            "operator": "acquired_by.author",
+            "adu_serial": "run.data_logger.id",
+            "e_azimuth": "run.ex.measurement_azimuth",
+            "ex_len": "run.ex.dipole_length", 
+            "ey_len": "run.ey.dipole_length",
+            "ex_resistance": "run.ex.contact_resistance.start",
+            "ey_resistance": "run.ey.contact_resistance.start",
+            "h_azimuth": "run.hx.measurement_azimuth",
+            "hx": "run.hx.sensor.id",
+            "hy": "run.hy.sensor.id",
+            "hz": "run.hz.sensor.id",
+            "hx_resistance": "run.hx.h_field_max.start",
+            "hy_resistance": "run.hy.h_field_max.start",
+            "hz_resistance": "run.hz.h_field_max.start",
+            "algorithmname": "transfer_function.software.name",
+            "ndec": "processing_parameter",
+            "nfft": "processing_parameter",
+            "ntype": "processing_parameter",
+            "rrtype": "processing_parameter",
+            "removelargelines": "processing_parameter",
+            "rotmaxe": "processing_parameter"}
+        
+        
 
     def __str__(self):
         return "".join(self.write_info())
@@ -76,6 +101,8 @@ class Information(object):
                 else:
                     line = line.strip()
                     if len(line) > 1:
+                        if len(line) <=3 and not line.isalnum():
+                            continue
                         info_list.append(line)
 
         info_list += phoenix_list_02
@@ -133,6 +160,8 @@ class Information(object):
 
             else:
                 self.info_dict[l_list[0]] = None
+                
+        self.parse_info()
 
         if self.info_list is None:
             self.logger.info("Could not read information")
@@ -170,3 +199,40 @@ class Information(object):
                     new_info_list.append(line.strip())
 
         return new_info_list
+    
+    def parse_info(self):
+        """
+        Try to parse the info section into useful information.
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        new_dict = {}
+        processing_parameters = []
+        for key, value in self.info_dict.items():
+            if key is None:
+                continue
+            try:
+                new_key = self.translation_dict[key.lower()]
+                if new_key == "processing_parameter":
+                    processing_parameters.append(f"{key}={value}")
+                else:
+                    new_dict[new_key] = value
+                    
+                for item in self.info_list:
+                    if key.lower() in item.lower():
+                        self.info_list.remove(item)
+                        break
+                    
+            except KeyError:
+                new_dict[key] = value
+                
+        new_dict["transfer_function.processing_parameters"] = processing_parameters
+                
+        self.info_dict = new_dict
+                    
+                
+            
+            
+        
+        

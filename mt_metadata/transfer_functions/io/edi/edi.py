@@ -153,7 +153,7 @@ class EDI(object):
             return 1.0 / self.frequency
         return None
 
-    def read(self, fn=None, old=False):
+    def read(self, fn=None):
         """
         Read in an edi file and fill attributes of each section's classes.
         Including:
@@ -203,7 +203,7 @@ class EDI(object):
         self.Data.read_data(self._edi_lines)
         self.Data.match_channels(self.Measurement.channel_ids)
 
-        self._read_data(old=old)
+        self._read_data()
 
         if self.Header.lat is None:
             self.Header.lat = self.Measurement.reflat
@@ -221,7 +221,7 @@ class EDI(object):
                 "Got elevation from refelev for {0}".format(self.Header.dataid)
             )
 
-    def _read_data(self, old=False):
+    def _read_data(self):
         """
         Read either impedance or spectra data depending on what the type is
         in the data section.
@@ -242,10 +242,8 @@ class EDI(object):
                 c_list = ["hx", "hy", "ex", "ey", "rhx", "rhy"]
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-            if old:
-                self._read_spectra_old(lines, comp_list=c_list)
-            else:
-                self._read_spectra_new(lines, comp_list=c_list)
+            
+            self._read_spectra_new(lines, comp_list=c_list)
 
         elif self.Data.data_type_in == "z":
             self._read_mt(lines)
@@ -633,7 +631,7 @@ class EDI(object):
             extra_lines.append(f"\toriginal_program.name={self.Header.progname}\n")
         if self.Header.progvers != __version__:
             extra_lines.append(f"\toriginal_program.version={self.Header.progvers}\n")
-        if self.Header.progdate != "2021-12-01":
+        if self.Header.progdate != "1980-01-01":
             extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.fileby != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
@@ -945,6 +943,13 @@ class EDI(object):
             if "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
                 sm.transfer_function.set_attr_from_name(key, value)
+                
+            if key[0:4] == "run.":
+                key = key.split("run.")[1]
+                comp, key = key.split('.', 1)
+                ch = getattr(sm.runs[0], comp)
+                ch.set_attr_from_name(key, value)
+                
             if "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:
@@ -977,6 +982,8 @@ class EDI(object):
 
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
+                
+            
 
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
@@ -1033,7 +1040,7 @@ class EDI(object):
                 if k in ["processing_parameters"]:
                     for item in v:
                         self.Info.info_list.append(
-                            f"processing_parameters.{item.replace('=', ' = ')}"
+                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
                         )
                 else:
                     self.Info.info_list.append(f"transfer_function.{k} = {v}")

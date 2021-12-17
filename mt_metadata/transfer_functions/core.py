@@ -49,9 +49,7 @@ class TF:
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
 
         self._rotation_angle = 0
-
         self.save_dir = Path.cwd()
-        self._fn = None
 
         self._dataset_attr_dict = {
             "survey": "survey_metadata.id",
@@ -246,7 +244,9 @@ class TF:
             return
         try:
             self._fn = Path(value)
+            self.save_dir = self._fn.parent
             if self._fn.exists():
+                
                 self.read_tf_file(self._fn)
             else:
                 self.logger.warning(f"Could not find {self._fn} skip reading.")
@@ -984,7 +984,7 @@ class TF:
 
         :Example: ::
 
-            >>> mt_obj.write_mt_file(file_type='xml')
+            >>> tf_obj.write_mtf_file(file_type='xml')
 
         """
 
@@ -1002,15 +1002,18 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename += f".{file_type}"
+                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
 
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
 
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
+            
+        if file_type == "xml":
+            file_type = "emtfxml"
 
-        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr"]:
+        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr", "zss"]:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
@@ -1024,26 +1027,28 @@ class TF:
 
         Read an TF response file.
 
-        .. note:: Currently only .edi, .xml, and .j files are supported
+        .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
+           files are supported
 
         :param fn: full path to input file
         :type fn: string
 
-        :param file_type: ['edi' | 'j' | 'xml' | ... ]
+        :param file_type: ['edi' | 'j' | 'xml' | 'avg' | 'zmm' | 'zrr' | 'zss' | ... ]
                           if None, automatically detects file type by
                           the extension.
         :type file_type: string
 
         :Example: ::
 
-            >>> import mtpy.core.mt as mt
-            >>> mt_obj = mt.TF()
-            >>> mt_obj.read_mt_file(r"/home/mt/mt01.xml")
+            >>> import mt_metadata.transfer_functions.core import TF
+            >>> tf_obj = TF()
+            >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
 
         """
 
         tf_obj = read_file(fn, file_type=file_type)
         self.__dict__.update(tf_obj.__dict__)
+        self.save_dir = self.fn.parent
 
 
 # ==============================================================================

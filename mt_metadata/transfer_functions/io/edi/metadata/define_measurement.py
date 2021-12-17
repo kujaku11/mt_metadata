@@ -96,7 +96,6 @@ class DefineMeasurement(Base):
     def __init__(self, **kwargs):
         self.measurement_list = None
         self._location = Location()
-        self.maxchan = None
         self.maxmeas = 7
         self.maxrun = 999
         self.refelev = 0
@@ -118,6 +117,14 @@ class DefineMeasurement(Base):
         ]
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        if self.reftype is None:
+            self.reftype = "cartesian"
+        if self.units is None:
+            self.units = "m"
+        if self.maxmeas == 0: 
+            self.maxmeas = 7
+        if self.maxrun == 0:
+            self.maxrun = 999
 
     def __str__(self):
         return "".join(self.write_measurement())

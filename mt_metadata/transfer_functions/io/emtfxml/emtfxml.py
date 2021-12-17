@@ -24,6 +24,7 @@ from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run
 from mt_metadata.utils import mttime
+from mt_metadata import __version__
 
 meta_classes = dict(
     [
@@ -495,7 +496,7 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
-        self.provenance.creating_application = "mt_metadata 0.1.5"
+        self.provenance.creating_application = f"mt_metadata {__version__}"
         self.provenance.create_time = mttime.get_now_utc()
 
         self._write_element(parent, self.provenance)
@@ -982,6 +983,7 @@ class EMTFXML(emtf_xml.EMTF):
             fn.sampling_rate = r.sample_rate
             fn.start = r.time_period.start
             fn.end = r.time_period.end
+            fn.run = r.id
 
             for comp in ["hx", "hy", "hz"]:
                 try:
