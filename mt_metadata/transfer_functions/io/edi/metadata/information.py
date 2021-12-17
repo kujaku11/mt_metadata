@@ -169,11 +169,12 @@ class Information(object):
                 else:
                     sep = "="
 
-            if ll.count(":") >= 1:
+            elif ll.count(":") >= 1:
                 sep = ":"
                 # colon_find = ll.find(":")
-            if ll.count("=") >= 1:
+            elif ll.count("=") >= 1:
                 sep = "="
+                
             if sep:
                 l_list = ll.split(sep, 1)
                 if len(l_list) == 2:

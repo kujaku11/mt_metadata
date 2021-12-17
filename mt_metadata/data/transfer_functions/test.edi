@@ -55,8 +55,6 @@
     RHx2   6    COIL2485    0.0 DGtn
     RHy2   7    COIL2487   90.0 DGtn
     Ebat:12.3V Hbat:12.3V Rbat:11.9V
-    Ex Voltage:AC=25.7mV, DC=+1.30mV
-    Ey Voltage:AC=13.8mV, DC=+1.50mV
     transfer_function.coordinate_system = geographic
     transfer_function.processing_parameters.XPR Weighting = RHO Variance.
     transfer_function.remote_references = []
@@ -65,11 +63,9 @@
     transfer_function.software.last_updated = 1980-01-01T00:00:00+00:00
     transfer_function.units = millivolts_per_kilometer_per_nanotesla
     provenance.creation_time = 2014-08-01T00:00:00+00:00
-    provenance.software.last_updated = 1980-01-01T00:00:00+00:00
     provenance.software.name = Phoenix
     provenance.software.version = MT-Editor Ver 0.99.2.106
     provenance.submitter.author = Phoenix
-    14-IEB0537Aa.channels_recorded_auxiliary = []
     14-IEB0537Aa.channels_recorded_electric = ['ex', 'ey']
     14-IEB0537Aa.channels_recorded_magnetic = ['hx', 'hy', 'hz', 'rrhx', 'rrhy']
     14-IEB0537Aa.data_logger.firmware.version = 3112F6
@@ -77,10 +73,12 @@
     14-IEB0537Aa.data_logger.model = MTU5A MTU5A
     14-IEB0537Aa.data_logger.timing_system.drift = 0.0
     14-IEB0537Aa.data_logger.timing_system.uncertainty = 0.0
+    14-IEB0537Aa.ex.ac.start = 25.7
     14-IEB0537Aa.ex.channel_id = 5374.0537
     14-IEB0537Aa.ex.channel_number = 1
     14-IEB0537Aa.ex.component = ex
     14-IEB0537Aa.ex.contact_resistance.start = 1.085
+    14-IEB0537Aa.ex.dc.start = 1.3
     14-IEB0537Aa.ex.dipole_length = 100.0
     14-IEB0537Aa.ex.measurement_azimuth = 0.0
     14-IEB0537Aa.ex.measurement_tilt = 0.0
@@ -88,10 +86,12 @@
     14-IEB0537Aa.ex.positive.type = electric
     14-IEB0537Aa.ex.translated_azimuth = 0.0
     14-IEB0537Aa.ex.type = auxiliary
+    14-IEB0537Aa.ey.ac.start = 13.8
     14-IEB0537Aa.ey.channel_id = 5375.0537
     14-IEB0537Aa.ey.channel_number = 2
     14-IEB0537Aa.ey.component = ey
     14-IEB0537Aa.ey.contact_resistance.start = 0.532
+    14-IEB0537Aa.ey.dc.start = 1.5
     14-IEB0537Aa.ey.dipole_length = 99.99699995499864
     14-IEB0537Aa.ey.measurement_azimuth = 116.61629962451384
     14-IEB0537Aa.ey.measurement_tilt = 0.0
