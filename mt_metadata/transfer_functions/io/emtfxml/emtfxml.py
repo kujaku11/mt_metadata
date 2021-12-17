@@ -999,9 +999,13 @@ class EMTFXML(emtf_xml.EMTF):
                     fn.magnetometer.append(mag)
 
                     ch_in = emtf_xml.Magnetic()
-                    ch_in.x = rch.location.x
-                    ch_in.y = rch.location.y
-                    ch_in.z = rch.location.z
+                    for item in ["x", "y", "z"]:
+                        if getattr(rch.location, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(rch.location, item)
+                        setattr(ch_in, item, value)
+                    
                     ch_in.name = comp.capitalize()
                     ch_in.orientation = rch.translated_azimuth
 
@@ -1034,12 +1038,20 @@ class EMTFXML(emtf_xml.EMTF):
                     fn.dipole.append(dp)
 
                     ch_out = emtf_xml.Electric()
-                    ch_out.x = c.positive.x2
-                    ch_out.y = c.positive.y2
-                    ch_out.z = c.positive.z2
-                    ch_out.x2 = c.negative.x
-                    ch_out.y2 = c.negative.y
-                    ch_out.z2 = c.negative.z
+                    for item in ["x", "y", "z"]:
+                        if getattr(c.negative, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(c.negative, item)
+                        setattr(ch_out, item, value)
+                        
+                    for item in ["x2", "y2", "z2"]:
+                        if getattr(c.positive, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(c.positive, item)
+                        setattr(ch_out, item, value)
+                        
                     ch_out.name = comp.capitalize()
                     ch_out.orientation = c.translated_azimuth
                     self.site_layout.output_channels.append(ch_out)

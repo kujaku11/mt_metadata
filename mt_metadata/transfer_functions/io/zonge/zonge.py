@@ -603,6 +603,8 @@ def read_avg(fn):
     if obj.t is not None:
         tf_object.tipper = obj.t
         tf_object.tipper_error = obj.t_err
+    
+    tf_object._fn = fn
 
     return tf_object
 
