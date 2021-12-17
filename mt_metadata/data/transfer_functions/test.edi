@@ -56,7 +56,7 @@
     RHy2   7    COIL2487   90.0 DGtn
     Ebat:12.3V Hbat:12.3V Rbat:11.9V
     transfer_function.coordinate_system = geographic
-    transfer_function.processing_parameters.XPR Weighting = RHO Variance.
+    transfer_function.processing_parameters.processing_parameters = [XPR Weighting = RHO Variance.]
     transfer_function.remote_references = []
     transfer_function.runs_processed = ['14-IEB0537Aa']
     transfer_function.sign_convention = +

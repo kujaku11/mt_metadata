@@ -998,6 +998,12 @@ class EDI(object):
 
         # add information to runs
         for rr in sm.runs:
+            if rr.time_period.start == '1980-01-01T00:00:00+00:00':
+                rr.time_period.start = sm.time_period.start
+                
+            if rr.time_period.end == '1980-01-01T00:00:00+00:00':
+                rr.time_period.end = sm.time_period.end
+                
             rr.ex = self.ex_metadata
             rr.ey = self.ey_metadata
             rr.hx = self.hx_metadata
@@ -1244,6 +1250,8 @@ class EDI(object):
                         magnetic.sensor.manufacturer = v
                     if key == "type":
                         magnetic.sensor.type = v
+                    if key.startswith("sensor."):
+                        magnetic.set_attr_from_name(key, v)
 
         return magnetic
 

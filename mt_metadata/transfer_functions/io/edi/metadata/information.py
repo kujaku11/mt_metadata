@@ -257,6 +257,11 @@ class Information(object):
                     else:
                         if "pot resist" in key.lower():
                             new_dict[new_key] = value.split()[0]
+                        elif key.lower().endswith("sen"):
+                            comp = key.lower().split()[0]
+                            new_dict[f"{comp}.sensor.manufacturer"] = "Phoenix Geophysics"
+                            new_dict[f"{comp}.sensor.type"] = "Induction Coil"
+                            new_dict[new_key] = value
                         else:
                             new_dict[new_key] = value
                         

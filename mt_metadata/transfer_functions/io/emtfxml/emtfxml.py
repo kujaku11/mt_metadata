@@ -762,7 +762,10 @@ class EMTFXML(emtf_xml.EMTF):
         """
         self.description = sm.summary
         self.site.project = sm.project
-        self.site.survey = sm.geographic_name
+        if sm.geographic_name is None:
+            self.site.survey = sm.id
+        else:
+            self.site.survey = sm.geographic_name
         self.site.country = sm.country
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
@@ -992,6 +995,7 @@ class EMTFXML(emtf_xml.EMTF):
                     mag.id = rch.sensor.id
                     mag.name = comp.capitalize()
                     mag.manufacturer = rch.sensor.manufacturer
+                    mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
 
                     ch_in = emtf_xml.Magnetic()
