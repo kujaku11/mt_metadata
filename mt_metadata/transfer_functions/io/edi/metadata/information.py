@@ -27,6 +27,28 @@ class Information(object):
         self.info_dict = {}
         self.phoenix_col_width = 38
         
+        self.phoenix_translation_dict = {
+            "survey": "survey.id",
+            "company": "acquired_by.organization",
+            "job": "survey.project",
+            "lat": "location.latitude",
+            "lng": "location.longitude",
+            "hardware": "run.data_logger.model",
+            "mtuprog version": "run.data_logger.firmware.version",
+            "xpr weighting": "processing_parameter",
+            "hx sen": "run.hx.sensor.id",
+            "hy sen": "run.hy.sensor.id",
+            "hz sen": "run.hz.sensor.id",
+            "rx sen": "run.rrhx.sensor.id",
+            "ry sen": "run.rrhy.sensor.id",
+            "stn number": "id",
+            "mtu-box serial number": "run.data_logger.id",
+            "ex pot resist": "run.ex.contact_resistance.start",
+            "ey pot resist": "run.ey.contact_resistance.start",
+            "ex voltage": "special",
+            "ey voltage": "special"
+            }
+        
         self.translation_dict = {
             "operator": "acquired_by.author",
             "adu_serial": "run.data_logger.id",
@@ -223,6 +245,7 @@ class Information(object):
                     if key.lower() in item.lower():
                         self.info_list.remove(item)
                         break
+                print(key, new_key)
                     
             except KeyError:
                 new_dict[key] = value

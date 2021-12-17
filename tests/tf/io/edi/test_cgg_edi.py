@@ -27,7 +27,7 @@ class TestCGGEDI(unittest.TestCase):
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": None,
+            "DATAID": "TEST01",
             "DATUM": "WGS84",
             "ELEV": 175.270,
             "EMPTY": 1.000000e32,
@@ -52,32 +52,9 @@ class TestCGGEDI(unittest.TestCase):
 
     def test_info(self):
         info_list = [
-            "/*",
             "SITE INFO:",
-            "OPERATOR=MOOMBARRIGA",
-            "ADU_SERIAL=222",
-            "E_AZIMUTH=0.0",
-            "EX_LEN=100.0",
-            "EY_LEN=100.0",
-            "EX_RESISTANCE=44479800",
-            "EY_RESISTANCE=41693800",
-            "H_SITE=E_SITE",
-            "H_AZIMUTH=0.0",
-            "HX=MFS06e-246",
-            "HY=MFS06e-249",
-            "HZ=MFS06e-249",
-            "HX_RESISTANCE=169869",
-            "HY_RESISTANCE=164154",
-            "HZ_RESISTANCE=2653",
+            'H_SITE=E_SITE',
             "PROCESSING PARAMETERS:",
-            "AlgorithmName=L13ss",
-            "NDec=1",
-            "NFFT=128",
-            "Ntype=1",
-            "RRType=None",
-            "RemoveLargeLines=true",
-            "RotMaxE=false",
-            "*/",
         ]
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
