@@ -25,7 +25,9 @@ class Information(object):
 
         self.info_list = []
         self.info_dict = {}
-        self.phoenix_col_width = 38
+        self._phoenix_col_width = 38
+        self._phoenix_file = False
+        
         
         self.phoenix_translation_dict = {
             "survey": "survey.id",
@@ -45,8 +47,8 @@ class Information(object):
             "mtu-box serial number": "run.data_logger.id",
             "ex pot resist": "run.ex.contact_resistance.start",
             "ey pot resist": "run.ey.contact_resistance.start",
-            "ex voltage": "special",
-            "ey voltage": "special"
+            "ex voltage": ["run.ex.ac.start", "run.ex.dc.start"],
+            "ey voltage": ["run.ey.ac.start", "run.ey.dc.start"],
             }
         
         self.translation_dict = {
@@ -93,7 +95,6 @@ class Information(object):
 
         info_list = []
         info_find = False
-        phoenix_file = False
         phoenix_list_02 = []
 
         for line in edi_lines:
@@ -116,10 +117,10 @@ class Information(object):
                 if "maxinfo" in line.lower():
                     continue
                 if line.lower().find("run information") >= 0:
-                    phoenix_file = True
-                if phoenix_file and len(line) > self.phoenix_col_width:
-                    info_list.append(line[0 : self.phoenix_col_width].strip())
-                    phoenix_list_02.append(line[self.phoenix_col_width :].strip())
+                    self._phoenix_file = True
+                if self._phoenix_file and len(line) > self._phoenix_col_width:
+                    info_list.append(line[0 : self._phoenix_col_width].strip())
+                    phoenix_list_02.append(line[self._phoenix_col_width :].strip())
                 else:
                     line = line.strip()
                     if len(line) > 1:
@@ -235,17 +236,30 @@ class Information(object):
             if key is None:
                 continue
             try:
-                new_key = self.translation_dict[key.lower()]
-                if new_key == "processing_parameter":
-                    processing_parameters.append(f"{key}={value}")
+                if self._phoenix_file:
+                    new_key = self.phoenix_translation_dict[key.lower()]
                 else:
-                    new_dict[new_key] = value
-                    
+                    new_key = self.translation_dict[key.lower()]
+                
+                if isinstance(new_key, list):
+                    values = value.split(',')
+                    if len(values) == len(new_key):
+                        for vkey, item in zip(new_key, values):
+                            item_value = item.lower().split("=")[1].replace("mv", "")
+                            new_dict[vkey] = item_value
+                    else:
+                        self.logger.warngin("could not parse line %s", value)
+                        raise KeyError
+                else:        
+                    if new_key == "processing_parameter":
+                        processing_parameters.append(f"{key}={value}")
+                    else:
+                        new_dict[new_key] = value
+                        
                 for item in self.info_list:
                     if key.lower() in item.lower():
                         self.info_list.remove(item)
                         break
-                print(key, new_key)
                     
             except KeyError:
                 new_dict[key] = value
