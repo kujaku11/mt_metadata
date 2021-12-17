@@ -50,8 +50,7 @@ class TestPhoenixEDI(unittest.TestCase):
     def test_info(self):
         info_list = ['RUN INFORMATION',
          'PROCESSED FROM DFT TIME SERIES',
-         'START-UP: 2014/07/28 - 02:57:00',
-         'END-TIME: 2014/07/28 - 23:38:25',
+         'Lat 22:49.423 S Lng 139:17.681 E',
          'FILE: IEB0537A IEB0564M',
          'MTU-DFT VERSION: TStoFT.38',
          'MTU-RBS VERSION:R2012-0216-B22',
@@ -82,7 +81,9 @@ class TestPhoenixEDI(unittest.TestCase):
          'Hz1   5    COIL2320',
          'RHx2   6    COIL2485    0.0 DGtn',
          'RHy2   7    COIL2487   90.0 DGtn',
-         'Ebat:12.3V Hbat:12.3V Rbat:11.9V']
+         'Ebat:12.3V Hbat:12.3V Rbat:11.9V',
+         'Ex Voltage:AC=25.7mV, DC=+1.30mV',
+         'Ey Voltage:AC=13.8mV, DC=+1.50mV']
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
 

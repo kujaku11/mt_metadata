@@ -31,10 +31,8 @@ class Information(object):
         
         self.phoenix_translation_dict = {
             "survey": "survey.id",
-            "company": "acquired_by.organization",
+            "company": "station.acquired_by.organization",
             "job": "survey.project",
-            "lat": "location.latitude",
-            "lng": "location.longitude",
             "hardware": "run.data_logger.model",
             "mtuprog version": "run.data_logger.firmware.version",
             "xpr weighting": "processing_parameter",
@@ -43,16 +41,18 @@ class Information(object):
             "hz sen": "run.hz.sensor.id",
             "rx sen": "run.rrhx.sensor.id",
             "ry sen": "run.rrhy.sensor.id",
-            "stn number": "id",
+            "stn number": "station.id",
             "mtu-box serial number": "run.data_logger.id",
             "ex pot resist": "run.ex.contact_resistance.start",
             "ey pot resist": "run.ey.contact_resistance.start",
             "ex voltage": ["run.ex.ac.start", "run.ex.dc.start"],
             "ey voltage": ["run.ey.ac.start", "run.ey.dc.start"],
+            "start-up": "station.time_period.start",
+            "end-time": "station.time_period.end",
             }
         
         self.translation_dict = {
-            "operator": "acquired_by.author",
+            "operator": "station.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
             "ex_len": "run.ex.dipole_length", 
@@ -163,16 +163,16 @@ class Information(object):
             # need to check if there is an = or : seperator, which ever
             # comes first is assumed to be the delimiter
             sep = None
-            if ll.find(":") > -1 and ll.find(":") > -1:
+            if ll.count(":") > 0 and ll.count("=") > 0:
                 if ll.find(":") < ll.find("="):
                     sep = ":"
                 else:
                     sep = "="
 
-            if ll.count(":") == 1:
+            if ll.count(":") >= 1:
                 sep = ":"
                 # colon_find = ll.find(":")
-            if ll.count("=") == 1:
+            if ll.count("=") >= 1:
                 sep = "="
             if sep:
                 l_list = ll.split(sep, 1)
@@ -254,7 +254,12 @@ class Information(object):
                     if new_key == "processing_parameter":
                         processing_parameters.append(f"{key}={value}")
                     else:
-                        new_dict[new_key] = value
+                        if "pot resist" in key.lower():
+                            new_dict[new_key] = value.split()[0]
+                        else:
+                            new_dict[new_key] = value
+                        
+                    
                         
                 for item in self.info_list:
                     if key.lower() in item.lower():

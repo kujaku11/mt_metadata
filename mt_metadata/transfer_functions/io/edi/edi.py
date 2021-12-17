@@ -872,10 +872,8 @@ class EDI(object):
             if key is None:
                 key = "extra"
             key = key.lower()
-            if key in ["project"]:
-                setattr(sm, key, value)
-            if key in ["survey"]:
-                sm.id = value
+            if key.startswith("survey."):
+                sm.set_attr_from_name(key.split("survey.")[1], value)
 
         return sm
 
@@ -944,11 +942,15 @@ class EDI(object):
                 key = key.split("transfer_function.")[1]
                 sm.transfer_function.set_attr_from_name(key, value)
                 
-            if key[0:4] == "run.":
+            if key.startswith("run."):
                 key = key.split("run.")[1]
                 comp, key = key.split('.', 1)
                 ch = getattr(sm.runs[0], comp)
                 ch.set_attr_from_name(key, value)
+                
+            elif key.startswith("station."):
+                sm.set_attr_from_name(key.split("station.")[1], value)
+                
                 
             if "processing." in key:
                 key = key.split("processing.")[1]
@@ -983,7 +985,6 @@ class EDI(object):
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
                 
-            
 
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
@@ -1018,7 +1019,7 @@ class EDI(object):
 
         ### fill header information from station
         self.Header.acqby = sm.acquired_by.author
-        self.Header.acqdate = sm.time_period.start_date
+        self.Header.acqdate = sm.time_period.start
         self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id
         self.Header.declination = sm.location.declination
@@ -1029,6 +1030,7 @@ class EDI(object):
         self.Header.lon = sm.location.longitude
         self.Header.datum = sm.location.datum
         self.Header.units = sm.transfer_function.units
+        self.Header.enddate = sm.time_period.end
 
         ### write notes
         # write comments, which would be anything in the info section from an edi
@@ -1047,7 +1049,7 @@ class EDI(object):
 
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
-            if not v in [None, "None", "null"]:
+            if not v in [None, "None", "null", '1980-01-01T00:00:00+00:00']:
                 self.Info.info_list.append(f"provenance.{k} = {v}")
 
         # write field notes
@@ -1074,7 +1076,7 @@ class EDI(object):
             r_dict = run.to_dict(single=True)
 
             for rk, rv in r_dict.items():
-                if rv in [None, "1980-01-01T00:00:00+00:00"]:
+                if rv in [None, "1980-01-01T00:00:00+00:00", []]:
                     continue
                 if rk[0:2] in ["ex", "ey", "hx", "hy", "hz", "te", "rr"]:
                     if rk[0:2] == "te":
