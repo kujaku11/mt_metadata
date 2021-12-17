@@ -116,7 +116,7 @@ class Information(object):
             elif info_find:
                 if "maxinfo" in line.lower():
                     continue
-                if line.lower().find("run information") >= 0:
+                if line.lower().find("run information") >= 0 and line.lower().find("station") >= 0:
                     self._phoenix_file = True
                 if self._phoenix_file and len(line) > self._phoenix_col_width:
                     info_list.append(line[0 : self._phoenix_col_width].strip())
@@ -269,8 +269,9 @@ class Information(object):
                     
             except KeyError:
                 new_dict[key] = value
-                
-        new_dict["transfer_function.processing_parameters"] = processing_parameters
+        
+        if processing_parameters != []:
+            new_dict["transfer_function.processing_parameters"] = processing_parameters
                 
         self.info_dict = new_dict
                     

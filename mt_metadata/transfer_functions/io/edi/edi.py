@@ -940,7 +940,11 @@ class EDI(object):
             key = key.lower()
             if "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
-                sm.transfer_function.set_attr_from_name(key, value)
+                if "processing_parameters" in key:
+                    param = key.split(".")[-1]
+                    sm.transfer_function.processing_parameters.append(f"{param}={value}")
+                else:
+                    sm.transfer_function.set_attr_from_name(key, value)
                 
             if key.startswith("run."):
                 key = key.split("run.")[1]
