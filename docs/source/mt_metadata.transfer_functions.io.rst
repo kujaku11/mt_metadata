@@ -1,5 +1,17 @@
-mt\_metadata.transfer\_functions.tf.io package
+mt\_metadata.transfer\_functions.io package
 ===========================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mt_metadata.transfer_functions.io.edi
+   mt_metadata.transfer_functions.io.emtfxml
+   mt_metadata.transfer_functions.io.jfiles
+   mt_metadata.transfer_functions.io.zfiles
+   mt_metadata.transfer_functions.io.zonge
 
 Submodules
 ----------
@@ -12,43 +24,18 @@ mt\_metadata.transfer\_functions.io.readwrite module
    :undoc-members:
    :show-inheritance:
 
-mt\_metadata.transfer\_functions.io.edi module
-----------------------------------------------------
+mt\_metadata.transfer\_functions.io.tools module
+------------------------------------------------
 
-.. automodule:: mt_metadata.transfer_functions.io.edi
+.. automodule:: mt_metadata.transfer_functions.io.tools
    :members:
    :undoc-members:
    :show-inheritance:
-   
-mt\_metadata.transfer\_functions.io.emtfxml module
-----------------------------------------------------
-
-.. automodule:: mt_metadata.transfer_functions.io.emtfxml
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-mt\_metadata.transfer\_functions.io.zmm module
-----------------------------------------------------
-
-.. automodule:: mt_metadata.transfer_functions.io.zmm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-mt\_metadata.transfer\_functions.io.jfile module
-----------------------------------------------------
-
-.. automodule:: mt_metadata.transfer_functions.io.jfile
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 Module contents
 ---------------
 
-.. automodule:: mt_metadata.transfer_functions.tf
+.. automodule:: mt_metadata.transfer_functions.io
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,13 +1,13 @@
 ======================
-MT Metadata Structure
+Metadata Structure
 ======================
 
-.. contents::  :local:
+.. _structure:
 
 Metadata Validation
 ---------------------
 
-Metadata validation can be done in many different ways.  After writing most of the code I learned about JSON and XML validation, but since I was naive to those I developed a structure that works.  That structure is this, all metadata key words have certain attributes that describe how the metadata value should be represented and validated.  Those are:
+Metadata validation can be done in many different ways.  After writing most of the code I learned about JSON and XML validation and Pydantic, but since I was naive to those I developed this structure. Future versions may include external packages for validation.  That structure forces explicit metadata description through all metadata a dictionary with the key words:
 
 	* **type** - How the value should be represented based on very basic types
 	

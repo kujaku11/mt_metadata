@@ -39,7 +39,6 @@ class Base:
 
     def __init__(self, attr_dict={}, **kwargs):
 
-        self._attr_dict = attr_dict
         self._changed = False
 
         self._class_name = validate_attribute(self.__class__.__name__)
@@ -47,8 +46,50 @@ class Base:
         self.logger = setup_logger(f"{__name__}.{self._class_name}", level=LOG_LEVEL)
         self._debug = False
 
+        self._set_attr_dict(attr_dict)
+
         for name, value in kwargs.items():
             self.set_attr_from_name(name, value)
+
+    def _set_attr_dict(self, attr_dict):
+        """
+        Set attribute dictionary and variables
+
+        :param attr_dict: DESCRIPTION
+        :type attr_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        self._attr_dict = attr_dict
+
+        for k, d in attr_dict.items():
+            if d["required"]:
+                if "list" in d["style"]:
+                    value = []
+                elif "date" in d["style"] or "time" in d["style"]:
+                    value = "1980-01-01T00:00:00+00:00"
+                elif "controlled" in d["style"]:
+                    if "other" in d["options"]:
+                        value = None
+                    else:
+                        value = d["options"][0]
+                else:
+                    if d["type"] in ["integer", "float"]:
+                        value = 0
+                    elif d["type"] in ["string"]:
+                        value = "none"
+                    elif d["type"] in ["bool"]:
+                        value = False
+
+            else:
+                if "date" in d["style"] or "time" in d["style"]:
+                    value = "1980-01-01T00:00:00+00:00"
+                else:
+                    value = None
+
+            setattr(self, k, value)
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]

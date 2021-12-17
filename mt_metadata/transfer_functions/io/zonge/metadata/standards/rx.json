@@ -1,0 +1,32 @@
+{
+	"gdp_stn": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Station name",
+        "options": [],
+        "alias": [],
+        "example": "24"
+    },
+	"length": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Generic dipole length",
+        "options": [],
+        "alias": [],
+        "example": "100"
+    },
+	"h_p_r": {
+        "type": "float",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "Horizontal, pitch, roll of array",
+        "options": [],
+        "alias": [],
+        "example": "0, 0, 180"
+    }	
+}

@@ -1,8 +1,12 @@
-=====
+===========
 Usage
-=====
+===========
 
-.. contents::  :local:
+.. _ref-usage:
+
+
+Basic
+-------------
 
 **mt_metadata** is written to make read/writing magnetotelluric (MT) metadata easier.
 

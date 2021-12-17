@@ -25,7 +25,7 @@ class Declination(Base):
 
     def __init__(self, **kwargs):
 
-        self.value = None
+        self.value = 0.0
         self.epoch = None
         self.model = None
         self.comments = None

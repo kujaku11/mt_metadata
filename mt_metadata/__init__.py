@@ -109,7 +109,9 @@ MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
 MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath("data/mt_xml/multi_run_experiment.xml")
-MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath("data/mt_xml/multi_run_experiment_02.xml")
+MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath(
+    "data/mt_xml/multi_run_experiment_02.xml"
+)
 
 ### Transfer function files
 TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/example_emtf.zmm")
@@ -119,3 +121,6 @@ TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi
 TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")
+TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
+TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
+TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath("data/transfer_functions/spectra_out.edi")

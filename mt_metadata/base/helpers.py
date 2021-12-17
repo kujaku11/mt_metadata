@@ -52,12 +52,22 @@ def wrap_description(description, column_width):
 
 def write_lines(attr_dict, c1=45, c2=45, c3=15):
     """
-     write table lines
-    :param lines_list: DESCRIPTION
     Takes the attribute dictionary from the json and parses it into a table
     Returns a string representation of this table.  This overwrites the doc.
+    
+    :param attr_dict: attribute dictionary
+    :type attr_dict: dict
+    :param c1: cloumn 1 width, defaults to 45
+    :type c1: integer, optional
+    :param c2: column 2 width, defaults to 45
+    :type c2: integer, optional
+    :param c3: column 3 width, defaults to 15
+    :type c3: integer, optional
+    :return: doc string
+    :rtype: string
 
     """
+
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
         "-" * (c1 + 1), "-" * (c2 + 2), "-" * (c3 + 1)
@@ -124,17 +134,19 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
 def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     """
-     write table lines
-    :param lines_list: DESCRIPTION
-    :type lines_list: TYPE
-    :param c1: DESCRIPTION
-    :type c1: TYPE
-    :param c2: DESCRIPTION
-    :type c2: TYPE
-    :param c3: DESCRIPTION
-    :type c3: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    
+    :param key: key to write from attr dict
+    :type key: string
+    :param attr_dict: attribute dictionary
+    :type attr_dict: dict
+    :param c1: column 1 width, defaults to 45
+    :type c1: int, optional
+    :param c2: column 2 width, defaults to 45
+    :type c2: int, optional
+    :param c3: column 3 width, defaults to 15
+    :type c3: int, optional
+    :return: list of lines
+    :rtype: list
 
     """
 

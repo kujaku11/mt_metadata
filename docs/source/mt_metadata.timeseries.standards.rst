@@ -1,10 +1,6 @@
 mt\_metadata.timeseries.standards package
 =========================================
 
-Submodules
-----------
-
-
 Module contents
 ---------------
 

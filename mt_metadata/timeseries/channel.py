@@ -37,24 +37,14 @@ class Channel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.type = "auxiliary"
-        self.units = None
-        self.channel_number = None
-        self.channel_id = None
-        self.comments = None
-        self._component = None
-        self.sample_rate = 0.0
-        self.measurement_azimuth = 0.0
-        self.measurement_tilt = 0.0
         self.data_quality = DataQuality()
         self.filter = Filtered()
         self.location = Location()
         self.time_period = TimePeriod()
-        self.translated_azimuth = None
-        self.translated_tilt = None
         self.sensor = Instrument()
         self.fdsn = Fdsn()
         self._ch_pattern = r"\w+"
+        self._component = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

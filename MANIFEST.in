@@ -13,6 +13,11 @@ recursive-include mt_metadata/utils *.yaml
 recursive-include mt_metadata/timeseries/filters/standards *.json
 recursive-include mt_metadata/timeseries/standards *.json
 recursive-include mt_metadata/transfer_functions/tf/standards *.json
-recursive-include mt_metadata/transfer_functions/emtf_xml/standards *.json
+recursive-include mt_metadata/transfer_functions/io/emtfxml/metadata/standards *.json
+recursive-include mt_metadata/transfer_functions/io/edi/metadata/standards *.json
+recursive-include mt_metadata/transfer_functions/io/zfiles/metadata/standards *.json
+recursive-include mt_metadata/transfer_functions/io/jfiles/metadata/standards *.json
+recursive-include mt_metadata/transfer_functions/io/zonge/metadata/standards *.json
 recursive-include mt_metadata/data/mt_xml *.xml
 recursive-include mt_metadata/data/stationxml *.xml
+recursive-include mt_metadata/data/transfer_functions *.edi *.xml *.j *.zmm

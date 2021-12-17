@@ -11,6 +11,8 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
+
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
@@ -33,7 +35,7 @@ class Electric(Channel):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.dipole_length = 0.0
+        self._dipole_length = 0.0
         self.positive = Electrode()
         self.negative = Electrode()
         self.contact_resistance = Diagnostic()
@@ -46,3 +48,23 @@ class Electric(Channel):
         # descriptions and throw an error
         Channel.__init__(self, **kwargs)
         self._attr_dict = attr_dict
+
+    @property
+    def dipole_length(self):
+        return self._dipole_length
+
+    @dipole_length.setter
+    def dipole_length(self, value):
+        try:
+            value = float(value)
+        except ValueError:
+            raise ValueError("Input dipole length must be a float")
+
+        self._dipole_length = value
+
+        if self.translated_azimuth != None:
+            self.positive.x2 = value * np.cos(np.deg2rad(self.translated_azimuth))
+            self.positive.y2 = value * np.sin(np.deg2rad(self.translated_azimuth))
+        else:
+            self.positive.x2 = value * np.cos(np.deg2rad(self.measurement_azimuth))
+            self.positive.y2 = value * np.sin(np.deg2rad(self.measurement_azimuth))

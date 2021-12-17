@@ -1,13 +1,13 @@
 """
+==========================
 Channel Response Filter
-=========================
+==========================
 
 Combines all filters for a given channel into a total response that can be used in 
 the frequency domain.
 
-.. note:: Time Delay filters should be applied in the time domain otherwise bad
-things can happen.   
-
+.. note:: Time Delay filters should be applied in the time domain 
+    otherwise bad things can happen.   
 """
 # =============================================================================
 # Imports
@@ -35,7 +35,6 @@ class ChannelResponseFilter(object):
     This class holds a list of all the filters associated with a channel.
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
-
     """
 
     def __init__(self, **kwargs):
@@ -188,9 +187,8 @@ class ChannelResponseFilter(object):
     def non_delay_filters(self):
         """
 
-        Returns all the non-time_delay filters as a list
-        -------
-
+        :return: all the non-time_delay filters as a list
+        
         """
         non_delay_filters = [x for x in self.filters_list if x.type != "time delay"]
         return non_delay_filters
@@ -198,10 +196,9 @@ class ChannelResponseFilter(object):
     @property
     def delay_filters(self):
         """
-
-        Returns all the time delay filters as a list
-        -------
-
+        
+        :return: all the time delay filters as a list
+        
         """
         delay_filters = [x for x in self.filters_list if x.type == "time delay"]
         return delay_filters
@@ -209,10 +206,9 @@ class ChannelResponseFilter(object):
     @property
     def total_delay(self):
         """
-
-        Returns the total delay of all filters
-        -------
-
+        
+        :return: the total delay of all filters
+        
         """
         delay_filters = self.delay_filters
         total_delay = 0.0
@@ -229,16 +225,23 @@ class ChannelResponseFilter(object):
         **kwargs,
     ):
         """
-
-        Parameters
-        ----------
-        frequencies: numpy array of frequencies, expected in Hz
-
-        Returns
-        -------
-        h : numpy array of (possibly complex-valued) frequency response at the input frequencies
+        
+        :param frequencies: frequencies to compute complex response,
+         defaults to None
+        :type frequencies: np.ndarray, optional
+        :param include_delay: include delay in complex response,
+         defaults to False
+        :type include_delay: bool, optional
+        :param normalize: normalize the response to 1, defaults to False
+        :type normalize: bool, optional
+        :param include_decimation: Include decimation in response,
+         defaults to True
+        :type include_decimation: bool, optional
+        :return: complex response along give frequency array
+        :rtype: np.ndarray
 
         """
+        
         if frequencies is not None:
             self.frequencies = frequencies
 
@@ -292,14 +295,14 @@ class ChannelResponseFilter(object):
     @property
     def units_in(self):
         """
-        returns the units of the channel
+        :return: the units of the channel
         """
         return self.filters_list[0].units_in
 
     @property
     def units_out(self):
         """
-        returns the units of the channel
+        :return: the units of the channel
         """
         return self.filters_list[-1].units_out
 
@@ -389,6 +392,27 @@ class ChannelResponseFilter(object):
         include_delay=False,
         include_decimation=True,
     ):
+        """
+        Plot the response
+        
+        :param frequencies: frequencies to compute response, defaults to None
+        :type frequencies: np.ndarray, optional
+        :param x_units: [ period | frequency ], defaults to "period"
+        :type x_units: string, optional
+        :param unwrap: Unwrap phase, defaults to True
+        :type unwrap: bool, optional
+        :param pb_tol: pass band tolerance, defaults to 1e-1
+        :type pb_tol: float, optional
+        :param interpolation_method: Interpolation method see scipy.signal.interpolate
+         [ slinear | nearest | cubic | quadratic | ], defaults to "slinear"
+        :type interpolation_method: string, optional
+        :param include_delay: include delays in response, defaults to False
+        :type include_delay: bool, optional
+        :param include_decimation: Include decimation in response, 
+         defaults to True
+        :type include_decimation: bool, optional
+
+        """
 
         if frequencies is not None:
             self.frequencies = frequencies

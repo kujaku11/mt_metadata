@@ -33,13 +33,13 @@ class FIRFilter(FilterBase):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.type = "fir"
-        self.coefficients = None
-        self.symmetry = "NONE"
-        self.gain_frequency = 0.0
-        self.decimation_factor = 1.0
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        self.type = "fir"
+        if self.decimation_factor == 0:
+            self.decimation_factor = 1.0
+        if self.gain == 0.0:
+            self.gain = 1.0
         if isinstance(self.gain_frequency, str):
             self.gain_frequency = float(self.gain_frequency)
 

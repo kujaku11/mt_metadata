@@ -74,6 +74,7 @@ def load_logging_config(config_fn=CONF_FILE):
     configure/setup the logging according to the input configfile
 
     :param configfile: .yml, .ini, .conf, .json, .yaml.
+    
     Its default is the logging.yml located in the same dir as this module.
     It can be modofied to use env variables to search for a log config file.
     """

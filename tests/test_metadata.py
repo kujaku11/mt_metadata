@@ -52,32 +52,45 @@ class TestBase(unittest.TestCase):
         self.base_object.add_base_attribute(
             self.extra_name, self.extra_value, self.extra_v_dict
         )
-        self.assertIsInstance(
-            self.base_object.extra_attribute, self.extra_v_dict["type"]
-        )
-        self.assertEqual(self.base_object.extra_attribute, "10")
+        with self.subTest("extra"):
+            self.assertIsInstance(
+                self.base_object.extra_attribute, self.extra_v_dict["type"]
+            )
+        with self.subTest("extra 10"):
+            self.assertEqual(self.base_object.extra_attribute, "10")
 
     def test_validate_type(self):
-        self.assertEqual(10.0, self.base_object._validate_type("10", "float"))
-        self.assertEqual(10, self.base_object._validate_type("10", int))
-        self.assertEqual("10", self.base_object._validate_type(10, str))
-        self.assertEqual(True, self.base_object._validate_type("true", bool))
+
+        with self.subTest("float"):
+            self.assertEqual(10.0, self.base_object._validate_type("10", "float"))
+        with self.subTest("integer"):
+            self.assertEqual(10, self.base_object._validate_type("10", int))
+        with self.subTest("string"):
+            self.assertEqual("10", self.base_object._validate_type(10, str))
+        with self.subTest("bool"):
+            self.assertEqual(True, self.base_object._validate_type("true", bool))
+
+    def test_list_validation_type(self):
 
         number_list = [10, "11", 12.6, "13.3"]
-        self.assertEqual(
-            [10, 11, 12, 13], self.base_object._validate_type(number_list, int)
-        )
-        self.assertEqual(
-            [10.0, 11.0, 12.6, 13.3],
-            self.base_object._validate_type(number_list, float),
-        )
-        self.assertEqual(
-            ["10", "11", "12.6", "13.3"],
-            self.base_object._validate_type(number_list, str),
-        )
-        self.assertEqual(
-            [True, False], self.base_object._validate_type(["true", "False"], bool)
-        )
+        with self.subTest("int"):
+            self.assertEqual(
+                [10, 11, 12, 13], self.base_object._validate_type(number_list, int)
+            )
+        with self.subTest("float"):
+            self.assertEqual(
+                [10.0, 11.0, 12.6, 13.3],
+                self.base_object._validate_type(number_list, float),
+            )
+        with self.subTest("string"):
+            self.assertEqual(
+                ["10", "11", "12.6", "13.3"],
+                self.base_object._validate_type(number_list, str),
+            )
+        with self.subTest("bool"):
+            self.assertEqual(
+                [True, False], self.base_object._validate_type(["true", "False"], bool)
+            )
 
 
 # =============================================================================

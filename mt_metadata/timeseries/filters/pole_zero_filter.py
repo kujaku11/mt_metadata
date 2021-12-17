@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+.. py:module:: pole_zero_filter
+    :synopsis: Deal with Pole Zero Filters 
+
+.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
+
+"""
 import copy
 import numpy as np
 import obspy
@@ -6,7 +14,6 @@ import scipy.signal as signal
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
-from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
@@ -14,17 +21,6 @@ attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-# Decision:
-# A
-# - import obspy mapping from filter.py
-# - add the desired attrs here
-# - assign to self._obspy_mapping in __init__
-# B
-# - augment obspy mapping in __init__()
-# C
-# - augment obspy mapping in from_obspy_stage()
-# D
-# - put obspy mapping in json
 obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 obspy_mapping["_zeros"] = "zeros"
 obspy_mapping["_poles"] = "poles"
@@ -35,33 +31,32 @@ class PoleZeroFilter(FilterBase):
     def __init__(self, **kwargs):
 
         super().__init__()
-        self.type = "zpk"
-        self.poles = None
-        self.zeros = None
-        self.normalization_factor = 1.0
-        # this is a hack for now until we sort out the order of inheritance
-        # if not then the normalization factor is a string and causes an error
-        try:
-            kwargs["normalization_factor"]
-        except KeyError:
-            kwargs["normalization_factor"] = 1.0
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        self.type = "zpk"
+        if self.normalization_factor == 0:
+            self.normalization_factor = 1.0
+        if self.gain == 0:
+            self.gain = 1.0
 
         self.obspy_mapping = obspy_mapping
 
     @property
     def poles(self):
+        """
+        
+        :return: array of poles
+        :rtype: np.ndarray
+
+        """
         return self._poles
 
     @poles.setter
     def poles(self, value):
         """
         Set the poles, make sure the input is validated
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: pole values
+        :type value: list, tuple, np.ndarray
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
@@ -75,16 +70,21 @@ class PoleZeroFilter(FilterBase):
 
     @property
     def zeros(self):
+        """
+        
+        :return: array of zeros
+        :rtype: np.ndarray
+
+        """
         return self._zeros
 
     @zeros.setter
     def zeros(self, value):
         """
+        
         Set the zeros, make sure the input is validated
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: zero values
+        :type value: list, tuple, np.ndarray
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
@@ -98,18 +98,41 @@ class PoleZeroFilter(FilterBase):
 
     @property
     def n_poles(self):
+        """
+        :return: number of poles
+        :rtype: integer
+        
+        """
         return len(self._poles)
 
     @property
     def n_zeros(self):
+        """
+        
+        :return: number of zeros
+        :rtype: integer
+
+        """
         return len(self._zeros)
 
     def zero_pole_gain_representation(self):
+        """
+        
+        :return: scipy.signal.ZPG object
+        :rtype: :class:`scipy.signal.ZerosPolesGain`
+
+        """
         zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
         return zpg
 
     @property
     def total_gain(self):
+        """
+        
+        :return: total gain of the filter
+        :rtype: float
+
+        """
         return self.gain * self.normalization_factor
 
     def to_obspy(
@@ -120,10 +143,18 @@ class PoleZeroFilter(FilterBase):
         sample_rate=1,
     ):
         """
-        create an obspy stage
-
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Convert the filter to an obspy filter
+        
+        :param stage_number: sequential stage number, defaults to 1
+        :type stage_number: integer, optional
+        :param pz_type: Pole Zero type, defaults to "LAPLACE (RADIANS/SECOND)"
+        :type pz_type: string, optional
+        :param normalization_frequency: Normalization frequency, defaults to 1
+        :type normalization_frequency: float, optional
+        :param sample_rate: sample rate, defaults to 1
+        :type sample_rate: float, optional
+        :return: Obspy stage filter
+        :rtype: :class:`obspy.core.inventory.PolesZerosResponseStage` 
 
         """
         if self.zeros is None:
@@ -152,14 +183,12 @@ class PoleZeroFilter(FilterBase):
 
     def complex_response(self, frequencies, **kwargs):
         """
+        Computes complex response for given frequency range
+        :param frequencies: array of frequencies to estimate the response
+        :type frequencies: np.ndarray
 
-        Parameters
-        ----------
-        frequencies: numpy array of frequencies, expected in Hz
-
-        Returns
-        -------
-        h : numpy array of (possibly complex-valued) frequency response at the input frequencies
+        :return: complex response
+        :rtype: np.ndarray
 
         """
         angular_frequencies = 2 * np.pi * frequencies
@@ -183,7 +212,7 @@ class PoleZeroFilter(FilterBase):
         :type window_len: integer
 
         :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
+         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
 
         :return: estimated normalization frequency Hz

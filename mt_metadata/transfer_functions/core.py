@@ -49,9 +49,7 @@ class TF:
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
 
         self._rotation_angle = 0
-
         self.save_dir = Path.cwd()
-        self._fn = None
 
         self._dataset_attr_dict = {
             "survey": "survey_metadata.id",
@@ -67,6 +65,7 @@ class TF:
             "start": "station_metadata.time_period.start",
             "end": "station_metadata.time_period.end",
             "runs_processed": "station_metadata.run_list",
+            "coordinate_system": "station_metadata.orientation.reference_frame",
         }
 
         self._ch_input_dict = {
@@ -101,13 +100,13 @@ class TF:
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
-        lines.append(f"\tSurvey:        {self.survey_metadata.id}")
-        lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.elevation:.3f}")
+        lines.append(f"\tSurvey:            {self.survey_metadata.id}")
+        lines.append(f"\tProject:           {self.survey_metadata.project}")
+        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date:     {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tLatitude:          {self.latitude:.3f}")
+        lines.append(f"\tLongitude:         {self.longitude:.3f}")
+        lines.append(f"\tElevation:         {self.elevation:.3f}")
         lines.append("\tDeclination:   ")
         lines.append(
             f"\t\tValue:     {self.station_metadata.location.declination.value}"
@@ -115,9 +114,10 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
+        lines.append(f"\tCoordinate System: {self.station_metadata.orientation.reference_frame}")
 
-        lines.append(f"\tImpedance:     {self.has_impedance()}")
-        lines.append(f"\tTipper:        {self.has_tipper()}")
+        lines.append(f"\tImpedance:         {self.has_impedance()}")
+        lines.append(f"\tTipper:            {self.has_tipper()}")
 
         if self.period is not None:
             lines.append(f"\tN Periods:     {len(self.period)}")
@@ -239,13 +239,19 @@ class TF:
     @fn.setter
     def fn(self, value):
         """set file name"""
+        if value is None:
+            self._fn = None
+            return
         try:
             self._fn = Path(value)
+            self.save_dir = self._fn.parent
             if self._fn.exists():
+                
                 self.read_tf_file(self._fn)
             else:
                 self.logger.warning(f"Could not find {self._fn} skip reading.")
-        except TypeError:
+        except TypeError as error:
+            self.logger.exception(error)
             self._fn = None
 
     @property
@@ -324,6 +330,8 @@ class TF:
             "res": (3, 3),
             "transfer_function": (3, 2),
             "transfer_function_error": (3, 2),
+            "tf": (3, 2),
+            "tf_error": (3, 2),
         }
 
         shape = shape_dict[atype]
@@ -409,6 +417,8 @@ class TF:
             "transfer_function": "transfer_function",
             "impedance_error": "transfer_function_error",
             "tipper_error": "transfer_function_error",
+            "tf_error": "transfer_function_error",
+            "transfer_function_error": "transfer_function_error",
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -462,9 +472,15 @@ class TF:
 
         """
         if self.has_transfer_function():
-            return self.dataset.transfer_function.sel(
+            ds = self.dataset.transfer_function.sel(
                 input=["hx", "hy"], output=["ex", "ey", "hz"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
 
     @transfer_function.setter
     def transfer_function(self, value):
@@ -478,6 +494,38 @@ class TF:
 
         """
         self._set_data_array(value, "tf")
+
+    @property
+    def transfer_function_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_transfer_function():
+            ds = self.dataset.transfer_function_error.sel(
+                input=["hx", "hy"], output=["ex", "ey", "hz"]
+            )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+    
+                ds.attrs[key] = value
+            return ds
+
+    @transfer_function_error.setter
+    def transfer_function_error(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tf_error")
 
     def has_impedance(self):
         """
@@ -517,7 +565,11 @@ class TF:
                 output=self._ch_output_dict["impedance"],
             )
             z.name = "impedance"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                z.attrs[key] = value
             return z
 
     @impedance.setter
@@ -547,7 +599,12 @@ class TF:
                 output=self._ch_output_dict["impedance"],
             )
             z_err.name = "impedance_error"
+            
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                z_err.attrs[key] = value
             return z_err
 
     @impedance_error.setter
@@ -601,7 +658,12 @@ class TF:
                 output=self._ch_output_dict["tipper"],
             )
             t.name = "tipper"
+            
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                t.attrs[key] = value
             return t
 
     @tipper.setter
@@ -630,6 +692,11 @@ class TF:
                 output=self._ch_output_dict["tipper"],
             )
             t.name = "tipper_error"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                t.attrs[key] = value
 
             return t
 
@@ -667,9 +734,15 @@ class TF:
     @property
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
-            return self.dataset.inverse_signal_power.sel(
+            ds =  self.dataset.inverse_signal_power.sel(
                 input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
 
         return None
 
@@ -711,10 +784,17 @@ class TF:
     @property
     def residual_covariance(self):
         if self.has_residual_covariance():
-            return self.dataset.residual_covariance.sel(
+            ds =  self.dataset.residual_covariance.sel(
                 input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
             )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
 
+                ds.attrs[key] = value
+
+            return ds
+        
         return None
 
     @residual_covariance.setter
@@ -864,46 +944,18 @@ class TF:
         """
         self.station_metadata.id = station_name
 
-    # def plot_mt_response(self, **kwargs):
-    #     """
-    #     Returns a mtpy.imaging.plotresponse.PlotResponse object
-
-    #     :Plot Response: ::
-
-    #         >>> mt_obj = mt.TF(edi_file)
-    #         >>> pr = mt.plot_mt_response()
-    #         >>> # if you need more info on plot_mt_response
-    #         >>> help(pr)
-
-    #     """
-
-    #     from mtpy.imaging import plot_mt_response
-
-    #     # todo change this to the format of the new imaging API
-    #     plot_obj = plot_mt_response.PlotMTResponse(
-    #         z_object=self.Z,
-    #         t_object=self.Tipper,
-    #         pt_obj=self.pt,
-    #         station=self.station,
-    #         **kwargs,
-    #     )
-
-    # return plot_obj
-    # # raise NotImplementedError
-
     def write_tf_file(
         self,
         fn=None,
         save_dir=None,
         fn_basename=None,
         file_type="edi",
-        longitude_format="longitude",
-        latlon_format="dms",
+        **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
 
-        .. todo:: jtype and Gary Egberts z format
+        .. todo:: j-files and avg files
 
         :param fn: full path to file to save to
         :type fn: :class:`pathlib.Path` or string
@@ -914,8 +966,10 @@ class TF:
         :param fn_basename: name of file with or without extension
         :type fn_basename: string
 
-        :param file_type: [ 'edi' | 'xml' ]
+        :param file_type: [ 'edi' | 'xml' | "zmm" ]
         :type file_type: string
+        
+        keyword arguments include
 
         :param longitude_format:  whether to write longitude as longitude or LONG.
                                   options are 'longitude' or 'LONG', default 'longitude'
@@ -930,7 +984,7 @@ class TF:
 
         :Example: ::
 
-            >>> mt_obj.write_mt_file(file_type='xml')
+            >>> tf_obj.write_mtf_file(file_type='xml')
 
         """
 
@@ -938,6 +992,9 @@ class TF:
             new_fn = Path(fn)
             self.save_dir = new_fn.parent
             fn_basename = new_fn.name
+            file_type = new_fn.suffix.lower()[1:]
+            if file_type in ["xml"]:
+                file_type = "emtfxml"
 
         if save_dir is not None:
             self.save_dir = Path(save_dir)
@@ -945,47 +1002,53 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename += f".{file_type}"
+                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
 
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
 
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
-        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr"]:
+            
+        if file_type == "xml":
+            file_type = "emtfxml"
+
+        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr", "zss"]:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
 
         fn = self.save_dir.joinpath(fn_basename)
 
-        return write_file(self, fn, file_type=file_type)
+        return write_file(self, fn, file_type=file_type, **kwargs)
 
     def read_tf_file(self, fn, file_type=None):
         """
 
         Read an TF response file.
 
-        .. note:: Currently only .edi, .xml, and .j files are supported
+        .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
+           files are supported
 
         :param fn: full path to input file
         :type fn: string
 
-        :param file_type: ['edi' | 'j' | 'xml' | ... ]
+        :param file_type: ['edi' | 'j' | 'xml' | 'avg' | 'zmm' | 'zrr' | 'zss' | ... ]
                           if None, automatically detects file type by
                           the extension.
         :type file_type: string
 
         :Example: ::
 
-            >>> import mtpy.core.mt as mt
-            >>> mt_obj = mt.TF()
-            >>> mt_obj.read_mt_file(r"/home/mt/mt01.xml")
+            >>> import mt_metadata.transfer_functions.core import TF
+            >>> tf_obj = TF()
+            >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
 
         """
 
         tf_obj = read_file(fn, file_type=file_type)
         self.__dict__.update(tf_obj.__dict__)
+        self.save_dir = self.fn.parent
 
 
 # ==============================================================================

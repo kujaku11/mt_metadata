@@ -49,28 +49,44 @@ Created on Wed Aug 26 10:32:45 2020
 from pathlib import Path
 
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.transfer_functions.io import edi, zmm, jfile, emtfxml
+from mt_metadata.transfer_functions.io import (
+    read_edi,
+    write_edi,
+    read_zmm,
+    write_zmm,
+    read_jfile,
+    write_jfile,
+    read_emtfxml,
+    write_emtfxml,
+    read_avg,
+    write_avg,
+)
 
 logger = setup_logger(__name__)
 # =============================================================================
 # generic reader for any file type
 # =============================================================================
 plugins = {
-    "edi": {"file_types": ["edi"], "reader": edi.read_edi, "writer": edi.write_edi},
+    "edi": {"file_types": ["edi"], "reader": read_edi, "writer": write_edi},
     "zmm": {
         "file_types": ["zmm", "zrr", "zss"],
-        "reader": zmm.read_zmm,
-        "writer": zmm.write_zmm,
+        "reader": read_zmm,
+        "writer": write_zmm,
     },
     "j": {
         "file_types": ["j"],
-        "reader": jfile.read_jfile,
-        "writer": jfile.write_jfile,
+        "reader": read_jfile,
+        "writer": write_jfile,
     },
     "emtfxml": {
         "file_types": ["xml"],
-        "reader": emtfxml.read_emtfxml,
-        "writer": emtfxml.write_emtfxml,
+        "reader": read_emtfxml,
+        "writer": write_emtfxml,
+    },
+    "avg": {
+        "file_types": ["avg"],
+        "reader": read_avg,
+        "writer": write_avg,
     },
 }
 
@@ -152,14 +168,7 @@ def read_file(fn, file_type=None):
     return file_reader(fn)
 
 
-def write_file(
-    mt_object,
-    fn,
-    file_type=None,
-    longitude_format="lon",
-    latlon_format="dms",
-    overwrite=False,
-):
+def write_file(mt_object, fn, file_type=None, **kwargs):
     """
     write a file based on extension or file type
 
@@ -170,14 +179,14 @@ def write_file(
     :return: DESCRIPTION
     :rtype: TYPE
 
+    longitude_format="lon",
+    latlon_format="dms",
+    overwrite=False,
+
     """
 
     if not isinstance(fn, Path):
         fn = Path(fn)
-
-    # if fn.exists():
-    #     if not overwrite:
-    #         fn = MTfh.make_unique_filename(fn)
 
     if file_type is not None:
         try:
@@ -192,4 +201,7 @@ def write_file(
     else:
         file_type, file_writer = get_writer(fn.suffix.replace(".", ""))
 
-    return file_writer(mt_object, fn)
+    new_obj = file_writer(mt_object, fn, **kwargs)
+    logger.info("Wrote %s", fn)
+
+    return new_obj

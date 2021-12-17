@@ -30,16 +30,19 @@ class TransferFunction(Base):
 
         self.processed_by = Person()
         self.software = Software()
+        self._processed_date = MTime()
+        self.data_quality = DataQuality()
+
+        super().__init__(attr_dict=attr_dict)
         self.units = "millivolts_per_kilometer_per_nanotesla"
         self.sign_convention = "+"
         self.runs_processed = []
         self.remote_references = []
         self.processing_parameters = []
-        self._processed_date = MTime()
         self.coordinate_system = "geographic"
-        self.data_quality = DataQuality()
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+        for key, value in kwargs.items():
+            self.set_attr_from_name(key, value)
 
     @property
     def processed_date(self):

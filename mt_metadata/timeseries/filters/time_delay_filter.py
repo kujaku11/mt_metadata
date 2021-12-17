@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+.. py:module:: time_delay_filter
+    :synopsis: Time delay filter
+
+.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
+.. codeauthor:: Karl Kappler
+
+"""
+
 import copy
 import numpy as np
 from obspy.core import inventory
@@ -18,43 +28,26 @@ attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
 class TimeDelayFilter(FilterBase):
     def __init__(self, **kwargs):
         super().__init__()
-        self.type = "time delay"
-        self.delay = None
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        if self.gain == 0.0:
+            self.gain = 1.0
+        self.type = "time delay"
         self.obspy_mapping = obspy_mapping
 
     def to_obspy(self, stage_number=1, sample_rate=1, normalization_frequency=0):
         """
-        stage_sequence_number,
-        stage_gain,
-        stage_gain_frequency,
-        input_units,
-        output_units,
-        cf_transfer_function_type,
-        resource_id=None,
-        resource_id2=None,
-        name=None,
-        numerator=None,
-        denominator=None,
-        input_units_description=None,
-        output_units_description=None,
-        description=None,
-        decimation_input_sample_rate=None,
-        decimation_factor=None,
-        decimation_offset=None,
-        decimation_delay=None,
-        decimation_correction=None
-
-        :param stage_number: DESCRIPTION, defaults to 1
-        :type stage_number: TYPE, optional
-        :param cf_type: DESCRIPTION, defaults to "DIGITAL"
-        :type cf_type: TYPE, optional
-        :param sample_rate: DESCRIPTION, defaults to 1
-        :type sample_rate: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Convert to an obspy stage
+        
+        :param stage_number: sequential stage number, defaults to 1
+        :type stage_number: integer, optional
+        :param normalization_frequency: Normalization frequency, defaults to 1
+        :type normalization_frequency: float, optional
+        :param sample_rate: sample rate, defaults to 1
+        :type sample_rate: float, optional
+        :return: Obspy stage filter
+        :rtype: :class:`obspy.core.inventory.CoefficientsTypeResponseStage` 
+        
         """
 
         stage = inventory.CoefficientsTypeResponseStage(
@@ -81,19 +74,12 @@ class TimeDelayFilter(FilterBase):
 
     def complex_response(self, frequencies, **kwargs):
         """
+        Computes complex response for given frequency range
+        :param frequencies: array of frequencies to estimate the response
+        :type frequencies: np.ndarray
 
-        Parameters
-        ----------
-        frequencies: numpy array of frequencies, expected in Hz
-
-        Returns
-        -------
-        h : numpy array of (possibly complex-valued) frequency response at the input frequencies
-
-        See notes in mt_metadata issue#14
-        The complex response for the time delay filter should in general be avoided.  Phase wrapping
-        artefacts at high frequency and non-causal time-series segments are expected.
-        In general, delay corrections should be applied in time domain before spectral processing.
+        :return: complex response
+        :rtype: np.ndarray
 
         """
         self.logger.debug(

@@ -25,8 +25,5 @@ class Battery(Base):
 
     def __init__(self, **kwargs):
 
-        self.type = None
-        self.id = None
         self.voltage = Diagnostic()
-        self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)

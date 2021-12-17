@@ -21,10 +21,13 @@ class CoefficientFilter(FilterBase):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.type = "coefficient"
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        self.type = "coefficient"
         self.obspy_mapping = obspy_mapping
+
+        if self.gain == 0.0:
+            self.gain = 1.0
 
     def to_obspy(
         self,

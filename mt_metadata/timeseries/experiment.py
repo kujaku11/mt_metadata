@@ -2,16 +2,7 @@
 """
 Containers for the full metadata tree
 
-Experiment
-   |--> Surveys
-   -------------
-       |--> Stations
-       --------------
-           |--> Runs
-           -----------
-               |--> Channels
-               ---------------
-                   |--> Responses
+Experiment --> Survey --> Station --> Run --> Channel
                    
 Each level has a list attribute 
     

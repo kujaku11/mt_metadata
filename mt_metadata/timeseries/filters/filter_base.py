@@ -26,105 +26,6 @@ to be gained by changing the representation.
 The "stages" that are described in the IRIS StationXML documentation appear to cover all possible linear time invariant
 filter types we are likely to encounter.
 
-TESTING:
-Several sample station xml files have been archived in the data repository for the purpose of testing the filter
-codes. These are described in the readme in mth5_test_data/iris
-
-Passing Tests Means:
--the container has a place for all the (relevant) info in the "Stage"
--The stages (or filters) can be combined,
--desired: Each Stage needs to be able to generate a response function
--The total response function of all the stage can be represented in a way that works with FFTs.
-
-____
-Players on the stage:
-
-<ATTR_DICT>
-attr_dict: This comes from a json configuration.  This object is not actually of type dictionary.
-It does provide us with a bunch of dictionaries .. one per attribute of the Filter() class.
-Other attributes are listed here:
-['name',
- 'type',
- 'units_in',
- 'units_out',
- 'calibration_date',
- 'normalization_factor',
- 'normalization_frequency',
- 'cutoff',
- 'operation',
- 'n_poles',
- 'n_zeros',
- 'conversion_factor']
-
-Since some of these attrs have 'required':True, and some have 'required':False, it isn;t
-clear to me yet if
-a)this is supposed to be an exhaustive list of all possible filter attrs,
-b) The list needs to be pared down to just the attrs that every filter will have
-c) something else I haven't thought of.
-</ATTR_DICT>
-
-<OBSPY_MAPPING>
-This is a dictionary that maps attribute names from obspy to the names we use in MTH5.
-
-Note that obspy defines all these filter attributes on __init__:
-class ResponseStage(ComparingObject):
-#    From the StationXML Definition:
-#        This complex type represents channel response and covers SEED
-#        blockettes 53 to 56.
- def __init__(self, stage_sequence_number, stage_gain,
-                 stage_gain_frequency, input_units, output_units,
-                 resource_id=None, resource_id2=None, name=None,
-                 input_units_description=None,
-                 output_units_description=None, description=None,
-                 decimation_input_sample_rate=None, decimation_factor=None,
-                 decimation_offset=None, decimation_delay=None,
-                 decimation_correction=None):
-
-</OBSPY_MAPPING>
-
-<RELATIONSHIP TO OPBSPY>
-This is not yet 100% well defined.  We do require the ability to populate our Filter() objects from obspy.
-It is desireable to map an arbitrary filter back into an obspy stage, and this could possibly be done
-directly or by casting it to xml and
-</RELATIONSHIP TO OPBSPY>
-<TODO>
-add a helper function to identify when the decimation information in the obspy class is degenerate,
-such as set to None, or decimation_factor == 1.0.
-
-Review code in obspy/core/inventory/response.py
-This seems to contain the functionality we want ... makes me wonder if we should just wrap this with calls?
-
-TAI: Currently we are casting time delay filters from stages that have degenerate decimation, but decimation_delay
-non-zero.  However, we should ask this question: Are there filters that we may expect to encounter that have
-both a time_delay and a non-identity response inasmuchas amplitude an phase? If so we want to address whether it is
-appropriate the factor these filters into a delay part and an "ampl/phase" part... is this legal?
-
-StageGain Is A hard requirement of both IRIS and OBSPY.  Let's play nice and add a gain to our base class.
-
-COMBINE?
-Filters Combine Method ... do we keep time delay and others as separate entitites?
-If so, what do we do with decimation filters that have an inate time delay?
-# def combine(self, other):
-#     # TODO: Add checks here that when you are stitching two filters together the
-#     # output_units of the before filter match the input units of the after
-#     Parameters
-#     ----------
-#     other
-#
-#     Returns a filter that has the combined complex response of the product of
-#     self and other.  The assumption is the the output of self matches to the imput of other.
-#     -------
-#
-#     print("units consistency check:")
-#     print("self output {}".format(self.output_units))
-#     print("other input {}".format(other.input_units))
-#
-#     cr1 = lambda f: self.complex_response(f)
-#     cr2 = lambda f: other.complex_response(f)
-#     cr3 = lambda f: cr1(f) * cr2(f)
-#     self.lambda_function = cr3
-COMBINE?
-</TODO>
 """
 # =============================================================================
 # Imports
@@ -159,23 +60,7 @@ class FilterBase(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        """
 
-        Parameters
-        ----------
-        kwargs
-        name: The label for this filter, can act as a key for response info
-        type: One of {'pole_zero', 'frequency_table', 'coefficient', 'fir', 'iir', 'time_delay'}
-        units_in: expected units of data coming from the previous stage ...
-        ? is this defined by the data itself? Or is this an Idealized Value?
-        normalization_frequency: ???
-        normalization_factor ???
-        cutoff
-
-        """
-
-        self.name = None
-        self.type = None
         self._units_in_obj = Unit()
         self._units_out_obj = Unit()
 
@@ -186,16 +71,38 @@ class FilterBase(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+        if self.gain == 0.0:
+            self.gain = 1.0
+
     @property
     def obspy_mapping(self):
+        """ 
+        
+        :return: mapping to an obspy filter
+        :rtype: dict
+
+        """
         return self._obspy_mapping
 
     @property
     def name(self):
+        """
+        
+        :return: name of the filter
+        :rtype: str
+
+        """
         return self._name
 
     @name.setter
     def name(self, value):
+        """
+        Set filter name 
+        
+        :param value: name of filter
+        :type value: sting
+
+        """
         if value is not None:
             self._name = str(value).lower().replace("/", " per ")
         else:
@@ -216,39 +123,80 @@ class FilterBase(Base):
 
     @property
     def calibration_date(self):
+        """
+        
+        :return: calibration date (YYYY-MM-DD)
+        :rtype: string 
+
+        """
         return self._calibration_dt.date
 
     @calibration_date.setter
     def calibration_date(self, value):
+        """
+        
+        :param value: set calibration date (YYYY-MM-DD)
+        :type value: string
+
+        """
         self._calibration_dt.from_str(value)
 
     @property
     def total_gain(self):
+        """
+        
+        :return: Total gain of the filter
+        :rtype: float
+
+        """
         return self.gain
 
     @property
     def units_in(self):
+        """
+        
+        :return: Input units of the filter
+        :rtype: string
+
+        """
         return self._units_in_obj.abbreviation
 
     @units_in.setter
     def units_in(self, value):
+        """
+        
+        :param value: input units of the filter
+        :type value: string
+
+        """
         self._units_in_obj = get_unit_object(value)
 
     @property
     def units_out(self):
+        """
+        
+        :return: Output units of the filter
+        :rtype: string
+
+        """
         return self._units_out_obj.abbreviation
 
     @units_out.setter
     def units_out(self, value):
+        """
+        
+        :param value: output units of the filter
+        :type value: string
+
+        """
         self._units_out_obj = get_unit_object(value)
 
     def get_filter_description(self):
         """
 
-        :param filter_type: DESCRIPTION
-        :type filter_type: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :return: predetermined filter description based on the
+            type of filter
+        :rtype: string
 
         """
 
@@ -260,24 +208,25 @@ class FilterBase(Base):
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):
         """
-        purpose of this method is to un-bloat the obspy stage dictionary which typically
-        contains a lot of extraneous information.
-        If you want to propagate all that info : you can make a mapping which is basically
-        dict(zip(stage.__dict__.keys(), stage.__dict__.keys()),
-        or we could maybe support something cleaner...
-
-        Parameters
-        ----------
-        stage:
-        mapping
-
-        Returns
-        -------
+        
+        :param cls: a filter object
+        :type cls: filter object
+        :param stage: Obspy stage filter
+        :type stage: :class:`obspy.inventory.response.ResponseStage`
+        :param mapping: dictionary for mapping from an obspy stage,
+            defaults to None
+        :type mapping: dict, optional
+        :raises TypeError: If stage is not a 
+            :class:`obspy.inventory.response.ResponseStage` 
+        :return: the appropriate mt_metadata.timeseries.filter object
+        :rtype: mt_metadata.timeseries.filter object
 
         """
+
         if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
-            print("Expected a Stage and got a {}".format(type(stage)))
-            raise Exception
+            msg = "Expected a Stage and got a %s"
+            cls.logger.error(msg, type(stage))
+            raise TypeError(msg % type(stage))
 
         if mapping is None:
             mapping = cls().obspy_mapping
@@ -308,13 +257,13 @@ class FilterBase(Base):
         with length `window_len` and estimating normalized std.
 
         ..note:: This only works for simple filters with
-        on flat pass band.
+         on flat pass band.
 
         :param window_len: length of sliding window in points
         :type window_len: integer
 
         :param tol: the ratio of the mean/std should be around 1
-        tol is the range around 1 to find the flat part of the curve.
+         tol is the range around 1 to find the flat part of the curve.
         :type tol: float
 
         :return: pass band frequencies
@@ -400,16 +349,14 @@ class FilterBase(Base):
 
     @property
     def decimation_active(self):
+        """
+        
+        :return: if decimation is prescribed
+        :rtype: bool
+
+        """
         if hasattr(self, "decimation_factor"):
             if self.decimation_factor != 1.0:
                 return True
         return False
 
-    def apply(self, ts):
-        data_spectum = ts.fft()
-        complex_response = self.complex_response(ts.frequencies)
-        calibrated_spectrum = data_spectum / complex_response
-        calibrated_data = np.fft.ifft(calibrated_spectrum)
-        output = ts._deepcopy()
-        output.data = calibrated_data
-        return output
