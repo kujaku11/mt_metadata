@@ -11,7 +11,8 @@
             "CC-BY-SA",
             "CC-BY-ND",
             "CC-BY-NC-SA",
-            "CC-BY-NC-ND"
+            "CC-BY-NC-ND",
+            "other"
         ],
         "alias": [],
         "example": "CC-0"
