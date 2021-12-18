@@ -76,11 +76,11 @@ class Base:
                     else:
                         value = d["options"][0]
                 else:
-                    if d["type"] in ["integer", "float"]:
+                    if d["type"] in ["integer", "float", int, float]:
                         value = 0
-                    elif d["type"] in ["string"]:
+                    elif d["type"] in ["string", str]:
                         value = "none"
-                    elif d["type"] in ["bool"]:
+                    elif d["type"] in ["bool", bool]:
                         value = False
 
             else:
