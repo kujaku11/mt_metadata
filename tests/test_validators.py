@@ -173,7 +173,7 @@ class TestValidators(unittest.TestCase):
             {"url": [{"type": "string", "value": "a.com", "compare": "a.com"}]},
             {
                 "email": [
-                    {"type": "string", "value": "a@test.com", "compare": "2@test.com"}
+                    {"type": "string", "value": "a@test.com", "compare": "a@test.com"}
                 ]
             },
             {
@@ -232,7 +232,7 @@ class TestValidators(unittest.TestCase):
                 for item in klist:
                     with self.subTest(msg=key):
                         valid_value = validators.validate_value_type(
-                            item["value"], item["type"], item["style"]
+                            item["value"], item["type"], style=key
                         )
                         self.assertEqual(valid_value, item["compare"])
 

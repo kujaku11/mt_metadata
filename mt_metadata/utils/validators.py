@@ -396,9 +396,6 @@ def validate_value_type(value, v_type, style=None):
             + "propogate this attribute using to_dict, to_json or "
             + "to_series, you need to add attribute description using "
             + "class function add_base_attribute."
-            + "Example: \n\t>>> Run.add_base_attribute(new, 10, "
-            + '{"type":float, "required": True, "units": None, '
-            + '"style": number})'
         )
         print(msg)
         return value
@@ -410,16 +407,14 @@ def validate_value_type(value, v_type, style=None):
     else:
         msg = "v_type must be a string or type not {0}".format(v_type)
 
-    # check style for a list
-    if isinstance(value, v_type):
-        if style:
-            if v_type is str and "list" in style:
-                value = value.replace("[", "").replace("]", "").split(",")
-                value = [ss.strip() for ss in value]
-        return value
+    # check style for a list, if it is split the string
+    if style:
+        if "list" in style and isinstance(value, str):
+            value = value.replace("[", "").replace("]", "").split(",")
+            value = [ss.strip() for ss in value]
 
     # if value is not of v_type
-    else:
+    if not isinstance(value, v_type):
         msg = "value=%s must be %s not %s"
         # if the value is a string, convert to appropriate type
         if isinstance(value, str):
@@ -472,9 +467,9 @@ def validate_value_type(value, v_type, style=None):
             elif v_type is bool:
                 value_list = []
                 for v in value:
-                    if v in [True, "true", "True", "TRUE"]:
+                    if v in [True, "true", "True", "TRUE", 1, "1"]:
                         value_list.append(True)
-                    elif v in [False, "false", "False", "FALSE"]:
+                    elif v in [False, "false", "False", "FALSE", 0, "0"]:
                         value_list.append(False)
                 value = value_list
             return value
@@ -484,7 +479,8 @@ def validate_value_type(value, v_type, style=None):
 
         else:
             raise MTSchemaError(msg, value, v_type, type(value))
-    return None
+    else:
+        return value
 
 
 def validate_value_dict(value_dict):
