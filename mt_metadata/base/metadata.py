@@ -64,35 +64,9 @@ class Base:
 
         self._attr_dict = attr_dict
 
-        for k, d in attr_dict.items():
-            if d["required"]:
-                if d["default"] in [None]:
-                    if "list" in d["style"]:
-                        value = []
-                    elif "date" in d["style"] or "time" in d["style"]:
-                        value = "1980-01-01T00:00:00+00:00"
-                    elif "controlled" in d["style"]:
-                        if "other" in d["options"]:
-                            value = None
-                        else:
-                            value = d["options"][0]
-                    else:
-                        if d["type"] in ["integer", "float", int, float]:
-                            value = 0
-                        elif d["type"] in ["string", str]:
-                            value = "none"
-                        elif d["type"] in ["bool", bool]:
-                            value = False
-                else:
-                    value = d["default"]
-
-            else:
-                if "date" in d["style"] or "time" in d["style"]:
-                    value = "1980-01-01T00:00:00+00:00"
-                else:
-                    value = None
-
-            setattr(self, k, value)
+        for key, value_dict in attr_dict.items():
+            print(key, value_dict["default"])
+            setattr(self, key, value_dict["default"])
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]
