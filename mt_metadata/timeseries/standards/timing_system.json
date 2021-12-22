@@ -7,7 +7,8 @@
         "description": "Any comment on the timing system.",
         "options": [],
         "alias": [],
-        "example": "GPS locked with internal quartz clock"
+        "example": "GPS locked with internal quartz clock",
+		"default": null
     },
     "drift": {
         "type": "float",
@@ -17,7 +18,8 @@
         "description": "Estimated drift of the timing system.",
         "options": [],
         "alias": [],
-        "example": "0.001"
+        "example": "0.001",
+		"default": 0.0
     },
     "type": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "Type of timing system.",
         "options": [],
         "alias": [],
-        "example": "GPS"
+        "example": "GPS",
+		"default": "GPS"
     },
     "uncertainty": {
         "type": "float",
@@ -37,6 +40,7 @@
         "description": "Estimated uncertainty of the timing system.",
         "options": [],
         "alias": [],
-        "example": "0.0002"
+        "example": "0.0002",
+		"default": 0.0
     }
 }

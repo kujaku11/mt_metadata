@@ -7,7 +7,8 @@
         "description": "Channel number on the data logger.",
         "options": [],
         "alias": [],
-        "example": "1"
+        "example": "1",
+		"default": 0
     },
     "comments": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "Any comments about the channel.",
         "options": [],
         "alias": [],
-        "example": "ambient air temperature was chilly, ice on cables"
+        "example": "ambient air temperature was chilly, ice on cables",
+		"default": null
     },
     "component": {
         "type": "string",
@@ -36,7 +38,8 @@
             "other"
         ],
         "alias": [],
-        "example": "T"
+        "example": "T",
+		"default": null
     },
     "measurement_azimuth": {
         "type": "float",
@@ -48,7 +51,8 @@
         "alias": [
             "azimuth"
         ],
-        "example": "0"
+        "example": "0",
+		"default": 0.0
     },
     "measurement_tilt": {
         "type": "float",
@@ -60,7 +64,8 @@
         "alias": [
             "dip"
         ],
-        "example": "0"
+        "example": "0",
+		"default": 0.0
     },
     "sample_rate": {
         "type": "float",
@@ -72,7 +77,8 @@
         "alias": [
             "sampling_rate"
         ],
-        "example": "8"
+        "example": "8",
+		"default": 0.0
     },
     "translated_azimuth": {
         "type": "float",
@@ -84,7 +90,8 @@
         "alias": [
             "azimuth"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "translated_tilt": {
         "type": "float",
@@ -96,7 +103,8 @@
         "alias": [
             "dip"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "type": {
         "type": "string",
@@ -106,7 +114,8 @@
         "description": "Data type for the channel, should be a descriptive word that a user can understand.",
         "options": [],
         "alias": [],
-        "example": "temperature"
+        "example": "temperature",
+		"default": null
     },
     "units": {
         "type": "string",
@@ -123,6 +132,7 @@
             "other"
         ],
         "alias": [],
-        "example": "celsius"
+        "example": "celsius",
+		"default": null
     }
 }

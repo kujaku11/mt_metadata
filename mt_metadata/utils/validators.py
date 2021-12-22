@@ -355,6 +355,8 @@ def validate_default(value_dict):
             
             value = value_dict["default"]
             type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+            if "list" in value_dict["style"]:
+                
             if not isinstance(value, type_dict[value_dict["type"]]):
                 if value_dict["type"] in ["integer", int]:
                     value = int(value)
@@ -371,6 +373,124 @@ def validate_default(value_dict):
         else:
             value = None
     return value
+
+def validate_value_type(value, v_type, style=None):
+    """
+    validate type from standards
+
+    """
+
+    # if the value is a metadata type skip cause the individual components
+    # will be validated separately
+    if "metadata" in str(type(value)):
+        return value
+    # return if the value is None, this may need to change in the future
+    # if an empty list or something else should be returned
+    if not isinstance(value, (list, tuple, np.ndarray)):
+        if value in [None, "None", "none", "unknown"]:
+            return None
+    # hack to get around h5py reference types, in the future will need
+    # a more robust test.
+    if v_type == "h5py_reference":
+        return value
+
+    # return value if the value type is not defined.
+    if v_type is None:
+        msg = (
+            "standards data type is unknown, if you want to "
+            + "propogate this attribute using to_dict, to_json or "
+            + "to_series, you need to add attribute description using "
+            + "class function add_base_attribute."
+            + "Example: \n\t>>> Run.add_base_attribute(new, 10, "
+            + '{"type":float, "required": True, "units": None, '
+            + '"style": number})'
+        )
+        print(msg)
+        return value
+
+    # if not a python type but a string organize into a dictionary
+    if not isinstance(v_type, type) and isinstance(v_type, str):
+        type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+        v_type = type_dict[validate_type(v_type)]
+    else:
+        msg = "v_type must be a string or type not {0}".format(v_type)
+
+    # check style for a list
+    if isinstance(value, v_type):
+        if style:
+            if v_type is str and "list" in style:
+                value = value.replace("[", "").replace("]", "").split(",")
+                value = [ss.strip() for ss in value]
+        return value
+
+    # if value is not of v_type
+    else:
+        msg = "value=%s must be %s not %s"
+        info = "converting %s to %s"
+        # if the value is a string, convert to appropriate type
+        if isinstance(value, str):
+            if v_type is int:
+                try:
+                    return int(value)
+                except ValueError as error:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is float:
+                try:
+                    return float(value)
+                except ValueError as error:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is bool:
+                if value.lower() in ["false", "0"]:
+                    return False
+                elif value.lower() in ["true", "1"]:
+                    return True
+                else:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is str:
+                return value
+
+        # if a number convert to appropriate type
+        elif isinstance(value, (int, np.int_)):
+            if v_type is float:
+                return float(value)
+            elif v_type is str:
+                return "{0:.0f}".format(value)
+            return int(value)
+
+        # if a number convert to appropriate type
+        elif isinstance(value, (float, np.float_)):
+            if v_type is int:
+                return int(value)
+            elif v_type is str:
+                return f"{value}"
+            return float(value)
+
+        # if a list convert to appropriate entries to given type
+        elif isinstance(value, Iterable):
+            if v_type is str:
+                if isinstance(value, np.ndarray):
+                    value = value.astype(np.unicode_)
+                value = [f"{v}".replace("'", "").replace('"', "") for v in value]
+            elif v_type is int:
+                value = [int(float(v)) for v in value]
+            elif v_type is float:
+                value = [float(v) for v in value]
+            elif v_type is bool:
+                value_list = []
+                for v in value:
+                    if v in [True, "true", "True", "TRUE"]:
+                        value_list.append(True)
+                    elif v in [False, "false", "False", "FALSE"]:
+                        value_list.append(False)
+                value = value_list
+            return value
+
+        elif isinstance(value, (np.bool_)):
+            return bool(value)
+
+        else:
+            raise MTSchemaError(msg, value, v_type, type(value))
+    return None
 
 
 def validate_value_dict(value_dict):

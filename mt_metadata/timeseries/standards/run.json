@@ -7,7 +7,8 @@
         "description": "List of auxiliary channels recorded",
         "options": [],
         "alias": [],
-        "example": "[T]"
+        "example": "[T]",
+		"default": []
     },
     "channels_recorded_electric": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "List of electric channels recorded",
         "options": [],
         "alias": [],
-        "example": "\"[Ex , Ey]\""
+        "example": "\"[Ex , Ey]\"",
+		"default": []
     },
     "channels_recorded_magnetic": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "List of magnetic channels recorded",
         "options": [],
         "alias": [],
-        "example": "\"[Hx , Hy , Hz]\""
+        "example": "\"[Hx , Hy , Hz]\"",
+		"default": []
     },
     "comments": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "Any comments on the run.",
         "options": [],
         "alias": [],
-        "example": "cows chewed cables"
+        "example": "cows chewed cables",
+		"default": null
     },
     "data_type": {
         "type": "string",
@@ -54,7 +58,8 @@
             "other"
         ],
         "alias": [],
-        "example": "BBMT"
+        "example": "BBMT",
+		"default": "BBMT"
     },
     "id": {
         "type": "string",
@@ -64,7 +69,8 @@
         "description": "Run ID should be station name followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or {station}001.",
         "options": [],
         "alias": [],
-        "example": "001"
+        "example": "001",
+		"default": null
     },
     "sample_rate": {
         "type": "float",
@@ -74,6 +80,7 @@
         "description": "Digital sample rate for the run",
         "options": [],
         "alias": [],
-        "example": "100"
+        "example": "100",
+		"default": 0.0
     }
 }

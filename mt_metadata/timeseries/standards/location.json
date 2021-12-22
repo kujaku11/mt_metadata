@@ -9,7 +9,8 @@
         "alias": [
             "lat"
         ],
-        "example": "23.134"
+        "example": "23.134",
+		"default": 0.0
     },
     "longitude": {
         "type": "float",
@@ -22,7 +23,8 @@
             "lon",
             "long"
         ],
-        "example": "14.23"
+        "example": "14.23",
+		"default": 0.0
     },
     "elevation": {
         "type": "float",
@@ -34,6 +36,7 @@
         "alias": [
             "elev"
         ],
-        "example": "123.4"
+        "example": "123.4",
+		"default": 0.0
     }
 }

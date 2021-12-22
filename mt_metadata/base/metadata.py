@@ -65,7 +65,6 @@ class Base:
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            print(key, value_dict["default"])
             setattr(self, key, value_dict["default"])
 
     def __str__(self):

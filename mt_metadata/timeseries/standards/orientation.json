@@ -12,7 +12,8 @@
             "other"
         ],
         "alias": [],
-        "example": "compass"
+        "example": "compass",
+		"default": "compass"
     },
     "reference_frame": {
         "type": "string",
@@ -25,6 +26,7 @@
             "geomagnetic"
         ],
         "alias": [],
-        "example": "geomagnetic"
+        "example": "geomagnetic",
+		"default": "geographic"
     }
 }

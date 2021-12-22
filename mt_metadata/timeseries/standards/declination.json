@@ -7,7 +7,8 @@
         "description": "Any comments on declination",
         "options": [],
         "alias": [],
-        "example": "estimated from WMM 2016"
+        "example": "estimated from WMM 2016",
+		"default": null
     },
     "model": {
         "type": "string",
@@ -16,6 +17,7 @@
         "units": null,
         "description": "Geomagnetic reference model used to calculate declination plus the year estimated.",
         "options": [
+			"WMM",
             "EMAG2",
             "EMM",
             "HDGM",
@@ -25,7 +27,8 @@
 			"other"
         ],
         "alias": [],
-        "example": "WMM-16"
+        "example": "WMM-16",
+		"default": "WMM"
     },
     "value": {
         "type": "float",
@@ -35,6 +38,7 @@
         "description": "Geomagnetic declination angle relative to geographic north positive clockwise.",
         "options": [],
         "alias": [],
-        "example": "12.3"
+        "example": "12.3",
+		"default": 0.0
     }
 }
