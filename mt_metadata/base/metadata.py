@@ -66,22 +66,25 @@ class Base:
 
         for k, d in attr_dict.items():
             if d["required"]:
-                if "list" in d["style"]:
-                    value = []
-                elif "date" in d["style"] or "time" in d["style"]:
-                    value = "1980-01-01T00:00:00+00:00"
-                elif "controlled" in d["style"]:
-                    if "other" in d["options"]:
-                        value = None
+                if d["default"] in [None]:
+                    if "list" in d["style"]:
+                        value = []
+                    elif "date" in d["style"] or "time" in d["style"]:
+                        value = "1980-01-01T00:00:00+00:00"
+                    elif "controlled" in d["style"]:
+                        if "other" in d["options"]:
+                            value = None
+                        else:
+                            value = d["options"][0]
                     else:
-                        value = d["options"][0]
+                        if d["type"] in ["integer", "float", int, float]:
+                            value = 0
+                        elif d["type"] in ["string", str]:
+                            value = "none"
+                        elif d["type"] in ["bool", bool]:
+                            value = False
                 else:
-                    if d["type"] in ["integer", "float", int, float]:
-                        value = 0
-                    elif d["type"] in ["string", str]:
-                        value = "none"
-                    elif d["type"] in ["bool", bool]:
-                        value = False
+                    value = d["default"]
 
             else:
                 if "date" in d["style"] or "time" in d["style"]:

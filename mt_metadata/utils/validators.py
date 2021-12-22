@@ -323,6 +323,55 @@ def validate_example(example):
         example = "{0}".format(example)
     return example
 
+def validate_default(value_dict):
+    """
+    validate default value
+    
+    :param default: DESCRIPTION
+    :type default: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    if value_dict["required"]:
+        if value_dict["default"] in [None]:
+            if "list" in value_dict["style"]:
+                value = []
+            elif "date" in value_dict["style"] or "time" in value_dict["style"]:
+                value = "1980-01-01T00:00:00+00:00"
+            elif "controlled" in value_dict["style"]:
+                if "other" in value_dict["options"]:
+                    value = None
+                else:
+                    value = value_dict["options"][0]
+            else:
+                if value_dict["type"] in ["integer", "float", int, float]:
+                    value = 0
+                elif value_dict["type"] in ["string", str]:
+                    value = "none"
+                elif value_dict["type"] in ["bool", bool]:
+                    value = False
+        else:
+            
+            value = value_dict["default"]
+            type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+            if not isinstance(value, type_dict[value_dict["type"]]):
+                if value_dict["type"] in ["integer", int]:
+                    value = int(value)
+                if value_dict["type"] in ["float", float]:
+                    value = float(value)
+                elif value_dict["type"] in ["string", str]:
+                    value = str(value)
+                elif value_dict["type"] in ["bool", bool]:
+                    value = bool(value)
+
+    else:
+        if "date" in value_dict["style"] or "time" in value_dict["style"]:
+            value = "1980-01-01T00:00:00+00:00"
+        else:
+            value = None
+    return value
+
 
 def validate_value_dict(value_dict):
     """
@@ -346,6 +395,8 @@ def validate_value_dict(value_dict):
     header = validate_header(list(value_dict.keys()))
     # loop over validating functions in this module
     for key in header:
+        if key == "default":
+            continue
         try:
             value_dict[key] = getattr(sys.modules[__name__], f"validate_{key}")(
                 value_dict[key]
@@ -353,4 +404,7 @@ def validate_value_dict(value_dict):
         except KeyError:
             raise KeyError("Could not find {key} for validator {__name__}")
 
+    # need to validate the default value after all other keys have been validated
+    value_dict["default"] = validate_default(value_dict)
+    
     return value_dict

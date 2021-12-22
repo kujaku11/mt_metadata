@@ -79,6 +79,7 @@ class BaseDict(MutableMapping):
                 "options": None,
                 "description": "user defined",
                 "example": None,
+                "default": None,
             }
 
     def __delitem__(self, key):
