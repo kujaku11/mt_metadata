@@ -20,9 +20,12 @@ Created on Wed Apr 29 11:11:31 2020
 import sys
 import re
 import logging
+from collections.abc import Iterable
+
+import numpy as np
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
-from mt_metadata.utils.exceptions import MTValidatorError
+from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
 
 # =============================================================================
 # validator functions
@@ -323,6 +326,7 @@ def validate_example(example):
         example = "{0}".format(example)
     return example
 
+
 def validate_default(value_dict):
     """
     validate default value
@@ -352,20 +356,10 @@ def validate_default(value_dict):
                 elif value_dict["type"] in ["bool", bool]:
                     value = False
         else:
-            
-            value = value_dict["default"]
-            type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
-            if "list" in value_dict["style"]:
-                
-            if not isinstance(value, type_dict[value_dict["type"]]):
-                if value_dict["type"] in ["integer", int]:
-                    value = int(value)
-                if value_dict["type"] in ["float", float]:
-                    value = float(value)
-                elif value_dict["type"] in ["string", str]:
-                    value = str(value)
-                elif value_dict["type"] in ["bool", bool]:
-                    value = bool(value)
+
+            value = validate_value_type(
+                value_dict["default"], value_dict["type"], value_dict["style"]
+            )
 
     else:
         if "date" in value_dict["style"] or "time" in value_dict["style"]:
@@ -373,6 +367,7 @@ def validate_default(value_dict):
         else:
             value = None
     return value
+
 
 def validate_value_type(value, v_type, style=None):
     """
@@ -426,18 +421,17 @@ def validate_value_type(value, v_type, style=None):
     # if value is not of v_type
     else:
         msg = "value=%s must be %s not %s"
-        info = "converting %s to %s"
         # if the value is a string, convert to appropriate type
         if isinstance(value, str):
             if v_type is int:
                 try:
                     return int(value)
-                except ValueError as error:
+                except ValueError:
                     raise MTSchemaError(msg, value, v_type, type(value))
             elif v_type is float:
                 try:
                     return float(value)
-                except ValueError as error:
+                except ValueError:
                     raise MTSchemaError(msg, value, v_type, type(value))
             elif v_type is bool:
                 if value.lower() in ["false", "0"]:
@@ -526,5 +520,5 @@ def validate_value_dict(value_dict):
 
     # need to validate the default value after all other keys have been validated
     value_dict["default"] = validate_default(value_dict)
-    
+
     return value_dict

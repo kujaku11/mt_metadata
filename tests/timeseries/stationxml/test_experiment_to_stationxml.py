@@ -106,8 +106,7 @@ class TestExperiment2StationXML02(unittest.TestCase):
     def test_num_channels(self):
         # the length is 10 because channel metadata changes.
         self.assertEqual(
-            len(self.inventory.networks[0].stations[0].channels),
-            10,
+            len(self.inventory.networks[0].stations[0].channels), 10,
         )
 
     def test_channel_time_periods(self):

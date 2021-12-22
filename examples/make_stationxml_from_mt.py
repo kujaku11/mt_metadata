@@ -54,9 +54,7 @@ for station in ["CAR05"]:
 
     # create an inventory object and write stationxml
     inv = a.mt_to_xml(
-        mtex,
-        stationxml_fn=output_path.joinpath(xml_fn),
-        ns_dict=deepcopy(ns_dict),
+        mtex, stationxml_fn=output_path.joinpath(xml_fn), ns_dict=deepcopy(ns_dict),
     )
 
 # if you want to make a complete stationxml

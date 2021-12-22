@@ -156,14 +156,85 @@ class TestValidators(unittest.TestCase):
             self.assertIsInstance(valid_alias, list)
         with self.subTest(msg="has alias"):
             self.assertListEqual(valid_alias, ["other_name"])
-            
+
     def test_validate_default(self):
-        for value, dtype in zip([0, 0.0, "0", False], ["integer", "float", "string", "boolean"]):
+        for value, dtype in zip(
+            [0, 0.0, "0", False], ["integer", "float", "string", "boolean"]
+        ):
             with self.subTest(msg=dtype):
                 self.value_dict["type"] = dtype
                 self.value_dict["default"] = 0
                 valid_default = validators.validate_default(self.value_dict)
                 self.assertEqual(value, valid_default)
+
+    def test_validate_value_type(self):
+        test_dict = [
+            {"name": [{"type": "string", "value": "test", "compare": "test"}]},
+            {"url": [{"type": "string", "value": "a.com", "compare": "a.com"}]},
+            {
+                "email": [
+                    {"type": "string", "value": "a@test.com", "compare": "2@test.com"}
+                ]
+            },
+            {
+                "number": [
+                    {"type": "integer", "value": "10", "compare": 10},
+                    {"type": "float", "value": "10", "compare": 10.0},
+                ]
+            },
+            {
+                "date": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "free form": [
+                    {"type": "string", "value": "free form", "compare": "free form"}
+                ]
+            },
+            {
+                "time": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "date time": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "name list": [
+                    {"type": "string", "value": "a, b, c", "compare": ["a", "b", "c"]}
+                ]
+            },
+            {
+                "number list": [
+                    {"type": "integer", "value": "1, 2, 3", "compare": [1, 2, 3]},
+                    {"type": "float", "value": "1, 2, 3", "compare": [1.0, 2.0, 3.0]},
+                ]
+            },
+        ]
+
+        for key_list in test_dict:
+            for key, klist in key_list.items():
+                for item in klist:
+                    with self.subTest(msg=key):
+                        valid_value = validators.validate_value_type(
+                            item["value"], item["type"], item["style"]
+                        )
+                        self.assertEqual(valid_value, item["compare"])
 
 
 # =============================================================================

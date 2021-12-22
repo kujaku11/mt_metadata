@@ -359,4 +359,3 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
-

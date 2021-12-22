@@ -195,10 +195,7 @@ class Header(Location):
             setattr(self, key, value)
 
     def write_header(
-        self,
-        longitude_format="LON",
-        latlon_format="dms",
-        required=True,
+        self, longitude_format="LON", latlon_format="dms", required=True,
     ):
         """
         Write header information to a list of lines.

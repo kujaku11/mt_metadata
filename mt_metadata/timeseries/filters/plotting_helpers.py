@@ -109,20 +109,13 @@ def plot_response(
 
         # plot amplitude
         (l1,) = ax_amp.plot(
-            frequencies,
-            response_amplitude,
-            linewidth=1.5,
-            linestyle="-",
-            label=name,
+            frequencies, response_amplitude, linewidth=1.5, linestyle="-", label=name,
         )
         lines.append(l1)
 
         # plot phase
         ax_phs.plot(
-            frequencies,
-            response_phase,
-            linewidth=1.5,
-            linestyle="-",
+            frequencies, response_phase, linewidth=1.5, linestyle="-",
         )
 
         # plot pass band
@@ -231,11 +224,7 @@ def plot_response(
 
     if len(label) > 1:
         fig.legend(
-            lines,
-            label,
-            ncol=len(label),
-            loc="upper center",
-            borderaxespad=-0.5,
+            lines, label, ncol=len(label), loc="upper center", borderaxespad=-0.5,
         )
     else:
         fig.suptitle(title)

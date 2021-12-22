@@ -241,7 +241,7 @@ class ChannelResponseFilter(object):
         :rtype: np.ndarray
 
         """
-        
+
         if frequencies is not None:
             self.frequencies = frequencies
 

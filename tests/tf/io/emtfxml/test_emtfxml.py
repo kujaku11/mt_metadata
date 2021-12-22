@@ -282,7 +282,7 @@ class TestEMTFXML(unittest.TestCase):
                             [-0.1160949 - 0.2708645j, 3.143284 + 1.101737j],
                             [-2.470717 - 0.7784633j, -0.1057851 + 0.1022045j],
                         ]
-                    )
+                    ),
                 ).all()
             )
 
@@ -295,10 +295,10 @@ class TestEMTFXML(unittest.TestCase):
                             [0.00483462 + 0.00983358j, 0.02643963 + 0.05098311j],
                             [-0.02203037 - 0.03744689j, -0.00295362 - 0.01293358j],
                         ]
-                    )
+                    ),
                 ).all()
             )
-            
+
     def test_z_sip(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((33, 2, 2), self.xml.data.z_invsigcov.shape)
@@ -307,8 +307,12 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.z_invsigcov[0],
-                    np.array([[ 0.8745101-2.905133e-08j, -0.4293981+1.663000e-01j],
-                           [-0.4293981-1.663000e-01j,  1.39159  -7.486698e-10j]])
+                    np.array(
+                        [
+                            [0.8745101 - 2.905133e-08j, -0.4293981 + 1.663000e-01j],
+                            [-0.4293981 - 1.663000e-01j, 1.39159 - 7.486698e-10j],
+                        ]
+                    ),
                 ).all()
             )
 
@@ -316,11 +320,15 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.z_invsigcov[-1],
-                    np.array([[9.120293e-08-2.13634e-16j, 5.066908e-08+2.26600e-08j],
-                           [5.066908e-08-2.26600e-08j, 1.086271e-07+1.02634e-16j]])
+                    np.array(
+                        [
+                            [9.120293e-08 - 2.13634e-16j, 5.066908e-08 + 2.26600e-08j],
+                            [5.066908e-08 - 2.26600e-08j, 1.086271e-07 + 1.02634e-16j],
+                        ]
+                    ),
                 ).all()
             )
-            
+
     def test_z_residual(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((33, 2, 2), self.xml.data.z_residcov.shape)
@@ -329,8 +337,18 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.z_residcov[0],
-                    np.array([[ 1.286460e-03+8.470329e-22j, -5.816711e-05+3.347000e-05j],
-                           [-5.816711e-05-3.347000e-05j,  1.037540e-03+0.000000e+00j]])
+                    np.array(
+                        [
+                            [
+                                1.286460e-03 + 8.470329e-22j,
+                                -5.816711e-05 + 3.347000e-05j,
+                            ],
+                            [
+                                -5.816711e-05 - 3.347000e-05j,
+                                1.037540e-03 + 0.000000e00j,
+                            ],
+                        ]
+                    ),
                 ).all()
             )
 
@@ -338,8 +356,12 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.z_residcov[-1],
-                    np.array([[ 86.38148+0.000000e+00j, -31.70986+1.281000e+00j],
-                           [-31.70986-1.281000e+00j,  45.52852-2.775558e-17j]])
+                    np.array(
+                        [
+                            [86.38148 + 0.000000e00j, -31.70986 + 1.281000e00j],
+                            [-31.70986 - 1.281000e00j, 45.52852 - 2.775558e-17j],
+                        ]
+                    ),
                 ).all()
             )
 
@@ -351,7 +373,7 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t[0],
-                    np.array([[-0.09386985 + 0.00620671j, 0.04601304 + 0.03035755j]])
+                    np.array([[-0.09386985 + 0.00620671j, 0.04601304 + 0.03035755j]]),
                 ).all()
             )
 
@@ -359,10 +381,10 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t[-1],
-                    np.array([[-0.03648688 + 0.08738894j, 0.1750294 + 0.1666582j]])
+                    np.array([[-0.03648688 + 0.08738894j, 0.1750294 + 0.1666582j]]),
                 ).all()
             )
-            
+
     def test_t_sip(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((33, 2, 2), self.xml.data.t_invsigcov.shape)
@@ -371,8 +393,12 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t_invsigcov[0],
-                    np.array([[ 0.8745101-2.905133e-08j, -0.4293981+1.663000e-01j],
-                           [-0.4293981-1.663000e-01j,  1.39159  -7.486698e-10j]])
+                    np.array(
+                        [
+                            [0.8745101 - 2.905133e-08j, -0.4293981 + 1.663000e-01j],
+                            [-0.4293981 - 1.663000e-01j, 1.39159 - 7.486698e-10j],
+                        ]
+                    ),
                 ).all()
             )
 
@@ -380,11 +406,15 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t_invsigcov[-1],
-                    np.array([[9.120293e-08-2.13634e-16j, 5.066908e-08+2.26600e-08j],
-                           [5.066908e-08-2.26600e-08j, 1.086271e-07+1.02634e-16j]])
+                    np.array(
+                        [
+                            [9.120293e-08 - 2.13634e-16j, 5.066908e-08 + 2.26600e-08j],
+                            [5.066908e-08 - 2.26600e-08j, 1.086271e-07 + 1.02634e-16j],
+                        ]
+                    ),
                 ).all()
             )
-            
+
     def test_t_residual(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((33, 1, 1), self.xml.data.t_residcov.shape)
@@ -392,20 +422,16 @@ class TestEMTFXML(unittest.TestCase):
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
-                    self.xml.data.t_residcov[0],
-                    np.array([[9.623e-05+0.j]])
+                    self.xml.data.t_residcov[0], np.array([[9.623e-05 + 0.0j]])
                 ).all()
             )
 
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(
-                    self.xml.data.t_residcov[-1],
-                    np.array([[29820.+0.j]])
+                    self.xml.data.t_residcov[-1], np.array([[29820.0 + 0.0j]])
                 ).all()
             )
-            
-
 
 
 # =============================================================================

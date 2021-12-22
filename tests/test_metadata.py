@@ -36,7 +36,7 @@ class TestBase(unittest.TestCase):
             "options": ["10", "12"],
             "alias": ["other"],
             "example": "extra",
-            "default": "12"
+            "default": "12",
         }
         self.extra_value = 10
 

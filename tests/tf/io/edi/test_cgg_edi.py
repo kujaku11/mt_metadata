@@ -53,7 +53,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_info(self):
         info_list = [
             "SITE INFO:",
-            'H_SITE=E_SITE',
+            "H_SITE=E_SITE",
             "PROCESSING PARAMETERS:",
         ]
 

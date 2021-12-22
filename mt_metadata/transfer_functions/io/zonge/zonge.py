@@ -206,7 +206,6 @@ class ZongeMTAvg:
         self._fill_z()
         self._fill_t()
 
-
     def to_complex(self, zmag, zphase):
         """
         outputs of mtedit are magnitude and phase of z, convert to real and
@@ -474,9 +473,9 @@ class ZongeMTAvg:
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
         sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
-        sm.transfer_function.software.last_updated = (
-            self.header.m_t_edit.version.split()[-1]
-        )
+        sm.transfer_function.software.last_updated = self.header.m_t_edit.version.split()[
+            -1
+        ]
 
         for key, value in self.header.m_t_edit.to_dict(single=True).items():
             if "version" in key:
@@ -603,7 +602,7 @@ def read_avg(fn):
     if obj.t is not None:
         tf_object.tipper = obj.t
         tf_object.tipper_error = obj.t_err
-    
+
     tf_object._fn = fn
 
     return tf_object
