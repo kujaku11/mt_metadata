@@ -29,6 +29,7 @@ class TestValidators(unittest.TestCase):
         self.options = "[option01 | option02 | ...]"
         self.alias = "other_name"
         self.example = "example name"
+        self.default = "option01"
         self.header = [
             "attribute",
             "type",
@@ -39,6 +40,7 @@ class TestValidators(unittest.TestCase):
             "options",
             "alias",
             "example",
+            "default",
         ]
 
         self.value_dict = {
@@ -50,6 +52,7 @@ class TestValidators(unittest.TestCase):
             "options": self.options,
             "alias": self.alias,
             "example": self.example,
+            "default": self.default,
         }
 
         self.name_fail = "0test/WeakSauce"
@@ -83,10 +86,12 @@ class TestValidators(unittest.TestCase):
         )
 
     def test_validate_required(self):
-        self.assertEqual(self.required, validators.validate_required(self.required))
-        self.assertEqual(
-            self.required, validators.validate_required(str(self.required))
-        )
+        with self.subTest(msg="required"):
+            self.assertEqual(self.required, validators.validate_required(self.required))
+        with self.subTest(msg="string"):
+            self.assertEqual(
+                self.required, validators.validate_required(str(self.required))
+            )
 
     def test_validate_required_fail(self):
         self.assertRaises(
@@ -94,24 +99,32 @@ class TestValidators(unittest.TestCase):
         )
 
     def test_validate_type(self):
-        self.assertEqual("string", validators.validate_type(str))
-        self.assertEqual("float", validators.validate_type(float))
-        self.assertEqual("integer", validators.validate_type(int))
-        self.assertEqual("boolean", validators.validate_type(bool))
+        with self.subTest(msg="string"):
+            self.assertEqual("string", validators.validate_type(str))
+        with self.subTest(msg="float"):
+            self.assertEqual("float", validators.validate_type(float))
+        with self.subTest(msg="integer"):
+            self.assertEqual("integer", validators.validate_type(int))
+        with self.subTest(msg="boolean"):
+            self.assertEqual("boolean", validators.validate_type(bool))
 
     def test_validate_type_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_type, self.type_fail)
 
     def test_validate_units(self):
-        self.assertEqual(self.units, validators.validate_units(self.units))
-        self.assertEqual(None, validators.validate_units(None))
+        with self.subTest(msg="has units"):
+            self.assertEqual(self.units, validators.validate_units(self.units))
+        with self.subTest(msg="none units"):
+            self.assertEqual(None, validators.validate_units(None))
 
     def test_validate_units_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_units, self.units_fail)
 
     def test_validate_style(self):
-        self.assertEqual(self.style, validators.validate_style(self.style))
-        self.assertEqual("name", validators.validate_style(None))
+        with self.subTest(msg="style"):
+            self.assertEqual(self.style, validators.validate_style(self.style))
+        with self.subTest(msg="none style"):
+            self.assertEqual("name", validators.validate_style(None))
 
     def test_validate_style_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_style, self.style_fail)
@@ -131,15 +144,20 @@ class TestValidators(unittest.TestCase):
 
     def test_validated_options(self):
         valid_list = validators.validate_options(self.options)
-        self.assertIsInstance(validators.validate_options(self.options), list)
-        self.assertListEqual(["option01", "option02", "..."], valid_list)
+        with self.subTest(msg="is list"):
+            self.assertIsInstance(validators.validate_options(self.options), list)
+        with self.subTest(msg="valid list"):
+            self.assertListEqual(["option01", "option02", "..."], valid_list)
         valid_list = validators.validate_options(["option01", "option02", "..."])
-        self.assertListEqual(["option01", "option02", "..."], valid_list)
+        with self.subTest(msg="valid list 2"):
+            self.assertListEqual(["option01", "option02", "..."], valid_list)
 
     def test_validate_alias(self):
         valid_alias = validators.validate_alias(self.alias)
-        self.assertIsInstance(valid_alias, list)
-        self.assertListEqual(valid_alias, ["other_name"])
+        with self.subTest(msg="is list"):
+            self.assertIsInstance(valid_alias, list)
+        with self.subTest(msg="alias"):
+            self.assertListEqual(valid_alias, ["other_name"])
 
 
 # =============================================================================
