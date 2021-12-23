@@ -44,8 +44,8 @@ def wrap_description(description, column_width):
     split a description into separate lines
     """
     d_lines = textwrap.wrap(description, column_width)
-    if len(d_lines) < 9:
-        d_lines += [""] * (9 - len(d_lines))
+    if len(d_lines) < 11:
+        d_lines += [""] * (11 - len(d_lines))
 
     return d_lines
 
@@ -120,9 +120,17 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         lines.append(
             line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
         )
+        
+        # line 10 blank
+        lines.append(line.format("", c1, d_lines[9], c2, e_lines[9], c3))
+        
+        # line 11 type
+        lines.append(
+            line.format(f"Default: {entry['default']}", c1, d_lines[10], c2, e_lines[10], c3)
+        )
 
         # line 10 blank
-        if len(d_lines) > 9:
+        if len(d_lines) > 11:
             lines.append(line.format("", c1, d_lines[9], c2, "", c3))
             for d_line in d_lines[10:]:
                 lines.append(line.format("", c1, d_line, c2, "", c3))
@@ -212,14 +220,24 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
 
     # line 8 blank
     lines.append(line.format("", c1, d_lines[7], c2, e_lines[7], c3))
-
+    
     # line 9 type
-    lines.append(line.format("", c1, d_lines[8], c2, e_lines[8], c3))
+    lines.append(
+        line.format(
+            f"**Default**: {attr_dict['default']}", c1, d_lines[8], c2, e_lines[8], c3
+        )
+    )
 
     # line 10 blank
-    if len(d_lines) > 9:
-        lines.append(line.format("", c1, d_lines[9], c2, "", c3))
-        for d_line in d_lines[10:]:
+    lines.append(line.format("", c1, d_lines[9], c2, e_lines[9], c3))
+
+    # line 9 type
+    lines.append(line.format("", c1, d_lines[10], c2, e_lines[10], c3))
+
+    # line 10 blank
+    if len(d_lines) > 11:
+        lines.append(line.format("", c1, d_lines[11], c2, "", c3))
+        for d_line in d_lines[12:]:
             lines.append(line.format("", c1, d_line, c2, "", c3))
 
     lines.append(hline)

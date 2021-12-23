@@ -10,7 +10,7 @@ Supported Formats
 .. list-table:: 
     :widths: 25 50 20 20
     :header-rows: 1
-	
+    
     * - Format
       - Description
       - Read
@@ -35,7 +35,7 @@ Supported Formats
       - Zonge International .avg format out put by their MTEdit code [.avg]
       - Yes
       - No
-	  
+      
 Purpose
 ----------------
 
@@ -52,7 +52,7 @@ mt_metadata.transfer_functions.io
     - edi
        - metadata
            - standards
-               - .json standard files		   
+               - .json standard files           
     - zfiles
        - metadata
            - standards
@@ -69,6 +69,42 @@ mt_metadata.transfer_functions.io
        - metadata
            - standards
               - .json standard files
-			   
+               
 Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :func:`mt_metadata.transfer_functions.io.readwrite.read` and :func:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :func:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :func:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
-  
+
+========================
+Metadata Definitions
+========================
+
+.. toctree::
+    :maxdepth: 1
+    :caption: General Transfer Function Definitions
+    
+    tf_survey
+    tf_station
+    tf_run
+    tf_auxiliary
+    tf_electric
+    tf_magnetic
+    tf_transfer_function
+
+
+.. toctree::
+    :maxdepth: 1
+    :caption: EMTF XML Definitions
+    
+    emtfxml_e_m_t_f
+    emtfxml_external_url
+    emtfxml_primary_data
+    emtfxml_attachment
+    emtfxml_provenance
+    emtfxml_copyright
+    emtfxml_site
+    emtfxml_field_notes
+    emtfxml_processing_info
+    emtfxml_statistical_estimates
+    emtfxml_estimate
+    emtfxml_data_types
+    emtfxml_data_type
+    emtfxml_site_layout
+    
