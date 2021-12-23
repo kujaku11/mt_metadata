@@ -1,13 +1,14 @@
 {
     "maxchan": {
         "type": "integer",
-        "required": false,
+        "required": true,
         "style": "number",
         "units": null,
         "description": "maximum number of channels",
         "options": [],
         "alias": [],
-        "example": "16"
+        "example": "16",
+		"default": 999
     },
 	"maxrun": {
         "type": "integer",
@@ -17,7 +18,8 @@
         "description": "maximum number of runs",
         "options": [],
         "alias": [],
-        "example": "2020-01-01"
+        "example": "999",
+		"default": 999
     },
 	"maxmeas": {
         "type": "integer",
@@ -27,7 +29,8 @@
         "description": "maximum number of measurements",
         "options": [],
         "alias": [],
-        "example": "2020-01-01"
+        "example": "999",
+		"default": 999
     },
 	"reftype": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "Type of offset from reference center point.",
         "options": [],
         "alias": [],
-        "example": "cart"
+        "example": "cart",
+		"default": 0.0
     },
 	"refloc": {
         "type": "string",
@@ -47,7 +51,8 @@
         "description": "Description of location reference center point.",
         "options": [],
         "alias": [],
-        "example": "here"
+        "example": "here",
+		"default": 0.0
     },
     "units": {
         "type": "string",
@@ -57,6 +62,7 @@
         "description": "In the EDI standards this is the elevation units.",
         "options": [],
         "alias": [],
-        "example": "m"
-    }
+        "example": "m",
+		"default": "m"
+		}
 }

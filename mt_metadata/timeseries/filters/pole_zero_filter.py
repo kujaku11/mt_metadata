@@ -34,10 +34,6 @@ class PoleZeroFilter(FilterBase):
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "zpk"
-        if self.normalization_factor == 0:
-            self.normalization_factor = 1.0
-        if self.gain == 0:
-            self.gain = 1.0
 
         self.obspy_mapping = obspy_mapping
 

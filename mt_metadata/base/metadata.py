@@ -68,9 +68,9 @@ class Base:
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]
-        lines = ["{0}:".format(self._class_name)]
+        lines = [f"{self._class_name}:"]
         for name, value in meta_dict.items():
-            lines.append("\t{0} = {1}".format(name, value))
+            lines.append(f"\t{name} = {value}")
         return "\n".join(lines)
 
     def __repr__(self):

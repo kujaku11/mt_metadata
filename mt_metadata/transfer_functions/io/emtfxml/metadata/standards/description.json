@@ -7,6 +7,7 @@
         "description": "description of what is in the file; default is magnetotelluric transfer functions",
         "options": [],
         "alias": [],
-        "example": "Magnetotelluric Transfer Functions"
+        "example": "Magnetotelluric Transfer Functions",
+		"default": null
     }
 }

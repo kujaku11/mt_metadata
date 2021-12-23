@@ -7,7 +7,8 @@
         "description": "name of filter applied or to be applies. If more than one filter input as a comma separated list",
         "options": [],
         "alias": [],
-        "example": "\"[counts2mv, lowpass_magnetic]\""
+        "example": "\"[counts2mv, lowpass_magnetic]\"",
+		"default": []
     },
     "applied": {
         "type": "boolean",
@@ -17,7 +18,8 @@
         "description": "boolean if filter has been applied or not. If more than one filter input as a comma separated list.  Needs to be the same length as name or if only one entry is given it is assumed to apply to all filters listed.",
         "options": [],
         "alias": [],
-        "example": "\"[True, False]\""
+        "example": "\"[True, False]\"",
+		"default": []
     },
     "comments": {
         "type": "string",
@@ -27,6 +29,7 @@
         "description": "any comments on filters",
         "options": [],
         "alias": [],
-        "example": "low pass is not calibrated"
+        "example": "low pass is not calibrated",
+		"default": null
     }
 }

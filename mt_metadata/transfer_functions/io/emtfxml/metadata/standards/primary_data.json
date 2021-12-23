@@ -7,6 +7,7 @@
         "description": "file name of the figure file that displays the data",
         "options": [],
         "alias": [],
-        "example": "example.png"
+        "example": "example.png", 
+		"default": null
     }
 }

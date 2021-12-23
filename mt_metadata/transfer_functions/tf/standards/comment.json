@@ -9,7 +9,8 @@
         "alias": [
             "nome"
         ],
-        "example": "M. Tee"
+        "example": "M. Tee",
+		"default": null
     },
     "date": {
         "type": "string",
@@ -19,7 +20,8 @@
         "description": "Date the comment was made",
         "options": [],
         "alias": [],
-        "example": "2020-01-21"
+        "example": "2020-01-21",
+		"default": null
     },
     "value": {
         "type": "string",
@@ -29,6 +31,7 @@
         "description": "Comment string",
         "options": [],
         "alias": [],
-        "example": "This is a comment"
+        "example": "This is a comment",
+		"default": null
     }
 }

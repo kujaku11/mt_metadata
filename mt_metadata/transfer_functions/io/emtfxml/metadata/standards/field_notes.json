@@ -7,7 +7,8 @@
         "description": "Any field errors",
         "options": [],
         "alias": [],
-        "example": "moose ate cables"
+        "example": "moose ate cables",
+		"default": null
     },
     "run": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "Run name",
         "options": [],
         "alias": [],
-        "example": "mt001a"
+        "example": "mt001a",
+		"default": null
     },
 	"sampling_rate": {
         "type": "float",
@@ -27,7 +29,8 @@
         "description": "Sample rate of the run",
         "options": [],
         "alias": [],
-        "example": "1"
+        "example": "1",
+		"default": null
     },
 	"start": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "Date time when the data collection started",
         "options": [],
         "alias": [],
-        "example": "2020-01-01T12:00:00"
+        "example": "2020-01-01T12:00:00",
+		"default": "1980-01-01T00:00:00"
     },
     "end": {
         "type": "string",
@@ -47,6 +51,7 @@
         "description": "Date time when the data collection ended",
         "options": [],
         "alias": [],
-        "example": "2020-05-01T12:00:00"
+        "example": "2020-05-01T12:00:00",
+		"default": "1980-01-01T00:00:00"
     }
 }

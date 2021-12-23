@@ -7,7 +7,8 @@
         "description": "name of value estimate",
         "options": [],
         "alias": [],
-        "example": "tx"
+        "example": "tx",
+		"default": null
     },
     "output": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "output field component",
         "options": [],
         "alias": [],
-        "example": "ex"
+        "example": "ex",
+		"default": null
     },
 	"input": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "input field component",
         "options": [],
         "alias": [],
-        "example": "hy"
+        "example": "hy",
+		"default": null
     },
 	"value": {
         "type": "string",
@@ -37,6 +40,7 @@
         "description": "value of the estimate",
         "options": [],
         "alias": [],
-        "example": "10.1 + 11j"
+        "example": "10.1 + 11j",
+		"default": null
     }
 }

@@ -7,7 +7,8 @@
         "description": "Name of the manufacturer of the instrument",
         "options": [],
         "alias": [],
-        "example": "MT Gurus"
+        "example": "MT Gurus",
+		"default": null
     },
     "length": {
         "type": "float",
@@ -17,7 +18,8 @@
         "description": "Dipole length",
         "options": [],
         "alias": [],
-        "example": "10"
+        "example": "10",
+		"default": null
     },
     "azimuth": {
         "type": "float",
@@ -27,7 +29,8 @@
         "description": "Azimuth of the dipole relative to coordinate system",
         "options": [],
         "alias": [],
-        "example": "90"
+        "example": "90",
+		"default": null
     },
     "name": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "Name of the dipole",
         "options": [],
         "alias": [],
-        "example": "ex"
+        "example": "ex",
+		"default": null
     },
 	"type": {
         "type": "string",
@@ -47,6 +51,7 @@
         "description": "type of dipole",
         "options": [],
         "alias": [],
-        "example": "wire"
+        "example": "wire",
+		"default": null
     }
 }

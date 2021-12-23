@@ -7,7 +7,8 @@
         "description": "author name",
         "options": [],
         "alias": [],
-        "example": "person name"
+        "example": "person name",
+		"default": null
     },
     "organization": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "organization name",
         "options": [],
         "alias": [],
-        "example": "mt gurus"
+        "example": "mt gurus",
+		"default": null
     },
     "email": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "email of the contact person",
         "options": [],
         "alias": [],
-        "example": "mt.guru@em.org"
+        "example": "mt.guru@em.org",
+		"default": null
     },
 	"url": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "url of the contact person or organization",
         "options": [],
         "alias": [],
-        "example": "em.org"
+        "example": "em.org",
+		"default": null
     },
     "comments": {
         "type": "string",
@@ -47,6 +51,7 @@
         "description": "email of the contact person",
         "options": [],
         "alias": [],
-        "example": "expert digger"
+        "example": "expert digger",
+		"default": null
     }
 }

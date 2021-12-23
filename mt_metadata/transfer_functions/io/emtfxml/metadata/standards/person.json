@@ -9,7 +9,8 @@
         "alias": [
             "author"
         ],
-        "example": "person name"
+        "example": "person name", 
+		"default": null
     },
     "org": {
         "type": "string",
@@ -21,7 +22,8 @@
         "alias": [
             "organization"
         ],
-        "example": "mt gurus"
+        "example": "mt gurus", 
+		"default": null
     },
     "org_url": {
         "type": "string",
@@ -31,7 +33,8 @@
         "description": "URL of organization",
         "options": [],
         "alias": [],
-        "example": "https://www.mt_gurus.org"
+        "example": "https://www.mt_gurus.org", 
+		"default": null
     },
     "email": {
         "type": "string",
@@ -41,6 +44,7 @@
         "description": "email of the contact person",
         "options": [],
         "alias": [],
-        "example": "mt.guru@em.org"
+        "example": "mt.guru@em.org", 
+		"default": null
     }
 }

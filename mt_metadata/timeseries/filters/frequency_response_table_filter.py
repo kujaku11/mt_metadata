@@ -39,9 +39,6 @@ class FrequencyResponseTableFilter(FilterBase):
         self.type = "frequency response table"
         self.obspy_mapping = obspy_mapping
 
-        if self.gain == 0.0:
-            self.gain = 1.0
-
     @property
     def frequencies(self):
         """

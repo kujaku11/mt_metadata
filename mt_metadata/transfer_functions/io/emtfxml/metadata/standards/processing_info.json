@@ -11,7 +11,8 @@
 			"other"
         ],
         "alias": [],
-        "example": "exp(+ i\\omega t)"
+        "example": "exp(+ i\\omega t)", 
+		"default": "exp(+ i\\omega t)"
     },
     "processed_by": {
         "type": "string",
@@ -21,7 +22,8 @@
         "description": "Names of people who processed the data",
         "options": [],
         "alias": [],
-        "example": "MT Guru"
+        "example": "MT Guru", 
+		"default": null
     },
     "processing_tag": {
         "type": "string",
@@ -31,6 +33,7 @@
         "description": "List of remote references",
         "options": [],
         "alias": [],
-        "example": "mt001-mt002"
+        "example": "mt001-mt002", 
+		"default": null
     }
 }

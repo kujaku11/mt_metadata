@@ -20,7 +20,7 @@
         "options": [],
         "alias": [],
         "example": "16",
-		"default": 1
+		"default": "1"
     },
 
     "decimation_input_sample_rate": {

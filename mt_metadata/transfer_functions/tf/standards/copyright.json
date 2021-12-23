@@ -15,6 +15,7 @@
             "other"
         ],
         "alias": [],
-        "example": "CC-0"
+        "example": "CC-0",
+		"default": "CC-0"
     }
 }

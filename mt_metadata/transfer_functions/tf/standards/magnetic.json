@@ -7,7 +7,8 @@
         "description": "minimum magnetic field strength at beginning of measurement",
         "options": [],
         "alias": [],
-        "example": "40345.1"
+        "example": "40345.1",
+		"default": null
     },
     "h_field_min.end": {
         "type": "float",
@@ -17,7 +18,8 @@
         "description": "minimum magnetic field strength at end of measurement",
         "options": [],
         "alias": [],
-        "example": "50453.2"
+        "example": "50453.2",
+		"default": null
     },
     "h_field_max.start": {
         "type": "float",
@@ -27,7 +29,8 @@
         "description": "maximum magnetic field strength at beginning of measurement",
         "options": [],
         "alias": [],
-        "example": "34565.2"
+        "example": "34565.2",
+		"default": null
     },
     "h_field_max.end": {
         "type": "float",
@@ -37,6 +40,7 @@
         "description": "maximum magnetic field strength at end of measurement",
         "options": [],
         "alias": [],
-        "example": "34526.1"
+        "example": "34526.1",
+		"default": null
     }
 }

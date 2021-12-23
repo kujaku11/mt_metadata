@@ -7,7 +7,8 @@
         "description": "doi number of the citation",
         "options": [],
         "alias": [],
-        "example": "###/###"
+        "example": "###/###",
+		"default": null
     },
 	"survey_d_o_i": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "doi number of the survey",
         "options": [],
         "alias": [],
-        "example": "###/###"
+        "example": "###/###",
+		"default": null
     },
     "authors": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "author names",
         "options": [],
         "alias": [],
-        "example": "M.Tee A. Roura"
+        "example": "M.Tee A. Roura",
+		"default": null
     },
     "title": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "Full title of the citation",
         "options": [],
         "alias": [],
-        "example": "Paper Title"
+        "example": "Paper Title",
+		"default": null
     },
     "year": {
         "type": "string",
@@ -47,7 +51,8 @@
         "description": "Year of citation",
         "options": [],
         "alias": [],
-        "example": "2020"
+        "example": "2020",
+		"default": null
     },
     "volume": {
         "type": "string",
@@ -57,7 +62,8 @@
         "description": "Journal volume of the citation",
         "options": [],
         "alias": [],
-        "example": "12"
+        "example": "12",
+		"default": null
     },
     "pages": {
         "type": "string",
@@ -67,7 +73,8 @@
         "description": "Page numbers of the citation",
         "options": [],
         "alias": [],
-        "example": "10-15"
+        "example": "10-15",
+		"default": null
     },
     "journal": {
         "type": "string",
@@ -77,6 +84,7 @@
         "description": "Journal title of citation",
         "options": [],
         "alias": [],
-        "example": "Journal of Geophysical Research"
+        "example": "Journal of Geophysical Research",
+		"default": null
     }
 }

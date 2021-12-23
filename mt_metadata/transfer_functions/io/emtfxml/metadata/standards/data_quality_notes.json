@@ -7,7 +7,8 @@
         "description": "Data are good for periods larger than this number",
         "options": [],
         "alias": [],
-        "example": "0.01"
+        "example": "0.01",
+		"default": null
     },
     "good_to_period": {
         "type": "float",
@@ -17,7 +18,8 @@
         "description": "Data are good for periods smaller than this number",
         "options": [],
         "alias": [],
-        "example": "1000"
+        "example": "1000",
+		"default": null
     },
     "rating": {
         "type": "integer",
@@ -27,6 +29,7 @@
         "description": "Rating of the data from 0 to 5 where 5 is the best and 0 is unrated",
         "options": [],
         "alias": [],
-        "example": "4"
+        "example": "4",
+		"default": null
     }
 }

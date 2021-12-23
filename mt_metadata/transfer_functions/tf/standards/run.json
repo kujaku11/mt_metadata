@@ -7,7 +7,8 @@
         "description": "list of auxiliary channels recorded",
         "options": [],
         "alias": [],
-        "example": "[T]"
+        "example": "[T]",
+		"default": []
     },
     "channels_recorded_electric": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "list of electric channels recorded",
         "options": [],
         "alias": [],
-        "example": "\"[Ex | Ey]\""
+        "example": "\"[Ex | Ey]\"",
+		"default": []
     },
     "channels_recorded_magnetic": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "list of magnetic channels recorded",
         "options": [],
         "alias": [],
-        "example": "\"[Hx | Hy | Hz]\""
+        "example": "\"[Hx | Hy | Hz]\"",
+		"default": []
     },
     "comments": {
         "type": "string",
@@ -37,7 +40,8 @@
         "description": "any comments on the run",
         "options": [],
         "alias": [],
-        "example": "cows chewed cables"
+        "example": "cows chewed cables",
+		"default": null
     },
     "data_type": {
         "type": "string",
@@ -54,7 +58,8 @@
             "other"
         ],
         "alias": [],
-        "example": "BBMT"
+        "example": "BBMT",
+		"default": "BBMT"
     },
     "id": {
         "type": "string",
@@ -64,7 +69,8 @@
         "description": "run ID should be station name followed by an alphabet letter for the run",
         "options": [],
         "alias": [],
-        "example": "mt02b"
+        "example": "mt02b",
+		"default": null
     },
     "sample_rate": {
         "type": "float",
@@ -74,6 +80,7 @@
         "description": "rate of sampling renureded for this run",
         "options": [],
         "alias": [],
-        "example": "100"
+        "example": "100",
+		"default": 0.0
     }
 }

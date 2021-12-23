@@ -7,6 +7,7 @@
         "description": "list of statistical estimates",
         "options": [],
         "alias": [],
-        "example": "[var cov]"
+        "example": "[var cov]",
+		"default": []
     }
 }

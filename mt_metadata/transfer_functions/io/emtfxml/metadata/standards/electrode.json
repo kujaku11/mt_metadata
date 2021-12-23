@@ -13,7 +13,8 @@
             "other"
         ],
         "alias": [],
-        "example": "N"
+        "example": "N",
+		"default": null
     },
     "number": {
         "type": "string",
@@ -23,7 +24,8 @@
         "description": "Electrode ID number",
         "options": [],
         "alias": [],
-        "example": "1a"
+        "example": "1a",
+		"default": null
     },
 	"comments": {
         "type": "string",
@@ -33,6 +35,7 @@
         "description": "comments on the electrode",
         "options": [],
         "alias": [],
-        "example": "Ag-AgCl porous pot"
+        "example": "Ag-AgCl porous pot",
+		"default": null
     }
 }
