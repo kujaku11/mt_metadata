@@ -135,7 +135,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("id", "NMX20"),
                 ("location.datum", "WGS84"),
                 ("location.declination.epoch", "2020.0"),
-                ("location.declination.model", "EMAG2"),
+                ("location.declination.model", "WMM"),
                 ("location.declination.value", 9.09),
                 ("location.elevation", 1940.05),
                 ("location.latitude", 34.470528),

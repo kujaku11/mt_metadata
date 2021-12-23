@@ -8,7 +8,7 @@
         "options": [],
         "alias": [],
         "example": "2020-02-08T12:23:40.324600+00:00",
-		"deafult": "1980-01-01T00:00:00+00:00"
+		"default": "1980-01-01T00:00:00+00:00"
     },
     "creating_application": {
         "type": "string",
@@ -19,6 +19,6 @@
         "options": [],
         "alias": [],
         "example": "EMTF File Conversion Utilities 4.0",
-		"deafult": "mt_metadata"		
+		"default": "mt_metadata"		
     }
 }
