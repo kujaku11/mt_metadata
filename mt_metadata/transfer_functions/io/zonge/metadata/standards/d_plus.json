@@ -7,6 +7,7 @@
         "description": "Was D+ used to smooth the response",
         "options": ["no", "yes"],
         "alias": [],
-        "example": "no"
+        "example": "no",
+		"default": "no"
     }	
 }

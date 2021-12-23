@@ -7,6 +7,7 @@
         "description": "Type of EM source",
         "options": ["natural", "controlled source"],
         "alias": [],
-        "example": "natural"
+        "example": "natural",
+		"default": "natural"
     }
 }
