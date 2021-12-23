@@ -4,13 +4,16 @@ Created on Sat Dec  4 14:13:37 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
+from mt_metadata.base import Base
 from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 # Info object
 # ==============================================================================
-class Information(object):
+class Information(Base):
     """
     Contain, read, and write info section of .edi file
 
@@ -21,7 +24,6 @@ class Information(object):
     """
 
     def __init__(self, fn=None, edi_lines=None):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
 
         self.info_list = []
         self.info_dict = {}
@@ -74,6 +76,8 @@ class Information(object):
             "rotmaxe": "processing_parameter",
         }
 
+        super().__init__(attr_dict={})
+        
     def __str__(self):
         return "".join(self.write_info())
 

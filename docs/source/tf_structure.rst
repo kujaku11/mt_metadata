@@ -95,40 +95,12 @@ Supported Formats
 Metadata Definitions
 ========================
 
-General Transfer Function Definitions
----------------------------------------
-
 .. toctree::
     :maxdepth: 1
-    :caption: Metadata Definitions
     
-    tf_survey
-    tf_station
-    tf_run
-    tf_auxiliary
-    tf_electric
-    tf_magnetic
-    tf_transfer_function
-
-
-EMTF XML
-------------------------------
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Metadata Definitions
-    
-    emtfxml_e_m_t_f
-    emtfxml_external_url
-    emtfxml_primary_data
-    emtfxml_attachment
-    emtfxml_provenance
-    emtfxml_copyright
-    emtfxml_site
-    emtfxml_field_notes
-    emtfxml_processing_info
-    emtfxml_statistical_estimates
-    emtfxml_estimate
-    emtfxml_data_types
-    emtfxml_data_type
-    emtfxml_site_layout    
+    tf_index
+    tf_emtfxml_index
+    tf_edi_index
+    tf_zmm_index
+    tf_jfile_index
+    tf_zonge_index

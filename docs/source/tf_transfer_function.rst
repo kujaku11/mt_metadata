@@ -2,8 +2,8 @@
 .. role:: blue
 .. role:: navy
 
-Transfer_function
-=================
+TransferFunction
+================
 
 
 :navy:`sign_convention`

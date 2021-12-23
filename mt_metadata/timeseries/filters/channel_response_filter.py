@@ -15,6 +15,7 @@ the frequency domain.
 from copy import deepcopy
 import numpy as np
 
+from mt_metadata.base import Base
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
@@ -23,14 +24,13 @@ from mt_metadata.timeseries.filters import (
     FIRFilter,
 )
 from mt_metadata.utils.units import get_unit_object
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from obspy.core import inventory
 
 # =============================================================================
 
 
-class ChannelResponseFilter(object):
+class ChannelResponseFilter(Base):
     """
     This class holds a list of all the filters associated with a channel.
     It has methods for combining the responses of all the filters into a total
@@ -41,8 +41,8 @@ class ChannelResponseFilter(object):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
-        self.logger = setup_logger(f"{self.__class__}.{self.__class__.__name__}")
 
+        super().__init__(attr_dict={})
         for k, v in kwargs.items():
             setattr(self, k, v)
 

@@ -185,7 +185,7 @@ class TestValidators(unittest.TestCase):
             {
                 "date": [
                     {
-                        "type": "string",
+                        "type": "string",cd .
                         "value": "2020-10-01T00:12:00",
                         "compare": "2020-10-01T00:12:00",
                     }
@@ -217,11 +217,7 @@ class TestValidators(unittest.TestCase):
             {
                 "name list": [
                     {"type": "string", "value": "a, b, c", "compare": ["a", "b", "c"]},
-                    {
-                        "type": "bool",
-                        "value": "0, false, 1, true",
-                        "compare": [False, False, True, True],
-                    },
+                    {"type": "bool", "value": "0, false, 1, true", "compare": [False, False, True, True]}
                 ]
             },
             {

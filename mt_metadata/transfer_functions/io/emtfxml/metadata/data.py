@@ -4,16 +4,23 @@ Created on Mon Sep  6 13:53:55 2021
 
 @author: jpeacock
 """
+# =============================================================================
+# Imports
+# =============================================================================
 import numpy as np
 from xml.etree import cElementTree as et
 
+from mt_metadata.base import Base
+# =============================================================================
 
-class TransferFunction:
+
+class TransferFunction(Base):
     """
     Deal with the complex XML format
     """
 
     def __init__(self):
+        
         self.index_dict = {"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0}
         self.dtype_dict = {
             "complex": complex,
@@ -51,6 +58,8 @@ class TransferFunction:
             "t_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
             "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
+        
+        super().__init__(attr_dict={})
 
     def initialize_arrays(self, n_periods):
         self.period = np.zeros(n_periods)
