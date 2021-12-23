@@ -35,12 +35,7 @@ The base metadata object is structured in a flexible way to accommodate any type
     :caption: Transfer Functions
     
     source/tf_structure
-    source/notebooks/tf_example.ipynb
-    source/notebooks/tf_edi_example.ipynb
-    source/notebooks/tf_emtfxml_example.ipynb
-    source/notebooks/tf_zfile_example.ipynb
-    source/notebooks/tf_jfile_example.ipynb	
-    source/notebooks/tf_avg_example.ipynb	
+    	
 
 .. toctree::
     :maxdepth: 1
