@@ -15,7 +15,8 @@ the frequency domain.
 from copy import deepcopy
 import numpy as np
 
-from mt_metadata.base import Base
+from mt_metadata.base import Base, get_schema
+from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
@@ -27,6 +28,8 @@ from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from obspy.core import inventory
 
+# =============================================================================
+attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
@@ -42,7 +45,7 @@ class ChannelResponseFilter(Base):
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
 
-        super().__init__(attr_dict={})
+        super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -163,7 +166,7 @@ class ChannelResponseFilter(Base):
                     continue
                 pb.append((f_pb.min(), f_pb.max()))
 
-        if pb is not []:
+        if pb != []:
             pb = np.array(pb)
             return np.array([pb[:, 0].max(), pb[:, 1].min()])
         return None
@@ -172,8 +175,9 @@ class ChannelResponseFilter(Base):
     def normalization_frequency(self):
         """get normalization frequency from ZPK or FAP filter"""
 
-        if self._normalization_frequency is None:
-            return np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
+        if self._normalization_frequency == 0.0:
+            if self.pass_band is not None:
+                return np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
 
         return self._normalization_frequency
 

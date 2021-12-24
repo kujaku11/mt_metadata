@@ -317,27 +317,41 @@ class Base:
             "input_channels",
             "output_channels",
             "data_types_list",
+            "info_list",
+            "info_dict",
+            "filters_list",
             "fn",
         ]
 
-        if hasattr(self, "_attr_dict"):
-            if name[0] != "_":
-                if not name in skip_list:
-                    self.logger.debug("Setting {0} to {1}".format(name, value))
-                    v_dict = self._attr_dict[name]
-                    v_type = self._get_standard_type(name)
-                    value = self._validate_type(value, v_type, v_dict["style"])
-                    # check options
-                    if v_dict["style"] == "controlled vocabulary":
-                        options = v_dict["options"]
-                        accept, other, msg = self._validate_option(value, options)
-                        if not accept:
-                            self.logger.error(msg.format(value, options))
-                            raise MTSchemaError(msg.format(value, options))
-                        if other and not accept:
-                            self.logger.warning(msg.format(value, options, name))
 
-        super().__setattr__(name, value)
+        if name in skip_list:
+            super().__setattr__(name, value)
+        
+        elif hasattr(self, "_attr_dict") and not name.startswith("_"):
+            self.logger.debug("Setting {0} to {1}".format(name, value))
+            try:
+                v_dict = self._attr_dict[name]
+                v_type = self._get_standard_type(name)
+                value = self._validate_type(value, v_type, v_dict["style"])
+                # check options
+                if v_dict["style"] == "controlled vocabulary":
+                    options = v_dict["options"]
+                    accept, other, msg = self._validate_option(value, options)
+                    if not accept:
+                        self.logger.error(msg.format(value, options))
+                        raise MTSchemaError(msg.format(value, options))
+                    if other and not accept:
+                        self.logger.warning(msg.format(value, options, name))
+                super().__setattr__(name, value)
+            except KeyError as error:
+                test_property = getattr(self.__class__, name, None)
+                if isinstance(test_property, property):
+                    self.logger.debug("Identified %s as property, using fset", name)
+                    test_property.fset(self, value)
+                else:
+                    raise KeyError(error)
+        else:
+            super().__setattr__(name, value)
 
     def _get_standard_type(self, name):
         """

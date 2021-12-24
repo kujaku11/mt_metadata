@@ -185,7 +185,7 @@ class TestValidators(unittest.TestCase):
             {
                 "date": [
                     {
-                        "type": "string",cd .
+                        "type": "string",
                         "value": "2020-10-01T00:12:00",
                         "compare": "2020-10-01T00:12:00",
                     }
