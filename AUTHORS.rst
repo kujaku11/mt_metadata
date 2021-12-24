@@ -2,16 +2,12 @@
 Credits
 =======
 
-This project is a joint effor between IRIS-PASSCAL and USGS. 
-
-Funding is provided by the Community for Data Integration at the U.S. Geological Survey.   
+This project is in cooperation with the Incorporated Research Institutes of Seismology (IRIS), the U.S. Geological Survey (USGS), and other collaborators.  Facilities of the IRIS Consortium are supported by the National Science Foundation’s Seismological Facilities for the Advancement of Geoscience (SAGE) Award under Cooperative Support Agreement EAR-1851048.  USGS is partially funded through the Community for Data Integration and IMAGe through the Minerals Resources Program.  
 
 Development Lead
 ----------------
 
 * Jared Peacock <jpeacock@usgs.gov>
-* The `timeseries` modules was developed by the `IRIS-PASSCAL MT Software working group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__.
-* The `transfer_functions.emtfxml` is based on Anna Kelbert's EMTF XML published in `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <https://pubs.geoscienceworld.org/geophysics/article/85/1/F1/580537/EMTF-XML-New-data-interchange-format-and>`__
 
 Contributors
 ------------

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="mt_metadata_logo.svg"
+   inkscape:export-filename="C:\Users\jpeacock\Documents\GitHub\mt_metadata\docs\_static\mt_metadata_logo.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.3932941"
+     inkscape:cx="317.23382"
+     inkscape:cy="225.36521"
+     inkscape:window-width="3840"
+     inkscape:window-height="1526"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient12363">
+      <stop
+         style="stop-color:#c30000;stop-opacity:1"
+         offset="0"
+         id="stop12359" />
+      <stop
+         style="stop-color:#f68839;stop-opacity:1"
+         offset="0.24895887"
+         id="stop20557" />
+      <stop
+         style="stop-color:#ebf8e4;stop-opacity:1"
+         offset="0.49321911"
+         id="stop20491" />
+      <stop
+         style="stop-color:#1489d5;stop-opacity:1"
+         offset="0.715159"
+         id="stop20489" />
+      <stop
+         style="stop-color:#00007e;stop-opacity:1"
+         offset="1"
+         id="stop12361" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient12256">
+      <stop
+         style="stop-color:#00004d;stop-opacity:1"
+         offset="0"
+         id="stop12252" />
+      <stop
+         style="stop-color:#00917d;stop-opacity:1;"
+         offset="0.77459359"
+         id="stop26374" />
+      <stop
+         style="stop-color:#00dc94;stop-opacity:1"
+         offset="1"
+         id="stop12254" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12256"
+       id="linearGradient12258"
+       x1="26.108335"
+       y1="39.011898"
+       x2="140.3129"
+       y2="53.463017"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0001768,0,0,1.0938612,-0.01473621,-3.1974329)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12363"
+       id="linearGradient12365"
+       x1="26.578224"
+       y1="45.819221"
+       x2="139.30704"
+       y2="45.819221"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="pad"
+       gradientTransform="matrix(0.99821166,0,0,0.99821166,1.3268693,0.5727838)" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g35333">
+      <rect
+         id="rect11435"
+         width="118.11834"
+         height="18.360178"
+         x="24.293869"
+         y="38.370014"
+         style="fill:url(#linearGradient12258);fill-opacity:1;stroke:#000000;stroke-width:0.371121;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <g
+         id="g35245"
+         transform="translate(-1.0345637,1.1234997)">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:16.9333px;line-height:1.25;font-family:sans-serif;fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           x="27.676407"
+           y="52.103222"
+           id="text1221-4"><tspan
+             sodipodi:role="line"
+             id="tspan1219-0"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;font-family:Stencil;-inkscape-font-specification:Stencil;fill:#1a1a1a;fill-opacity:1;stroke-width:0.264583"
+             x="27.676407"
+             y="52.103222">MT Metadata</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:16.903px;line-height:1.25;font-family:sans-serif;fill:url(#linearGradient12365);fill-opacity:1;stroke:none;stroke-width:0.26411"
+           x="27.296329"
+           y="51.943027"
+           id="text1221"
+           transform="scale(0.99821166,1.0017915)"><tspan
+             sodipodi:role="line"
+             id="tspan1219"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.903px;font-family:Stencil;-inkscape-font-specification:Stencil;fill:url(#linearGradient12365);fill-opacity:1;stroke-width:0.26411"
+             x="27.296329"
+             y="51.943027">MT Metadata</tspan></text>
+      </g>
+    </g>
+    <rect
+       style="fill:#ffafb2;fill-opacity:0;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect34309"
+       width="30.268618"
+       height="0"
+       x="60.234726"
+       y="59.082298" />
+  </g>
+</svg>
