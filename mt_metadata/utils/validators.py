@@ -337,6 +337,7 @@ def validate_default(value_dict):
     :rtype: TYPE
 
     """
+    
     if value_dict["required"]:
         if value_dict["default"] in [None]:
             if "list" in value_dict["style"]:
@@ -355,6 +356,8 @@ def validate_default(value_dict):
                     value = "none"
                 elif value_dict["type"] in ["bool", bool]:
                     value = False
+                elif value_dict["type"] in ["h5py_reference"]:
+                    value = None
         else:
 
             value = validate_value_type(
