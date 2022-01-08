@@ -275,11 +275,11 @@ class TransferFunction(Base):
     def initialize_arrays(self, n_periods):
         self._period = np.zeros(n_periods)
         self._z = np.zeros((n_periods, 2, 2), dtype=complex)
-        self._z_var = np.zeros_like(self.z, dtype=np.float)
+        self._z_var = np.zeros_like(self.z, dtype=float)
         self._z_invsigcov = np.zeros_like(self.z, dtype=complex)
         self._z_residcov = np.zeros_like(self.z, dtype=complex)
         self._t = np.zeros((n_periods, 1, 2), dtype=complex)
-        self._t_var = np.zeros_like(self.t, dtype=np.float)
+        self._t_var = np.zeros_like(self.t, dtype=float)
         self._t_invsigcov = np.zeros((n_periods, 2, 2), dtype=complex)
         self._t_residcov = np.zeros((n_periods, 1, 1), dtype=complex)
 

@@ -410,7 +410,7 @@ class TestMTStationToXML02(unittest.TestCase):
         )
 
     def test_equipments(self):
-        self.assertEquals(
+        self.assertEqual(
             len(self.base_xml_station.equipments), len(self.test_xml_station.equipments)
         )
         for be, te in zip(
