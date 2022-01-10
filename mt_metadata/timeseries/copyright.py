@@ -25,24 +25,3 @@ class Copyright(Base):
     def __init__(self, **kwargs):
         self.citation = Citation()
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-        if self.conditions_of_use == None:
-            self.conditions_of_use = "".join(
-                [
-                    "All data and metadata for this survey are ",
-                    "available free of charge and may be copied ",
-                    "freely, duplicated and further distributed ",
-                    "provided this data set is cited as the ",
-                    "reference. While the author(s) strive to ",
-                    "provide data and metadata of best possible ",
-                    "quality, neither the author(s) of this data ",
-                    "set, not IRIS make any claims, promises, or ",
-                    "guarantees about the accuracy, completeness, ",
-                    "or adequacy of this information, and expressly ",
-                    "disclaim liability for errors and omissions in ",
-                    "the contents of this file. Guidelines about ",
-                    "the quality or limitations of the data and ",
-                    "metadata, as obtained from the author(s), are ",
-                    "included for informational purposes only.",
-                ]
-            )

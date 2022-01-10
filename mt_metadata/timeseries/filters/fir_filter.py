@@ -36,12 +36,8 @@ class FIRFilter(FilterBase):
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "fir"
-        if self.decimation_factor == 0:
+        if not self.decimation_factor:
             self.decimation_factor = 1.0
-        if self.gain == 0.0:
-            self.gain = 1.0
-        if isinstance(self.gain_frequency, str):
-            self.gain_frequency = float(self.gain_frequency)
 
         self.obspy_mapping = obspy_mapping
 
@@ -130,10 +126,7 @@ class FIRFilter(FilterBase):
         plt.show()
 
     def to_obspy(
-        self,
-        stage_number=1,
-        normalization_frequency=1,
-        sample_rate=1,
+        self, stage_number=1, normalization_frequency=1, sample_rate=1,
     ):
         """
         create an obspy stage

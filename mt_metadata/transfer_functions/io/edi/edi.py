@@ -242,7 +242,7 @@ class EDI(object):
                 c_list = ["hx", "hy", "ex", "ey", "rhx", "rhy"]
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-            
+
             self._read_spectra_new(lines, comp_list=c_list)
 
         elif self.Data.data_type_in == "z":
@@ -942,20 +942,21 @@ class EDI(object):
                 key = key.split("transfer_function.")[1]
                 if "processing_parameters" in key:
                     param = key.split(".")[-1]
-                    sm.transfer_function.processing_parameters.append(f"{param}={value}")
+                    sm.transfer_function.processing_parameters.append(
+                        f"{param}={value}"
+                    )
                 else:
                     sm.transfer_function.set_attr_from_name(key, value)
-                
+
             if key.startswith("run."):
                 key = key.split("run.")[1]
-                comp, key = key.split('.', 1)
+                comp, key = key.split(".", 1)
                 ch = getattr(sm.runs[0], comp)
                 ch.set_attr_from_name(key, value)
-                
+
             elif key.startswith("station."):
                 sm.set_attr_from_name(key.split("station.")[1], value)
-                
-                
+
             if "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:
@@ -988,7 +989,6 @@ class EDI(object):
 
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
-                
 
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
@@ -998,12 +998,12 @@ class EDI(object):
 
         # add information to runs
         for rr in sm.runs:
-            if rr.time_period.start == '1980-01-01T00:00:00+00:00':
+            if rr.time_period.start == "1980-01-01T00:00:00+00:00":
                 rr.time_period.start = sm.time_period.start
-                
-            if rr.time_period.end == '1980-01-01T00:00:00+00:00':
+
+            if rr.time_period.end == "1980-01-01T00:00:00+00:00":
                 rr.time_period.end = sm.time_period.end
-                
+
             rr.ex = self.ex_metadata
             rr.ey = self.ey_metadata
             rr.hx = self.hx_metadata
@@ -1059,7 +1059,7 @@ class EDI(object):
 
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
-            if not v in [None, "None", "null", '1980-01-01T00:00:00+00:00']:
+            if not v in [None, "None", "null", "1980-01-01T00:00:00+00:00"]:
                 self.Info.info_list.append(f"provenance.{k} = {v}")
 
         # write field notes

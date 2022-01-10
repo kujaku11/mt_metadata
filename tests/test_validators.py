@@ -29,6 +29,7 @@ class TestValidators(unittest.TestCase):
         self.options = "[option01 | option02 | ...]"
         self.alias = "other_name"
         self.example = "example name"
+        self.default = 0
         self.header = [
             "attribute",
             "type",
@@ -39,6 +40,7 @@ class TestValidators(unittest.TestCase):
             "options",
             "alias",
             "example",
+            "default",
         ]
 
         self.value_dict = {
@@ -50,6 +52,7 @@ class TestValidators(unittest.TestCase):
             "options": self.options,
             "alias": self.alias,
             "example": self.example,
+            "default": self.default,
         }
 
         self.name_fail = "0test/WeakSauce"
@@ -94,24 +97,32 @@ class TestValidators(unittest.TestCase):
         )
 
     def test_validate_type(self):
-        self.assertEqual("string", validators.validate_type(str))
-        self.assertEqual("float", validators.validate_type(float))
-        self.assertEqual("integer", validators.validate_type(int))
-        self.assertEqual("boolean", validators.validate_type(bool))
+        with self.subTest(msg="string"):
+            self.assertEqual("string", validators.validate_type(str))
+        with self.subTest(msg="float"):
+            self.assertEqual("float", validators.validate_type(float))
+        with self.subTest(msg="integer"):
+            self.assertEqual("integer", validators.validate_type(int))
+        with self.subTest(msg="boolean"):
+            self.assertEqual("boolean", validators.validate_type(bool))
 
     def test_validate_type_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_type, self.type_fail)
 
     def test_validate_units(self):
-        self.assertEqual(self.units, validators.validate_units(self.units))
-        self.assertEqual(None, validators.validate_units(None))
+        with self.subTest(msg="units"):
+            self.assertEqual(self.units, validators.validate_units(self.units))
+        with self.subTest(msg="none"):
+            self.assertEqual(None, validators.validate_units(None))
 
     def test_validate_units_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_units, self.units_fail)
 
     def test_validate_style(self):
-        self.assertEqual(self.style, validators.validate_style(self.style))
-        self.assertEqual("name", validators.validate_style(None))
+        with self.subTest(msg="style"):
+            self.assertEqual(self.style, validators.validate_style(self.style))
+        with self.subTest(msg="None"):
+            self.assertEqual("name", validators.validate_style(None))
 
     def test_validate_style_fail(self):
         self.assertRaises(MTValidatorError, validators.validate_style, self.style_fail)
@@ -131,15 +142,100 @@ class TestValidators(unittest.TestCase):
 
     def test_validated_options(self):
         valid_list = validators.validate_options(self.options)
-        self.assertIsInstance(validators.validate_options(self.options), list)
-        self.assertListEqual(["option01", "option02", "..."], valid_list)
+        with self.subTest(msg="is list"):
+            self.assertIsInstance(validators.validate_options(self.options), list)
+        with self.subTest(msg="list equals"):
+            self.assertListEqual(["option01", "option02", "..."], valid_list)
         valid_list = validators.validate_options(["option01", "option02", "..."])
-        self.assertListEqual(["option01", "option02", "..."], valid_list)
+        with self.subTest(msg="valid list"):
+            self.assertListEqual(["option01", "option02", "..."], valid_list)
 
     def test_validate_alias(self):
         valid_alias = validators.validate_alias(self.alias)
-        self.assertIsInstance(valid_alias, list)
-        self.assertListEqual(valid_alias, ["other_name"])
+        with self.subTest(msg="is list"):
+            self.assertIsInstance(valid_alias, list)
+        with self.subTest(msg="has alias"):
+            self.assertListEqual(valid_alias, ["other_name"])
+
+    def test_validate_default(self):
+        for value, dtype in zip(
+            [0, 0.0, "0", False], ["integer", "float", "string", "boolean"]
+        ):
+            with self.subTest(msg=dtype):
+                self.value_dict["type"] = dtype
+                self.value_dict["default"] = 0
+                valid_default = validators.validate_default(self.value_dict)
+                self.assertEqual(value, valid_default)
+
+    def test_validate_value_type(self):
+        test_dict = [
+            {"name": [{"type": "string", "value": "test", "compare": "test"}]},
+            {"url": [{"type": "string", "value": "a.com", "compare": "a.com"}]},
+            {
+                "email": [
+                    {"type": "string", "value": "a@test.com", "compare": "a@test.com"}
+                ]
+            },
+            {
+                "number": [
+                    {"type": "integer", "value": "10", "compare": 10},
+                    {"type": "float", "value": "10", "compare": 10.0},
+                ]
+            },
+            {
+                "date": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "free form": [
+                    {"type": "string", "value": "free form", "compare": "free form"}
+                ]
+            },
+            {
+                "time": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "date time": [
+                    {
+                        "type": "string",
+                        "value": "2020-10-01T00:12:00",
+                        "compare": "2020-10-01T00:12:00",
+                    }
+                ]
+            },
+            {
+                "name list": [
+                    {"type": "string", "value": "a, b, c", "compare": ["a", "b", "c"]},
+                    {"type": "bool", "value": "0, false, 1, true", "compare": [False, False, True, True]}
+                ]
+            },
+            {
+                "number list": [
+                    {"type": "integer", "value": "1, 2, 3", "compare": [1, 2, 3]},
+                    {"type": "float", "value": "1, 2, 3", "compare": [1.0, 2.0, 3.0]},
+                ]
+            },
+        ]
+
+        for key_list in test_dict:
+            for key, klist in key_list.items():
+                for item in klist:
+                    with self.subTest(msg=key):
+                        valid_value = validators.validate_value_type(
+                            item["value"], item["type"], style=key
+                        )
+                        self.assertEqual(valid_value, item["compare"])
 
 
 # =============================================================================

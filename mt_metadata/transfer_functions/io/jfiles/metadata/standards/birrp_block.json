@@ -7,7 +7,8 @@
         "description": "File name of data block",
         "options": [],
         "alias": [],
-        "example": "hx.dat"
+        "example": "hx.dat",
+		"default": null
     },
 	"nskip": {
         "type": "integer",
@@ -17,7 +18,8 @@
         "description": "number of points to skip",
         "options": [],
         "alias": [],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
 	"nread": {
         "type": "integer",
@@ -27,7 +29,8 @@
         "description": "number of points to read",
         "options": [],
         "alias": [],
-        "example": "10000"
+        "example": "10000",
+		"default": null
     },
 	"ncomp": {
         "type": "integer",
@@ -37,7 +40,8 @@
         "description": "number of components in file",
         "options": [],
         "alias": [],
-        "example": "4"
+        "example": "4",
+		"default": []
     },
 	"indices": {
         "type": "integer",
@@ -47,6 +51,7 @@
         "description": "index values to use",
         "options": [],
         "alias": [],
-        "example": "[1, 2]"
+        "example": "[1, 2]",
+		"default": null
     }
 }

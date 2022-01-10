@@ -2,11 +2,86 @@
 .. role:: blue
 .. role:: navy
 
-Pole_zero_filter
-================
+DataQuality
+===========
 
 
-:navy:`name`
+:navy:`warnings`
+~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **warnings**                                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | any warnings about the data that should be    | periodic       |
+       |                                              | noted                                         | pipeline noise |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`good_from_period`
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **good_from_period**                         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Data are good for periods larger than this    | 0.01           |
+       |                                              | number                                        |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`good_to_period`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **good_to_period**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Data are good for periods smaller than this   | 1000           |
+       |                                              | number                                        |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`flag`
 ~~~~~~~~~~~~
 
 .. container::
@@ -16,15 +91,17 @@ Pole_zero_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **name**                                     | **Description**                               | **Example**    |
+       | **flag**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
-       |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list.                               | "              |
+       | **Required**: :blue:`False`                  | Flag for data quality                         | 0              |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
+       | **Type**: integer                            |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -41,19 +118,21 @@ Pole_zero_filter
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the filter.                | ambient air    |
-       |                                              |                                               | temperature    |
+       | **Required**: :blue:`False`                  | any comments about the data quality           | 0              |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`type`
-~~~~~~~~~~~~
+:navy:`rating.author`
+~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -62,21 +141,23 @@ Pole_zero_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **type**                                     | **Description**                               | **Example**    |
+       | **rating.author**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Type of filter.                               | table          |
+       | **Required**: :blue:`False`                  | author of who rated the data                  | gradstudent ace|
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`units_in`
-~~~~~~~~~~~~~~~~
+:navy:`rating.method`
+~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -85,67 +166,23 @@ Pole_zero_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_in**                                 | **Description**                               | **Example**    |
+       | **rating.method**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the input units to the filter. Should | count          |
-       |                                              | be all lowercase and separated with an        |                |
-       | **Units**: None                              | underscore, use 'per' if units are divided    |                |
-       |                                              | and '-' if units are multiplied.              |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`units_out`
-~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_out**                                | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the output units.  Should be all      | millivolt      |
-       |                                              | lowercase and separated with an underscore,   |                |
-       | **Units**: None                              | use 'per' if units are divided and '-' if     |                |
-       |                                              | units are multiplied.                         |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`calibration_date`
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **calibration_date**                         | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Most recent date of filter calibration in ISO | 2020-01-01     |
-       |                                              | format of YYY-MM-DD.                          |                |
+       | **Required**: :blue:`False`                  | the method used to rate the data              | standard       |
+       |                                              |                                               | deviation      |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`gain`
-~~~~~~~~~~~~
+:navy:`rating.value`
+~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -154,84 +191,17 @@ Pole_zero_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **gain**                                     | **Description**                               | **Example**    |
+       | **rating.value**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | scalar gain of the filter across all          | 1.0            |
-       |                                              | frequencies, producted with any frequency     |                |
-       | **Units**: None                              | depenendent terms                             |                |
+       | **Required**: :red:`True`                    | a rating from 1-5 where 1 is bad and 5 is     | 4              |
+       |                                              | good and 0 if unrated                         |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: integer                            |                                               |                |
        |                                              |                                               |                |
        | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`poles`
-~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **poles**                                    | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | The complex-valued poles associated with the  | "[-1/4.,       |
-       |                                              | filter response.                              | -0.1+j*0.3,    |
-       | **Units**: None                              |                                               | -0.1-j*0.3]"   |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number list                       |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`zeros`
-~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **zeros**                                    | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | The complex-valued zeros associated with the  | "[0.0, ]"      |
-       |                                              | filter response.                              |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number list                       |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`normalization_factor`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **normalization_factor**                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | The scale factor to apply to the monic        | "[-1000.1]"    |
-       |                                              | response.                                     |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       | **Default**: 0                               |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

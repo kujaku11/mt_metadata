@@ -7,7 +7,8 @@
         "description": "Name of the statistical estimate",
         "options": [],
         "alias": [],
-        "example": "var"
+        "example": "var",
+		"default": null
     },
     "type": {
         "type": "string",
@@ -20,7 +21,8 @@
             "complex"
         ],
         "alias": [],
-        "example": "real"
+        "example": "real",
+		"default": "real"
     },
     "description": {
         "type": "string",
@@ -30,7 +32,8 @@
         "description": "Description of the statistical estimate",
         "options": [],
         "alias": [],
-        "example": "this is an estimate"
+        "example": "this is an estimate",
+		"default": null
     },
     "external_url": {
         "type": "string",
@@ -40,7 +43,8 @@
         "description": "Full path to external link that has additional information",
         "options": [],
         "alias": [],
-        "example": "http://www.iris.edu/dms/products/emtf/variance.html"
+        "example": "http://www.iris.edu/dms/products/emtf/variance.html",
+		"default": null
     },
     "intention": {
         "type": "string",
@@ -55,7 +59,8 @@
             "primary data type"
         ],
         "alias": [],
-        "example": "error estimate"
+        "example": "error estimate",
+		"default": null
     },
     "tag": {
         "type": "string",
@@ -65,7 +70,8 @@
         "description": "A useful tag for the estimate",
         "options": [],
         "alias": [],
-        "example": "tipper"
+        "example": "tipper",
+		"default": null
     },
 	"output": {
         "type": "string",
@@ -75,7 +81,8 @@
         "description": "Type of output channels in data type",
         "options": ["E", "H"],
         "alias": [],
-        "example": "E"
+        "example": "E",
+		"default": null
     },
 	"input": {
         "type": "string",
@@ -85,7 +92,8 @@
         "description": "Type of input channels in data type",
         "options": ["E", "H"],
         "alias": [],
-        "example": "E"
+        "example": "E",
+		"default": null
     },
 	"units": {
         "type": "string",
@@ -95,6 +103,7 @@
         "description": "Units for the data type",
         "options": [],
         "alias": [],
-        "example": "[mV/km]/[nT]"
+        "example": "[mV/km]/[nT]",
+		"default": null
     }
 }

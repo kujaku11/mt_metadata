@@ -16,38 +16,33 @@ The base metadata object is structured in a flexible way to accommodate any type
     authors
     history
     conventions
-	
+    
 .. toctree::
-	:maxdepth: 1
-	:caption: Basics of Metadata Structure
-	
-	source/structure
-	
+    :maxdepth: 1
+    :caption: Basics of Metadata Structure
+    
+    source/structure
+    
 .. toctree::
     :maxdepth: 1
     :caption: Time Series
 
     source/ts_metadata_guide
     source/notebooks/filters_example.ipynb
-	
+    
 .. toctree::
     :maxdepth: 1
     :caption: Transfer Functions
     
     source/tf_structure
-    source/notebooks/tf_example.ipynb
-    source/notebooks/tf_edi_example.ipynb
-    source/notebooks/tf_emtfxml_example.ipynb
-    source/notebooks/tf_zfile_example.ipynb
-    source/notebooks/tf_jfile_example.ipynb	
-    source/notebooks/tf_avg_example.ipynb	
+        
 
 .. toctree::
     :maxdepth: 1
     :caption: API Reference
-	
+    
     source/modules
-	
+    
 
 Indices and tables
 ==================

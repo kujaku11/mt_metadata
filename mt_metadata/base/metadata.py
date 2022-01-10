@@ -13,15 +13,13 @@ Created on Wed Dec 23 20:41:16 2020
 # =============================================================================
 import json
 import pandas as pd
-import numpy as np
 import logging
 from copy import deepcopy
 
 from collections import OrderedDict
-from collections.abc import Iterable
 from operator import itemgetter
 
-from mt_metadata.utils.validators import validate_attribute, validate_type
+from mt_metadata.utils.validators import validate_attribute, validate_value_type
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
 from mt_metadata.utils.mt_logger import setup_logger
@@ -64,38 +62,14 @@ class Base:
 
         self._attr_dict = attr_dict
 
-        for k, d in attr_dict.items():
-            if d["required"]:
-                if "list" in d["style"]:
-                    value = []
-                elif "date" in d["style"] or "time" in d["style"]:
-                    value = "1980-01-01T00:00:00+00:00"
-                elif "controlled" in d["style"]:
-                    if "other" in d["options"]:
-                        value = None
-                    else:
-                        value = d["options"][0]
-                else:
-                    if d["type"] in ["integer", "float", int, float]:
-                        value = 0
-                    elif d["type"] in ["string", str]:
-                        value = "none"
-                    elif d["type"] in ["bool", bool]:
-                        value = False
-
-            else:
-                if "date" in d["style"] or "time" in d["style"]:
-                    value = "1980-01-01T00:00:00+00:00"
-                else:
-                    value = None
-
-            setattr(self, k, value)
+        for key, value_dict in attr_dict.items():
+            setattr(self, key, value_dict["default"])
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]
-        lines = ["{0}:".format(self._class_name)]
+        lines = [f"{self._class_name}:"]
         for name, value in meta_dict.items():
-            lines.append("\t{0} = {1}".format(name, value))
+            lines.append(f"\t{name} = {value}")
         return "\n".join(lines)
 
     def __repr__(self):
@@ -165,11 +139,12 @@ class Base:
                 )
 
         for k, v in other.to_dict(single=True).items():
-            if isinstance(v, np.ndarray):
+            if hasattr(v, "size"):
                 if v.size > 0:
                     self.set_attr_from_name(k, v)
-            elif v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-                self.set_attr_from_name(k, v)
+            else:
+                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+                    self.set_attr_from_name(k, v)
 
     @property
     def changed(self):
@@ -267,129 +242,12 @@ class Base:
         validate type from standards
 
         """
-        # if the value is a metadata type skip cause the individual components
-        # will be validated separately
-        if "metadata" in str(type(value)):
-            return value
-        # return if the value is None, this may need to change in the future
-        # if an empty list or something else should be returned
-        if not isinstance(value, (list, tuple, np.ndarray)):
-            if value in [None, "None", "none", "unknown"]:
-                return None
-        # hack to get around h5py reference types, in the future will need
-        # a more robust test.
-        if v_type == "h5py_reference":
-            return value
 
-        # return value if the value type is not defined.
-        if v_type is None:
-            msg = (
-                "standards data type is unknown, if you want to "
-                + "propogate this attribute using to_dict, to_json or "
-                + "to_series, you need to add attribute description using "
-                + "class function add_base_attribute."
-                + "Example: \n\t>>> Run.add_base_attribute(new, 10, "
-                + '{"type":float, "required": True, "units": None, '
-                + '"style": number})'
-            )
-            self.logger.info(msg)
-            return value
-
-        # if not a python type but a string organize into a dictionary
-        if not isinstance(v_type, type) and isinstance(v_type, str):
-            type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
-            v_type = type_dict[validate_type(v_type)]
-        else:
-            msg = "v_type must be a string or type not {0}".format(v_type)
-
-        # check style for a list
-        if isinstance(value, v_type):
-            if style:
-                if v_type is str and "list" in style:
-                    value = value.replace("[", "").replace("]", "").split(",")
-                    value = [ss.strip() for ss in value]
-            return value
-
-        # if value is not of v_type
-        else:
-            msg = "value=%s must be %s not %s"
-            info = "converting %s to %s"
-            # if the value is a string, convert to appropriate type
-            if isinstance(value, str):
-                if v_type is int:
-                    try:
-                        self.logger.debug(info, type(value), v_type)
-                        return int(value)
-                    except ValueError as error:
-                        self.logger.exception(error)
-                        raise MTSchemaError(msg, value, v_type, type(value))
-                elif v_type is float:
-                    try:
-                        self.logger.debug(info, type(value), v_type)
-                        return float(value)
-                    except ValueError as error:
-                        self.logger.exception(error)
-                        raise MTSchemaError(msg, value, v_type, type(value))
-                elif v_type is bool:
-                    if value.lower() in ["false", "0"]:
-                        self.logger.debug(info.format(value, False))
-                        return False
-                    elif value.lower() in ["true", "1"]:
-                        self.logger.debug(info.format(value, True))
-                        return True
-                    else:
-                        self.logger.exception(msg.format(value, v_type, type(value)))
-                        raise MTSchemaError(msg, value, v_type, type(value))
-                elif v_type is str:
-                    return value
-
-            # if a number convert to appropriate type
-            elif isinstance(value, (int, np.int_)):
-                if v_type is float:
-                    self.logger.debug(info, type(value), v_type)
-                    return float(value)
-                elif v_type is str:
-                    self.logger.debug(info, type(value), v_type)
-                    return "{0:.0f}".format(value)
-                return int(value)
-
-            # if a number convert to appropriate type
-            elif isinstance(value, (float, np.float_)):
-                if v_type is int:
-                    self.logger.debug(info, type(value), v_type)
-                    return int(value)
-                elif v_type is str:
-                    self.logger.debug(info, type(value), v_type)
-                    return f"{value}"
-                return float(value)
-
-            # if a list convert to appropriate entries to given type
-            elif isinstance(value, Iterable):
-                if v_type is str:
-                    if isinstance(value, np.ndarray):
-                        value = value.astype(np.unicode_)
-                    value = [f"{v}".replace("'", "").replace('"', "") for v in value]
-                elif v_type is int:
-                    value = [int(float(v)) for v in value]
-                elif v_type is float:
-                    value = [float(v) for v in value]
-                elif v_type is bool:
-                    value_list = []
-                    for v in value:
-                        if v in [True, "true", "True", "TRUE"]:
-                            value_list.append(True)
-                        elif v in [False, "false", "False", "FALSE"]:
-                            value_list.append(False)
-                    value = value_list
-                return value
-
-            elif isinstance(value, (np.bool_)):
-                return bool(value)
-
-            else:
-                self.logger.exception(msg.format(value, v_type, type(value)))
-                raise MTSchemaError(msg, value, v_type, type(value))
-        return None
+        try:
+            return validate_value_type(value, v_type, style=style)
+        except MTSchemaError as error:
+            self.logger.exception(error)
+            raise MTSchemaError(error)
 
     def _validate_option(self, name, option_list):
         """
@@ -459,27 +317,41 @@ class Base:
             "input_channels",
             "output_channels",
             "data_types_list",
+            "info_list",
+            "info_dict",
+            "filters_list",
             "fn",
         ]
 
-        if hasattr(self, "_attr_dict"):
-            if name[0] != "_":
-                if not name in skip_list:
-                    self.logger.debug("Setting {0} to {1}".format(name, value))
-                    v_dict = self._attr_dict[name]
-                    v_type = self._get_standard_type(name)
-                    value = self._validate_type(value, v_type, v_dict["style"])
-                    # check options
-                    if v_dict["style"] == "controlled vocabulary":
-                        options = v_dict["options"]
-                        accept, other, msg = self._validate_option(value, options)
-                        if not accept:
-                            self.logger.error(msg.format(value, options))
-                            raise MTSchemaError(msg.format(value, options))
-                        if other and not accept:
-                            self.logger.warning(msg.format(value, options, name))
 
-        super().__setattr__(name, value)
+        if name in skip_list:
+            super().__setattr__(name, value)
+        
+        elif hasattr(self, "_attr_dict") and not name.startswith("_"):
+            self.logger.debug("Setting {0} to {1}".format(name, value))
+            try:
+                v_dict = self._attr_dict[name]
+                v_type = self._get_standard_type(name)
+                value = self._validate_type(value, v_type, v_dict["style"])
+                # check options
+                if v_dict["style"] == "controlled vocabulary":
+                    options = v_dict["options"]
+                    accept, other, msg = self._validate_option(value, options)
+                    if not accept:
+                        self.logger.error(msg.format(value, options))
+                        raise MTSchemaError(msg.format(value, options))
+                    if other and not accept:
+                        self.logger.warning(msg.format(value, options, name))
+                super().__setattr__(name, value)
+            except KeyError as error:
+                test_property = getattr(self.__class__, name, None)
+                if isinstance(test_property, property):
+                    self.logger.debug("Identified %s as property, using fset", name)
+                    test_property.fset(self, value)
+                else:
+                    raise KeyError(error)
+        else:
+            super().__setattr__(name, value)
 
     def _get_standard_type(self, name):
         """

@@ -7,7 +7,8 @@
         "description": "Any notes on conditions of use",
         "options": [],
         "alias": [],
-        "example": "Cite data upon usage."
+        "example": "Cite data upon usage.",
+		"default": null
     },
     "release_status": {
         "type": "string",
@@ -20,7 +21,8 @@
             "restricted release"
         ],
         "alias": [],
-        "example": "unrestricted release"
+        "example": "unrestricted release",
+		"default": "unrestricted release"
     },
 	"acknowledgement": {
         "type": "string",
@@ -30,6 +32,7 @@
         "description": "any acknowledgments the transfer function should have.",
         "options": [],
         "alias": [],
-        "example": "This project was funded by x."
+        "example": "This project was funded by x.",
+		"default": null
     }
 }

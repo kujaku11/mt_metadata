@@ -7,7 +7,8 @@
         "description": "closest geographic name to the station",
         "options": [],
         "alias": [],
-        "example": "\"Whitehorse, YK\""
+        "example": "\"Whitehorse, YK\"",
+		"default": null
     },
     "id": {
         "type": "string",
@@ -17,12 +18,13 @@
         "description": "Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
         "options": [],
         "alias": [],
-        "example": "MT001"
+        "example": "MT001",
+		"default": null
     },
     "run_list": {
         "type": "string",
         "required": true,
-        "style": "free form",
+        "style": "name list",
         "units": null,
         "description": "list of runs recorded by the station. Should be a summary of all runss recorded",
         "options": [
@@ -32,7 +34,8 @@
             "other"
         ],
         "alias": [],
-        "example": "\"[ mt001a, mt001b, mt001c ]\""
+        "example": "\"[ mt001a, mt001b, mt001c ]\"",
+		"default": []
     },
     "project": {
         "type": "string",
@@ -42,7 +45,8 @@
         "description": "Name of the project",
         "options": [],
         "alias": [],
-        "example": "USMTArray"
+        "example": "USMTArray",
+		"default": null
     },
     "survey": {
         "type": "string",
@@ -52,7 +56,8 @@
         "description": "Name of the survey",
         "options": [],
         "alias": [],
-        "example": "MT 2020"
+        "example": "MT 2020",
+		"default": null
     },
     "year_collected": {
         "type": "integer",
@@ -62,7 +67,8 @@
         "description": "Year data collected",
         "options": [],
         "alias": [],
-        "example": "2020"
+        "example": "2020",
+		"default": "1980"
     },
     "country": {
         "type": "string",
@@ -72,7 +78,8 @@
         "description": "Country where data was collected",
         "options": [],
         "alias": [],
-        "example": "USA"
+        "example": "USA",
+		"default": null
     },
     "acquired_by": {
         "type": "string",
@@ -82,7 +89,8 @@
         "description": "Person or group who collected the data",
         "options": [],
         "alias": [],
-        "example": "MT Group"
+        "example": "MT Group",
+		"default": null
     },
     "start": {
         "type": "string",
@@ -92,7 +100,8 @@
         "description": "Date time when the data collection started",
         "options": [],
         "alias": [],
-        "example": "2020-01-01T12:00:00"
+        "example": "2020-01-01T12:00:00",
+		"default": "1980-01-01T00:00:00"
     },
     "end": {
         "type": "string",
@@ -102,6 +111,7 @@
         "description": "Date time when the data collection ended",
         "options": [],
         "alias": [],
-        "example": "2020-05-01T12:00:00"
+        "example": "2020-05-01T12:00:00",
+		"default": "1980-01-01T00:00:00"
     }
 }

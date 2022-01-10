@@ -7,6 +7,7 @@
         "description": "Scale factor for a simple coefficient filter.",
         "options": [],
         "alias": [],
-        "example": "100"
+        "example": "100",
+		"default": 1.0
     }
 }

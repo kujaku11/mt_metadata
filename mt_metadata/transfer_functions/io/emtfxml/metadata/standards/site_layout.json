@@ -7,7 +7,8 @@
         "description": "list of input channels for transfer function estimation",
         "options": [],
         "alias": [],
-        "example": "[Magnetic(hx), Magnetic(hy)]"
+        "example": "[Magnetic(hx), Magnetic(hy)]",
+		"default": []
     },
 	"output_channels": {
         "type": "string",
@@ -17,6 +18,7 @@
         "description": "list of output channels for transfer function estimation",
         "options": [],
         "alias": [],
-        "example": "[Electric(ex), Electric(ey), Magnetic(hz)]"
+        "example": "[Electric(ex), Electric(ey), Magnetic(hz)]",
+		"default": []
     }
 }

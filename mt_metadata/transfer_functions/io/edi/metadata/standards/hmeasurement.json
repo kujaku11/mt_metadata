@@ -7,7 +7,8 @@
         "description": "Channel number, could be location.channel_number.",
         "options": [],
         "alias": [],
-        "example": "1"
+        "example": "1",
+		"default": 0.0
     },
 	"chtype": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "channel type, should start with an 'h' or 'b'",
         "options": ["hx", "hy", "hz", "other"],
         "alias": [],
-        "example": "hx"
+        "example": "hx",
+		"default": null
     },
 	"x": {
         "type": "float",
@@ -27,7 +29,8 @@
         "description": "location of sensor relative center point in north direction",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": 0.0
     },
 	"y": {
         "type": "float",
@@ -37,7 +40,8 @@
         "description": "location of sensor relative center point in east direction",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": 0.0
     },
 	"z": {
         "type": "float",
@@ -47,7 +51,8 @@
         "description": "location of sensor relative center point in depth",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": 0.0
     },
 	"azm": {
         "type": "float",
@@ -57,7 +62,8 @@
         "description": "orientation of the sensor relative to coordinate system, clockwise positive.",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": 0.0
     },
 	"dip": {
         "type": "float",
@@ -67,7 +73,8 @@
         "description": "orientation of the sensor relative to horizontal = 0",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": 0.0
     },
 	"acqchan": {
         "type": "string",
@@ -77,7 +84,8 @@
         "description": "description of acquired channel",
         "options": [],
         "alias": [],
-        "example": "100.0"
+        "example": "100.0",
+		"default": null
     }
 	
 }

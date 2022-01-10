@@ -2,35 +2,12 @@
 .. role:: blue
 .. role:: navy
 
-Coefficient_filter
-==================
+Fdsn
+====
 
 
-:navy:`name`
-~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **name**                                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
-       |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list.                               | "              |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`id`
+~~~~~~~~~~
 
 .. container::
 
@@ -39,66 +16,72 @@ Coefficient_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **id**                                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the filter.                | ambient air    |
-       |                                              |                                               | temperature    |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`type`
-~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **type**                                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Type of filter.                               | table          |
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`units_in`
-~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_in**                                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the input units to the filter. Should | count          |
-       |                                              | be all lowercase and separated with an        |                |
-       | **Units**: None                              | underscore, use 'per' if units are divided    |                |
-       |                                              | and '-' if units are multiplied.              |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: alpha numeric                     |                                               |                |
        |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`units_out`
+:navy:`network`
+~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **network**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`channel_code`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channel_code**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: alpha numeric                     |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`new_epoch`
 ~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -108,21 +91,23 @@ Coefficient_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_out**                                | **Description**                               | **Example**    |
+       | **new_epoch**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the output units.  Should be all      | millivolt      |
-       |                                              | lowercase and separated with an underscore,   |                |
-       | **Units**: None                              | use 'per' if units are divided and '-' if     |                |
-       |                                              | units are multiplied.                         |                |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
+       |                                              | created or not.                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
+       | **Type**: boolean                            |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`calibration_date`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`alternate_code`
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -131,21 +116,23 @@ Coefficient_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **calibration_date**                         | **Description**                               | **Example**    |
+       | **alternate_code**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Most recent date of filter calibration in ISO | 2020-01-01     |
-       |                                              | format of YYY-MM-DD.                          |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`gain`
-~~~~~~~~~~~~
+:navy:`alternate_network_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -154,15 +141,17 @@ Coefficient_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **gain**                                     | **Description**                               | **Example**    |
+       | **alternate_network_code**                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Scale factor for a simple coefficient filter. | 100            |
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
+       | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

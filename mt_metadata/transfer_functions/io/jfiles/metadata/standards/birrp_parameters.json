@@ -7,7 +7,8 @@
         "description": "Number of output channels",
         "options": [],
         "alias": [],
-        "example": "2"
+        "example": "2",
+		"default": null
     },
 	"inputs": {
         "type": "integer",
@@ -17,7 +18,8 @@
         "description": "Number of input channels",
         "options": [],
         "alias": [],
-        "example": "2"
+        "example": "2",
+		"default": null
     },
 	"references": {
         "type": "integer",
@@ -27,7 +29,8 @@
         "description": "Number of reference channels",
         "options": [],
         "alias": [],
-        "example": "2"
+        "example": "2",
+		"default": null
     },
 	"tbw": {
         "type": "float",
@@ -37,7 +40,8 @@
         "description": "total bandwidth of window",
         "options": [],
         "alias": [],
-        "example": "2.0"
+        "example": "2.0",
+		"default": null
     },
 	"deltat": {
         "type": "float",
@@ -47,7 +51,8 @@
         "description": "sampling spacing, if negative sample rate.",
         "options": [],
         "alias": [],
-        "example": "1.0"
+        "example": "1.0",
+		"default": null
     },
 	"nfft": {
         "type": "float",
@@ -57,7 +62,8 @@
         "description": "length of time window.",
         "options": [],
         "alias": [],
-        "example": "8192"
+        "example": "8192",
+		"default": null
     },
 	"nsctinc": {
         "type": "float",
@@ -67,7 +73,8 @@
         "description": "number by which the segment length is divided by to get next window.",
         "options": [],
         "alias": [],
-        "example": "2.0"
+        "example": "2.0",
+		"default": null
     },
 	"nsctmax": {
         "type": "float",
@@ -77,7 +84,8 @@
         "description": "maximum number of sections",
         "options": [],
         "alias": [],
-        "example": "2.0"
+        "example": "2.0",
+		"default": null
     },
 	"nf1": {
         "type": "integer",
@@ -87,7 +95,8 @@
         "description": "index of first frequency",
         "options": [],
         "alias": [],
-        "example": "4"
+        "example": "4",
+		"default": null
     },
 	"nfinc": {
         "type": "integer",
@@ -97,7 +106,8 @@
         "description": "increment value of next frequency",
         "options": [],
         "alias": [],
-        "example": "2"
+        "example": "2",
+		"default": null
     },
 	"nfsect": {
         "type": "integer",
@@ -107,7 +117,8 @@
         "description": "total number of frequencies to process.",
         "options": [],
         "alias": [],
-        "example": "4"
+        "example": "4",
+		"default": null
     },
 	"uin": {
         "type": "float",
@@ -117,7 +128,8 @@
         "description": "small leverage point minimum",
         "options": [],
         "alias": [],
-        "example": "0.00"
+        "example": "0.00",
+		"default": null
     },
 	"ainlin": {
         "type": "float",
@@ -127,7 +139,8 @@
         "description": "bounded influence value",
         "options": [],
         "alias": [],
-        "example": "-999"
+        "example": "-999",
+		"default": null
     },
 	"ainuin": {
         "type": "float",
@@ -137,7 +150,8 @@
         "description": "large leverage point minimu",
         "options": [],
         "alias": [],
-        "example": "0.99"
+        "example": "0.99",
+		"default": null
     },
 	"c2threshe": {
         "type": "float",
@@ -147,7 +161,8 @@
         "description": "coherencey threshold for electric channels",
         "options": [],
         "alias": [],
-        "example": "0.35"
+        "example": "0.35",
+		"default": null
     },
 	"nz": {
         "type": "integer",
@@ -157,7 +172,8 @@
         "description": "Use threshold for hz channels",
         "options": [],
         "alias": [],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
 	"c2threshe1": {
         "type": "float",
@@ -167,7 +183,8 @@
         "description": "coherencey threshold for hz channels",
         "options": [],
         "alias": [],
-        "example": "0.35"
+        "example": "0.35",
+		"default": null
     },
 	"npcs": {
         "type": "integer",
@@ -177,7 +194,8 @@
         "description": "number of data segments used",
         "options": [],
         "alias": [],
-        "example": "2"
+        "example": "2",
+		"default": null
     },
 	"nar": {
         "type": "integer",
@@ -187,7 +205,8 @@
         "description": "order of auto-regressive prewhitening filter.",
         "options": [],
         "alias": [],
-        "example": "5"
+        "example": "5",
+		"default": null
     },
 	"imode": {
         "type": "integer",
@@ -197,7 +216,8 @@
         "description": "input data file mode",
         "options": [],
         "alias": [],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
 	"jmode": {
         "type": "integer",
@@ -207,7 +227,8 @@
         "description": "input time mode",
         "options": [],
         "alias": [],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
 	"ncomp": {
         "type": "integer",
@@ -217,6 +238,7 @@
         "description": "number of components",
         "options": [],
         "alias": [],
-        "example": "5"
+        "example": "5",
+		"default": null
     }
 }

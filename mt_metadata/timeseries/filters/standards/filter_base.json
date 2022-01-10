@@ -7,7 +7,8 @@
         "description": "Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
         "options": [],
         "alias": [],
-        "example": "\"lowpass_magnetic\""
+        "example": "\"lowpass_magnetic\"",
+		"default": null
     },
 
     "comments": {
@@ -18,7 +19,8 @@
         "description": "Any comments about the filter.",
         "options": [],
         "alias": [],
-        "example": "ambient air temperature"
+        "example": "ambient air temperature",
+		"default": null
     },
 	
     "type": {
@@ -36,7 +38,8 @@
             "other"
         ],
         "alias": [],
-        "example": "fap_table"
+        "example": "fap_table",
+		"default": null
     },
 
     "units_in": {
@@ -47,7 +50,8 @@
         "description": "Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
         "options": [],
         "alias": [],
-        "example": "count"
+        "example": "count",
+		"default": null
     },
 
     "units_out": {
@@ -58,7 +62,8 @@
         "description": "Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
         "options": [],
         "alias": [],
-        "example": "millivolt"
+        "example": "millivolt",
+		"default": null
     },
 
     "calibration_date": {
@@ -69,7 +74,8 @@
         "description": "Most recent date of filter calibration in ISO format of YYY-MM-DD.",
         "options": [],
         "alias": [],
-        "example": "2020-01-01"
+        "example": "2020-01-01",
+		"default": "1980-01-01"
     }, 
 
     "gain": {
@@ -80,6 +86,7 @@
         "description": "scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
         "options": [],
         "alias": [],
-        "example": "1.0"
+        "example": "1.0",
+		"default": 1.0
     }
 }

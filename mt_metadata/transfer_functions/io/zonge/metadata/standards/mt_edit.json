@@ -7,6 +7,7 @@
         "description": "Version of MT Edit and date",
         "options": [],
         "alias": [],
-        "example": "3.10m applied 2021/01/27"
+        "example": "3.10m applied 2021/01/27",
+		"default": null
     }	
 }

@@ -7,6 +7,7 @@
         "description": "Type of smoothing for phase slope algorithm",
         "options": ["m", "ft", "km"],
         "alias": [],
-        "example": "m"
+        "example": "m",
+		"default": "m"
     }	
 }

@@ -11,7 +11,8 @@
             "other"
         ],
         "alias": [],
-        "example": "x"
+        "example": "x",
+		"default": "L"
     },
     "channels_recorded": {
         "type": "string",
@@ -30,7 +31,8 @@
             "other"
         ],
         "alias": [],
-        "example": "\"[ Ex, Ey, Hx, Hy, Hz, T]\""
+        "example": "\"[ Ex, Ey, Hx, Hy, Hz, T]\"",
+		"default": []
     },
     "comments": {
         "type": "string",
@@ -40,7 +42,8 @@
         "description": "Any comments on the station.",
         "options": [],
         "alias": [],
-        "example": "5 runs"
+        "example": "5 runs",
+		"default": null
     },
     "data_type": {
         "type": "string",
@@ -57,7 +60,8 @@
             "other"
         ],
         "alias": [],
-        "example": "BBMT"
+        "example": "BBMT",
+		"default": "BBMT"
     },
     "geographic_name": {
         "type": "string",
@@ -67,7 +71,8 @@
         "description": "Closest geographic name to the station, usually a city, but could be another common geographic location.",
         "options": [],
         "alias": [],
-        "example": "\"Whitehorse, YK\""
+        "example": "\"Whitehorse, YK\"",
+		"default": null
     },
     "id": {
         "type": "string",
@@ -77,7 +82,8 @@
         "description": "Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
         "options": [],
         "alias": [],
-        "example": "MT001"
+        "example": "MT001",
+		"default": null
     },
     "run_list": {
         "type": "string",
@@ -92,6 +98,7 @@
             "other"
         ],
         "alias": [],
-        "example": "\"[ mt001a, mt001b, mt001c ]\""
+        "example": "\"[ mt001a, mt001b, mt001c ]\"",
+		"default": []
     }
 }

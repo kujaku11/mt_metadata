@@ -286,7 +286,7 @@ class JFile:
         if self.header.birrp_parameters.deltat < 0:
             r1.sample_rate = abs(self.header.birrp_parameters.deltat)
         else:
-            r1.sample_rate = 1./(self.header.birrp_parameters.deltat)
+            r1.sample_rate = 1.0 / (self.header.birrp_parameters.deltat)
 
         if not np.all(self.z == 0):
             r1._ex.component = "ex"

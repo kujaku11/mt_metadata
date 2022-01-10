@@ -103,7 +103,9 @@ class TF:
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date:     {self.station_metadata.time_period.start_date}")
+        lines.append(
+            f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
+        )
         lines.append(f"\tLatitude:          {self.latitude:.3f}")
         lines.append(f"\tLongitude:         {self.longitude:.3f}")
         lines.append(f"\tElevation:         {self.elevation:.3f}")
@@ -114,7 +116,9 @@ class TF:
         lines.append(
             f"\t\tModel:     {self.station_metadata.location.declination.model}"
         )
-        lines.append(f"\tCoordinate System: {self.station_metadata.orientation.reference_frame}")
+        lines.append(
+            f"\tCoordinate System: {self.station_metadata.orientation.reference_frame}"
+        )
 
         lines.append(f"\tImpedance:         {self.has_impedance()}")
         lines.append(f"\tTipper:            {self.has_tipper()}")
@@ -246,7 +250,7 @@ class TF:
             self._fn = Path(value)
             self.save_dir = self._fn.parent
             if self._fn.exists():
-                
+
                 self.read_tf_file(self._fn)
             else:
                 self.logger.warning(f"Could not find {self._fn} skip reading.")
@@ -510,7 +514,7 @@ class TF:
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
-    
+
                 ds.attrs[key] = value
             return ds
 
@@ -599,7 +603,7 @@ class TF:
                 output=self._ch_output_dict["impedance"],
             )
             z_err.name = "impedance_error"
-            
+
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -658,7 +662,7 @@ class TF:
                 output=self._ch_output_dict["tipper"],
             )
             t.name = "tipper"
-            
+
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -734,7 +738,7 @@ class TF:
     @property
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
-            ds =  self.dataset.inverse_signal_power.sel(
+            ds = self.dataset.inverse_signal_power.sel(
                 input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
             )
             for key, mkey in self._dataset_attr_dict.items():
@@ -784,7 +788,7 @@ class TF:
     @property
     def residual_covariance(self):
         if self.has_residual_covariance():
-            ds =  self.dataset.residual_covariance.sel(
+            ds = self.dataset.residual_covariance.sel(
                 input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
             )
             for key, mkey in self._dataset_attr_dict.items():
@@ -794,7 +798,7 @@ class TF:
                 ds.attrs[key] = value
 
             return ds
-        
+
         return None
 
     @residual_covariance.setter
@@ -945,12 +949,7 @@ class TF:
         self.station_metadata.id = station_name
 
     def write_tf_file(
-        self,
-        fn=None,
-        save_dir=None,
-        fn_basename=None,
-        file_type="edi",
-        **kwargs,
+        self, fn=None, save_dir=None, fn_basename=None, file_type="edi", **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
@@ -1009,7 +1008,7 @@ class TF:
 
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
-            
+
         if file_type == "xml":
             file_type = "emtfxml"
 

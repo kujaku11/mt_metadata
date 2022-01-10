@@ -4,13 +4,16 @@ Created on Sat Dec  4 14:13:37 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
+from mt_metadata.base import Base
 from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 # Info object
 # ==============================================================================
-class Information(object):
+class Information(Base):
     """
     Contain, read, and write info section of .edi file
 
@@ -21,14 +24,12 @@ class Information(object):
     """
 
     def __init__(self, fn=None, edi_lines=None):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
 
         self.info_list = []
         self.info_dict = {}
         self._phoenix_col_width = 38
         self._phoenix_file = False
-        
-        
+
         self.phoenix_translation_dict = {
             "survey": "survey.id",
             "company": "station.acquired_by.organization",
@@ -49,13 +50,13 @@ class Information(object):
             "ey voltage": ["run.ey.ac.start", "run.ey.dc.start"],
             "start-up": "station.time_period.start",
             "end-time": "station.time_period.end",
-            }
-        
+        }
+
         self.translation_dict = {
             "operator": "station.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
-            "ex_len": "run.ex.dipole_length", 
+            "ex_len": "run.ex.dipole_length",
             "ey_len": "run.ey.dipole_length",
             "ex_resistance": "run.ex.contact_resistance.start",
             "ey_resistance": "run.ey.contact_resistance.start",
@@ -72,10 +73,11 @@ class Information(object):
             "ntype": "processing_parameter",
             "rrtype": "processing_parameter",
             "removelargelines": "processing_parameter",
-            "rotmaxe": "processing_parameter"}
-        
-        
+            "rotmaxe": "processing_parameter",
+        }
 
+        super().__init__(attr_dict={})
+        
     def __str__(self):
         return "".join(self.write_info())
 
@@ -116,7 +118,10 @@ class Information(object):
             elif info_find:
                 if "maxinfo" in line.lower():
                     continue
-                if line.lower().find("run information") >= 0 and line.lower().find("station") >= 0:
+                if (
+                    line.lower().find("run information") >= 0
+                    and line.lower().find("station") >= 0
+                ):
                     self._phoenix_file = True
                 if self._phoenix_file and len(line) > self._phoenix_col_width:
                     info_list.append(line[0 : self._phoenix_col_width].strip())
@@ -124,7 +129,7 @@ class Information(object):
                 else:
                     line = line.strip()
                     if len(line) > 1:
-                        if len(line) <=3 and not line.isalnum():
+                        if len(line) <= 3 and not line.isalnum():
                             continue
                         info_list.append(line)
 
@@ -174,7 +179,7 @@ class Information(object):
                 # colon_find = ll.find(":")
             elif ll.count("=") >= 1:
                 sep = "="
-                
+
             if sep:
                 l_list = ll.split(sep, 1)
                 if len(l_list) == 2:
@@ -184,7 +189,7 @@ class Information(object):
 
             else:
                 self.info_dict[l_list[0]] = None
-                
+
         self.parse_info()
 
         if self.info_list is None:
@@ -223,7 +228,7 @@ class Information(object):
                     new_info_list.append(line.strip())
 
         return new_info_list
-    
+
     def parse_info(self):
         """
         Try to parse the info section into useful information.
@@ -241,9 +246,9 @@ class Information(object):
                     new_key = self.phoenix_translation_dict[key.lower()]
                 else:
                     new_key = self.translation_dict[key.lower()]
-                
+
                 if isinstance(new_key, list):
-                    values = value.split(',')
+                    values = value.split(",")
                     if len(values) == len(new_key):
                         for vkey, item in zip(new_key, values):
                             item_value = item.lower().split("=")[1].replace("mv", "")
@@ -251,7 +256,7 @@ class Information(object):
                     else:
                         self.logger.warngin("could not parse line %s", value)
                         raise KeyError
-                else:        
+                else:
                     if new_key == "processing_parameter":
                         processing_parameters.append(f"{key}={value}")
                     else:
@@ -259,29 +264,23 @@ class Information(object):
                             new_dict[new_key] = value.split()[0]
                         elif key.lower().endswith("sen"):
                             comp = key.lower().split()[0]
-                            new_dict[f"{comp}.sensor.manufacturer"] = "Phoenix Geophysics"
+                            new_dict[
+                                f"{comp}.sensor.manufacturer"
+                            ] = "Phoenix Geophysics"
                             new_dict[f"{comp}.sensor.type"] = "Induction Coil"
                             new_dict[new_key] = value
                         else:
                             new_dict[new_key] = value
-                        
-                    
-                        
+
                 for item in self.info_list:
                     if key.lower() in item.lower():
                         self.info_list.remove(item)
                         break
-                    
+
             except KeyError:
                 new_dict[key] = value
-        
+
         if processing_parameters != []:
             new_dict["transfer_function.processing_parameters"] = processing_parameters
-                
+
         self.info_dict = new_dict
-                    
-                
-            
-            
-        
-        

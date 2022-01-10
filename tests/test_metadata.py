@@ -36,6 +36,7 @@ class TestBase(unittest.TestCase):
             "options": ["10", "12"],
             "alias": ["other"],
             "example": "extra",
+            "default": "12",
         }
         self.extra_value = 10
 
@@ -91,6 +92,19 @@ class TestBase(unittest.TestCase):
             self.assertEqual(
                 [True, False], self.base_object._validate_type(["true", "False"], bool)
             )
+            
+    def test_update(self):
+        other = Base()
+        other.add_base_attribute(
+            self.extra_name, self.extra_value, self.extra_v_dict
+        )
+        
+        other.extra_attribute = 12
+        
+        self.base_object.update(other)
+        
+        self.assertEqual(self.base_object, other)
+        
 
 
 # =============================================================================

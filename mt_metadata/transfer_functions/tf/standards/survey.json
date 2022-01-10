@@ -7,7 +7,8 @@
         "description": "Alphanumeric survey ID that will be specific to the archive",
         "options": [],
         "alias": [],
-        "example": "EMT20"
+        "example": "EMT20",
+		"default": null
     },
     "comments": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "any comments about the survey",
         "options": [],
         "alias": [],
-        "example": "long survey"
+        "example": "long survey",
+		"default": null
     },
     "country": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "country(s) countries survey located in. If multiple input as comma separated names",
         "options": [],
         "alias": [],
-        "example": "\"[USA, Canada]\""
+        "example": "\"[USA, Canada]\"",
+		"default": null
     },
     "datum": {
         "type": "string",
@@ -45,7 +48,8 @@
             "other"
         ],
         "alias": [],
-        "example": "WGS84"
+        "example": "WGS84",
+		"default": "WGS84"
     },
     "geographic_name": {
         "type": "string",
@@ -55,7 +59,8 @@
         "description": "closest geographic reference to survey",
         "options": [],
         "alias": [],
-        "example": "Yukon"
+        "example": "Yukon",
+		"default": null
     },
     "name": {
         "type": "string",
@@ -65,7 +70,8 @@
         "description": "descriptive name of the survey",
         "options": [],
         "alias": [],
-        "example": "MT Characterization of Yukon Terrane"
+        "example": "MT Characterization of Yukon Terrane",
+		"default": null
     },
     "project": {
         "type": "string",
@@ -75,7 +81,8 @@
         "description": "alphanumeric name for the project e.g USGS-GEOMAG",
         "options": [],
         "alias": [],
-        "example": "YUTOO"
+        "example": "YUTOO",
+		"default": null
     },
     "summary": {
         "type": "string",
@@ -85,7 +92,8 @@
         "description": "summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled",
         "options": [],
         "alias": [],
-        "example": "long project of characterizing mineral resources in Yukon"
+        "example": "long project of characterizing mineral resources in Yukon",
+		"default": null
     },
     "time_period.end_date": {
         "type": "string",
@@ -95,7 +103,8 @@
         "description": "end date of the survey in UTC",
         "options": [],
         "alias": [],
-        "example": "1/2/1995"
+        "example": "1995-01-01",
+		"default": "1980-01-01"
     },
     "time_period.start_date": {
         "type": "string",
@@ -105,6 +114,7 @@
         "description": "start date of the survey in UTC",
         "options": [],
         "alias": [],
-        "example": "1/2/2020"
+        "example": "2020-01-01",
+		"default": "1980-01-01"
     }
 }

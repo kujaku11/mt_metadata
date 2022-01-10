@@ -11,7 +11,8 @@
             "other"
         ],
         "alias": [],
-        "example": "+"
+        "example": "+",
+		"default": null
     },
     "units": {
         "type": "string",
@@ -25,27 +26,30 @@
             "other"
         ],
         "alias": [],
-        "example": "millivolts_per_kilometer_per_nanotesla"
+        "example": "millivolts_per_kilometer_per_nanotesla",
+		"default": null
     },
     "runs_processed": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of runs used in the processing",
         "options": [],
         "alias": [],
-        "example": "[ MT001a MT001c]"
+        "example": "[ MT001a MT001c]",
+		"default":[]
     },
     "remote_references": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of remote references",
         "options": [],
         "alias": [],
-        "example": "[ MT002b MT002c ]"
+        "example": "[ MT002b MT002c ]",
+		"default": []
     },
     "processed_date": {
         "type": "string",
@@ -55,17 +59,19 @@
         "description": "date the data were processed",
         "options": [],
         "alias": [],
-        "example": "2020-01-01T12:00:00"
+        "example": "2020-01-01T12:00:00",
+		"default": null
     },
     "processing_parameters": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of processing parameters with structure name = value",
         "options": [],
         "alias": [],
-        "example": "[nfft=4096, n_windows=16]"
+        "example": "[nfft=4096, n_windows=16]",
+		"default": []
     },
 	"coordinate_system": {
         "type": "string",
@@ -79,6 +85,7 @@
 			"other"
 		],
         "alias": [],
-        "example": "geographic"
+        "example": "geographic",
+		"default": "geopgraphic"
     }
 }

@@ -77,7 +77,7 @@ class Site(Base):
     @run_list.setter
     def run_list(self, value):
         if value is None:
-            return 
+            return
         if isinstance(value, (str)):
             if value.count(",") > 0:
                 delimiter = ","

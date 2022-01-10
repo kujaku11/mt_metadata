@@ -7,6 +7,7 @@
         "description": "Full url to the DOI.",
         "options": [],
         "alias": [],
-        "example": "http://doi.###"
+        "example": "http://doi.###",
+		"default": null
     }
 }

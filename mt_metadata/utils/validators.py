@@ -20,9 +20,12 @@ Created on Wed Apr 29 11:11:31 2020
 import sys
 import re
 import logging
+from collections.abc import Iterable
+
+import numpy as np
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
-from mt_metadata.utils.exceptions import MTValidatorError
+from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
 
 # =============================================================================
 # validator functions
@@ -324,6 +327,165 @@ def validate_example(example):
     return example
 
 
+def validate_default(value_dict):
+    """
+    validate default value
+    
+    :param default: DESCRIPTION
+    :type default: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    
+    if value_dict["required"]:
+        if value_dict["default"] in [None]:
+            if "list" in value_dict["style"]:
+                value = []
+            elif "date" in value_dict["style"] or "time" in value_dict["style"]:
+                value = "1980-01-01T00:00:00+00:00"
+            elif "controlled" in value_dict["style"]:
+                if "other" in value_dict["options"]:
+                    value = None
+                else:
+                    value = value_dict["options"][0]
+            else:
+                if value_dict["type"] in ["integer", "float", int, float]:
+                    value = 0
+                elif value_dict["type"] in ["string", str]:
+                    value = "none"
+                elif value_dict["type"] in ["bool", bool]:
+                    value = False
+                elif value_dict["type"] in ["h5py_reference"]:
+                    value = None
+        else:
+
+            value = validate_value_type(
+                value_dict["default"], value_dict["type"], value_dict["style"]
+            )
+
+    else:
+        if "date" in value_dict["style"] or "time" in value_dict["style"]:
+            value = "1980-01-01T00:00:00+00:00"
+        else:
+            value = None
+    return value
+
+
+def validate_value_type(value, v_type, style=None):
+    """
+    validate type from standards
+
+    """
+
+    # if the value is a metadata type skip cause the individual components
+    # will be validated separately
+    if "metadata" in str(type(value)):
+        return value
+    # return if the value is None, this may need to change in the future
+    # if an empty list or something else should be returned
+    if not isinstance(value, (list, tuple, np.ndarray)):
+        if value in [None, "None", "none", "unknown"]:
+            return None
+    # hack to get around h5py reference types, in the future will need
+    # a more robust test.
+    if v_type == "h5py_reference":
+        return value
+
+    # return value if the value type is not defined.
+    if v_type is None:
+        msg = (
+            "standards data type is unknown, if you want to "
+            + "propogate this attribute using to_dict, to_json or "
+            + "to_series, you need to add attribute description using "
+            + "class function add_base_attribute."
+        )
+        print(msg)
+        return value
+
+    # if not a python type but a string organize into a dictionary
+    if not isinstance(v_type, type) and isinstance(v_type, str):
+        type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+        v_type = type_dict[validate_type(v_type)]
+    else:
+        msg = "v_type must be a string or type not {0}".format(v_type)
+
+    # check style for a list, if it is split the string
+    if style:
+        if "list" in style and isinstance(value, str):
+            value = value.replace("[", "").replace("]", "").split(",")
+            value = [ss.strip() for ss in value]
+
+    # if value is not of v_type
+    if not isinstance(value, v_type):
+        msg = "value=%s must be %s not %s"
+        # if the value is a string, convert to appropriate type
+        if isinstance(value, str):
+            if v_type is int:
+                try:
+                    return int(value)
+                except ValueError:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is float:
+                try:
+                    return float(value)
+                except ValueError:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is bool:
+                if value.lower() in ["false", "0"]:
+                    return False
+                elif value.lower() in ["true", "1"]:
+                    return True
+                else:
+                    raise MTSchemaError(msg, value, v_type, type(value))
+            elif v_type is str:
+                return value
+
+        # if a number convert to appropriate type
+        elif isinstance(value, (int, np.int_)):
+            if v_type is float:
+                return float(value)
+            elif v_type is str:
+                return "{0:.0f}".format(value)
+            return int(value)
+
+        # if a number convert to appropriate type
+        elif isinstance(value, (float, np.float_)):
+            if v_type is int:
+                return int(value)
+            elif v_type is str:
+                return f"{value}"
+            return float(value)
+
+        # if a list convert to appropriate entries to given type
+        elif isinstance(value, Iterable):
+            if v_type is str:
+                if isinstance(value, np.ndarray):
+                    value = value.astype(np.unicode_)
+                value = [f"{v}".replace("'", "").replace('"', "") for v in value]
+            elif v_type is int:
+                value = [int(float(v)) for v in value]
+            elif v_type is float:
+                value = [float(v) for v in value]
+            elif v_type is bool:
+                value_list = []
+                for v in value:
+                    if v in [True, "true", "True", "TRUE", 1, "1"]:
+                        value_list.append(True)
+                    elif v in [False, "false", "False", "FALSE", 0, "0"]:
+                        value_list.append(False)
+                value = value_list
+            return value
+
+        elif isinstance(value, (np.bool_)):
+            return bool(value)
+
+        else:
+            raise MTSchemaError(msg, value, v_type, type(value))
+    else:
+        return value
+
+
 def validate_value_dict(value_dict):
     """
     Validate an input value dictionary
@@ -346,11 +508,16 @@ def validate_value_dict(value_dict):
     header = validate_header(list(value_dict.keys()))
     # loop over validating functions in this module
     for key in header:
+        if key == "default":
+            continue
         try:
             value_dict[key] = getattr(sys.modules[__name__], f"validate_{key}")(
                 value_dict[key]
             )
         except KeyError:
             raise KeyError("Could not find {key} for validator {__name__}")
+
+    # need to validate the default value after all other keys have been validated
+    value_dict["default"] = validate_default(value_dict)
 
     return value_dict

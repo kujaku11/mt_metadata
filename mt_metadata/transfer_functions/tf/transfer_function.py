@@ -34,12 +34,6 @@ class TransferFunction(Base):
         self.data_quality = DataQuality()
 
         super().__init__(attr_dict=attr_dict)
-        self.units = "millivolts_per_kilometer_per_nanotesla"
-        self.sign_convention = "+"
-        self.runs_processed = []
-        self.remote_references = []
-        self.processing_parameters = []
-        self.coordinate_system = "geographic"
 
         for key, value in kwargs.items():
             self.set_attr_from_name(key, value)
@@ -52,7 +46,3 @@ class TransferFunction(Base):
     def processed_date(self, value):
         self._processed_date = value
 
-
-# ==============================================================================
-# Site details
-# ==============================================================================

@@ -9,7 +9,8 @@
         "alias": [
             "serial"
         ],
-        "example": "mt01"
+        "example": "mt01",
+		"default": null
     },
     "manufacturer": {
         "type": "string",
@@ -19,7 +20,8 @@
         "description": "who manufactured the instrument",
         "options": [],
         "alias": [],
-        "example": "mt gurus"
+        "example": "mt gurus",
+		"default": null
     },
     "type": {
         "type": "string",
@@ -29,7 +31,8 @@
         "description": "instrument type",
         "options": [],
         "alias": [],
-        "example": "broadband 32-bit"
+        "example": "broadband 32-bit",
+		"default": null
     },
     "model": {
         "type": "string",
@@ -39,7 +42,8 @@
         "description": "model version of the instrument",
         "options": [],
         "alias": [],
-        "example": "falcon5"
+        "example": "falcon5",
+		"default": null
     },
     "name": {
         "type": "string",
@@ -49,7 +53,8 @@
         "description": "Name of the model of the instrument",
         "options": [],
         "alias": [],
-        "example": "falcon5"
+        "example": "falcon5",
+		"default": null
     },
     "settings": {
         "type": "string",
@@ -59,6 +64,7 @@
         "description": "Any settings for the instrument",
         "options": [],
         "alias": [],
-        "example": "notch filter applied"
+        "example": "notch filter applied",
+		"default": null
     }
 }

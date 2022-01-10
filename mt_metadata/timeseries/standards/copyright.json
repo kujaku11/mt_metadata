@@ -22,6 +22,7 @@
 			"CC-BY-NC-NC"
         ],
         "alias": [],
-        "example": "CC BY"
+        "example": "CC BY",
+		"default": "CC-0"
     }
 }

@@ -7,6 +7,7 @@
         "description": "Flag for data quality",
         "options": [],
         "alias": [],
-        "example": "0"
+        "example": "0",
+		"default": null
     }
 }

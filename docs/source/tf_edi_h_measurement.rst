@@ -2,35 +2,12 @@
 .. role:: blue
 .. role:: navy
 
-Time_delay_filter
-=================
+HMeasurement
+============
 
 
-:navy:`name`
-~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **name**                                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
-       |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list.                               | "              |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`id`
+~~~~~~~~~~
 
 .. container::
 
@@ -39,21 +16,23 @@ Time_delay_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **id**                                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments about the filter.                | ambient air    |
-       |                                              |                                               | temperature    |
+       | **Required**: :red:`True`                    | Channel number, could be                      | 1              |
+       |                                              | location.channel_number.                      |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: float                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`type`
-~~~~~~~~~~~~
+:navy:`chtype`
+~~~~~~~~~~~~~~
 
 .. container::
 
@@ -62,9 +41,9 @@ Time_delay_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **type**                                     | **Description**                               | **Example**    |
+       | **chtype**                                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Type of filter.                               | table          |
+       | **Required**: :red:`True`                    | channel type, should start with an 'h' or 'b' | hx             |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -72,11 +51,13 @@ Time_delay_filter
        |                                              |                                               |                |
        | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`units_in`
-~~~~~~~~~~~~~~~~
+:navy:`x`
+~~~~~~~~~
 
 .. container::
 
@@ -85,21 +66,23 @@ Time_delay_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_in**                                 | **Description**                               | **Example**    |
+       | **x**                                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the input units to the filter. Should | count          |
-       |                                              | be all lowercase and separated with an        |                |
-       | **Units**: None                              | underscore, use 'per' if units are divided    |                |
-       |                                              | and '-' if units are multiplied.              |                |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :red:`True`                    | location of sensor relative center point in   | 100.0          |
+       |                                              | north direction                               |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`units_out`
-~~~~~~~~~~~~~~~~~
+:navy:`y`
+~~~~~~~~~
 
 .. container::
 
@@ -108,21 +91,23 @@ Time_delay_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **units_out**                                | **Description**                               | **Example**    |
+       | **y**                                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the output units.  Should be all      | millivolt      |
-       |                                              | lowercase and separated with an underscore,   |                |
-       | **Units**: None                              | use 'per' if units are divided and '-' if     |                |
-       |                                              | units are multiplied.                         |                |
-       | **Type**: string                             |                                               |                |
+       | **Required**: :red:`True`                    | location of sensor relative center point in   | 100.0          |
+       |                                              | east direction                                |                |
+       | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Style**: alpha numeric                     |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`calibration_date`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`z`
+~~~~~~~~~
 
 .. container::
 
@@ -131,61 +116,92 @@ Time_delay_filter
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **calibration_date**                         | **Description**                               | **Example**    |
+       | **z**                                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Most recent date of filter calibration in ISO | 2020-01-01     |
-       |                                              | format of YYY-MM-DD.                          |                |
+       | **Required**: :red:`True`                    | location of sensor relative center point in   | 100.0          |
+       |                                              | depth                                         |                |
+       | **Units**: meters                            |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`azm`
+~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **azm**                                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | orientation of the sensor relative to         | 100.0          |
+       |                                              | coordinate system, clockwise positive.        |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`dip`
+~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **dip**                                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | orientation of the sensor relative to         | 100.0          |
+       |                                              | horizontal = 0                                |                |
+       | **Units**: degrees                           |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: 0.0                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`acqchan`
+~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **acqchan**                                  | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | description of acquired channel               | 100.0          |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`gain`
-~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **gain**                                     | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | scalar gain of the filter across all          | 1.0            |
-       |                                              | frequencies, producted with any frequency     |                |
-       | **Units**: None                              | depenendent terms                             |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`delay`
-~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **delay**                                    | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | The delay interval of the filter. This should | -0.201         |
-       |                                              | be a single number.                           |                |
-       | **Units**: second                            |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

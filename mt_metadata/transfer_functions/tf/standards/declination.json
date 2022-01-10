@@ -7,7 +7,8 @@
         "description": "any comments on declination",
         "options": [],
         "alias": [],
-        "example": "estimated from WMM 2016"
+        "example": "estimated from WMM 2016",
+		"default": null
     },
     "model": {
         "type": "string",
@@ -24,7 +25,8 @@
             "unknown"
         ],
         "alias": [],
-        "example": "WMM"
+        "example": "WMM",
+		"default": "WMM"
     },
     "epoch": {
         "type": "string",
@@ -34,7 +36,8 @@
         "description": "Epoch for which declination was approximated in.",
         "options": [],
         "alias": [],
-        "example": "2020"
+        "example": "2020",
+		"default": null
     },
     "value": {
         "type": "float",
@@ -44,6 +47,7 @@
         "description": "declination angle relative to geographic north positive clockwise",
         "options": [],
         "alias": [],
-        "example": "12.3"
+        "example": "12.3",
+		"default": 0.0
     }
 }

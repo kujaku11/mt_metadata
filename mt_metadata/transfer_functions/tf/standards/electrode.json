@@ -10,7 +10,8 @@
             "east",
             "easting"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "x2": {
         "type": "float",
@@ -23,7 +24,8 @@
             "east",
             "easting"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "y": {
         "type": "float",
@@ -36,7 +38,8 @@
             "north",
             "northing"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "y2": {
         "type": "float",
@@ -49,7 +52,8 @@
             "north",
             "northing"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
 	    "z": {
         "type": "float",
@@ -59,6 +63,7 @@
         "description": "relative elevation to the center of the station",
         "options": [],
         "alias": [],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     }
 }

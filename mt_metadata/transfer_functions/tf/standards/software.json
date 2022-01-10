@@ -7,7 +7,8 @@
         "description": "author of the software",
         "options": [],
         "alias": [],
-        "example": "nerd alert"
+        "example": "nerd alert",
+		"default": null
     },
     "version": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "software version",
         "options": [],
         "alias": [],
-        "example": "12.01a"
+        "example": "12.01a",
+		"default": null
     },
 	"last_updated": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "Most recent date the software was updated.  Prefer to use version, but this works for non-versioned software.",
         "options": [],
         "alias": [],
-        "example": "2020-01-01"
+        "example": "2020-01-01",
+		"default": "1980-01-01"
     },
     "name": {
         "type": "string",
@@ -37,6 +40,7 @@
         "description": "software name",
         "options": [],
         "alias": [],
-        "example": "mtrules"
+        "example": "mtrules",
+		"default": null
     }
 }

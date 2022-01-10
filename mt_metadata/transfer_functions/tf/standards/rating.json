@@ -7,7 +7,8 @@
         "description": "author of who rated the data",
         "options": [],
         "alias": [],
-        "example": "gradstudet ace"
+        "example": "gradstudent ace",
+		"default": null
     },
     "method": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "the method used to rate the data",
         "options": [],
         "alias": [],
-        "example": "standard deviation"
+        "example": "standard deviation",
+		"default": null
     },
     "value": {
         "type": "integer",
@@ -34,6 +36,7 @@
             "5"
         ],
         "alias": [],
-        "example": "4"
+        "example": "4",
+		"default": 0
     }
 }

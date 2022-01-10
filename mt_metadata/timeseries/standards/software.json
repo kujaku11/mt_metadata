@@ -7,7 +7,8 @@
         "description": "Author of the software",
         "options": [],
         "alias": [],
-        "example": "Neo"
+        "example": "Neo",
+		"default": null
     },
     "version": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "Software version",
         "options": [],
         "alias": [],
-        "example": "12.01a"
+        "example": "12.01a",
+		"default": null
     },
     "name": {
         "type": "string",
@@ -27,6 +29,7 @@
         "description": "Software name",
         "options": [],
         "alias": [],
-        "example": "mtrules"
+        "example": "mtrules",
+		"default": null
     }
 }

@@ -7,7 +7,8 @@
         "description": "description of where the external URL points towards",
         "options": [],
         "alias": [],
-        "example": "IRIS DMC Metadata"
+        "example": "IRIS DMC Metadata",
+		"default": null
     },
     "url": {
         "type": "string",
@@ -17,6 +18,7 @@
         "description": "full URL of where the data is stored",
         "options": [],
         "alias": [],
-        "example": "http://www.iris.edu/mda/EM/NVS11"
+        "example": "http://www.iris.edu/mda/EM/NVS11",
+		"default": null
     }
 }

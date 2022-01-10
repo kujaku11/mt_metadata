@@ -121,7 +121,7 @@ class DefineMeasurement(Base):
             self.reftype = "cartesian"
         if self.units is None:
             self.units = "m"
-        if self.maxmeas == 0: 
+        if self.maxmeas == 0:
             self.maxmeas = 7
         if self.maxrun == 0:
             self.maxrun = 999

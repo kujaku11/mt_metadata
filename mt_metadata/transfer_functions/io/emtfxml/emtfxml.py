@@ -206,10 +206,10 @@ class EMTFXML(emtf_xml.EMTF):
             "site_layout": self._write_site_layout,
             "data": self._write_data,
         }
-        
+
         if self.fn != None:
             self.read()
-            
+
     def __str__(self):
         lines = [f"Station: {self.station_metadata.id}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
@@ -231,7 +231,7 @@ class EMTFXML(emtf_xml.EMTF):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-            
+
         if self.data.t is not None:
             lines.append("\ttipper:        True")
         else:
@@ -348,8 +348,7 @@ class EMTFXML(emtf_xml.EMTF):
                 self._writer_dict[key](emtf_element, key, value)
             else:
                 self._write_element(
-                    emtf_element,
-                    value,
+                    emtf_element, value,
                 )
 
         with open(fn, "w") as fid:
@@ -818,8 +817,8 @@ class EMTFXML(emtf_xml.EMTF):
             self.processing_info.processing_software.last_mod
         )
         if self.processing_info.processing_tag is not None:
-            s.transfer_function.remote_references = (
-                self.processing_info.processing_tag.split("_")
+            s.transfer_function.remote_references = self.processing_info.processing_tag.split(
+                "_"
             )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
@@ -1005,7 +1004,7 @@ class EMTFXML(emtf_xml.EMTF):
                         else:
                             value = getattr(rch.location, item)
                         setattr(ch_in, item, value)
-                    
+
                     ch_in.name = comp.capitalize()
                     ch_in.orientation = rch.translated_azimuth
 
@@ -1044,14 +1043,14 @@ class EMTFXML(emtf_xml.EMTF):
                         else:
                             value = getattr(c.negative, item)
                         setattr(ch_out, item, value)
-                        
+
                     for item in ["x2", "y2", "z2"]:
                         if getattr(c.positive, item) is None:
                             value = 0.0
                         else:
                             value = getattr(c.positive, item)
                         setattr(ch_out, item, value)
-                        
+
                     ch_out.name = comp.capitalize()
                     ch_out.orientation = c.translated_azimuth
                     self.site_layout.output_channels.append(ch_out)

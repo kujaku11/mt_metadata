@@ -22,10 +22,7 @@ class TestCoefficientFilter(unittest.TestCase):
 
     def setUp(self):
         self.cf = CoefficientFilter(
-            units_in="v",
-            units_out="v",
-            name="coefficient",
-            gain=10,
+            units_in="v", units_out="v", name="coefficient", gain=10,
         )
         self.f = np.logspace(-5, 5, 100)
 
@@ -54,13 +51,7 @@ class TestCoefficientFilter(unittest.TestCase):
         with self.subTest(msg="test amplitude"):
             cr_amp = np.abs(cr)
             amp = np.repeat(10, self.f.size)
-            self.assertTrue(
-                np.isclose(
-                    cr_amp,
-                    amp,
-                ).all()
-                == True
-            )
+            self.assertTrue(np.isclose(cr_amp, amp,).all() == True)
 
         with self.subTest(msg="test phase"):
             cr_phase = np.angle(cr, deg=True)

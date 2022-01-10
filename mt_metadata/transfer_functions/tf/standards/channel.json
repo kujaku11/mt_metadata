@@ -7,7 +7,8 @@
         "description": "channel number on the data logger",
         "options": [],
         "alias": [],
-        "example": "1"
+        "example": "1",
+		"default": 0
     },
     "channel_id": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "channel id given by the user or data logger",
         "options": [],
         "alias": [],
-        "example": "1001.11"
+        "example": "1001.11",
+		"default": null
     },
     "comments": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "any comments about the channel",
         "options": [],
         "alias": [],
-        "example": "ambient air temperature"
+        "example": "ambient air temperature",
+		"default": null
     },
     "component": {
         "type": "string",
@@ -46,7 +49,8 @@
             "other"
         ],
         "alias": [],
-        "example": "T"
+        "example": "T",
+		"default": null
     },
     "measurement_azimuth": {
         "type": "float",
@@ -58,7 +62,8 @@
         "alias": [
             "azimuth"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "measurement_tilt": {
         "type": "float",
@@ -70,7 +75,8 @@
         "alias": [
             "dip"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "sample_rate": {
         "type": "float",
@@ -82,7 +88,8 @@
         "alias": [
             "sampling_rate"
         ],
-        "example": "8"
+        "example": "8",
+		"default": null
     },
     "translated_azimuth": {
         "type": "float",
@@ -94,7 +101,8 @@
         "alias": [
             "azimuth"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "translated_tilt": {
         "type": "float",
@@ -106,7 +114,8 @@
         "alias": [
             "dip"
         ],
-        "example": "0"
+        "example": "0",
+		"default": null
     },
     "type": {
         "type": "string",
@@ -116,7 +125,8 @@
         "description": "data type for the channel",
         "options": [],
         "alias": [],
-        "example": "temperature"
+        "example": "temperature",
+		"default": "auxiliary"
     },
     "units": {
         "type": "string",
@@ -133,6 +143,7 @@
             "other"
         ],
         "alias": [],
-        "example": "celsius"
+        "example": "celsius",
+		"default": null
     }
 }

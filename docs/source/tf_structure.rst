@@ -10,7 +10,7 @@ Supported Formats
 .. list-table:: 
     :widths: 25 50 20 20
     :header-rows: 1
-	
+    
     * - Format
       - Description
       - Read
@@ -35,7 +35,7 @@ Supported Formats
       - Zonge International .avg format out put by their MTEdit code [.avg]
       - Yes
       - No
-	  
+      
 Purpose
 ----------------
 
@@ -46,29 +46,61 @@ The :class:`mt_metadata.transfer_functions.core.TF` object contains standard met
 Module Structure
 ------------------
 
-The module structure for `mt_metadata.transfer_functions` is setup to be plug-in like.  Each transfer function file format has its own module in `mt_metadata.transfer_functions.io`.  For example EDI files are in the module `mt_metadata.transfer_functions.io.edi`.  Under each module there is a `metadata` folder and a `metadata/standards` folder to accommodate format specific metadata and standardize data types for those metadata.
+The module structure for :mod:`mt_metadata.transfer_functions` is setup to be plug-in like.  Each transfer function file format has its own module in :mod:`mt_metadata.transfer_functions.io`.  For example EDI files are in the module :mod:`mt_metadata.transfer_functions.io.edi`.  Under each module there is a `metadata` folder and a `metadata/standards` folder to accommodate format specific metadata and standardize data types for those metadata.
 
-mt_metadata.transfer_functions.io
-    - edi
-       - metadata
-           - standards
-               - .json standard files		   
-    - zfiles
-       - metadata
-           - standards
-               - .json standard files
-    - jfiles
-       - metadata
-           - standards
-               - .json standard files
-    - zonge
-       - metadata
-           - standards
-               - .json standard files
-    - emtfxml
-       - metadata
-           - standards
-              - .json standard files
-			   
+.. code-block:: python
+
+    mt_metadata.transfer_functions.io
+    -----------------------------------
+        |- edi
+          |- metadata
+            |- standards
+              |- .json standard files           
+        |- zfiles
+          |- metadata
+            |- standards
+              |- .json standard files
+        |- jfiles
+          |- metadata
+            |- standards
+              |- .json standard files
+        |- zonge
+          |- metadata
+             |- standards
+               |- .json standard files
+        |- emtfxml
+          |- metadata
+              |- standards
+                |- .json standard files
+               
 Each of these modules are imported into `mt_metadata.transfer_functions.io.readwrite` for generic readers and writers.  The :class:`mt_metadata.transfer_functions.core.TF` class uses the :func:`mt_metadata.transfer_functions.io.readwrite.read` and :func:`mt_metadata.transfer_functions.io.readwrite.write` functions to read and write through :func:`mt_metadata.transfer_functions.core.TF.read_tf_file` and :func:`mt_metadata.transfer_functions.core.TF.write_tf_file` methods   
-  
+
+
+===============================   
+Supported Formats
+===============================
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Examples
+
+    notebooks/tf_example.ipynb
+    notebooks/tf_edi_example.ipynb
+    notebooks/tf_emtfxml_example.ipynb
+    notebooks/tf_zfile_example.ipynb
+    notebooks/tf_jfile_example.ipynb    
+    notebooks/tf_avg_example.ipynb
+
+========================
+Metadata Definitions
+========================
+
+.. toctree::
+    :maxdepth: 1
+    
+    tf_index
+    tf_emtfxml_index
+    tf_edi_index
+    tf_zmm_index
+    tf_jfile_index
+    tf_zonge_index

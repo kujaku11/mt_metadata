@@ -4,16 +4,23 @@ Created on Mon Sep  6 13:53:55 2021
 
 @author: jpeacock
 """
+# =============================================================================
+# Imports
+# =============================================================================
 import numpy as np
 from xml.etree import cElementTree as et
 
+from mt_metadata.base import Base
+# =============================================================================
 
-class TransferFunction:
+
+class TransferFunction(Base):
     """
     Deal with the complex XML format
     """
 
     def __init__(self):
+        
         self.index_dict = {"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0}
         self.dtype_dict = {
             "complex": complex,
@@ -51,17 +58,230 @@ class TransferFunction:
             "t_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
             "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
+        
+        super().__init__(attr_dict={})
+        
+    @property
+    def period(self):
+        """periods for estimates"""
+        return self._period
+
+    @period.setter
+    def period(self, value):
+        """
+        Set the period, make sure the input is validated
+
+        Linear period
+        :param value: Linear period
+        :type value: iterable
+
+        """
+        if value is None:
+            self._period = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._period = np.array(value, dtype=float)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def z(self):
+        """zs for estimates"""
+        return self._z
+
+    @z.setter
+    def z(self, value):
+        """
+        Set the z, make sure the input is validated
+
+        """
+        if value is None:
+            self._z = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._z = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def z_var(self):
+        """z_var for estimates"""
+        return self._z_var
+
+    @z_var.setter
+    def z_var(self, value):
+        """
+        Set the z, make sure the input is validated
+
+        """
+        if value is None:
+            self._z_var = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._z_var = np.array(value, dtype=float)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def z_invsigcov(self):
+        """z_invsigcov for estimates"""
+        return self._z_invsigcov
+
+    @z_invsigcov.setter
+    def z_invsigcov(self, value):
+        """
+        Set the z, make sure the input is validated
+
+        """
+        if value is None:
+            self._z_invsigcov = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._z_invsigcov = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def z_residcov(self):
+        """z_residcov for estimates"""
+        return self._z_residcov
+
+    @z_residcov.setter
+    def z_residcov(self, value):
+        """
+        Set the z, make sure the input is validated
+
+        """
+        if value is None:
+            self._z_residcov = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._z_residcov = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def t(self):
+        """ts for estimates"""
+        return self._t
+
+    @t.setter
+    def t(self, value):
+        """
+        Set the t, make sure the input is validated
+
+        """
+        if value is None:
+            self._t = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._t = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def t_var(self):
+        """t_var for estimates"""
+        return self._t_var
+
+    @t_var.setter
+    def t_var(self, value):
+        """
+        Set the t, make sure the input is validated
+
+        """
+        if value is None:
+            self._t_var = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._t_var = np.array(value, dtype=float)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def t_invsigcov(self):
+        """t_invsigcov for estimates"""
+        return self._t_invsigcov
+
+    @t_invsigcov.setter
+    def t_invsigcov(self, value):
+        """
+        Set the t, make sure the input is validated
+
+        """
+        if value is None:
+            self._t_invsigcov = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._t_invsigcov = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+            
+    @property
+    def t_residcov(self):
+        """t_residcov for estimates"""
+        return self._t_residcov
+
+    @t_residcov.setter
+    def t_residcov(self, value):
+        """
+        Set the t, make sure the input is validated
+
+        """
+        if value is None:
+            self._t_residcov = None
+
+        elif isinstance(value, (list, tuple, np.ndarray)):
+            self._t_residcov = np.array(value, dtype=complex)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
 
     def initialize_arrays(self, n_periods):
-        self.period = np.zeros(n_periods)
-        self.z = np.zeros((n_periods, 2, 2), dtype=complex)
-        self.z_var = np.zeros_like(self.z, dtype=np.float)
-        self.z_invsigcov = np.zeros_like(self.z, dtype=complex)
-        self.z_residcov = np.zeros_like(self.z, dtype=complex)
-        self.t = np.zeros((n_periods, 1, 2), dtype=complex)
-        self.t_var = np.zeros_like(self.t, dtype=np.float)
-        self.t_invsigcov = np.zeros((n_periods, 2, 2), dtype=complex)
-        self.t_residcov = np.zeros((n_periods, 1, 1), dtype=complex)
+        self._period = np.zeros(n_periods)
+        self._z = np.zeros((n_periods, 2, 2), dtype=complex)
+        self._z_var = np.zeros_like(self.z, dtype=float)
+        self._z_invsigcov = np.zeros_like(self.z, dtype=complex)
+        self._z_residcov = np.zeros_like(self.z, dtype=complex)
+        self._t = np.zeros((n_periods, 1, 2), dtype=complex)
+        self._t_var = np.zeros_like(self.t, dtype=float)
+        self._t_invsigcov = np.zeros((n_periods, 2, 2), dtype=complex)
+        self._t_residcov = np.zeros((n_periods, 1, 1), dtype=complex)
 
     @property
     def array_dict(self):

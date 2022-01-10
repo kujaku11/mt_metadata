@@ -12,7 +12,8 @@
             "other"
         ],
         "alias": [],
-        "example": "compass"
+        "example": "compass",
+		"default": null
     },
     "reference_frame": {
         "type": "string",
@@ -25,7 +26,8 @@
             "geomagnetic"
         ],
         "alias": [],
-        "example": "geomagnetic"
+        "example": "geomagnetic",
+		"default": "geographic"
     },
 	"angle_to_geographic_north": {
         "type": "float",
@@ -38,7 +40,8 @@
             "geomagnetic"
         ],
         "alias": [],
-        "example": "geomagnetic"
+        "example": "geomagnetic",
+		"default": "geographic"
     },
 	"value": {
         "type": "string",
@@ -51,6 +54,7 @@
             "other"
         ],
         "alias": [],
-        "example": "orthogonal"
+        "example": "orthogonal",
+		"default": "orthogonal"
     }
 }

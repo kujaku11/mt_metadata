@@ -194,10 +194,7 @@ class TestFAPFilter(unittest.TestCase):
         self.pz.normalization_factor = 2002.269
 
         self.cf = CoefficientFilter(
-            units_in="v",
-            units_out="v",
-            name="example_coefficient",
-            gain=10,
+            units_in="v", units_out="v", name="example_coefficient", gain=10,
         )
 
         self.cr = ChannelResponseFilter(

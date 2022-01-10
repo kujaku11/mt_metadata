@@ -9,7 +9,8 @@
         "alias": [
             "lat"
         ],
-        "example": "23.134"
+        "example": "23.134",
+		"default": 0.0
     },
     "longitude": {
         "type": "float",
@@ -22,7 +23,8 @@
             "lon",
             "long"
         ],
-        "example": "14.23"
+        "example": "14.23",
+		"default": 0.0
     },
     "elevation": {
         "type": "float",
@@ -34,7 +36,8 @@
         "alias": [
             "elev"
         ],
-        "example": "123.4"
+        "example": "123.4",
+		"default": 0.0
     },
 	"datum": {
         "type": "string",
@@ -44,7 +47,8 @@
         "description": "Datum of the location values.  Usually a well known datum like WGS84.",
         "options": ["WGS84", "NAD83", "other"],
         "alias": [],
-        "example": "WGS84"
+        "example": "WGS84",
+		"default": "WGS84"
     },
     "x": {
         "type": "float",
@@ -57,7 +61,8 @@
             "east",
             "easting"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "x2": {
         "type": "float",
@@ -70,7 +75,8 @@
             "east",
             "easting"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "y": {
         "type": "float",
@@ -83,7 +89,8 @@
             "north",
             "northing"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "y2": {
         "type": "float",
@@ -96,7 +103,8 @@
             "north",
             "northing"
         ],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
     "z": {
         "type": "float",
@@ -106,7 +114,8 @@
         "description": "relative elevation to the center of the station",
         "options": [],
         "alias": [],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     },
 	"z2": {
         "type": "float",
@@ -116,6 +125,7 @@
         "description": "relative elevation to the center of the station",
         "options": [],
         "alias": [],
-        "example": "10.0"
+        "example": "10.0",
+		"default": null
     }
 }

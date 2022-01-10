@@ -7,7 +7,8 @@
         "description": "Given FDSN archive ID name",
         "options": [],
         "alias": [],
-        "example": "MT001"
+        "example": "MT001",
+		"default": null
     },
     "network": {
         "type": "string",
@@ -17,7 +18,8 @@
         "description": "Given two character FDSN archive network code",
         "options": [],
         "alias": [],
-        "example": "EM"
+        "example": "EM",
+		"default": null
     },
     "channel_code": {
         "type": "string",
@@ -27,7 +29,8 @@
         "description": "Three character FDSN channel code",
         "options": [],
         "alias": [],
-        "example": "LQN"
+        "example": "LQN",
+		"default": null
     },
     "new_epoch": {
         "type": "boolean",
@@ -37,6 +40,7 @@
         "description": "Boolean telling if a new epoch needs to be created or not",
         "options": [],
         "alias": [],
-        "example": "False"
+        "example": "False",
+		"default": null
     }
 }

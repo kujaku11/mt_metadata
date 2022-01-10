@@ -7,7 +7,8 @@
         "description": "date and time the file was created",
         "options": [],
         "alias": [],
-        "example": "2020-02-08T12:23:40.324600+00:00"
+        "example": "2020-02-08T12:23:40.324600+00:00",
+		"default": "1980-01-01T00:00:00+00:00"
     },
     "creating_application": {
         "type": "string",
@@ -17,6 +18,7 @@
         "description": "name of the application that created the XML file",
         "options": [],
         "alias": [],
-        "example": "EMTF File Conversion Utilities 4.0"
+        "example": "EMTF File Conversion Utilities 4.0",
+		"default": "mt_metadata"		
     }
 }
