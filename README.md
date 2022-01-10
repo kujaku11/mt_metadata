@@ -1,4 +1,4 @@
-# mt_metadata version 0.1.6
+# mt_metadata version 0.1.7
  Standard MT metadata
 
 [![codecov](https://codecov.io/gh/kujaku11/mt_metadata/branch/main/graph/badge.svg?token=1WYF0G1L3D)](https://codecov.io/gh/kujaku11/mt_metadata)
