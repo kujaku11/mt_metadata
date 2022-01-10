@@ -22,6 +22,7 @@ Each element or category in the metadata standards is a :class:`mt_metadata.base
 	* **style**: If type is string, how the string should be styled, e.g. datetime
 	* **type**: Python data type [ str | int | float | bool ]
 	* **units**: Units of the attribute in SI full name, e.g. millivolts
+	* **default**: Default value.  If **required** is True value will be set to this, otherwise a type of None is set.
 	
 When an attribute of :class:`mt_metadata.base.metadata.Base` is set the attribute will be validated against this standard.  The validators will try to put the attribute into the proper data type and style.  Therefore if the standards change just the JSON files should be changed.  This will hopefully make it easier to expand different standards.  
  
@@ -133,6 +134,7 @@ To get help with any metadata attribute you can use
 		style: alpha numeric
 		type: string
 		units: None
+		default: None
 	
 If no argument is given information for all metadata attributes will be printed.
 
@@ -148,7 +150,8 @@ If you want to add new standard attributes to the metadata you can do this throu
 ...          'description': 'local temperature',
 ...          'alias': ['temp'],
 ...          'options': [ 'ambient', 'air', 'other'],
-...          'example': 'ambient'}
+...          'example': 'ambient',
+...          'default': 'ambient'}
 >>> station.add_base_attribute('temperature', 'ambient', extra)
 
 Dictionary Input/Output

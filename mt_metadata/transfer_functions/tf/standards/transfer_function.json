@@ -31,25 +31,25 @@
     },
     "runs_processed": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of runs used in the processing",
         "options": [],
         "alias": [],
         "example": "[ MT001a MT001c]",
-		"default": null
+		"default":[]
     },
     "remote_references": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of remote references",
         "options": [],
         "alias": [],
         "example": "[ MT002b MT002c ]",
-		"default": null
+		"default": []
     },
     "processed_date": {
         "type": "string",
@@ -64,14 +64,14 @@
     },
     "processing_parameters": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "name list",
         "units": null,
         "description": "list of processing parameters with structure name = value",
         "options": [],
         "alias": [],
         "example": "[nfft=4096, n_windows=16]",
-		"default": null
+		"default": []
     },
 	"coordinate_system": {
         "type": "string",

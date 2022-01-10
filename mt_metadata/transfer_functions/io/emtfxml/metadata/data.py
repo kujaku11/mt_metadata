@@ -103,7 +103,7 @@ class TransferFunction(Base):
             self._z = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._z = np.array(value, dtype=float)
+            self._z = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
@@ -149,7 +149,7 @@ class TransferFunction(Base):
             self._z_invsigcov = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._z_invsigcov = np.array(value, dtype=float)
+            self._z_invsigcov = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
@@ -172,7 +172,7 @@ class TransferFunction(Base):
             self._z_residcov = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._z_residcov = np.array(value, dtype=float)
+            self._z_residcov = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
@@ -195,7 +195,7 @@ class TransferFunction(Base):
             self._t = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._t = np.array(value, dtype=float)
+            self._t = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
@@ -241,7 +241,7 @@ class TransferFunction(Base):
             self._t_invsigcov = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._t_invsigcov = np.array(value, dtype=float)
+            self._t_invsigcov = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
@@ -264,7 +264,7 @@ class TransferFunction(Base):
             self._t_residcov = None
 
         elif isinstance(value, (list, tuple, np.ndarray)):
-            self._t_residcov = np.array(value, dtype=float)
+            self._t_residcov = np.array(value, dtype=complex)
         else:
             msg = (
                 f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
