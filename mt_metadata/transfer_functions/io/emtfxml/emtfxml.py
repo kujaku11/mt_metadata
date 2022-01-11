@@ -1077,6 +1077,7 @@ def read_emtfxml(fn):
     obj.read(fn)
 
     emtf = TF()
+    emtf._fn = obj.fn
     emtf.survey_metadata = obj.survey_metadata
     emtf.station_metadata = obj.station_metadata
 
