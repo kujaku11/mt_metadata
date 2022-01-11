@@ -116,6 +116,7 @@ MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath(
 
 ### Transfer function files
 TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/example_emtf.zmm")
+TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tipper_only.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/example_birrp.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi")

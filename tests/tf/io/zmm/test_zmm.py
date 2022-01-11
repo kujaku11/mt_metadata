@@ -39,7 +39,7 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("Testing Channel hx.number", i=2):
             self.assertEqual(self.zmm_obj.hx.number, 1)
         with self.subTest("Testing Channel hx.dl", i=3):
-            self.assertEqual(self.zmm_obj.hx.dl, 300)
+            self.assertEqual(self.zmm_obj.hx.dl, "300")
         with self.subTest("Testing Channel hx.azimuth", i=4):
             self.assertEqual(self.zmm_obj.hx.azimuth, 0.0)
         with self.subTest("Testing Channel hx.tilt", i=5):
@@ -51,7 +51,7 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("Testing Channel hy.number", i=2):
             self.assertEqual(self.zmm_obj.hy.number, 2)
         with self.subTest("Testing Channel hy.dl", i=3):
-            self.assertEqual(self.zmm_obj.hy.dl, 300)
+            self.assertEqual(self.zmm_obj.hy.dl, "300")
         with self.subTest("Testing Channel hy.azimuth", i=4):
             self.assertEqual(self.zmm_obj.hy.azimuth, 90.0)
         with self.subTest("Testing Channel hy.tilt", i=5):
@@ -63,7 +63,7 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("Testing Channel hz.number", i=2):
             self.assertEqual(self.zmm_obj.hz.number, 3)
         with self.subTest("Testing Channel hz.dl", i=3):
-            self.assertEqual(self.zmm_obj.hz.dl, 300)
+            self.assertEqual(self.zmm_obj.hz.dl, "300")
         with self.subTest("Testing Channel hz.azimuth", i=4):
             self.assertEqual(self.zmm_obj.hz.azimuth, 0.0)
         with self.subTest("Testing Channel hz.tilt", i=5):
@@ -75,7 +75,7 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("Testing Channel EX.number", i=2):
             self.assertEqual(self.zmm_obj.ex.number, 4)
         with self.subTest("Testing Channel EX.dl", i=3):
-            self.assertEqual(self.zmm_obj.ex.dl, 300)
+            self.assertEqual(self.zmm_obj.ex.dl, "300")
         with self.subTest("Testing Channel EX.azimuth", i=4):
             self.assertEqual(self.zmm_obj.ex.azimuth, 0.0)
         with self.subTest("Testing Channel EX.tilt", i=5):
@@ -87,7 +87,7 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("Testing Channel ey.number", i=2):
             self.assertEqual(self.zmm_obj.ey.number, 5)
         with self.subTest("Testing Channel ey.dl", i=3):
-            self.assertEqual(self.zmm_obj.ey.dl, 300)
+            self.assertEqual(self.zmm_obj.ey.dl, "300")
         with self.subTest("Testing Channel ey.azimuth", i=4):
             self.assertEqual(self.zmm_obj.ey.azimuth, 90.0)
         with self.subTest("Testing Channel ey.tilt", i=5):
