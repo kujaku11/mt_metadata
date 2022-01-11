@@ -23,6 +23,7 @@ from mt_metadata.base.helpers import write_block
 FN_PATH = Path(__file__).parent.joinpath("source")
 # =============================================================================
 
+
 def to_caps(name):
     """
     convert class name into mixed upper case
@@ -33,8 +34,9 @@ def to_caps(name):
     :rtype: TYPE
 
     """
-    
+
     return "".join(name.replace("_", " ").title().split())
+
 
 def write_attribute_table_file(level, stem):
     """
@@ -48,7 +50,7 @@ def write_attribute_table_file(level, stem):
     :rtype: TYPE
 
     """
-    
+
     lines = [".. role:: red", ".. role:: blue", ".. role:: navy", ""]
 
     obj = level()
@@ -66,10 +68,10 @@ def write_attribute_table_file(level, stem):
     fn = FN_PATH.joinpath(f"{stem}_{obj._class_name}.rst")
     with fn.open(mode="w") as fid:
         fid.write("\n".join(lines))
-    
+
     return fn
 
-        
+
 def write_metadata_standards(module_name, stem):
     """
     write a file for each metadata class in module
@@ -83,34 +85,37 @@ def write_metadata_standards(module_name, stem):
 
     """
     mod = importlib.import_module(module_name)
-    
+
     mod_dict = dict(inspect.getmembers(mod, inspect.isclass))
     fn_list = []
     for key, obj in mod_dict.items():
         fn_list.append(write_attribute_table_file(obj, stem))
-    
+
     return fn_list
-    
-            
+
+
 # =============================================================================
 # Run
 # =============================================================================
 if __name__ == "__main__":
-    
+
     module_dict = {
         "mt_metadata.timeseries": ("ts", "Time Series"),
         "mt_metadata.timeseries.filters": ("ts_filter", "Time Series Filters"),
         "mt_metadata.transfer_functions.tf": ("tf", "Transfer Function"),
-        "mt_metadata.transfer_functions.io.emtfxml.metadata": ("tf_emtfxml", "EMTF XML"),
+        "mt_metadata.transfer_functions.io.emtfxml.metadata": (
+            "tf_emtfxml",
+            "EMTF XML",
+        ),
         "mt_metadata.transfer_functions.io.edi.metadata": ("tf_edi", "EDI"),
         "mt_metadata.transfer_functions.io.zfiles.metadata": ("tf_zmm", "Z-Files"),
         "mt_metadata.transfer_functions.io.jfiles.metadata": ("tf_jfile", "J-Files"),
         "mt_metadata.transfer_functions.io.zonge.metadata": ("tf_zonge", "Zonge AVG"),
-        }
-    
+    }
+
     for module, stem in module_dict.items():
         fn_list = write_metadata_standards(module, stem[0])
-        
+
         lines = [
             ".. role:: red",
             ".. role:: blue",
@@ -122,12 +127,9 @@ if __name__ == "__main__":
             "    :maxdepth: 1",
             "    :caption: Metadata Definitions",
             "",
-            ]
+        ]
         lines += [f"{' '*4}{f.stem}" for f in fn_list]
         lines.append("")
-                  
+
         with open(FN_PATH.joinpath(f"{stem[0]}_index.rst"), "w") as fid:
             fid.write("\n".join(lines))
-                      
-        
-        

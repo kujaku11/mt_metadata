@@ -77,7 +77,7 @@ class Information(Base):
         }
 
         super().__init__(attr_dict={})
-        
+
     def __str__(self):
         return "".join(self.write_info())
 

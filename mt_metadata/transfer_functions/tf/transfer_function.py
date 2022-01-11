@@ -45,4 +45,3 @@ class TransferFunction(Base):
     @processed_date.setter
     def processed_date(self, value):
         self._processed_date = value
-

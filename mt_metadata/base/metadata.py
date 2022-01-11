@@ -323,10 +323,9 @@ class Base:
             "fn",
         ]
 
-
         if name in skip_list:
             super().__setattr__(name, value)
-        
+
         elif hasattr(self, "_attr_dict") and not name.startswith("_"):
             self.logger.debug("Setting {0} to {1}".format(name, value))
             try:

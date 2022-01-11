@@ -337,7 +337,7 @@ def validate_default(value_dict):
     :rtype: TYPE
 
     """
-    
+
     if value_dict["required"]:
         if value_dict["default"] in [None]:
             if "list" in value_dict["style"]:

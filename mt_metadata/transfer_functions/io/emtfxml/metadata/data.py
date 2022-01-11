@@ -11,6 +11,7 @@ import numpy as np
 from xml.etree import cElementTree as et
 
 from mt_metadata.base import Base
+
 # =============================================================================
 
 
@@ -20,7 +21,7 @@ class TransferFunction(Base):
     """
 
     def __init__(self):
-        
+
         self.index_dict = {"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0}
         self.dtype_dict = {
             "complex": complex,
@@ -58,9 +59,9 @@ class TransferFunction(Base):
             "t_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
             "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
-        
+
         super().__init__(attr_dict={})
-        
+
     @property
     def period(self):
         """periods for estimates"""
@@ -87,7 +88,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def z(self):
         """zs for estimates"""
@@ -110,7 +111,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def z_var(self):
         """z_var for estimates"""
@@ -133,7 +134,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def z_invsigcov(self):
         """z_invsigcov for estimates"""
@@ -156,7 +157,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def z_residcov(self):
         """z_residcov for estimates"""
@@ -179,7 +180,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def t(self):
         """ts for estimates"""
@@ -202,7 +203,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def t_var(self):
         """t_var for estimates"""
@@ -225,7 +226,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def t_invsigcov(self):
         """t_invsigcov for estimates"""
@@ -248,7 +249,7 @@ class TransferFunction(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
     @property
     def t_residcov(self):
         """t_residcov for estimates"""

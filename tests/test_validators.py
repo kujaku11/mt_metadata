@@ -217,7 +217,11 @@ class TestValidators(unittest.TestCase):
             {
                 "name list": [
                     {"type": "string", "value": "a, b, c", "compare": ["a", "b", "c"]},
-                    {"type": "bool", "value": "0, false, 1, true", "compare": [False, False, True, True]}
+                    {
+                        "type": "bool",
+                        "value": "0, false, 1, true",
+                        "compare": [False, False, True, True],
+                    },
                 ]
             },
             {

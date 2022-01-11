@@ -50,8 +50,6 @@ class ZMMHeader(object):
             "TRANSFER FUNCTIONS IN MEASUREMENT COORDINATES",
             "********* WITH FULL ERROR COVARIANCE ********",
         ]
-        
-        
 
     @property
     def fn(self):
@@ -945,23 +943,28 @@ def read_zmm(zmm_fn):
 
     k_dict = OrderedDict(
         {
-            "survey_metadata": "survey_metadata", 
+            "survey_metadata": "survey_metadata",
             "station_metadata": "station_metadata",
             "period": "periods",
-            }
+        }
     )
 
     for tf_key, j_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(zmm_obj, j_key))
-        
-    tf_obj._transfer_function["transfer_function"].loc[dict(input=zmm_obj.input_channels,
-                                      output=zmm_obj.output_channels)] = zmm_obj.dataset.transfer_function.sel(
+
+    tf_obj._transfer_function["transfer_function"].loc[
+        dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+    ] = zmm_obj.dataset.transfer_function.sel(
         input=zmm_obj.input_channels, output=zmm_obj.output_channels
     )
-    tf_obj._transfer_function["inverse_signal_power"].loc[dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)] = zmm_obj.dataset.inverse_signal_power.sel(
+    tf_obj._transfer_function["inverse_signal_power"].loc[
+        dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
+    ] = zmm_obj.dataset.inverse_signal_power.sel(
         input=zmm_obj.input_channels, output=zmm_obj.input_channels
     )
-    tf_obj._transfer_function["residual_covariance"].loc[dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)] = zmm_obj.dataset.residual_covariance.sel(
+    tf_obj._transfer_function["residual_covariance"].loc[
+        dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
+    ] = zmm_obj.dataset.residual_covariance.sel(
         input=zmm_obj.output_channels, output=zmm_obj.output_channels
     )
 

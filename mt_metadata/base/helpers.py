@@ -120,13 +120,15 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         lines.append(
             line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
         )
-        
+
         # line 10 blank
         lines.append(line.format("", c1, d_lines[9], c2, e_lines[9], c3))
-        
+
         # line 11 type
         lines.append(
-            line.format(f"Default: {entry['default']}", c1, d_lines[10], c2, e_lines[10], c3)
+            line.format(
+                f"Default: {entry['default']}", c1, d_lines[10], c2, e_lines[10], c3
+            )
         )
 
         # line 10 blank
@@ -220,7 +222,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
 
     # line 8 blank
     lines.append(line.format("", c1, d_lines[7], c2, e_lines[7], c3))
-    
+
     # line 9 type
     lines.append(
         line.format(
