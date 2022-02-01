@@ -1,6 +1,8 @@
 # mt_metadata version 0.1.7
  Standard MT metadata
 
+[![PyPi version](https://img.shields.io/pypi/v/mth5.svg)](https://pypi.python.org/pypi/mth5)
+[![Latest conda|conda-forge version](https://img.shields.io/conda/v/conda-forge/mth5.svg)](https://anaconda.org/conda-forge/mth5)
 [![codecov](https://codecov.io/gh/kujaku11/mt_metadata/branch/main/graph/badge.svg?token=1WYF0G1L3D)](https://codecov.io/gh/kujaku11/mt_metadata)
 ![example workflow name](https://github.com/kujaku11/mt_metadata/workflows/TestingInConda/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -20,6 +22,10 @@ MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https:/
     - Supports (will support) to/from **EDI**, **ZMM** (Egberts EMTF output), **JFILE** (BIRRP output), **EMTFXML** (Kelbert's format)
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
+
+# Documentation
+
+[MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
 
 ## Standards
 
@@ -84,9 +90,6 @@ The time series module is more mature than the transfer function module at the m
 *Soon to be*
 `conda install mt_metadata`
 
-# Documentation
-
-[MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
 
 # Example
 
