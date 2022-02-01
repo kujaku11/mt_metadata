@@ -5,6 +5,7 @@
 ![example workflow name](https://github.com/kujaku11/mt_metadata/workflows/TestingInConda/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/324097765.svg)](https://zenodo.org/badge/latestdoi/324097765)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kujaku11/mt_metadata/main)
 
 # Description
 
