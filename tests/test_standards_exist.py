@@ -17,7 +17,7 @@ def get_standard_dirs(dir_path):
     existing_dirs = list(set([fn.parent.as_posix() for fn in dir_path.rglob("*.json")]))
     existing_dirs = [fn[fn.rfind("mt_metadata") :] for fn in existing_dirs]
 
-    return existing_dirs
+    return sorted(set(existing_dirs))
 
 
 def read_manifest(fn):
@@ -27,7 +27,7 @@ def read_manifest(fn):
         if "recursive-include" in line and "json" in line:
             standards_dir_list.append(line.split()[1])
 
-    return standards_dir_list
+    return sorted(set(standards_dir_list))
 
 
 class TestStandards(unittest.TestCase):
@@ -39,8 +39,8 @@ class TestStandards(unittest.TestCase):
             self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
 
     def test_standards_exist(self):
-        existing_dirs = sorted(get_standard_dirs(self.home))
-        manifest_dirs = sorted(read_manifest(self.manifest_fn))
+        existing_dirs = get_standard_dirs(self.home)
+        manifest_dirs = read_manifest(self.manifest_fn)
         self.assertListEqual(existing_dirs, manifest_dirs)
 
 

@@ -212,8 +212,15 @@ class Station(Base):
             end.append(run.time_period.end)
 
         if start:
-            if self.time_period.start > min(start):
+            if self.time_period.start == "1980-01-01T00:00:00+00:00":
                 self.time_period.start = min(start)
+            else:
+                if self.time_period.start > min(start):
+                    self.time_period.start = min(start)
+
         if end:
-            if self.time_period.end < max(end):
+            if self.time_period.end == "1980-01-01T00:00:00+00:00":
                 self.time_period.end = max(end)
+            else:
+                if self.time_period.end < max(end):
+                    self.time_period.end = max(end)

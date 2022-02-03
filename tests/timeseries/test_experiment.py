@@ -58,26 +58,34 @@ class TestBuildExperiment(unittest.TestCase):
 
     def setUp(self):
         self.experiment = Experiment()
+        self.start = "2020-01-01T00:00:00+00:00"
+        self.end = "2021-01-01T12:00:00+00:00"
+        
+        kwargs = {"time_period.start": self.start,
+                  "time_period.end": self.end}
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(survey_id=survey)
             survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
-                station_obj = Station(id=station)
+                station_obj = Station(id=station, **kwargs)
                 for run in ["mt01a", "mt01b"]:
-                    run_obj = Run(id=run)
+                    run_obj = Run(id=run, **kwargs)
                     for ch in ["ex", "ey"]:
-                        ch_obj = Electric(component=ch)
+                        ch_obj = Electric(component=ch, **kwargs)
                         run_obj.channels.append(ch_obj)
                     for ch in ["hx", "hy", "hz"]:
-                        ch_obj = Magnetic(component=ch)
+                        ch_obj = Magnetic(component=ch, **kwargs)
                         run_obj.channels.append(ch_obj)
                     for ch in ["temperature", "voltage"]:
-                        ch_obj = Auxiliary(component=ch)
+                        ch_obj = Auxiliary(component=ch, **kwargs)
                         run_obj.channels.append(ch_obj)
 
+                    run_obj.update_time_period()
                     station_obj.runs.append(run_obj)
+                    station_obj.update_time_period()
                 survey_obj.stations.append(station_obj)
+                survey_obj.update_time_period()
 
             self.experiment.surveys.append(survey_obj)
 
@@ -86,7 +94,24 @@ class TestBuildExperiment(unittest.TestCase):
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
         self.assertEqual(self.experiment, experiment_02)
+        
+    def test_survey_time_period(self):
+        with self.subTest("start"):
+            self.assertEqual(self.start, self.experiment.surveys[0].time_period.start)
+        with self.subTest("end"):
+            self.assertEqual(self.end, self.experiment.surveys[0].time_period.end) 
+            
+    def test_station_time_period(self):
+        with self.subTest("start"):
+            self.assertEqual(self.start, self.experiment.surveys[0].stations[0].time_period.start)
+        with self.subTest("end"):
+            self.assertEqual(self.end, self.experiment.surveys[0].stations[0].time_period.end)
 
+    def test_run_time_period(self):
+        with self.subTest("start"):
+            self.assertEqual(self.start, self.experiment.surveys[0].stations[0].runs[0].time_period.start)
+        with self.subTest("end"):
+            self.assertEqual(self.end, self.experiment.surveys[0].stations[0].runs[0].time_period.end)
 
 # =============================================================================
 # run
