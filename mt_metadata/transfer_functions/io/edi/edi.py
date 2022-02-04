@@ -627,6 +627,8 @@ class EDI(object):
 
         # write lines
         extra_lines = []
+        if self.survey_metadata.summary != None:
+            extra_lines.append(f"survey.summary = {self.survey_metadata.summary}")
         if self.Header.progname != "mt_metadata":
             extra_lines.append(f"\toriginal_program.name={self.Header.progname}\n")
         if self.Header.progvers != __version__:
@@ -635,6 +637,7 @@ class EDI(object):
             extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.fileby != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
+        
 
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
@@ -658,8 +661,13 @@ class EDI(object):
         zrot_lines = [self._data_header_str.format("impedance rotation angles".upper())]
         if self.rotation_angle is None:
             self.rotation_angle = np.zeros(self.frequency.size)
+        elif isinstance(self.rotation_angle, (float, int)):
+            self.rotation_angle = np.repeat(self.rotation_angle, self.frequency.size)
         elif len(self.rotation_angle) != self.frequency.size:
-            self.rotation_angle = np.repeat(self.rotation_angle[0], self.frequency.size)
+            raise ValueError(
+                "rotation angle must be the same length and the number of "
+                f"frequencies {len(self.rotation_angle)} != {self.frequency.size}"
+                )
 
         zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 
@@ -899,6 +907,8 @@ class EDI(object):
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
         self.Header.country = survey.country
+        if survey.summary != None:
+            self.Info.info_list.append(f"survey.summary = {survey.summary}")
 
     @property
     def station_metadata(self):
@@ -1366,6 +1376,7 @@ def write_edi(tf_object, fn=None, **kwargs):
         edi_obj.t = tf_object.tipper.data
         edi_obj.t_err = tf_object.tipper_error.data
     edi_obj.frequency = 1.0 / tf_object.period
+    edi_obj.rotation_angle = tf_object._rotation_angle
 
     # fill from survey metadata
     edi_obj.survey_metadata = tf_object.survey_metadata

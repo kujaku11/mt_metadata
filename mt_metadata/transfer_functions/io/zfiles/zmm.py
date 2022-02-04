@@ -157,7 +157,7 @@ class ZMMHeader(object):
                 line_list = line.strip().split()
                 comp = line_list[-1].lower()
                 channel_dict = {"channel": comp}
-                channel_dict["chn_num"] = int(line_list[0]) % self.num_channels
+                channel_dict["chn_num"] = int(line_list[0])
                 channel_dict["azm"] = float(line_list[1])
                 channel_dict["tilt"] = float(line_list[2])
                 channel_dict["dl"] = line_list[3]
@@ -967,6 +967,9 @@ def read_zmm(zmm_fn):
     ] = zmm_obj.dataset.residual_covariance.sel(
         input=zmm_obj.output_channels, output=zmm_obj.output_channels
     )
+        
+    tf_obj._compute_error_from_covariance()
+    tf_obj._rotation_angle = -1 * zmm_obj.declination
 
     return tf_obj
 
