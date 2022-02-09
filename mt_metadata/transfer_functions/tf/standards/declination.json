@@ -22,7 +22,8 @@
             "HDGM",
             "IGRF",
             "WMM",
-            "unknown"
+            "unknown",
+			"other"
         ],
         "alias": [],
         "example": "WMM",
