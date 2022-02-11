@@ -191,8 +191,10 @@ class Header(Location):
             if key in ["progvers"]:
                 if value.lower().find("mt-editor") != -1:
                     self.phoenix_edi = True
-
-            setattr(self, key, value)
+            if key =="declination":
+                setattr(self.declination, "value", value)
+            else:
+                setattr(self, key, value)
 
     def write_header(
         self, longitude_format="LON", latlon_format="dms", required=True,
