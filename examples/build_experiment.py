@@ -43,5 +43,5 @@ for survey in ["One", "Two"]:
     experiment.surveys.append(survey_obj)
 
 experiment_xml = experiment.to_xml(
-    fn=r"c:\Users\jpeacock\test_experiment.xml", required=False
+    fn=r"test_experiment.xml", required=False
 )
