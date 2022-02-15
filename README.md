@@ -14,20 +14,42 @@
 MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https://www.iris.edu/hq/about_iris/governance/mt_soft>) and USGS to develop tools that standardize magnetotelluric metadata, well, at least create tools for standards that are generally accepted.  This include the two main types of magnetotelluric data
 
 - **Time Series** 
-    - Supports translation to/from **StationXML**
     - Structured as:
         - Experiment -> Survey -> Station -> Run -> Channel
+    - Supports translation to/from **StationXML**
         
 - **Transfer Functions**
-    - Supports (will support) to/from **EDI**, **ZMM** (Egberts EMTF output), **JFILE** (BIRRP output), **EMTFXML** (Kelbert's format)
+    - Supports (will support) to/from:
+        - **EDI** (most common format)
+        - **ZMM** (Egberts EMTF output)
+        - **JFILE** (BIRRP output)
+        - **EMTFXML** (Kelbert's format)
+        - **AVG** (Zonge output)
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
 
 # Documentation
 
-[MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
+ReadTheDocs: [MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
 
-## Standards
+# Installation
+
+## From Source
+
+`git clone git://github.com/kujaku11/mt_metadata`
+
+`python setup.py install`
+
+You can add the flag `-e` if you want to change the code.
+
+## PIP
+`pip install mt_metadata`
+
+## Conda
+
+`conda install mt_metadata`
+
+# Standards
 
 Each metadata keyword has an associated standard that goes with it.  These are stored internally in JSON file.  The JSON files are read in when the package is loaded to initialize the standards.  Each keyword is described by:  
 
@@ -80,16 +102,6 @@ And each object has a doc string that describes the standard:
 
 The time series module is more mature than the transfer function module at the moment, and this is still a work in progress.
 
-# Installation
-
-## PIP
-`pip install mt_metadata`
-
-## Conda
-
-*Soon to be*
-`conda install mt_metadata`
-
 
 # Example
 
@@ -98,7 +110,7 @@ from mt_metadata import timeseries
 x = timeseries.Instrument()
 
 ```
-### Help
+# Help
 ```
 help(x)
 
@@ -147,7 +159,7 @@ help(x)
 +----------------------------------------------+-----------------------------------------------+----------------+
 ```
 
-### Fill in metadata
+## Fill in metadata
 ```
 x.model = "falcon 5"
 x.type = "broadband 32-bit"
@@ -155,7 +167,7 @@ x.manufacturer = "MT Gurus"
 x.id = "f176"
 ```
 
-### to JSON
+## to JSON
 ```
 print(x.to_json())
 {
@@ -168,7 +180,7 @@ print(x.to_json())
 }
 ```
 
-### to XML
+## to XML
 ```
 print(x.to_xml(string=True))
 <?xml version="1.0" ?>
