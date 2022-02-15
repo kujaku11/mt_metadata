@@ -14,12 +14,17 @@
 MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https://www.iris.edu/hq/about_iris/governance/mt_soft>) and USGS to develop tools that standardize magnetotelluric metadata, well, at least create tools for standards that are generally accepted.  This include the two main types of magnetotelluric data
 
 - **Time Series** 
-    - Supports translation to/from **StationXML**
     - Structured as:
         - Experiment -> Survey -> Station -> Run -> Channel
+    - Supports translation to/from **StationXML**
         
 - **Transfer Functions**
-    - Supports (will support) to/from **EDI**, **ZMM** (Egberts EMTF output), **JFILE** (BIRRP output), **EMTFXML** (Kelbert's format)
+    - Supports (will support) to/from:
+        - **EDI** (most common format)
+        - **ZMM** (Egberts EMTF output)
+        - **JFILE** (BIRRP output)
+        - **EMTFXML** (Kelbert's format)
+        - **AVG** (Zonge output)
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
 
