@@ -27,8 +27,8 @@ ns_dict = {
 # Input Parameters
 # =============================================================================
 # path to the folder where all the xmls are
-xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\mth5")
-output_path = Path(r"c:\Users\jpeacock")
+xml_path = Path(r"path\to\mt\xml\files")
+output_path = Path(r"path\to\output\folder")
 
 # make an instance of MTML2StationXML where the input is the path to the folder
 # containing the MTML.xml files
