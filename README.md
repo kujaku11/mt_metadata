@@ -1,8 +1,8 @@
 # mt_metadata version 0.1.7
  Standard MT metadata
 
-[![PyPi version](https://img.shields.io/pypi/v/mth5.svg)](https://pypi.python.org/pypi/mth5)
-[![Latest conda|conda-forge version](https://img.shields.io/conda/v/conda-forge/mth5.svg)](https://anaconda.org/conda-forge/mth5)
+[![PyPi version](https://img.shields.io/pypi/v/mt_metadata.svg)](https://pypi.python.org/pypi/mt-metadata)
+[![Latest conda|conda-forge version](https://img.shields.io/conda/v/conda-forge/mt-metadata.svg)](https://anaconda.org/conda-forge/mt-metadata)
 [![codecov](https://codecov.io/gh/kujaku11/mt_metadata/branch/main/graph/badge.svg?token=1WYF0G1L3D)](https://codecov.io/gh/kujaku11/mt_metadata)
 ![example workflow name](https://github.com/kujaku11/mt_metadata/workflows/TestingInConda/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -28,9 +28,12 @@ MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https:/
 
 Most people will be using the transfer functions, but a lot of that metadata comes from the time series metadata.  This module supports both and has tried to make them more or less seamless to reduce complication.
 
-# Documentation
+* **Version**: 0.1.7
+* **Free software**: MIT license
+* **Documentation**: https://mt-metadata.readthedocs.io.
+* **Examples**: Click the `Binder` badge above and Jupyter Notebook examples are in **mt_metadata/examples/notebooks** and **docs/source/notebooks**
+* **Suggested Citation**: Peacock, J. R., Kappler, K., Ronan, T., Heagy, L.,  Kelbert, A., Frassetto, A. (2022) MTH5: an archive and exchangeable data format for magnetotelluric time series data, *Computers & Geoscience*, In Press
 
-ReadTheDocs: [MT Metadata Documentation](https://mt-metadata.readthedocs.io/en/latest/)
 
 # Installation
 
@@ -192,3 +195,9 @@ print(x.to_xml(string=True))
 </instrument>
 
 ```
+
+
+Credits
+-------
+
+This project is in cooperation with the Incorporated Research Institutes of Seismology, the U.S. Geological Survey, and other collaborators.  Facilities of the IRIS Consortium are supported by the National Science Foundation’s Seismological Facilities for the Advancement of Geoscience (SAGE) Award under Cooperative Support Agreement EAR-1851048.  USGS is partially funded through the Community for Data Integration and IMAGe through the Minerals Resources Program. 
