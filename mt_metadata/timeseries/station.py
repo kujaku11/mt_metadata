@@ -14,6 +14,7 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.utils.validators import validate_value_type
 from . import (
     Fdsn,
     Orientation,
@@ -176,6 +177,7 @@ class Station(Base):
     @run_list.setter
     def run_list(self, value):
         """Set list of run names"""
+        
         if not hasattr(value, "__iter__"):
             msg = (
                 "input station_list must be an iterable, should be a list "
@@ -183,6 +185,9 @@ class Station(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
+            
+        value = validate_value_type(value, str, "name_list")
+
         for run in value:
             if not isinstance(run, str):
                 try:
