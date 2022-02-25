@@ -31,11 +31,15 @@ class Provenance(Base):
         self._creation_dt = MTime()
         self._creation_dt.now()
         
-        super().__init__(attr_dict=attr_dict, **kwargs)
-       
         self.creator = Person()
         self.submitter = Person()
         self.software = Software()
+        
+        print(dir(self))
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
+       
+
 
     @property
     def creation_time(self):

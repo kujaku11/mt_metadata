@@ -63,7 +63,7 @@ class Base:
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            setattr(self, key, value_dict["default"])
+            self.set_attr_from_name(key, value_dict["default"])
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]
@@ -285,6 +285,8 @@ class Base:
     def __setattr__(self, name, value):
         """
         set attribute based on metadata standards
+        
+        Something here doesnt allow other objects to be set as attributes
 
         """
         # skip these attribute because they are validated in the property
@@ -323,7 +325,9 @@ class Base:
             "fn",
         ]
 
+        
         if not name.startswith("_"):
+            print(name, value, type(value))
             # test if the attribute is a property first, if it is, then
             # it will have its own defined setter, so use that one and
             # skip validation.

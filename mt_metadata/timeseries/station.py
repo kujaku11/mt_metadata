@@ -52,7 +52,6 @@ class Station(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.fdsn = Fdsn()
         self.channels_recorded = []
         self.run_list = []
@@ -62,6 +61,8 @@ class Station(Base):
         self.location = Location()
         self.time_period = TimePeriod()
         self.runs = []
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
 
     def __add__(self, other):
         if isinstance(other, Station):
