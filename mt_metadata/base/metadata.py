@@ -537,6 +537,9 @@ class Base:
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
                             value[key] = obj.to_dict(nested=nested, required=required)
+                        else:
+                            value[key] = obj
+                            
                 elif isinstance(value, list):
                     v_list = []
                     for obj in value:
