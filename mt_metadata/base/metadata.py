@@ -323,32 +323,43 @@ class Base:
             "fn",
         ]
 
-        if name in skip_list:
-            super().__setattr__(name, value)
-
-        elif hasattr(self, "_attr_dict") and not name.startswith("_"):
-            self.logger.debug("Setting {0} to {1}".format(name, value))
+        if not name.startswith("_"):
+            # test if the attribute is a property first, if it is, then
+            # it will have its own defined setter, so use that one and
+            # skip validation.
             try:
-                v_dict = self._attr_dict[name]
-                v_type = self._get_standard_type(name)
-                value = self._validate_type(value, v_type, v_dict["style"])
-                # check options
-                if v_dict["style"] == "controlled vocabulary":
-                    options = v_dict["options"]
-                    accept, other, msg = self._validate_option(value, options)
-                    if not accept:
-                        self.logger.error(msg.format(value, options))
-                        raise MTSchemaError(msg.format(value, options))
-                    if other and not accept:
-                        self.logger.warning(msg.format(value, options, name))
+                if isinstance(getattr(type(self), name), property):
+                    super().__setattr__(name, value)
+                    return
+            except AttributeError:
+                pass
+            
+            if name in skip_list:
                 super().__setattr__(name, value)
-            except KeyError as error:
-                test_property = getattr(self.__class__, name, None)
-                if isinstance(test_property, property):
-                    self.logger.debug("Identified %s as property, using fset", name)
-                    test_property.fset(self, value)
-                else:
-                    raise KeyError(error)
+
+            elif hasattr(self, "_attr_dict"):
+                self.logger.debug("Setting {0} to {1}".format(name, value))
+                try:
+                    v_dict = self._attr_dict[name]
+                    v_type = self._get_standard_type(name)
+                    value = self._validate_type(value, v_type, v_dict["style"])
+                    # check options
+                    if v_dict["style"] == "controlled vocabulary":
+                        options = v_dict["options"]
+                        accept, other, msg = self._validate_option(value, options)
+                        if not accept:
+                            self.logger.error(msg.format(value, options))
+                            raise MTSchemaError(msg.format(value, options))
+                        if other and not accept:
+                            self.logger.warning(msg.format(value, options, name))
+                    super().__setattr__(name, value)
+                except KeyError as error:
+                    test_property = getattr(self.__class__, name, None)
+                    if isinstance(test_property, property):
+                        self.logger.debug("Identified %s as property, using fset", name)
+                        test_property.fset(self, value)
+                    else:
+                        raise KeyError(error)
         else:
             super().__setattr__(name, value)
 
@@ -395,13 +406,24 @@ class Base:
         10
 
         """
+        try:
+            if isinstance(getattr(type(self), name), property):
+                return getattr(self, name)
+        except AttributeError:
+            pass
+        
         name = self._validate_name(name)
         v_type = self._get_standard_type(name)
+        
 
         if "." in name:
             value = helpers.recursive_split_getattr(self, name)
         else:
             value = getattr(self, name)
+            
+
+        if hasattr(value, "to_dict"):
+            return value
 
         return self._validate_type(value, v_type)
 
@@ -506,7 +528,16 @@ class Base:
         for name in list(self._attr_dict.keys()):
             try:
                 value = self.get_attr_from_name(name)
-            except AttributeError:
+                if isinstance(value, dict):
+                    for key, obj in value.items():
+                        if hasattr(obj, "to_dict"):
+                            print("has to_dict")
+                            value[key] = obj.to_dict(nested=nested, required=required)
+                if hasattr(value, "to_dict"):
+                    value = value.to_dict(nested=nested, required=required)
+                    
+            except AttributeError as error:
+                self.logger.exception(error)
                 value = None
             if required:
                 if (
