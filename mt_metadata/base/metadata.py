@@ -537,7 +537,7 @@ class Base:
                     value = value.to_dict(nested=nested, required=required)
                     
             except AttributeError as error:
-                self.logger.exception(error)
+                self.logger.debug(error)
                 value = None
             if required:
                 if (
