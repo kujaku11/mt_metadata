@@ -11,13 +11,14 @@ Created on Wed Dec 23 20:41:16 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import json
-import pandas as pd
 import logging
 from copy import deepcopy
-
 from collections import OrderedDict
 from operator import itemgetter
+
+import json
+import pandas as pd
+import numpy as np
 
 from mt_metadata.utils.validators import validate_attribute, validate_value_type
 from mt_metadata.utils.exceptions import MTSchemaError
@@ -328,9 +329,9 @@ class Base:
         
         if name in skip_list:
             super().__setattr__(name, value)
+            return
         
         if not name.startswith("_"):
-            print(name, value, type(value))
             # test if the attribute is a property first, if it is, then
             # it will have its own defined setter, so use that one and
             # skip validation.
@@ -339,6 +340,7 @@ class Base:
                 if isinstance(test_property, property):
                     self.logger.debug("Identified %s as property, using fset", name)
                     test_property.fset(self, value)
+                    return
             except AttributeError:
                 pass
 
@@ -540,7 +542,11 @@ class Base:
                 self.logger.debug(error)
                 value = None
             if required:
-                if (
+                if isinstance(value, (np.ndarray)):
+                    if value.all() != 0:
+                        meta_dict[name] = value
+                        
+                elif (
                     value not in [None, "1980-01-01T00:00:00+00:00"]
                     or self._attr_dict[name]["required"]
                 ):
