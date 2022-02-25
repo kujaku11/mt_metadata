@@ -47,27 +47,17 @@ class Survey(Base):
 
     def __init__(self, **kwargs):
 
+        super().__init__(attr_dict=attr_dict, **kwargs)
         self.acquired_by = Person()
         self.fdsn = Fdsn()
         self.citation_dataset = Citation()
         self.citation_journal = Citation()
-        self.comments = None
-        self.country = None
-        self.datum = None
-        self.geographic_name = None
-        self.name = None
         self.northwest_corner = Location()
-        self.project = None
         self.project_lead = Person()
-        self.release_license = "CC-0"
         self.southeast_corner = Location()
-        self.summary = None
-        self.id = None
         self.time_period = TimePeriod()
         self.stations = []
         self.filters = {}
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __add__(self, other):
         if isinstance(other, Survey):
