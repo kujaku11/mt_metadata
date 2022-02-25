@@ -25,10 +25,8 @@ class Software(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.author = None
-        self.name = None
+
         self._last_mod_dt = MTime()
-        self.remote_ref = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

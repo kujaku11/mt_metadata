@@ -25,8 +25,6 @@ class Channels(Base):
 
     def __init__(self, **kwargs):
 
-        self.ref = None
-        self.units = None
         self.inputs = []
         self.outputs = []
 

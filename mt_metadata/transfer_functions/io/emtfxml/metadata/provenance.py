@@ -31,9 +31,9 @@ class Provenance(Base):
     def __init__(self, **kwargs):
 
         self._creation_dt = MTime()
-        self.creating_application = None
         self.submitter = Person()
         self.creator = Person()
+        
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

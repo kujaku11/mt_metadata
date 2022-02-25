@@ -530,13 +530,19 @@ class Base:
         for name in list(self._attr_dict.keys()):
             try:
                 value = self.get_attr_from_name(name)
-                if isinstance(value, dict):
-                    for key, obj in value.items():
-                        if hasattr(obj, "to_dict"):
-                            print("has to_dict")
-                            value[key] = obj.to_dict(nested=nested, required=required)
                 if hasattr(value, "to_dict"):
                     value = value.to_dict(nested=nested, required=required)
+                    
+                elif isinstance(value, dict):
+                    for key, obj in value.items():
+                        if hasattr(obj, "to_dict"):
+                            value[key] = obj.to_dict(nested=nested, required=required)
+                elif isinstance(value, list):
+                    v_list = []
+                    for obj in value:
+                        if hasattr(obj, "to_dict"):
+                            v_list.append(obj.to_dict(nested=nested, required=required))
+                    value = v_list
                     
             except AttributeError as error:
                 self.logger.debug(error)

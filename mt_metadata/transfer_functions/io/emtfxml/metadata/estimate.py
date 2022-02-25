@@ -24,11 +24,5 @@ class Estimate(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.name = None
-        self.type = None
-        self.description = None
-        self.tag = None
-        self.external_url = None
-        self.intention = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

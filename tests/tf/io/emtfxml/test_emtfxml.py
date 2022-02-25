@@ -204,63 +204,131 @@ class TestEMTFXML(unittest.TestCase):
                 )
 
     def test_statistical_estimates(self):
-        test_dict = OrderedDict(
-            [
-                (
-                    "estimates_list",
-                    [
-                        "estimate:\n\tdescription = Variance\n\texternal_url = http://www.iris.edu/dms/products/emtf/variance.html\n\tintention = error estimate\n\tname = VAR\n\ttag = variance\n\ttype = real",
-                        "estimate:\n\tdescription = Full covariance between each two TF components\n\texternal_url = http://www.iris.edu/dms/products/emtf/covariance.html\n\tintention = error estimate\n\tname = COV\n\ttag = covariance\n\ttype = complex",
-                        "estimate:\n\tdescription = Inverse Coherent Signal Power Matrix (S)\n\texternal_url = http://www.iris.edu/dms/products/emtf/inverse_signal_covariance.html\n\tintention = signal power estimate\n\tname = INVSIGCOV\n\ttag = inverse_signal_covariance\n\ttype = complex",
-                        "estimate:\n\tdescription = Residual Covariance (N)\n\texternal_url = http://www.iris.edu/dms/products/emtf/residual_covariance.html\n\tintention = error estimate\n\tname = RESIDCOV\n\ttag = residual_covariance\n\ttype = complex",
-                        "estimate:\n\tdescription = Coherence\n\texternal_url = http://www.iris.edu/dms/products/emtf/coherence.html\n\tintention = signal coherence\n\tname = COH\n\ttag = coherence\n\ttype = complex",
-                        "estimate:\n\tdescription = Multiple Coherence\n\texternal_url = http://www.iris.edu/dms/products/emtf/multiple_coherence.html\n\tintention = signal coherence\n\tname = PREDCOH\n\ttag = multiple_coherence\n\ttype = complex",
-                        "estimate:\n\tdescription = Signal Amplitude\n\texternal_url = http://www.iris.edu/dms/products/emtf/signal_amplitude.html\n\tintention = signal power estimate\n\tname = SIGAMP\n\ttag = signal_amplitude\n\ttype = complex",
-                        "estimate:\n\tdescription = Signal Noise\n\texternal_url = http://www.iris.edu/dms/products/emtf/signal_noise.html\n\tintention = error estimate\n\tname = SIGNOISE\n\ttag = signal_noise\n\ttype = complex",
-                    ],
-                )
-            ]
-        )
+        test_dict = OrderedDict([('estimates_list',
+                      [{'estimate': OrderedDict([('description', 'Variance'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/variance.html'),
+                                     ('intention', 'error estimate'),
+                                     ('name', 'VAR'),
+                                     ('tag', 'variance'),
+                                     ('type', 'real')])},
+                       {'estimate': OrderedDict([('description',
+                                      'Full covariance between each two TF components'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/covariance.html'),
+                                     ('intention', 'error estimate'),
+                                     ('name', 'COV'),
+                                     ('tag', 'covariance'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description',
+                                      'Inverse Coherent Signal Power Matrix (S)'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/inverse_signal_covariance.html'),
+                                     ('intention', 'signal power estimate'),
+                                     ('name', 'INVSIGCOV'),
+                                     ('tag', 'inverse_signal_covariance'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description',
+                                      'Residual Covariance (N)'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/residual_covariance.html'),
+                                     ('intention', 'error estimate'),
+                                     ('name', 'RESIDCOV'),
+                                     ('tag', 'residual_covariance'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description', 'Coherence'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/coherence.html'),
+                                     ('intention', 'signal coherence'),
+                                     ('name', 'COH'),
+                                     ('tag', 'coherence'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description', 'Multiple Coherence'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/multiple_coherence.html'),
+                                     ('intention', 'signal coherence'),
+                                     ('name', 'PREDCOH'),
+                                     ('tag', 'multiple_coherence'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description', 'Signal Amplitude'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/signal_amplitude.html'),
+                                     ('intention', 'signal power estimate'),
+                                     ('name', 'SIGAMP'),
+                                     ('tag', 'signal_amplitude'),
+                                     ('type', 'complex')])},
+                       {'estimate': OrderedDict([('description', 'Signal Noise'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/signal_noise.html'),
+                                     ('intention', 'error estimate'),
+                                     ('name', 'SIGNOISE'),
+                                     ('tag', 'signal_noise'),
+                                     ('type', 'complex')])}])])
 
         self.assertDictEqual(
             test_dict, self.xml.statistical_estimates.to_dict(single=True)
         )
 
     def test_data_types(self):
-        test_dict = OrderedDict(
-            [
-                (
-                    "data_types_list",
-                    [
-                        "data_type:\n\tdescription = MT impedance\n\texternal_url = http://www.iris.edu/dms/products/emtf/impedance.html\n\tinput = H\n\tintention = primary data type\n\tname = Z\n\toutput = E\n\ttag = impedance\n\ttype = complex\n\tunits = [mV/km]/[nT]",
-                        "data_type:\n\tdescription = Vertical Field Transfer Functions (Tipper)\n\texternal_url = http://www.iris.edu/dms/products/emtf/tipper.html\n\tinput = H\n\tintention = primary data type\n\tname = T\n\toutput = H\n\ttag = tipper\n\ttype = complex\n\tunits = []",
-                    ],
-                )
-            ]
-        )
+        test_dict = OrderedDict([('data_types_list',
+                      [{'data_type': OrderedDict([('description', 'MT impedance'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/impedance.html'),
+                                     ('input', 'H'),
+                                     ('intention', 'primary data type'),
+                                     ('name', 'Z'),
+                                     ('output', 'E'),
+                                     ('tag', 'impedance'),
+                                     ('type', 'complex'),
+                                     ('units', '[mV/km]/[nT]')])},
+                       {'data_type': OrderedDict([('description',
+                                      'Vertical Field Transfer Functions (Tipper)'),
+                                     ('external_url',
+                                      'http://www.iris.edu/dms/products/emtf/tipper.html'),
+                                     ('input', 'H'),
+                                     ('intention', 'primary data type'),
+                                     ('name', 'T'),
+                                     ('output', 'H'),
+                                     ('tag', 'tipper'),
+                                     ('type', 'complex'),
+                                     ('units', '[]')])}])])
 
         self.assertDictEqual(test_dict, self.xml.data_types.to_dict(single=True))
 
     def test_site_layout(self):
-        test_dict = OrderedDict(
-            [
-                (
-                    "input_channels",
-                    [
-                        "magnetic:\n\tname = Hx\n\torientation = 9.1\n\tx = 0.0\n\ty = 0.0\n\tz = 0.0",
-                        "magnetic:\n\tname = Hy\n\torientation = 99.1\n\tx = 0.0\n\ty = 0.0\n\tz = 0.0",
-                    ],
-                ),
-                (
-                    "output_channels",
-                    [
-                        "magnetic:\n\tname = Hz\n\torientation = 9.1\n\tx = 0.0\n\ty = 0.0\n\tz = 0.0",
-                        "electric:\n\tname = Ex\n\torientation = 9.1\n\tx = -50.0\n\tx2 = 50.0\n\ty = 0.0\n\ty2 = 0.0\n\tz = 0.0\n\tz2 = 0.0",
-                        "electric:\n\tname = Ey\n\torientation = 99.1\n\tx = 0.0\n\tx2 = 0.0\n\ty = -50.0\n\ty2 = 50.0\n\tz = 0.0\n\tz2 = 0.0",
-                    ],
-                ),
-            ]
-        )
+        test_dict = OrderedDict([('input_channels',
+                      [{'magnetic': OrderedDict([('name', 'Hx'),
+                                     ('orientation', 9.1),
+                                     ('x', 0.0),
+                                     ('y', 0.0),
+                                     ('z', 0.0)])},
+                       {'magnetic': OrderedDict([('name', 'Hy'),
+                                     ('orientation', 99.1),
+                                     ('x', 0.0),
+                                     ('y', 0.0),
+                                     ('z', 0.0)])}]),
+                     ('output_channels',
+                      [{'magnetic': OrderedDict([('name', 'Hz'),
+                                     ('orientation', 9.1),
+                                     ('x', 0.0),
+                                     ('y', 0.0),
+                                     ('z', 0.0)])},
+                       {'electric': OrderedDict([('name', 'Ex'),
+                                     ('orientation', 9.1),
+                                     ('x', -50.0),
+                                     ('x2', 50.0),
+                                     ('y', 0.0),
+                                     ('y2', 0.0),
+                                     ('z', 0.0),
+                                     ('z2', 0.0)])},
+                       {'electric': OrderedDict([('name', 'Ey'),
+                                     ('orientation', 99.1),
+                                     ('x', 0.0),
+                                     ('x2', 0.0),
+                                     ('y', -50.0),
+                                     ('y2', 50.0),
+                                     ('z', 0.0),
+                                     ('z2', 0.0)])}])])
 
         self.assertDictEqual(test_dict, self.xml.site_layout.to_dict(single=True))
 

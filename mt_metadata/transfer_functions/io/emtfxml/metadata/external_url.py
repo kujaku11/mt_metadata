@@ -25,6 +25,4 @@ class ExternalUrl(Base):
 
     def __init__(self, **kwargs):
 
-        self.description = None
-        self.url = None
         super().__init__(attr_dict=attr_dict, **kwargs)

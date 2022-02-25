@@ -24,11 +24,6 @@ class Dipole(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.manufacturer = None
-        self.length = None
-        self.azimuth = None
-        self.name = None
-        self.type = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         self._electrode = []

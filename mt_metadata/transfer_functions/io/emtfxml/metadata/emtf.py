@@ -21,10 +21,4 @@ class EMTF(Base):
 
     def __init__(self, **kwargs):
 
-        self.description = None
-        self.product_id = None
-        self.sub_type = "MT_TF"
-        self.notes = None
-        self.tags = None
-
         super().__init__(attr_dict=attr_dict, **kwargs)
