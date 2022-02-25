@@ -27,8 +27,10 @@ class Location(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.declination = Declination()
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        
 
     @property
     def latitude(self):

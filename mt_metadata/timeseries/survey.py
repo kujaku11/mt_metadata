@@ -47,7 +47,6 @@ class Survey(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.acquired_by = Person()
         self.fdsn = Fdsn()
         self.citation_dataset = Citation()
@@ -58,6 +57,9 @@ class Survey(Base):
         self.time_period = TimePeriod()
         self.stations = []
         self.filters = {}
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
 
     def __add__(self, other):
         if isinstance(other, Survey):

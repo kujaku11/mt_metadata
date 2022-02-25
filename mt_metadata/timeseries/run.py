@@ -51,9 +51,6 @@ class Run(Base):
 
     def __init__(self, **kwargs):
 
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
         self.acquired_by = Person()
         self.provenance = Provenance()
         self.time_period = TimePeriod()
@@ -62,6 +59,9 @@ class Run(Base):
         self.fdsn = Fdsn()
         self.channels = []
 
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
+       
     def __len__(self):
         return len(self.channels)
 

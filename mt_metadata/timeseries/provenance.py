@@ -35,8 +35,6 @@ class Provenance(Base):
         self.submitter = Person()
         self.software = Software()
         
-        print(dir(self))
-        
         super().__init__(attr_dict=attr_dict, **kwargs)
        
 

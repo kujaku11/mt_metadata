@@ -34,13 +34,14 @@ class Electric(Channel):
 
     def __init__(self, **kwargs):
 
-        Channel.__init__(self, _ch_pattern=r"e\w+", **kwargs)
-
         self.positive = Electrode()
         self.negative = Electrode()
         self.contact_resistance = Diagnostic()
         self.ac = Diagnostic()
         self.dc = Diagnostic()
+        
+        Channel.__init__(self, _ch_pattern=r"e\w+", **kwargs)
+
         self.type = "electric"
 
         self._attr_dict = attr_dict

@@ -27,7 +27,9 @@ class DataLogger(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.timing_system = TimingSystem()
         self.firmware = Software()
         self.power_source = Battery()
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        

@@ -25,6 +25,8 @@ class DataQuality(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.rating = Rating()
+        
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        
 
