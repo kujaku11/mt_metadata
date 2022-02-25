@@ -542,6 +542,8 @@ class Base:
                     for obj in value:
                         if hasattr(obj, "to_dict"):
                             v_list.append(obj.to_dict(nested=nested, required=required))
+                        else:
+                            v_list.append(obj)
                     value = v_list
                     
             except AttributeError as error:
