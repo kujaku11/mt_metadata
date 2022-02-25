@@ -50,11 +50,10 @@ class Run(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.id = None
-        self.sample_rate = None
-        self.comments = None
-        self._n_chan = None
-        self.data_type = None
+
+
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
         self.acquired_by = Person()
         self.provenance = Provenance()
         self.time_period = TimePeriod()
@@ -62,8 +61,6 @@ class Run(Base):
         self.metadata_by = Person()
         self.fdsn = Fdsn()
         self.channels = []
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __len__(self):
         return len(self.channels)

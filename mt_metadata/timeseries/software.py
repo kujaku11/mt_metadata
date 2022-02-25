@@ -23,11 +23,9 @@ class Software(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.name = None
-        self.version = None
         self._author = Person()
-
         super().__init__(attr_dict=attr_dict, **kwargs)
+        
 
     @property
     def author(self):

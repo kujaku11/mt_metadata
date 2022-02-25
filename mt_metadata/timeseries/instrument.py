@@ -22,11 +22,5 @@ class Instrument(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
-        self.id = None
-        self.manufacturer = None
-        self.type = None
-        self.model = None
-        self.name = None
-        self.settings = None
+        
         super().__init__(attr_dict=attr_dict, **kwargs)

@@ -36,11 +36,12 @@ class Magnetic(Channel):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+
+        Channel.__init__(self, _ch_pattern=r"[h,b]\w+", **kwargs)
+        
         self.sensor = Instrument()
         self.h_field_min = Diagnostic()
         self.h_field_max = Diagnostic()
-
-        Channel.__init__(self, _ch_pattern=r"[h,b]\w+", **kwargs)
         self.type = "magnetic"
 
         self._attr_dict = attr_dict

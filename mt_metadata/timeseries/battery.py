@@ -25,5 +25,5 @@ class Battery(Base):
 
     def __init__(self, **kwargs):
 
-        self.voltage = Diagnostic()
         super().__init__(attr_dict=attr_dict, **kwargs)
+        self.voltage = Diagnostic()

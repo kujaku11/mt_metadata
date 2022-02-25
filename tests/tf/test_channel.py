@@ -17,7 +17,7 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Channel
+from mt_metadata.transfer_functions.tf import Channel
 
 # =============================================================================
 #

@@ -23,10 +23,4 @@ class TimingSystem(Base):
 
     def __init__(self, **kwargs):
 
-        self.type = None
-        self.drift = None
-        self.drift_units = None
-        self.uncertainty = None
-        self.uncertainty_units = None
-        self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)

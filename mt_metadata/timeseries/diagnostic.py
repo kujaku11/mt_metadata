@@ -22,7 +22,5 @@ class Diagnostic(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.units = None
-        self.start = None
-        self.end = None
+
         super().__init__(attr_dict=attr_dict, **kwargs)

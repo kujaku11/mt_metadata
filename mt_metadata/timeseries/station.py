@@ -51,24 +51,17 @@ class Station(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.id = None
+
+        super().__init__(attr_dict=attr_dict, **kwargs)
         self.fdsn = Fdsn()
-        self.geographic_name = None
-        self.datum = None
-        self.num_channels = None
         self.channels_recorded = []
         self.run_list = []
-        self.channel_layout = None
-        self.comments = None
-        self.data_type = None
         self.orientation = Orientation()
         self.acquired_by = Person()
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
         self.runs = []
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __add__(self, other):
         if isinstance(other, Station):

@@ -28,12 +28,4 @@ class Electrode(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
-        self.id = None
-        self.manufacturer = None
-        self.type = None
-        self.model = None
-        self.latitude = 0.0
-        self.longitude = 0.0
-        self.elevation = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)

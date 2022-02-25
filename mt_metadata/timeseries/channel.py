@@ -37,6 +37,8 @@ class Channel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+
+        super().__init__(attr_dict=attr_dict, **kwargs)
         self.data_quality = DataQuality()
         self.filter = Filtered()
         self.location = Location()
@@ -45,8 +47,6 @@ class Channel(Base):
         self.fdsn = Fdsn()
         self._ch_pattern = r"\w+"
         self._component = None
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
     def component(self):

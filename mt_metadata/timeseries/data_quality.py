@@ -25,10 +25,6 @@ class DataQuality(Base):
 
     def __init__(self, **kwargs):
 
-        self.rating = Rating()
-        self.warnings = None
-        self.flag = 0
-        self.good_from_period = None
-        self.good_to_period = None
-
         super().__init__(attr_dict=attr_dict, **kwargs)
+        self.rating = Rating()
+
