@@ -22,9 +22,5 @@ class Fdsn(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.id = None
-        self.network = None
-        self.channel_code = None
-        self.new_epoch = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

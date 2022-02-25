@@ -17,7 +17,6 @@ from . import HMeasurement, EMeasurement
 
 # =============================================================================
 attr_dict = get_schema("define_measurement", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Location()._attr_dict)
 # =============================================================================
 
 

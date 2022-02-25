@@ -27,19 +27,8 @@ class Location(Base):
 
     def __init__(self, **kwargs):
 
-        self.comments = None
-        self.datum = "WGS84"
         self.declination = Declination()
 
-        self._elevation = 0.0
-        self._latitude = 0.0
-        self._longitude = 0.0
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0
-        self.x2 = 0.0
-        self.y2 = 0.0
-        self.z2 = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

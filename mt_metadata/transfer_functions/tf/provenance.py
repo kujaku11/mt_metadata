@@ -31,13 +31,11 @@ class Provenance(Base):
 
         self._creation_dt = MTime()
         self._creation_dt.now()
-        self.creating_application = "MT Metadata"
         self.creator = Person()
         self.submitter = Person()
         self.software = Software()
         self.archive = Person()
-        self.log = None
-        self.comments = None
+        
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

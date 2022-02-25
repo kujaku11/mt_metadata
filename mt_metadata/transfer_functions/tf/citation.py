@@ -22,11 +22,5 @@ class Citation(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.author = None
-        self.title = None
-        self.journal = None
-        self.volume = None
-        self.doi = None
-        self.year = None
-        self.survey_doi = None
+
         super().__init__(attr_dict=attr_dict, **kwargs)

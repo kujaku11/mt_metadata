@@ -27,9 +27,7 @@ class Filtered(Base):
     def __init__(self, **kwargs):
         self._name = []
         self._applied = []
-        self.name = None
-        self.applied = None
-        self.comments = None
+        
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

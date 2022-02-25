@@ -23,9 +23,4 @@ class Person(Base):
 
     def __init__(self, **kwargs):
 
-        self.email = None
-        self.author = None
-        self.organization = None
-        self.url = None
-        self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)

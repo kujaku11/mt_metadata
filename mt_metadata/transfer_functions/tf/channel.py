@@ -36,13 +36,14 @@ class Channel(Base):
 
     def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
         self.data_quality = DataQuality()
         self.filter = Filtered()
         self.location = Location()
         self.time_period = TimePeriod()
         self.sensor = Instrument()
         self.fdsn = Fdsn()
+        self._component = None
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
 
     @property

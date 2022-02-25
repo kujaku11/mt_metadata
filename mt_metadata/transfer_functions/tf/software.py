@@ -24,8 +24,7 @@ class Software(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.name = None
-        self.version = None
+        
         self._author = Person()
         self._last_updated = MTime()
 

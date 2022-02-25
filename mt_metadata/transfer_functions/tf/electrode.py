@@ -29,17 +29,4 @@ class Electrode(Base):
 
     def __init__(self, **kwargs):
 
-        self.id = None
-        self.manufacturer = None
-        self.type = None
-        self.model = None
-        self.latitude = 0.0
-        self.longitude = 0.0
-        self.elevation = 0.0
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-        self.x2 = 0.0
-        self.y2 = 0.0
-        self.z2 = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)

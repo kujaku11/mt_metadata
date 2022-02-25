@@ -23,19 +23,7 @@ class Filter(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.name = None
-        self.type = None
-        self.units_in = None
-        self.units_out = None
         self._calibration_dt = MTime()
-        self.operation = None
-        self.normalization_frequency = None
-        self.normalization_factor = None
-        self.cutoff = None
-        self.n_poles = None
-        self.n_zeros = None
-        self.comments = None
-        self.conversion_factor = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
