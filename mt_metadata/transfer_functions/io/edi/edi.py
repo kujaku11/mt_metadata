@@ -100,12 +100,13 @@ class EDI(object):
             "freq",
             "zxxr", "zxxi", "zxyr", "zxyi", "zyxr", "zyxi", "zyyr", "zyyi",
             "zxx.var", "zxy.var", "zyx.var", "zyy.var",
-            "txr", "txi", "tyr", "tyr", "tx.exp", "ty.exp", "txvar.exp", "tyvar.exp",
+            "txr.exp", "txi.exp", "tyr.exp", "tyi.exp",
+            "txvar.exp", "tyvar.exp",
             "rhoxx", "rhoxy", "rhoyx", "rhoyy", 
             "rhoxx.err", "rhoxy.err", "rhoyx.err", "rhoyy.err",
             "phsxx", "phsxy", "phsyx", "phsyy",
             "phsxx.err", "phsxy.err", "phsyx.err", "phsyy.err",
-            ]
+            "zrot", "rhorot", "trot"]
         
         self._index_dict = {
             "zxx": {"ii": 0, "jj": 0, "obj": "z", "err_obj": "z_err"},
@@ -114,6 +115,10 @@ class EDI(object):
             "zyy": {"ii": 1, "jj": 1, "obj": "z", "err_obj": "z_err"},
             "tx": {"ii": 0, "jj":0, "obj": "t", "err_obj": "t_err"},
             "ty": {"ii": 0, "jj":1, "obj": "t", "err_obj": "t_err"},
+            "rhoxx": {"ii": 0, "jj": 0, "obj": "z", "err_obj": "z_err"},
+            "rhoxy": {"ii": 0, "jj": 1, "obj": "z", "err_obj": "z_err"},
+            "rhoyx": {"ii": 1, "jj": 0, "obj": "z", "err_obj": "z_err"},
+            "rhoyy": {"ii": 1, "jj": 1, "obj": "z", "err_obj": "z_err"},
             }
         
 
@@ -317,21 +322,37 @@ class EDI(object):
         self.data_dict = data_dict
         # fill impedance tensor
         for key, index in self._index_dict.items():
-            print(key)
             ii = index["ii"]
             jj = index["jj"]
+            obj = getattr(self, index["obj"])
+            error_obj = getattr(self, index["err_obj"])
             try:
-                obj = getattr(self, index["obj"])
-                error_obj = getattr(self, index["err_obj"])
-                obj[:, ii, jj]  = (
-                    np.array(data_dict[f"{key}r"]) + np.array(data_dict[f"{key}i"]) * 1j
-                )
+                if key.startswith("z"):
+                    obj[:, ii, jj]  = (
+                        np.array(data_dict[f"{key}r"]) + np.array(data_dict[f"{key}i"]) * 1j
+                    )
+                    error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
+                    error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
                 
-                error_key = [k for k in data_dict.keys() if f"{key}." in k][0]
-                print(error_key)
-                error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
+                elif key.startswith("t"):
+                    obj[:, ii, jj]  = (
+                        np.array(data_dict[f"{key}r.exp"]) + np.array(data_dict[f"{key}i.exp"]) * 1j
+                    )
+                    error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
+                    error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
+                
+                elif key.startswith("r") or key.startswith("p"):
+                    if self.z.all() == 0.0:
+                        z_real = np.sqrt((5 * self.frequency * np.array(data_dict[key]))/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))**2 + 1))
+                        z_imag = (np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))) * z_real
+                        obj[:, ii, jj] = z_real + 1j * z_imag
+                    if self.z_err.all() == 0.0:
+                        z_real_err = np.sqrt((5 * self.frequency * np.array(data_dict[f"{key}.err"]))/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}.err"]))**2 + 1))
+                        z_imag_err = (np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}.err"]))) * z_real_err
+                        error_obj[:, ii, jj] = z_real_err ** 2 + 1j * z_imag_err ** 2
+                    
+                
             except KeyError as error:
-                print(f"Error: {key}")
                 self.logger.exception(error)
             
         # if "zxxr" in data_dict.keys():
@@ -363,34 +384,33 @@ class EDI(object):
             self.frequency = self.frequency[::-1]
             self.z = self.z[::-1]
             self.z_err = self.z_err[::-1]
-            flip = True
 
         try:
             self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
             self.rotation_angle = np.zeros_like(self.frequency)
 
-        # fill tipper data if there it exists
-        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
-        self.t_err = np.zeros((self.frequency.size, 1, 2), dtype=float)
+        # # fill tipper data if there it exists
+        # self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
+        # self.t_err = np.zeros((self.frequency.size, 1, 2), dtype=float)
 
-        if "txr.exp" in list(data_dict.keys()):
-            self.t[:, 0, 0] = (
-                np.array(data_dict["txr.exp"]) + np.array(data_dict["txi.exp"]) * 1j
-            )
-            self.t[:, 0, 1] = (
-                np.array(data_dict["tyr.exp"]) + np.array(data_dict["tyi.exp"]) * 1j
-            )
+        # if "txr.exp" in list(data_dict.keys()):
+        #     self.t[:, 0, 0] = (
+        #         np.array(data_dict["txr.exp"]) + np.array(data_dict["txi.exp"]) * 1j
+        #     )
+        #     self.t[:, 0, 1] = (
+        #         np.array(data_dict["tyr.exp"]) + np.array(data_dict["tyi.exp"]) * 1j
+        #     )
 
-            self.t_err[:, 0, 0] = np.abs(np.array(data_dict["txvar.exp"])) ** 0.5
-            self.t_err[:, 0, 1] = np.abs(np.array(data_dict["tyvar.exp"])) ** 0.5
+        #     self.t_err[:, 0, 0] = np.abs(np.array(data_dict["txvar.exp"])) ** 0.5
+        #     self.t_err[:, 0, 1] = np.abs(np.array(data_dict["tyvar.exp"])) ** 0.5
 
-            if flip:
-                self.t = self.t[::-1]
-                self.t_err = self.t_err[::-1]
+        #     if flip:
+        #         self.t = self.t[::-1]
+        #         self.t_err = self.t_err[::-1]
 
-        else:
-            self.logger.debug("Could not find any Tipper data.")
+        # else:
+        #     self.logger.debug("Could not find any Tipper data.")
 
     def _read_spectra_new(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
