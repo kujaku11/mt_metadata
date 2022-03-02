@@ -95,6 +95,27 @@ class EDI(object):
             ["txr.exp", "txi.exp", "txvar.exp"],
             ["tyr.exp", "tyi.exp", "tyvar.exp"],
         ]
+        
+        self._accepted_keys = [
+            "freq",
+            "zxxr", "zxxi", "zxyr", "zxyi", "zyxr", "zyxi", "zyyr", "zyyi",
+            "zxx.var", "zxy.var", "zyx.var", "zyy.var",
+            "txr", "txi", "tyr", "tyr", "tx.exp", "ty.exp", "txvar.exp", "tyvar.exp",
+            "rhoxx", "rhoxy", "rhoyx", "rhoyy", 
+            "rhoxx.err", "rhoxy.err", "rhoyx.err", "rhoyy.err",
+            "phsxx", "phsxy", "phsyx", "phsyy",
+            "phsxx.err", "phsxy.err", "phsyx.err", "phsyy.err",
+            ]
+        
+        self._index_dict = {
+            "zxx": {"ii": 0, "jj": 0, "obj": "z", "err_obj": "z_err"},
+            "zxy": {"ii": 0, "jj": 1, "obj": "z", "err_obj": "z_err"},
+            "zyx": {"ii": 1, "jj": 0, "obj": "z", "err_obj": "z_err"},
+            "zyy": {"ii": 1, "jj": 1, "obj": "z", "err_obj": "z_err"},
+            "tx": {"ii": 0, "jj":0, "obj": "t", "err_obj": "t_err"},
+            "ty": {"ii": 0, "jj":1, "obj": "t", "err_obj": "t_err"},
+            }
+        
 
         self._data_header_str = ">!****{0}****!\n"
 
@@ -265,7 +286,7 @@ class EDI(object):
                 if len(line_list) == 0:
                     continue
                 key = line_list[0].lower()
-                if key[0] == "z" or key[0] == "t" or key == "freq":
+                if key in self._accepted_keys:
                     data_find = True
                     data_dict[key] = []
                 else:
@@ -287,56 +308,71 @@ class EDI(object):
                 data_dict[key] += d_lines
 
         # fill useful arrays
-        freq_arr = np.array(data_dict["freq"], dtype=float)
-        self.z = np.zeros((freq_arr.size, 2, 2), dtype=complex)
-        self.z_err = np.zeros((freq_arr.size, 2, 2), dtype=float)
-
+        self.frequency = np.array(data_dict["freq"], dtype=float)
+        self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
+        self.z_err = np.zeros((self.frequency.size, 2, 2), dtype=float)
+        # fill tipper data if there it exists
+        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
+        self.t_err = np.zeros((self.frequency.size, 1, 2), dtype=float)
+        self.data_dict = data_dict
         # fill impedance tensor
-        if "zxxr" in data_dict.keys():
-            self.z[:, 0, 0] = (
-                np.array(data_dict["zxxr"]) + np.array(data_dict["zxxi"]) * 1j
-            )
-            self.z_err[:, 0, 0] = np.abs(np.array(data_dict["zxx.var"])) ** 0.5
-        if "zxyr" in data_dict.keys():
-            self.z[:, 0, 1] = (
-                np.array(data_dict["zxyr"]) + np.array(data_dict["zxyi"]) * 1j
-            )
-            self.z_err[:, 0, 1] = np.abs(np.array(data_dict["zxy.var"])) ** 0.5
-        if "zyxr" in data_dict.keys():
-            self.z[:, 1, 0] = (
-                np.array(data_dict["zyxr"]) + np.array(data_dict["zyxi"]) * 1j
-            )
-            self.z_err[:, 1, 0] = np.abs(np.array(data_dict["zyx.var"])) ** 0.5
-        if "zyyr" in data_dict.keys():
-            self.z[:, 1, 1] = (
-                np.array(data_dict["zyyr"]) + np.array(data_dict["zyyi"]) * 1j
-            )
-            self.z_err[:, 1, 1] = np.abs(np.array(data_dict["zyy.var"])) ** 0.5
+        for key, index in self._index_dict.items():
+            print(key)
+            ii = index["ii"]
+            jj = index["jj"]
+            try:
+                obj = getattr(self, index["obj"])
+                error_obj = getattr(self, index["err_obj"])
+                obj[:, ii, jj]  = (
+                    np.array(data_dict[f"{key}r"]) + np.array(data_dict[f"{key}i"]) * 1j
+                )
+                
+                error_key = [k for k in data_dict.keys() if f"{key}." in k][0]
+                print(error_key)
+                error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
+            except KeyError as error:
+                print(f"Error: {key}")
+                self.logger.exception(error)
+            
+        # if "zxxr" in data_dict.keys():
+        #     self.z[:, 0, 0] = (
+        #         np.array(data_dict["zxxr"]) + np.array(data_dict["zxxi"]) * 1j
+        #     )
+        #     self.z_err[:, 0, 0] = np.abs(np.array(data_dict["zxx.var"])) ** 0.5
+        # if "zxyr" in data_dict.keys():
+        #     self.z[:, 0, 1] = (
+        #         np.array(data_dict["zxyr"]) + np.array(data_dict["zxyi"]) * 1j
+        #     )
+        #     self.z_err[:, 0, 1] = np.abs(np.array(data_dict["zxy.var"])) ** 0.5
+        # if "zyxr" in data_dict.keys():
+        #     self.z[:, 1, 0] = (
+        #         np.array(data_dict["zyxr"]) + np.array(data_dict["zyxi"]) * 1j
+        #     )
+        #     self.z_err[:, 1, 0] = np.abs(np.array(data_dict["zyx.var"])) ** 0.5
+        # if "zyyr" in data_dict.keys():
+        #     self.z[:, 1, 1] = (
+        #         np.array(data_dict["zyyr"]) + np.array(data_dict["zyyi"]) * 1j
+        #     )
+        #     self.z_err[:, 1, 1] = np.abs(np.array(data_dict["zyy.var"])) ** 0.5
 
         # check for order of frequency, we want high togit  low
-        if freq_arr[0] < freq_arr[1]:
+        if self.frequency[0] < self.frequency[1]:
             self.logger.debug(
                 "Ordered arrays to be arranged from high to low frequency"
             )
-            freq_arr = freq_arr[::-1]
+            self.frequency = self.frequency[::-1]
             self.z = self.z[::-1]
             self.z_err = self.z_err[::-1]
             flip = True
 
-        # set the attributes as private variables to avoid redundant estimation
-        # of res and phase
-        self.frequency = freq_arr
-        self.z = self.z
-        self.z_err = self.z_err
-
         try:
             self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
-            self.rotation_angle = np.zeros_like(freq_arr)
+            self.rotation_angle = np.zeros_like(self.frequency)
 
         # fill tipper data if there it exists
-        self.t = np.zeros((freq_arr.size, 1, 2), dtype=complex)
-        self.t_err = np.zeros((freq_arr.size, 1, 2), dtype=float)
+        self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
+        self.t_err = np.zeros((self.frequency.size, 1, 2), dtype=float)
 
         if "txr.exp" in list(data_dict.keys()):
             self.t[:, 0, 0] = (
