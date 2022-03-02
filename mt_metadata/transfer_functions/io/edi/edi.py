@@ -369,7 +369,10 @@ class EDI(object):
         try:
             self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
-            self.rotation_angle = np.zeros_like(self.frequency)
+            try:
+                self.rotation_angle = np.array(data_dict["rhorot"])
+            except KeyError:
+                self.rotation_angle = np.zeros_like(self.frequency)
 
     def _read_spectra_new(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
