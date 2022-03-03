@@ -311,9 +311,13 @@ class EDI(object):
                     except ValueError:
                         d_lines[ii] = 0.0
                 data_dict[key] += d_lines
+             
+        # put everything into arrays
+        for key, k_list in data_dict.items():
+            data_dict[key] = np.array(k_list)
 
         # fill useful arrays
-        self.frequency = np.array(data_dict["freq"], dtype=float)
+        self.frequency = data_dict["freq"]
         self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
         self.z_err = np.zeros((self.frequency.size, 2, 2), dtype=float)
         # fill tipper data if there it exists
@@ -331,27 +335,27 @@ class EDI(object):
             try:
                 if key.startswith("z"):
                     obj[:, ii, jj]  = (
-                        np.array(data_dict[f"{key}r"]) + np.array(data_dict[f"{key}i"]) * 1j
+                        data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
                     )
                     error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
-                    error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
+                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
                 
                 elif key.startswith("t"):
                     obj[:, ii, jj]  = (
-                        np.array(data_dict[f"{key}r.exp"]) + np.array(data_dict[f"{key}i.exp"]) * 1j
+                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
                     error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
-                    error_obj[:, ii, jj] = np.abs(np.array(data_dict[error_key])) ** 0.5
+                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
                 
                 elif key.startswith("r") or key.startswith("p"):
+                    self.logger.debug("Reading RHO and PHS to compute impedance")
                     if (self.z[:, ii, jj] == 0).all():
-                        z_real = np.sqrt((5 * self.frequency * np.array(data_dict[key]))/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))**2 + 1))
+                        z_real = np.sqrt((5 * self.frequency * data_dict[key])/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))**2 + 1))
                         z_imag = (np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))) * z_real
                         obj[:, ii, jj] = z_real + 1j * z_imag
-                    if (self.z_err[:, ii, jj] == 0).all():
-                        z_real_err = np.sqrt((5 * self.frequency * np.array(data_dict[f"{key}.err"]))/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}.err"]))**2 + 1))
-                        z_imag_err = (np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}.err"]))) * z_real_err
-                        error_obj[:, ii, jj] = np.abs(z_real_err ** 2 + 1j * z_imag_err ** 2)
+                    
+                        error_obj[:, ii, jj] = np.deg2rad(data_dict[f"phs{key[-2:]}.err"]) * np.sqrt(data_dict[key] * (self.frequency * 5))
+                        
                     
                 
             except KeyError as error:
