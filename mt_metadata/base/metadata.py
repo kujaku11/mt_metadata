@@ -564,7 +564,7 @@ class Base:
                 value = None
             if required:
                 if isinstance(value, (np.ndarray)):
-                    if name == "zeros":
+                    if name == "zeros" or name == "poles":
                         meta_dict[name] = value
                     elif value.all() != 0:
                         meta_dict[name] = value
