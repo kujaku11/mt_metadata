@@ -95,21 +95,31 @@ class Base:
                 other_dict = OrderedDict(
                     sorted(other.to_dict().items(), key=itemgetter(0))
                 )
-            if other_dict == home_dict:
-                return True
             else:
-                for key, value in home_dict.items():
-                    try:
-                        other_value = other_dict[key]
-                        if value != other_value:
+                raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
+            fail = False
+            for key, value in home_dict.items():
+                try:
+                    other_value = other_dict[key]
+                    if isinstance(value, np.ndarray):
+                        if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
-                    except KeyError:
-                        msg = "Cannot find {0} in other".format(key)
+                            fail = True
+                            
+                    elif value != other_value:
+                        msg = f"{key}: {value} != {other_value}"
                         self.logger.info(msg)
+                        fail = True
+                except KeyError:
+                    msg = "Cannot find {0} in other".format(key)
+                    self.logger.info(msg)
 
+            if fail:
                 return False
-        raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
+            else:
+                return True
+        
 
     def __ne__(self, other):
         return not self.__eq__(other)
