@@ -533,7 +533,10 @@ class NumpyEncoder(json.JSONEncoder):
             return float(obj)
 
         elif isinstance(obj, (np.ndarray)):
-            return obj.tolist()
+            if obj.dtype == complex:
+                return {"real": obj.real.tolist(), "imag": obj.imag.tolist()}
+            else: 
+                return obj.tolist()
 
         # For now turn references into a generic string
         elif "h5" in str(type(obj)):
