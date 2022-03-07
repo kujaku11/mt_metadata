@@ -263,12 +263,11 @@ class ChannelResponseFilter(Base):
             # warn that there are no filters associated with channel?
             return np.ones(len(self.frequencies))
 
-        filter_stage = filters_list.pop(0)
-        result = filter_stage.complex_response(self.frequencies, **kwargs)
-        while len(filters_list):
-            filter_stage = filters_list.pop(0)
-            result *= filter_stage.complex_response(self.frequencies, **kwargs)
-
+        result = filters_list[0].complex_response(self.frequencies)
+        
+        for ff in filters_list[1:]:
+            result *= ff.complex_response(self.frequencies)
+        
         if normalize:
             result /= np.max(np.abs(result))
         return result

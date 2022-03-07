@@ -768,7 +768,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.country = sm.country
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
-        self.copyright.citation.authors = sm.citation_dataset.author
+        self.copyright.citation.authors = sm.citation_dataset.authors
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
         self.copyright.acknowledgement = sm.comments

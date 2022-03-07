@@ -191,6 +191,7 @@ class PoleZeroFilter(FilterBase):
         w, h = signal.freqs_zpk(
             self.zeros, self.poles, self.total_gain, worN=angular_frequencies
         )
+
         return h
 
     def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):
