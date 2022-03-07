@@ -323,8 +323,11 @@ def recursive_split_getattr(base_object, name, sep="."):
         value, prop = recursive_split_getattr(base_object, other[0])
     else:
         value = getattr(base_object, key)
-        if isinstance(getattr(type(base_object), key), property):
-            prop = True
+        try:
+            if isinstance(getattr(type(base_object), key), property):
+                prop = True
+        except AttributeError:
+            prop = False
     return value, prop
 
 
