@@ -320,10 +320,12 @@ def recursive_split_getattr(base_object, name, sep="."):
 
     if other:
         base_object = getattr(base_object, key)
-        value = recursive_split_getattr(base_object, other[0])
+        value, prop = recursive_split_getattr(base_object, other[0])
     else:
         value = getattr(base_object, key)
-    return value
+        if isinstance(getattr(type(base_object), key), property):
+            prop = True
+    return value, prop
 
 
 def recursive_split_setattr(base_object, name, value, sep="."):

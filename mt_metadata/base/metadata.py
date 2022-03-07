@@ -418,21 +418,23 @@ class Base:
         10
 
         """
-        try:
-            if isinstance(getattr(type(self), name), property):
-                return getattr(self, name)
-        except AttributeError:
-            pass
-        
+
         name = self._validate_name(name)
         v_type = self._get_standard_type(name)
         
 
         if "." in name:
-            value = helpers.recursive_split_getattr(self, name)
+            value, prop = helpers.recursive_split_getattr(self, name)
+            if prop:
+                return value
+
         else:
             value = getattr(self, name)
-            
+            try:
+                if isinstance(getattr(type(self), name), property):
+                    return value
+            except AttributeError:
+                pass
 
         if hasattr(value, "to_dict"):
             return value
