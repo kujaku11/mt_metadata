@@ -350,14 +350,17 @@ class EDI(object):
                 elif key.startswith("r") or key.startswith("p"):
                     self.logger.debug("Reading RHO and PHS to compute impedance")
                     if (self.z[:, ii, jj] == 0).all():
-                        z_real = np.sqrt((5 * self.frequency * data_dict[key])/(np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))**2 + 1))
-                        z_imag = (np.tan(np.deg2rad(data_dict[f"phs{key[-2:]}"]))) * z_real
-                        obj[:, ii, jj] = z_real + 1j * z_imag
+                        phase = data_dict[f"phs{key[-2:]}"]
+                        z_real = np.sqrt((5 * self.frequency * data_dict[key])/(np.tan(np.deg2rad(phase))**2 + 1))
+                        z_imag = (np.tan(np.deg2rad(phase))) * z_real
+                        if ii == 1 and jj == 0:
+                            if phase.mean() < 90 and phase.mean() > 0:
+                                obj[:, ii, jj] = -1 * (z_real + 1j * z_imag)
+                        else:
+                            obj[:, ii, jj] = z_real + 1j * z_imag
                     
                         error_obj[:, ii, jj] = np.deg2rad(data_dict[f"phs{key[-2:]}.err"]) * np.sqrt(data_dict[key] * (self.frequency * 5))
-                        
-                    
-                
+   
             except KeyError as error:
                 self.logger.debug(error)
 

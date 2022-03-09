@@ -15,6 +15,7 @@ import logging
 from copy import deepcopy
 from collections import OrderedDict
 from operator import itemgetter
+from pathlib import Path
 
 import json
 import pandas as pd
@@ -663,12 +664,25 @@ class Base:
         :type json_str: string
 
         """
-        if not isinstance(json_str, str):
+        if isinstance(json_str, str):
+            json_path = Path(json_str)
+            if json_path.exists():
+                with open(json_path, "r") as fid:
+                    json_dict = json.load(fid)
+            else:
+                json_dict = json.loads(json_str)
+        elif isinstance(json_str, Path):
+            if json_str.exists():
+                with open(json_str, "r") as fid:
+                    json_dict = json.load(fid)
+        
+        elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise MTSchemaError(msg % type(json_str))
 
-        self.from_dict(json.loads(json_str))
+        self.from_dict(json_dict) 
+        
 
     def from_series(self, pd_series):
         """
