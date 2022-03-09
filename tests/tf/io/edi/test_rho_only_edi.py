@@ -188,8 +188,8 @@ class TestMetronixEDI(unittest.TestCase):
                 54.45707,  53.5037 ,  55.26363,  -85.40018])
         
         pyx = np.rad2deg(np.arctan2(self.edi_obj.z[:, 1, 0].imag, self.edi_obj.z[:, 1, 0].real))
-        
-        self.assertTrue(np.isclose(phase_yx, pyx).all())
+
+        self.assertTrue(np.isclose(phase_yx % -180, pyx % -180).all())
 
 # =============================================================================
 # run
