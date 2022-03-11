@@ -78,6 +78,7 @@ from .channel import Channel
 from .auxiliary import Auxiliary
 from .electric import Electric
 from .magnetic import Magnetic
+from .statistical_estimate import StatisticalEstimate
 from .run import Run
 from .station import Station
 
@@ -113,4 +114,5 @@ __all__ = [
     "Auxiliary",
     "Electric",
     "Magnetic",
+    "StatisticalEstimate",
 ]
