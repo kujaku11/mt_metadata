@@ -18,7 +18,8 @@
         "description": "Type of number contained in the estimate",
         "options": [
             "real",
-            "complex"
+            "complex",
+			"other"
         ],
         "alias": [],
         "example": "real",
