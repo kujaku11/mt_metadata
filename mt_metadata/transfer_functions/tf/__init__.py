@@ -58,7 +58,7 @@ from mt_metadata.timeseries.fdsn import Fdsn
 from mt_metadata.timeseries.rating import Rating
 from mt_metadata.timeseries.data_quality import DataQuality
 from mt_metadata.timeseries.citation import Citation
-from mt_metadata.timeseries.comment import Comment
+from .comment import Comment
 from mt_metadata.timeseries.copyright import Copyright
 from mt_metadata.timeseries.person import Person
 from mt_metadata.timeseries.software import Software
@@ -69,8 +69,8 @@ from mt_metadata.timeseries.electrode import Electrode
 from mt_metadata.timeseries.timing_system import TimingSystem
 from mt_metadata.timeseries.time_period import TimePeriod
 from mt_metadata.timeseries.orientation import Orientation
-from mt_metadata.timeseries.filtered import Filtered
-from mt_metadata.timeseries.filter import Filter
+from mt_metadata.timeseries.filters.filtered import Filtered
+from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.data_logger import DataLogger
 from .transfer_function import TransferFunction
 from mt_metadata.timeseries.survey import Survey
@@ -104,7 +104,7 @@ __all__ = [
     "Orientation",
     "Software",
     "Filtered",
-    "Filter",
+    "FilterBase",
     "DataLogger",
     "TransferFunction",
     "Survey",
