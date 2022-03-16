@@ -51,36 +51,36 @@ Created on Sun Apr 24 20:50:41 2020
 # package file
 
 ### !!! DO NOT CHANGE THE ORDER !!!
-from .declination import Declination
-from .location import Location
-from .instrument import Instrument
-from .fdsn import Fdsn
-from .rating import Rating
-from .data_quality import DataQuality
-from .citation import Citation
-from .comment import Comment
-from .copyright import Copyright
-from .person import Person
-from .software import Software
-from .provenance import Provenance
-from .diagnostic import Diagnostic
-from .battery import Battery
-from .electrode import Electrode
-from .timing_system import TimingSystem
-from .time_period import TimePeriod
-from .orientation import Orientation
-from .filtered import Filtered
-from .filter import Filter
-from .data_logger import DataLogger
+from mt_metadata.timeseries.declination import Declination
+from mt_metadata.timeseries.location import Location
+from mt_metadata.timeseries.instrument import Instrument
+from mt_metadata.timeseries.fdsn import Fdsn
+from mt_metadata.timeseries.rating import Rating
+from mt_metadata.timeseries.data_quality import DataQuality
+from mt_metadata.timeseries.citation import Citation
+from mt_metadata.timeseries.comment import Comment
+from mt_metadata.timeseries.copyright import Copyright
+from mt_metadata.timeseries.person import Person
+from mt_metadata.timeseries.software import Software
+from mt_metadata.timeseries.provenance import Provenance
+from mt_metadata.timeseries.diagnostic import Diagnostic
+from mt_metadata.timeseries.battery import Battery
+from mt_metadata.timeseries.electrode import Electrode
+from mt_metadata.timeseries.timing_system import TimingSystem
+from mt_metadata.timeseries.time_period import TimePeriod
+from mt_metadata.timeseries.orientation import Orientation
+from mt_metadata.timeseries.filtered import Filtered
+from mt_metadata.timeseries.filter import Filter
+from mt_metadata.timeseries.data_logger import DataLogger
 from .transfer_function import TransferFunction
-from .survey import Survey
-from .channel import Channel
-from .auxiliary import Auxiliary
-from .electric import Electric
-from .magnetic import Magnetic
+from mt_metadata.timeseries.survey import Survey
+from mt_metadata.timeseries.channel import Channel
+from mt_metadata.timeseries.auxiliary import Auxiliary
+from mt_metadata.timeseries.electric import Electric
+from mt_metadata.timeseries.magnetic import Magnetic
 from .statistical_estimate import StatisticalEstimate
-from .run import Run
-from .station import Station
+from mt_metadata.timeseries.run import Run
+from mt_metadata.timeseries.station import Station
 
 
 __all__ = [

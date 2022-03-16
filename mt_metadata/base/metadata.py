@@ -475,7 +475,6 @@ class Base:
                 )
 
                 self.logger.error(msg.format(name))
-                self.logger.exception(error)
                 raise AttributeError(error)
         else:
             setattr(self, name, value)

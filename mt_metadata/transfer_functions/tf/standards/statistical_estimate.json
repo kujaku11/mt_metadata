@@ -57,5 +57,16 @@
         "alias": [],
         "example": ["ex", "ey", "hz"],
 		"default": null
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Units of the estimate.",
+        "options": [],
+        "alias": [],
+        "example": "millivolts per kilometer per nanotesla",
+		"default": null
     }
 }
