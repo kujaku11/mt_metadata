@@ -905,7 +905,6 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
-
             s.add_run(r)
 
         return s
