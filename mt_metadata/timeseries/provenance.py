@@ -21,6 +21,7 @@ from . import Person, Software
 attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "creator")
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "submitter")
+attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "archive")
 attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "software")
 
 # =============================================================================
@@ -35,6 +36,7 @@ class Provenance(Base):
         self.creator = Person()
         self.submitter = Person()
         self.software = Software()
+        self.archive = Person()
         
         super().__init__(attr_dict=attr_dict, **kwargs)
        

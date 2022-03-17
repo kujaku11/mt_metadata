@@ -22,7 +22,7 @@ from . import metadata as emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
-from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run
+from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run, Electric, Magnetic
 from mt_metadata.utils import mttime
 from mt_metadata import __version__
 
@@ -846,24 +846,26 @@ class EMTFXML(emtf_xml.EMTF):
             # need to set azimuths from site layout with the x, y, z postions.
             if len(fn.magnetometer) == 1:
                 for comp in ["hx", "hy", "hz"]:
-                    c = getattr(r, comp)
+                    c = Magnetic()
                     c.component = comp
                     c.sensor.id = fn.magnetometer[0].id
                     c.sensor.name = fn.magnetometer[0].name
                     c.sensor.manufacturer = fn.magnetometer[0].manufacturer
+                    r.add_channel(c)
 
             else:
                 for mag in fn.magnetometer:
                     comp = mag.name.lower()
-                    c = getattr(r, comp)
+                    c = Magnetic()
                     c.component = comp
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
+                    r.add_channel(c)
 
             for dp in fn.dipole:
                 comp = dp.name.lower()
-                c = getattr(r, comp)
+                c = Electric()
                 c.component = comp
                 c.translated_azimuth = dp.azimuth
                 c.dipole_length = dp.length
@@ -876,6 +878,7 @@ class EMTFXML(emtf_xml.EMTF):
                         c.negative.id = pot.number
                         c.negative.type = pot.value
                         c.negative.manufacture = dp.manufacturer
+                r.add_channel(c)
 
             for ch in (
                 self.site_layout.input_channels + self.site_layout.output_channels

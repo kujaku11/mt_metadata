@@ -210,7 +210,7 @@ class Station(Base):
         for run in self.runs:
             recorded_list += run.channels_recorded_all
 
-        self._recorded_channels = list(set(recorded_list))
+        self._recorded_channels = sorted(list(set(recorded_list)))
 
         return self._recorded_channels
 
