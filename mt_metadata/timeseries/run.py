@@ -125,6 +125,15 @@ class Run(Base):
         :rtype: TYPE
 
         """
+        if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
+            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
+            self.logger.error(msg)
+            raise ValueError(msg)
+        if channel_obj.component is None:
+            msg = "component cannot be empty"
+            self.logger.error(msg)
+            raise ValueError(msg)
+
         index = self.channel_index(channel_obj.component)
         if index is not None:
             self.channels[index] = channel_obj
@@ -280,17 +289,6 @@ class Run(Base):
    
     @ex.setter
     def ex(self, value):
-        if not isinstance(value, Electric):
-            msg = f"Input must be metadata.Electric not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Electric object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["ex"]:
-            msg = f"Input Electric.component must be ex not {value.component}"
-            self.logger.error(msg)
-            raise ValueError(msg)
         self.add_channel(value)
    
     @property
@@ -299,17 +297,6 @@ class Run(Base):
    
     @ey.setter
     def ey(self, value):
-        if not isinstance(value, Electric):
-            msg = f"Input must be metadata.Electric not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Electric object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["ey"]:
-            msg = f"Input Electric.component must be ey not {value.component}"
-            self.logger.error(msg)
-            raise ValueError(msg)
         self.add_channel(value)
    
     @property
@@ -318,17 +305,6 @@ class Run(Base):
    
     @hx.setter
     def hx(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["hx"]:
-            msg = f"Input Magnetic.component must be hx not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
         self.add_channel(value)
    
     @property
@@ -337,17 +313,6 @@ class Run(Base):
    
     @hy.setter
     def hy(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["hy"]:
-            msg = f"Input Magnetic.component must be hy not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
         self.add_channel(value)
    
     @property
@@ -356,17 +321,6 @@ class Run(Base):
    
     @hz.setter
     def hz(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["hz"]:
-            msg = f"Input Magnetic.component must be hz not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
         self.add_channel(value)
    
     @property
@@ -375,13 +329,5 @@ class Run(Base):
    
     @temperature.setter
     def temperature(self, value):
-        if not isinstance(value, Auxiliary):
-            msg = f"Input must be metadata.Auxiliary not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component.lower() not in ["temperature"]:
-            msg = f"Input Auxiliary.component must be temperature not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
         self.add_channel(value)
    
