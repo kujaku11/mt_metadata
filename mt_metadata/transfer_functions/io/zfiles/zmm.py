@@ -164,12 +164,20 @@ class ZMMHeader(object):
                 if channel_dict["chn_num"] == 0:
                     channel_dict["chn_num"] = self.num_channels
                 setattr(self, comp, Channel(channel_dict))
-                ch = getattr(self.station_metadata.runs[0], comp)
+                
+                if comp in ["ex", "ey"]:
+                    ch = Electric()
+                elif comp in ["hx", "hy", "hz"]:
+                    ch = Magnetic()
+                
+                ch.component = comp
                 ch.measurement_azimuth = channel_dict["azm"]
                 ch.measurement_tilt = channel_dict["tilt"]
                 ch.translated_azimuth = channel_dict["azm"]
                 ch.translated_tilt = channel_dict["tilt"]
                 ch.channel_number = channel_dict["chn_num"]
+                
+                self.station_metadata.runs[0].add_channel(ch)
 
     def write_header(self):
         """
