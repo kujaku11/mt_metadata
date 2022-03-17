@@ -80,7 +80,7 @@ from mt_metadata.timeseries.electric import Electric
 from mt_metadata.timeseries.magnetic import Magnetic
 from .statistical_estimate import StatisticalEstimate
 from mt_metadata.timeseries.run import Run
-from mt_metadata.timeseries.station import Station
+from .station import Station
 
 
 __all__ = [

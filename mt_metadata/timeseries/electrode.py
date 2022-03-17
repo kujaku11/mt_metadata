@@ -20,7 +20,7 @@ attr_dict = get_schema("instrument", SCHEMA_FN_PATHS)
 attr_dict.add_dict(
     get_schema("location", SCHEMA_FN_PATHS),
     None,
-    keys=["latitude", "longitude", "elevation"],
+    keys=["latitude", "longitude", "elevation", "x", "y", "z", "x2", "y2", "z2"],
 )
 
 # =============================================================================

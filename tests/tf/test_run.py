@@ -17,7 +17,7 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.transfer_functions.tf import Run
+from mt_metadata.transfer_functions.tf import Run, Auxiliary, Magnetic
 
 # =============================================================================
 #
@@ -28,8 +28,8 @@ class TestRun(unittest.TestCase):
         self.meta_dict = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", None),
-                    ("channels_recorded_auxiliary", []),
+                    ("acquired_by.author", "test"),
+                    ('channels_recorded_auxiliary', []),
                     ("channels_recorded_electric", ["ex", "ey"]),
                     ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
                     ("data_logger.firmware.author", None),
@@ -40,11 +40,11 @@ class TestRun(unittest.TestCase):
                     ("data_logger.timing_system.drift", None),
                     ("data_logger.timing_system.type", None),
                     ("data_logger.timing_system.uncertainty", None),
-                    ("data_logger.type", None),
-                    ("data_type", None),
+                    ("data_logger.type", "MT"),
+                    ("data_type", "MT"),
                     ("id", "gv163a"),
-                    ("metadata_by.name", None),
-                    ("sample_rate", None),
+                    ("metadata_by.author", "metadata_by.author"),
+                    ("sample_rate", 1.0),
                     ("time_period.end", "1980-01-01T00:00:00+00:00"),
                     ("time_period.start", "2020-01-02T12:20:40.456000+00:00"),
                 ]
@@ -251,8 +251,8 @@ class TestRun(unittest.TestCase):
             "magnetic": OrderedDict(
                 [
 
-                    ("channel_number", None),
-                    ("component", None),
+                    ("channel_number", 0),
+                    ("component", "rrhx"),
                     ("data_quality.flag", 0),
                     ("data_quality.rating.value", 0),
                     ("filter.applied", [False]),
@@ -280,8 +280,8 @@ class TestRun(unittest.TestCase):
         self.rrhx_dict = {
             "magnetic": OrderedDict(
                 [
-                    ("channel_number", None),
-                    ("component", None),
+                    ("channel_number", 0),
+                    ("component", "rrhy"),
                     ("data_quality.flag", 0),
                     ("data_quality.rating.value", 0),
                     ("filter.applied", [False]),
@@ -307,17 +307,26 @@ class TestRun(unittest.TestCase):
             }
         
         self.temperature_dict = {
-            "magnetic": OrderedDict(
-                [
-                    ("temperature.channel_number", None),
-                    ("temperature.component", None),
-                    ("temperature.measurement_azimuth", 0.0),
-                    ("temperature.measurement_tilt", 0.0),
-                    ("temperature.sample_rate", 0.0),
-                    ("temperature.type", "auxiliary"),
-                    ("temperature.units", None),
-                    ]
-                )
+            'auxiliary': OrderedDict([('channel_number', 0),
+                          ('component', 'temperature'),
+                          ('data_quality.rating.value', 0),
+                          ('filter.applied', [False]),
+                          ('filter.name', []),
+                          ('location.elevation', 0.0),
+                          ('location.latitude', 0.0),
+                          ('location.longitude', 0.0),
+                          ('measurement_azimuth', 0.0),
+                          ('measurement_tilt', 0.0),
+                          ('sample_rate', 0.0),
+                          ('sensor.id', None),
+                          ('sensor.manufacturer', None),
+                          ('sensor.type', None),
+                          ('time_period.end', '1980-01-01T00:00:00+00:00'),
+                          ('time_period.start', '1980-01-01T00:00:00+00:00'),
+                          ('type', 'auxiliary'),
+                          ('units', None)
+                          ]
+                                     )
             }
         
 
@@ -336,17 +345,18 @@ class TestRun(unittest.TestCase):
         run_obj.from_series(run_series)
         self.assertDictEqual(self.meta_dict, run_obj.to_dict())
 
-    def test_in_out_json(self):
-        survey_json = json.dumps(self.meta_dict)
+    def test_in_out_json_full(self):
+        run_json = json.dumps(self.meta_dict)
         run_obj = Run()
-        run_obj.from_json((survey_json))
-        with self.subTest("test from_json"):
-            self.assertDictEqual(self.meta_dict, run_obj.to_dict())
+        run_obj.from_json((run_json))
+        self.assertDictEqual(self.meta_dict, run_obj.to_dict())
 
+    def test_in_out_json_nested(self):
         run_json = self.run_object.to_json(nested=True)
-        self.run_object.from_json(run_json)
+        run_obj = Run()
+        run_obj.from_json(run_json)
         with self.subTest("test_nested"):
-            self.assertDictEqual(self.meta_dict, self.run_object.to_dict())
+            self.assertDictEqual(self.meta_dict, run_obj.to_dict())
 
     def test_start(self):
         self.run_object.time_period.start = "2020/01/02T12:20:40.4560Z"
@@ -379,13 +389,27 @@ class TestRun(unittest.TestCase):
         self.assertEqual(self.run_object.n_channels, 7)
         
     def test_channels(self):
-        for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy", "temperature"]:
+        for comp in ["ex", "ey", "hx", "hy", "hz"]:
             
-            getattr(self.run_object, comp).from_dict(getattr(self, f"{comp}_dict"))
-            with self.subTest("testing comp"):
+            with self.subTest(f"testing {comp}"):
+                getattr(self.run_object, comp).from_dict(getattr(self, f"{comp}_dict"))
                 ch = self.run_object.get_channel(comp)
                 self.assertDictEqual(ch.to_dict(), getattr(self, f"{comp}_dict"))
                 
+    def test_auxiliary_channel(self):
+        temp = Auxiliary()
+        temp.from_dict(self.temperature_dict)
+        self.run_object.add_channel(temp)
+        
+        with self.subTest("Has Channel"):
+            self.assertTrue(self.run_object.has_channel(temp.component))
+            
+        with self.subTest("Dict Equal"):
+
+            self.assertDictEqual(self.run_object.get_channel(temp.component).to_dict(),
+                                 self.temperature_dict)
+            
+        
 
 
 # =============================================================================

@@ -376,7 +376,7 @@ class Run(Base):
     @temperature.setter
     def temperature(self, value):
         if not isinstance(value, Auxiliary):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
+            msg = f"Input must be metadata.Auxiliary not {type(value)}"
             self.logger.error(msg)
             raise ValueError(msg)
         if value.component.lower() not in ["temperature"]:
@@ -385,41 +385,3 @@ class Run(Base):
             raise ValueError(msg)
         self.add_channel(value)
    
-    @property
-    def rrhx(self):
-        return self.get_channel("rrhx")
-   
-    @rrhx.setter
-    def rrhx(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["rrhx"]:
-            msg = f"Input Magnetic.component must be rrhx not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
-        self.add_channel(value)
-   
-    @property
-    def rrhy(self):
-        return self.get_channel("rrhy")
-   
-    @rrhy.setter
-    def rrhy(self, value):
-        if not isinstance(value, Magnetic):
-            msg = f"Input must be metadata.Magnetic not {type(value)}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        if value.component is None:
-            msg = "assuming initial empty Magnetic object"
-            self.logger.debug(msg)
-        elif value.component.lower() not in ["rrhy"]:
-            msg = f"Input Magnetic.component must be rrhy not {value.component}"
-            self.logger.error(ValueError)
-            raise ValueError(msg)
-        self.add_channel(value)
-
