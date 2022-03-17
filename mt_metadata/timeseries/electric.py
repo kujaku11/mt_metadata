@@ -39,7 +39,7 @@ class Electric(Channel):
         self.contact_resistance = Diagnostic()
         self.ac = Diagnostic()
         self.dc = Diagnostic()
-        
+
         Channel.__init__(self, _ch_pattern=r"e\w+", **kwargs)
 
         self.type = "electric"

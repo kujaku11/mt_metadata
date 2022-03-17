@@ -95,32 +95,60 @@ class EDI(object):
             ["txr.exp", "txi.exp", "txvar.exp"],
             ["tyr.exp", "tyi.exp", "tyvar.exp"],
         ]
-        
+
         self._accepted_keys = [
             "freq",
-            "zxxr", "zxxi", "zxyr", "zxyi", "zyxr", "zyxi", "zyyr", "zyyi",
-            "zxx.var", "zxy.var", "zyx.var", "zyy.var",
-            "txr.exp", "txi.exp", "tyr.exp", "tyi.exp",
-            "txvar.exp", "tyvar.exp",
-            "rhoxx", "rhoxy", "rhoyx", "rhoyy", 
-            "rhoxx.err", "rhoxy.err", "rhoyx.err", "rhoyy.err",
-            "phsxx", "phsxy", "phsyx", "phsyy",
-            "phsxx.err", "phsxy.err", "phsyx.err", "phsyy.err",
-            "zrot", "rhorot", "trot"]
-        
+            "zxxr",
+            "zxxi",
+            "zxyr",
+            "zxyi",
+            "zyxr",
+            "zyxi",
+            "zyyr",
+            "zyyi",
+            "zxx.var",
+            "zxy.var",
+            "zyx.var",
+            "zyy.var",
+            "txr.exp",
+            "txi.exp",
+            "tyr.exp",
+            "tyi.exp",
+            "txvar.exp",
+            "tyvar.exp",
+            "rhoxx",
+            "rhoxy",
+            "rhoyx",
+            "rhoyy",
+            "rhoxx.err",
+            "rhoxy.err",
+            "rhoyx.err",
+            "rhoyy.err",
+            "phsxx",
+            "phsxy",
+            "phsyx",
+            "phsyy",
+            "phsxx.err",
+            "phsxy.err",
+            "phsyx.err",
+            "phsyy.err",
+            "zrot",
+            "rhorot",
+            "trot",
+        ]
+
         self._index_dict = {
             "zxx": {"ii": 0, "jj": 0, "obj": "z", "err_obj": "z_err"},
             "zxy": {"ii": 0, "jj": 1, "obj": "z", "err_obj": "z_err"},
             "zyx": {"ii": 1, "jj": 0, "obj": "z", "err_obj": "z_err"},
             "zyy": {"ii": 1, "jj": 1, "obj": "z", "err_obj": "z_err"},
-            "tx": {"ii": 0, "jj":0, "obj": "t", "err_obj": "t_err"},
-            "ty": {"ii": 0, "jj":1, "obj": "t", "err_obj": "t_err"},
+            "tx": {"ii": 0, "jj": 0, "obj": "t", "err_obj": "t_err"},
+            "ty": {"ii": 0, "jj": 1, "obj": "t", "err_obj": "t_err"},
             "rhoxx": {"ii": 0, "jj": 0, "obj": "z", "err_obj": "z_err"},
             "rhoxy": {"ii": 0, "jj": 1, "obj": "z", "err_obj": "z_err"},
             "rhoyx": {"ii": 1, "jj": 0, "obj": "z", "err_obj": "z_err"},
             "rhoyy": {"ii": 1, "jj": 1, "obj": "z", "err_obj": "z_err"},
-            }
-        
+        }
 
         self._data_header_str = ">!****{0}****!\n"
 
@@ -311,7 +339,7 @@ class EDI(object):
                     except ValueError:
                         d_lines[ii] = 0.0
                 data_dict[key] += d_lines
-             
+
         # put everything into arrays
         for key, k_list in data_dict.items():
             data_dict[key] = np.array(k_list)
@@ -324,7 +352,7 @@ class EDI(object):
         self.t = np.zeros((self.frequency.size, 1, 2), dtype=complex)
         self.t_err = np.zeros((self.frequency.size, 1, 2), dtype=float)
         self.data_dict = data_dict
-        
+
         # fill tensors
         for key in sorted(self._index_dict.keys(), reverse=True):
             index = self._index_dict[key]
@@ -334,33 +362,40 @@ class EDI(object):
             error_obj = getattr(self, index["err_obj"])
             try:
                 if key.startswith("z"):
-                    obj[:, ii, jj]  = (
-                        data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
-                    )
-                    error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
+                    obj[:, ii, jj] = data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
+                    error_key = [
+                        k for k in data_dict.keys() if key in k and "var" in k
+                    ][0]
                     error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
-                
+
                 elif key.startswith("t"):
-                    obj[:, ii, jj]  = (
+                    obj[:, ii, jj] = (
                         data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
-                    error_key = [k for k in data_dict.keys() if key in k and "var" in k][0]
+                    error_key = [
+                        k for k in data_dict.keys() if key in k and "var" in k
+                    ][0]
                     error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
-                
+
                 elif key.startswith("r") or key.startswith("p"):
                     self.logger.debug("Reading RHO and PHS to compute impedance")
                     if (self.z[:, ii, jj] == 0).all():
                         phase = data_dict[f"phs{key[-2:]}"]
-                        z_real = np.sqrt((5 * self.frequency * data_dict[key])/(np.tan(np.deg2rad(phase))**2 + 1))
+                        z_real = np.sqrt(
+                            (5 * self.frequency * data_dict[key])
+                            / (np.tan(np.deg2rad(phase)) ** 2 + 1)
+                        )
                         z_imag = (np.tan(np.deg2rad(phase))) * z_real
                         if ii == 1 and jj == 0:
                             if phase.mean() < 90 and phase.mean() > 0:
                                 obj[:, ii, jj] = -1 * (z_real + 1j * z_imag)
                         else:
                             obj[:, ii, jj] = z_real + 1j * z_imag
-                    
-                        error_obj[:, ii, jj] = np.deg2rad(data_dict[f"phs{key[-2:]}.err"]) * np.sqrt(data_dict[key] * (self.frequency * 5))
-   
+
+                        error_obj[:, ii, jj] = np.deg2rad(
+                            data_dict[f"phs{key[-2:]}.err"]
+                        ) * np.sqrt(data_dict[key] * (self.frequency * 5))
+
             except KeyError as error:
                 self.logger.debug(error)
 
@@ -662,7 +697,6 @@ class EDI(object):
             extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.fileby != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
-        
 
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
@@ -692,7 +726,7 @@ class EDI(object):
             raise ValueError(
                 "rotation angle must be the same length and the number of "
                 f"frequencies {len(self.rotation_angle)} != {self.frequency.size}"
-                )
+            )
 
         zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 

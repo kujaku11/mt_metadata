@@ -37,11 +37,10 @@ class Magnetic(Channel):
 
     def __init__(self, **kwargs):
 
-                
         self.sensor = Instrument()
         self.h_field_min = Diagnostic()
         self.h_field_max = Diagnostic()
-        
+
         Channel.__init__(self, _ch_pattern=r"[r,h,b]\w+", **kwargs)
 
         self.type = "magnetic"

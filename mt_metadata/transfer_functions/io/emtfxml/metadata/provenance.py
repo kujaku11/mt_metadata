@@ -33,7 +33,7 @@ class Provenance(Base):
         self._creation_dt = MTime()
         self.submitter = Person()
         self.creator = Person()
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

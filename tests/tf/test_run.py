@@ -29,7 +29,7 @@ class TestRun(unittest.TestCase):
             "run": OrderedDict(
                 [
                     ("acquired_by.author", "test"),
-                    ('channels_recorded_auxiliary', []),
+                    ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", ["ex", "ey"]),
                     ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
                     ("data_logger.firmware.author", None),
@@ -50,7 +50,7 @@ class TestRun(unittest.TestCase):
                 ]
             )
         }
-        
+
         self.ex_dict = {
             "electric": OrderedDict(
                 [
@@ -98,10 +98,10 @@ class TestRun(unittest.TestCase):
                     ("translated_azimuth", -12.5),
                     ("type", "electric"),
                     ("units", "millivolts"),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.ey_dict = {
             "electric": OrderedDict(
                 [
@@ -149,10 +149,10 @@ class TestRun(unittest.TestCase):
                     ("translated_azimuth", 77.5),
                     ("type", "electric"),
                     ("units", "millivolts"),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.hx_dict = {
             "magnetic": OrderedDict(
                 [
@@ -180,10 +180,10 @@ class TestRun(unittest.TestCase):
                     ("translated_azimuth", -12.5),
                     ("type", "magnetic"),
                     ("units", "nanotesla"),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.hy_dict = {
             "magnetic": OrderedDict(
                 [
@@ -211,10 +211,10 @@ class TestRun(unittest.TestCase):
                     ("translated_azimuth", 77.5),
                     ("type", "magnetic"),
                     ("units", "nanotesla"),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.hz_dict = {
             "magnetic": OrderedDict(
                 [
@@ -243,14 +243,13 @@ class TestRun(unittest.TestCase):
                     ("translated_tilt", 90.0),
                     ("type", "magnetic"),
                     ("units", "nanotesla"),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.rrhx_dict = {
             "magnetic": OrderedDict(
                 [
-
                     ("channel_number", 0),
                     ("component", "rrhx"),
                     ("data_quality.flag", 0),
@@ -273,10 +272,10 @@ class TestRun(unittest.TestCase):
                     ("time_period.start", "1980-01-01T00:00:00+00:00"),
                     ("type", "magnetic"),
                     ("units", None),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.rrhx_dict = {
             "magnetic": OrderedDict(
                 [
@@ -302,33 +301,34 @@ class TestRun(unittest.TestCase):
                     ("time_period.start", "1980-01-01T00:00:00+00:00"),
                     ("type", "magnetic"),
                     ("units", None),
-                    ]
-                )
-            }
-        
+                ]
+            )
+        }
+
         self.temperature_dict = {
-            'auxiliary': OrderedDict([('channel_number', 0),
-                          ('component', 'temperature'),
-                          ('data_quality.rating.value', 0),
-                          ('filter.applied', [False]),
-                          ('filter.name', []),
-                          ('location.elevation', 0.0),
-                          ('location.latitude', 0.0),
-                          ('location.longitude', 0.0),
-                          ('measurement_azimuth', 0.0),
-                          ('measurement_tilt', 0.0),
-                          ('sample_rate', 0.0),
-                          ('sensor.id', None),
-                          ('sensor.manufacturer', None),
-                          ('sensor.type', None),
-                          ('time_period.end', '1980-01-01T00:00:00+00:00'),
-                          ('time_period.start', '1980-01-01T00:00:00+00:00'),
-                          ('type', 'auxiliary'),
-                          ('units', None)
-                          ]
-                                     )
-            }
-        
+            "auxiliary": OrderedDict(
+                [
+                    ("channel_number", 0),
+                    ("component", "temperature"),
+                    ("data_quality.rating.value", 0),
+                    ("filter.applied", [False]),
+                    ("filter.name", []),
+                    ("location.elevation", 0.0),
+                    ("location.latitude", 0.0),
+                    ("location.longitude", 0.0),
+                    ("measurement_azimuth", 0.0),
+                    ("measurement_tilt", 0.0),
+                    ("sample_rate", 0.0),
+                    ("sensor.id", None),
+                    ("sensor.manufacturer", None),
+                    ("sensor.type", None),
+                    ("time_period.end", "1980-01-01T00:00:00+00:00"),
+                    ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                    ("type", "auxiliary"),
+                    ("units", None),
+                ]
+            )
+        }
 
         self.meta_dict = {
             "run": OrderedDict(sorted(self.meta_dict["run"].items(), key=itemgetter(0)))
@@ -381,35 +381,35 @@ class TestRun(unittest.TestCase):
         )
 
     def test_n_channels(self):
-        
+
         self.assertEqual(self.run_object.n_channels, 5)
 
     def test_add_channels(self):
         self.run_object.channels_recorded_auxiliary = ["temperature", "battery"]
         self.assertEqual(self.run_object.n_channels, 7)
-        
+
     def test_channels(self):
         for comp in ["ex", "ey", "hx", "hy", "hz"]:
-            
+
             with self.subTest(f"testing {comp}"):
                 getattr(self.run_object, comp).from_dict(getattr(self, f"{comp}_dict"))
                 ch = self.run_object.get_channel(comp)
                 self.assertDictEqual(ch.to_dict(), getattr(self, f"{comp}_dict"))
-                
+
     def test_auxiliary_channel(self):
         temp = Auxiliary()
         temp.from_dict(self.temperature_dict)
         self.run_object.add_channel(temp)
-        
+
         with self.subTest("Has Channel"):
             self.assertTrue(self.run_object.has_channel(temp.component))
-            
+
         with self.subTest("Dict Equal"):
 
-            self.assertDictEqual(self.run_object.get_channel(temp.component).to_dict(),
-                                 self.temperature_dict)
-            
-        
+            self.assertDictEqual(
+                self.run_object.get_channel(temp.component).to_dict(),
+                self.temperature_dict,
+            )
 
 
 # =============================================================================

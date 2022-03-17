@@ -189,9 +189,9 @@ class Station(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
         value = validate_value_type(value, str, "name_list")
-        
+
         for run in value:
             if not isinstance(run, str):
                 try:

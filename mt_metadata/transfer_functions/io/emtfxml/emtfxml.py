@@ -22,7 +22,14 @@ from . import metadata as emtf_xml
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
-from mt_metadata.transfer_functions.tf import Instrument, Survey, Station, Run, Electric, Magnetic
+from mt_metadata.transfer_functions.tf import (
+    Instrument,
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
 from mt_metadata.utils import mttime
 from mt_metadata import __version__
 

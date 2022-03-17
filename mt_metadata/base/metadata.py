@@ -97,7 +97,9 @@ class Base:
                     sorted(other.to_dict().items(), key=itemgetter(0))
                 )
             else:
-                raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
+                raise ValueError(
+                    f"Cannot compare {self._class_name} with {type(other)}"
+                )
             fail = False
             for key, value in home_dict.items():
                 try:
@@ -107,7 +109,7 @@ class Base:
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
                             fail = True
-                            
+
                     elif value != other_value:
                         msg = f"{key}: {value} != {other_value}"
                         self.logger.info(msg)
@@ -120,7 +122,6 @@ class Base:
                 return False
             else:
                 return True
-        
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -337,11 +338,10 @@ class Base:
             "fn",
         ]
 
-        
         if name in skip_list:
             super().__setattr__(name, value)
             return
-        
+
         if not name.startswith("_"):
             # test if the attribute is a property first, if it is, then
             # it will have its own defined setter, so use that one and
@@ -422,7 +422,6 @@ class Base:
 
         name = self._validate_name(name)
         v_type = self._get_standard_type(name)
-        
 
         if "." in name:
             value, prop = helpers.recursive_split_getattr(self, name)
@@ -544,14 +543,14 @@ class Base:
                 value = self.get_attr_from_name(name)
                 if hasattr(value, "to_dict"):
                     value = value.to_dict(nested=nested, required=required)
-                    
+
                 elif isinstance(value, dict):
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
                             value[key] = obj.to_dict(nested=nested, required=required)
                         else:
                             value[key] = obj
-                            
+
                 elif isinstance(value, list):
                     v_list = []
                     for obj in value:
@@ -560,7 +559,7 @@ class Base:
                         else:
                             v_list.append(obj)
                     value = v_list
-                    
+
             except AttributeError as error:
                 self.logger.debug(error)
                 value = None
@@ -570,7 +569,7 @@ class Base:
                         meta_dict[name] = value
                     elif value.all() != 0:
                         meta_dict[name] = value
-                        
+
                 elif (
                     value not in [None, "1980-01-01T00:00:00+00:00"]
                     or self._attr_dict[name]["required"]
@@ -674,14 +673,13 @@ class Base:
             if json_str.exists():
                 with open(json_str, "r") as fid:
                     json_dict = json.load(fid)
-        
+
         elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise MTSchemaError(msg % type(json_str))
 
-        self.from_dict(json_dict) 
-        
+        self.from_dict(json_dict)
 
     def from_series(self, pd_series):
         """

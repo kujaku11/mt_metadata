@@ -86,9 +86,9 @@ def plot_response(
         label = [label]
 
     assert len(label) == len(complex_response)
-    
+
     if x_units.lower() == "period":
-        frequencies = 1./frequencies
+        frequencies = 1.0 / frequencies
 
     amp_min = []
     amp_max = []
@@ -124,8 +124,8 @@ def plot_response(
         # plot pass band
         if pass_band is not None:
             if x_units.lower() == "period":
-                pass_band = 1./pass_band
-                
+                pass_band = 1.0 / pass_band
+
             ax_amp.fill_between(
                 pass_band,
                 [10e-20, 10e-20],
@@ -167,7 +167,7 @@ def plot_response(
 
     if normalization_frequency is not None:
         if x_units.lower() == "period":
-            normalization_frequency = 1./normalization_frequency
+            normalization_frequency = 1.0 / normalization_frequency
         ax_amp.plot(
             [normalization_frequency, normalization_frequency],
             [10e-20, 10e10],

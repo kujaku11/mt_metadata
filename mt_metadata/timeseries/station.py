@@ -64,7 +64,6 @@ class Station(Base):
         self.runs = []
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-
     def __add__(self, other):
         if isinstance(other, Station):
             self.runs.extend(other.runs)
@@ -177,7 +176,7 @@ class Station(Base):
     @run_list.setter
     def run_list(self, value):
         """Set list of run names"""
-        
+
         if not hasattr(value, "__iter__"):
             msg = (
                 "input station_list must be an iterable, should be a list "
@@ -185,7 +184,7 @@ class Station(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-            
+
         value = validate_value_type(value, str, "name_list")
 
         for run in value:

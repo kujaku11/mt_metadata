@@ -23,7 +23,6 @@ class Copyright(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        
+
         self.citation = Citation()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        

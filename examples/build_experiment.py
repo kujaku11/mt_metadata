@@ -42,6 +42,4 @@ for survey in ["One", "Two"]:
 
     experiment.surveys.append(survey_obj)
 
-experiment_xml = experiment.to_xml(
-    fn=r"test_experiment.xml", required=False
-)
+experiment_xml = experiment.to_xml(fn=r"test_experiment.xml", required=False)

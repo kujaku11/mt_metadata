@@ -540,7 +540,7 @@ class NumpyEncoder(json.JSONEncoder):
         elif isinstance(obj, (np.ndarray)):
             if obj.dtype == complex:
                 return {"real": obj.real.tolist(), "imag": obj.imag.tolist()}
-            else: 
+            else:
                 return obj.tolist()
 
         # For now turn references into a generic string

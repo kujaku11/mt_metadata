@@ -25,7 +25,6 @@ class Software(Base):
     def __init__(self, **kwargs):
         self._author = Person()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        
 
     @property
     def author(self):

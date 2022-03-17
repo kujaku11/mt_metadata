@@ -264,10 +264,10 @@ class ChannelResponseFilter(Base):
             return np.ones(len(self.frequencies))
 
         result = filters_list[0].complex_response(self.frequencies)
-        
+
         for ff in filters_list[1:]:
             result *= ff.complex_response(self.frequencies)
-        
+
         if normalize:
             result /= np.max(np.abs(result))
         return result

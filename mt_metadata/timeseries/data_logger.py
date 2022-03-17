@@ -30,6 +30,5 @@ class DataLogger(Base):
         self.timing_system = TimingSystem()
         self.firmware = Software()
         self.power_source = Battery()
-        
+
         super().__init__(attr_dict=attr_dict, **kwargs)
-        

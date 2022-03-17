@@ -164,19 +164,19 @@ class ZMMHeader(object):
                 if channel_dict["chn_num"] == 0:
                     channel_dict["chn_num"] = self.num_channels
                 setattr(self, comp, Channel(channel_dict))
-                
+
                 if comp in ["ex", "ey"]:
                     ch = Electric()
                 elif comp in ["hx", "hy", "hz"]:
                     ch = Magnetic()
-                
+
                 ch.component = comp
                 ch.measurement_azimuth = channel_dict["azm"]
                 ch.measurement_tilt = channel_dict["tilt"]
                 ch.translated_azimuth = channel_dict["azm"]
                 ch.translated_tilt = channel_dict["tilt"]
                 ch.channel_number = channel_dict["chn_num"]
-                
+
                 self.station_metadata.runs[0].add_channel(ch)
 
     def write_header(self):
@@ -975,7 +975,7 @@ def read_zmm(zmm_fn):
     ] = zmm_obj.dataset.residual_covariance.sel(
         input=zmm_obj.output_channels, output=zmm_obj.output_channels
     )
-        
+
     tf_obj._compute_error_from_covariance()
     tf_obj._rotation_angle = -1 * zmm_obj.declination
 

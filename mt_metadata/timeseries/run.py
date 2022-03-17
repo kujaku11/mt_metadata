@@ -61,7 +61,6 @@ class Run(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-       
     def __len__(self):
         return len(self.channels)
 
@@ -97,7 +96,7 @@ class Run(Base):
         if self.has_channel(component):
             return self.channels_recorded_all.index(component)
         return None
-    
+
     def get_channel(self, component):
         """
         Get a channel 
@@ -108,10 +107,10 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        
+
         if self.has_channel(component):
             return self.channels_dict[component]
-        
+
         else:
             return None
 
@@ -168,7 +167,7 @@ class Run(Base):
             raise TypeError("\n".join(fails))
 
         self._channels = channels
-        
+
     @property
     def channels_dict(self):
         return dict([(c.component, c) for c in self.channels])
@@ -282,52 +281,51 @@ class Run(Base):
             else:
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
-                    
+
     @property
     def ex(self):
         return self.get_channel("ex")
-   
+
     @ex.setter
     def ex(self, value):
         self.add_channel(value)
-   
+
     @property
     def ey(self):
         return self.get_channel("ey")
-   
+
     @ey.setter
     def ey(self, value):
         self.add_channel(value)
-   
+
     @property
     def hx(self):
         return self.get_channel("hx")
-   
+
     @hx.setter
     def hx(self, value):
         self.add_channel(value)
-   
+
     @property
     def hy(self):
         return self.get_channel("hy")
-   
+
     @hy.setter
     def hy(self, value):
         self.add_channel(value)
-   
+
     @property
     def hz(self):
         return self.get_channel("hz")
-   
+
     @hz.setter
     def hz(self, value):
         self.add_channel(value)
-   
+
     @property
     def temperature(self):
         return self.get_channel("temperature")
-   
+
     @temperature.setter
     def temperature(self, value):
         self.add_channel(value)
-   

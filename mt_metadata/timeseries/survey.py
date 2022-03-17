@@ -57,9 +57,8 @@ class Survey(Base):
         self.time_period = TimePeriod()
         self.stations = []
         self.filters = {}
-        
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __add__(self, other):
         if isinstance(other, Survey):

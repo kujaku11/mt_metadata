@@ -27,4 +27,3 @@ class Battery(Base):
 
         self.voltage = Diagnostic()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        

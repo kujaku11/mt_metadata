@@ -60,9 +60,8 @@ class TestBuildExperiment(unittest.TestCase):
         self.experiment = Experiment()
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2021-01-01T12:00:00+00:00"
-        
-        kwargs = {"time_period.start": self.start,
-                  "time_period.end": self.end}
+
+        kwargs = {"time_period.start": self.start, "time_period.end": self.end}
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(survey_id=survey)
@@ -94,24 +93,34 @@ class TestBuildExperiment(unittest.TestCase):
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
         self.assertEqual(self.experiment, experiment_02)
-        
+
     def test_survey_time_period(self):
         with self.subTest("start"):
             self.assertEqual(self.start, self.experiment.surveys[0].time_period.start)
         with self.subTest("end"):
-            self.assertEqual(self.end, self.experiment.surveys[0].time_period.end) 
-            
+            self.assertEqual(self.end, self.experiment.surveys[0].time_period.end)
+
     def test_station_time_period(self):
         with self.subTest("start"):
-            self.assertEqual(self.start, self.experiment.surveys[0].stations[0].time_period.start)
+            self.assertEqual(
+                self.start, self.experiment.surveys[0].stations[0].time_period.start
+            )
         with self.subTest("end"):
-            self.assertEqual(self.end, self.experiment.surveys[0].stations[0].time_period.end)
+            self.assertEqual(
+                self.end, self.experiment.surveys[0].stations[0].time_period.end
+            )
 
     def test_run_time_period(self):
         with self.subTest("start"):
-            self.assertEqual(self.start, self.experiment.surveys[0].stations[0].runs[0].time_period.start)
+            self.assertEqual(
+                self.start,
+                self.experiment.surveys[0].stations[0].runs[0].time_period.start,
+            )
         with self.subTest("end"):
-            self.assertEqual(self.end, self.experiment.surveys[0].stations[0].runs[0].time_period.end)
+            self.assertEqual(
+                self.end, self.experiment.surveys[0].stations[0].runs[0].time_period.end
+            )
+
 
 # =============================================================================
 # run
