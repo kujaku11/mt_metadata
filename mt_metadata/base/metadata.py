@@ -663,12 +663,15 @@ class Base:
 
         """
         if isinstance(json_str, str):
-            json_path = Path(json_str)
-            if json_path.exists():
-                with open(json_path, "r") as fid:
-                    json_dict = json.load(fid)
-            else:
-                json_dict = json.loads(json_str)
+            try:
+                json_path = Path(json_str)
+                if json_path.exists():
+                    with open(json_path, "r") as fid:
+                        json_dict = json.load(fid)
+            except OSError:
+                pass
+            json_dict = json.loads(json_str)
+            
         elif isinstance(json_str, Path):
             if json_str.exists():
                 with open(json_str, "r") as fid:
