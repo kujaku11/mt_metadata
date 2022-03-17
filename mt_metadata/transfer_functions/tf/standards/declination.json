@@ -31,7 +31,7 @@
     },
     "epoch": {
         "type": "string",
-        "required": true,
+        "required": false,
         "style": "free form",
         "units": null,
         "description": "Epoch for which declination was approximated in.",

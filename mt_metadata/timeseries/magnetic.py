@@ -42,7 +42,7 @@ class Magnetic(Channel):
         self.h_field_min = Diagnostic()
         self.h_field_max = Diagnostic()
         
-        Channel.__init__(self, _ch_pattern=r"[h,b]\w+", **kwargs)
+        Channel.__init__(self, _ch_pattern=r"[r,h,b]\w+", **kwargs)
 
         self.type = "magnetic"
 
