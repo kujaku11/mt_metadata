@@ -413,6 +413,7 @@ def validate_value_type(value, v_type, style=None):
     # check style for a list, if it is split the string
     if style:
         if "list" in style and isinstance(value, str):
+            delimeter = " "
             if value.count(",") > 0:
                 delimeter = ","
             elif value.strip().count(" ") > 0:
