@@ -23,10 +23,6 @@ class Person(Base):
 
     def __init__(self, **kwargs):
 
-        self.email = None
-        self.name = None
-        self.organization = None
-        self.comments = None
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

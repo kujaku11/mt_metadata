@@ -413,7 +413,13 @@ def validate_value_type(value, v_type, style=None):
     # check style for a list, if it is split the string
     if style:
         if "list" in style and isinstance(value, str):
-            value = value.replace("[", "").replace("]", "").split(",")
+            if value.count(",") > 0:
+                delimeter = ","
+            elif value.strip().count(" ") > 0:
+                delimeter = " "
+            elif value.count(";") > 0:
+                delimeter = ";"
+            value = value.replace("[", "").replace("]", "").split(delimeter)
             value = [ss.strip() for ss in value]
 
     # if value is not of v_type

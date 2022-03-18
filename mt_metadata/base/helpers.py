@@ -320,10 +320,15 @@ def recursive_split_getattr(base_object, name, sep="."):
 
     if other:
         base_object = getattr(base_object, key)
-        value = recursive_split_getattr(base_object, other[0])
+        value, prop = recursive_split_getattr(base_object, other[0])
     else:
         value = getattr(base_object, key)
-    return value
+        try:
+            if isinstance(getattr(type(base_object), key), property):
+                prop = True
+        except AttributeError:
+            prop = False
+    return value, prop
 
 
 def recursive_split_setattr(base_object, name, value, sep="."):
@@ -533,7 +538,10 @@ class NumpyEncoder(json.JSONEncoder):
             return float(obj)
 
         elif isinstance(obj, (np.ndarray)):
-            return obj.tolist()
+            if obj.dtype == complex:
+                return {"real": obj.real.tolist(), "imag": obj.imag.tolist()}
+            else:
+                return obj.tolist()
 
         # For now turn references into a generic string
         elif "h5" in str(type(obj)):

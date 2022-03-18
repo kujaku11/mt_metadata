@@ -29,18 +29,20 @@ attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
     get_schema("location", SCHEMA_FN_PATHS),
     "location",
-    keys=["latitude", "longitude", "elevation"],
+    keys=["latitude", "longitude", "elevation", "x", "y", "z"],
 )
 # =============================================================================
 class Magnetic(Channel):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+
         self.sensor = Instrument()
         self.h_field_min = Diagnostic()
         self.h_field_max = Diagnostic()
 
-        Channel.__init__(self, _ch_pattern=r"[h,b]\w+", **kwargs)
+        Channel.__init__(self, _ch_pattern=r"[r,h,b]\w+", **kwargs)
+
         self.type = "magnetic"
 
         self._attr_dict = attr_dict

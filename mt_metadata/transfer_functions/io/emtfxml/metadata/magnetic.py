@@ -25,10 +25,4 @@ class Magnetic(Base):
 
     def __init__(self, **kwargs):
 
-        self.name = None
-        self.orientation = None
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-
         super().__init__(attr_dict=attr_dict, **kwargs)

@@ -14,14 +14,15 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
 from . import Person, Software, DataQuality
 
 # =============================================================================
 attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "processed_by")
-attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "software")
-attr_dict.add_dict(get_schema("data_quality", SCHEMA_FN_PATHS), "data_quality")
+attr_dict.add_dict(get_schema("person", TS_SCHEMA_FN_PATHS), "processed_by")
+attr_dict.add_dict(get_schema("software", TS_SCHEMA_FN_PATHS), "software")
+attr_dict.add_dict(get_schema("data_quality", TS_SCHEMA_FN_PATHS), "data_quality")
 # =============================================================================
 class TransferFunction(Base):
     __doc__ = write_lines(attr_dict)

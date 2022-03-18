@@ -15,7 +15,9 @@ from pathlib import Path
 
 def get_standard_dirs(dir_path):
     existing_dirs = list(set([fn.parent.as_posix() for fn in dir_path.rglob("*.json")]))
-    existing_dirs = [fn[fn.rfind("mt_metadata") :] for fn in existing_dirs if ".git" not in fn]
+    existing_dirs = [
+        fn[fn.rfind("mt_metadata") :] for fn in existing_dirs if ".git" not in fn
+    ]
 
     return sorted(set(existing_dirs))
 

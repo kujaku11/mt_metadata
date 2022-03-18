@@ -4,7 +4,7 @@
         "required": true,
         "style": "number",
         "units": "degrees",
-        "description": "Latitude of location in datum specified at survey level.",
+        "description": "latitude of location in datum specified at survey level",
         "options": [],
         "alias": [
             "lat"
@@ -17,7 +17,7 @@
         "required": true,
         "style": "number",
         "units": "degrees",
-        "description": "Longitude of location in datum specified at survey level.",
+        "description": "longitude of location in datum specified at survey level",
         "options": [],
         "alias": [
             "lon",
@@ -31,12 +31,101 @@
         "required": true,
         "style": "number",
         "units": "meters",
-        "description": "Elevation of location in datum specified at survey level.",
+        "description": "elevation of location in datum specified at survey level",
         "options": [],
         "alias": [
             "elev"
         ],
         "example": "123.4",
 		"default": 0.0
+    },
+	"datum": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Datum of the location values.  Usually a well known datum like WGS84.",
+        "options": ["WGS84", "NAD83", "other"],
+        "alias": [],
+        "example": "WGS84",
+		"default": "WGS84"
+    },
+    "x": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "x2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "y": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "y2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "z": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0",
+		"default": null
+    },
+	"z2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0",
+		"default": null
     }
 }

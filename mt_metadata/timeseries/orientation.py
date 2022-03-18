@@ -22,7 +22,5 @@ class Orientation(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.reference_frame = "geographic"
-        self.method = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

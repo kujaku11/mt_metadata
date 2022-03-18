@@ -948,6 +948,39 @@ class TF:
         """
         self.station_metadata.id = station_name
 
+    def to_ts_station_metadata(self):
+        """
+        need a convinience function to translate to ts station metadata 
+        for MTH5
+        
+        """
+
+        from mt_metadata.timeseries import Station as TSStation
+
+        ts_station_metadata = TSStation()
+        for key, value in self.station_metadata.to_dict(single=True).items():
+            if "transfer_function" in key:
+                continue
+            try:
+                ts_station_metadata.set_attr_from_name(key, value)
+            except AttributeError:
+                continue
+
+        return ts_station_metadata
+
+    def from_ts_station_metadata(self, ts_station_metadata):
+        """
+        need a convinience function to translate to ts station metadata 
+        for MTH5
+        
+        """
+
+        for key, value in ts_station_metadata.to_dict(single=True).items():
+            try:
+                self.station_metadata.set_attr_from_name(key, value)
+            except AttributeError:
+                continue
+
     def write_tf_file(
         self, fn=None, save_dir=None, fn_basename=None, file_type="edi", **kwargs,
     ):

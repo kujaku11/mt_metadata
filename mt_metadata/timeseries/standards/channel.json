@@ -10,6 +10,17 @@
         "example": "1",
 		"default": 0
     },
+	"channel_id": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "channel id given by the user or data logger",
+        "options": [],
+        "alias": [],
+        "example": "1001.11",
+		"default": null
+    },
     "comments": {
         "type": "string",
         "required": false,

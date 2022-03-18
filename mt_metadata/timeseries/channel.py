@@ -37,6 +37,7 @@ class Channel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+
         self.data_quality = DataQuality()
         self.filter = Filtered()
         self.location = Location()

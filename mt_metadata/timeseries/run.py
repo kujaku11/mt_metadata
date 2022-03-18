@@ -50,11 +50,7 @@ class Run(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.id = None
-        self.sample_rate = None
-        self.comments = None
-        self._n_chan = None
-        self.data_type = None
+
         self.acquired_by = Person()
         self.provenance = Provenance()
         self.time_period = TimePeriod()
@@ -101,6 +97,23 @@ class Run(Base):
             return self.channels_recorded_all.index(component)
         return None
 
+    def get_channel(self, component):
+        """
+        Get a channel 
+        
+        :param component: DESCRIPTION
+        :type component: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_channel(component):
+            return self.channels_dict[component]
+
+        else:
+            return None
+
     def add_channel(self, channel_obj):
         """
         Add a channel to the list, check if one exists if it does overwrite it
@@ -111,6 +124,15 @@ class Run(Base):
         :rtype: TYPE
 
         """
+        if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
+            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
+            self.logger.error(msg)
+            raise ValueError(msg)
+        if channel_obj.component is None:
+            msg = "component cannot be empty"
+            self.logger.error(msg)
+            raise ValueError(msg)
+
         index = self.channel_index(channel_obj.component)
         if index is not None:
             self.channels[index] = channel_obj
@@ -145,6 +167,10 @@ class Run(Base):
             raise TypeError("\n".join(fails))
 
         self._channels = channels
+
+    @property
+    def channels_dict(self):
+        return dict([(c.component, c) for c in self.channels])
 
     @property
     def n_channels(self):
@@ -255,3 +281,51 @@ class Run(Base):
             else:
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
+
+    @property
+    def ex(self):
+        return self.get_channel("ex")
+
+    @ex.setter
+    def ex(self, value):
+        self.add_channel(value)
+
+    @property
+    def ey(self):
+        return self.get_channel("ey")
+
+    @ey.setter
+    def ey(self, value):
+        self.add_channel(value)
+
+    @property
+    def hx(self):
+        return self.get_channel("hx")
+
+    @hx.setter
+    def hx(self, value):
+        self.add_channel(value)
+
+    @property
+    def hy(self):
+        return self.get_channel("hy")
+
+    @hy.setter
+    def hy(self, value):
+        self.add_channel(value)
+
+    @property
+    def hz(self):
+        return self.get_channel("hz")
+
+    @hz.setter
+    def hz(self, value):
+        self.add_channel(value)
+
+    @property
+    def temperature(self):
+        return self.get_channel("temperature")
+
+    @temperature.setter
+    def temperature(self, value):
+        self.add_channel(value)

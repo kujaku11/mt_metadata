@@ -11,13 +11,15 @@ Created on Wed Dec 23 20:41:16 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import json
-import pandas as pd
 import logging
 from copy import deepcopy
-
 from collections import OrderedDict
 from operator import itemgetter
+from pathlib import Path
+
+import json
+import pandas as pd
+import numpy as np
 
 from mt_metadata.utils.validators import validate_attribute, validate_value_type
 from mt_metadata.utils.exceptions import MTSchemaError
@@ -63,7 +65,7 @@ class Base:
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            setattr(self, key, value_dict["default"])
+            self.set_attr_from_name(key, value_dict["default"])
 
     def __str__(self):
         meta_dict = self.to_dict()[self._class_name.lower()]
@@ -94,21 +96,32 @@ class Base:
                 other_dict = OrderedDict(
                     sorted(other.to_dict().items(), key=itemgetter(0))
                 )
-            if other_dict == home_dict:
-                return True
             else:
-                for key, value in home_dict.items():
-                    try:
-                        other_value = other_dict[key]
-                        if value != other_value:
+                raise ValueError(
+                    f"Cannot compare {self._class_name} with {type(other)}"
+                )
+            fail = False
+            for key, value in home_dict.items():
+                try:
+                    other_value = other_dict[key]
+                    if isinstance(value, np.ndarray):
+                        if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
-                    except KeyError:
-                        msg = "Cannot find {0} in other".format(key)
-                        self.logger.info(msg)
+                            fail = True
 
+                    elif value != other_value:
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                except KeyError:
+                    msg = "Cannot find {0} in other".format(key)
+                    self.logger.info(msg)
+
+            if fail:
                 return False
-        raise ValueError(f"Cannot compare {self._class_name} with {type(other)}")
+            else:
+                return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -285,6 +298,8 @@ class Base:
     def __setattr__(self, name, value):
         """
         set attribute based on metadata standards
+        
+        Something here doesnt allow other objects to be set as attributes
 
         """
         # skip these attribute because they are validated in the property
@@ -325,8 +340,22 @@ class Base:
 
         if name in skip_list:
             super().__setattr__(name, value)
+            return
 
-        elif hasattr(self, "_attr_dict") and not name.startswith("_"):
+        if not name.startswith("_"):
+            # test if the attribute is a property first, if it is, then
+            # it will have its own defined setter, so use that one and
+            # skip validation.
+            try:
+                test_property = getattr(self.__class__, name, None)
+                if isinstance(test_property, property):
+                    self.logger.debug("Identified %s as property, using fset", name)
+                    test_property.fset(self, value)
+                    return
+            except AttributeError:
+                pass
+
+        if hasattr(self, "_attr_dict") and not name.startswith("_"):
             self.logger.debug("Setting {0} to {1}".format(name, value))
             try:
                 v_dict = self._attr_dict[name]
@@ -343,12 +372,7 @@ class Base:
                         self.logger.warning(msg.format(value, options, name))
                 super().__setattr__(name, value)
             except KeyError as error:
-                test_property = getattr(self.__class__, name, None)
-                if isinstance(test_property, property):
-                    self.logger.debug("Identified %s as property, using fset", name)
-                    test_property.fset(self, value)
-                else:
-                    raise KeyError(error)
+                raise KeyError(error)
         else:
             super().__setattr__(name, value)
 
@@ -395,13 +419,25 @@ class Base:
         10
 
         """
+
         name = self._validate_name(name)
         v_type = self._get_standard_type(name)
 
         if "." in name:
-            value = helpers.recursive_split_getattr(self, name)
+            value, prop = helpers.recursive_split_getattr(self, name)
+            if prop:
+                return value
+
         else:
             value = getattr(self, name)
+            try:
+                if isinstance(getattr(type(self), name), property):
+                    return value
+            except AttributeError:
+                pass
+
+        if hasattr(value, "to_dict"):
+            return value
 
         return self._validate_type(value, v_type)
 
@@ -438,7 +474,6 @@ class Base:
                 )
 
                 self.logger.error(msg.format(name))
-                self.logger.exception(error)
                 raise AttributeError(error)
         else:
             setattr(self, name, value)
@@ -506,10 +541,36 @@ class Base:
         for name in list(self._attr_dict.keys()):
             try:
                 value = self.get_attr_from_name(name)
-            except AttributeError:
+                if hasattr(value, "to_dict"):
+                    value = value.to_dict(nested=nested, required=required)
+
+                elif isinstance(value, dict):
+                    for key, obj in value.items():
+                        if hasattr(obj, "to_dict"):
+                            value[key] = obj.to_dict(nested=nested, required=required)
+                        else:
+                            value[key] = obj
+
+                elif isinstance(value, list):
+                    v_list = []
+                    for obj in value:
+                        if hasattr(obj, "to_dict"):
+                            v_list.append(obj.to_dict(nested=nested, required=required))
+                        else:
+                            v_list.append(obj)
+                    value = v_list
+
+            except AttributeError as error:
+                self.logger.debug(error)
                 value = None
             if required:
-                if (
+                if isinstance(value, (np.ndarray)):
+                    if name == "zeros" or name == "poles":
+                        meta_dict[name] = value
+                    elif value.all() != 0:
+                        meta_dict[name] = value
+
+                elif (
                     value not in [None, "1980-01-01T00:00:00+00:00"]
                     or self._attr_dict[name]["required"]
                 ):
@@ -601,12 +662,27 @@ class Base:
         :type json_str: string
 
         """
-        if not isinstance(json_str, str):
+        if isinstance(json_str, str):
+            try:
+                json_path = Path(json_str)
+                if json_path.exists():
+                    with open(json_path, "r") as fid:
+                        json_dict = json.load(fid)
+            except OSError:
+                pass
+            json_dict = json.loads(json_str)
+            
+        elif isinstance(json_str, Path):
+            if json_str.exists():
+                with open(json_str, "r") as fid:
+                    json_dict = json.load(fid)
+
+        elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise MTSchemaError(msg % type(json_str))
 
-        self.from_dict(json.loads(json_str))
+        self.from_dict(json_dict)
 
     def from_series(self, pd_series):
         """

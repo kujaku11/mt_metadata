@@ -27,10 +27,8 @@ class ProcessingInfo(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.sign_convention = None
-        self.processed_by = None
+
         self.remote_ref = RemoteRef()
         self.processing_software = Software()
-        self.processing_tag = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)

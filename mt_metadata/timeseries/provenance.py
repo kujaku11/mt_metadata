@@ -21,7 +21,9 @@ from . import Person, Software
 attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "creator")
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "submitter")
+attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "archive")
 attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "software")
+
 # =============================================================================
 class Provenance(Base):
     __doc__ = write_lines(attr_dict)
@@ -30,12 +32,12 @@ class Provenance(Base):
 
         self._creation_dt = MTime()
         self._creation_dt.now()
-        self.creating_application = "MT Metadata"
+
         self.creator = Person()
         self.submitter = Person()
         self.software = Software()
-        self.log = None
-        self.comments = None
+        self.archive = Person()
+
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property

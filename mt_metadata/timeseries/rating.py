@@ -22,8 +22,5 @@ class Rating(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-        self.author = None
-        self.method = None
-        self.value = 0.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)

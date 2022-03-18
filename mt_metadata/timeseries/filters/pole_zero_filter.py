@@ -62,7 +62,7 @@ class PoleZeroFilter(FilterBase):
             self._poles = np.array(value.split(","), dtype=complex)
 
         else:
-            self._poles = np.empty(0)
+            self._poles = np.empty(0, dtype=complex)
 
     @property
     def zeros(self):
@@ -90,7 +90,7 @@ class PoleZeroFilter(FilterBase):
             self._zeros = np.array(value.split(","), dtype=complex)
 
         else:
-            self._zeros = np.empty(0)
+            self._zeros = np.empty(0, complex)
 
     @property
     def n_poles(self):
@@ -191,6 +191,7 @@ class PoleZeroFilter(FilterBase):
         w, h = signal.freqs_zpk(
             self.zeros, self.poles, self.total_gain, worN=angular_frequencies
         )
+
         return h
 
     def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):

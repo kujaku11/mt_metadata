@@ -25,5 +25,4 @@ class PrimaryData(Base):
 
     def __init__(self, **kwargs):
 
-        self.filename = None
         super().__init__(attr_dict=attr_dict, **kwargs)
