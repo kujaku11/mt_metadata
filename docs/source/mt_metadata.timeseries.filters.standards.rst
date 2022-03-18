@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: mt_metadata.timeseries.filters.standards
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:
