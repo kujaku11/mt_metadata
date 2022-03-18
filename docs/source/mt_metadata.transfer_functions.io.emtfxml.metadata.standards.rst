@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: mt_metadata.transfer_functions.io.emtfxml.metadata.standards
-   :members:
-   :undoc-members:
-   :show-inheritance:
+    :members:
+    :undoc-members:
+    :show-inheritance:

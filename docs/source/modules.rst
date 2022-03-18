@@ -5,4 +5,3 @@ mt_metadata
    :maxdepth: 4
 
    mt_metadata
-

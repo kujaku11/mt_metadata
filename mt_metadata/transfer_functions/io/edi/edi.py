@@ -1021,6 +1021,14 @@ class EDI(object):
                 key = key.split("run.")[1]
                 comp, key = key.split(".", 1)
                 ch = getattr(sm.runs[0], comp)
+                if ch is None:
+                    if comp in ["ex", "ey"]:
+                        ch = metadata.Electric(component=comp)
+                    elif comp in ["hx", "hy", "hz"]:
+                        ch = metadata.Magnetic(component=comp)
+                    else:
+                        self.logger.warning(f"Do not recognize channel {comp}, skipping...")
+                    
                 ch.set_attr_from_name(key, value)
 
             elif key.startswith("station."):
