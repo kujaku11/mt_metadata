@@ -71,7 +71,7 @@ class TestEMTFXML(unittest.TestCase):
                         "UTS18",
                     ],
                 ),
-                ("transfer_function.runs_processed", ["NMX20a NMX20b"]),
+                ("transfer_function.runs_processed", ["NMX20a", "NMX20b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
             ]
         )
