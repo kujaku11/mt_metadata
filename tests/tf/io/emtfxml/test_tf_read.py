@@ -83,9 +83,11 @@ class TestEMTFXML(unittest.TestCase):
             [
                 ("acquired_by.author", "National Geoelectromagnetic Facility"),
                 ("citation_dataset.doi", "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH"),
-                ('citation_dataset.title',
-                 'USMTArray South Magnetotelluric Transfer Functions'),
-                ('citation_dataset.year', '2020-2023'),
+                (
+                    "citation_dataset.title",
+                    "USMTArray South Magnetotelluric Transfer Functions",
+                ),
+                ("citation_dataset.year", "2020-2023"),
                 ("citation_journal.doi", None),
                 (
                     "comments",

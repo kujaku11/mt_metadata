@@ -671,7 +671,7 @@ class Base:
             except OSError:
                 pass
             json_dict = json.loads(json_str)
-            
+
         elif isinstance(json_str, Path):
             if json_str.exists():
                 with open(json_str, "r") as fid:

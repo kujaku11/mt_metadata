@@ -1027,8 +1027,10 @@ class EDI(object):
                     elif comp in ["hx", "hy", "hz"]:
                         ch = metadata.Magnetic(component=comp)
                     else:
-                        self.logger.warning(f"Do not recognize channel {comp}, skipping...")
-                    
+                        self.logger.warning(
+                            f"Do not recognize channel {comp}, skipping..."
+                        )
+
                 ch.set_attr_from_name(key, value)
 
             elif key.startswith("station."):
