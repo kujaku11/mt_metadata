@@ -43,6 +43,17 @@
         "example": "mt.guru@em.org",
 		"default": null
     },
+    "url": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "URL of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "em.org",
+		"default": null
+    },
     "comments": {
         "type": "string",
         "required": false,
