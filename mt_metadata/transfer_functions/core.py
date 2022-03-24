@@ -947,6 +947,17 @@ class TF:
         set station name
         """
         self.station_metadata.id = station_name
+        
+    @property
+    def tf_id(self):
+        """ transfer function id """
+        return self.station_metadata.transfer_function.id
+    
+    @tf_id.setter
+    def tf_id(self, value):
+        """ set transfer function id """
+        self.station_metadata.transfer_function.id = value
+        
 
     def to_ts_station_metadata(self):
         """
@@ -1079,6 +1090,9 @@ class TF:
         """
 
         tf_obj = read_file(fn, file_type=file_type)
+        if tf_obj.station_metadata.transfer_function.id is None:
+            tf_obj.station_metadata.transfer_function.id = tf_obj.station_metadata.id
+            
         self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
 

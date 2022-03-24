@@ -1,7 +1,18 @@
 {
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "transfer function id",
+        "options": [        ],
+        "alias": [],
+        "example": "mt01_256",
+        "default": null
+    },
     "sign_convention": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "controlled vocabulary",
         "units": null,
         "description": "sign of the transfer function estimates",
@@ -16,7 +27,7 @@
     },
     "units": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "controlled vocabulary",
         "units": null,
         "description": "units of the impedance tensor estimates",
@@ -53,7 +64,7 @@
     },
     "processed_date": {
         "type": "string",
-        "required": false,
+        "required": true,
         "style": "date time",
         "units": null,
         "description": "date the data were processed",
