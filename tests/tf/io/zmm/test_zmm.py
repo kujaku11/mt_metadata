@@ -118,10 +118,18 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertTrue(self.tf_obj.has_tipper())
 
     def test_station_metadata(self):
-        self.assertTrue(self.tf_obj.station_metadata == self.zmm_obj.station_metadata)
+        zmm_st = self.zmm_obj.station_metadata.to_dict(single=True)
+        tf_st = self.tf_obj.station_metadata.to_dict(single=True)
+        for zmm_key, zmm_value in zmm_st.items():
+            with self.subTest(zmm_key):
+                self.assertEqual(zmm_value, tf_st[zmm_key])
 
     def test_survey_metadata(self):
-        self.assertTrue(self.tf_obj.survey_metadata == self.zmm_obj.survey_metadata)
+        zmm_st = self.zmm_obj.survey_metadata.to_dict(single=True)
+        tf_st = self.tf_obj.survey_metadata.to_dict(single=True)
+        for zmm_key, zmm_value in zmm_st.items():
+            with self.subTest(zmm_key):
+                self.assertEqual(zmm_value, tf_st[zmm_key])
 
 
 # =============================================================================

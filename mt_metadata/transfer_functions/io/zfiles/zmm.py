@@ -130,6 +130,7 @@ class ZMMHeader(object):
         self.station = header_list[3].lower().strip()
         self.station_metadata._runs = []
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
+        self.station_metadata.transfer_function.id = self.station
 
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
