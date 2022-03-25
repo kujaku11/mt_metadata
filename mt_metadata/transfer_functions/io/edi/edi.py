@@ -991,6 +991,7 @@ class EDI(object):
         sm.provenance.software.version = self.Header.progvers
         sm.transfer_function.processed_date = self.Header.filedate
         sm.transfer_function.runs_processed = sm.run_list
+        sm.transfer_function.id = self.station
 
         for key, value in self.Info.info_dict.items():
             if key is None:

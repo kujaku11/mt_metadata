@@ -242,10 +242,18 @@ class TestToTF(unittest.TestCase):
         self.tf = TF(fn=TF_EDI_SPECTRA)
 
     def test_station_metadata(self):
-        self.assertTrue(self.edi.station_metadata == self.tf.station_metadata)
-
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+                
     def test_survey_metadata(self):
-        self.assertTrue(self.edi.survey_metadata == self.tf.survey_metadata)
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
 
     def test_has_impedance(self):
         self.assertTrue(self.tf.has_impedance())
