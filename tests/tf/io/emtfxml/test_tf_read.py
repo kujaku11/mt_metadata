@@ -58,6 +58,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.end", "2020-10-07T20:28:00+00:00"),
                 ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ('transfer_function.id', 'NMX20'),
+                ('transfer_function.processed_date', None),
                 ("transfer_function.processing_parameters", ["{type: None}"]),
                 (
                     "transfer_function.remote_references",
@@ -73,6 +75,7 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("transfer_function.runs_processed", ["NMX20a", "NMX20b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ('transfer_function.units', None)
             ]
         )
 
