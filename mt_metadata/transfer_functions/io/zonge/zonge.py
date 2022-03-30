@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from .metadata import Header
-from mt_metadata.transfer_functions.tf import Survey, Station, Run
+from mt_metadata.transfer_functions.tf import Survey, Station, Run, Magnetic, Electric
 
 # ==============================================================================
 # deal with avg files output from mtedit
@@ -486,36 +486,39 @@ class ZongeMTAvg:
         sm.runs.append(Run(id="001"))
         for comp in self.comp_lst_z + self.comp_lst_tip:
             if "zx" in comp:
-                sm.runs[0]._ex.component = "ex"
-                sm.runs[0]._ex.dipole_length = self.header.rx.length
-                sm.runs[0]._ex.measurement_azimuth = self.header.rx.h_p_r[0]
-                sm.runs[0]._ex.translated_azimuth = self.header.rx.h_p_r[0]
-                sm.runs[0]._ex.channel_id = 1
+                ch = Electric(component="ex")
+                ch.dipole_length = self.header.rx.length
+                ch.measurement_azimuth = self.header.rx.h_p_r[0]
+                ch.translated_azimuth = self.header.rx.h_p_r[0]
+                ch.channel_id = 1
+                sm.runs[0].add_channel(ch)
 
             elif "zy" in comp:
-                sm.runs[0]._ey.component = "ey"
-                sm.runs[0]._ey.dipole_length = self.header.rx.length
-                sm.runs[0]._ey.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                sm.runs[0]._ey.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                sm.runs[0]._ey.channel_id = 2
+                ch = Electric(component="ey")
+                ch.dipole_length = self.header.rx.length
+                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                ch.channel_id = 2
+                sm.runs[0].add_channel(ch)
+                    
             if comp[-1] == "x":
-                sm.runs[0]._hx.component = "hx"
-                sm.runs[0]._hx.measurement_azimuth = self.header.rx.h_p_r[0]
-                sm.runs[0]._hx.translated_azimuth = self.header.rx.h_p_r[0]
-                sm.runs[0]._hx.channel_id = 3
+                ch = Magnetic(component="hx")
+                ch.measurement_azimuth = self.header.rx.h_p_r[0]
+                ch.translated_azimuth = self.header.rx.h_p_r[0]
+                ch.channel_id = 3
 
             elif comp[-1] == "y":
-                sm.runs[0]._hy.component = "hy"
-                sm.runs[0]._hy.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                sm.runs[0]._hy.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                sm.runs[0]._hy.channel_id = 4
+                ch = Magnetic(component="hy")
+                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                ch.channel_id = 4
 
             if comp[1] == "z":
-                sm.runs[0]._hz.component = "hz"
-                sm.runs[0]._hz.measurement_tilt = self.header.rx.h_p_r[-1]
-                sm.runs[0]._hz.translated_tilt = self.header.rx.h_p_r[-1]
-                sm.runs[0]._hz.translated_azimuth = self.header.rx.h_p_r[0]
-                sm.runs[0]._hz.channel_id = 5
+                ch = Magnetic(component="hz")
+                ch.measurement_tilt = self.header.rx.h_p_r[-1]
+                ch.translated_tilt = self.header.rx.h_p_r[-1]
+                ch.translated_azimuth = self.header.rx.h_p_r[0]
+                ch.channel_id = 5
 
         return sm
 

@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 from collections import OrderedDict
 
-from mt_metadata.transfer_functions.tf import Survey, Station, Run
+from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.mt_logger import setup_logger
 from .metadata import Header
@@ -289,21 +289,16 @@ class JFile:
             r1.sample_rate = 1.0 / (self.header.birrp_parameters.deltat)
 
         if not np.all(self.z == 0):
-            r1._ex.component = "ex"
-            r1._ex.channel_id = 1
-
-            r1._ey.component = "ey"
-            r1._ey.channel_id = 2
-
-            r1._hx.component = "hx"
-            r1._hx.channel_id = 3
-
-            r1._hy.component = "hy"
-            r1._hy.channel_id = 4
+            for ii, comp in enumerate(["ex", "ey", "hx", "hy"], 1):
+                if comp.startswith("e"):
+                    ch = Electric(component=comp, channel_id=ii)
+                elif comp.startswith("h"):
+                    ch = Magnetic(component=comp, channel_id=ii)
+                r1.add_channel(ch)
 
         if not np.all(self.t == 0):
-            r1._hz.component = "hz"
-            r1._hz.channel_id = 5
+            ch = Magnetic(component="hz", channel_id=5)
+            r1.add_channel(ch)
 
         sm.runs.append(r1)
         sm.id = self.header.station
