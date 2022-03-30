@@ -1021,11 +1021,14 @@ class EDI(object):
             if key.startswith("run."):
                 key = key.split("run.")[1]
                 comp, key = key.split(".", 1)
-                ch = getattr(sm.runs[0], comp)
+                try:
+                    ch = getattr(sm.runs[0], comp)
+                except AttributeError:
+                    ch = None
                 if ch is None:
                     if comp in ["ex", "ey"]:
                         ch = metadata.Electric(component=comp)
-                    elif comp in ["hx", "hy", "hz"]:
+                    elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
                         ch = metadata.Magnetic(component=comp)
                     else:
                         self.logger.warning(
