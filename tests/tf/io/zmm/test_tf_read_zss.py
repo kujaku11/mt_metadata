@@ -72,18 +72,15 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
                 ("provenance.submitter.organization", None),
-                ("run_list", ["station    :ysw212abcdefghijkla"]),
+                ("run_list", ["ysw212abcdefghijkla"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
-                ("transfer_function.id", "station    :ysw212abcdefghijkl"),
+                ("transfer_function.id", "ysw212abcdefghijkl"),
                 ("transfer_function.processed_date", None),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.remote_references", []),
-                (
-                    "transfer_function.runs_processed",
-                    ["station    :ysw212abcdefghijkla"],
-                ),
+                ("transfer_function.runs_processed", ["ysw212abcdefghijkla"],),
                 ("transfer_function.sign_convention", None),
                 ("transfer_function.units", None),
             ]
@@ -107,7 +104,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_logger.type", None),
                 ("data_type", "BBMT"),
-                ("id", "station    :ysw212abcdefghijkla"),
+                ("id", "ysw212abcdefghijkla"),
                 ("sample_rate", 5.0),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
@@ -125,10 +122,8 @@ class TestEMTFXML(unittest.TestCase):
     def test_t(self):
         with self.subTest("has tipper"):
             self.assertTrue(self.tf.has_tipper())
-
         with self.subTest(msg="shape"):
             self.assertTupleEqual((44, 1, 2), self.tf.tipper.shape)
-
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
@@ -136,7 +131,6 @@ class TestEMTFXML(unittest.TestCase):
                     np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
                 ).all()
             )
-
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(
@@ -148,10 +142,8 @@ class TestEMTFXML(unittest.TestCase):
     def test_sip(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((44, 2, 2), self.tf.inverse_signal_power.shape)
-
         with self.subTest("has inverse_signal_power"):
             self.assertTrue(self.tf.has_inverse_signal_power())
-
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
@@ -164,7 +156,6 @@ class TestEMTFXML(unittest.TestCase):
                     ),
                 ).all()
             )
-
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(
@@ -187,10 +178,8 @@ class TestEMTFXML(unittest.TestCase):
     def test_residual(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
-
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
-
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
@@ -216,7 +205,6 @@ class TestEMTFXML(unittest.TestCase):
                     ),
                 ).all()
             )
-
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(

@@ -114,7 +114,6 @@ class ZMMHeader(object):
 
         if fn is not None:
             self.fn = fn
-
         with open(self.fn, "r") as fid:
             line = fid.readline()
 
@@ -125,9 +124,11 @@ class ZMMHeader(object):
                 self._header_count += 1
 
                 line = fid.readline()
-
         self.station_metadata.comments = ""
-        self.station = header_list[3].lower().strip()
+        station = header_list[3].lower().strip()
+        if station.count(":") > 0:
+            station = station.split(":")[1]
+        self.station = station
         self.station_metadata._runs = []
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
         self.station_metadata.transfer_function.id = self.station
@@ -170,7 +171,6 @@ class ZMMHeader(object):
                     ch = Electric()
                 elif comp in ["hx", "hy", "hz"]:
                     ch = Magnetic()
-
                 ch.component = comp
                 ch.measurement_azimuth = channel_dict["azm"]
                 ch.measurement_tilt = channel_dict["tilt"]
@@ -215,13 +215,10 @@ class ZMMHeader(object):
                 channel = getattr(self.station_metadata.runs[0], ch)
                 if channel.channel_number == None:
                     channel.channel_number = int(ii)
-
                 if channel.translated_tilt is None:
                     channel.translated_tilt = 0.0
-
                 if channel.translated_azimuth is None:
                     channel.translated_azimuth = 0.0
-
                 lines += [
                     (
                         f"{channel.channel_number:>5d} "
@@ -231,11 +228,9 @@ class ZMMHeader(object):
                         f"{channel.component.capitalize():>3}"
                     )
                 ]
-
             except (AttributeError, TypeError):
                 self.logger.warning(f"Could not find {ch}")
                 continue
-
         return lines
 
     @property
@@ -308,7 +303,6 @@ class ZMM(ZMMHeader):
 
         for key in list(kwargs.keys()):
             setattr(self, key, kwargs[key])
-
         if self.fn is not None:
             self.read()
 
@@ -325,12 +319,10 @@ class ZMM(ZMMHeader):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-
         if "hz" in self.output_channels:
             lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
-
         if self.periods is not None:
             lines.append(f"\tNumber of periods: {self.periods.size}")
             lines.append(
@@ -427,7 +419,6 @@ class ZMM(ZMMHeader):
         """
         if self.num_freq is None:
             return
-
         self.periods = np.zeros(self.num_freq)
         self.transfer_functions = np.zeros(
             (self.num_freq, self.num_channels - 2, 2), dtype=np.complex64
@@ -455,7 +446,6 @@ class ZMM(ZMMHeader):
         """
         if fn is not None:
             self.fn = fn
-
         self.read_header()
         self.initialize_arrays()
 
@@ -486,7 +476,6 @@ class ZMM(ZMMHeader):
             self._fill_tf_array_from_block(data_block["tf"], ii)
             self._fill_sig_array_from_block(data_block["sig"], ii)
             self._fill_res_array_from_block(data_block["res"], ii)
-
         self._fill_dataset()
 
         self.station_metadata.id = self.station
@@ -530,7 +519,6 @@ class ZMM(ZMMHeader):
         """
         if fn is not None:
             self.fn = fn
-
         lines = self.write_header()
 
         for p in self.dataset.period.data:
@@ -564,7 +552,6 @@ class ZMM(ZMMHeader):
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
-
             # write signal power
             lines += [" Inverse Coherent Signal Power Matrix"]
             for ii, c_out in enumerate(self.input_channels):
@@ -575,7 +562,6 @@ class ZMM(ZMMHeader):
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
-
             # write residual covariance
             lines += [" Residual Covariance"]
             for ii, c_out in enumerate(self.output_channels):
@@ -586,10 +572,8 @@ class ZMM(ZMMHeader):
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
-
         with open(self.fn, "w") as fid:
             fid.write("\n".join(lines))
-
         return self.fn
 
     def _get_period_blocks(self):
@@ -599,12 +583,10 @@ class ZMM(ZMMHeader):
 
         with open(self.fn, "r") as fid:
             fn_str = fid.read()
-
         period_strings = fn_str.lower().split("period")
         period_blocks = []
         for per in period_strings:
             period_blocks.append(per.split("\n"))
-
         return period_blocks[1:]
 
     def _read_period_block(self, period_block):
@@ -650,14 +632,12 @@ class ZMM(ZMMHeader):
             elif "residual" in line.lower():
                 key = "res"
                 continue
-
             line_list = [float(xx) for xx in line.strip().split()]
             values = [
                 complex(line_list[ii], line_list[ii + 1])
                 for ii in range(0, len(line_list), 2)
             ]
             data_dict[key].append(values)
-
         return data_dict
 
     def _flatten_list(self, x_list):
@@ -741,7 +721,6 @@ class ZMM(ZMMHeader):
             )
             self.logger.error(msg)
             raise ZMMError(msg)
-
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
@@ -812,7 +791,6 @@ class ZMM(ZMMHeader):
                 "contain the vertical magnetic field as a "
                 "predicted channel."
             )
-
         # transform the TFs first...
         # build transformation matrix for predictor channels
         #    (horizontal magnetic fields)
@@ -879,7 +857,6 @@ class ZMM(ZMMHeader):
             electric.component = comp
             electric.channel_number = meas.number
             electric.channel_id = meas.number
-
         return electric
 
     @property
@@ -911,7 +888,6 @@ class ZMM(ZMMHeader):
             magnetic.component = comp
             magnetic.channel_number = meas.number
             magnetic.channel_id = meas.number
-
         return magnetic
 
     @property
@@ -960,7 +936,6 @@ def read_zmm(zmm_fn):
 
     for tf_key, j_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(zmm_obj, j_key))
-
     tf_obj._transfer_function["transfer_function"].loc[
         dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
     ] = zmm_obj.dataset.transfer_function.sel(
@@ -999,7 +974,6 @@ def write_zmm(tf_object, fn=None):
 
     if not isinstance(tf_object, TF):
         raise ValueError("Input must be a TF object")
-
     zmm_obj = ZMM()
     zmm_obj.dataset = tf_object.dataset
     zmm_obj.station_metadata = tf_object.station_metadata
@@ -1017,11 +991,9 @@ def write_zmm(tf_object, fn=None):
         if tf_object.has_impedance():
             zmm_obj.num_channels = 4
             number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
-
     for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
         if "rr" in comp:
             continue
-
         ch = getattr(tf_object.station_metadata.runs[0], comp)
         c = Channel()
         c.from_dict(ch.to_dict(single=True))
