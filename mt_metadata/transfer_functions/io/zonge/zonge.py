@@ -506,12 +506,14 @@ class ZongeMTAvg:
                 ch.measurement_azimuth = self.header.rx.h_p_r[0]
                 ch.translated_azimuth = self.header.rx.h_p_r[0]
                 ch.channel_id = 3
+                sm.runs[0].add_channel(ch)
 
             elif comp[-1] == "y":
                 ch = Magnetic(component="hy")
                 ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
                 ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
                 ch.channel_id = 4
+                sm.runs[0].add_channel(ch)
 
             if comp[1] == "z":
                 ch = Magnetic(component="hz")
@@ -519,6 +521,7 @@ class ZongeMTAvg:
                 ch.translated_tilt = self.header.rx.h_p_r[-1]
                 ch.translated_azimuth = self.header.rx.h_p_r[0]
                 ch.channel_id = 5
+                sm.runs[0].add_channel(ch)
 
         return sm
 
