@@ -247,7 +247,7 @@ class TestToTF(unittest.TestCase):
         for edi_key, edi_value in edi_st.items():
             with self.subTest(edi_key):
                 self.assertEqual(edi_value, tf_st[edi_key])
-                
+
     def test_survey_metadata(self):
         edi_st = self.edi.survey_metadata.to_dict(single=True)
         tf_st = self.tf.survey_metadata.to_dict(single=True)
