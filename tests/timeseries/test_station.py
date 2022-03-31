@@ -32,7 +32,7 @@ class TestStation(unittest.TestCase):
         self.station_object = Station()
         self.meta_dict = {
             "station": {
-                "acquired_by.author": "mt",
+                "acquired_by.name": "mt",
                 "acquired_by.comments": "Aqcuired by comments",
                 "fdsn.id": "MT012",
                 "channel_layout": "L",
