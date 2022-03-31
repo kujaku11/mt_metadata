@@ -161,7 +161,7 @@ class EDI(object):
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.name}")
         lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
         lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
@@ -170,12 +170,10 @@ class EDI(object):
             lines.append("\tImpedance:     True")
         else:
             lines.append("\tImpedance:     False")
-
         if self.t is not None:
             lines.append("\tTipper:        True")
         else:
             lines.append("\tTipper:        False")
-
         if self.frequency is not None:
             lines.append(f"\tNumber of periods: {self.frequency.size}")
             lines.append(
@@ -184,7 +182,6 @@ class EDI(object):
             lines.append(
                 f"\t\tFrequency Range {self.frequency.min():.5E} -- {self.frequency.max():.5E} s"
             )
-
         return "\n".join(lines)
 
     def __repr__(self):
@@ -237,20 +234,16 @@ class EDI(object):
 
         if fn is not None:
             self._fn = Path(fn)
-
         if self.fn is None:
             msg = "Must input EDI file to read"
             self.logger.error(msg)
             raise IOError(msg)
-
         if not self.fn.exists():
             msg = f"Cannot find EDI file: {self.fn}"
             self.logger.error(msg)
             raise IOError(msg)
-
         with open(self.fn, "r") as fid:
             self._edi_lines = _validate_edi_lines(fid.readlines())
-
         self.Header.read_header(self._edi_lines)
         self.Info.read_info(self._edi_lines)
         self.Measurement.read_measurement(self._edi_lines)
@@ -296,9 +289,7 @@ class EDI(object):
                 c_list = ["hx", "hy", "ex", "ey", "rhx", "rhy"]
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-
             self._read_spectra_new(lines, comp_list=c_list)
-
         elif self.Data.data_type_in == "z":
             self._read_mt(lines)
 
@@ -324,7 +315,6 @@ class EDI(object):
                     data_dict[key] = []
                 else:
                     data_find = False
-
             elif data_find and ">" not in line and "!" not in line:
                 d_lines = line.strip().split()
                 for ii, dd in enumerate(d_lines):
@@ -335,15 +325,12 @@ class EDI(object):
                         d_lines[ii] = float(dd)
                         if d_lines[ii] == self.Header.empty:
                             d_lines[ii] = 0.0
-
                     except ValueError:
                         d_lines[ii] = 0.0
                 data_dict[key] += d_lines
-
         # put everything into arrays
         for key, k_list in data_dict.items():
             data_dict[key] = np.array(k_list)
-
         # fill useful arrays
         self.frequency = data_dict["freq"]
         self.z = np.zeros((self.frequency.size, 2, 2), dtype=complex)
@@ -367,7 +354,6 @@ class EDI(object):
                         k for k in data_dict.keys() if key in k and "var" in k
                     ][0]
                     error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
-
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
                         data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
@@ -376,7 +362,6 @@ class EDI(object):
                         k for k in data_dict.keys() if key in k and "var" in k
                     ][0]
                     error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
-
                 elif key.startswith("r") or key.startswith("p"):
                     self.logger.debug("Reading RHO and PHS to compute impedance")
                     if (self.z[:, ii, jj] == 0).all():
@@ -391,14 +376,11 @@ class EDI(object):
                                 obj[:, ii, jj] = -1 * (z_real + 1j * z_imag)
                         else:
                             obj[:, ii, jj] = z_real + 1j * z_imag
-
                         error_obj[:, ii, jj] = np.deg2rad(
                             data_dict[f"phs{key[-2:]}.err"]
                         ) * np.sqrt(data_dict[key] * (self.frequency * 5))
-
             except KeyError as error:
                 self.logger.debug(error)
-
         # check for order of frequency, we want high togit  low
         if self.frequency[0] < self.frequency[1]:
             self.logger.debug(
@@ -407,7 +389,6 @@ class EDI(object):
             self.frequency = self.frequency[::-1]
             self.z = self.z[::-1]
             self.z_err = self.z_err[::-1]
-
         try:
             self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
@@ -460,13 +441,10 @@ class EDI(object):
                     avgt_dict[key] = avgt
                 except ValueError:
                     self.logger.debug("did not find frequency key")
-
             elif data_find and line.find(">") == -1 and line.find("!") == -1:
                 data_dict[key] += [float(ll) for ll in line.strip().split()]
-
             elif line.find(">spectra") == -1:
                 data_find = False
-
         # get an object that contains the indices for each component
         cc = index_locator(comp_list)
 
@@ -516,7 +494,6 @@ class EDI(object):
                         s_arr[jj, ii] = complex(
                             spectra_arr[jj, ii], spectra_arr[ii, jj]
                         )
-
             # check for empty values
             s_arr[s_arr == 0] = np.nan
             s_arr[s_arr == self.Header.empty] = np.nan
@@ -574,7 +551,6 @@ class EDI(object):
                 ee[2, 0] = s_arr[cc.ey, cc.hz]
                 ee[2, 1] = s_arr[cc.ey, cc.ex]
                 ee[2, 2] = s_arr[cc.ey, cc.ey]
-
             elif not cc.has_tipper and cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.ex]
                 re[0, 1] = s_arr[cc.rhx, cc.ey]
@@ -590,7 +566,6 @@ class EDI(object):
                 ee[0, 1] = s_arr[cc.ex, cc.ey]
                 ee[1, 0] = s_arr[cc.ey, cc.ex]
                 ee[1, 1] = s_arr[cc.ey, cc.ey]
-
             elif cc.has_tipper and not cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.hz]
                 re[1, 0] = s_arr[cc.rhy, cc.hz]
@@ -599,7 +574,6 @@ class EDI(object):
                 he[1, 0] = s_arr[cc.hy, cc.hz]
 
                 ee[0, 0] = s_arr[cc.hz, cc.hz]
-
             # check to make sure the values are legit for accurate results
             if abs(np.linalg.det(rh)) < np.finfo(float).eps:
                 self.logger.warning(
@@ -607,7 +581,6 @@ class EDI(object):
                     f"{abs(np.linalg.det(rh))} for period {key}. "
                     "Results may be inaccurate"
                 )
-
             tfh = np.matmul(np.linalg.inv(rh), re)
             tf = tfh.conj().T
 
@@ -625,7 +598,6 @@ class EDI(object):
             for nn in range(cc.n_outputs):
                 for mm in range(cc.n_inputs):
                     variance[nn, mm] = res[nn, nn] * sig[mm, mm]
-
             self.tf[kk, :, :] = tf
             self.tf_err[kk, :, :] = np.sqrt(np.abs(variance))
             self.signal_inverse_power[kk, :, :] = sig
@@ -638,12 +610,10 @@ class EDI(object):
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[0, :].real))
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
-
             elif not cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[:, :]
                 self.z_err[kk, :, :] = np.sqrt(np.abs(variance[:, :]))
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
-
             elif cc.has_tipper and not cc.has_electric:
                 self.t[kk, :, :] = tf[:, :]
                 self.t_err[kk, :, :] = np.sqrt(np.abs(variance[:, :].real))
@@ -684,7 +654,6 @@ class EDI(object):
                 new_edi_fn = self.fn
             else:
                 new_edi_fn = Path().cwd().joinpath(f"{self.Header.dataid}.edi")
-
         # write lines
         extra_lines = []
         if self.survey_metadata.summary != None:
@@ -697,7 +666,6 @@ class EDI(object):
             extra_lines.append(f"\toriginal_program.date={self.Header.progdate}\n")
         if self.Header.fileby != "1980-01-01":
             extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
-
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -727,7 +695,6 @@ class EDI(object):
                 "rotation angle must be the same length and the number of "
                 f"frequencies {len(self.rotation_angle)} != {self.frequency.size}"
             )
-
         zrot_lines += self._write_data_block(self.rotation_angle, "zrot")
 
         # write out data only impedance and tipper
@@ -752,7 +719,6 @@ class EDI(object):
                     z_data_lines += z_lines_real
                     z_data_lines += z_lines_imag
                     z_data_lines += z_lines_var
-
         if self.t is None:
             trot_lines = [""]
             t_data_lines = [""]
@@ -790,7 +756,6 @@ class EDI(object):
             except AttributeError:
                 trot_lines = [""]
                 t_data_lines = [""]
-
         edi_lines = (
             header_lines
             + info_lines
@@ -806,7 +771,6 @@ class EDI(object):
 
         with open(new_edi_fn, "w") as fid:
             fid.write("".join(edi_lines))
-
         return new_edi_fn
 
     def _write_data_block(self, data_comp_arr, data_key):
@@ -841,15 +805,12 @@ class EDI(object):
             block_lines = [
                 ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
-
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
                 ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
-
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
-
         for d_index, d_comp in enumerate(data_comp_arr, 1):
             if d_comp == 0.0 and data_key.lower() not in ["zrot", "trot"]:
                 d_comp = self.Header.empty
@@ -862,9 +823,7 @@ class EDI(object):
             # at the end of the block add a return
             if d_index == data_comp_arr.size:
                 num_str += "\n"
-
             block_lines.append(num_str)
-
         return block_lines
 
     # -----------------------------------------------------------------------
@@ -931,7 +890,7 @@ class EDI(object):
             except AttributeError:
                 pass
         sm.id = self.Header.survey
-        sm.acquired_by.author = self.Header.acqby
+        sm.acquired_by.name = self.Header.acqby
         sm.geographic_name = self.Header.loc
         sm.country = self.Header.country
 
@@ -941,7 +900,6 @@ class EDI(object):
             key = key.lower()
             if key.startswith("survey."):
                 sm.set_attr_from_name(key.split("survey.")[1], value)
-
         return sm
 
     @survey_metadata.setter
@@ -961,7 +919,6 @@ class EDI(object):
                 "Input must be a mt_metadata.transfer_function.Survey object"
                 f" not {type(survey)}"
             )
-
         self.Header.survey = survey.id
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
@@ -984,7 +941,7 @@ class EDI(object):
         sm.location.declination.value = self.Header.declination.value
         sm.orientation.reference_frame = self.Header.coordinate_system.split()[0]
         # provenance
-        sm.acquired_by.author = self.Header.acqby
+        sm.acquired_by.name = self.Header.acqby
         sm.provenance.creation_time = self.Header.filedate
         sm.provenance.submitter.author = self.Header.fileby
         sm.provenance.software.name = self.Header.fileby
@@ -998,11 +955,9 @@ class EDI(object):
                 continue
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
-
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate
-
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
@@ -1017,7 +972,6 @@ class EDI(object):
                     )
                 else:
                     sm.transfer_function.set_attr_from_name(key, value)
-
             if key.startswith("run."):
                 key = key.split("run.")[1]
                 comp, key = key.split(".", 1)
@@ -1034,12 +988,9 @@ class EDI(object):
                         self.logger.warning(
                             f"Do not recognize channel {comp}, skipping..."
                         )
-
                 ch.set_attr_from_name(key, value)
-
             elif key.startswith("station."):
                 sm.set_attr_from_name(key.split("station.")[1], value)
-
             if "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:
@@ -1049,10 +1000,8 @@ class EDI(object):
                         sm.transfer_function.remote_references = value.split(",")
                     else:
                         sm.transfer_function.remote_references = value.split()
-
             elif key in ["processedby", "processed_by"]:
                 sm.transfer_function.processed_by.author = value
-
             elif key in ["runlist", "run_list"]:
                 if value.count(",") > 0:
                     runs = value.split(",")
@@ -1062,20 +1011,16 @@ class EDI(object):
                 for rr in runs:
                     sm.run_list.append(metadata.Run(id=rr))
                 sm.transfer_function.runs_processed = runs
-
             elif key == "sitename":
                 sm.geographic_name = value
             elif key == "signconvention":
                 sm.transfer_function.sign_convention = value
             if "mtft" in key or "emtf" in key or "mtedit" in key:
                 sm.transfer_function.processing_parameters.append(f"{key}={value}")
-
             if "provenance" in key:
                 sm.set_attr_from_name(key, value)
-
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
-
         # make any extra information in info list into a comment
         sm.comments = "\n".join(self.Info.info_list)
 
@@ -1083,10 +1028,8 @@ class EDI(object):
         for rr in sm.runs:
             if rr.time_period.start == "1980-01-01T00:00:00+00:00":
                 rr.time_period.start = sm.time_period.start
-
             if rr.time_period.end == "1980-01-01T00:00:00+00:00":
                 rr.time_period.end = sm.time_period.end
-
             rr.ex = self.ex_metadata
             rr.ey = self.ey_metadata
             rr.hx = self.hx_metadata
@@ -1097,7 +1040,6 @@ class EDI(object):
                 rr.rrhx = self.rrhx_metadata
             if self.rrhy_metadata.component in ["rrhy"]:
                 rr.rrhy = self.rrhy_metadata
-
         return sm
 
     @station_metadata.setter
@@ -1111,7 +1053,7 @@ class EDI(object):
         """
 
         ### fill header information from station
-        self.Header.acqby = sm.acquired_by.author
+        self.Header.acqby = sm.acquired_by.name
         self.Header.acqdate = sm.time_period.start
         self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id
@@ -1139,12 +1081,10 @@ class EDI(object):
                         )
                 else:
                     self.Info.info_list.append(f"transfer_function.{k} = {v}")
-
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
             if not v in [None, "None", "null", "1980-01-01T00:00:00+00:00"]:
                 self.Info.info_list.append(f"provenance.{k} = {v}")
-
         # write field notes
         for run in sm.runs:
             write_dict = dict(
@@ -1165,7 +1105,6 @@ class EDI(object):
             for cc in write_dict.keys():
                 if getattr(run, cc).component is not None:
                     write_dict[cc] = True
-
             r_dict = run.to_dict(single=True)
 
             for rk, rv in r_dict.items():
@@ -1221,7 +1160,6 @@ class EDI(object):
                         self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
                 else:
                     self.Info.info_list.append(f"{run.id}.{rk} = {rv}")
-
         ### fill measurement
         self.Measurement.refelev = sm.location.elevation
         self.Measurement.reflat = sm.location.latitude
@@ -1266,7 +1204,6 @@ class EDI(object):
                     if key == "type":
                         electric.negative.type = v
                         electric.positive.type = v
-
             if (
                 electric.positive.x2 == 0
                 and electric.positive.y2 == 0.0
@@ -1279,14 +1216,12 @@ class EDI(object):
                 electric.positive.y2 = electric.dipole_length * np.sin(
                     np.deg2rad(meas.azimuth)
                 )
-
             for key, value in self.Info.info_dict.items():
                 if key is None:
                     continue
                 if f".{comp}." in key:
                     key = key.split(f".{comp}.", 1)[-1]
                     electric.set_attr_from_name(key, value)
-
         return electric
 
     @property
@@ -1335,7 +1270,6 @@ class EDI(object):
                         magnetic.sensor.type = v
                     if key.startswith("sensor."):
                         magnetic.set_attr_from_name(key, v)
-
         return magnetic
 
     @property
@@ -1410,10 +1344,8 @@ def read_edi(fn):
                 "station_metadata": "station_metadata",
             }
         )
-
     for tf_key, edi_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))
-
     # need to set latitude to compute UTM coordinates to make sure station
     # location is estimated for ModEM
     tf_obj.latitude = edi_obj.station_metadata.location.latitude
@@ -1440,7 +1372,6 @@ def write_edi(tf_object, fn=None, **kwargs):
 
     if not isinstance(tf_object, TF):
         raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
-
     edi_obj = EDI()
     if tf_object.has_impedance():
         edi_obj.z = tf_object.impedance.data
@@ -1467,7 +1398,6 @@ def write_edi(tf_object, fn=None, **kwargs):
     for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
         if hasattr(edi_obj.Measurement, f"meas_{comp}"):
             setattr(edi_obj.Data, comp, getattr(edi_obj.Measurement, f"meas_{comp}").id)
-
     new_edi_fn = edi_obj.write(new_edi_fn=fn, **kwargs)
     edi_obj._fn = new_edi_fn
 

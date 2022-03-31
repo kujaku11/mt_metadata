@@ -133,7 +133,6 @@ class TF:
             lines.append("\tFrequency Range:")
             lines.append(f"\t\tMin:   {1./self.period.max():.5E} Hz")
             lines.append(f"\t\tMax:   {1./self.period.min():.5E} Hz")
-
         return "\n".join(lines)
 
     def __repr__(self):
@@ -156,11 +155,8 @@ class TF:
         if self.survey_metadata != other.survey_metadata:
             self.logger.info("Survey Metadata is not equal")
             is_equal = False
-        if self.Z != other.Z:
-            self.logger.info("Z is not equal")
-            is_equal = False
-        if self.Tipper != other.Tipper:
-            self.logger.info("Tipper is not equal")
+        if (self.transfer_function != other.transfer_function).any():
+            self.logger.info("TF is not equal")
             is_equal = False
         return is_equal
 
@@ -313,7 +309,6 @@ class TF:
             value = getattr(self, obj).get_attr_from_name(attr)
 
             self._transfer_function.attrs[key] = value
-
         return self._transfer_function
 
     def _validate_input_ndarray(self, ndarray, atype="impedance"):
@@ -343,7 +338,6 @@ class TF:
             msg = "%s must be have shape (n_periods, %s, %s), not %s"
             self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
             raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
-
         if ndarray.shape[0] != self.period.size:
             msg = "New %s shape %s not same as old %s, suggest creating a new instance."
             self.logger.error(msg, atype, ndarray.shape, shape)
@@ -370,17 +364,14 @@ class TF:
             msg = "Coordinates must be period, output, input, not %s"
             self.logger.error(msg, list(da.coords.keys()))
             raise TFError(msg % da.coords.keys())
-
         if sorted(ch_out) != sorted(da.coords["output"].data.tolist()):
             msg = "Output dimensions must be %s not %s"
             self.logger.error(msg, ch_out, da.coords["output"].data.tolist())
             raise TFError(msg % (ch_out, da.coords["output"].data.tolist()))
-
         if sorted(ch_in) != sorted(da.coords["input"].data.tolist()):
             msg = "Input dimensions must be %s not %s"
             self.logger.error(msg, ch_in, da.coords["input"].data.tolist())
             raise TFError(msg % (ch_in, da.coords["input"].data.tolist()))
-
         # need to reorder the data array to the expected coordinates
         da = da.reindex(output=ch_out, input=ch_in)
         # if this is the first instantiation then just resize the
@@ -434,7 +425,6 @@ class TF:
             self._validate_input_ndarray(value, atype=atype)
 
             self._transfer_function[key].loc[comps] = value
-
         elif isinstance(value, xr.DataArray):
             nda = self._validate_input_dataarray(value, atype=atype)
 
@@ -701,7 +691,6 @@ class TF:
                 value = getattr(self, obj).get_attr_from_name(attr)
 
                 t.attrs[key] = value
-
             return t
 
     @tipper_error.setter
@@ -747,7 +736,6 @@ class TF:
 
                 ds.attrs[key] = value
             return ds
-
         return None
 
     @inverse_signal_power.setter
@@ -796,9 +784,7 @@ class TF:
                 value = getattr(self, obj).get_attr_from_name(attr)
 
                 ds.attrs[key] = value
-
             return ds
-
         return None
 
     @residual_covariance.setter
@@ -947,17 +933,16 @@ class TF:
         set station name
         """
         self.station_metadata.id = station_name
-        
+
     @property
     def tf_id(self):
         """ transfer function id """
         return self.station_metadata.transfer_function.id
-    
+
     @tf_id.setter
     def tf_id(self, value):
         """ set transfer function id """
         self.station_metadata.transfer_function.id = value
-        
 
     def to_ts_station_metadata(self):
         """
@@ -976,7 +961,6 @@ class TF:
                 ts_station_metadata.set_attr_from_name(key, value)
             except AttributeError:
                 continue
-
         return ts_station_metadata
 
     def from_ts_station_metadata(self, ts_station_metadata):
@@ -1038,29 +1022,22 @@ class TF:
             file_type = new_fn.suffix.lower()[1:]
             if file_type in ["xml"]:
                 file_type = "emtfxml"
-
         if save_dir is not None:
             self.save_dir = Path(save_dir)
-
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
                 fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
-
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
-
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
-
         if file_type == "xml":
             file_type = "emtfxml"
-
         if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr", "zss"]:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
-
         fn = self.save_dir.joinpath(fn_basename)
 
         return write_file(self, fn, file_type=file_type, **kwargs)
@@ -1092,7 +1069,6 @@ class TF:
         tf_obj = read_file(fn, file_type=file_type)
         if tf_obj.station_metadata.transfer_function.id is None:
             tf_obj.station_metadata.transfer_function.id = tf_obj.station_metadata.id
-            
         self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
 

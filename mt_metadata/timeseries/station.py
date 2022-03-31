@@ -32,7 +32,7 @@ location_dict = get_schema("location", SCHEMA_FN_PATHS)
 location_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
 attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["name", "comments"]
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
@@ -165,7 +165,6 @@ class Station(Base):
                 runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
         self._runs = runs
 
     @property
@@ -184,7 +183,6 @@ class Station(Base):
             )
             self.logger.error(msg)
             raise TypeError(msg)
-
         value = validate_value_type(value, str, "name_list")
 
         for run in value:
@@ -195,7 +193,6 @@ class Station(Base):
                     msg = f"could not convert {run} to string"
                     self.logger.error(msg)
                     raise ValueError(msg)
-
             run = run.replace("'", "").replace('"', "")
             self.runs.append(Run(id=run))
 
@@ -208,14 +205,12 @@ class Station(Base):
         for run in self.runs:
             start.append(run.time_period.start)
             end.append(run.time_period.end)
-
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":
                 self.time_period.start = min(start)
             else:
                 if self.time_period.start > min(start):
                     self.time_period.start = min(start)
-
         if end:
             if self.time_period.end == "1980-01-01T00:00:00+00:00":
                 self.time_period.end = max(end)

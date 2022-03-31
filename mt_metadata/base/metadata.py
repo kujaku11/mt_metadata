@@ -109,7 +109,6 @@ class Base:
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
                             fail = True
-
                     elif value != other_value:
                         msg = f"{key}: {value} != {other_value}"
                         self.logger.info(msg)
@@ -117,7 +116,6 @@ class Base:
                 except KeyError:
                     msg = "Cannot find {0} in other".format(key)
                     self.logger.info(msg)
-
             if fail:
                 return False
             else:
@@ -150,7 +148,6 @@ class Base:
                 raise ValueError(
                     msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k)
                 )
-
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
@@ -183,7 +180,6 @@ class Base:
                 )
             except AttributeError:
                 continue
-
         return copied
 
     def get_attribute_list(self):
@@ -213,7 +209,6 @@ class Base:
                 msg = "{0} not attribute {1} found".format(error, name)
                 self.logger.error(msg)
                 raise MTSchemaError(msg)
-
             lines = ["{0}:".format(name)]
             for key, value in v_dict.items():
                 lines.append("\t{0}: {1}".format(key, value))
@@ -225,7 +220,6 @@ class Base:
                 for key, value in v_dict.items():
                     lines.append("\t{0}: {1}".format(key, value))
                 lines.append("=" * 50)
-
         print("\n".join(lines))
 
     def _validate_name(self, name):
@@ -279,7 +273,6 @@ class Base:
         """
         if name is None:
             return True, False, None
-
         options = [ss.lower() for ss in option_list]
         other_possible = False
         if "other" in options:
@@ -292,7 +285,6 @@ class Base:
                 + " are allowed.  Allowing {2} to be set to {0}."
             )
             return True, other_possible, msg
-
         return False, other_possible, "{0} not found in options list {1}"
 
     def __setattr__(self, name, value):
@@ -341,7 +333,6 @@ class Base:
         if name in skip_list:
             super().__setattr__(name, value)
             return
-
         if not name.startswith("_"):
             # test if the attribute is a property first, if it is, then
             # it will have its own defined setter, so use that one and
@@ -354,7 +345,6 @@ class Base:
                     return
             except AttributeError:
                 pass
-
         if hasattr(self, "_attr_dict") and not name.startswith("_"):
             self.logger.debug("Setting {0} to {1}".format(name, value))
             try:
@@ -427,7 +417,6 @@ class Base:
             value, prop = helpers.recursive_split_getattr(self, name)
             if prop:
                 return value
-
         else:
             value = getattr(self, name)
             try:
@@ -435,10 +424,8 @@ class Base:
                     return value
             except AttributeError:
                 pass
-
         if hasattr(value, "to_dict"):
             return value
-
         return self._validate_type(value, v_type)
 
     def set_attr_from_name(self, name, value):
@@ -543,14 +530,12 @@ class Base:
                 value = self.get_attr_from_name(name)
                 if hasattr(value, "to_dict"):
                     value = value.to_dict(nested=nested, required=required)
-
                 elif isinstance(value, dict):
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
                             value[key] = obj.to_dict(nested=nested, required=required)
                         else:
                             value[key] = obj
-
                 elif isinstance(value, list):
                     v_list = []
                     for obj in value:
@@ -559,7 +544,6 @@ class Base:
                         else:
                             v_list.append(obj)
                     value = v_list
-
             except AttributeError as error:
                 self.logger.debug(error)
                 value = None
@@ -569,7 +553,6 @@ class Base:
                         meta_dict[name] = value
                     elif value.all() != 0:
                         meta_dict[name] = value
-
                 elif (
                     value not in [None, "1980-01-01T00:00:00+00:00"]
                     or self._attr_dict[name]["required"]
@@ -577,10 +560,8 @@ class Base:
                     meta_dict[name] = value
             else:
                 meta_dict[name] = value
-
         if nested:
             meta_dict = helpers.structure_dict(meta_dict)
-
         meta_dict = {
             self._class_name.lower(): OrderedDict(
                 sorted(meta_dict.items(), key=itemgetter(0))
@@ -589,7 +570,6 @@ class Base:
 
         if single:
             meta_dict = meta_dict[list(meta_dict.keys())[0]]
-
         return meta_dict
 
     def from_dict(self, meta_dict, skip_none=False):
@@ -604,7 +584,6 @@ class Base:
             msg = "Input must be a dictionary not {0}".format(type(meta_dict))
             self.logger.error(msg)
             raise MTSchemaError(msg)
-
         keys = list(meta_dict.keys())
         if len(keys) == 1:
             class_name = keys[0]
@@ -620,7 +599,6 @@ class Base:
                 "Assuming input dictionary is of type %s", self._class_name
             )
             meta_dict = helpers.flatten_dict(meta_dict)
-
         # set attributes by key.
         for name, value in meta_dict.items():
             if skip_none:
@@ -635,7 +613,6 @@ class Base:
                     "1980-01-01T00:00:00+00:00",
                 ]:
                     continue
-
             self.set_attr_from_name(name, value)
 
     def to_json(self, nested=False, indent=" " * 4, required=True):
@@ -671,17 +648,14 @@ class Base:
             except OSError:
                 pass
             json_dict = json.loads(json_str)
-
         elif isinstance(json_str, Path):
             if json_str.exists():
                 with open(json_str, "r") as fid:
                     json_dict = json.load(fid)
-
         elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise MTSchemaError(msg % type(json_str))
-
         self.from_dict(json_dict)
 
     def from_series(self, pd_series):
