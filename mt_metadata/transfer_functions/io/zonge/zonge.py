@@ -164,7 +164,6 @@ class ZongeMTAvg:
         self.comp = self.fn.stem[0]
         with open(self.fn, "r") as fid:
             alines = fid.readlines()
-
         # read header
         alines = self.header.read_header(alines)
 
@@ -179,7 +178,6 @@ class ZongeMTAvg:
 
         if not self.comp_dict:
             self.comp_dict = self.get_comp_dict(alines)
-
         self.comp_lst_z = []
         self.comp_lst_tip = []
         ii = 0
@@ -194,7 +192,6 @@ class ZongeMTAvg:
                     elif akey[0] == "t":
                         self.comp_lst_tip.append(akey)
                     ii = 0
-
             # read the data line.
             elif len(aline) > 2:
                 aline = aline.replace("*", "0.50")
@@ -202,7 +199,6 @@ class ZongeMTAvg:
                 for cc, ckey in enumerate(self.info_keys):
                     self.comp_dict[akey][ii][ckey.lower()] = alst[cc]
                 ii += 1
-
         self._fill_z()
         self._fill_t()
 
@@ -215,14 +211,12 @@ class ZongeMTAvg:
 
         if isinstance(zmag, np.ndarray):
             assert len(zmag) == len(zphase)
-
         if self.z_coordinate == "up":
             zreal = zmag * np.cos((zphase / 1000) % np.pi)
             zimag = zmag * np.sin((zphase / 1000) % np.pi)
         else:
             zreal = zmag * np.cos((zphase / 1000))
             zimag = zmag * np.sin((zphase / 1000))
-
         return zreal, zimag
 
     def to_amp_phase(self, zreal, zimag):
@@ -240,10 +234,8 @@ class ZongeMTAvg:
 
         if isinstance(zreal, np.ndarray):
             assert len(zreal) == len(zimag)
-
         if self.z_coordinate == "up":
             zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
-
         else:
             zphase = np.arctan2(zimag, zreal) * 1000
         zmag = np.sqrt(zreal ** 2 + zimag ** 2)
@@ -312,7 +304,6 @@ class ZongeMTAvg:
                             self.z_err[ll] = self.z_err[mm]
                         except KeyError:
                             pass
-
             # fill z with values from comp_dict
             for ikey in self.comp_lst_z:
                 ii, jj = self.comp_index[ikey]
@@ -330,7 +321,6 @@ class ZongeMTAvg:
                     self.z_err[ll, ii, jj] = (
                         self.comp_dict[ikey]["ares.%err"][kk] * 0.005
                     )
-
         # fill for the first time
         else:
             self.nfreq = nz
@@ -351,13 +341,10 @@ class ZongeMTAvg:
                     z[:, ii, jj] = -1 * (zr + zi * 1j)
                 else:
                     z[:, ii, jj] = zr + zi * 1j
-
                 z_err[:, ii, jj] = self.comp_dict[ikey]["ares.%err"][:nz] * 0.005
-
             self.frequency = freq
             self.z = z
             self.z_err = z_err
-
         self.z = np.nan_to_num(self.z)
         self.z_err = np.nan_to_num(self.z_err)
 
@@ -369,7 +356,6 @@ class ZongeMTAvg:
         if self.comp_flag["tzy"] == False and self.comp_flag["tzx"] == False:
             self.header.logger.debug("No Tipper found in %s", self.fn.name)
             return
-
         flst = np.array(
             [
                 len(np.nonzero(self.comp_dict[comp]["freq"])[0])
@@ -407,7 +393,6 @@ class ZongeMTAvg:
                             self.tipper_err[ll] = self.tipper_err[mm]
                         except KeyError:
                             pass
-
             # fill z with values from comp_dict
             for ikey in self.comp_lst_tip:
                 ii, jj = self.comp_index[ikey]
@@ -429,7 +414,6 @@ class ZongeMTAvg:
                         * 0.05
                         * np.sqrt(tzr ** 2 + tzi ** 2)
                     )
-
         else:
             self.nfreq_tipper = nz
             self.freq_dict_x = dict([(ff, nn) for nn, ff in enumerate(freq)])
@@ -454,11 +438,9 @@ class ZongeMTAvg:
                     * 0.05
                     * np.sqrt(tzr ** 2 + tzi ** 2)
                 )
-
             self.frequency = sorted(self.freq_dict_x.keys())
             self.tipper = tipper
             self.tipper_err = tipper_err
-
         self.tipper = np.nan_to_num(self.tipper)
         self.tipper_err = np.nan_to_num(self.tipper_err)
 
@@ -481,6 +463,7 @@ class ZongeMTAvg:
             if "version" in key:
                 continue
             sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
+        sm.transfer_function.runs_processed = ["001"]
 
         sm.data_type = self.header.survey.type
         sm.runs.append(Run(id="001"))
@@ -492,7 +475,6 @@ class ZongeMTAvg:
                 ch.translated_azimuth = self.header.rx.h_p_r[0]
                 ch.channel_id = 1
                 sm.runs[0].add_channel(ch)
-
             elif "zy" in comp:
                 ch = Electric(component="ey")
                 ch.dipole_length = self.header.rx.length
@@ -500,21 +482,18 @@ class ZongeMTAvg:
                 ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
                 ch.channel_id = 2
                 sm.runs[0].add_channel(ch)
-                    
             if comp[-1] == "x":
                 ch = Magnetic(component="hx")
                 ch.measurement_azimuth = self.header.rx.h_p_r[0]
                 ch.translated_azimuth = self.header.rx.h_p_r[0]
                 ch.channel_id = 3
                 sm.runs[0].add_channel(ch)
-
             elif comp[-1] == "y":
                 ch = Magnetic(component="hy")
                 ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
                 ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
                 ch.channel_id = 4
                 sm.runs[0].add_channel(ch)
-
             if comp[1] == "z":
                 ch = Magnetic(component="hz")
                 ch.measurement_tilt = self.header.rx.h_p_r[-1]
@@ -522,7 +501,6 @@ class ZongeMTAvg:
                 ch.translated_azimuth = self.header.rx.h_p_r[0]
                 ch.channel_id = 5
                 sm.runs[0].add_channel(ch)
-
         return sm
 
     @station_metadata.setter
@@ -573,7 +551,6 @@ class ZongeMTAvg:
                     else:
                         line.append(f"{s:<7}")
                 header_lines.append(" ".join(line))
-
         with open(fn, "w") as fid:
             fid.write("\n".join(header_lines))
 
@@ -608,7 +585,6 @@ def read_avg(fn):
     if obj.t is not None:
         tf_object.tipper = obj.t
         tf_object.tipper_error = obj.t_err
-
     tf_object._fn = fn
 
     return tf_object

@@ -81,9 +81,9 @@ class Base:
         if other in [None]:
             return False
         elif isinstance(other, (Base, dict, str, pd.Series)):
-            home_dict = self.to_dict()[self._class_name]
+            home_dict = self.to_dict(single=True, required=False)
             if isinstance(other, Base):
-                other_dict = other.to_dict()[self._class_name]
+                other_dict = other.to_dict(single=True, required=False)
             elif isinstance(other, dict):
                 other_dict = other
             elif isinstance(other, str):

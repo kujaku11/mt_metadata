@@ -16,6 +16,7 @@ import xarray as xr
 from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
+from mt_metadata.base.helpers import validate_name
 
 
 # =============================================================================
@@ -932,7 +933,7 @@ class TF:
         """
         set station name
         """
-        self.station_metadata.id = station_name
+        self.station_metadata.id = validate_name(station_name)
 
     @property
     def tf_id(self):
@@ -942,7 +943,7 @@ class TF:
     @tf_id.setter
     def tf_id(self, value):
         """ set transfer function id """
-        self.station_metadata.transfer_function.id = value
+        self.station_metadata.transfer_function.id = validate_name(value)
 
     def to_ts_station_metadata(self):
         """

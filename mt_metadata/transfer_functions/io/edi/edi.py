@@ -1103,7 +1103,7 @@ class EDI(object):
                 ]
             )
             for cc in write_dict.keys():
-                if getattr(run, cc).component is not None:
+                if cc in run.channels_recorded_all:
                     write_dict[cc] = True
             r_dict = run.to_dict(single=True)
 
