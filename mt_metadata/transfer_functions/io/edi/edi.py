@@ -289,7 +289,7 @@ class EDI(object):
                 c_list = ["hx", "hy", "ex", "ey", "rhx", "rhy"]
             elif self.Data.nchan == 7:
                 c_list = ["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
-            self._read_spectra_new(lines, comp_list=c_list)
+            self._read_spectra(lines, comp_list=c_list)
         elif self.Data.data_type_in == "z":
             self._read_mt(lines)
 
@@ -397,7 +397,7 @@ class EDI(object):
             except KeyError:
                 self.rotation_angle = np.zeros_like(self.frequency)
 
-    def _read_spectra_new(
+    def _read_spectra(
         self, data_lines, comp_list=["hx", "hy", "hz", "ex", "ey", "rhx", "rhy"]
     ):
         """
@@ -500,6 +500,8 @@ class EDI(object):
 
             # from A. Kelbert's EMTF
             # cross spectra matrices
+
+            # Note we changed the indices to [ex, ey, hz] from [hz, ex, ey]
             # input channels
             rh = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
             rr = np.zeros((cc.n_inputs, cc.n_inputs), dtype=complex)
@@ -528,29 +530,29 @@ class EDI(object):
 
             # fill in cross powers for output channels
             if cc.has_tipper and cc.has_electric:
-                re[0, 0] = s_arr[cc.rhx, cc.hz]
-                re[0, 1] = s_arr[cc.rhx, cc.ex]
-                re[0, 2] = s_arr[cc.rhx, cc.ey]
-                re[1, 0] = s_arr[cc.rhy, cc.hz]
-                re[1, 1] = s_arr[cc.rhy, cc.ex]
-                re[1, 2] = s_arr[cc.rhy, cc.ey]
+                re[0, 2] = s_arr[cc.rhx, cc.hz]
+                re[0, 0] = s_arr[cc.rhx, cc.ex]
+                re[0, 1] = s_arr[cc.rhx, cc.ey]
+                re[1, 2] = s_arr[cc.rhy, cc.hz]
+                re[1, 0] = s_arr[cc.rhy, cc.ex]
+                re[1, 1] = s_arr[cc.rhy, cc.ey]
 
-                he[0, 0] = s_arr[cc.hx, cc.hz]
-                he[0, 1] = s_arr[cc.hx, cc.ex]
-                he[0, 2] = s_arr[cc.hx, cc.ey]
-                he[1, 0] = s_arr[cc.hy, cc.hz]
-                he[1, 1] = s_arr[cc.hy, cc.ex]
-                he[1, 2] = s_arr[cc.hy, cc.ey]
+                he[0, 2] = s_arr[cc.hx, cc.hz]
+                he[0, 0] = s_arr[cc.hx, cc.ex]
+                he[0, 1] = s_arr[cc.hx, cc.ey]
+                he[1, 2] = s_arr[cc.hy, cc.hz]
+                he[1, 0] = s_arr[cc.hy, cc.ex]
+                he[1, 1] = s_arr[cc.hy, cc.ey]
 
-                ee[0, 0] = s_arr[cc.hz, cc.hz]
-                ee[0, 1] = s_arr[cc.hz, cc.ex]
-                ee[0, 2] = s_arr[cc.hz, cc.ey]
-                ee[1, 0] = s_arr[cc.ex, cc.hz]
-                ee[1, 1] = s_arr[cc.ex, cc.ex]
-                ee[1, 2] = s_arr[cc.ex, cc.ey]
-                ee[2, 0] = s_arr[cc.ey, cc.hz]
-                ee[2, 1] = s_arr[cc.ey, cc.ex]
-                ee[2, 2] = s_arr[cc.ey, cc.ey]
+                ee[2, 2] = s_arr[cc.hz, cc.hz]
+                ee[2, 0] = s_arr[cc.hz, cc.ex]
+                ee[2, 1] = s_arr[cc.hz, cc.ey]
+                ee[0, 2] = s_arr[cc.ex, cc.hz]
+                ee[0, 0] = s_arr[cc.ex, cc.ex]
+                ee[0, 1] = s_arr[cc.ex, cc.ey]
+                ee[1, 2] = s_arr[cc.ey, cc.hz]
+                ee[1, 0] = s_arr[cc.ey, cc.ex]
+                ee[1, 1] = s_arr[cc.ey, cc.ey]
             elif not cc.has_tipper and cc.has_electric:
                 re[0, 0] = s_arr[cc.rhx, cc.ex]
                 re[0, 1] = s_arr[cc.rhx, cc.ey]
@@ -604,10 +606,10 @@ class EDI(object):
             self.residual_covariance[kk, :, :] = res
 
             if cc.has_tipper and cc.has_electric:
-                self.z[kk, :, :] = tf[1:, :]
-                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[1:, :]))
-                self.t[kk, :, :] = tf[0, :]
-                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[0, :].real))
+                self.z[kk, :, :] = tf[0:2, :]
+                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[0:2, :]))
+                self.t[kk, :, :] = tf[2, :]
+                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[2, :].real))
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
             elif not cc.has_tipper and cc.has_electric:
@@ -1346,10 +1348,6 @@ def read_edi(fn):
         )
     for tf_key, edi_key in k_dict.items():
         setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))
-    # need to set latitude to compute UTM coordinates to make sure station
-    # location is estimated for ModEM
-    tf_obj.latitude = edi_obj.station_metadata.location.latitude
-
     et = MTime().now()
     tf_obj.logger.debug(
         f"Reading EDI for {tf_obj.station} and conversion to MT took {et - st:.2f} seconds"

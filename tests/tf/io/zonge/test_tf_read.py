@@ -87,7 +87,7 @@ class TestEMTFXML(unittest.TestCase):
                     ],
                 ),
                 ("transfer_function.remote_references", []),
-                ("transfer_function.runs_processed", []),
+                ("transfer_function.runs_processed", ["001"]),
                 ("transfer_function.sign_convention", None),
                 ("transfer_function.units", None),
             ]
@@ -125,7 +125,6 @@ class TestEMTFXML(unittest.TestCase):
     def test_z(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((28, 2, 2), self.tf.impedance.shape)
-
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
@@ -138,7 +137,6 @@ class TestEMTFXML(unittest.TestCase):
                     ),
                 ).all()
             )
-
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(
@@ -155,7 +153,6 @@ class TestEMTFXML(unittest.TestCase):
     def test_z_err(self):
         with self.subTest(msg="shape"):
             self.assertTupleEqual((28, 2, 2), self.tf.impedance_error.shape)
-
         with self.subTest(msg="first element"):
             self.assertTrue(
                 np.isclose(
@@ -163,7 +160,6 @@ class TestEMTFXML(unittest.TestCase):
                     np.array([[0.492, 0.3165], [0.1025, 0.278]]),
                 ).all()
             )
-
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(

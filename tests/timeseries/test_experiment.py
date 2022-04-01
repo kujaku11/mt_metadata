@@ -65,6 +65,8 @@ class TestBuildExperiment(unittest.TestCase):
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(survey_id=survey)
+            survey_obj.acquired_by.author = "None"
+            survey_obj.project_lead.author = "None"
             survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
                 station_obj = Station(id=station, **kwargs)
@@ -79,13 +81,11 @@ class TestBuildExperiment(unittest.TestCase):
                     for ch in ["temperature", "voltage"]:
                         ch_obj = Auxiliary(component=ch, **kwargs)
                         run_obj.channels.append(ch_obj)
-
                     run_obj.update_time_period()
                     station_obj.runs.append(run_obj)
                     station_obj.update_time_period()
                 survey_obj.stations.append(station_obj)
                 survey_obj.update_time_period()
-
             self.experiment.surveys.append(survey_obj)
 
     def test_write_xml(self):
