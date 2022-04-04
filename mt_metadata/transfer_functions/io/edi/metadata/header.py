@@ -168,7 +168,6 @@ class Header(Location):
                         key = h_list[0].strip()
                         value = h_list[1].strip()
                         header_list.append("{0}={1}".format(key, value))
-
         return header_list
 
     def read_header(self, edi_lines):
@@ -191,6 +190,14 @@ class Header(Location):
             if key in ["progvers"]:
                 if value.lower().find("mt-editor") != -1:
                     self.phoenix_edi = True
+            if key in ["coordinate_system"]:
+                value = value.lower()
+                if "geomagnetic" in value:
+                    value = "geomagnetic"
+                elif "geographic" in value:
+                    value = "geographic"
+                elif "station" in value:
+                    value = "station"
             if key == "declination":
                 setattr(self.declination, "value", value)
             else:
@@ -227,7 +234,6 @@ class Header(Location):
         for key, value in self.to_dict(single=True, required=required).items():
             if key in ["x", "x2", "y", "y2", "z", "z2"]:
                 continue
-
             if key in ["latitude"]:
                 key = "lat"
             elif key in ["longitude"]:
@@ -237,7 +243,6 @@ class Header(Location):
             if "declination" in key:
                 if self.declination.value == 0.0:
                     continue
-
             if key in ["lat", "lon", "long"] and value is not None:
                 if latlon_format.lower() == "dd":
                     value = f"{value:.6f}"
@@ -245,12 +250,9 @@ class Header(Location):
                     value = self._convert_position_float2str(value)
             if key in ["elev"] and value is not None:
                 value = "{0:.3f}".format(value)
-
             if isinstance(value, list):
                 value = ",".join(value)
-
             header_lines.append(f"\t{key.upper()}={value}\n")
-
         header_lines.append("\n")
         return header_lines
 
@@ -264,7 +266,6 @@ class Header(Location):
         if header_list is None:
             self.logger.info("No header information to read")
             return None
-
         new_header_list = []
         for h_line in header_list:
             h_line = h_line.strip().replace('"', "")
@@ -274,5 +275,4 @@ class Header(Location):
                     key = h_list[0].strip().lower()
                     value = h_list[1].strip()
                     new_header_list.append("{0}={1}".format(key, value))
-
         return new_header_list
