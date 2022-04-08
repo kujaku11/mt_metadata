@@ -56,4 +56,10 @@
 * Updated mt_metadata.transfer_functions.core.TF
 * Added documentation on transfer functions
 
+0.1.8 (2022-04-07)
+--------------------
+
+* Bug fixes (mainly in the transfer functions)
+* Combined timeseries and transfer_function metadata where similar, so now transfer_function metadata imports from timeseries when applicable.  Reduces files and redundancy.
+* Updated documentation
 

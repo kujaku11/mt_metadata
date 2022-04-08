@@ -73,7 +73,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
             )
             self.logger.error(msg)
             raise ValueError(msg)
-
         mt_survey = metadata.Survey()
 
         for mt_key, xml_key in self.mt_translator.items():
@@ -98,21 +97,26 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 mt_survey.set_attr_from_name(
                     mt_key, self.read_xml_identifier(network.identifiers)
                 )
-
             elif mt_key in ["comments"]:
                 for comment in network.comments:
                     key, value = self.read_xml_comment(comment)
-                    key = key.split("mt.survey.")[1]
-                    if "summary" in key:
-                        key = key.replace("summary", "comments")
-                    if key in ["comments"]:
+                    if "mt.survey" in key:
+                        key = key.split("mt.survey.")[1]
+                        if "summary" in key:
+                            key = key.replace("summary", "comments")
+                        if key in ["comments"]:
+                            if mt_survey.comments:
+                                mt_survey.comments += f", {value}"
+                            else:
+                                mt_survey.comments = value
+                        else:
+                            mt_survey.set_attr_from_name(key, value)
+                    else:
                         if mt_survey.comments:
-                            mt_survey.comments += value
+                            if not value in mt_survey.comments:
+                                mt_survey.comments += f", {value}"
                         else:
                             mt_survey.comments = value
-                    else:
-                        mt_survey.set_attr_from_name(key, value)
-
             else:
                 value = getattr(network, xml_key)
                 if value is None:
@@ -123,12 +127,9 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 else:
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
-
                 mt_survey.set_attr_from_name(mt_key, value)
-
         if mt_survey.id is None:
             mt_survey.id = mt_survey.fdsn.network
-
         return mt_survey
 
     def mt_to_xml(self, survey, code="ZU"):
@@ -145,7 +146,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
             )
             self.logger.error(msg)
             raise ValueError(msg)
-
         network = inventory.Network(code)
         for inv_key, mt_key in self.xml_translator.items():
             if mt_key is None:
@@ -164,7 +164,6 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         )
                         operator.contacts = [person]
                     network.operators = [operator]
-
             elif inv_key == "comments":
                 if survey.comments is not None:
                     comment = inventory.Comment(survey.comments)
@@ -174,10 +173,8 @@ class XMLNetworkMTSurvey(BaseTranslator):
             elif inv_key == "identifiers":
                 doi = survey.get_attr_from_name(mt_key)
                 network.identifiers.append(f"DOI:{doi}")
-
             else:
                 setattr(network, inv_key, survey.get_attr_from_name(mt_key))
-
         comments = self.make_mt_comments(survey, mt_key_base="mt.survey")
         network.comments = comments
 
