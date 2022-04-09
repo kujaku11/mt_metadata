@@ -30,6 +30,9 @@ ns_dict = {
 xml_path = Path(r"path\to\mt\xml\files")
 output_path = Path(r"path\to\output\folder")
 
+xml_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt\annas_connundrums\mth5_newer")
+output_path = Path(r"c:\Users\jpeacock\OneDrive - DOI\mt")
+
 # make an instance of MTML2StationXML where the input is the path to the folder
 # containing the MTML.xml files
 a = MT2StationXML(xml_path)
@@ -39,7 +42,7 @@ today = f"{now.year}{now.month:02}{now.day:02}"
 # if you want to make one stationxml per station then you can loop over
 # stations
 # for station in a.stations:
-for station in ["CAR05"]:
+for station in ["AZV13"]:
     mtex = a.make_experiment(stations=station)
 
     # name the file as network_year_station_today.xml
@@ -56,7 +59,6 @@ for station in ["CAR05"]:
     inv = a.mt_to_xml(
         mtex, stationxml_fn=output_path.joinpath(xml_fn), ns_dict=deepcopy(ns_dict),
     )
-
 # if you want to make a complete stationxml
 # mtex = a.make_experiment()
 # inv = a.mt_to_xml(mtex, stationxml_fn=output_path.joinpath("full_stationxml.xml"))

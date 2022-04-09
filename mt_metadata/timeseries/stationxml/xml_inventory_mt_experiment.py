@@ -62,12 +62,10 @@ class XMLInventoryMTExperiment:
             if isinstance(stationxml_fn, Path):
                 stationxml_fn = stationxml_fn.as_posix()
             inventory_object = read_inventory(stationxml_fn)
-
         if not inventory_object:
             msg = "Must provide either an inventory object or StationXML file path"
             self.logger.error(msg)
             raise ValueError(msg)
-
         mt_experiment = metadata.Experiment()
         for xml_network in inventory_object.networks:
             mt_survey = self.network_translator.xml_to_mt(xml_network)
@@ -80,7 +78,7 @@ class XMLInventoryMTExperiment:
                     mt_survey.filters.update(mt_filters)
                     # if there is a run list match channel to runs
                     if self.channel_translator.run_list:
-                        for run_id in self.channel_translator.run_list:
+                        for run_id in sorted(self.channel_translator.run_list):
                             # need to make a copy of the channel otherwise
                             # the properties are constantly overwritten as we loop
                             # through the runs
@@ -90,21 +88,25 @@ class XMLInventoryMTExperiment:
                             run_channel.time_period.start = mt_run.time_period.start
                             run_channel.time_period.end = mt_run.time_period.end
                             mt_run.add_channel(run_channel)
-
                     # if there are runs already try to match by start, end, sample_rate
+                    # initialized runs have a sample rate of 0.  This could be an
+                    # issue in the future.
                     elif mt_station.runs:
                         for mt_run in mt_station.runs:
-                            if mt_run.sample_rate == mt_channel.sample_rate:
+                            if (
+                                mt_run.sample_rate == mt_channel.sample_rate
+                                or mt_run.sample_rate == 0
+                            ):
+                                # match assuming the runs have the correct start
+                                # and end times.
                                 if (
                                     mt_run.time_period.start
-                                    == mt_channel.time_period.start
+                                    >= mt_channel.time_period.start
+                                ) and (
+                                    mt_run.time_period.end <= mt_channel.time_period.end
                                 ):
-                                    if (
-                                        mt_run.time_period.end
-                                        == mt_channel.time_period.end
-                                    ):
-                                        mt_run.channels.append(mt_channel)
-
+                                    mt_run.channels.append(mt_channel)
+                                    mt_run.sample_rate = mt_channel.sample_rate
                     # make a new run with generic information
                     else:
                         mt_run = metadata.Run(id=f"{len(mt_station.runs)+1:03d}")
@@ -118,10 +120,8 @@ class XMLInventoryMTExperiment:
             mt_survey.update_bounding_box()
             mt_survey.update_time_period()
             mt_experiment.surveys.append(mt_survey)
-
         if mt_fn:
             mt_experiment.to_xml(fn=mt_fn)
-
         return mt_experiment
 
     def mt_to_xml(self, mt_experiment, mt_fn=None, stationxml_fn=None, ns_dict=None):
@@ -146,12 +146,10 @@ class XMLInventoryMTExperiment:
         if mt_fn:
             mt_experiment = metadata.Experiment()
             mt_experiment.from_xml(mt_fn)
-
         if not mt_experiment:
             msg = "Must provide either an experiment object or file path"
             self.logger.error(msg)
             raise ValueError(msg)
-
         xml_inventory = inventory.Inventory()
         for mt_survey in mt_experiment.surveys:
             xml_network = self.network_translator.mt_to_xml(mt_survey)
@@ -162,12 +160,10 @@ class XMLInventoryMTExperiment:
                     xml_station = self.add_run(xml_station, mt_run, mt_survey.filters)
                 xml_network.stations.append(xml_station)
             xml_inventory.networks.append(xml_network)
-
         if stationxml_fn:
             if isinstance(stationxml_fn, Path):
                 stationxml_fn = stationxml_fn.as_posix()
             xml_inventory.write(stationxml_fn, "stationxml", nsmap=ns_dict)
-
         return xml_inventory
 
     def add_run(self, xml_station, mt_run, filters_dict):
@@ -212,17 +208,13 @@ class XMLInventoryMTExperiment:
                         existing_channel.comments.append(
                             inventory.Comment(mt_run.id, subject="mt.run.id")
                         )
-
                     if xml_channel.start_date < existing_channel.start_date:
                         self.logger.debug("Changed starting time")
                         existing_channel.start_date = xml_channel.start_date
-
                     if xml_channel.end_date > existing_channel.end_date:
                         self.logger.debug("Changed ending time")
                         existing_channel.end_date = xml_channel.end_date
-
                     # continue
-
                 if not find:
                     self.logger.debug(
                         f"xxx Unmatched {xml_channel.code}!={existing_channel.code}"
@@ -243,7 +235,6 @@ class XMLInventoryMTExperiment:
                         inventory.Comment(mt_run.id, subject="mt.run.id")
                     )
                 xml_station.channels.append(xml_channel)
-
         return xml_station
 
     def compare_xml_channel(self, xml_channel_01, xml_channel_02):
@@ -262,39 +253,32 @@ class XMLInventoryMTExperiment:
         if xml_channel_01.code != xml_channel_02.code:
             self.logger.debug(f"{xml_channel_01.code} != {xml_channel_02.code}")
             return False
-
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
             self.logger.debug(
                 f"{xml_channel_01.sample_rate} != {xml_channel_02.sample_rate}"
             )
             return False
-
         if xml_channel_01.sensor != xml_channel_02.sensor:
             self.logger.debug(f"{xml_channel_01.sensor} != {xml_channel_02.sensor}")
             return False
-
         if round(xml_channel_01.latitude, 3) != round(xml_channel_02.latitude, 3):
             self.logger.debug(
                 f"{round(xml_channel_01.latitude, 3)} != {round(xml_channel_02.latitude, 3)}"
             )
             return False
-
         if round(xml_channel_01.longitude, 3) != round(xml_channel_02.longitude, 3):
             self.logger.debug(
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
             )
             return False
-
         if round(xml_channel_01.azimuth, 2) != round(xml_channel_02.azimuth, 2):
             self.logger.debug(
                 f"{round(xml_channel_01.azimuth, 2)} != {round(xml_channel_02.azimuth, 2)}"
             )
             return False
-
         if round(xml_channel_01.dip, 2) != round(xml_channel_02.dip, 2):
             self.logger.debug(
                 f"{round(xml_channel_01.dip, 2)} != {round(xml_channel_02.dip, 2)}"
             )
             return False
-
         return True
