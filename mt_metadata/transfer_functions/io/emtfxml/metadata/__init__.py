@@ -35,6 +35,7 @@ from .magnetometer import Magnetometer
 from .field_notes import FieldNotes
 from .software import Software
 from .remote_ref import RemoteRef
+from .remote_info import RemoteInfo
 from .processing_info import ProcessingInfo
 from .estimate import Estimate
 from .statistical_estimates import StatisticalEstimates
@@ -67,6 +68,7 @@ __all__ = [
     "FieldNotes",
     "Software",
     "RemoteRef",
+    "RemoteInfo",
     "ProcessingInfo",
     "Estimate",
     "StatisticalEstimates",
