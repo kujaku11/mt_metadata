@@ -74,7 +74,7 @@ class TestNetwork02(unittest.TestCase):
     def test_comments_comments(self):
         self.assertEqual(
             self.survey.comments,
-            "Long-period EarthScope-style coverage of southern United States",
+            "Long-period EarthScope-style coverage of southern United States, ",
         )
 
     def test_comments_project_lead(self):
