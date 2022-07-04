@@ -55,7 +55,6 @@ class Header(Location):
                     new_line += ","
             else:
                 new_line += line[ii]
-
         # now that we have a useful line, split it into its parts
         line_list = new_line.split(",")
 
@@ -67,7 +66,6 @@ class Header(Location):
             ll_list = ll.split("=")
             if len(ll_list) == 1:
                 continue
-
             # some times there is just a list of numbers, need a way to read
             # that.
             if len(ll_list) != 2:
@@ -83,9 +81,7 @@ class Header(Location):
                     value = float(ll_list[1])
                 except ValueError:
                     value = ll_list[1]
-
                 l_dict[key] = value
-
         return l_dict
 
     def read_header(self, j_lines):
@@ -111,13 +107,12 @@ class Header(Location):
         for h_line in header_lines[1:]:
             h_dict = self._read_header_line(h_line)
             for key, value in h_dict.items():
-                if key in ["filnam", "nskip", "nread", "ncomp", "indices"]:
-                    if key == "ncomp":
+                if key in ["filnam", "nskip", "nread", "ncomp", "indices", "nfil"]:
+                    if key in ["nfil", "ncomp"]:
                         fn_count += 1
                     if len(self.data_blocks) != fn_count + 1:
                         self.data_blocks.append(BirrpBlock())
                     self.data_blocks[fn_count].set_attr_from_name(key, value)
-
                 # if its the line of angles, put them all in a list with a unique key
                 elif key in ["theta1", "theta2", "phi"]:
                     if key == "theta1":
@@ -125,7 +120,6 @@ class Header(Location):
                     if len(self.angles) != theta_count + 1:
                         self.angles.append(BirrpAngles())
                     self.angles[theta_count].set_attr_from_name(key, value)
-
                 else:
                     self.birrp_parameters.set_attr_from_name(key, value)
 
@@ -146,5 +140,4 @@ class Header(Location):
                 m_value = float(m_list[0].strip())
             except ValueError:
                 m_value = 0.0
-
             self.set_attr_from_name(m_key, m_value)
