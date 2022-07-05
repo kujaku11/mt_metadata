@@ -33,6 +33,7 @@ class TransferFunction(Base):
         self.software = Software()
         self._processed_date = MTime()
         self.data_quality = DataQuality()
+        self.processing_parameters = []
 
         super().__init__(attr_dict=attr_dict)
 
