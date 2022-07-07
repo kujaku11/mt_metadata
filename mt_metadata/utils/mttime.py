@@ -9,6 +9,7 @@ import datetime
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+import pytz
 
 from dateutil import parser as dtparser
 from dateutil.tz.tz import tzutc, tzlocal
@@ -143,7 +144,9 @@ class MTime:
                 self.logger.debug(f"Parsed {time} to {self.iso_str}")
 
             elif isinstance(time, (int, float)):
-                self.logger.debug(f"Input time {time}, assuming epoch seconds in UTC")
+                self.logger.debug(
+                    f"Input time {time}, assuming epoch seconds in UTC"
+                )
                 self.epoch_seconds = time
             elif isinstance(time, (np.datetime64)):
                 self.logger.debug(
@@ -171,7 +174,9 @@ class MTime:
             self.from_str("1980-01-01 00:00:00")
 
         if gps_time:
-            leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
+            leap_seconds = calculate_leap_seconds(
+                self.year, self.month, self.day
+            )
             self.logger.debug(
                 f"Converting GPS time to UTC with {leap_seconds} leap seconds"
             )
@@ -355,7 +360,9 @@ class MTime:
         """
 
         if dt_str is None:
-            self.logger.warning("Time string is None, setting to 1980-01-01:00:00:00")
+            self.logger.warning(
+                "Time string is None, setting to 1980-01-01:00:00:00"
+            )
             dt_str = "1980-01-01T00:00:00"
 
         try:
@@ -383,7 +390,10 @@ class MTime:
         """
         make sure the timezone is UTC
         """
-        if dt_object.tzinfo == datetime.timezone.utc:
+        if (
+            dt_object.tzinfo == datetime.timezone.utc
+            or dt_object.tzinfo == pytz.UTC
+        ):
             return dt_object
 
         elif isinstance(dt_object.tzinfo, tzutc):
@@ -397,7 +407,9 @@ class MTime:
             self.logger.debug("Local timezone identified setting to UTC")
             return dt_object.replace(tzinfo=datetime.timezone.utc)
 
-        elif dt_object.tzinfo != datetime.timezone.utc:
+        elif not isinstance(
+            dt_object.tzinfo, (type(datetime.timezone.utc), type(pytz.UTC))
+        ):
             raise ValueError("Time zone must be UTC")
 
     @property
