@@ -8,6 +8,7 @@ Created on Thu May 21 14:09:17 2020
 import unittest
 from dateutil import parser as dtparser
 from dateutil import tz
+import pandas as pd
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.exceptions import MTTimeError
 
@@ -38,6 +39,20 @@ class TestMTime(unittest.TestCase):
         self.assertEqual(self.month, self.mtime_obj.month)
         self.assertEqual(self.day, self.mtime_obj.day)
 
+    def test_pd_timestamp(self):
+        stamp = pd.Timestamp(self.dt_true)
+
+        t = MTime(stamp)
+        self.assertEqual(self.year, t.year)
+        self.assertEqual(self.month, t.month)
+        self.assertEqual(self.day, t.day)
+        self.assertEqual(self.hour, t.hour)
+        self.assertEqual(self.minute, t.minutes)
+        self.assertEqual(self.second, t.seconds)
+        self.assertEqual(self.ms, t.microseconds)
+        self.assertEqual(self.dt_true, t.iso_str)
+        self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
+
     def test_string_input_dt(self):
         self.mtime_obj.from_str(self.dt_str_01)
         self.assertEqual(self.year, self.mtime_obj.year)
@@ -53,7 +68,9 @@ class TestMTime(unittest.TestCase):
         )
 
     def test_input_fail(self):
-        self.assertRaises(MTTimeError, self.mtime_obj.from_str, self.input_fail)
+        self.assertRaises(
+            MTTimeError, self.mtime_obj.from_str, self.input_fail
+        )
 
     def test_compare_dt(self):
         dt_01 = MTime()
