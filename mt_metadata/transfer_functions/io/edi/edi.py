@@ -138,41 +138,37 @@ class EDI(object):
         ]
 
         self._channel_skip_list = [
-            f"{comp}.{ff}"
-            for ff in [
-                "filter.name",
-                "filter.applied",
-                "time_period.start",
-                "time_period.end",
-                "location.elevation",
-                "location.latitude",
-                "location.longitude",
-                "location.x",
-                "location.y",
-                "location.z",
-                "positive.latitude",
-                "positive.longitude",
-                "positive.elevation",
-                "positive.x",
-                "positive.x2",
-                "positive.y",
-                "positive.y2",
-                "positive.z",
-                "positive.z2",
-                "negative.latitude",
-                "negative.longitude",
-                "negative.elevation",
-                "negative.x",
-                "negative.x2",
-                "negative.y",
-                "negative.y2",
-                "negative.z",
-                "negative.z2",
-                "sample_rate",
-                "data_quality.rating.value",
-                "data_quality.flag",
-            ]
-            for comp in ["ex", "ey", "hx", "hy", "hz", "te", "rr"]
+            "filter.name",
+            "filter.applied",
+            "time_period.start",
+            "time_period.end",
+            "location.elevation",
+            "location.latitude",
+            "location.longitude",
+            "location.x",
+            "location.y",
+            "location.z",
+            "positive.latitude",
+            "positive.longitude",
+            "positive.elevation",
+            "positive.x",
+            "positive.x2",
+            "positive.y",
+            "positive.y2",
+            "positive.z",
+            "positive.z2",
+            "negative.latitude",
+            "negative.longitude",
+            "negative.elevation",
+            "negative.x",
+            "negative.x2",
+            "negative.y",
+            "negative.y2",
+            "negative.z",
+            "negative.z2",
+            "sample_rate",
+            "data_quality.rating.value",
+            "data_quality.flag",
         ]
 
         self._index_dict = {
@@ -1057,6 +1053,9 @@ class EDI(object):
                     )
                 else:
                     sm.transfer_function.set_attr_from_name(key, value)
+                    if "runs_processed" in key:
+                        sm.run_list = sm.transfer_function.runs_processed
+
             if key.startswith("run."):
                 key = key.split("run.")[1]
                 comp, key = key.split(".", 1)
@@ -1200,21 +1199,13 @@ class EDI(object):
                         self.Info.info_list.append(
                             f"{run.id}.{ch.component}.{ch_key} = {ch_value}"
                         )
+                self.Measurement.from_metadata(ch)
 
         ### fill measurement
         self.Measurement.refelev = sm.location.elevation
         self.Measurement.reflat = sm.location.latitude
         self.Measurement.reflon = sm.location.longitude
         self.Measurement.maxchan = len(sm.channels_recorded)
-        if len(sm.channels_recorded) > 0:
-            for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
-                try:
-                    self.Measurement.from_metadata(
-                        getattr(sm.runs[0], f"{comp}")
-                    )
-                except AttributeError as error:
-                    self.logger.exception(error)
-                    self.logger.debug(f"Did not find information on {comp}")
 
     def _get_electric_metadata(self, comp):
         """
