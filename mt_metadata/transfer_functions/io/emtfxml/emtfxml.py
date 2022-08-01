@@ -33,6 +33,9 @@ from mt_metadata.transfer_functions.tf import (
 from mt_metadata.utils import mttime
 from mt_metadata import __version__
 
+from mt_metadata.transfer_functions.channel_nomenclature import map_channels
+
+
 meta_classes = dict(
     [
         (validate_attribute(k), v)
@@ -1127,6 +1130,9 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
 
     from mt_metadata.transfer_functions.core import TF
 
+    channel_nomenclature = kwargs.get("channel_nomenclature", "default")
+    EX, EY, HX, HY, HZ = map_channels(channel_nomenclature)
+
     if not isinstance(tf_object, TF):
         raise ValueError(
             "Input must be an mt_metadata.transfer_functions.core.TF object"
@@ -1146,10 +1152,10 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
         emtf.data.z_var = tf_object.impedance_error.data ** 2
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
         emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=[HX, HY], output=[HX, HY])
         ].data
         emtf.data.z_residcov = tf_object.residual_covariance.loc[
-            dict(input=["ex", "ey"], output=["ex", "ey"])
+            dict(input=[EX, EY], output=[EX, EY])
         ].data
     if tf_object.has_tipper():
         tags += ["tipper"]
@@ -1158,10 +1164,10 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
 
     if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
         emtf.data.t_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=[HX, HY], output=[HX, HY])
         ].data
         emtf.data.t_residcov = tf_object.residual_covariance.loc[
-            dict(input=["hz"], output=["hz"])
+            dict(input=[HZ], output=[HZ])
         ].data
 
     emtf.tags = ", ".join(tags)

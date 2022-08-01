@@ -18,6 +18,8 @@ from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 from mt_metadata.base.helpers import validate_name
 
+from mt_metadata.transfer_functions.channel_nomenclature import map_channels
+
 
 # =============================================================================
 class TF:
@@ -48,6 +50,7 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
+        self.channel_nomenclature = kwargs.get("channel_nomenclature", "default")
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -68,27 +71,35 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
-
+        EX, EY, HX, HY, HZ = map_channels(self.channel_nomenclature)
+        self.EX = EX
+        self.EY = EY
+        self.HX = HX
+        self.HY = HY
+        self.HZ = HZ
+        self.EX_EY = [EX, EY]
+        self.HX_HY = [HX, HY]
+        self.EX_EY_HZ = [EX, EY, HZ]
         self._ch_input_dict = {
-            "impedance": ["hx", "hy"],
-            "tipper": ["hx", "hy"],
-            "impedance_error": ["hx", "hy"],
-            "tipper_error": ["hx", "hy"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["hx", "hy"],
-            "tf_error": ["hx", "hy"],
+            "impedance": self.HX_HY,
+            "tipper": self.HX_HY,
+            "impedance_error": self.HX_HY,
+            "tipper_error": self.HX_HY,
+            "isp": self.HX_HY,
+            "res": self.EX_EY_HZ,
+            "tf": self.HX_HY,
+            "tf_error": self.HX_HY,
         }
 
         self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "impedance_error": ["ex", "ey"],
-            "tipper_error": ["hz"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["ex", "ey", "hz"],
-            "tf_error": ["ex", "ey", "hz"],
+            "impedance": self.EX_EY,
+            "tipper": [self.HZ],
+            "impedance_error": self.EX_EY,
+            "tipper_error": [self.HZ],
+            "isp": self.HX_HY,
+            "res": self.EX_EY_HZ,
+            "tf": self.EX_EY_HZ,
+            "tf_error": self.EX_EY_HZ,
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -447,7 +458,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "ex" in outputs or "ey" in outputs or "hz" in outputs:
+        if self.EX in outputs or self.EY in outputs or self.HZ in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["tf"], output=self._ch_output_dict["tf"]
@@ -468,7 +479,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function.sel(
-                input=["hx", "hy"], output=["ex", "ey", "hz"]
+                input=self.HX_HY, output=self.EX_EY_HZ
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -500,7 +511,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function_error.sel(
-                input=["hx", "hy"], output=["ex", "ey", "hz"]
+                input=self.HX_HY, output=self.EX_EY_HZ
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -534,7 +545,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "ex" in outputs or "ey" in outputs:
+        if self.EX in outputs or self.EY in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["impedance"],
@@ -627,7 +638,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "hz" in outputs:
+        if self.HZ in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["tipper"],
@@ -815,36 +826,35 @@ class TF:
         :rtype: TYPE
 
         """
-
         sigma_e = self.residual_covariance.loc[
-            dict(input=["ex", "ey"], output=["ex", "ey"])
+            dict(input=self.EX_EY, output=self.EX_EY)
         ]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=self.HX_HY, output=self.HX_HY)
         ]
 
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.EX], output=[self.EX])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
         )
         z_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.EX], output=[self.EX])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
         )
         z_err[:, 1, 0] = np.real(
-            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.EY], output=[self.EY])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
         )
         z_err[:, 1, 1] = np.real(
-            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.EY], output=[self.EY])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=["hx", "hy"], output=["ex", "ey"])
+            dict(input=self.HX_HY, output=self.EX_EY)
         ] = z_err
 
     def _compute_tipper_error_from_covariance(self):
@@ -859,26 +869,25 @@ class TF:
         :rtype: TYPE
 
         """
-
-        sigma_e = self.residual_covariance.loc[dict(input=["hz"], output=["hz"])]
+        sigma_e = self.residual_covariance.loc[dict(input=[self.HZ], output=[self.HZ])]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=self.HX_HY, output=self.HX_HY)
         ]
 
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.HZ], output=[self.HZ])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
         )
         t_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.HZ], output=[self.HZ])].data.flatten()
+            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=["hx", "hy"], output=["hz"])
+            dict(input=self.HX_HY, output=[self.HZ])
         ] = t_err
 
     def _compute_error_from_covariance(self):
@@ -947,9 +956,9 @@ class TF:
 
     def to_ts_station_metadata(self):
         """
-        need a convinience function to translate to ts station metadata 
+        need a convinience function to translate to ts station metadata
         for MTH5
-        
+
         """
 
         from mt_metadata.timeseries import Station as TSStation
@@ -966,9 +975,9 @@ class TF:
 
     def from_ts_station_metadata(self, ts_station_metadata):
         """
-        need a convinience function to translate to ts station metadata 
+        need a convinience function to translate to ts station metadata
         for MTH5
-        
+
         """
 
         for key, value in ts_station_metadata.to_dict(single=True).items():
@@ -996,7 +1005,7 @@ class TF:
 
         :param file_type: [ 'edi' | 'xml' | "zmm" ]
         :type file_type: string
-        
+
         keyword arguments include
 
         :param longitude_format:  whether to write longitude as longitude or LONG.
