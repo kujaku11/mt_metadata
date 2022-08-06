@@ -18,9 +18,13 @@ from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 from mt_metadata.base.helpers import validate_name
 
-from mt_metadata.transfer_functions.channel_nomenclature import map_channels
-
-
+DEFAULT_CHANNEL_NOMENCLATURE = {
+    "hx": "hx",
+    "hy": "hy",
+    "hz": "hz",
+    "ex": "ex",
+    "ey": "ey",
+}
 # =============================================================================
 class TF:
     """
@@ -50,7 +54,8 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
-        self.channel_nomenclature = kwargs.get("channel_nomenclature")
+        self.channel_nomenclature = kwargs.get("channel_nomenclature",
+                                               DEFAULT_CHANNEL_NOMENCLATURE)
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
