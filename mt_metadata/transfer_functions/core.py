@@ -76,16 +76,16 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
-        #unpack channel nomenclature
-        #easier way to assign these attrs?
-        self.ex = self.channel_nomenclature.ex
-        self.ey = self.channel_nomenclature.ey
-        self.hx = self.channel_nomenclature.hx
-        self.hy = self.channel_nomenclature.hy
-        self.hz = self.channel_nomenclature.hz
-        self.ex_ey = self.channel_nomenclature.ex_ey
-        self.hx_hy = self.channel_nomenclature.hx_hy
-        self.ex_ey_hz = self.channel_nomenclature.ex_ey_hz
+        #unpack channel nomenclature dict
+        self.ex = self.channel_nomenclature["ex"]
+        self.ey = self.channel_nomenclature["ey"]
+        self.hx = self.channel_nomenclature["hx"]
+        self.hy = self.channel_nomenclature["hy"]
+        self.hz = self.channel_nomenclature["hz"]
+        self.ex_ey = [self.ex, self.ey]
+        self.hx_hy = [self.hx, self.hy]
+        self.ex_ey_hz = [self.ex, self.ey, self.hz]
+
         self._ch_input_dict = {
             "impedance": self.hx_hy,
             "tipper": self.hx_hy,

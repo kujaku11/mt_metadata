@@ -1127,8 +1127,8 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
     """
 
     from mt_metadata.transfer_functions.core import TF
-    ex_ey = [tf_object.channel_nomenclature.ex, tf_object.channel_nomenclature.ey]
-    hx_hy = [tf_object.channel_nomenclature.hx, tf_object.channel_nomenclature.hy]
+    ex_ey = [tf_object.channel_nomenclature["ex"], tf_object.channel_nomenclature["ey"]]
+    hx_hy = [tf_object.channel_nomenclature["hx"], tf_object.channel_nomenclature["hy"]]
 
     if not isinstance(tf_object, TF):
         raise ValueError(
@@ -1164,7 +1164,8 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
             dict(input=hx_hy, output=hx_hy)
         ].data
         emtf.data.t_residcov = tf_object.residual_covariance.loc[
-            dict(input=[tf_object.channel_nomenclature.hz], output=[tf_object.channel_nomenclature.hz])
+            dict(input=[tf_object.channel_nomenclature["hz"]], output=[
+                tf_object.channel_nomenclature["hz"]])
         ].data
 
     emtf.tags = ", ".join(tags)
