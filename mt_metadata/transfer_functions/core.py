@@ -50,7 +50,7 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
-        self.channel_nomenclature = kwargs.get("channel_nomenclature", "default")
+        self.channel_nomenclature = kwargs.get("channel_nomenclature")
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -71,35 +71,36 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
-        EX, EY, HX, HY, HZ = map_channels(self.channel_nomenclature)
-        self.EX = EX
-        self.EY = EY
-        self.HX = HX
-        self.HY = HY
-        self.HZ = HZ
-        self.EX_EY = [EX, EY]
-        self.HX_HY = [HX, HY]
-        self.EX_EY_HZ = [EX, EY, HZ]
+        #unpack channel nomenclature
+        #easier way to assign these attrs?
+        self.ex = self.channel_nomenclature.ex
+        self.ey = self.channel_nomenclature.ey
+        self.hx = self.channel_nomenclature.hx
+        self.hy = self.channel_nomenclature.hy
+        self.hz = self.channel_nomenclature.hz
+        self.ex_ey = self.channel_nomenclature.ex_ey
+        self.hx_hy = self.channel_nomenclature.hx_hy
+        self.ex_ey_hz = self.channel_nomenclature.ex_ey_hz
         self._ch_input_dict = {
-            "impedance": self.HX_HY,
-            "tipper": self.HX_HY,
-            "impedance_error": self.HX_HY,
-            "tipper_error": self.HX_HY,
-            "isp": self.HX_HY,
-            "res": self.EX_EY_HZ,
-            "tf": self.HX_HY,
-            "tf_error": self.HX_HY,
+            "impedance": self.hx_hy,
+            "tipper": self.hx_hy,
+            "impedance_error": self.hx_hy,
+            "tipper_error": self.hx_hy,
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.hx_hy,
+            "tf_error": self.hx_hy,
         }
 
         self._ch_output_dict = {
-            "impedance": self.EX_EY,
-            "tipper": [self.HZ],
-            "impedance_error": self.EX_EY,
-            "tipper_error": [self.HZ],
-            "isp": self.HX_HY,
-            "res": self.EX_EY_HZ,
-            "tf": self.EX_EY_HZ,
-            "tf_error": self.EX_EY_HZ,
+            "impedance": self.ex_ey,
+            "tipper": [self.hz],
+            "impedance_error": self.ex_ey,
+            "tipper_error": [self.hz],
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.ex_ey_hz,
+            "tf_error": self.ex_ey_hz,
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -458,7 +459,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if self.EX in outputs or self.EY in outputs or self.HZ in outputs:
+        if self.ex in outputs or self.ey in outputs or self.hz in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["tf"], output=self._ch_output_dict["tf"]
@@ -479,7 +480,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function.sel(
-                input=self.HX_HY, output=self.EX_EY_HZ
+                input=self.hx_hy, output=self.ex_ey_hz
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -511,7 +512,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function_error.sel(
-                input=self.HX_HY, output=self.EX_EY_HZ
+                input=self.hx_hy, output=self.ex_ey_hz
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -545,7 +546,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if self.EX in outputs or self.EY in outputs:
+        if self.ex in outputs or self.ey in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["impedance"],
@@ -638,7 +639,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if self.HZ in outputs:
+        if self.hz in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["tipper"],
@@ -827,34 +828,34 @@ class TF:
 
         """
         sigma_e = self.residual_covariance.loc[
-            dict(input=self.EX_EY, output=self.EX_EY)
+            dict(input=self.ex_ey, output=self.ex_ey)
         ]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=self.HX_HY, output=self.HX_HY)
+            dict(input=self.hx_hy, output=self.hx_hy)
         ]
 
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=[self.EX], output=[self.EX])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
+            sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         z_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=[self.EX], output=[self.EX])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
+            sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
         z_err[:, 1, 0] = np.real(
-            sigma_e.loc[dict(input=[self.EY], output=[self.EY])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
+            sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         z_err[:, 1, 1] = np.real(
-            sigma_e.loc[dict(input=[self.EY], output=[self.EY])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
+            sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=self.HX_HY, output=self.EX_EY)
+            dict(input=self.hx_hy, output=self.ex_ey)
         ] = z_err
 
     def _compute_tipper_error_from_covariance(self):
@@ -869,25 +870,25 @@ class TF:
         :rtype: TYPE
 
         """
-        sigma_e = self.residual_covariance.loc[dict(input=[self.HZ], output=[self.HZ])]
+        sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=self.HX_HY, output=self.HX_HY)
+            dict(input=self.hx_hy, output=self.hx_hy)
         ]
 
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=[self.HZ], output=[self.HZ])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HX], output=[self.HX])].data.flatten()
+            sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         t_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=[self.HZ], output=[self.HZ])].data.flatten()
-            * sigma_s.loc[dict(input=[self.HY], output=[self.HY])].data.flatten()
+            sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=self.HX_HY, output=[self.HZ])
+            dict(input=self.hx_hy, output=[self.hz])
         ] = t_err
 
     def _compute_error_from_covariance(self):
