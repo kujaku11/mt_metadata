@@ -196,6 +196,13 @@ class TestFAPFilter(unittest.TestCase):
 
         self.assertTrue((self.fap.phases == np.deg2rad(degree_phases)).all())
 
+    def test_phases_in_milliradians(self):
+        degree_phases = np.arange(100) * 1000 * np.pi / 2
+
+        self.fap.phases = degree_phases
+
+        self.assertTrue((self.fap.phases == (degree_phases / 1000)).all())
+
     def test_pass_band(self):
         pb = self.fap.pass_band(self.fap.frequencies, tol=1e-2)
         self.assertTrue(np.isclose(pb, np.array([2.0, 181.02])).all())
