@@ -2,7 +2,7 @@
 """
 Created on Mon Feb 22 09:27:10 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -117,8 +117,9 @@ class XMLInventoryMTExperiment:
                         mt_station.runs.append(mt_run)
                 mt_station.update_time_period()
                 mt_survey.stations.append(mt_station)
-            mt_survey.update_bounding_box()
-            mt_survey.update_time_period()
+            if xml_network.stations:
+                mt_survey.update_bounding_box()
+                mt_survey.update_time_period()
             mt_experiment.surveys.append(mt_survey)
         if mt_fn:
             mt_experiment.to_xml(fn=mt_fn)

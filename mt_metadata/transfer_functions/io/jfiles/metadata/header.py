@@ -107,8 +107,15 @@ class Header(Location):
         for h_line in header_lines[1:]:
             h_dict = self._read_header_line(h_line)
             for key, value in h_dict.items():
-                if key in ["filnam", "nskip", "nread", "ncomp", "indices", "nfil"]:
-                    if key in ["nfil", "ncomp"]:
+                if key in [
+                    "filnam",
+                    "nskip",
+                    "nread",
+                    "ncomp",
+                    "indices",
+                    "nfil",
+                ]:
+                    if key in ["nfil"]:
                         fn_count += 1
                     if len(self.data_blocks) != fn_count + 1:
                         self.data_blocks.append(BirrpBlock())
