@@ -189,6 +189,13 @@ class TestFAPFilter(unittest.TestCase):
 
             self.assertRaises(MTSchemaError, set_gain_fail, "a")
 
+    def test_phases_in_degrees(self):
+        degree_phases = np.arange(100)
+
+        self.fap.phases = degree_phases
+
+        self.assertTrue((self.fap.phases == np.deg2rad(degree_phases)).all())
+
     def test_pass_band(self):
         pb = self.fap.pass_band(self.fap.frequencies, tol=1e-2)
         self.assertTrue(np.isclose(pb, np.array([2.0, 181.02])).all())
@@ -201,14 +208,18 @@ class TestFAPFilter(unittest.TestCase):
 
         with self.subTest(msg="test amplitude"):
             cr_amp = np.abs(cr)
-            self.assertTrue(np.isclose(np.abs(self.fap.amplitudes), cr_amp).all())
+            self.assertTrue(
+                np.isclose(np.abs(self.fap.amplitudes), cr_amp).all()
+            )
 
         with self.subTest(msg="test phase"):
             cr_phase = np.unwrap(np.angle(cr, deg=False))
             # the high frequencies get a little jumbled with unwrap,
             # not sure why but for now just skip those frequencies until
             # we know more about it.
-            self.assertTrue(np.isclose(cr_phase[:-10], self.fap.phases[:-10]).all())
+            self.assertTrue(
+                np.isclose(cr_phase[:-10], self.fap.phases[:-10]).all()
+            )
 
     def test_to_obspy_stage(self):
         stage = self.fap.to_obspy(2, sample_rate=10, normalization_frequency=1)
