@@ -11,7 +11,10 @@ import copy
 import numpy as np
 from scipy.interpolate import interp1d
 
-from obspy.core.inventory.response import ResponseListResponseStage, ResponseListElement
+from obspy.core.inventory.response import (
+    ResponseListResponseStage,
+    ResponseListElement,
+)
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
@@ -21,7 +24,9 @@ from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS))
+attr_dict.add_dict(
+    get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS)
+)
 
 # =============================================================================
 
@@ -32,6 +37,11 @@ obspy_mapping["phases"] = "_empirical_phases"
 
 
 class FrequencyResponseTableFilter(FilterBase):
+    """
+    Phases should be in radians.
+
+    """
+
     def __init__(self, **kwargs):
         super().__init__()
 
@@ -42,7 +52,7 @@ class FrequencyResponseTableFilter(FilterBase):
     @property
     def frequencies(self):
         """
-        
+
         :return: calibration frequencies
         :rtype: np.ndarray
 
@@ -62,16 +72,14 @@ class FrequencyResponseTableFilter(FilterBase):
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_frequencies = np.array(value, dtype=float)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
     @property
     def amplitudes(self):
         """
-        
+
         :return: calibrated amplitudes
         :rtype: np.ndarray
 
@@ -90,16 +98,15 @@ class FrequencyResponseTableFilter(FilterBase):
             self._empirical_amplitudes = np.array(value, dtype=float)
 
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
     @property
     def phases(self):
         """
-        
+        Should be in units of radians
+
         :return: calibrated phases
         :rtype: np.ndarray
 
@@ -109,17 +116,33 @@ class FrequencyResponseTableFilter(FilterBase):
     @phases.setter
     def phases(self, value):
         """
-        Set the amplitudes, make sure the input is validated
+        Set the phases, make sure the input is validated
+
+        The units should be radians
+
         :param value: calibrated phases
         :type value: np.ndarray
 
         """
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_phases = np.array(value, dtype=float)
+
+            if self._empirical_phases.size > 0:
+
+                if self._empirical_phases.mean() > 1000 * np.pi / 2:
+                    self.logger.warning(
+                        "Phases appear to be in milli radians attempting to conver to radians"
+                    )
+                    self._empirical_phases = self._empirical_phases / 1000
+
+                elif np.abs(self._empirical_phases).max() > 6 * np.pi:
+                    self.logger.warning(
+                        "Phases appear to be in degrees attempting to conver to radians"
+                    )
+                    self._empirical_phases = np.deg2rad(self._empirical_phases)
+
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -144,7 +167,10 @@ class FrequencyResponseTableFilter(FilterBase):
         return self._empirical_frequencies.max()
 
     def to_obspy(
-        self, stage_number=1, normalization_frequency=1, sample_rate=1,
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         Convert to an obspy stage
@@ -156,7 +182,7 @@ class FrequencyResponseTableFilter(FilterBase):
         :param sample_rate: sample rate, defaults to 1
         :type sample_rate: float, optional
         :return: Obspy stage filter
-        :rtype: :class:`obspy.core.inventory.ResponseListResponseStage` 
+        :rtype: :class:`obspy.core.inventory.ResponseListResponseStage`
 
         """
         response_elements = []
