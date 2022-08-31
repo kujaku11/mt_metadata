@@ -92,9 +92,7 @@ class ChannelResponseFilter(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._frequencies = np.array(value, dtype=float)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -144,7 +142,9 @@ class ChannelResponseFilter(Base):
             if is_acceptable_filter(item):
                 return_list.append(item)
             else:
-                fails.append(f"Item is not an acceptable filter type, {type(item)}")
+                fails.append(
+                    f"Item is not an acceptable filter type, {type(item)}"
+                )
 
         if fails:
             raise TypeError(", ".join(fails))
@@ -192,27 +192,31 @@ class ChannelResponseFilter(Base):
         """
 
         :return: all the non-time_delay filters as a list
-        
+
         """
-        non_delay_filters = [x for x in self.filters_list if x.type != "time delay"]
+        non_delay_filters = [
+            x for x in self.filters_list if x.type != "time delay"
+        ]
         return non_delay_filters
 
     @property
     def delay_filters(self):
         """
-        
+
         :return: all the time delay filters as a list
-        
+
         """
-        delay_filters = [x for x in self.filters_list if x.type == "time delay"]
+        delay_filters = [
+            x for x in self.filters_list if x.type == "time delay"
+        ]
         return delay_filters
 
     @property
     def total_delay(self):
         """
-        
+
         :return: the total delay of all filters
-        
+
         """
         delay_filters = self.delay_filters
         total_delay = 0.0
@@ -229,7 +233,7 @@ class ChannelResponseFilter(Base):
         **kwargs,
     ):
         """
-        
+
         :param frequencies: frequencies to compute complex response,
          defaults to None
         :type frequencies: np.ndarray, optional
@@ -261,7 +265,7 @@ class ChannelResponseFilter(Base):
 
         if len(filters_list) == 0:
             # warn that there are no filters associated with channel?
-            return np.ones(len(self.frequencies))
+            return np.ones(len(self.frequencies), dtype=complex)
 
         result = filters_list[0].complex_response(self.frequencies)
 
@@ -272,7 +276,9 @@ class ChannelResponseFilter(Base):
             result /= np.max(np.abs(result))
         return result
 
-    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=6):
+    def compute_instrument_sensitivity(
+        self, normalization_frequency=None, sig_figs=6
+    ):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
 
@@ -286,20 +292,27 @@ class ChannelResponseFilter(Base):
             self.normalization_frequency = normalization_frequency
         sensitivity = 1.0
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(self.normalization_frequency)
+            complex_response = mt_filter.complex_response(
+                self.normalization_frequency
+            )
             sensitivity *= complex_response.astype(complex)
         try:
             sensitivity = np.abs(sensitivity[0])
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
-        return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
+        return round(
+            sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity))))
+        )
 
     @property
     def units_in(self):
         """
         :return: the units of the channel
         """
+        if self.filters_list is []:
+            return None
+
         return self.filters_list[0].units_in
 
     @property
@@ -307,6 +320,9 @@ class ChannelResponseFilter(Base):
         """
         :return: the units of the channel
         """
+        if self.filters_list is [] or len(self.filters_list) == 0:
+            return None
+
         return self.filters_list[-1].units_out
 
     def _check_consistency_of_units(self):
@@ -345,19 +361,23 @@ class ChannelResponseFilter(Base):
         units_out_obj = get_unit_object(self.units_out)
 
         total_response = inventory.Response()
-        total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
-            total_sensitivity,
-            self.normalization_frequency,
-            units_in_obj.abbreviation,
-            units_out_obj.abbreviation,
-            input_units_description=units_in_obj.name,
-            output_units_description=units_out_obj.name,
+        total_response.instrument_sensitivity = (
+            inventory.InstrumentSensitivity(
+                total_sensitivity,
+                self.normalization_frequency,
+                units_in_obj.abbreviation,
+                units_out_obj.abbreviation,
+                input_units_description=units_in_obj.name,
+                output_units_description=units_out_obj.name,
+            )
         )
 
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
                 if f.units_out not in ["count"]:
-                    self.logger.debug("converting CoefficientFilter %s to PZ", f.name)
+                    self.logger.debug(
+                        "converting CoefficientFilter %s to PZ", f.name
+                    )
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
                     pz.units_in = f.units_in
@@ -397,7 +417,7 @@ class ChannelResponseFilter(Base):
     ):
         """
         Plot the response
-        
+
         :param frequencies: frequencies to compute response, defaults to None
         :type frequencies: np.ndarray, optional
         :param x_units: [ period | frequency ], defaults to "period"
@@ -411,7 +431,7 @@ class ChannelResponseFilter(Base):
         :type interpolation_method: string, optional
         :param include_delay: include delays in response, defaults to False
         :type include_delay: bool, optional
-        :param include_decimation: Include decimation in response, 
+        :param include_decimation: Include decimation in response,
          defaults to True
         :type include_decimation: bool, optional
 
@@ -435,7 +455,8 @@ class ChannelResponseFilter(Base):
 
         # get response of individual filters
         cr_list = [
-            f.complex_response(self.frequencies, **cr_kwargs) for f in filters_list
+            f.complex_response(self.frequencies, **cr_kwargs)
+            for f in filters_list
         ]
 
         # compute total response
