@@ -15,6 +15,7 @@ Created on Tue Jul 11 10:53:23 2013
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 from .metadata import Header
 from mt_metadata.transfer_functions.tf import (
@@ -38,62 +39,25 @@ class ZongeMTAvg:
         self.header = Header()
 
         self.info_keys = [
-            "Skp",
-            "Freq",
-            "E.mag",
-            "B.mag",
-            "Z.mag",
-            "Z.phz",
-            "ARes.mag",
-            "ARes.%err",
-            "Z.perr",
-            "Coher",
-            "FC.NUse",
-            "FC.NTry",
+            "skip",
+            "frequency",
+            "e_magnitude",
+            "b_magnitude",
+            "z_magnitude",
+            "z_phase",
+            "apparent_resistivity",
+            "apparent_resistivity_err",
+            "z_err",
+            "coherency",
+            "fc_use",
+            "fc_try",
         ]
-        self.info_type = [
-            int,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            int,
-            int,
-        ]
-
-        self.info_fmt = [
-            "<1.0f",
-            "<.4g",
-            "<.4e",
-            "<.4e",
-            "<.4e",
-            "<.1f",
-            "<.4e",
-            "<.1f",
-            "<.1f",
-            "<.3f",
-            "<.0f",
-            "<.0f",
-        ]
-
-        self.info_dtype = np.dtype(
-            [
-                (kk.lower(), tt)
-                for kk, tt in zip(self.info_keys, self.info_type)
-            ]
-        )
 
         self.z = None
         self.z_err = None
         self.t = None
         self.t_err = None
-        self.comp_lst_z = ["zxx", "zxy", "zyx", "zyy"]
-        self.comp_lst_tip = ["tzx", "tzy"]
+
         self.comp_index = {
             "zxx": (0, 0),
             "zxy": (0, 1),
@@ -102,21 +66,8 @@ class ZongeMTAvg:
             "tzx": (0, 0),
             "tzy": (0, 1),
         }
-        self.comp_flag = {
-            "zxx": False,
-            "zxy": False,
-            "zyx": False,
-            "zyy": False,
-            "tzx": False,
-            "tzy": False,
-        }
-        self.comp_dict = None
-        self.comp = None
-        self.nfreq = None
-        self.nfreq_tipper = None
-        self.freq_dict = None
-        self.freq_dict_x = None
-        self.freq_dict_y = None
+
+        self.freq_index_dict = None
         self.z_coordinate = "down"
 
         self.fn = fn
@@ -129,89 +80,62 @@ class ZongeMTAvg:
     def fn(self, value):
         if value is not None:
             self._fn = Path(value)
-            if self._fn.exists():
-                self.read()
         else:
             self._fn = None
 
-    def get_comp_dict(self, lines):
+    def read(self, fn=None):
         """
-        Get the component dictionary from the file
+        Read into a pandas data frame
 
-        :param lines: DESCRIPTION
-        :type lines: TYPE
+        :param fn: DESCRIPTION, defaults to None
+        :type fn: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        avg_str = "".join(lines)
-
-        index_0 = avg_str.find("$")
-        index_1 = avg_str.find("$", index_0 + 1)
-
-        n_values = int(round((index_1 - index_0) / index_0))
-
-        return self._make_comp_dict(n_values)
-
-    def _make_comp_dict(self, n_values):
-        """ """
-
-        return dict(
-            [
-                (ckey, np.zeros(n_values, dtype=self.info_dtype))
-                for ckey in list(self.comp_flag.keys())
-            ]
-        )
-
-    def read(self, fn=None):
-        """
-        read in average file
-        """
 
         if fn is not None:
-            self._fn = Path(fn)
-        self.comp = self.fn.stem[0]
-        with open(self.fn, "r") as fid:
-            alines = fid.readlines()
+            self.fn = Path(fn)
+
+        with self.fn.open("r") as fid:
+            lines = fid.readlines()
+
         # read header
-        alines = self.header.read_header(alines)
+        data_lines = self.header.read_header(lines)
 
-        self.comp_flag = {
-            "zxx": False,
-            "zxy": False,
-            "zyx": False,
-            "zyy": False,
-            "tzx": False,
-            "tzy": False,
-        }
-
-        if not self.comp_dict:
-            self.comp_dict = self.get_comp_dict(alines)
-        self.comp_lst_z = []
-        self.comp_lst_tip = []
-        ii = 0
-        for aline in alines:
-            if "skp" in aline.lower():
+        data_list = []
+        for line in data_lines:
+            if "$" in line:
+                key, comp = [ss.strip() for ss in line.split("=")]
+            elif "skp" in line.lower() or len(line) < 2:
                 continue
-            if aline.find("=") > 0 and aline.find("$") == 0:
-                alst = [aa.strip() for aa in aline.strip().split("=")]
-                if alst[1].lower() in list(self.comp_flag.keys()):
-                    akey = alst[1].lower()
-                    self.comp_flag[akey] = True
-                    if akey[0] == "z":
-                        self.comp_lst_z.append(akey)
-                    elif akey[0] == "t":
-                        self.comp_lst_tip.append(akey)
-                    ii = 0
-            # read the data line.
-            elif len(aline) > 2:
-                aline = aline.replace("*", "0.50")
-                alst = [aa.strip() for aa in aline.strip().split(",")]
-                for cc, ckey in enumerate(self.info_keys):
-                    self.comp_dict[akey][ii][ckey.lower()] = alst[cc]
-                ii += 1
-        self._fill_z()
-        self._fill_t()
+            else:
+                line = line.replace("*", "0.50")
+                values = [comp.lower()] + [
+                    float(ss.strip()) for ss in line.split(",")
+                ]
+                entry = dict(
+                    [
+                        (key.lower(), value)
+                        for key, value in zip(
+                            ["comp"] + self.info_keys, values
+                        )
+                    ]
+                )
+                data_list.append(entry)
+
+        df = pd.DataFrame(data_list)
+
+        self.frequency = df.frequency.unique()
+        self.frequency.sort()
+        self.n_freq = self.frequency.size
+
+        self.freq_index_dict = dict(
+            [(ff, ii) for ii, ff in enumerate(self.frequency)]
+        )
+
+        self.z, self.z_err = self._fill_z(df)
+        self.t, self.t_err = self._fill_t(df)
 
     def to_complex(self, zmag, zphase):
         """
@@ -253,221 +177,56 @@ class ZongeMTAvg:
 
         return zmag, zphase
 
-    def _match_freq(self, freq_list1, freq_list2):
+    def _fill_z(self, df):
         """
-        fill the frequency dictionary where keys are freqeuency and
-        values are index of where that frequency should be in the array of z
-        and tipper
+        create Z array with data, need to take into account when the different
+        components have different frequencies, sometimes one might get skipped.
         """
 
-        comb_freq_list = list(set(freq_list1).intersection(freq_list2)) + list(
-            set(freq_list1).symmetric_difference(freq_list2)
-        )
-        comb_freq_list.sort()
+        z = np.zeros((self.n_freq, 2, 2), dtype=complex)
+        z_err = np.zeros((self.n_freq, 2, 2), dtype=float)
 
-        return dict([(freq, ff) for ff, freq in enumerate(comb_freq_list)])
+        for row in df.itertuples():
+            if "z" in row.comp:
+                z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
+                ii, jj = self.comp_index[row.comp]
+                f_index = self.freq_index_dict[row.frequency]
 
-    def _fill_z(self):
-        """
-        create Z array with data
-        """
-        flst = np.array(
-            [
-                len(np.nonzero(self.comp_dict[comp]["freq"])[0])
-                for comp in self.comp_lst_z
-            ]
-        )
+                z[f_index, ii, jj] = z_real + 1j * z_imag
+                z_err[f_index, ii, jj] = row.z_err * 0.005
 
-        nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_z[np.where(flst == nz)[0][0]]][
-            "freq"
-        ]
-        freq = freq[np.nonzero(freq)]
+        return z, z_err
 
-        if self.nfreq:
-            self.freq_dict_y = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(
-                sorted(self.freq_dict_x.keys()), freq
-            )
-
-            new_nz = len(list(new_freq_dict.keys()))
-            self.freq_dict = new_freq_dict
-            # fill z according to index values
-            self.frequency = sorted(new_freq_dict.keys())
-            self.z = np.zeros((new_nz, 2, 2), dtype=complex)
-            self.z_err = np.ones((new_nz, 2, 2))
-            nzx, nzy, nzz = self.z.shape
-
-            # need to fill the new array with the old values, but they
-            # need to be stored in the correct position
-            clst = ["zxx", "zxy", "zyx", "zyy"]
-            for cc in self.comp_lst_z:
-                clst.remove(cc)
-            for ikey in clst:
-                for kk, zz in enumerate(self.Z.z):
-                    ii, jj = self.comp_index[ikey]
-                    if zz[ii, jj].real != 0.0:
-                        # index for new Z array
-                        ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-
-                        # index for old Z array
-                        try:
-                            mm = self.freq_dict_x[
-                                self.comp_dict[ikey]["freq"][kk]
-                            ]
-
-                            self.z[ll] = self.z[mm]
-                            self.z_err[ll] = self.z_err[mm]
-                        except KeyError:
-                            pass
-            # fill z with values from comp_dict
-            for ikey in self.comp_lst_z:
-                ii, jj = self.comp_index[ikey]
-
-                zr, zi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz].copy(),
-                    self.comp_dict[ikey]["z.phz"][:nz].copy(),
-                )
-                for kk, zzr, zzi in zip(list(range(len(zr))), zr, zi):
-                    ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-                    if ikey.find("yx") > 0 and self.z_coordinate == "up":
-                        self.z[ll, ii, jj] = -1 * (zzr + zzi * 1j)
-                    else:
-                        self.z[ll, ii, jj] = zzr + zzi * 1j
-                    self.z_err[ll, ii, jj] = (
-                        self.comp_dict[ikey]["ares.%err"][kk] * 0.005
-                    )
-        # fill for the first time
-        else:
-            self.nfreq = nz
-            self.freq_dict_x = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # fill z with values
-            z = np.zeros((nz, 2, 2), dtype="complex")
-            z_err = np.ones((nz, 2, 2))
-
-            for ikey in self.comp_lst_z:
-                ii, jj = self.comp_index[ikey]
-
-                zr, zi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz].copy(),
-                    self.comp_dict[ikey]["z.phz"][:nz].copy(),
-                )
-
-                if ikey.find("yx") > 0 and self.z_coordinate == "up":
-                    z[:, ii, jj] = -1 * (zr + zi * 1j)
-                else:
-                    z[:, ii, jj] = zr + zi * 1j
-                z_err[:, ii, jj] = (
-                    self.comp_dict[ikey]["ares.%err"][:nz] * 0.005
-                )
-            self.frequency = freq
-            self.z = z
-            self.z_err = z_err
-        self.z = np.nan_to_num(self.z)
-        self.z_err = np.nan_to_num(self.z_err)
-
-    def _fill_t(self):
+    def _fill_t(self, df):
         """
         fill tipper values
         """
 
-        if self.comp_flag["tzy"] == False and self.comp_flag["tzx"] == False:
+        if "txy" not in df.comp.to_list():
             self.header.logger.debug("No Tipper found in %s", self.fn.name)
-            return
-        flst = np.array(
-            [
-                len(np.nonzero(self.comp_dict[comp]["freq"])[0])
-                for comp in self.comp_lst_tip
-            ]
-        )
-        nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_tip[np.where(flst == nz)[0][0]]][
-            "freq"
-        ]
-        freq = freq[np.nonzero(freq)]
-        if self.nfreq_tipper and self.Tipper.tipper is not None:
-            # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(
-                sorted(self.freq_dict.keys()), freq
-            )
+            return None, None
 
-            new_nz = len(list(new_freq_dict.keys()))
-            # fill z according to index values
-            self.tipper = np.zeros((new_nz, 1, 2), dtype=complex)
-            self.tipper_err = np.ones((new_nz, 1, 2))
+        tipper = np.zeros((self.n_freq, 1, 2), dtype=complex)
+        tipper_err = np.ones((self.n_freq, 1, 2), dtype=float)
 
-            self.freq_dict = new_freq_dict
-
-            # need to fill the new array with the old values, but they
-            # need to be stored in the correct position
-            for ikey in ["tzx", "tzy"]:
-                for kk, tt in enumerate(self.Tipper.tipper):
-                    ii, jj = self.comp_index[ikey]
-                    if tt[ii, jj].real != 0.0:
-                        # index for new tipper array
-                        ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-
-                        # index for old tipper array
-                        try:
-                            mm = self.freq_dict_x[
-                                self.comp_dict[ikey]["freq"][kk]
-                            ]
-
-                            self.tipper[ll] = self.tipper[mm]
-                            self.tipper_err[ll] = self.tipper_err[mm]
-                        except KeyError:
-                            pass
-            # fill z with values from comp_dict
-            for ikey in self.comp_lst_tip:
-                ii, jj = self.comp_index[ikey]
-
-                tr, ti = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz],
-                    self.comp_dict[ikey]["z.phz"][:nz],
-                )
-                for kk, tzr, tzi in zip(list(range(len(tr))), tr, ti):
-                    ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-
-                    if self.z_coordinate == "up":
-                        self.tipper[ll, ii, jj] = -1 * (tzr + tzi * 1j)
-                    else:
-                        self.tipper[ll, ii, jj] = tzr + tzi * 1j
-                    # error estimation
-                    self.tipper_err[ll, ii, jj] += (
-                        self.comp_dict[ikey]["ares.%err"][kk]
-                        * 0.05
-                        * np.sqrt(tzr**2 + tzi**2)
-                    )
-        else:
-            self.nfreq_tipper = nz
-            self.freq_dict_x = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # fill z with values
-            tipper = np.zeros((nz, 1, 2), dtype="complex")
-            tipper_err = np.ones((nz, 1, 2))
-
-            for ikey in self.comp_lst_tip:
-                ii, jj = self.comp_index[ikey]
-
-                tzr, tzi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz],
-                    self.comp_dict[ikey]["z.phz"][:nz],
-                )
+        for row in df.itertuples():
+            if "t" in row.comp:
+                t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
+                ii, jj = self.comp_index[row.comp]
+                f_index = self.freq_index_dict[row.frequency]
 
                 if self.z_coordinate == "up":
-                    tipper[:, ii, jj] = -1 * (tzr + tzi * 1j)
+                    self.tipper[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
                 else:
-                    tipper[:, ii, jj] = tzr + tzi * 1j
-                tipper_err[:, ii, jj] = (
-                    self.comp_dict[ikey]["ares.%err"][:nz]
+                    self.tipper[f_index, ii, jj] = t_real + t_imag * 1j
+                # error estimation
+                self.tipper_err[f_index, ii, jj] += (
+                    row.apparent_resistivity_err
                     * 0.05
-                    * np.sqrt(tzr**2 + tzi**2)
+                    * np.sqrt(t_real**2 + t_imag**2)
                 )
-            self.frequency = sorted(self.freq_dict_x.keys())
-            self.tipper = tipper
-            self.tipper_err = tipper_err
-        self.tipper = np.nan_to_num(self.tipper)
-        self.tipper_err = np.nan_to_num(self.tipper_err)
+
+        return tipper, tipper_err
 
     @property
     def station_metadata(self):
@@ -476,6 +235,8 @@ class ZongeMTAvg:
         sm.id = self.header.station
         sm.location.latitude = self.header.latitude
         sm.location.longitude = self.header.longitude
+        sm.location.elevation = self.header.elevation
+        sm.location.datum = self.header.datum
 
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"

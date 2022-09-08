@@ -118,7 +118,8 @@ class Header(Base):
                 else:
                     self.set_attr_from_name(key, value)
             else:
-                data_lines.append(line)
+                if len(line) > 2:
+                    data_lines.append(line)
 
         return data_lines
 
@@ -165,6 +166,14 @@ class Header(Base):
 
             except KeyError:
                 return None
+
+    @property
+    def datum(self):
+        return self.g_p_s.datum
+
+    @property
+    def utm_zone(self):
+        return self.g_p_s.u_t_m_zone
 
     @property
     def station(self):
