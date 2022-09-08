@@ -1,0 +1,35 @@
+{
+    "date": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the line data collected on",
+        "options": [],
+        "alias": [],
+        "example": "0",
+    		"default": ""
+    },
+	 "time": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Line number",
+        "options": [],
+        "alias": [],
+        "example": 0,
+    		"default": 0
+    },
+    "type": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Line number",
+        "options": [],
+        "alias": [],
+        "example": 0,
+    		"default": 0
+    }
+}
