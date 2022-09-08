@@ -87,15 +87,26 @@
         "example": "335754.685:4263553.435:1650.2",
 		"default": ""
     },
-    "u_t_m2": {
+    "a_space": {
         "type": "string",
         "required": false,
         "style": "free form",
         "units": null,
-        "description": "UTM location of remote station",
+        "description": "spacing of lines",
         "options": [],
         "alias": [],
-        "example": "335754.685:4263553.435:1650.2",
-		"default": ""
+        "example": "100 m",
+		"default": null
+    },
+    "s_space": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "spacing of stations along the line",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": null
     }
 }

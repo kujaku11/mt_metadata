@@ -17,7 +17,7 @@ Created on Tue Jul 11 10:53:23 2013
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Survey, Tx, Rx, MTEdit, Unit, GPS, GDP, CH, STN, MTFT24
+from . import Survey, Tx, Rx, MTEdit, Unit, GPS, GDP, CH, STN, Line, MTFT24
 from mt_metadata.utils.validators import validate_attribute
 
 # =============================================================================
@@ -31,6 +31,7 @@ attr_dict.add_dict(get_schema("gps", SCHEMA_FN_PATHS), name="g_p_s")
 attr_dict.add_dict(get_schema("gdp", SCHEMA_FN_PATHS), name="g_d_p")
 attr_dict.add_dict(get_schema("ch", SCHEMA_FN_PATHS), name="ch")
 attr_dict.add_dict(get_schema("stn", SCHEMA_FN_PATHS), name="stn")
+attr_dict.add_dict(get_schema("line", SCHEMA_FN_PATHS), name="line")
 attr_dict.add_dict(get_schema("unit", SCHEMA_FN_PATHS), name="unit")
 
 
@@ -50,8 +51,11 @@ class Header(Base):
         self.g_p_s = GPS()
         self.g_d_p = GDP()
         self.stn = STN()
+        self.line = Line()
         self.unit = Unit()
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        self._comp_dict = {}
 
         self._header_keys = [
             "survey.type",
@@ -79,6 +83,8 @@ class Header(Base):
 
         """
 
+        comp = None
+        data_lines = []
         for ii, line in enumerate(lines):
             if line.find("=") > 0 and line.find("$") == 0:
                 key, value = line[1:].split("=")
@@ -98,11 +104,23 @@ class Header(Base):
                         value = value[0]
                     else:
                         value = value[0].strip()
-                self.set_attr_from_name(key, value)
-            elif line[0] == "S":
-                break
 
-        return lines[ii:]
+                if "rx.cmp" in key:
+                    comp = value
+                    data_lines.append(line)
+                    self._comp_dict[comp] = {"rx": Rx(), "ch": CH()}
+                if comp is not None:
+                    comp_key, comp_attr = key.split(".")
+
+                    self._comp_dict[comp][comp_key].set_attr_from_name(
+                        comp_attr, value
+                    )
+                else:
+                    self.set_attr_from_name(key, value)
+            else:
+                data_lines.append(line)
+
+        return data_lines
 
     @property
     def latitude(self):
@@ -119,6 +137,34 @@ class Header(Base):
     @longitude.setter
     def longitude(self, value):
         self.g_p_s.lon = value
+
+    @property
+    def elevation(self):
+        if self.center_location is not None:
+            return self.center_location[-1]
+
+    @property
+    def easting(self):
+        if self.center_location is not None:
+            return self.center_location[0]
+
+    @property
+    def northing(self):
+        if self.center_location is not None:
+            return self.center_location[1]
+
+    @property
+    def center_location(self):
+        if self._comp_dict != {}:
+            try:
+                location_str = self._comp_dict["zxx"]["rx"].center
+                return [
+                    float(ss.strip().split()[0])
+                    for ss in location_str.split(":")
+                ]
+
+            except KeyError:
+                return None
 
     @property
     def station(self):

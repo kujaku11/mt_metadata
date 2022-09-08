@@ -13,6 +13,7 @@ from .gps import GPS
 from .gdp import GDP
 from .ch import CH
 from .stn import STN
+from .line import Line
 from .header import Header
 
 __all__ = [
@@ -29,5 +30,6 @@ __all__ = [
     "GDP",
     "CH",
     "STN",
+    "Line",
     "Header",
 ]

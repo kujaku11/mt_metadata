@@ -17,14 +17,20 @@ from pathlib import Path
 import numpy as np
 
 from .metadata import Header
-from mt_metadata.transfer_functions.tf import Survey, Station, Run, Magnetic, Electric
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Magnetic,
+    Electric,
+)
 
 # ==============================================================================
 # deal with avg files output from mtedit
 # ==============================================================================
 class ZongeMTAvg:
     """
-    deal with avg files output from mtedit 
+    deal with avg files output from mtedit
     """
 
     def __init__(self, fn=None):
@@ -76,7 +82,10 @@ class ZongeMTAvg:
         ]
 
         self.info_dtype = np.dtype(
-            [(kk.lower(), tt) for kk, tt in zip(self.info_keys, self.info_type)]
+            [
+                (kk.lower(), tt)
+                for kk, tt in zip(self.info_keys, self.info_type)
+            ]
         )
 
         self.z = None
@@ -181,7 +190,9 @@ class ZongeMTAvg:
         self.comp_lst_z = []
         self.comp_lst_tip = []
         ii = 0
-        for aline in alines[1:]:
+        for aline in alines:
+            if "skp" in aline.lower():
+                continue
             if aline.find("=") > 0 and aline.find("$") == 0:
                 alst = [aa.strip() for aa in aline.strip().split("=")]
                 if alst[1].lower() in list(self.comp_flag.keys()):
@@ -238,7 +249,7 @@ class ZongeMTAvg:
             zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
         else:
             zphase = np.arctan2(zimag, zreal) * 1000
-        zmag = np.sqrt(zreal ** 2 + zimag ** 2)
+        zmag = np.sqrt(zreal**2 + zimag**2)
 
         return zmag, zphase
 
@@ -268,13 +279,17 @@ class ZongeMTAvg:
         )
 
         nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_z[np.where(flst == nz)[0][0]]]["freq"]
+        freq = self.comp_dict[self.comp_lst_z[np.where(flst == nz)[0][0]]][
+            "freq"
+        ]
         freq = freq[np.nonzero(freq)]
 
         if self.nfreq:
             self.freq_dict_y = dict([(ff, nn) for nn, ff in enumerate(freq)])
             # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(sorted(self.freq_dict_x.keys()), freq)
+            new_freq_dict = self._match_freq(
+                sorted(self.freq_dict_x.keys()), freq
+            )
 
             new_nz = len(list(new_freq_dict.keys()))
             self.freq_dict = new_freq_dict
@@ -298,7 +313,9 @@ class ZongeMTAvg:
 
                         # index for old Z array
                         try:
-                            mm = self.freq_dict_x[self.comp_dict[ikey]["freq"][kk]]
+                            mm = self.freq_dict_x[
+                                self.comp_dict[ikey]["freq"][kk]
+                            ]
 
                             self.z[ll] = self.z[mm]
                             self.z_err[ll] = self.z_err[mm]
@@ -341,7 +358,9 @@ class ZongeMTAvg:
                     z[:, ii, jj] = -1 * (zr + zi * 1j)
                 else:
                     z[:, ii, jj] = zr + zi * 1j
-                z_err[:, ii, jj] = self.comp_dict[ikey]["ares.%err"][:nz] * 0.005
+                z_err[:, ii, jj] = (
+                    self.comp_dict[ikey]["ares.%err"][:nz] * 0.005
+                )
             self.frequency = freq
             self.z = z
             self.z_err = z_err
@@ -363,11 +382,15 @@ class ZongeMTAvg:
             ]
         )
         nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_tip[np.where(flst == nz)[0][0]]]["freq"]
+        freq = self.comp_dict[self.comp_lst_tip[np.where(flst == nz)[0][0]]][
+            "freq"
+        ]
         freq = freq[np.nonzero(freq)]
         if self.nfreq_tipper and self.Tipper.tipper is not None:
             # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(sorted(self.freq_dict.keys()), freq)
+            new_freq_dict = self._match_freq(
+                sorted(self.freq_dict.keys()), freq
+            )
 
             new_nz = len(list(new_freq_dict.keys()))
             # fill z according to index values
@@ -387,7 +410,9 @@ class ZongeMTAvg:
 
                         # index for old tipper array
                         try:
-                            mm = self.freq_dict_x[self.comp_dict[ikey]["freq"][kk]]
+                            mm = self.freq_dict_x[
+                                self.comp_dict[ikey]["freq"][kk]
+                            ]
 
                             self.tipper[ll] = self.tipper[mm]
                             self.tipper_err[ll] = self.tipper_err[mm]
@@ -412,7 +437,7 @@ class ZongeMTAvg:
                     self.tipper_err[ll, ii, jj] += (
                         self.comp_dict[ikey]["ares.%err"][kk]
                         * 0.05
-                        * np.sqrt(tzr ** 2 + tzi ** 2)
+                        * np.sqrt(tzr**2 + tzi**2)
                     )
         else:
             self.nfreq_tipper = nz
@@ -436,7 +461,7 @@ class ZongeMTAvg:
                 tipper_err[:, ii, jj] = (
                     self.comp_dict[ikey]["ares.%err"][:nz]
                     * 0.05
-                    * np.sqrt(tzr ** 2 + tzi ** 2)
+                    * np.sqrt(tzr**2 + tzi**2)
                 )
             self.frequency = sorted(self.freq_dict_x.keys())
             self.tipper = tipper
@@ -454,15 +479,19 @@ class ZongeMTAvg:
 
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
-        sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
-        sm.transfer_function.software.last_updated = self.header.m_t_edit.version.split()[
-            -1
-        ]
+        sm.transfer_function.software.version = (
+            self.header.m_t_edit.version.split()[0]
+        )
+        sm.transfer_function.software.last_updated = (
+            self.header.m_t_edit.version.split()[-1]
+        )
 
         for key, value in self.header.m_t_edit.to_dict(single=True).items():
             if "version" in key:
                 continue
-            sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
+            sm.transfer_function.processing_parameters.append(
+                f"mtedit.{key}={value}"
+            )
         sm.transfer_function.runs_processed = ["001"]
 
         sm.data_type = self.header.survey.type
