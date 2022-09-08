@@ -310,7 +310,7 @@ class ChannelResponseFilter(Base):
         """
         :return: the units of the channel
         """
-        if self.filters_list is []:
+        if self.filters_list is [] or len(self.filters_list) == 0:
             return None
 
         return self.filters_list[0].units_in

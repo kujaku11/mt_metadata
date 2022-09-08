@@ -17,7 +17,7 @@ Created on Tue Jul 11 10:53:23 2013
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Survey, Tx, Rx, MTEdit, Unit, GPS
+from . import Survey, Tx, Rx, MTEdit, Unit, GPS, MTFT24
 from mt_metadata.utils.validators import validate_attribute
 
 # =============================================================================
@@ -25,6 +25,7 @@ attr_dict = get_schema("header", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("survey", SCHEMA_FN_PATHS), name="survey")
 attr_dict.add_dict(get_schema("tx", SCHEMA_FN_PATHS), name="tx")
 attr_dict.add_dict(get_schema("rx", SCHEMA_FN_PATHS), name="rx")
+attr_dict.add_dict(MTEdit()._attr_dict, name="m_t_edit")
 attr_dict.add_dict(MTEdit()._attr_dict, name="m_t_edit")
 attr_dict.add_dict(get_schema("gps", SCHEMA_FN_PATHS), name="g_p_s")
 attr_dict.add_dict(get_schema("unit", SCHEMA_FN_PATHS), name="unit")
@@ -75,7 +76,10 @@ class Header(Base):
             if line.find("=") > 0 and line.find("$") == 0:
                 key, value = line[1:].split("=")
                 key = ".".join(
-                    [validate_attribute(k) for k in key.replace(":", ".").split(".")]
+                    [
+                        validate_attribute(k)
+                        for k in key.replace(":", ".").split(".")
+                    ]
                 )
 
                 value = value.lower().strip()
