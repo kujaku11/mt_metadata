@@ -17,7 +17,7 @@ Created on Tue Jul 11 10:53:23 2013
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Survey, Tx, Rx, MTEdit, Unit, GPS, MTFT24
+from . import Survey, Tx, Rx, MTEdit, Unit, GPS, GDP, CH, STN, MTFT24
 from mt_metadata.utils.validators import validate_attribute
 
 # =============================================================================
@@ -26,8 +26,11 @@ attr_dict.add_dict(get_schema("survey", SCHEMA_FN_PATHS), name="survey")
 attr_dict.add_dict(get_schema("tx", SCHEMA_FN_PATHS), name="tx")
 attr_dict.add_dict(get_schema("rx", SCHEMA_FN_PATHS), name="rx")
 attr_dict.add_dict(MTEdit()._attr_dict, name="m_t_edit")
-attr_dict.add_dict(MTEdit()._attr_dict, name="m_t_edit")
+attr_dict.add_dict(MTFT24()._attr_dict, name="m_t_f_t24")
 attr_dict.add_dict(get_schema("gps", SCHEMA_FN_PATHS), name="g_p_s")
+attr_dict.add_dict(get_schema("gdp", SCHEMA_FN_PATHS), name="g_d_p")
+attr_dict.add_dict(get_schema("ch", SCHEMA_FN_PATHS), name="ch")
+attr_dict.add_dict(get_schema("stn", SCHEMA_FN_PATHS), name="stn")
 attr_dict.add_dict(get_schema("unit", SCHEMA_FN_PATHS), name="unit")
 
 
@@ -42,7 +45,11 @@ class Header(Base):
         self.tx = Tx()
         self.rx = Rx()
         self.m_t_edit = MTEdit()
+        self.m_t_f_t24 = MTFT24()
+        self.ch = CH()
         self.g_p_s = GPS()
+        self.g_d_p = GDP()
+        self.stn = STN()
         self.unit = Unit()
         super().__init__(attr_dict=attr_dict, **kwargs)
 

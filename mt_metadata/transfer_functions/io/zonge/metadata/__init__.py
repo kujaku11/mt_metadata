@@ -10,6 +10,9 @@ from .mt_edit import MTEdit
 from .mtft24 import MTFT24
 from .unit import Unit
 from .gps import GPS
+from .gdp import GDP
+from .ch import CH
+from .stn import STN
 from .header import Header
 
 __all__ = [
@@ -23,5 +26,8 @@ __all__ = [
     "MTFT24",
     "Unit",
     "GPS",
+    "GDP",
+    "CH",
+    "STN",
     "Header",
 ]
