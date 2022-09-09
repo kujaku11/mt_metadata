@@ -21,8 +21,10 @@ from mt_metadata.transfer_functions.core import TF
 
 
 class TestEMTFXML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf = TF(fn=TF_ZMM)
+        self.tf.read_tf_file()
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -49,7 +51,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.survey_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.survey_metadata.to_dict(single=True)
+        )
 
     def test_station_metadata(self):
         meta_dict = OrderedDict(
@@ -86,7 +90,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.station_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.station_metadata.to_dict(single=True)
+        )
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
@@ -128,8 +134,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.impedance[0],
                     np.array(
                         [
-                            [-5.99100018 - 5.95499992j, 17.27000046 + 12.72000027j],
-                            [-51.59000015 - 23.03000069j, -0.35179999 + 7.66300011j],
+                            [
+                                -5.99100018 - 5.95499992j,
+                                17.27000046 + 12.72000027j,
+                            ],
+                            [
+                                -51.59000015 - 23.03000069j,
+                                -0.35179999 + 7.66300011j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -141,8 +153,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.impedance[-1],
                     np.array(
                         [
-                            [1.69399995e-04 + 0.01282j, 5.67400008e-02 + 0.06538j],
-                            [3.78899992e-01 - 0.85600001j, 2.71499991e-01 - 0.4786j],
+                            [
+                                1.69399995e-04 + 0.01282j,
+                                5.67400008e-02 + 0.06538j,
+                            ],
+                            [
+                                3.78899992e-01 - 0.85600001j,
+                                2.71499991e-01 - 0.4786j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -156,7 +174,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.impedance_error[0],
-                    np.array([[0.53822149, 1.44624196], [1.92694986, 5.17786036]]),
+                    np.array(
+                        [[0.53822149, 1.44624196], [1.92694986, 5.17786036]]
+                    ),
                 ).all()
             )
 
@@ -164,7 +184,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.impedance_error[-1],
-                    np.array([[0.00273188, 0.0020596], [1.12854018, 0.85081953]]),
+                    np.array(
+                        [[0.00273188, 0.0020596], [1.12854018, 0.85081953]]
+                    ),
                 ).all()
             )
 
@@ -176,7 +198,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[0.25870001 - 0.18619999j, -0.05068000 + 0.0659j]]),
+                    np.array(
+                        [[0.25870001 - 0.18619999j, -0.05068000 + 0.0659j]]
+                    ),
                 ).all()
             )
 
@@ -190,7 +214,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_sip(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 2, 2), self.tf.inverse_signal_power.shape)
+            self.assertTupleEqual(
+                (38, 2, 2), self.tf.inverse_signal_power.shape
+            )
 
         with self.subTest("has inverse_signal_power"):
             self.assertTrue(self.tf.has_inverse_signal_power())
@@ -235,7 +261,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())

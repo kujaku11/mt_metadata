@@ -14,8 +14,10 @@ from mt_metadata import TF_ZSS_TIPPER
 
 
 class TestTranslateZmm(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf_obj = TF(TF_ZSS_TIPPER)
+        self.tf_obj.read_tf_file()
         self.zmm_obj = zmm.ZMM(TF_ZSS_TIPPER)
         self.maxDiff = None
 
@@ -29,7 +31,9 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertEqual(self.tf_obj.station, self.zmm_obj.station)
 
     def test_channels_recorded(self):
-        self.assertListEqual(["hx", "hy", "hz"], self.zmm_obj.channels_recorded)
+        self.assertListEqual(
+            ["hx", "hy", "hz"], self.zmm_obj.channels_recorded
+        )
 
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
@@ -79,7 +83,9 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("testing shape", i=1):
             self.assertEqual(self.zmm_obj.transfer_functions.shape, (44, 1, 2))
         with self.subTest("testing dtype", i=2):
-            self.assertEqual(self.zmm_obj.transfer_functions.dtype.type, np.complex64)
+            self.assertEqual(
+                self.zmm_obj.transfer_functions.dtype.type, np.complex64
+            )
 
     def test_sigma_s(self):
         with self.subTest("testing shape", i=1):
@@ -100,10 +106,14 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertTrue(self.tf_obj.has_tipper())
 
     def test_station_metadata(self):
-        self.assertTrue(self.tf_obj.station_metadata == self.zmm_obj.station_metadata)
+        self.assertTrue(
+            self.tf_obj.station_metadata == self.zmm_obj.station_metadata
+        )
 
     def test_survey_metadata(self):
-        self.assertTrue(self.tf_obj.survey_metadata == self.zmm_obj.survey_metadata)
+        self.assertTrue(
+            self.tf_obj.survey_metadata == self.zmm_obj.survey_metadata
+        )
 
 
 # =============================================================================
