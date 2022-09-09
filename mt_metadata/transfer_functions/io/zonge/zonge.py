@@ -57,6 +57,7 @@ class ZongeMTAvg:
         self.z_err = None
         self.t = None
         self.t_err = None
+        self.components = []
 
         self.comp_index = {
             "zxx": (0, 0),
@@ -129,6 +130,7 @@ class ZongeMTAvg:
         self.frequency = self.df.frequency.unique()
         self.frequency.sort()
         self.n_freq = self.frequency.size
+        self.components = self.df.comp.unique()
 
         self.freq_index_dict = dict(
             [(ff, ii) for ii, ff in enumerate(self.frequency)]
@@ -186,7 +188,9 @@ class ZongeMTAvg:
         z = np.zeros((self.n_freq, 2, 2), dtype=complex)
         z_err = np.zeros((self.n_freq, 2, 2), dtype=float)
 
-        for row in self.df.itertuples():
+        for row in self.df[
+            self.df.comp.isin(["zxx", "zxy", "zyx", "zyy"])
+        ].itertuples():
             if "z" in row.comp:
                 z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = self.comp_index[row.comp]
@@ -202,31 +206,31 @@ class ZongeMTAvg:
         fill tipper values
         """
 
-        if "txy" not in self.df.comp.to_list():
+        if "tzx" not in self.df.comp.to_list():
             self.header.logger.debug("No Tipper found in %s", self.fn.name)
             return None, None
 
-        tipper = np.zeros((self.n_freq, 1, 2), dtype=complex)
-        tipper_err = np.ones((self.n_freq, 1, 2), dtype=float)
+        t = np.zeros((self.n_freq, 1, 2), dtype=complex)
+        t_err = np.ones((self.n_freq, 1, 2), dtype=float)
 
-        for row in self.df.itertuples():
+        for row in self.df[self.df.comp.isin(["tzx", "tzy"])].itertuples():
             if "t" in row.comp:
                 t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = self.comp_index[row.comp]
                 f_index = self.freq_index_dict[row.frequency]
 
                 if self.z_coordinate == "up":
-                    self.tipper[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
+                    t[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
                 else:
-                    self.tipper[f_index, ii, jj] = t_real + t_imag * 1j
+                    t[f_index, ii, jj] = t_real + t_imag * 1j
                 # error estimation
-                self.tipper_err[f_index, ii, jj] += (
+                t_err[f_index, ii, jj] += (
                     row.apparent_resistivity_err
                     * 0.05
                     * np.sqrt(t_real**2 + t_imag**2)
                 )
 
-        return tipper, tipper_err
+        return t, t_err
 
     @property
     def run_metadata(self):
@@ -377,7 +381,7 @@ class ZongeMTAvg:
         sm.location.latitude = self.header.latitude
         sm.location.longitude = self.header.longitude
         sm.location.elevation = self.header.elevation
-        sm.location.datum = self.header.datum
+        sm.location.datum = self.header.datum.upper()
 
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
