@@ -34,10 +34,14 @@ class EMeasurement(Base):
             "x2": "<.2f",
             "y2": "<.2f",
             "z2": "<.2f",
+            "azm": "<.2f",
             "acqchan": "<",
         }
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        if self.azm == 0:
+            self.azm = self.azimuth
 
     def __str__(self):
         return "\n".join(
@@ -66,7 +70,8 @@ class EMeasurement(Base):
     @property
     def azimuth(self):
         if hasattr(self, "azm"):
-            return self.azm
+            if self.azm != 0:
+                return self.azm
         try:
             return np.rad2deg(
                 np.arctan2((self.y2 - self.y), (self.x2 - self.x))

@@ -48,9 +48,11 @@ class TestHeader(unittest.TestCase):
 
 
 class TestEMeasurement(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.e_dict = {
             "id": 14.001,
+            "azm": 0,
             "chtype": "EX",
             "x": -50.0,
             "y": 0.0,
@@ -65,8 +67,32 @@ class TestEMeasurement(unittest.TestCase):
             self.assertEqual(v, getattr(self.ex, k))
 
 
+class TestEMeasurementAZM(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.e_dict = {
+            "id": 14.001,
+            "azm": 0,
+            "chtype": "EX",
+            "x": -50.0,
+            "y": 0.0,
+            "x2": 50.0,
+            "y2": 10.0,
+        }
+
+        self.ex = EMeasurement(**self.e_dict)
+
+    def test_attr(self):
+        for k, v in self.e_dict.items():
+            if k != "azm":
+                self.assertEqual(v, getattr(self.ex, k))
+            else:
+                self.assertEqual(5.710593137499642, getattr(self.ex, k))
+
+
 class TestHMeasurement(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.h_dict = {
             "id": 12.001,
             "chtype": "HY",

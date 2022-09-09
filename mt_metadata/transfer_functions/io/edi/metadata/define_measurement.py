@@ -225,7 +225,7 @@ class DefineMeasurement(Base):
         read the define measurment section of the edi file
 
         should be a list with lines for:
-            
+
             - maxchan
             - maxmeas
             - maxrun
@@ -235,7 +235,7 @@ class DefineMeasurement(Base):
             - reftype
             - units
             - dictionaries for >XMEAS with keys:
-                
+
                 - id
                 - chtype
                 - x
@@ -287,6 +287,8 @@ class DefineMeasurement(Base):
                     value = HMeasurement(**line)
                 elif line["chtype"].lower().find("e") >= 0:
                     value = EMeasurement(**line)
+                    if value.azm == 0:
+                        value.azm = value.azimuth
                 if hasattr(self, key):
                     key = key.replace("_", "_rr")
                     try:
@@ -352,7 +354,9 @@ class DefineMeasurement(Base):
                             chn_count += 1
 
                     try:
-                        m_list.append(f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}")
+                        m_list.append(
+                            f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
+                        )
                     except (ValueError, TypeError):
                         m_list.append(f" {mkey.upper()}={0.0:{mfmt}}")
 
@@ -388,6 +392,9 @@ class DefineMeasurement(Base):
         if channel.component is None:
             return
 
+        azm = channel.measurement_azimuth
+        if azm != channel.translated_azimuth:
+            azm = channel.translated_azimuth
         if "e" in channel.component:
             meas = EMeasurement(
                 **{
@@ -397,15 +404,14 @@ class DefineMeasurement(Base):
                     "y2": channel.positive.y2,
                     "chtype": channel.component,
                     "id": channel.channel_id,
+                    "azm": azm,
                     "acqchan": channel.channel_number,
                 }
             )
+
             setattr(self, f"meas_{channel.component.lower()}", meas)
 
         elif "h" in channel.component:
-            azm = channel.measurement_azimuth
-            if azm != channel.translated_azimuth:
-                azm = channel.translated_azimuth
             meas = HMeasurement(
                 **{
                     "x": channel.location.x,

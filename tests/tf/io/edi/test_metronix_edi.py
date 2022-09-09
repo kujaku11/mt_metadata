@@ -66,6 +66,7 @@ class TestMetronixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 1000.0001),
                 ("x", -50.0),
@@ -85,6 +86,7 @@ class TestMetronixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 1001.0001),
                 ("x", 0.0),

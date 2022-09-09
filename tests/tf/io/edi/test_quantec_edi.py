@@ -58,6 +58,7 @@ class TestQuantecEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 14.001),
                 ("x", -50.0),
@@ -77,6 +78,7 @@ class TestQuantecEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 15.001),
                 ("x", 0.0),

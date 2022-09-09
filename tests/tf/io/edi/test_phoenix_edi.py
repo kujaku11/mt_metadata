@@ -92,6 +92,7 @@ class TestPhoenixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "CH1"),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 5374.0537),
                 ("x", -50.0),
@@ -111,6 +112,7 @@ class TestPhoenixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "CH2"),
+                ("azm", 116.61629962451384),
                 ("chtype", "EY"),
                 ("id", 5375.0537),
                 ("x", 22.4),
