@@ -23,6 +23,7 @@ from mt_metadata.transfer_functions.core import TF
 class TestEMTFXML(unittest.TestCase):
     def setUp(self):
         self.tf = TF(fn=TF_AVG)
+        self.tf.read_tf_file()
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -49,7 +50,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.survey_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.survey_metadata.to_dict(single=True)
+        )
 
     def test_station_metadata(self):
         meta_dict = OrderedDict(
@@ -58,6 +61,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("data_type", "nsamt"),
                 ("geographic_name", None),
                 ("id", "24"),
+                ("location.datum", "WGS84"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 0.0),
                 ("location.elevation", 0.0),
@@ -93,7 +97,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.station_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.station_metadata.to_dict(single=True)
+        )
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
@@ -105,7 +111,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("data_logger.firmware.name", None),
                 ("data_logger.firmware.version", None),
                 ("data_logger.id", None),
-                ("data_logger.manufacturer", None),
+                ("data_logger.manufacturer", "Zonge International"),
                 ("data_logger.timing_system.drift", 0.0),
                 ("data_logger.timing_system.type", "GPS"),
                 ("data_logger.timing_system.uncertainty", 0.0),
@@ -131,8 +137,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.impedance[0],
                     np.array(
                         [
-                            [-0.85198341 - 1.1020768j, -1.76236149 - 1.89288924j],
-                            [-0.17290554 - 0.45221147j, -0.16184071 - 0.1545914j],
+                            [
+                                -0.85198341 - 1.1020768j,
+                                -1.76236149 - 1.89288924j,
+                            ],
+                            [
+                                -0.17290554 - 0.45221147j,
+                                -0.16184071 - 0.1545914j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -143,8 +155,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.impedance[-1],
                     np.array(
                         [
-                            [-1.90536913 - 22.95806911j, 147.51100994 + 280.66686097j],
-                            [-164.60236806 - 270.77480464j, 9.34354731 + 12.52851806j],
+                            [
+                                -1.90536913 - 22.95806911j,
+                                147.51100994 + 280.66686097j,
+                            ],
+                            [
+                                -164.60236806 - 270.77480464j,
+                                9.34354731 + 12.52851806j,
+                            ],
                         ]
                     ),
                 ).all()

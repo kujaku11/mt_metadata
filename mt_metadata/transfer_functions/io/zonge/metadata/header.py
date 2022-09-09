@@ -196,7 +196,8 @@ class Header(Base):
 
     @property
     def instrument_type(self):
-        return self.g_d_p.type.upper()
+        if self.g_d_p.type is not None:
+            return self.g_d_p.type.upper()
 
     @property
     def firmware(self):
