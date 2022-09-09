@@ -125,9 +125,11 @@ class Header(Base):
         return data_lines
 
     def _has_channel(self, component):
-        if self._comp_dict["zxx"]["ch"].cmp is None:
+        try:
+            if self._comp_dict["zxx"]["ch"].cmp is None:
+                return False
+        except KeyError:
             return False
-
         return True
 
     @property

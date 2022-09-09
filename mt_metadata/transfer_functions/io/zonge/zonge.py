@@ -238,7 +238,136 @@ class ZongeMTAvg:
         if self.header.start_time is not None:
             rm.time_period.start = self.header.start_time
 
+        if "zxy" in self.df.comp.unique():
+            rm.add_channel(self.ex_metadata)
+            rm.add_channel(self.ey_metadata)
+            rm.add_channel(self.hx_metadata)
+            rm.add_channel(self.hy_metadata)
+
+        if "tzx" in self.df.comp.unique():
+            rm.add_channel(self.hz_metadata)
+
         return rm
+
+    @property
+    def ex_metadata(self):
+        ch = Electric(component="ex")
+        if self.header._has_channel("zxy"):
+            ch.dipole_length = self.header._comp_dict["zxy"]["rx"].length
+            ch.measurement_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[0]
+            ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
+            ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
+            ch.channel_id = self.header._comp_dict["zxy"]["ch"].number[0]
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0]
+            ch.translated_azimuth = self.header.rx.h_p_r[0]
+            ch.channel_id = 4
+
+        return ch
+
+    @property
+    def ey_metadata(self):
+        ch = Electric(component="ey")
+        if self.header._has_channel("zyx"):
+            ch.dipole_length = self.header._comp_dict["zyx"]["rx"].length
+            ch.measurement_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[0]
+            ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
+            ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
+            ch.channel_id = self.header._comp_dict["zyx"]["ch"].number[0]
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.channel_id = 5
+
+        return ch
+
+    @property
+    def hx_metadata(self):
+        ch = Magnetic(component="hx")
+        if self.header._has_channel("zyx"):
+            ch.measurement_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["zyx"]["ch"].number[1]
+            ch.channel_id = 1
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0]
+            ch.translated_azimuth = self.header.rx.h_p_r[0]
+            ch.channel_id = 1
+
+        return ch
+
+    @property
+    def hy_metadata(self):
+        ch = Magnetic(component="hy")
+        if self.header._has_channel("zxy"):
+            ch.measurement_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["zxy"]["ch"].number[1]
+            ch.channel_id = 2
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.channel_id = 2
+
+        return ch
+
+    @property
+    def hz_metadata(self):
+        ch = Magnetic(component="hy")
+        if self.header._has_channel("tzx"):
+            ch.measurement_azimuth = self.header._comp_dict["tzx"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["tzx"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]
+            ch.channel_id = 3
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[-1]
+            ch.translated_azimuth = self.header.rx.h_p_r[-1]
+            ch.channel_id = 3
+
+        return ch
 
     @property
     def station_metadata(self):
@@ -265,48 +394,12 @@ class ZongeMTAvg:
             sm.transfer_function.processing_parameters.append(
                 f"mtedit.{key}={value}"
             )
-        sm.transfer_function.runs_processed = ["001"]
 
         sm.data_type = self.header.survey.type
-        sm.runs.append(Run(id="001"))
-        for comp in self.df.comp.unique():
-            if comp in self.header._comp_dict.keys():
-                if self.header._comp_dict[comp]["ch"] == {}:
-                    if "zx" in comp:
-                        ch = Electric(component="ex")
-                        ch.dipole_length = self.header.rx.length
-                        ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                        ch.translated_azimuth = self.header.rx.h_p_r[0]
-                        ch.channel_id = 1
-                        sm.runs[0].add_channel(ch)
-                    elif "zy" in comp:
-                        ch = Electric(component="ey")
-                        ch.dipole_length = self.header.rx.length
-                        ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                        ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                        ch.channel_id = 2
-                        sm.runs[0].add_channel(ch)
-                    if comp[-1] == "x":
-                        ch = Magnetic(component="hx")
-                        ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                        ch.translated_azimuth = self.header.rx.h_p_r[0]
-                        ch.channel_id = 3
-                        sm.runs[0].add_channel(ch)
-                    elif comp[-1] == "y":
-                        ch = Magnetic(component="hy")
-                        ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                        ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                        ch.channel_id = 4
-                        sm.runs[0].add_channel(ch)
-                    if comp[1] == "z":
-                        ch = Magnetic(component="hz")
-                        ch.measurement_tilt = self.header.rx.h_p_r[-1]
-                        ch.translated_tilt = self.header.rx.h_p_r[-1]
-                        ch.translated_azimuth = self.header.rx.h_p_r[0]
-                        ch.channel_id = 5
-                        sm.runs[0].add_channel(ch)
-                else:
-                    pass
+        sm.add_run(self.run_metadata)
+        sm.transfer_function.runs_processed = [self.run_metadata.id]
+        if self.header.start_time is not None:
+            sm.time_period.start = self.header.start_time
 
         return sm
 
@@ -380,6 +473,7 @@ def read_avg(fn):
     from mt_metadata.transfer_functions.core import TF
 
     obj = ZongeMTAvg(fn=fn)
+    obj.read()
 
     tf_object = TF()
     tf_object.survey_metadata = obj.survey_metadata
