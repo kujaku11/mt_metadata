@@ -25,13 +25,19 @@ class TestTFPeriodInput(unittest.TestCase):
         self.assertEqual(self.tf.period.size, self.n_period)
 
     def test_tf_shape(self):
-        self.assertEqual(self.tf.dataset.transfer_function.shape[0], self.n_period)
+        self.assertEqual(
+            self.tf.dataset.transfer_function.shape[0], self.n_period
+        )
 
     def test_isp_shape(self):
-        self.assertEqual(self.tf.dataset.inverse_signal_power.shape[0], self.n_period)
+        self.assertEqual(
+            self.tf.dataset.inverse_signal_power.shape[0], self.n_period
+        )
 
     def test_res_shape(self):
-        self.assertEqual(self.tf.dataset.residual_covariance.shape[0], self.n_period)
+        self.assertEqual(
+            self.tf.dataset.residual_covariance.shape[0], self.n_period
+        )
 
 
 class TestTFImpedanceInput(unittest.TestCase):
@@ -96,7 +102,11 @@ class TestTFTipperInput(unittest.TestCase):
         self.test_t = xr.DataArray(
             data=np.random.rand(self.n_period, 1, 2),
             dims=["period", "output", "input"],
-            coords={"period": self.period, "output": ["hz"], "input": ["hx", "hy"]},
+            coords={
+                "period": self.period,
+                "output": ["hz"],
+                "input": ["hx", "hy"],
+            },
             name="tipper",
         )
         self.new_t = np.random.rand(self.n_period, 1, 2)
@@ -171,7 +181,9 @@ class TestTFISPInput(unittest.TestCase):
         self.assertTrue(self.tf.has_inverse_signal_power())
 
     def test_shape(self):
-        self.assertEqual(self.tf.inverse_signal_power.data.shape, (self.n_period, 2, 2))
+        self.assertEqual(
+            self.tf.inverse_signal_power.data.shape, (self.n_period, 2, 2)
+        )
 
     def test_xarray(self):
         self.assertTrue(
@@ -186,7 +198,9 @@ class TestTFISPInput(unittest.TestCase):
 
     def test_set_from_array(self):
         self.tf.inverse_signal_power = self.new_t
-        self.assertTrue(np.all(self.tf.inverse_signal_power.data == self.new_t) == True)
+        self.assertTrue(
+            np.all(self.tf.inverse_signal_power.data == self.new_t) == True
+        )
 
 
 class TestTFResidualInput(unittest.TestCase):
@@ -225,10 +239,14 @@ class TestTFResidualInput(unittest.TestCase):
         self.assertTrue(self.tf.has_residual_covariance())
 
     def test_shape(self):
-        self.assertEqual(self.tf.residual_covariance.data.shape, (self.n_period, 3, 3))
+        self.assertEqual(
+            self.tf.residual_covariance.data.shape, (self.n_period, 3, 3)
+        )
 
     def test_xarray(self):
-        self.assertTrue(np.all(self.tf.residual_covariance.data == self.test_t) == True)
+        self.assertTrue(
+            np.all(self.tf.residual_covariance.data == self.test_t) == True
+        )
 
     def test_fail(self):
         def set_value(value):
@@ -238,7 +256,9 @@ class TestTFResidualInput(unittest.TestCase):
 
     def test_set_from_array(self):
         self.tf.residual_covariance = self.new_t
-        self.assertTrue(np.all(self.tf.residual_covariance.data == self.new_t) == True)
+        self.assertTrue(
+            np.all(self.tf.residual_covariance.data == self.new_t) == True
+        )
 
 
 # =============================================================================
