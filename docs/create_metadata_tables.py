@@ -27,7 +27,7 @@ FN_PATH = Path(__file__).parent.joinpath("source")
 def to_caps(name):
     """
     convert class name into mixed upper case
-    
+
     :param name: DESCRIPTION
     :type name: TYPE
     :return: DESCRIPTION
@@ -41,7 +41,7 @@ def to_caps(name):
 def write_attribute_table_file(level, stem):
     """
     Write an attribute table for the given metadata class
-    
+
     :param level: DESCRIPTION
     :type level: TYPE
     :param stem: DESCRIPTION
@@ -75,7 +75,7 @@ def write_attribute_table_file(level, stem):
 def write_metadata_standards(module_name, stem):
     """
     write a file for each metadata class in module
-    
+
     :param module_name: DESCRIPTION
     :type module_name: TYPE
     :param stem: DESCRIPTION
@@ -108,9 +108,18 @@ if __name__ == "__main__":
             "EMTF XML",
         ),
         "mt_metadata.transfer_functions.io.edi.metadata": ("tf_edi", "EDI"),
-        "mt_metadata.transfer_functions.io.zfiles.metadata": ("tf_zmm", "Z-Files"),
-        "mt_metadata.transfer_functions.io.jfiles.metadata": ("tf_jfile", "J-Files"),
-        "mt_metadata.transfer_functions.io.zonge.metadata": ("tf_zonge", "Zonge AVG"),
+        "mt_metadata.transfer_functions.io.zfiles.metadata": (
+            "tf_zmm",
+            "Z-Files",
+        ),
+        "mt_metadata.transfer_functions.io.jfiles.metadata": (
+            "tf_jfile",
+            "J-Files",
+        ),
+        "mt_metadata.transfer_functions.io.zonge.metadata": (
+            "tf_zonge",
+            "Zonge AVG",
+        ),
     }
 
     for module, stem in module_dict.items():
