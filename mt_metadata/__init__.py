@@ -87,7 +87,9 @@ REQUIRED_KEYS = [
 LOG_LEVEL = "info"
 
 load_logging_config()
-debug_logger = setup_logger(__name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL)
+debug_logger = setup_logger(
+    __name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL
+)
 debug_logger.debug(f"Starting MT Metadata {LOG_LEVEL} Log File")
 
 error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
@@ -100,16 +102,26 @@ DATA_DIR = Path(__file__).absolute().parent
 ### Station XML files
 STATIONXML_01 = DATA_DIR.joinpath("data/stationxml/fdsn_no_mt_info.xml")
 STATIONXML_02 = DATA_DIR.joinpath("data/stationxml/mtml_single_station.xml")
-STATIONXML_MAGNETIC = DATA_DIR.joinpath("data/stationxml/mtml_magnetometer_example.xml")
-STATIONXML_ELECTRIC = DATA_DIR.joinpath("data/stationxml/mtml_electrode_example.xml")
-STATIONXML_FAP = DATA_DIR.joinpath("data/stationxml/station_xml_with_fap_example.xml")
-STATIONXML_FIR = DATA_DIR.joinpath("data/stationxml/station_xml_with_fir_example.xml")
+STATIONXML_MAGNETIC = DATA_DIR.joinpath(
+    "data/stationxml/mtml_magnetometer_example.xml"
+)
+STATIONXML_ELECTRIC = DATA_DIR.joinpath(
+    "data/stationxml/mtml_electrode_example.xml"
+)
+STATIONXML_FAP = DATA_DIR.joinpath(
+    "data/stationxml/station_xml_with_fap_example.xml"
+)
+STATIONXML_FIR = DATA_DIR.joinpath(
+    "data/stationxml/station_xml_with_fir_example.xml"
+)
 
 ### MT EXPERIMENT files
 MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
-MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath("data/mt_xml/multi_run_experiment.xml")
+MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath(
+    "data/mt_xml/multi_run_experiment.xml"
+)
 MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath(
     "data/mt_xml/multi_run_experiment_02.xml"
 )
@@ -119,11 +131,20 @@ TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/example_emtf.zmm")
 TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tipper_only.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/example_birrp.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
-TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/IEB0537A_Phoenix.edi")
-TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/IEB0858A_metronix.edi")
+TF_EDI_PHOENIX = DATA_DIR.joinpath(
+    "data/transfer_functions/IEB0537A_Phoenix.edi"
+)
+TF_EDI_METRONIX = DATA_DIR.joinpath(
+    "data/transfer_functions/IEB0858A_metronix.edi"
+)
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")
 TF_EDI_RHO_ONLY = DATA_DIR.joinpath("data/transfer_functions/rho_only.edi")
 TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
-TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath("data/transfer_functions/spectra_out.edi")
+TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
+    "data/transfer_functions/spectra_out.edi"
+)
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
+TF_AVG_TIPPER = DATA_DIR.joinpath(
+    "data/transfer_functions/example_zonge_with_tipper.avg"
+)

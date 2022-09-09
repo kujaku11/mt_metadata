@@ -175,7 +175,7 @@ class Header(Base):
 
     @property
     def datum(self):
-        return self.g_p_s.datum
+        return self.g_p_s.datum.upper()
 
     @property
     def utm_zone(self):
@@ -196,7 +196,7 @@ class Header(Base):
 
     @property
     def instrument_type(self):
-        return self.g_d_p.type
+        return self.g_d_p.type.upper()
 
     @property
     def firmware(self):

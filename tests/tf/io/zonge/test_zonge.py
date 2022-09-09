@@ -23,7 +23,8 @@ from mt_metadata.transfer_functions.io.zonge import ZongeMTAvg
 
 
 class TestAVGHeader(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
 
         self.header = Header()
         with open(TF_AVG, "r") as fid:
@@ -55,7 +56,9 @@ class TestAVGHeader(unittest.TestCase):
             self.assertEqual(self.header.m_t_edit.phase_slope.to_z_mag, "no")
 
         with self.subTest("version"):
-            self.assertEqual(self.header.m_t_edit.version, "3.10m applied 2021/01/27")
+            self.assertEqual(
+                self.header.m_t_edit.version, "3.10m applied 2021/01/27"
+            )
 
     def test_rx(self):
         with self.subTest("gdp_stn"):
@@ -85,9 +88,11 @@ class TestAVGHeader(unittest.TestCase):
 
 
 class TestAVG(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
 
         self.avg = ZongeMTAvg(fn=TF_AVG)
+        self.avg.read()
 
     def test_z(self):
         with self.subTest("shape"):

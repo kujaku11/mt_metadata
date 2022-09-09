@@ -63,7 +63,7 @@ class EDI(object):
         >>> new_edi_fn = edi_obj.write()
     """
 
-    def __init__(self, fn=None):
+    def __init__(self, fn=None, **kwargs):
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self._fn = None
         self._edi_lines = None
@@ -190,6 +190,9 @@ class EDI(object):
         self._block_len = 6
 
         self.fn = fn
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
@@ -1330,7 +1333,7 @@ class EDI(object):
 # =============================================================================
 #  Generic read and write
 # =============================================================================
-def read_edi(fn):
+def read_edi(fn, **kwargs):
     """
 
     Read an edi file and return a :class:`mtpy.core.mt.MT` object
@@ -1348,7 +1351,7 @@ def read_edi(fn):
 
     st = MTime().now()
 
-    edi_obj = EDI()
+    edi_obj = EDI(**kwargs)
     edi_obj.read(fn)
 
     tf_obj = TF()

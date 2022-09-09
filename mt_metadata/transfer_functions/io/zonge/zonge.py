@@ -34,7 +34,7 @@ class ZongeMTAvg:
     deal with avg files output from mtedit
     """
 
-    def __init__(self, fn=None):
+    def __init__(self, fn=None, **kwargs):
 
         self.header = Header()
 
@@ -59,7 +59,7 @@ class ZongeMTAvg:
         self.t_err = None
         self.components = []
 
-        self.comp_index = {
+        self._comp_index_down = {
             "zxx": (0, 0),
             "zxy": (0, 1),
             "zyx": (1, 0),
@@ -68,10 +68,37 @@ class ZongeMTAvg:
             "tzy": (0, 1),
         }
 
+        self._comp_index_up = {
+            "zxx": (1, 1),
+            "zxy": (1, 0),
+            "zyx": (0, 1),
+            "zyy": (0, 0),
+            "tzx": (0, 1),
+            "tzy": (0, 0),
+        }
+
         self.freq_index_dict = None
-        self.z_coordinate = "down"
+        self.z_positive = "down"
 
         self.fn = fn
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def _get_comp_index(self):
+        """
+        get the correct component index dictionary based on z_positive
+
+        Down assumes x is north, y is east
+
+        Up assumes x is east, y is north
+        """
+        if self.z_positive == "down":
+            return self._comp_index_down
+        elif self.z_positive == "up":
+            return self._comp_index_up
+        else:
+            raise ValueError("z_postiive must be either [ 'up' | 'down' ]")
 
     @property
     def fn(self):
@@ -148,12 +175,8 @@ class ZongeMTAvg:
 
         if isinstance(zmag, np.ndarray):
             assert len(zmag) == len(zphase)
-        if self.z_coordinate == "up":
-            zreal = zmag * np.cos((zphase / 1000) % np.pi)
-            zimag = zmag * np.sin((zphase / 1000) % np.pi)
-        else:
-            zreal = zmag * np.cos((zphase / 1000))
-            zimag = zmag * np.sin((zphase / 1000))
+        zreal = zmag * np.cos((zphase / 1000))
+        zimag = zmag * np.sin((zphase / 1000))
         return zreal, zimag
 
     def to_amp_phase(self, zreal, zimag):
@@ -171,10 +194,7 @@ class ZongeMTAvg:
 
         if isinstance(zreal, np.ndarray):
             assert len(zreal) == len(zimag)
-        if self.z_coordinate == "up":
-            zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
-        else:
-            zphase = np.arctan2(zimag, zreal) * 1000
+        zphase = np.arctan2(zimag, zreal) * 1000
         zmag = np.sqrt(zreal**2 + zimag**2)
 
         return zmag, zphase
@@ -188,12 +208,14 @@ class ZongeMTAvg:
         z = np.zeros((self.n_freq, 2, 2), dtype=complex)
         z_err = np.zeros((self.n_freq, 2, 2), dtype=float)
 
+        comp_index = self._get_comp_index()
+
         for row in self.df[
             self.df.comp.isin(["zxx", "zxy", "zyx", "zyy"])
         ].itertuples():
             if "z" in row.comp:
                 z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
-                ii, jj = self.comp_index[row.comp]
+                ii, jj = comp_index[row.comp]
                 f_index = self.freq_index_dict[row.frequency]
 
                 z[f_index, ii, jj] = z_real + 1j * z_imag
@@ -213,13 +235,15 @@ class ZongeMTAvg:
         t = np.zeros((self.n_freq, 1, 2), dtype=complex)
         t_err = np.ones((self.n_freq, 1, 2), dtype=float)
 
+        comp_index = self._get_comp_index()
+
         for row in self.df[self.df.comp.isin(["tzx", "tzy"])].itertuples():
             if "t" in row.comp:
                 t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
-                ii, jj = self.comp_index[row.comp]
+                ii, jj = comp_index[row.comp]
                 f_index = self.freq_index_dict[row.frequency]
 
-                if self.z_coordinate == "up":
+                if self.z_positive == "up":
                     t[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
                 else:
                     t[f_index, ii, jj] = t_real + t_imag * 1j
@@ -464,7 +488,7 @@ class ZongeMTAvg:
 # =============================================================================
 
 
-def read_avg(fn):
+def read_avg(fn, z_positive="down", **kwargs):
     """
     Read an .avg file output by MTEdit developed by Zonge International.
 
@@ -476,7 +500,7 @@ def read_avg(fn):
     """
     from mt_metadata.transfer_functions.core import TF
 
-    obj = ZongeMTAvg(fn=fn)
+    obj = ZongeMTAvg(fn=fn, z_positive=z_positive, **kwargs)
     obj.read()
 
     tf_object = TF()
