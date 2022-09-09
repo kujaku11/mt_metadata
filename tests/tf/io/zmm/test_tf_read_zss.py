@@ -21,8 +21,10 @@ from mt_metadata.transfer_functions.core import TF
 
 
 class TestEMTFXML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf = TF(fn=TF_ZSS_TIPPER)
+        self.tf.read_tf_file()
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -49,7 +51,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.survey_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.survey_metadata.to_dict(single=True)
+        )
 
     def test_station_metadata(self):
         meta_dict = OrderedDict(
@@ -80,13 +84,18 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.processed_date", None),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.remote_references", []),
-                ("transfer_function.runs_processed", ["ysw212abcdefghijkla"],),
+                (
+                    "transfer_function.runs_processed",
+                    ["ysw212abcdefghijkla"],
+                ),
                 ("transfer_function.sign_convention", None),
                 ("transfer_function.units", None),
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.station_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.station_metadata.to_dict(single=True)
+        )
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
@@ -128,7 +137,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
+                    np.array(
+                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
+                    ),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -141,7 +152,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_sip(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((44, 2, 2), self.tf.inverse_signal_power.shape)
+            self.assertTupleEqual(
+                (44, 2, 2), self.tf.inverse_signal_power.shape
+            )
         with self.subTest("has inverse_signal_power"):
             self.assertTrue(self.tf.has_inverse_signal_power())
         with self.subTest(msg="first element"):
@@ -177,7 +190,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (44, 3, 3), self.tf.residual_covariance.shape
+            )
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):
@@ -211,9 +226,21 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.residual_covariance[-1],
                     np.array(
                         [
-                            [0.00000000 + 0.0j, 0.00000000 + 0.0j, 0.00000000 + 0.0j],
-                            [0.00000000 + 0.0j, 0.00000000 + 0.0j, 0.00000000 + 0.0j],
-                            [0.00000000 + 0.0j, 0.00000000 + 0.0j, 38.70000076 + 0.0j],
+                            [
+                                0.00000000 + 0.0j,
+                                0.00000000 + 0.0j,
+                                0.00000000 + 0.0j,
+                            ],
+                            [
+                                0.00000000 + 0.0j,
+                                0.00000000 + 0.0j,
+                                0.00000000 + 0.0j,
+                            ],
+                            [
+                                0.00000000 + 0.0j,
+                                0.00000000 + 0.0j,
+                                38.70000076 + 0.0j,
+                            ],
                         ]
                     ),
                 ).all()

@@ -13,7 +13,13 @@ from copy import deepcopy
 import numpy as np
 import xarray as xr
 
-from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 from mt_metadata.base.helpers import validate_name
@@ -54,8 +60,9 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
-        self.channel_nomenclature = kwargs.get("channel_nomenclature",
-                                               DEFAULT_CHANNEL_NOMENCLATURE)
+        self.channel_nomenclature = kwargs.get(
+            "channel_nomenclature", DEFAULT_CHANNEL_NOMENCLATURE
+        )
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -76,7 +83,7 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
-        #unpack channel nomenclature dict
+        # unpack channel nomenclature dict
         self.ex = self.channel_nomenclature["ex"]
         self.ey = self.channel_nomenclature["ey"]
         self.hx = self.channel_nomenclature["hx"]
@@ -110,17 +117,19 @@ class TF:
 
         self._transfer_function = self._initialize_transfer_function()
 
-        self.fn = fn
-
         # provide key words to fill values if an edi file does not exist
         for key in list(kwargs.keys()):
             setattr(self, key, kwargs[key])
+
+        self.fn = fn
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
+        lines.append(
+            f"\tAcquired by:       {self.station_metadata.acquired_by.author}"
+        )
         lines.append(
             f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
         )
@@ -260,17 +269,8 @@ class TF:
         if value is None:
             self._fn = None
             return
-        try:
-            self._fn = Path(value)
-            self.save_dir = self._fn.parent
-            if self._fn.exists():
-
-                self.read_tf_file(self._fn)
-            else:
-                self.logger.warning(f"Could not find {self._fn} skip reading.")
-        except TypeError as error:
-            self.logger.exception(error)
-            self._fn = None
+        self._fn = Path(value)
+        self.save_dir = self._fn.parent
 
     @property
     def latitude(self):
@@ -399,10 +399,13 @@ class TF:
             and not self.has_tipper()
             and not self.has_impedance()
         ):
-            self._transfer_function = self._initialize_transfer_function(da.period)
+            self._transfer_function = self._initialize_transfer_function(
+                da.period
+            )
             return da
         elif (
-            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
+            self._transfer_function.transfer_function.data.shape[0]
+            == da.data.shape[0]
         ):
             return da
         else:
@@ -467,7 +470,8 @@ class TF:
         if self.ex in outputs or self.ey in outputs or self.hz in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tf"], output=self._ch_output_dict["tf"]
+                    input=self._ch_input_dict["tf"],
+                    output=self._ch_output_dict["tf"],
                 ).data
                 == 0
             ):
@@ -735,7 +739,8 @@ class TF:
 
         if np.all(
             self._transfer_function.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
+                input=self._ch_input_dict["isp"],
+                output=self._ch_output_dict["isp"],
             ).data
             == 0
         ):
@@ -746,7 +751,8 @@ class TF:
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
             ds = self.dataset.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
+                input=self._ch_input_dict["isp"],
+                output=self._ch_output_dict["isp"],
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -784,7 +790,8 @@ class TF:
 
         if np.all(
             self._transfer_function.residual_covariance.sel(
-                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
+                input=self._ch_input_dict["res"],
+                output=self._ch_output_dict["res"],
             ).data
             == 0
         ):
@@ -795,7 +802,8 @@ class TF:
     def residual_covariance(self):
         if self.has_residual_covariance():
             ds = self.dataset.residual_covariance.sel(
-                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
+                input=self._ch_input_dict["res"],
+                output=self._ch_output_dict["res"],
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -842,19 +850,27 @@ class TF:
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.real(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 0, 1] = np.real(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
         z_err[:, 1, 0] = np.real(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 1, 1] = np.real(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
@@ -875,7 +891,9 @@ class TF:
         :rtype: TYPE
 
         """
-        sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
+        sigma_e = self.residual_covariance.loc[
+            dict(input=[self.hz], output=[self.hz])
+        ]
         sigma_s = self.inverse_signal_power.loc[
             dict(input=self.hx_hy, output=self.hx_hy)
         ]
@@ -883,11 +901,15 @@ class TF:
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.real(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         t_err[:, 0, 1] = np.real(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
@@ -925,7 +947,9 @@ class TF:
             else:
                 self.dataset["period"] = value
         else:
-            self._transfer_function = self._initialize_transfer_function(periods=value)
+            self._transfer_function = self._initialize_transfer_function(
+                periods=value
+            )
         return
 
     @property
@@ -952,12 +976,12 @@ class TF:
 
     @property
     def tf_id(self):
-        """ transfer function id """
+        """transfer function id"""
         return self.station_metadata.transfer_function.id
 
     @tf_id.setter
     def tf_id(self, value):
-        """ set transfer function id """
+        """set transfer function id"""
         self.station_metadata.transfer_function.id = validate_name(value)
 
     def to_ts_station_metadata(self):
@@ -993,7 +1017,12 @@ class TF:
                 continue
 
     def write_tf_file(
-        self, fn=None, save_dir=None, fn_basename=None, file_type="edi", **kwargs,
+        self,
+        fn=None,
+        save_dir=None,
+        fn_basename=None,
+        file_type="edi",
+        **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
@@ -1043,7 +1072,9 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
+                fn_basename = fn_basename.with_name(
+                    f"{fn_basename.name}.{file_type}"
+                )
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
@@ -1058,7 +1089,7 @@ class TF:
 
         return write_file(self, fn, file_type=file_type, **kwargs)
 
-    def read_tf_file(self, fn, file_type=None):
+    def read_tf_file(self, fn=None, file_type=None, **kwargs):
         """
 
         Read an TF response file.
@@ -1081,10 +1112,14 @@ class TF:
             >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
 
         """
+        if fn is not None:
+            self.fn = fn
 
-        tf_obj = read_file(fn, file_type=file_type)
+        tf_obj = read_file(self.fn, file_type=file_type, **kwargs)
         if tf_obj.station_metadata.transfer_function.id is None:
-            tf_obj.station_metadata.transfer_function.id = tf_obj.station_metadata.id
+            tf_obj.station_metadata.transfer_function.id = (
+                tf_obj.station_metadata.id
+            )
         self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
 

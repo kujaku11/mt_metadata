@@ -12,7 +12,13 @@ from pathlib import Path
 import numpy as np
 from collections import OrderedDict
 
-from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.mt_logger import setup_logger
 from .metadata import Header
@@ -25,7 +31,7 @@ class JFile:
     be able to read and write a j-file
     """
 
-    def __init__(self, fn=None):
+    def __init__(self, fn=None, **kwargs):
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         self.header = Header()
 
@@ -38,6 +44,9 @@ class JFile:
         self.t_err = None
         self.frequency = None
 
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
         if self.fn is not None:
             self.read()
 
@@ -45,11 +54,21 @@ class JFile:
         lines = [f"Station: {self.header.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        lines.append(
+            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
+        )
+        lines.append(
+            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
+        )
+        lines.append(
+            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
+        )
+        lines.append(
+            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
+        )
+        lines.append(
+            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
+        )
         if self.z is not None:
             if (self.z == 0).all():
                 lines.append("\tImpedance:     False")
@@ -145,13 +164,18 @@ class JFile:
     def read(self, fn=None):
         """
         Read data from a j file
-        
+
         :param fn: full path to j-file to read, defaults to None
         :type fn: string or pathlib.Path, optional
 
         """
         # read data
-        z_index_dict = {"zxx": (0, 0), "zxy": (0, 1), "zyx": (1, 0), "zyy": (1, 1)}
+        z_index_dict = {
+            "zxx": (0, 0),
+            "zxy": (0, 1),
+            "zyx": (1, 0),
+            "zyy": (1, 1),
+        }
         t_index_dict = {"tzx": (0, 0), "tzy": (0, 1)}
 
         if fn is not None:
@@ -165,7 +189,9 @@ class JFile:
         self.header.read_metadata(j_line_list)
 
         data_lines = [
-            j_line for j_line in j_line_list if not ">" in j_line and not "#" in j_line
+            j_line
+            for j_line in j_line_list
+            if not ">" in j_line and not "#" in j_line
         ][:]
 
         self.header.station = data_lines[0].strip()
@@ -184,7 +210,9 @@ class JFile:
             if "z" in d_line.lower():
                 d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
+            elif (
+                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
+            ):
                 continue
             elif "r" in d_line.lower():
                 break
@@ -254,7 +282,9 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
+                    z_value = (
+                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
+                    )
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
@@ -265,19 +295,23 @@ class JFile:
                     kk = t_index_dict[t_key][0]
                     ll = t_index_dict[t_key][1]
                     try:
-                        t_value = t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
+                        t_value = (
+                            t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
+                        )
                         self.t[p_index, kk, ll] = t_value
                         self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
-                        self.logger.debug(f"No value found for period {per:.4g}")
+                        self.logger.debug(
+                            f"No value found for period {per:.4g}"
+                        )
                         self.logger.debug(f"For component {t_key}")
 
         # put the results into mtpy objects
         self.frequency = 1.0 / all_periods
         self.z[np.where(self.z == np.inf)] = 0 + 0j
         self.t[np.where(self.t == np.inf)] = 0 + 0j
-        self.z_err[np.where(self.z_err == np.inf)] = 10 ** 6
-        self.t_err[np.where(self.t_err == np.inf)] = 10 ** 6
+        self.z_err[np.where(self.z_err == np.inf)] = 10**6
+        self.t_err[np.where(self.t_err == np.inf)] = 10**6
 
     @property
     def station_metadata(self):
@@ -311,11 +345,17 @@ class JFile:
         # provenance
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
-        sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
+        sm.transfer_function.processed_date = MTime(
+            self.fn.stat().st_ctime
+        ).iso_str
         sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
-        for key, value in self.header.birrp_parameters.to_dict(single=True).items():
-            sm.transfer_function.processing_parameters.append(f"{key} = {value}")
+        for key, value in self.header.birrp_parameters.to_dict(
+            single=True
+        ).items():
+            sm.transfer_function.processing_parameters.append(
+                f"{key} = {value}"
+            )
 
         return sm
 

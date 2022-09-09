@@ -87,6 +87,17 @@
         "example": "100.0",
 		"default": 0.0
     },
+	"azm": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "orientation of the sensor relative to coordinate system, clockwise positive.",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
 	"acqchan": {
         "type": "string",
         "required": true,

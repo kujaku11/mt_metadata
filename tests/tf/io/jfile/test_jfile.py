@@ -18,12 +18,15 @@ from mt_metadata import TF_JFILE
 # CGG
 # =============================================================================
 class TestJFile(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.j_obj = JFile(fn=TF_JFILE)
         self.maxDiff = None
 
     def test_title(self):
-        self.assertEqual("BIRRP Version 5 basic mode output", self.j_obj.header.title)
+        self.assertEqual(
+            "BIRRP Version 5 basic mode output", self.j_obj.header.title
+        )
 
     def test_birrp_parameters(self):
         birrp_params = OrderedDict(
@@ -54,7 +57,8 @@ class TestJFile(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            birrp_params, self.j_obj.header.birrp_parameters.to_dict(single=True)
+            birrp_params,
+            self.j_obj.header.birrp_parameters.to_dict(single=True),
         )
 
     def test_data_blocks(self):
@@ -88,7 +92,8 @@ class TestJFile(unittest.TestCase):
         for ii, block in enumerate(db):
             with self.subTest(msg=f"block {ii}"):
                 self.assertDictEqual(
-                    block, self.j_obj.header.data_blocks[ii].to_dict(single=True)
+                    block,
+                    self.j_obj.header.data_blocks[ii].to_dict(single=True),
                 )
 
     def test_station(self):

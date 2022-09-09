@@ -15,77 +15,51 @@ Created on Tue Jul 11 10:53:23 2013
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 from .metadata import Header
-from mt_metadata.transfer_functions.tf import Survey, Station, Run, Magnetic, Electric
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Magnetic,
+    Electric,
+)
 
 # ==============================================================================
 # deal with avg files output from mtedit
 # ==============================================================================
 class ZongeMTAvg:
     """
-    deal with avg files output from mtedit 
+    deal with avg files output from mtedit
     """
 
-    def __init__(self, fn=None):
+    def __init__(self, fn=None, **kwargs):
 
         self.header = Header()
 
         self.info_keys = [
-            "Skp",
-            "Freq",
-            "E.mag",
-            "B.mag",
-            "Z.mag",
-            "Z.phz",
-            "ARes.mag",
-            "ARes.%err",
-            "Z.perr",
-            "Coher",
-            "FC.NUse",
-            "FC.NTry",
+            "skip",
+            "frequency",
+            "e_magnitude",
+            "b_magnitude",
+            "z_magnitude",
+            "z_phase",
+            "apparent_resistivity",
+            "apparent_resistivity_err",
+            "z_phase_err",
+            "coherency",
+            "fc_use",
+            "fc_try",
         ]
-        self.info_type = [
-            int,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            float,
-            int,
-            int,
-        ]
-
-        self.info_fmt = [
-            "<1.0f",
-            "<.4g",
-            "<.4e",
-            "<.4e",
-            "<.4e",
-            "<.1f",
-            "<.4e",
-            "<.1f",
-            "<.1f",
-            "<.3f",
-            "<.0f",
-            "<.0f",
-        ]
-
-        self.info_dtype = np.dtype(
-            [(kk.lower(), tt) for kk, tt in zip(self.info_keys, self.info_type)]
-        )
 
         self.z = None
         self.z_err = None
         self.t = None
         self.t_err = None
-        self.comp_lst_z = ["zxx", "zxy", "zyx", "zyy"]
-        self.comp_lst_tip = ["tzx", "tzy"]
-        self.comp_index = {
+        self.components = []
+
+        self._comp_index_down = {
             "zxx": (0, 0),
             "zxy": (0, 1),
             "zyx": (1, 0),
@@ -93,24 +67,38 @@ class ZongeMTAvg:
             "tzx": (0, 0),
             "tzy": (0, 1),
         }
-        self.comp_flag = {
-            "zxx": False,
-            "zxy": False,
-            "zyx": False,
-            "zyy": False,
-            "tzx": False,
-            "tzy": False,
+
+        self._comp_index_up = {
+            "zxx": (1, 1),
+            "zxy": (1, 0),
+            "zyx": (0, 1),
+            "zyy": (0, 0),
+            "tzx": (0, 1),
+            "tzy": (0, 0),
         }
-        self.comp_dict = None
-        self.comp = None
-        self.nfreq = None
-        self.nfreq_tipper = None
-        self.freq_dict = None
-        self.freq_dict_x = None
-        self.freq_dict_y = None
-        self.z_coordinate = "down"
+
+        self.freq_index_dict = None
+        self.z_positive = "down"
 
         self.fn = fn
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def _get_comp_index(self):
+        """
+        get the correct component index dictionary based on z_positive
+
+        Down assumes x is north, y is east
+
+        Up assumes x is east, y is north
+        """
+        if self.z_positive == "down":
+            return self._comp_index_down
+        elif self.z_positive == "up":
+            return self._comp_index_up
+        else:
+            raise ValueError("z_postiive must be either [ 'up' | 'down' ]")
 
     @property
     def fn(self):
@@ -120,87 +108,63 @@ class ZongeMTAvg:
     def fn(self, value):
         if value is not None:
             self._fn = Path(value)
-            if self._fn.exists():
-                self.read()
         else:
             self._fn = None
 
-    def get_comp_dict(self, lines):
+    def read(self, fn=None):
         """
-        Get the component dictionary from the file
+        Read into a pandas data frame
 
-        :param lines: DESCRIPTION
-        :type lines: TYPE
+        :param fn: DESCRIPTION, defaults to None
+        :type fn: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        avg_str = "".join(lines)
-
-        index_0 = avg_str.find("$")
-        index_1 = avg_str.find("$", index_0 + 1)
-
-        n_values = int(round((index_1 - index_0) / index_0))
-
-        return self._make_comp_dict(n_values)
-
-    def _make_comp_dict(self, n_values):
-        """ """
-
-        return dict(
-            [
-                (ckey, np.zeros(n_values, dtype=self.info_dtype))
-                for ckey in list(self.comp_flag.keys())
-            ]
-        )
-
-    def read(self, fn=None):
-        """
-        read in average file
-        """
 
         if fn is not None:
-            self._fn = Path(fn)
-        self.comp = self.fn.stem[0]
-        with open(self.fn, "r") as fid:
-            alines = fid.readlines()
+            self.fn = Path(fn)
+
+        with self.fn.open("r") as fid:
+            lines = fid.readlines()
+
         # read header
-        alines = self.header.read_header(alines)
+        data_lines = self.header.read_header(lines)
 
-        self.comp_flag = {
-            "zxx": False,
-            "zxy": False,
-            "zyx": False,
-            "zyy": False,
-            "tzx": False,
-            "tzy": False,
-        }
+        data_list = []
+        for line in data_lines:
+            if "$" in line:
+                key, comp = [ss.strip() for ss in line.split("=")]
+            elif "skp" in line.lower() or len(line) < 2:
+                continue
+            else:
+                line = line.replace("*", "0.50")
+                values = [comp.lower()] + [
+                    float(ss.strip()) for ss in line.split(",")
+                ]
+                entry = dict(
+                    [
+                        (key.lower(), value)
+                        for key, value in zip(
+                            ["comp"] + self.info_keys, values
+                        )
+                    ]
+                )
+                data_list.append(entry)
 
-        if not self.comp_dict:
-            self.comp_dict = self.get_comp_dict(alines)
-        self.comp_lst_z = []
-        self.comp_lst_tip = []
-        ii = 0
-        for aline in alines[1:]:
-            if aline.find("=") > 0 and aline.find("$") == 0:
-                alst = [aa.strip() for aa in aline.strip().split("=")]
-                if alst[1].lower() in list(self.comp_flag.keys()):
-                    akey = alst[1].lower()
-                    self.comp_flag[akey] = True
-                    if akey[0] == "z":
-                        self.comp_lst_z.append(akey)
-                    elif akey[0] == "t":
-                        self.comp_lst_tip.append(akey)
-                    ii = 0
-            # read the data line.
-            elif len(aline) > 2:
-                aline = aline.replace("*", "0.50")
-                alst = [aa.strip() for aa in aline.strip().split(",")]
-                for cc, ckey in enumerate(self.info_keys):
-                    self.comp_dict[akey][ii][ckey.lower()] = alst[cc]
-                ii += 1
-        self._fill_z()
-        self._fill_t()
+        self.df = pd.DataFrame(data_list)
+
+        self.frequency = self.df.frequency.unique()
+        self.frequency.sort()
+        self.n_freq = self.frequency.size
+        self.components = self.df.comp.unique()
+
+        self.freq_index_dict = dict(
+            [(ff, ii) for ii, ff in enumerate(self.frequency)]
+        )
+
+        self.z, self.z_err = self._fill_z()
+        self.t, self.t_err = self._fill_t()
 
     def to_complex(self, zmag, zphase):
         """
@@ -211,12 +175,8 @@ class ZongeMTAvg:
 
         if isinstance(zmag, np.ndarray):
             assert len(zmag) == len(zphase)
-        if self.z_coordinate == "up":
-            zreal = zmag * np.cos((zphase / 1000) % np.pi)
-            zimag = zmag * np.sin((zphase / 1000) % np.pi)
-        else:
-            zreal = zmag * np.cos((zphase / 1000))
-            zimag = zmag * np.sin((zphase / 1000))
+        zreal = zmag * np.cos((zphase / 1000))
+        zimag = zmag * np.sin((zphase / 1000))
         return zreal, zimag
 
     def to_amp_phase(self, zreal, zimag):
@@ -234,215 +194,231 @@ class ZongeMTAvg:
 
         if isinstance(zreal, np.ndarray):
             assert len(zreal) == len(zimag)
-        if self.z_coordinate == "up":
-            zphase = (np.arctan2(zimag, zreal) % np.pi) * 1000
-        else:
-            zphase = np.arctan2(zimag, zreal) * 1000
-        zmag = np.sqrt(zreal ** 2 + zimag ** 2)
+        zphase = np.arctan2(zimag, zreal) * 1000
+        zmag = np.sqrt(zreal**2 + zimag**2)
 
         return zmag, zphase
 
-    def _match_freq(self, freq_list1, freq_list2):
-        """
-        fill the frequency dictionary where keys are freqeuency and
-        values are index of where that frequency should be in the array of z
-        and tipper
-        """
-
-        comb_freq_list = list(set(freq_list1).intersection(freq_list2)) + list(
-            set(freq_list1).symmetric_difference(freq_list2)
-        )
-        comb_freq_list.sort()
-
-        return dict([(freq, ff) for ff, freq in enumerate(comb_freq_list)])
-
     def _fill_z(self):
         """
-        create Z array with data
+        create Z array with data, need to take into account when the different
+        components have different frequencies, sometimes one might get skipped.
         """
-        flst = np.array(
-            [
-                len(np.nonzero(self.comp_dict[comp]["freq"])[0])
-                for comp in self.comp_lst_z
-            ]
-        )
 
-        nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_z[np.where(flst == nz)[0][0]]]["freq"]
-        freq = freq[np.nonzero(freq)]
+        z = np.zeros((self.n_freq, 2, 2), dtype=complex)
+        z_err = np.ones((self.n_freq, 2, 2), dtype=float)
 
-        if self.nfreq:
-            self.freq_dict_y = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(sorted(self.freq_dict_x.keys()), freq)
+        comp_index = self._get_comp_index()
 
-            new_nz = len(list(new_freq_dict.keys()))
-            self.freq_dict = new_freq_dict
-            # fill z according to index values
-            self.frequency = sorted(new_freq_dict.keys())
-            self.z = np.zeros((new_nz, 2, 2), dtype=complex)
-            self.z_err = np.ones((new_nz, 2, 2))
-            nzx, nzy, nzz = self.z.shape
-
-            # need to fill the new array with the old values, but they
-            # need to be stored in the correct position
-            clst = ["zxx", "zxy", "zyx", "zyy"]
-            for cc in self.comp_lst_z:
-                clst.remove(cc)
-            for ikey in clst:
-                for kk, zz in enumerate(self.Z.z):
-                    ii, jj = self.comp_index[ikey]
-                    if zz[ii, jj].real != 0.0:
-                        # index for new Z array
-                        ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-
-                        # index for old Z array
-                        try:
-                            mm = self.freq_dict_x[self.comp_dict[ikey]["freq"][kk]]
-
-                            self.z[ll] = self.z[mm]
-                            self.z_err[ll] = self.z_err[mm]
-                        except KeyError:
-                            pass
-            # fill z with values from comp_dict
-            for ikey in self.comp_lst_z:
-                ii, jj = self.comp_index[ikey]
-
-                zr, zi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz].copy(),
-                    self.comp_dict[ikey]["z.phz"][:nz].copy(),
-                )
-                for kk, zzr, zzi in zip(list(range(len(zr))), zr, zi):
-                    ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-                    if ikey.find("yx") > 0 and self.z_coordinate == "up":
-                        self.z[ll, ii, jj] = -1 * (zzr + zzi * 1j)
-                    else:
-                        self.z[ll, ii, jj] = zzr + zzi * 1j
-                    self.z_err[ll, ii, jj] = (
-                        self.comp_dict[ikey]["ares.%err"][kk] * 0.005
-                    )
-        # fill for the first time
-        else:
-            self.nfreq = nz
-            self.freq_dict_x = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # fill z with values
-            z = np.zeros((nz, 2, 2), dtype="complex")
-            z_err = np.ones((nz, 2, 2))
-
-            for ikey in self.comp_lst_z:
-                ii, jj = self.comp_index[ikey]
-
-                zr, zi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz].copy(),
-                    self.comp_dict[ikey]["z.phz"][:nz].copy(),
+        for row in self.df[
+            self.df.comp.isin(["zxx", "zxy", "zyx", "zyy"])
+        ].itertuples():
+            if "z" in row.comp:
+                ii, jj = comp_index[row.comp]
+                f_index = self.freq_index_dict[row.frequency]
+                z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
+                z_real_error, z_imag_error = self.to_complex(
+                    (
+                        np.sqrt(
+                            (
+                                (row.apparent_resistivity_err / 100)
+                                * row.apparent_resistivity
+                            )
+                            * 5
+                            * row.frequency
+                        )
+                    ),
+                    row.z_phase_err,
                 )
 
-                if ikey.find("yx") > 0 and self.z_coordinate == "up":
-                    z[:, ii, jj] = -1 * (zr + zi * 1j)
-                else:
-                    z[:, ii, jj] = zr + zi * 1j
-                z_err[:, ii, jj] = self.comp_dict[ikey]["ares.%err"][:nz] * 0.005
-            self.frequency = freq
-            self.z = z
-            self.z_err = z_err
-        self.z = np.nan_to_num(self.z)
-        self.z_err = np.nan_to_num(self.z_err)
+                z[f_index, ii, jj] = z_real + 1j * z_imag
+
+                z_err[f_index, ii, jj] = np.sqrt(
+                    z_real_error**2 + z_imag_error**2
+                )
+
+        return z, z_err
 
     def _fill_t(self):
         """
         fill tipper values
         """
 
-        if self.comp_flag["tzy"] == False and self.comp_flag["tzx"] == False:
+        if "tzx" not in self.df.comp.to_list():
             self.header.logger.debug("No Tipper found in %s", self.fn.name)
-            return
-        flst = np.array(
-            [
-                len(np.nonzero(self.comp_dict[comp]["freq"])[0])
-                for comp in self.comp_lst_tip
-            ]
-        )
-        nz = flst.max()
-        freq = self.comp_dict[self.comp_lst_tip[np.where(flst == nz)[0][0]]]["freq"]
-        freq = freq[np.nonzero(freq)]
-        if self.nfreq_tipper and self.Tipper.tipper is not None:
-            # get new frequency dictionary to match index values
-            new_freq_dict = self._match_freq(sorted(self.freq_dict.keys()), freq)
+            return None, None
 
-            new_nz = len(list(new_freq_dict.keys()))
-            # fill z according to index values
-            self.tipper = np.zeros((new_nz, 1, 2), dtype=complex)
-            self.tipper_err = np.ones((new_nz, 1, 2))
+        t = np.zeros((self.n_freq, 1, 2), dtype=complex)
+        t_err = np.ones((self.n_freq, 1, 2), dtype=float)
 
-            self.freq_dict = new_freq_dict
+        comp_index = self._get_comp_index()
 
-            # need to fill the new array with the old values, but they
-            # need to be stored in the correct position
-            for ikey in ["tzx", "tzy"]:
-                for kk, tt in enumerate(self.Tipper.tipper):
-                    ii, jj = self.comp_index[ikey]
-                    if tt[ii, jj].real != 0.0:
-                        # index for new tipper array
-                        ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
+        for row in self.df[self.df.comp.isin(["tzx", "tzy"])].itertuples():
+            if "t" in row.comp:
+                t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
+                ii, jj = comp_index[row.comp]
+                f_index = self.freq_index_dict[row.frequency]
 
-                        # index for old tipper array
-                        try:
-                            mm = self.freq_dict_x[self.comp_dict[ikey]["freq"][kk]]
-
-                            self.tipper[ll] = self.tipper[mm]
-                            self.tipper_err[ll] = self.tipper_err[mm]
-                        except KeyError:
-                            pass
-            # fill z with values from comp_dict
-            for ikey in self.comp_lst_tip:
-                ii, jj = self.comp_index[ikey]
-
-                tr, ti = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz],
-                    self.comp_dict[ikey]["z.phz"][:nz],
-                )
-                for kk, tzr, tzi in zip(list(range(len(tr))), tr, ti):
-                    ll = self.freq_dict[self.comp_dict[ikey]["freq"][kk]]
-
-                    if self.z_coordinate == "up":
-                        self.tipper[ll, ii, jj] = -1 * (tzr + tzi * 1j)
-                    else:
-                        self.tipper[ll, ii, jj] = tzr + tzi * 1j
-                    # error estimation
-                    self.tipper_err[ll, ii, jj] += (
-                        self.comp_dict[ikey]["ares.%err"][kk]
-                        * 0.05
-                        * np.sqrt(tzr ** 2 + tzi ** 2)
-                    )
-        else:
-            self.nfreq_tipper = nz
-            self.freq_dict_x = dict([(ff, nn) for nn, ff in enumerate(freq)])
-            # fill z with values
-            tipper = np.zeros((nz, 1, 2), dtype="complex")
-            tipper_err = np.ones((nz, 1, 2))
-
-            for ikey in self.comp_lst_tip:
-                ii, jj = self.comp_index[ikey]
-
-                tzr, tzi = self.to_complex(
-                    self.comp_dict[ikey]["z.mag"][:nz],
-                    self.comp_dict[ikey]["z.phz"][:nz],
-                )
-
-                if self.z_coordinate == "up":
-                    tipper[:, ii, jj] = -1 * (tzr + tzi * 1j)
+                if self.z_positive == "up":
+                    t[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
                 else:
-                    tipper[:, ii, jj] = tzr + tzi * 1j
-                tipper_err[:, ii, jj] = (
-                    self.comp_dict[ikey]["ares.%err"][:nz]
-                    * 0.05
-                    * np.sqrt(tzr ** 2 + tzi ** 2)
+                    t[f_index, ii, jj] = t_real + t_imag * 1j
+                # error estimation
+                t_real_error, t_imag_error = self.to_complex(
+                    (
+                        np.sqrt(
+                            (
+                                (row.apparent_resistivity_err / 100)
+                                * row.apparent_resistivity
+                            )
+                        )
+                    ),
+                    row.z_phase_err,
                 )
-            self.frequency = sorted(self.freq_dict_x.keys())
-            self.tipper = tipper
-            self.tipper_err = tipper_err
-        self.tipper = np.nan_to_num(self.tipper)
-        self.tipper_err = np.nan_to_num(self.tipper_err)
+                t_err[f_index, ii, jj] = np.sqrt(t_real**2 + t_imag**2)
+
+        return t, t_err
+
+    @property
+    def run_metadata(self):
+        rm = Run(id="001")
+        rm.data_logger.id = self.header.instrument_id
+        rm.data_logger.type = self.header.instrument_type
+        rm.data_logger.manufacturer = "Zonge International"
+        rm.data_logger.firmware = self.header.firmware
+        if self.header.start_time is not None:
+            rm.time_period.start = self.header.start_time
+
+        if "zxy" in self.components:
+            rm.add_channel(self.ex_metadata)
+            rm.add_channel(self.ey_metadata)
+            rm.add_channel(self.hx_metadata)
+            rm.add_channel(self.hy_metadata)
+
+        if "tzx" in self.components:
+            rm.add_channel(self.hz_metadata)
+
+        return rm
+
+    @property
+    def ex_metadata(self):
+        ch = Electric(component="ex")
+        if self.header._has_channel("zxy"):
+            ch.dipole_length = self.header._comp_dict["zxy"]["rx"].length
+            ch.measurement_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[0]
+            ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
+            ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
+            ch.channel_id = self.header._comp_dict["zxy"]["ch"].number[0]
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0]
+            ch.translated_azimuth = self.header.rx.h_p_r[0]
+            ch.channel_id = 4
+
+        return ch
+
+    @property
+    def ey_metadata(self):
+        ch = Electric(component="ey")
+        if self.header._has_channel("zyx"):
+            ch.dipole_length = self.header._comp_dict["zyx"]["rx"].length
+            ch.measurement_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[0]
+            ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
+            ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
+            ch.channel_id = self.header._comp_dict["zyx"]["ch"].number[0]
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.channel_id = 5
+
+        return ch
+
+    @property
+    def hx_metadata(self):
+        ch = Magnetic(component="hx")
+        if self.header._has_channel("zyx"):
+            ch.measurement_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["zyx"]["ch"].number[1]
+            ch.channel_id = 1
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0]
+            ch.translated_azimuth = self.header.rx.h_p_r[0]
+            ch.channel_id = 1
+
+        return ch
+
+    @property
+    def hy_metadata(self):
+        ch = Magnetic(component="hy")
+        if self.header._has_channel("zxy"):
+            ch.measurement_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["zxy"]["ch"].number[1]
+            ch.channel_id = 2
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+            ch.channel_id = 2
+
+        return ch
+
+    @property
+    def hz_metadata(self):
+        ch = Magnetic(component="hz")
+        if self.header._has_channel("tzx"):
+            ch.measurement_azimuth = self.header._comp_dict["tzx"][
+                "ch"
+            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["tzx"][
+                "ch"
+            ].azimuth[1]
+            ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
+            ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
+            ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]
+            ch.channel_id = 3
+            ch.time_period.start = self.header.start_time
+
+        else:
+            ch.dipole_length = self.header.rx.length
+            ch.measurement_azimuth = self.header.rx.h_p_r[-1]
+            ch.translated_azimuth = self.header.rx.h_p_r[-1]
+            ch.channel_id = 3
+
+        return ch
 
     @property
     def station_metadata(self):
@@ -451,56 +427,31 @@ class ZongeMTAvg:
         sm.id = self.header.station
         sm.location.latitude = self.header.latitude
         sm.location.longitude = self.header.longitude
+        sm.location.elevation = self.header.elevation
+        sm.location.datum = self.header.datum.upper()
 
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
-        sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
-        sm.transfer_function.software.last_updated = self.header.m_t_edit.version.split()[
-            -1
-        ]
+        sm.transfer_function.software.version = (
+            self.header.m_t_edit.version.split()[0]
+        )
+        sm.transfer_function.software.last_updated = (
+            self.header.m_t_edit.version.split()[-1]
+        )
 
         for key, value in self.header.m_t_edit.to_dict(single=True).items():
             if "version" in key:
                 continue
-            sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
-        sm.transfer_function.runs_processed = ["001"]
+            sm.transfer_function.processing_parameters.append(
+                f"mtedit.{key}={value}"
+            )
 
         sm.data_type = self.header.survey.type
-        sm.runs.append(Run(id="001"))
-        for comp in self.comp_lst_z + self.comp_lst_tip:
-            if "zx" in comp:
-                ch = Electric(component="ex")
-                ch.dipole_length = self.header.rx.length
-                ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 1
-                sm.runs[0].add_channel(ch)
-            elif "zy" in comp:
-                ch = Electric(component="ey")
-                ch.dipole_length = self.header.rx.length
-                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.channel_id = 2
-                sm.runs[0].add_channel(ch)
-            if comp[-1] == "x":
-                ch = Magnetic(component="hx")
-                ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 3
-                sm.runs[0].add_channel(ch)
-            elif comp[-1] == "y":
-                ch = Magnetic(component="hy")
-                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.channel_id = 4
-                sm.runs[0].add_channel(ch)
-            if comp[1] == "z":
-                ch = Magnetic(component="hz")
-                ch.measurement_tilt = self.header.rx.h_p_r[-1]
-                ch.translated_tilt = self.header.rx.h_p_r[-1]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 5
-                sm.runs[0].add_channel(ch)
+        sm.add_run(self.run_metadata)
+        sm.transfer_function.runs_processed = [self.run_metadata.id]
+        if self.header.start_time is not None:
+            sm.time_period.start = self.header.start_time
+
         return sm
 
     @station_metadata.setter
@@ -560,7 +511,7 @@ class ZongeMTAvg:
 # =============================================================================
 
 
-def read_avg(fn):
+def read_avg(fn, z_positive="down", **kwargs):
     """
     Read an .avg file output by MTEdit developed by Zonge International.
 
@@ -572,7 +523,8 @@ def read_avg(fn):
     """
     from mt_metadata.transfer_functions.core import TF
 
-    obj = ZongeMTAvg(fn=fn)
+    obj = ZongeMTAvg(fn=fn, z_positive=z_positive, **kwargs)
+    obj.read()
 
     tf_object = TF()
     tf_object.survey_metadata = obj.survey_metadata

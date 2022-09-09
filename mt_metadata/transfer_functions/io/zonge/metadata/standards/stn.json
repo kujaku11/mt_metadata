@@ -1,0 +1,13 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "name of the station",
+        "options": [],
+        "alias": [],
+        "example": "1",
+    		"default": null
+    }
+}

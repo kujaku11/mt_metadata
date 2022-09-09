@@ -18,7 +18,8 @@ from mt_metadata import TF_EDI_PHOENIX
 # Phoenix
 # =============================================================================
 class TestPhoenixEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_PHOENIX)
 
     def test_header(self):
@@ -91,6 +92,7 @@ class TestPhoenixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "CH1"),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 5374.0537),
                 ("x", -50.0),
@@ -102,12 +104,15 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
                 ("acqchan", "CH2"),
+                ("azm", 116.61629962451384),
                 ("chtype", "EY"),
                 ("id", 5375.0537),
                 ("x", 22.4),
@@ -119,7 +124,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -135,7 +142,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -151,7 +160,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -167,7 +178,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
+        )
 
     def test_measurement_rrhx(self):
         ch = OrderedDict(
@@ -222,13 +235,19 @@ class TestPhoenixEDI(unittest.TestCase):
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(-22.82372, self.edi_obj.Measurement.reflat, 5)
+            self.assertAlmostEqual(
+                -22.82372, self.edi_obj.Measurement.reflat, 5
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflon, 5)
+            self.assertAlmostEqual(
+                139.294694, self.edi_obj.Measurement.reflon, 5
+            )
 
         with self.subTest("reflong"):
-            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflong, 5)
+            self.assertAlmostEqual(
+                139.294694, self.edi_obj.Measurement.reflong, 5
+            )
 
         with self.subTest("refelev"):
             self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
@@ -251,9 +270,13 @@ class TestPhoenixEDI(unittest.TestCase):
 
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
 
-        for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5):
+        for ii, ch in enumerate(
+            ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5
+        ):
             with self.subTest(msg=ch):
-                self.assertEqual(str(float(d_list[ii])), getattr(self.edi_obj.Data, ch))
+                self.assertEqual(
+                    str(float(d_list[ii])), getattr(self.edi_obj.Data, ch)
+                )
 
 
 # =============================================================================

@@ -14,8 +14,10 @@ from mt_metadata import TF_ZMM
 
 
 class TestTranslateZmm(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf_obj = TF(TF_ZMM)
+        self.tf_obj.read_tf_file()
         self.zmm_obj = zmm.ZMM(TF_ZMM)
         self.maxDiff = None
 
@@ -97,7 +99,9 @@ class TestTranslateZmm(unittest.TestCase):
         with self.subTest("testing shape", i=1):
             self.assertEqual(self.zmm_obj.transfer_functions.shape, (38, 3, 2))
         with self.subTest("testing dtype", i=2):
-            self.assertEqual(self.zmm_obj.transfer_functions.dtype.type, np.complex64)
+            self.assertEqual(
+                self.zmm_obj.transfer_functions.dtype.type, np.complex64
+            )
 
     def test_sigma_s(self):
         with self.subTest("testing shape", i=1):

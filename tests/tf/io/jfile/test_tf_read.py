@@ -21,8 +21,10 @@ from mt_metadata.transfer_functions.core import TF
 
 
 class TestEMTFXML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf = TF(fn=TF_JFILE)
+        self.tf.read_tf_file()
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -49,7 +51,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.survey_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.survey_metadata.to_dict(single=True)
+        )
 
     def test_station_metadata(self):
         meta_dict = OrderedDict(
@@ -111,7 +115,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(meta_dict, self.tf.station_metadata.to_dict(single=True))
+        self.assertDictEqual(
+            meta_dict, self.tf.station_metadata.to_dict(single=True)
+        )
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
