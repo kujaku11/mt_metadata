@@ -16,6 +16,7 @@ Created on Tue Jul 11 10:53:23 2013
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.utils.mttime import MTime
 from .standards import SCHEMA_FN_PATHS
 from . import Survey, Tx, Rx, MTEdit, Unit, GPS, GDP, CH, STN, Line, MTFT24
 from mt_metadata.utils.validators import validate_attribute
@@ -123,6 +124,12 @@ class Header(Base):
 
         return data_lines
 
+    def _has_channel(self, component):
+        if self._comp_dict["zxx"]["ch"].cmp is None:
+            return False
+
+        return True
+
     @property
     def latitude(self):
         return self.g_p_s.lat
@@ -143,6 +150,7 @@ class Header(Base):
     def elevation(self):
         if self.center_location is not None:
             return self.center_location[-1]
+        return 0.0
 
     @property
     def easting(self):
@@ -156,16 +164,12 @@ class Header(Base):
 
     @property
     def center_location(self):
-        if self._comp_dict != {}:
-            try:
-                location_str = self._comp_dict["zxx"]["rx"].center
-                return [
-                    float(ss.strip().split()[0])
-                    for ss in location_str.split(":")
-                ]
-
-            except KeyError:
-                return None
+        if self._has_channel("zxx"):
+            location_str = self._comp_dict["zxx"]["rx"].center
+            return [
+                float(ss.strip().split()[0]) for ss in location_str.split(":")
+            ]
+        return None
 
     @property
     def datum(self):
@@ -182,6 +186,27 @@ class Header(Base):
     @station.setter
     def station(self, value):
         self.rx.gdp_stn = value
+
+    @property
+    def instrument_id(self):
+        if self._has_channel("zxx"):
+            return self._comp_dict["zxx"]["ch"].gdp_box[0]
+
+    @property
+    def instrument_type(self):
+        return self.g_d_p.type
+
+    @property
+    def firmware(self):
+        try:
+            return self.g_d_p.prog_ver.split(":")[0]
+        except (IndexError, AttributeError):
+            return None
+
+    @property
+    def start_time(self):
+        if self.g_d_p.time != "1980-01-01T00:00:00+00:00":
+            return MTime(f"{self.g_d_p.date}T{self.g_d_p.time}")
 
     def write_header(self):
         """

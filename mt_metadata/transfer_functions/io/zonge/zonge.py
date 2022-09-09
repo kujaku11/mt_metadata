@@ -124,9 +124,9 @@ class ZongeMTAvg:
                 )
                 data_list.append(entry)
 
-        df = pd.DataFrame(data_list)
+        self.df = pd.DataFrame(data_list)
 
-        self.frequency = df.frequency.unique()
+        self.frequency = self.df.frequency.unique()
         self.frequency.sort()
         self.n_freq = self.frequency.size
 
@@ -134,8 +134,8 @@ class ZongeMTAvg:
             [(ff, ii) for ii, ff in enumerate(self.frequency)]
         )
 
-        self.z, self.z_err = self._fill_z(df)
-        self.t, self.t_err = self._fill_t(df)
+        self.z, self.z_err = self._fill_z()
+        self.t, self.t_err = self._fill_t()
 
     def to_complex(self, zmag, zphase):
         """
@@ -177,7 +177,7 @@ class ZongeMTAvg:
 
         return zmag, zphase
 
-    def _fill_z(self, df):
+    def _fill_z(self):
         """
         create Z array with data, need to take into account when the different
         components have different frequencies, sometimes one might get skipped.
@@ -186,7 +186,7 @@ class ZongeMTAvg:
         z = np.zeros((self.n_freq, 2, 2), dtype=complex)
         z_err = np.zeros((self.n_freq, 2, 2), dtype=float)
 
-        for row in df.itertuples():
+        for row in self.df.itertuples():
             if "z" in row.comp:
                 z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = self.comp_index[row.comp]
@@ -197,19 +197,19 @@ class ZongeMTAvg:
 
         return z, z_err
 
-    def _fill_t(self, df):
+    def _fill_t(self):
         """
         fill tipper values
         """
 
-        if "txy" not in df.comp.to_list():
+        if "txy" not in self.df.comp.to_list():
             self.header.logger.debug("No Tipper found in %s", self.fn.name)
             return None, None
 
         tipper = np.zeros((self.n_freq, 1, 2), dtype=complex)
         tipper_err = np.ones((self.n_freq, 1, 2), dtype=float)
 
-        for row in df.itertuples():
+        for row in self.df.itertuples():
             if "t" in row.comp:
                 t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = self.comp_index[row.comp]
@@ -227,6 +227,18 @@ class ZongeMTAvg:
                 )
 
         return tipper, tipper_err
+
+    @property
+    def run_metadata(self):
+        rm = Run(id="001")
+        rm.data_logger.id = self.header.instrument_id
+        rm.data_logger.type = self.header.instrument_type
+        rm.data_logger.manufacturer = "Zonge International"
+        rm.data_logger.firmware = self.header.firmware
+        if self.header.start_time is not None:
+            rm.time_period.start = self.header.start_time
+
+        return rm
 
     @property
     def station_metadata(self):
@@ -257,40 +269,45 @@ class ZongeMTAvg:
 
         sm.data_type = self.header.survey.type
         sm.runs.append(Run(id="001"))
-        for comp in self.comp_lst_z + self.comp_lst_tip:
-            if "zx" in comp:
-                ch = Electric(component="ex")
-                ch.dipole_length = self.header.rx.length
-                ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 1
-                sm.runs[0].add_channel(ch)
-            elif "zy" in comp:
-                ch = Electric(component="ey")
-                ch.dipole_length = self.header.rx.length
-                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.channel_id = 2
-                sm.runs[0].add_channel(ch)
-            if comp[-1] == "x":
-                ch = Magnetic(component="hx")
-                ch.measurement_azimuth = self.header.rx.h_p_r[0]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 3
-                sm.runs[0].add_channel(ch)
-            elif comp[-1] == "y":
-                ch = Magnetic(component="hy")
-                ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
-                ch.channel_id = 4
-                sm.runs[0].add_channel(ch)
-            if comp[1] == "z":
-                ch = Magnetic(component="hz")
-                ch.measurement_tilt = self.header.rx.h_p_r[-1]
-                ch.translated_tilt = self.header.rx.h_p_r[-1]
-                ch.translated_azimuth = self.header.rx.h_p_r[0]
-                ch.channel_id = 5
-                sm.runs[0].add_channel(ch)
+        for comp in self.df.comp.unique():
+            if comp in self.header._comp_dict.keys():
+                if self.header._comp_dict[comp]["ch"] == {}:
+                    if "zx" in comp:
+                        ch = Electric(component="ex")
+                        ch.dipole_length = self.header.rx.length
+                        ch.measurement_azimuth = self.header.rx.h_p_r[0]
+                        ch.translated_azimuth = self.header.rx.h_p_r[0]
+                        ch.channel_id = 1
+                        sm.runs[0].add_channel(ch)
+                    elif "zy" in comp:
+                        ch = Electric(component="ey")
+                        ch.dipole_length = self.header.rx.length
+                        ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                        ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                        ch.channel_id = 2
+                        sm.runs[0].add_channel(ch)
+                    if comp[-1] == "x":
+                        ch = Magnetic(component="hx")
+                        ch.measurement_azimuth = self.header.rx.h_p_r[0]
+                        ch.translated_azimuth = self.header.rx.h_p_r[0]
+                        ch.channel_id = 3
+                        sm.runs[0].add_channel(ch)
+                    elif comp[-1] == "y":
+                        ch = Magnetic(component="hy")
+                        ch.measurement_azimuth = self.header.rx.h_p_r[0] + 90
+                        ch.translated_azimuth = self.header.rx.h_p_r[0] + 90
+                        ch.channel_id = 4
+                        sm.runs[0].add_channel(ch)
+                    if comp[1] == "z":
+                        ch = Magnetic(component="hz")
+                        ch.measurement_tilt = self.header.rx.h_p_r[-1]
+                        ch.translated_tilt = self.header.rx.h_p_r[-1]
+                        ch.translated_azimuth = self.header.rx.h_p_r[0]
+                        ch.channel_id = 5
+                        sm.runs[0].add_channel(ch)
+                else:
+                    pass
+
         return sm
 
     @station_metadata.setter
