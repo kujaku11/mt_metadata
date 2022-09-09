@@ -67,7 +67,13 @@ class TestEMeasurement(unittest.TestCase):
 
 class TestHMeasurement(unittest.TestCase):
     def setUp(self):
-        self.h_dict = {"id": 12.001, "chtype": "HY", "x": 0.0, "y": 0.0, "azm": 90}
+        self.h_dict = {
+            "id": 12.001,
+            "chtype": "HY",
+            "x": 0.0,
+            "y": 0.0,
+            "azm": 90,
+        }
 
         self.hy = HMeasurement(**self.h_dict)
 

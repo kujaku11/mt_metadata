@@ -19,7 +19,8 @@ from mt_metadata import TF_EDI_METRONIX
 # Metronix
 # =============================================================================
 class TestMetronixEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_METRONIX)
 
     def test_header(self):
@@ -47,10 +48,14 @@ class TestMetronixEDI(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
         with self.subTest("acquire date"):
-            self.assertEqual(self.edi_obj.Header._acqdate, MTime("08/17/14 04:58"))
+            self.assertEqual(
+                self.edi_obj.Header._acqdate, MTime("08/17/14 04:58")
+            )
 
         with self.subTest("end date"):
-            self.assertEqual(self.edi_obj.Header._enddate, MTime("08/17/14 20:03"))
+            self.assertEqual(
+                self.edi_obj.Header._enddate, MTime("08/17/14 20:03")
+            )
 
     def test_info(self):
         info_list = []
@@ -72,7 +77,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
@@ -89,7 +96,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -105,7 +114,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -121,7 +132,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -137,7 +150,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
+        )
 
     def test_measurement(self):
         m_list = [
@@ -156,13 +171,19 @@ class TestMetronixEDI(unittest.TestCase):
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(22.6913783, self.edi_obj.Measurement.reflat, 5)
+            self.assertAlmostEqual(
+                22.6913783, self.edi_obj.Measurement.reflat, 5
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflon, 5)
+            self.assertAlmostEqual(
+                139.70504, self.edi_obj.Measurement.reflon, 5
+            )
 
         with self.subTest("reflong"):
-            self.assertAlmostEqual(139.70504, self.edi_obj.Measurement.reflong, 5)
+            self.assertAlmostEqual(
+                139.70504, self.edi_obj.Measurement.reflong, 5
+            )
 
         with self.subTest("refelev"):
             self.assertAlmostEqual(181.0, self.edi_obj.Measurement.refelev, 2)

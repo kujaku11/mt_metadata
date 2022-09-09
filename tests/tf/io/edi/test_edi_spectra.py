@@ -21,7 +21,8 @@ from mt_metadata.transfer_functions.core import TF
 # CGG
 # =============================================================================
 class TestSpectraEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_spectra = EDI(fn=TF_EDI_SPECTRA)
         self.edi_z = EDI(fn=TF_EDI_SPECTRA_OUT)
         self.maxDiff = None
@@ -45,11 +46,14 @@ class TestSpectraEDI(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
         with self.subTest("acquire date"):
-            self.assertEqual(self.edi_spectra.Header._acqdate, MTime("2004-07-03"))
+            self.assertEqual(
+                self.edi_spectra.Header._acqdate, MTime("2004-07-03")
+            )
 
         with self.subTest("units"):
             self.assertNotEqual(
-                self.edi_spectra.Header.units, "millivolts_per_kilometer_per_nanotesla"
+                self.edi_spectra.Header.units,
+                "millivolts_per_kilometer_per_nanotesla",
             )
 
     def test_info(self):
@@ -196,20 +200,29 @@ class TestSpectraEDI(unittest.TestCase):
         ]
 
         self.assertListEqual(
-            m_list, self.edi_spectra.Measurement.measurement_list[0 : len(m_list)]
+            m_list,
+            self.edi_spectra.Measurement.measurement_list[0 : len(m_list)],
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(35.55, self.edi_spectra.Measurement.reflat, 2)
+            self.assertAlmostEqual(
+                35.55, self.edi_spectra.Measurement.reflat, 2
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(-106.2833, self.edi_spectra.Measurement.reflon, 4)
+            self.assertAlmostEqual(
+                -106.2833, self.edi_spectra.Measurement.reflon, 4
+            )
 
         with self.subTest("reflong"):
-            self.assertAlmostEqual(-106.2833, self.edi_spectra.Measurement.reflong, 4)
+            self.assertAlmostEqual(
+                -106.2833, self.edi_spectra.Measurement.reflong, 4
+            )
 
         with self.subTest("refelev"):
-            self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
+            self.assertAlmostEqual(
+                0.0, self.edi_spectra.Measurement.refelev, 2
+            )
 
     def test_data_section(self):
         d_list = [
@@ -227,19 +240,25 @@ class TestSpectraEDI(unittest.TestCase):
         self.assertTrue(np.isclose(self.edi_spectra.z, self.edi_z.z).all())
 
     def test_z_err(self):
-        self.assertTrue(np.isclose(self.edi_spectra.z_err, self.edi_z.z_err).all())
+        self.assertTrue(
+            np.isclose(self.edi_spectra.z_err, self.edi_z.z_err).all()
+        )
 
     def test_t(self):
         self.assertTrue(np.isclose(self.edi_spectra.t, self.edi_z.t).all())
 
     def test_t_err(self):
-        self.assertTrue(np.isclose(self.edi_spectra.t_err, self.edi_z.t_err).all())
+        self.assertTrue(
+            np.isclose(self.edi_spectra.t_err, self.edi_z.t_err).all()
+        )
 
 
 class TestToTF(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi = EDI(fn=TF_EDI_SPECTRA)
         self.tf = TF(fn=TF_EDI_SPECTRA)
+        self.tf.read_tf_file()
 
     def test_station_metadata(self):
         edi_st = self.edi.station_metadata.to_dict(single=True)

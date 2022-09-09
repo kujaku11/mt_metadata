@@ -19,7 +19,8 @@ from mt_metadata import TF_EDI_CGG
 # CGG
 # =============================================================================
 class TestCGGEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_CGG)
         self.maxDiff = None
 
@@ -47,7 +48,8 @@ class TestCGGEDI(unittest.TestCase):
 
         with self.subTest("units"):
             self.assertNotEqual(
-                self.edi_obj.Header.units, "millivolts_per_kilometer_per_nanotesla"
+                self.edi_obj.Header.units,
+                "millivolts_per_kilometer_per_nanotesla",
             )
 
     def test_info(self):
@@ -74,7 +76,9 @@ class TestCGGEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
@@ -91,7 +95,9 @@ class TestCGGEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -107,7 +113,9 @@ class TestCGGEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -123,7 +131,9 @@ class TestCGGEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -139,7 +149,9 @@ class TestCGGEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
+        )
 
     def test_measurement_rrhx(self):
         ch = OrderedDict(
@@ -191,13 +203,19 @@ class TestCGGEDI(unittest.TestCase):
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(-30.930285, self.edi_obj.Measurement.reflat, 5)
+            self.assertAlmostEqual(
+                -30.930285, self.edi_obj.Measurement.reflat, 5
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflon, 5)
+            self.assertAlmostEqual(
+                127.22923, self.edi_obj.Measurement.reflon, 5
+            )
 
         with self.subTest("reflong"):
-            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflong, 5)
+            self.assertAlmostEqual(
+                127.22923, self.edi_obj.Measurement.reflong, 5
+            )
 
         with self.subTest("refelev"):
             self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)

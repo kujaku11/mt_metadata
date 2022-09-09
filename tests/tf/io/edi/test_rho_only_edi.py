@@ -19,7 +19,8 @@ from mt_metadata import TF_EDI_RHO_ONLY
 # Metronix
 # =============================================================================
 class TestMetronixEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_RHO_ONLY)
 
     def test_header(self):
@@ -47,7 +48,11 @@ class TestMetronixEDI(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
     def test_info(self):
-        info_list = ["SURVEY ID=Spencer Gulf", "EASTING=683849", "NORTHING=6.16438E+06"]
+        info_list = [
+            "SURVEY ID=Spencer Gulf",
+            "EASTING=683849",
+            "NORTHING=6.16438E+06",
+        ]
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
 
@@ -66,7 +71,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
@@ -83,7 +90,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -99,7 +108,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -115,7 +126,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement(self):
         m_list = [
@@ -199,7 +212,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        rxy = (0.2 / self.edi_obj.frequency) * np.abs(self.edi_obj.z[:, 0, 1]) ** 2
+        rxy = (0.2 / self.edi_obj.frequency) * np.abs(
+            self.edi_obj.z[:, 0, 1]
+        ) ** 2
         self.assertTrue(np.isclose(rho_xy, rxy).all())
 
     def test_phsxy(self):
@@ -237,7 +252,9 @@ class TestMetronixEDI(unittest.TestCase):
         )
 
         pxy = np.rad2deg(
-            np.arctan2(self.edi_obj.z[:, 0, 1].imag, self.edi_obj.z[:, 0, 1].real)
+            np.arctan2(
+                self.edi_obj.z[:, 0, 1].imag, self.edi_obj.z[:, 0, 1].real
+            )
         )
 
         self.assertTrue(np.isclose(phase_xy, pxy).all())
@@ -276,7 +293,9 @@ class TestMetronixEDI(unittest.TestCase):
             ]
         )
 
-        ryx = (0.2 / self.edi_obj.frequency) * np.abs(self.edi_obj.z[:, 1, 0]) ** 2
+        ryx = (0.2 / self.edi_obj.frequency) * np.abs(
+            self.edi_obj.z[:, 1, 0]
+        ) ** 2
         self.assertTrue(np.isclose(rho_yx, ryx).all())
 
     def test_phsyx(self):
@@ -314,7 +333,9 @@ class TestMetronixEDI(unittest.TestCase):
         )
 
         pyx = np.rad2deg(
-            np.arctan2(self.edi_obj.z[:, 1, 0].imag, self.edi_obj.z[:, 1, 0].real)
+            np.arctan2(
+                self.edi_obj.z[:, 1, 0].imag, self.edi_obj.z[:, 1, 0].real
+            )
         )
 
         self.assertTrue(np.isclose(phase_yx % -180, pyx % -180).all())
