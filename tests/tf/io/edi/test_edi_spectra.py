@@ -65,6 +65,7 @@ class TestSpectraEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 106.97549946792975),
                 ("chtype", "EX"),
                 ("id", 14.001),
                 ("x", 4872.0),
@@ -84,6 +85,7 @@ class TestSpectraEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", -163.19130837379313),
                 ("chtype", "EY"),
                 ("id", 15.001),
                 ("x", 4906.0),
