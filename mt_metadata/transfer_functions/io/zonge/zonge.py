@@ -289,13 +289,13 @@ class ZongeMTAvg:
         if self.header.start_time is not None:
             rm.time_period.start = self.header.start_time
 
-        if "zxy" in self.df.comp.unique():
+        if "zxy" in self.components:
             rm.add_channel(self.ex_metadata)
             rm.add_channel(self.ey_metadata)
             rm.add_channel(self.hx_metadata)
             rm.add_channel(self.hy_metadata)
 
-        if "tzx" in self.df.comp.unique():
+        if "tzx" in self.components:
             rm.add_channel(self.hz_metadata)
 
         return rm
@@ -398,7 +398,7 @@ class ZongeMTAvg:
 
     @property
     def hz_metadata(self):
-        ch = Magnetic(component="hy")
+        ch = Magnetic(component="hz")
         if self.header._has_channel("tzx"):
             ch.measurement_azimuth = self.header._comp_dict["tzx"][
                 "ch"

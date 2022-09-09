@@ -479,22 +479,22 @@ class TestAVG(unittest.TestCase):
         self.assertTrue(np.isclose(t1, self.avg.t[-1]).all())
 
     def test_z_err_first_element(self):
-        z1 = np.array([[4.985, 4.985], [4.985, 4.985]])
+        z1 = np.array([[13.50078836, 0.69379092], [67.73395417, 1.66174935]])
 
         self.assertTrue(np.isclose(z1, self.avg.z_err[0]).all())
 
     def test_z_err_final_element(self):
-        zf = np.array([[0.2715, 0.007], [0.075, 0.087]])
+        zf = np.array([[22.00814395, 9.4763284], [362.35893807, 22.16312252]])
 
         self.assertTrue(np.isclose(zf, self.avg.z_err[-1]).all())
 
     def test_t_err_first_element(self):
-        t1 = np.array([[3926.1985, 249.6652]])
+        t1 = np.array([[1062.3, 29.603]])
 
         self.assertTrue(np.isclose(t1, self.avg.t_err[0]).all())
 
     def test_t_err_last_element(self):
-        t1 = np.array([[2.6941, 1.1085536]])
+        t1 = np.array([[11.294, 0.67846]])
 
         self.assertTrue(np.isclose(t1, self.avg.t_err[-1]).all())
 

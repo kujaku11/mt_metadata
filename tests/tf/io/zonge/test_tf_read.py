@@ -21,7 +21,8 @@ from mt_metadata.transfer_functions.core import TF
 
 
 class TestEMTFXML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf = TF(fn=TF_AVG)
         self.tf.read_tf_file()
         self.maxDiff = None
@@ -175,14 +176,18 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.impedance_error[0],
-                    np.array([[0.492, 0.3165], [0.1025, 0.278]]),
+                    np.array(
+                        [[1.38180502, 2.05773344], [0.21920379, 0.16689004]]
+                    ),
                 ).all()
             )
         with self.subTest(msg="last element"):
             self.assertTrue(
                 np.isclose(
                     self.tf.impedance_error[-1],
-                    np.array([[0.2455, 0.005], [0.0195, 0.0665]]),
+                    np.array(
+                        [[16.14211287, 31.70665545], [62.57734798, 5.69963839]]
+                    ),
                 ).all()
             )
 
