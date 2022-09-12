@@ -168,6 +168,8 @@ class Header(Base):
     def center_location(self):
         if self._has_channel("zxx"):
             location_str = self._comp_dict["zxx"]["rx"].center
+            if location_str is None:
+                return None
             return [
                 float(ss.strip().split()[0]) for ss in location_str.split(":")
             ]
