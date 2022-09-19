@@ -75,7 +75,7 @@ def validate_attribute(name):
     """
     validate the name to conform to the standards
     name must be:
-        
+
         * all lower case {a-z; 1-9}
         * must start with a letter
         * categories are separated by '.'
@@ -175,7 +175,10 @@ def validate_type(value):
             return value
 
         else:
-            msg = "'type' must be type [ int | float " + f"| str | bool ].  Not {value}"
+            msg = (
+                "'type' must be type [ int | float "
+                + f"| str | bool ].  Not {value}"
+            )
             raise MTValidatorError(msg)
     else:
         msg = (
@@ -330,7 +333,7 @@ def validate_example(example):
 def validate_default(value_dict):
     """
     validate default value
-    
+
     :param default: DESCRIPTION
     :type default: TYPE
     :return: DESCRIPTION
@@ -342,7 +345,9 @@ def validate_default(value_dict):
         if value_dict["default"] in [None]:
             if "list" in value_dict["style"]:
                 value = []
-            elif "date" in value_dict["style"] or "time" in value_dict["style"]:
+            elif (
+                "date" in value_dict["style"] or "time" in value_dict["style"]
+            ):
                 value = "1980-01-01T00:00:00+00:00"
             elif "controlled" in value_dict["style"]:
                 if "other" in value_dict["options"]:
@@ -405,7 +410,12 @@ def validate_value_type(value, v_type, style=None):
 
     # if not a python type but a string organize into a dictionary
     if not isinstance(v_type, type) and isinstance(v_type, str):
-        type_dict = {"string": str, "integer": int, "float": float, "boolean": bool}
+        type_dict = {
+            "string": str,
+            "integer": int,
+            "float": float,
+            "boolean": bool,
+        }
         v_type = type_dict[validate_type(v_type)]
     else:
         msg = "v_type must be a string or type not {0}".format(v_type)
@@ -449,7 +459,9 @@ def validate_value_type(value, v_type, style=None):
                 return value
 
         # if a number convert to appropriate type
-        elif isinstance(value, (int, np.int_)):
+        elif isinstance(
+            value, (int, np.int_, np.int64, np.int32, np.int16, np.int8)
+        ):
             if v_type is float:
                 return float(value)
             elif v_type is str:
@@ -457,7 +469,9 @@ def validate_value_type(value, v_type, style=None):
             return int(value)
 
         # if a number convert to appropriate type
-        elif isinstance(value, (float, np.float_)):
+        elif isinstance(
+            value, (float, np.float_, np.float16, np.float32, np.float64)
+        ):
             if v_type is int:
                 return int(value)
             elif v_type is str:
@@ -469,7 +483,9 @@ def validate_value_type(value, v_type, style=None):
             if v_type is str:
                 if isinstance(value, np.ndarray):
                     value = value.astype(np.unicode_)
-                value = [f"{v}".replace("'", "").replace('"', "") for v in value]
+                value = [
+                    f"{v}".replace("'", "").replace('"', "") for v in value
+                ]
             elif v_type is int:
                 value = [int(float(v)) for v in value]
             elif v_type is float:
@@ -518,9 +534,9 @@ def validate_value_dict(value_dict):
         if key == "default":
             continue
         try:
-            value_dict[key] = getattr(sys.modules[__name__], f"validate_{key}")(
-                value_dict[key]
-            )
+            value_dict[key] = getattr(
+                sys.modules[__name__], f"validate_{key}"
+            )(value_dict[key])
         except KeyError:
             raise KeyError("Could not find {key} for validator {__name__}")
 

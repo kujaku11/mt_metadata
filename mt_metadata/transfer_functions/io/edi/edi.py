@@ -1256,6 +1256,8 @@ class EDI(object):
             for key, value in self.Info.info_dict.items():
                 if key is None:
                     continue
+                elif ".type" in key:
+                    continue
                 if f".{comp}." in key:
                     key = key.split(f".{comp}.", 1)[-1]
                     electric.set_attr_from_name(key, value)
