@@ -48,11 +48,13 @@ class TestMetronixEDI(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
     def test_info(self):
-        info_list = [
-            "SURVEY ID=Spencer Gulf",
-            "EASTING=683849",
-            "NORTHING=6.16438E+06",
-        ]
+        info_list = sorted(
+            [
+                "SURVEY ID=Spencer Gulf",
+                "EASTING=683849",
+                "NORTHING=6.16438E+06",
+            ]
+        )
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
 
