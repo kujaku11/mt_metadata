@@ -12,7 +12,7 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "concurrent-log-handler",
-    "numpy<=1.21",
+    "numpy",
     "pandas",
     "pyyaml",
     "obspy",
