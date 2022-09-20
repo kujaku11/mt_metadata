@@ -22,6 +22,7 @@ class TestMetronixEDI(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_METRONIX)
+        self.maxDiff = None
 
     def test_header(self):
         head = {
