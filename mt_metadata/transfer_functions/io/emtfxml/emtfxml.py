@@ -554,7 +554,13 @@ class EMTFXML(emtf_xml.EMTF):
             f.sampling_rate = run["sampling_rate"]
             f.start = run["start"]
             f.end = run["end"]
-            f.comments.from_dict({"comments": run["comments"]})
+            try:
+                if isinstance(run["comments"], list):
+                    f.comments.from_dict({"comments": run["comments"][0]})
+                else:
+                    f.comments.from_dict({"comments": run["comments"]})
+            except KeyError:
+                self.logger.debug("run has no comments")
             f.errors = run["errors"]
 
             if isinstance(run["magnetometer"], list):

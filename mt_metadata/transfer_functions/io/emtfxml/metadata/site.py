@@ -15,10 +15,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location, Orientation
-from . import (
-    DataQualityNotes,
-    DataQualityWarnings,
-)
+from . import DataQualityNotes, DataQualityWarnings, Comment
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
@@ -27,6 +24,7 @@ attr_dict.add_dict(Location()._attr_dict, "location")
 attr_dict.add_dict(Orientation()._attr_dict, "orientation")
 attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
 attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
+attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
 # =============================================================================
 class Site(Base):
     __doc__ = write_lines(attr_dict)
@@ -40,6 +38,7 @@ class Site(Base):
         self._run_list = []
         self._start_dt = MTime()
         self._end_dt = MTime()
+        self.comments = Comment()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
