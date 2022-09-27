@@ -218,30 +218,29 @@ class ZongeMTAvg:
 
         comp_index = self._get_comp_index()
 
-        for row in self.df[self.df.comp.str.contains("z")].itertuples():
-            if "z" in row.comp:
-                ii, jj = comp_index[row.comp]
-                f_index = self.freq_index_dict[row.frequency]
-                z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
-                z_real_error, z_imag_error = self.to_complex(
-                    (
-                        np.sqrt(
-                            (
-                                (row.apparent_resistivity_err / 100)
-                                * row.apparent_resistivity
-                            )
-                            * 5
-                            * row.frequency
+        for row in self.df[self.df.comp.str.startswith("z")].itertuples():
+            ii, jj = comp_index[row.comp]
+            f_index = self.freq_index_dict[row.frequency]
+            z_real, z_imag = self.to_complex(row.z_magnitude, row.z_phase)
+            z_real_error, z_imag_error = self.to_complex(
+                (
+                    np.sqrt(
+                        (
+                            (row.apparent_resistivity_err / 100)
+                            * row.apparent_resistivity
                         )
-                    ),
-                    row.z_phase_err,
-                )
+                        * 5
+                        * row.frequency
+                    )
+                ),
+                row.z_phase_err,
+            )
 
-                z[f_index, ii, jj] = z_real + 1j * z_imag
+            z[f_index, ii, jj] = z_real + 1j * z_imag
 
-                z_err[f_index, ii, jj] = np.sqrt(
-                    z_real_error**2 + z_imag_error**2
-                )
+            z_err[f_index, ii, jj] = np.sqrt(
+                z_real_error**2 + z_imag_error**2
+            )
 
         return z, z_err
 
@@ -259,29 +258,28 @@ class ZongeMTAvg:
 
         comp_index = self._get_comp_index()
 
-        for row in self.df[self.df.comp.str.contains("t")].itertuples():
-            if "t" in row.comp:
-                t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
-                ii, jj = comp_index[row.comp]
-                f_index = self.freq_index_dict[row.frequency]
+        for row in self.df[self.df.comp.str.startswith("t")].itertuples():
+            t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
+            ii, jj = comp_index[row.comp]
+            f_index = self.freq_index_dict[row.frequency]
 
-                if self.z_positive == "up":
-                    t[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
-                else:
-                    t[f_index, ii, jj] = t_real + t_imag * 1j
-                # error estimation
-                t_real_error, t_imag_error = self.to_complex(
-                    (
-                        np.sqrt(
-                            (
-                                (row.apparent_resistivity_err / 100)
-                                * row.apparent_resistivity
-                            )
+            if self.z_positive == "up":
+                t[f_index, ii, jj] = -1 * (t_real + t_imag * 1j)
+            else:
+                t[f_index, ii, jj] = t_real + t_imag * 1j
+            # error estimation
+            t_real_error, t_imag_error = self.to_complex(
+                (
+                    np.sqrt(
+                        (
+                            (row.apparent_resistivity_err / 100)
+                            * row.apparent_resistivity
                         )
-                    ),
-                    row.z_phase_err,
-                )
-                t_err[f_index, ii, jj] = np.sqrt(t_real**2 + t_imag**2)
+                    )
+                ),
+                row.z_phase_err,
+            )
+            t_err[f_index, ii, jj] = np.sqrt(t_real**2 + t_imag**2)
 
         return t, t_err
 
