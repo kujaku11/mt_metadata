@@ -148,3 +148,6 @@ TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
 TF_AVG_TIPPER = DATA_DIR.joinpath(
     "data/transfer_functions/example_zonge_with_tipper.avg"
 )
+TF_AVG_NEWER = DATA_DIR.joinpath(
+    "data/transfer_functions/example_zonge_newer.avg"
+)

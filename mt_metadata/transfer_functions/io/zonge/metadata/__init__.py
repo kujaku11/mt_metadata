@@ -11,6 +11,7 @@ from .mtft24 import MTFT24
 from .unit import Unit
 from .gps import GPS
 from .gdp import GDP
+from .job import Job
 from .ch import CH
 from .stn import STN
 from .line import Line
@@ -28,6 +29,7 @@ __all__ = [
     "Unit",
     "GPS",
     "GDP",
+    "Job",
     "CH",
     "STN",
     "Line",

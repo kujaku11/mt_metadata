@@ -493,16 +493,16 @@ Header
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **units**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | In the EDI standards this is the elevation    | millivolts_per_|
-       |                                              | units, in newer versions this should be units | kilometer_per_n|
-       | **Units**: None                              | of the transfer function.                     | anotesla       |
+       | **Required**: :red:`True`                    | In the EDI standards this is the elevation    | millivolts_per |
+       |                                              | units, in newer versions this should be units | _kilometer_per |
+       | **Units**: None                              | of the transfer function.                     | _nanotesla     |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: millivolts_per_kilometer_per_nanotesla|                                               |                |
-       |                                              |                                               |                |
+       | **Default**: millivolts_per_kilometer_       |                                               |                |
+       |              per_nanotesla                   |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
