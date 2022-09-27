@@ -24,7 +24,7 @@ class TestEMTFXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG_NEWER)
-        self.tf.read_tf_file()
+        self.tf.read_tf_file(z_positive="up")
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -139,12 +139,12 @@ class TestEMTFXML(unittest.TestCase):
                     np.array(
                         [
                             [
-                                0.05249684 + 0.06373682j,
-                                -0.15458447 - 0.13410915j,
+                                -0.0477167 - 0.04384979j,
+                                0.06316246 + 0.10325301j,
                             ],
                             [
-                                0.06316246 + 0.10325301j,
-                                -0.0477167 - 0.04384979j,
+                                -0.15458447 - 0.13410915j,
+                                0.05249684 + 0.06373682j,
                             ],
                         ]
                     ),
@@ -157,12 +157,12 @@ class TestEMTFXML(unittest.TestCase):
                     np.array(
                         [
                             [
-                                -30.66729089 - 24.60693054j,
-                                -56.74596843 - 551.65911573j,
+                                -134.88329222 + 96.31326534j,
+                                185.76082467 + 426.12021604j,
                             ],
                             [
-                                185.76082467 + 426.12021604j,
-                                -134.88329222 + 96.31326534j,
+                                -56.74596843 - 551.65911573j,
+                                -30.66729089 - 24.60693054j,
                             ],
                         ]
                     ),
@@ -177,7 +177,7 @@ class TestEMTFXML(unittest.TestCase):
                 np.isclose(
                     self.tf.impedance_error[0],
                     np.array(
-                        [[0.05116877, 0.09707527], [0.07098981, 0.0660245]]
+                        [[0.0660245, 0.07098981], [0.09707527, 0.05116877]]
                     ),
                 ).all()
             )
@@ -186,7 +186,7 @@ class TestEMTFXML(unittest.TestCase):
                 np.isclose(
                     self.tf.impedance_error[-1],
                     np.array(
-                        [[8.61436196, 42.95754183], [29.39997279, 23.43822519]]
+                        [[23.43822519, 29.39997279], [42.95754183, 8.61436196]]
                     ),
                 ).all()
             )
