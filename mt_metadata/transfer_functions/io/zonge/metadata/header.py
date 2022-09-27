@@ -18,7 +18,20 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.utils.mttime import MTime
 from .standards import SCHEMA_FN_PATHS
-from . import Survey, Tx, Rx, MTEdit, Unit, GPS, GDP, CH, STN, Line, MTFT24
+from . import (
+    Survey,
+    Tx,
+    Rx,
+    MTEdit,
+    Unit,
+    GPS,
+    GDP,
+    CH,
+    STN,
+    Line,
+    MTFT24,
+    Job,
+)
 from mt_metadata.utils.validators import validate_attribute
 
 # =============================================================================
@@ -34,6 +47,7 @@ attr_dict.add_dict(get_schema("ch", SCHEMA_FN_PATHS), name="ch")
 attr_dict.add_dict(get_schema("stn", SCHEMA_FN_PATHS), name="stn")
 attr_dict.add_dict(get_schema("line", SCHEMA_FN_PATHS), name="line")
 attr_dict.add_dict(get_schema("unit", SCHEMA_FN_PATHS), name="unit")
+attr_dict.add_dict(get_schema("job", SCHEMA_FN_PATHS), name="job")
 
 
 # =============================================================================
@@ -54,6 +68,7 @@ class Header(Base):
         self.stn = STN()
         self.line = Line()
         self.unit = Unit()
+        self.job = Job
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         self._comp_dict = {}

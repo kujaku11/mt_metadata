@@ -66,6 +66,10 @@ class ZongeMTAvg:
             "zyy": (1, 1),
             "tzx": (0, 0),
             "tzy": (0, 1),
+            "zxxr": (0, 0),
+            "zxyr": (0, 1),
+            "zyxr": (1, 0),
+            "zyyr": (1, 1),
         }
 
         self._comp_index_up = {
@@ -75,6 +79,10 @@ class ZongeMTAvg:
             "zyy": (0, 0),
             "tzx": (0, 1),
             "tzy": (0, 0),
+            "zxxr": (1, 1),
+            "zxyr": (1, 0),
+            "zyxr": (0, 1),
+            "zyyr": (0, 0),
         }
 
         self.freq_index_dict = None
@@ -210,9 +218,7 @@ class ZongeMTAvg:
 
         comp_index = self._get_comp_index()
 
-        for row in self.df[
-            self.df.comp.isin(["zxx", "zxy", "zyx", "zyy"])
-        ].itertuples():
+        for row in self.df[self.df.comp.str.contains("z")].itertuples():
             if "z" in row.comp:
                 ii, jj = comp_index[row.comp]
                 f_index = self.freq_index_dict[row.frequency]
@@ -253,7 +259,7 @@ class ZongeMTAvg:
 
         comp_index = self._get_comp_index()
 
-        for row in self.df[self.df.comp.isin(["tzx", "tzy"])].itertuples():
+        for row in self.df[self.df.comp.str.containse("t")].itertuples():
             if "t" in row.comp:
                 t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = comp_index[row.comp]
