@@ -259,7 +259,7 @@ class ZongeMTAvg:
 
         comp_index = self._get_comp_index()
 
-        for row in self.df[self.df.comp.str.containse("t")].itertuples():
+        for row in self.df[self.df.comp.str.contains("t")].itertuples():
             if "t" in row.comp:
                 t_real, t_imag = self.to_complex(row.z_magnitude, row.z_phase)
                 ii, jj = comp_index[row.comp]
