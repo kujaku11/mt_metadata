@@ -12,91 +12,67 @@ Created on Wed Dec  8 11:29:57 2021
 #
 # =============================================================================
 import unittest
+from collections import OrderedDict
 
 import numpy as np
 
 from mt_metadata import TF_AVG_NEWER
-from mt_metadata.transfer_functions.io.zonge.metadata import Header
 from mt_metadata.transfer_functions.io.zonge import ZongeMTAvg
 
 # =============================================================================
-
-
-class TestAVGHeader(unittest.TestCase):
-    @classmethod
-    def setUpClass(self):
-
-        self.header = Header()
-        with open(TF_AVG_NEWER, "r") as fid:
-            self.lines = fid.readlines()
-
-        self.header.read_header(self.lines)
-
-    def test_survey(self):
-        with self.subTest("survey type"):
-            self.assertEqual(self.header.survey.type, "nsamt")
-
-        with self.subTest("survey array"):
-            self.assertEqual(self.header.survey.array, "tensor")
-
-    def test_tx(self):
-        self.assertEqual(self.header.tx.type, "natural")
-
-    def test_mt_edit(self):
-        with self.subTest("auto phase flip"):
-            self.assertEqual(self.header.m_t_edit.auto.phase_flip, "yes")
-
-        with self.subTest("dplus use"):
-            self.assertEqual(self.header.m_t_edit.d_plus.use, "no")
-
-        with self.subTest("phase slope smooth"):
-            self.assertEqual(self.header.m_t_edit.phase_slope.smooth, "robust")
-
-        with self.subTest("phase slope to_z_mag"):
-            self.assertEqual(self.header.m_t_edit.phase_slope.to_z_mag, "no")
-
-        with self.subTest("version"):
-            self.assertEqual(
-                self.header.m_t_edit.version, "3.10m applied 2021/01/27"
-            )
-
-    def test_rx(self):
-        with self.subTest("gdp_stn"):
-            self.assertEqual(self.header.rx.gdp_stn, "24")
-
-        with self.subTest("h_p_r"):
-            self.assertListEqual(self.header.rx.h_p_r, [0.0, 0.0, 180.0])
-
-        with self.subTest("length"):
-            self.assertEqual(self.header.rx.length, 100.0)
-
-        with self.subTest("station"):
-            self.assertEqual(self.header.station, "24")
-
-    def test_gps(self):
-        with self.subTest("lat"):
-            self.assertAlmostEqual(self.header.g_p_s.lat, 32.83331167, 5)
-
-        with self.subTest("lon"):
-            self.assertAlmostEqual(self.header.g_p_s.lon, -107.08305667, 5)
-
-        with self.subTest("latitude"):
-            self.assertAlmostEqual(self.header.latitude, 32.83331167, 5)
-
-        with self.subTest("longitude"):
-            self.assertAlmostEqual(self.header.longitude, -107.08305667, 5)
 
 
 class TestAVG(unittest.TestCase):
     @classmethod
     def setUpClass(self):
 
-        self.avg = ZongeMTAvg(fn=TF_AVG)
+        self.avg = ZongeMTAvg(fn=TF_AVG_NEWER)
         self.avg.read()
+        self.maxDiff = None
+
+    def test_header(self):
+        h = OrderedDict(
+            [
+                ("g_d_p.date", "06/30/2017"),
+                ("g_d_p.prog_ver", "3899:zenacqv3.4e"),
+                ("g_d_p.time", "21:30:19.000"),
+                ("g_d_p.type", "zen"),
+                ("g_p_s.datum", "wgs84"),
+                ("g_p_s.lat", 44.1479163),
+                ("g_p_s.lon", -111.0497517),
+                ("g_p_s.u_t_m_zone", "12"),
+                ("job.for", '"ngf"'),
+                ("job.name", '"yellowstone"'),
+                ("line.name", '"wb28"'),
+                ("line.number", 28),
+                ("m_t_edit.auto.phase_flip", "no"),
+                ("m_t_edit.d_plus.use", "no"),
+                ("m_t_edit.phase_slope.smooth", "robust"),
+                ("m_t_edit.phase_slope.to_z_mag", "no"),
+                ("m_t_edit.version", "3.12a applied 2021/02/18"),
+                ("m_t_f_t24.version", "1.30h applied 2021/02/10"),
+                ("rx.a_space", "1 m"),
+                ("rx.gdp_stn", "2813"),
+                ("rx.h_p_r", [0.0, 0.0, 180.0]),
+                ("rx.length", 0.0),
+                ("rx.s_space", "1"),
+                ("stn.name", "2813"),
+                ("survey.array", "tensor"),
+                ("survey.datum", "wgs84"),
+                ("survey.proj", "UTM"),
+                ("survey.type", "mt"),
+                ("survey.u_t_m_zone", "12"),
+                ("tx.type", "natural"),
+                ("unit.b", "nt"),
+                ("unit.e", "uv/m"),
+                ("unit.length", "m"),
+            ]
+        )
+        self.assertDictEqual(h, self.avg.header.to_dict(single=True))
 
     def test_z(self):
         with self.subTest("shape"):
-            self.assertTupleEqual(self.avg.z.shape, (28, 2, 2))
+            self.assertTupleEqual(self.avg.z.shape, (37, 2, 2))
 
         with self.subTest("type"):
             self.assertEqual(self.avg.z.dtype.type, np.complex128)
@@ -106,7 +82,7 @@ class TestAVG(unittest.TestCase):
 
     def test_z_err(self):
         with self.subTest("shape"):
-            self.assertTupleEqual(self.avg.z_err.shape, (28, 2, 2))
+            self.assertTupleEqual(self.avg.z_err.shape, (37, 2, 2))
 
         with self.subTest("type"):
             self.assertEqual(self.avg.z_err.dtype.type, np.float64)
@@ -116,7 +92,7 @@ class TestAVG(unittest.TestCase):
 
     def test_frequency(self):
         with self.subTest("shape"):
-            self.assertTupleEqual(self.avg.frequency.shape, (28,))
+            self.assertTupleEqual(self.avg.frequency.shape, (37,))
 
     def test_tipper(self):
         with self.subTest("non existant"):
