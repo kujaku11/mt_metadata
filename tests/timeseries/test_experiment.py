@@ -41,6 +41,31 @@ class TestExperiment(unittest.TestCase):
         self.assertRaises(TypeError, set_surveys, 10)
         self.assertRaises(TypeError, set_surveys, [Survey(), Station()])
 
+    def test_add_survey(self):
+        survey_input = Survey(id="one")
+        self.experiment.add_survey(survey_input)
+
+        with self.subTest("length"):
+            self.assertEqual(len(self.experiment.surveys), 1)
+
+        with self.subTest("staiton names"):
+            self.assertListEqual(["one"], self.experiment.survey_names)
+
+        with self.subTest("has station"):
+            self.assertTrue(self.experiment.has_survey("one"))
+
+        with self.subTest("index"):
+            self.assertEqual(0, self.experiment.survey_index("one"))
+
+    def test_add_survey_fail(self):
+        self.assertRaises(TypeError, self.experiment.add_survey, 10)
+
+    def test_get_survey(self):
+        input_survey = Survey(id="one")
+        self.experiment.add_survey(input_survey)
+        s = self.experiment.get_survey("one")
+        self.assertTrue(input_survey == s)
+
     def test_add_experiments(self):
         ex2 = Experiment([Survey(id="two")])
         self.experiment.surveys.append(Survey(id="one"))
@@ -56,7 +81,8 @@ class TestBuildExperiment(unittest.TestCase):
     build and read an experiment
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.experiment = Experiment()
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2021-01-01T12:00:00+00:00"
@@ -96,29 +122,39 @@ class TestBuildExperiment(unittest.TestCase):
 
     def test_survey_time_period(self):
         with self.subTest("start"):
-            self.assertEqual(self.start, self.experiment.surveys[0].time_period.start)
+            self.assertEqual(
+                self.start, self.experiment.surveys[0].time_period.start
+            )
         with self.subTest("end"):
-            self.assertEqual(self.end, self.experiment.surveys[0].time_period.end)
+            self.assertEqual(
+                self.end, self.experiment.surveys[0].time_period.end
+            )
 
     def test_station_time_period(self):
         with self.subTest("start"):
             self.assertEqual(
-                self.start, self.experiment.surveys[0].stations[0].time_period.start
+                self.start,
+                self.experiment.surveys[0].stations[0].time_period.start,
             )
         with self.subTest("end"):
             self.assertEqual(
-                self.end, self.experiment.surveys[0].stations[0].time_period.end
+                self.end,
+                self.experiment.surveys[0].stations[0].time_period.end,
             )
 
     def test_run_time_period(self):
         with self.subTest("start"):
             self.assertEqual(
                 self.start,
-                self.experiment.surveys[0].stations[0].runs[0].time_period.start,
+                self.experiment.surveys[0]
+                .stations[0]
+                .runs[0]
+                .time_period.start,
             )
         with self.subTest("end"):
             self.assertEqual(
-                self.end, self.experiment.surveys[0].stations[0].runs[0].time_period.end
+                self.end,
+                self.experiment.surveys[0].stations[0].runs[0].time_period.end,
             )
 
 
