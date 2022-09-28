@@ -8,7 +8,9 @@ Created on Mon Feb  8 21:49:13 2021
 :license: MIT
 
 """
-from pathlib import Path
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 
 from mt_metadata.timeseries import (
@@ -20,6 +22,8 @@ from mt_metadata.timeseries import (
     Survey,
     Experiment,
 )
+
+# =============================================================================
 
 
 class TestExperiment(unittest.TestCase):

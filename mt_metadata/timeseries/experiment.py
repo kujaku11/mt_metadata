@@ -50,24 +50,31 @@ class Experiment(Base):
         if len(self.surveys) > 0:
             lines.append(f"Number of Surveys: {len(self.surveys)}")
             for survey in self.surveys:
-                lines.append(f"\tSurvey ID: {survey.id}")
-                lines.append(f"\tNumber of Stations: {len(survey)}")
-                lines.append(f"\t{'-' * 20}")
+                lines.append(f"  Survey ID: {survey.id}")
+                lines.append(f"  Number of Stations: {len(survey)}")
+                lines.append(
+                    f"  Number of Filters: {len(survey.filters.keys())}"
+                )
+                lines.append(f"  {'-' * 20}")
+                for f_key, f_object in survey.filters.items():
+                    lines.append(f"    Filter Name: {f_key}")
+                    lines.append(f"    Filter Type: {f_object.type}")
+                    lines.append(f"    {'-' * 20}")
                 for station in survey.stations:
-                    lines.append(f"\t\tStation ID: {station.id}")
-                    lines.append(f"\t\tNumber of Runs: {len(station)}")
-                    lines.append(f"\t\t{'-' * 20}")
+                    lines.append(f"    Station ID: {station.id}")
+                    lines.append(f"    Number of Runs: {len(station)}")
+                    lines.append(f"    {'-' * 20}")
                     for run in station.runs:
-                        lines.append(f"\t\t\tRun ID: {run.id}")
-                        lines.append(f"\t\t\tNumber of Channels: {len(run)}")
+                        lines.append(f"      Run ID: {run.id}")
+                        lines.append(f"      Number of Channels: {len(run)}")
                         lines.append(
-                            "\t\t\tRecorded Channels: "
+                            "      Recorded Channels: "
                             + ", ".join(run.channels_recorded_all)
                         )
-                        lines.append(f"\t\t\tStart: {run.time_period.start}")
-                        lines.append(f"\t\t\tEnd:   {run.time_period.end}")
+                        lines.append(f"      Start: {run.time_period.start}")
+                        lines.append(f"      End:   {run.time_period.end}")
 
-                        lines.append(f"\t\t\t{'-' * 20}")
+                        lines.append(f"      {'-' * 20}")
 
         return "\n".join(lines)
 
