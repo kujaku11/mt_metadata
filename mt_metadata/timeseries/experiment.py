@@ -17,6 +17,7 @@ Created on Mon Feb  8 21:25:40 2021
 # =============================================================================
 # Imports
 # =============================================================================
+from pathlib import Path
 from xml.etree import cElementTree as et
 import json
 
@@ -263,7 +264,7 @@ class Experiment(Base):
             survey_object.from_dict(survey_dict)
             self.add_survey(survey_object)
 
-    def to_json(self, nested=False, indent=" " * 4, required=True):
+    def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
@@ -273,11 +274,48 @@ class Experiment(Base):
 
         """
 
-        return json.dumps(
-            self.to_dict(nested=nested, required=required),
-            cls=helpers.NumpyEncoder,
-            indent=indent,
-        )
+        if fn is not None:
+            with open(fn, "w") as fid:
+                json.dump(
+                    self.to_dict(nested=nested, required=required),
+                    fid,
+                    cls=helpers.NumpyEncoder,
+                    indent=indent,
+                )
+
+        else:
+            return json.dumps(
+                self.to_dict(nested=nested, required=required),
+                cls=helpers.NumpyEncoder,
+                indent=indent,
+            )
+
+    def from_json(self, json_str):
+        """
+        read in a json string and update attributes of an object
+
+        :param json_str: json string or file path
+        :type json_str: string or :class:`pathlib.Path`
+
+        """
+        if isinstance(json_str, str):
+            try:
+                json_path = Path(json_str)
+                if json_path.exists():
+                    with open(json_path, "r") as fid:
+                        json_dict = json.load(fid)
+            except OSError:
+                pass
+            json_dict = json.loads(json_str)
+        elif isinstance(json_str, Path):
+            if json_str.exists():
+                with open(json_str, "r") as fid:
+                    json_dict = json.load(fid)
+        elif not isinstance(json_str, (str, Path)):
+            msg = "Input must be valid JSON string not %"
+            self.logger.error(msg, type(json_str))
+            raise TypeError(msg % type(json_str))
+        self.from_dict(json_dict)
 
     def to_xml(self, fn=None, required=True):
         """
@@ -345,30 +383,6 @@ class Experiment(Base):
             with open(fn, "w") as fid:
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
-
-    def to_json(self, fn):
-        """
-        Write JSON version of the experiment
-
-        :param fn: DESCRIPTION
-        :type fn: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        pass
-
-    def to_pickle(self, fn):
-        """
-        Write a pickle version of the experiment
-
-        :param fn: DESCRIPTION
-        :type fn: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        pass
 
     def from_xml(self, fn=None, element=None):
         """
@@ -446,9 +460,9 @@ class Experiment(Base):
 
         return elements
 
-    def from_json(self, fn):
+    def to_pickle(self, fn):
         """
-        Read JSON version of experiment
+        Write a pickle version of the experiment
 
         :param fn: DESCRIPTION
         :type fn: TYPE
