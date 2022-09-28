@@ -15,13 +15,21 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Person, Citation, Location, TimePeriod, Fdsn, Station
-from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
+from .filters import (
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+    FIRFilter,
+    FrequencyResponseTableFilter,
+)
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS),
+    "acquired_by",
+    keys=["author", "comments"],
 )
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
@@ -135,7 +143,16 @@ class Survey(Base):
         filters = {}
         fails = []
         for k, v in value.items():
-            if not isinstance(v, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)):
+            if not isinstance(
+                v,
+                (
+                    PoleZeroFilter,
+                    CoefficientFilter,
+                    TimeDelayFilter,
+                    FrequencyResponseTableFilter,
+                    FIRFilter,
+                ),
+            ):
                 msg = f"Item {k} is not Filter type; type={type(v)}"
                 fails.append(msg)
                 self.logger.error(msg)
