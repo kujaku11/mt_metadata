@@ -168,6 +168,77 @@ class Survey(Base):
         """return a list of filter names"""
         return list(self.filters.keys())
 
+    def has_station(self, station_id):
+        """
+        Has station id
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if station_id in self.station_names:
+            return True
+        return False
+
+    def station_index(self, station_id):
+        """
+        Get station index
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_station:
+            return self.station_names.index(station_id)
+        return None
+
+    def add_station(self, station_obj):
+        """
+        Add a station, if has the same name update that object.
+
+        :param station_obj: DESCRIPTION
+        :type station_obj: `:class:`mt_metadata.timeseries.Station`
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(station_obj, Station):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
+            )
+
+        index = self.station_index(station_obj.id)
+        if index is not None:
+            self.stations[index].update(station_obj)
+            self.logger.warning(
+                f"Station {station_obj.id} already exists, updating metadata"
+            )
+        else:
+            self.stations.append(station_obj)
+
+    def get_station(self, station_id):
+        """
+        Get a station from the station id
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        index = self.station_index(station_id)
+        if index is None:
+            self.logger.warning(f"Could not find station {station_id}")
+            return None
+        return self.stations[index]
+
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
