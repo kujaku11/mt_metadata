@@ -87,6 +87,7 @@ class TestBuildExperiment(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        self.maxDiff = None
         self.experiment = Experiment()
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2021-01-01T12:00:00+00:00"
@@ -160,6 +161,54 @@ class TestBuildExperiment(unittest.TestCase):
                 self.end,
                 self.experiment.surveys[0].stations[0].runs[0].time_period.end,
             )
+
+    def test_to_dict(self):
+        d = self.experiment.to_dict()
+
+        with self.subTest("keys"):
+            self.assertEqual(["experiment"], list(d.keys()))
+
+        with self.subTest("surveys/stations"):
+            self.assertIn("stations", d["experiment"]["surveys"][0].keys())
+
+        with self.subTest("surveys/filters"):
+            self.assertIn("filters", d["experiment"]["surveys"][0].keys())
+
+        with self.subTest("n_surveys"):
+            self.assertEqual(2, len(d["experiment"]["surveys"]))
+
+        with self.subTest("runs"):
+            self.assertIn(
+                "runs", d["experiment"]["surveys"][0]["stations"][0].keys()
+            )
+        with self.subTest("n_stations"):
+            self.assertEqual(2, len(d["experiment"]["surveys"][0]["stations"]))
+
+        with self.subTest("n_runs"):
+            self.assertEqual(
+                2, len(d["experiment"]["surveys"][0]["stations"][0]["runs"])
+            )
+
+        with self.subTest("n_channels"):
+            self.assertEqual(
+                7,
+                len(
+                    d["experiment"]["surveys"][0]["stations"][0]["runs"][0][
+                        "channels"
+                    ]
+                ),
+            )
+
+    def test_from_dict(self):
+        d = self.experiment.to_dict()
+        ex = Experiment()
+        ex.from_dict(d)
+
+        with self.subTest("surveys 1 equal"):
+            self.assertTrue(ex.surveys[0] == self.experiment.surveys[0])
+
+        with self.subTest("surveys 2 equal"):
+            self.assertTrue(ex.surveys[1] == self.experiment.surveys[1])
 
 
 # =============================================================================

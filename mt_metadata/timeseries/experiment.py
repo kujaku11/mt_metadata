@@ -18,6 +18,7 @@ Created on Mon Feb  8 21:25:40 2021
 # Imports
 # =============================================================================
 from xml.etree import cElementTree as et
+import json
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (
@@ -207,6 +208,76 @@ class Experiment(Base):
             self.logger.warning(f"Could not find survey {survey_id}")
             return None
         return self.surveys[index]
+
+    def to_dict(self, nested=False, required=True):
+        """
+        create a dictionary for the experiment object.
+
+        :param nested: DESCRIPTION, defaults to False
+        :type nested: TYPE, optional
+        :param single: DESCRIPTION, defaults to False
+        :type single: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        kwargs = {"nested": nested, "single": True, "required": required}
+
+        ex_dict = {"experiment": {"surveys": []}}
+        for survey in self.surveys:
+            survey_dict = survey.to_dict(**kwargs)
+            survey_dict["stations"] = []
+            survey_dict["filters"] = []
+            for station in survey.stations:
+                station_dict = station.to_dict(**kwargs)
+                station_dict["runs"] = []
+                for run in station.runs:
+                    run_dict = run.to_dict(**kwargs)
+                    run_dict["channels"] = []
+                    for channel in run.channels:
+                        run_dict["channels"].append(channel.to_dict(**kwargs))
+                    station_dict["runs"].append(run_dict)
+                survey_dict["stations"].append(station_dict)
+            for f_key, f_object in survey.filters.items():
+                survey_dict["filters"].append(f_object.to_dict(**kwargs))
+            ex_dict["experiment"]["surveys"].append(survey_dict)
+
+        return ex_dict
+
+    def from_dict(self, ex_dict):
+        """
+        fill from an input dictionary
+
+        :param ex_dict: DESCRIPTION
+        :type ex_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        for survey_dict in ex_dict["experiment"]["surveys"]:
+            survey_object = Survey()
+            survey_object.from_dict(survey_dict)
+            self.add_survey(survey_object)
+
+    def to_json(self, nested=False, indent=" " * 4, required=True):
+        """
+        Write a json string from a given object, taking into account other
+        class objects contained within the given object.
+
+        :param nested: make the returned json nested
+        :type nested: [ True | False ] , default is False
+
+        """
+
+        return json.dumps(
+            self.to_dict(nested=nested, required=required),
+            cls=helpers.NumpyEncoder,
+            indent=indent,
+        )
 
     def to_xml(self, fn=None, required=True):
         """

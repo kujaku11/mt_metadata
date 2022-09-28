@@ -21,7 +21,10 @@ import json
 import pandas as pd
 import numpy as np
 
-from mt_metadata.utils.validators import validate_attribute, validate_value_type
+from mt_metadata.utils.validators import (
+    validate_attribute,
+    validate_value_type,
+)
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
 from mt_metadata.utils.mt_logger import setup_logger
@@ -43,7 +46,9 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = setup_logger(f"{__name__}.{self._class_name}", level=LOG_LEVEL)
+        self.logger = setup_logger(
+            f"{__name__}.{self._class_name}", level=LOG_LEVEL
+        )
         self._debug = False
 
         self._set_attr_dict(attr_dict)
@@ -138,15 +143,23 @@ class Base:
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning("Cannot update %s with %s", type(self), type(other))
+            self.logger.warning(
+                "Cannot update %s with %s", type(self), type(other)
+            )
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = "%s is not equal %s != %s"
                 self.logger.error(
-                    msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k)
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
                 )
                 raise ValueError(
-                    msg, k, self.get_attr_from_name(k), other.get_attr_from_name(k)
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
                 )
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
@@ -290,7 +303,7 @@ class Base:
     def __setattr__(self, name, value):
         """
         set attribute based on metadata standards
-        
+
         Something here doesnt allow other objects to be set as attributes
 
         """
@@ -340,7 +353,9 @@ class Base:
             try:
                 test_property = getattr(self.__class__, name, None)
                 if isinstance(test_property, property):
-                    self.logger.debug("Identified %s as property, using fset", name)
+                    self.logger.debug(
+                        "Identified %s as property, using fset", name
+                    )
                     test_property.fset(self, value)
                     return
             except AttributeError:
@@ -533,14 +548,18 @@ class Base:
                 elif isinstance(value, dict):
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
-                            value[key] = obj.to_dict(nested=nested, required=required)
+                            value[key] = obj.to_dict(
+                                nested=nested, required=required
+                            )
                         else:
                             value[key] = obj
                 elif isinstance(value, list):
                     v_list = []
                     for obj in value:
                         if hasattr(obj, "to_dict"):
-                            v_list.append(obj.to_dict(nested=nested, required=required))
+                            v_list.append(
+                                obj.to_dict(nested=nested, required=required)
+                            )
                         else:
                             v_list.append(obj)
                     value = v_list
@@ -635,8 +654,8 @@ class Base:
         """
         read in a json string and update attributes of an object
 
-        :param json_str: json string
-        :type json_str: string
+        :param json_str: json string or file path
+        :type json_str: string or :class:`pathlib.Path`
 
         """
         if isinstance(json_str, str):

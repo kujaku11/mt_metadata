@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -99,7 +100,11 @@ class Survey(Base):
         stations = []
         fails = []
         for ii, station in enumerate(value):
-            if not isinstance(station, Station):
+            if isinstance(station, (dict, OrderedDict)):
+                s = Station()
+                s.from_dict(station)
+                stations.append(s)
+            elif not isinstance(station, Station):
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
@@ -132,32 +137,60 @@ class Survey(Base):
 
         """
 
-        if not isinstance(value, dict):
+        filters = {}
+        fails = []
+        if isinstance(value, list):
+            if len(value) > 0:
+                if isinstance(value[0], (dict, OrderedDict)):
+                    for ff in value:
+                        f_type = ff["type"]
+                        if f_type is None:
+                            msg = "filter type is None do not know how to read the filter"
+                            fails.append(msg)
+                            self.logger.error(msg)
+                        if f_type.lower() in ["zpk"]:
+                            f = PoleZeroFilter()
+                        elif f_type.lower() in ["coefficient"]:
+                            f = CoefficientFilter()
+                        elif f_type.lower() in ["time delay"]:
+                            f = TimeDelayFilter()
+                        elif f_type.lower() in ["fir"]:
+                            f = FIRFilter()
+                        elif f_type.lower() in ["frequency response table"]:
+                            f = FrequencyResponseTableFilter()
+                        else:
+                            msg = f"filter type {f_type} not supported."
+                            fails.append(msg)
+                            self.logger.error(msg)
+
+                        f.from_dict(ff)
+                        filters[f.name] = f
+
+        elif not isinstance(value, dict):
             msg = (
                 "Filters must be a dictionary with keys = names of filters, "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
+        else:
 
-        filters = {}
-        fails = []
-        for k, v in value.items():
-            if not isinstance(
-                v,
-                (
-                    PoleZeroFilter,
-                    CoefficientFilter,
-                    TimeDelayFilter,
-                    FrequencyResponseTableFilter,
-                    FIRFilter,
-                ),
-            ):
-                msg = f"Item {k} is not Filter type; type={type(v)}"
-                fails.append(msg)
-                self.logger.error(msg)
-            else:
-                filters[k.lower()] = v
+            for k, v in value.items():
+                if not isinstance(
+                    v,
+                    (
+                        PoleZeroFilter,
+                        CoefficientFilter,
+                        TimeDelayFilter,
+                        FrequencyResponseTableFilter,
+                        FIRFilter,
+                    ),
+                ):
+                    msg = f"Item {k} is not Filter type; type={type(v)}"
+                    fails.append(msg)
+                    self.logger.error(msg)
+                else:
+                    filters[k.lower()] = v
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
