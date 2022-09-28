@@ -193,7 +193,7 @@ class Survey(Base):
 
         """
 
-        if self.has_station:
+        if self.has_station(station_id):
             return self.station_names.index(station_id)
         return None
 
