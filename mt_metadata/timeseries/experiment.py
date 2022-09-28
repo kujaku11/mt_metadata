@@ -75,7 +75,10 @@ class Experiment(Base):
         return self.__str__()
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+        return (
+            isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -127,6 +130,77 @@ class Experiment(Base):
         """Return names of surveys in experiment"""
         return [ss.id for ss in self.surveys]
 
+    def has_survey(self, survey_id):
+        """
+        Has survey id
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if survey_id in self.survey_names:
+            return True
+        return False
+
+    def survey_index(self, survey_id):
+        """
+        Get survey index
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_survey(survey_id):
+            return self.survey_names.index(survey_id)
+        return None
+
+    def add_survey(self, survey_obj):
+        """
+        Add a survey, if has the same name update that object.
+
+        :param survey_obj: DESCRIPTION
+        :type survey_obj: `:class:`mt_metadata.timeseries.Survey`
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(survey_obj, Survey):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Survey object not {type(survey_obj)}"
+            )
+
+        index = self.survey_index(survey_obj.id)
+        if index is not None:
+            self.surveys[index].update(survey_obj)
+            self.logger.warning(
+                f"survey {survey_obj.id} already exists, updating metadata"
+            )
+        else:
+            self.surveys.append(survey_obj)
+
+    def get_survey(self, survey_id):
+        """
+        Get a survey from the survey id
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        index = self.survey_index(survey_id)
+        if index is None:
+            self.logger.warning(f"Could not find survey {survey_id}")
+            return None
+        return self.surveys[index]
+
     def to_xml(self, fn=None, required=True):
         """
         Write XML version of the experiment
@@ -159,18 +233,30 @@ class Experiment(Base):
                                 and channel.positive.longitude == 0
                                 and channel.positive.elevation == 0
                             ):
-                                channel.positive.latitude = station.location.latitude
-                                channel.positive.longitude = station.location.longitude
-                                channel.positive.elevation = station.location.elevation
+                                channel.positive.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.positive.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.positive.elevation = (
+                                    station.location.elevation
+                                )
                         else:
                             if (
                                 channel.location.latitude == 0
                                 and channel.location.longitude == 0
                                 and channel.location.elevation == 0
                             ):
-                                channel.location.latitude = station.location.latitude
-                                channel.location.longitude = station.location.longitude
-                                channel.location.elevation = station.location.elevation
+                                channel.location.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.location.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.location.elevation = (
+                                    station.location.elevation
+                                )
 
                         run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
