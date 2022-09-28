@@ -95,7 +95,7 @@ class TestBuildExperiment(unittest.TestCase):
         kwargs = {"time_period.start": self.start, "time_period.end": self.end}
 
         for survey in ["One", "Two"]:
-            survey_obj = Survey(survey_id=survey)
+            survey_obj = Survey(id=survey)
             survey_obj.acquired_by.author = "None"
             survey_obj.project_lead.author = "None"
             survey_obj.filters = {}
@@ -200,15 +200,12 @@ class TestBuildExperiment(unittest.TestCase):
             )
 
     def test_from_dict(self):
+
         d = self.experiment.to_dict()
         ex = Experiment()
         ex.from_dict(d)
 
-        with self.subTest("surveys 1 equal"):
-            self.assertTrue(ex.surveys[0] == self.experiment.surveys[0])
-
-        with self.subTest("surveys 2 equal"):
-            self.assertTrue(ex.surveys[1] == self.experiment.surveys[1])
+        self.assertTrue(ex == self.experiment)
 
 
 # =============================================================================
