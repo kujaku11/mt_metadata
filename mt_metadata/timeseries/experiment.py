@@ -259,6 +259,13 @@ class Experiment(Base):
 
         """
 
+        if not isinstance(ex_dict, dict):
+            msg = f"experiemnt input must be a dictionary not {type(ex_dict)}"
+            self.logger.debug(msg)
+            raise TypeError(msg)
+        if "experiment" not in ex_dict.keys():
+            return
+
         for survey_dict in ex_dict["experiment"]["surveys"]:
             survey_object = Survey()
             survey_object.from_dict(survey_dict)
