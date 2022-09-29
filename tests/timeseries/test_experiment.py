@@ -207,6 +207,12 @@ class TestBuildExperiment(unittest.TestCase):
 
         self.assertTrue(ex == self.experiment)
 
+    def test_from_dict_fail(self):
+        self.assertRaises(TypeError, self.experiment.from_dict, 10)
+
+    def test_from_empty_dict(self):
+        self.assertEqual(None, self.experiment.from_dict({}))
+
 
 # =============================================================================
 # run
