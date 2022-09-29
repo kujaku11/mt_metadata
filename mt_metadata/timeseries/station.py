@@ -29,10 +29,14 @@ from . import (
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 location_dict = get_schema("location", SCHEMA_FN_PATHS)
-location_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
+location_dict.add_dict(
+    get_schema("declination", SCHEMA_FN_PATHS), "declination"
+)
 attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["name", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS),
+    "acquired_by",
+    keys=["name", "comments"],
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
@@ -40,7 +44,9 @@ attr_dict.add_dict(
     "provenance",
     keys=["comments", "creation_time", "log"],
 )
-attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "provenance.software")
+attr_dict.add_dict(
+    get_schema("software", SCHEMA_FN_PATHS), "provenance.software"
+)
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "provenance.submitter",
@@ -157,7 +163,11 @@ class Station(Base):
         runs = []
         fails = []
         for ii, run in enumerate(value):
-            if not isinstance(run, Run):
+            if isinstance(run, dict):
+                r = Run()
+                r.from_dict(run)
+                runs.append(r)
+            elif not isinstance(run, Run):
                 msg = f"Item {ii} is not type(Run); type={type(run)}"
                 fails.append(msg)
                 self.logger.error(msg)

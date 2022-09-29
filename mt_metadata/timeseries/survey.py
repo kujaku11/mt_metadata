@@ -11,17 +11,26 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Person, Citation, Location, TimePeriod, Fdsn, Station
-from .filters import PoleZeroFilter, CoefficientFilter, TimeDelayFilter
+from .filters import (
+    PoleZeroFilter,
+    CoefficientFilter,
+    TimeDelayFilter,
+    FIRFilter,
+    FrequencyResponseTableFilter,
+)
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS),
+    "acquired_by",
+    keys=["author", "comments"],
 )
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
@@ -91,7 +100,11 @@ class Survey(Base):
         stations = []
         fails = []
         for ii, station in enumerate(value):
-            if not isinstance(station, Station):
+            if isinstance(station, (dict, OrderedDict)):
+                s = Station()
+                s.from_dict(station)
+                stations.append(s)
+            elif not isinstance(station, Station):
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
@@ -124,23 +137,60 @@ class Survey(Base):
 
         """
 
-        if not isinstance(value, dict):
+        filters = {}
+        fails = []
+        if isinstance(value, list):
+            if len(value) > 0:
+                if isinstance(value[0], (dict, OrderedDict)):
+                    for ff in value:
+                        f_type = ff["type"]
+                        if f_type is None:
+                            msg = "filter type is None do not know how to read the filter"
+                            fails.append(msg)
+                            self.logger.error(msg)
+                        if f_type.lower() in ["zpk"]:
+                            f = PoleZeroFilter()
+                        elif f_type.lower() in ["coefficient"]:
+                            f = CoefficientFilter()
+                        elif f_type.lower() in ["time delay"]:
+                            f = TimeDelayFilter()
+                        elif f_type.lower() in ["fir"]:
+                            f = FIRFilter()
+                        elif f_type.lower() in ["frequency response table"]:
+                            f = FrequencyResponseTableFilter()
+                        else:
+                            msg = f"filter type {f_type} not supported."
+                            fails.append(msg)
+                            self.logger.error(msg)
+
+                        f.from_dict(ff)
+                        filters[f.name] = f
+
+        elif not isinstance(value, dict):
             msg = (
                 "Filters must be a dictionary with keys = names of filters, "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
+        else:
 
-        filters = {}
-        fails = []
-        for k, v in value.items():
-            if not isinstance(v, (PoleZeroFilter, CoefficientFilter, TimeDelayFilter)):
-                msg = f"Item {k} is not Filter type; type={type(v)}"
-                fails.append(msg)
-                self.logger.error(msg)
-            else:
-                filters[k.lower()] = v
+            for k, v in value.items():
+                if not isinstance(
+                    v,
+                    (
+                        PoleZeroFilter,
+                        CoefficientFilter,
+                        TimeDelayFilter,
+                        FrequencyResponseTableFilter,
+                        FIRFilter,
+                    ),
+                ):
+                    msg = f"Item {k} is not Filter type; type={type(v)}"
+                    fails.append(msg)
+                    self.logger.error(msg)
+                else:
+                    filters[k.lower()] = v
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
@@ -150,6 +200,77 @@ class Survey(Base):
     def filter_names(self):
         """return a list of filter names"""
         return list(self.filters.keys())
+
+    def has_station(self, station_id):
+        """
+        Has station id
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if station_id in self.station_names:
+            return True
+        return False
+
+    def station_index(self, station_id):
+        """
+        Get station index
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_station(station_id):
+            return self.station_names.index(station_id)
+        return None
+
+    def add_station(self, station_obj):
+        """
+        Add a station, if has the same name update that object.
+
+        :param station_obj: DESCRIPTION
+        :type station_obj: `:class:`mt_metadata.timeseries.Station`
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(station_obj, Station):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
+            )
+
+        index = self.station_index(station_obj.id)
+        if index is not None:
+            self.stations[index].update(station_obj)
+            self.logger.warning(
+                f"Station {station_obj.id} already exists, updating metadata"
+            )
+        else:
+            self.stations.append(station_obj)
+
+    def get_station(self, station_id):
+        """
+        Get a station from the station id
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        index = self.station_index(station_id)
+        if index is None:
+            self.logger.warning(f"Could not find station {station_id}")
+            return None
+        return self.stations[index]
 
     def update_bounding_box(self):
         """
