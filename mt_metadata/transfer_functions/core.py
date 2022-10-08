@@ -448,6 +448,7 @@ class TF:
             "impedance_error": "transfer_function_error",
             "impedance_model_error": "transfer_function_model_error",
             "tipper_error": "transfer_function_error",
+            "tipper_model_error": "transfer_function_model_error",
             "tf_error": "transfer_function_error",
             "tf_model_error": "transfer_function_model_error",
             "transfer_function_error": "transfer_function_error",
@@ -810,6 +811,39 @@ class TF:
 
         """
         self._set_data_array(value, "tipper_error")
+
+    @property
+    def tipper_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_tipper():
+            t = self.dataset.transfer_function_model_error.sel(
+                input=self._ch_input_dict["tipper"],
+                output=self._ch_output_dict["tipper"],
+            )
+            t.name = "tipper_model_error"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                t.attrs[key] = value
+            return t
+
+    @tipper_model_error.setter
+    def tipper_model_error(self, value):
+        """
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tipper_model_error")
 
     def has_inverse_signal_power(self):
         """
