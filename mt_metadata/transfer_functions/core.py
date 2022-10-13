@@ -52,7 +52,7 @@ class TF:
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
 
         # set metadata for the station
-        self.survey_metadata = Survey()
+        self.survey_metadata = Survey(id="unknown_survey")
         self.station_metadata = Station()
         self.station_metadata.add_run(Run())
         self.station_metadata.runs[0].ex = Electric(component="ex")
@@ -1095,6 +1095,22 @@ class TF:
         set station name
         """
         self.station_metadata.id = validate_name(station_name)
+
+    @property
+    def survey(self):
+        """
+        Survey ID
+        """
+        return self.survey_metadata.id
+
+    @survey.setter
+    def survey(self, survey_id):
+        """
+        set survey id
+        """
+        if survey_id is None:
+            survey_id = "unkown_survey"
+        self.survey_metadata.id = validate_name(survey_id)
 
     @property
     def tf_id(self):
