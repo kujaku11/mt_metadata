@@ -66,7 +66,7 @@ class XMLChannelMTChannel(BaseTranslator):
         self.mt_comments_list = ["run.id"]
         self.run_list = None
 
-    def xml_to_mt(self, xml_channel):
+    def xml_to_mt(self, xml_channel, existing_filters={}):
         """
         Translate :class:`obspy.core.inventory.Channel` to
         :class:`mt_metadata.timeseries.Channel`
@@ -95,7 +95,7 @@ class XMLChannelMTChannel(BaseTranslator):
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
         mt_channel = self._sensor_to_mt(xml_channel.sensor, mt_channel)
         mt_channel = self._get_mt_units(xml_channel, mt_channel)
-        mt_filters = self._xml_response_to_mt(xml_channel)
+        mt_filters = self._xml_response_to_mt(xml_channel, existing_filters)
 
         for xml_key, mt_key in self.xml_translator.items():
             if mt_key:
@@ -126,7 +126,8 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         if not isinstance(
-            mt_channel, (metadata.Electric, metadata.Magnetic, metadata.Auxiliary)
+            mt_channel,
+            (metadata.Electric, metadata.Magnetic, metadata.Auxiliary),
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
@@ -176,8 +177,12 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.types = ["geophysical".upper()]
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
-        xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
-        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
+        xml_channel.restricted_status = release_dict[
+            xml_channel.restricted_status
+        ]
+        xml_channel = self._mt_to_xml_response(
+            mt_channel, filters_dict, xml_channel
+        )
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -193,7 +198,9 @@ class XMLChannelMTChannel(BaseTranslator):
                 xml_channel.dip = mt_channel.measurement_tilt % 360
 
             else:
-                setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
+                setattr(
+                    xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key)
+                )
 
         return xml_channel
 
@@ -250,7 +257,9 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.negative.model = sensor.model
             mt_channel.negative.type = "electrode"
 
-            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
+            mt_channel.dipole_length = self._parse_dipole_length(
+                sensor.description
+            )
 
             return mt_channel
 
@@ -455,7 +464,9 @@ class XMLChannelMTChannel(BaseTranslator):
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
         name = xml_channel.response.response_stages[-1].output_units
-        description = xml_channel.response.response_stages[-1].output_units_description
+        description = xml_channel.response.response_stages[
+            -1
+        ].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
@@ -470,16 +481,16 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return mt_channel
 
-    def _xml_response_to_mt(self, xml_channel):
+    def _xml_response_to_mt(self, xml_channel, existing_filters={}):
         """
         parse the filters from obspy into mt filters
         """
-        filter_dict = {}
+        ch_filter_dict = {}
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
             mt_filter = create_filter_from_stage(stage)
             if not mt_filter.name:
                 filter_number = self._add_filter_number(
-                    filter_dict.keys(), mt_filter.type
+                    existing_filters.keys(), mt_filter.type
                 )
                 mt_filter.name = f"{mt_filter.type}_{filter_number:02}"
 
@@ -490,9 +501,9 @@ class XMLChannelMTChannel(BaseTranslator):
             if mt_filter.decimation_active:
                 # keep filter names unique if same one used more than once
                 mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
-            filter_dict[mt_filter.name.lower()] = mt_filter
+            ch_filter_dict[mt_filter.name.lower()] = mt_filter
 
-        return filter_dict
+        return ch_filter_dict
 
     def _add_filter_number(self, keys, filter_type):
         """
