@@ -489,14 +489,15 @@ class XMLChannelMTChannel(BaseTranslator):
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
             mt_filter = create_filter_from_stage(stage)
             if not mt_filter.name:
-                filter_name = self._add_filter_number(
+                filter_name, new = self._add_filter_number(
                     existing_filters, mt_filter
                 )
                 mt_filter.name = filter_name
 
-                self.logger.info(
-                    f"Found an nnnamed filter, named it: '{mt_filter.name}'"
-                )
+                if new:
+                    self.logger.info(
+                        f"Found an unnamed filter, named it: '{mt_filter.name}'"
+                    )
 
             if mt_filter.decimation_active:
                 # keep filter names unique if same one used more than once
@@ -515,24 +516,26 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
+        new = True
         # check for existing filters
         for f_key, f_obj in existing_filters.items():
             if f_obj.type == mt_filter.type:
                 if round(abs(f_obj.complex_response([1])[0])) == round(
                     abs(mt_filter.complex_response([1])[0])
                 ):
-                    return f_obj.name
+                    new = False
+                    return f_obj.name, new
 
         try:
             last = sorted(
                 [k for k in existing_filters.keys() if mt_filter.type in k]
             )[-1]
         except IndexError:
-            return f"{mt_filter.type}_{0:02}"
+            return f"{mt_filter.type}_{0:02}", new
         try:
-            return f"{mt_filter.type}_{int(last[-2:]) + 1:02}"
+            return f"{mt_filter.type}_{int(last[-2:]) + 1:02}", new
         except ValueError:
-            return f"{mt_filter.type}_{0:02}"
+            return f"{mt_filter.type}_{0:02}", new
 
     def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
         """
