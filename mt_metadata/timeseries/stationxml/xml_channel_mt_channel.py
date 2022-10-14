@@ -516,26 +516,26 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
-        new = True
+
         # check for existing filters
         for f_key, f_obj in existing_filters.items():
             if f_obj.type == mt_filter.type:
                 if round(abs(f_obj.complex_response([1])[0])) == round(
                     abs(mt_filter.complex_response([1])[0])
                 ):
-                    new = False
-                    return f_obj.name, new
+
+                    return f_obj.name, False
 
         try:
             last = sorted(
                 [k for k in existing_filters.keys() if mt_filter.type in k]
             )[-1]
         except IndexError:
-            return f"{mt_filter.type}_{0:02}", new
+            return f"{mt_filter.type}_{0:02}", True
         try:
-            return f"{mt_filter.type}_{int(last[-2:]) + 1:02}", new
+            return f"{mt_filter.type}_{int(last[-2:]) + 1:02}", True
         except ValueError:
-            return f"{mt_filter.type}_{0:02}", new
+            return f"{mt_filter.type}_{0:02}", True
 
     def _mt_to_xml_response(self, mt_channel, filters_dict, xml_channel):
         """
