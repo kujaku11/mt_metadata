@@ -52,7 +52,7 @@ class TF:
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
 
         # set metadata for the station
-        self.survey_metadata = Survey()
+        self.survey_metadata = Survey(id="unknown_survey")
         self.station_metadata = Station()
         self.station_metadata.add_run(Run())
         self.station_metadata.runs[0].ex = Electric(component="ex")
@@ -97,7 +97,9 @@ class TF:
             "impedance": self.hx_hy,
             "tipper": self.hx_hy,
             "impedance_error": self.hx_hy,
+            "impedance_model_error": self.hx_hy,
             "tipper_error": self.hx_hy,
+            "tipper_model_error": self.hx_hy,
             "isp": self.hx_hy,
             "res": self.ex_ey_hz,
             "tf": self.hx_hy,
@@ -108,7 +110,9 @@ class TF:
             "impedance": self.ex_ey,
             "tipper": [self.hz],
             "impedance_error": self.ex_ey,
+            "impedance_model_error": self.ex_ey,
             "tipper_error": [self.hz],
+            "tipper_model_error": [self.hz],
             "isp": self.hx_hy,
             "res": self.ex_ey_hz,
             "tf": self.ex_ey_hz,
@@ -223,6 +227,17 @@ class TF:
             name="transfer_function_error",
         )
 
+        tf_model_err = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="transfer_function_model_error",
+        )
+
         inv_signal_power = xr.DataArray(
             data=0 + 0j,
             dims=["period", "output", "input"],
@@ -250,6 +265,7 @@ class TF:
             {
                 tf.name: tf,
                 tf_err.name: tf_err,
+                tf_model_err.name: tf_model_err,
                 inv_signal_power.name: inv_signal_power,
                 residual_covariance.name: residual_covariance,
             }
@@ -342,7 +358,9 @@ class TF:
             "impedance": (2, 2),
             "tipper": (1, 2),
             "impedance_error": (2, 2),
+            "impedance_model_error": (2, 2),
             "tipper_error": (1, 2),
+            "tipper_model_error": (1, 2),
             "isp": (2, 2),
             "res": (3, 3),
             "transfer_function": (3, 2),
@@ -432,9 +450,13 @@ class TF:
             "res": "residual_covariance",
             "transfer_function": "transfer_function",
             "impedance_error": "transfer_function_error",
+            "impedance_model_error": "transfer_function_model_error",
             "tipper_error": "transfer_function_error",
+            "tipper_model_error": "transfer_function_model_error",
             "tf_error": "transfer_function_error",
+            "tf_model_error": "transfer_function_model_error",
             "transfer_function_error": "transfer_function_error",
+            "transfer_function_model_error": "transfer_function_model_error",
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -543,6 +565,38 @@ class TF:
         """
         self._set_data_array(value, "tf_error")
 
+    @property
+    def transfer_function_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_transfer_function():
+            ds = self.dataset.transfer_function_model_error.sel(
+                input=self.hx_hy, output=self.ex_ey_hz
+            )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
+
+    @transfer_function_model_error.setter
+    def transfer_function_model_error(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tf_model_error")
+
     def has_impedance(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -636,6 +690,41 @@ class TF:
         """
         self._set_data_array(value, "impedance_error")
 
+    @property
+    def impedance_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_impedance():
+            z_err = self.dataset.transfer_function_model_error.sel(
+                input=self._ch_input_dict["impedance"],
+                output=self._ch_output_dict["impedance"],
+            )
+            z_err.name = "impedance_model_error"
+
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                z_err.attrs[key] = value
+            return z_err
+
+    @impedance_model_error.setter
+    def impedance_model_error(self, value):
+        """
+        Set the impedance model errors from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "impedance_model_error")
+
     def has_tipper(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -726,6 +815,39 @@ class TF:
 
         """
         self._set_data_array(value, "tipper_error")
+
+    @property
+    def tipper_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_tipper():
+            t = self.dataset.transfer_function_model_error.sel(
+                input=self._ch_input_dict["tipper"],
+                output=self._ch_output_dict["tipper"],
+            )
+            t.name = "tipper_model_error"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                t.attrs[key] = value
+            return t
+
+    @tipper_model_error.setter
+    def tipper_model_error(self, value):
+        """
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tipper_model_error")
 
     def has_inverse_signal_power(self):
         """
@@ -973,6 +1095,22 @@ class TF:
         set station name
         """
         self.station_metadata.id = validate_name(station_name)
+
+    @property
+    def survey(self):
+        """
+        Survey ID
+        """
+        return self.survey_metadata.id
+
+    @survey.setter
+    def survey(self, survey_id):
+        """
+        set survey id
+        """
+        if survey_id is None:
+            survey_id = "unkown_survey"
+        self.survey_metadata.id = validate_name(survey_id)
 
     @property
     def tf_id(self):
