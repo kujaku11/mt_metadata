@@ -442,6 +442,9 @@ class TF:
         :rtype: TYPE
 
         """
+        if value is None:
+            return
+
         key_dict = {
             "tf": "transfer_function",
             "impedance": "transfer_function",
