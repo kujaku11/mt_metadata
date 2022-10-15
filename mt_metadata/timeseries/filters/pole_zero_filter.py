@@ -40,7 +40,7 @@ class PoleZeroFilter(FilterBase):
     @property
     def poles(self):
         """
-        
+
         :return: array of poles
         :rtype: np.ndarray
 
@@ -67,7 +67,7 @@ class PoleZeroFilter(FilterBase):
     @property
     def zeros(self):
         """
-        
+
         :return: array of zeros
         :rtype: np.ndarray
 
@@ -77,7 +77,7 @@ class PoleZeroFilter(FilterBase):
     @zeros.setter
     def zeros(self, value):
         """
-        
+
         Set the zeros, make sure the input is validated
         :param value: zero values
         :type value: list, tuple, np.ndarray
@@ -97,14 +97,14 @@ class PoleZeroFilter(FilterBase):
         """
         :return: number of poles
         :rtype: integer
-        
+
         """
         return len(self._poles)
 
     @property
     def n_zeros(self):
         """
-        
+
         :return: number of zeros
         :rtype: integer
 
@@ -113,18 +113,20 @@ class PoleZeroFilter(FilterBase):
 
     def zero_pole_gain_representation(self):
         """
-        
+
         :return: scipy.signal.ZPG object
         :rtype: :class:`scipy.signal.ZerosPolesGain`
 
         """
-        zpg = signal.ZerosPolesGain(self.zeros, self.poles, self.normalization_factor)
+        zpg = signal.ZerosPolesGain(
+            self.zeros, self.poles, self.normalization_factor
+        )
         return zpg
 
     @property
     def total_gain(self):
         """
-        
+
         :return: total gain of the filter
         :rtype: float
 
@@ -140,7 +142,7 @@ class PoleZeroFilter(FilterBase):
     ):
         """
         Convert the filter to an obspy filter
-        
+
         :param stage_number: sequential stage number, defaults to 1
         :type stage_number: integer, optional
         :param pz_type: Pole Zero type, defaults to "LAPLACE (RADIANS/SECOND)"
@@ -150,7 +152,7 @@ class PoleZeroFilter(FilterBase):
         :param sample_rate: sample rate, defaults to 1
         :type sample_rate: float, optional
         :return: Obspy stage filter
-        :rtype: :class:`obspy.core.inventory.PolesZerosResponseStage` 
+        :rtype: :class:`obspy.core.inventory.PolesZerosResponseStage`
 
         """
         if self.zeros is None:
@@ -187,7 +189,7 @@ class PoleZeroFilter(FilterBase):
         :rtype: np.ndarray
 
         """
-        angular_frequencies = 2 * np.pi * frequencies
+        angular_frequencies = 2 * np.pi * np.array(frequencies)
         w, h = signal.freqs_zpk(
             self.zeros, self.poles, self.total_gain, worN=angular_frequencies
         )
