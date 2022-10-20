@@ -69,9 +69,7 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = (
-                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            )
+            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -557,7 +555,7 @@ class ZMM(ZMMHeader):
                 f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['df']} Hz"
             ]
             # write tf
-            lines += [" Tranfer Functions"]
+            lines += [" Transfer Functions"]
             for c_out in self.output_channels:
                 line = ""
                 for c_in in self.input_channels:
@@ -619,9 +617,7 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(
-            period_block[0].strip().split(":")[1].split()[0].strip()
-        )
+        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -630,12 +626,8 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(
-            period_block[1].strip().split("point")[1].split()[0].strip()
-        )
-        sr = float(
-            period_block[1].strip().split("freq.")[1].split()[0].strip()
-        )
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
         self.decimation_dict[f"{period:.10g}"] = {
             "level": level,
             "bands": bands,

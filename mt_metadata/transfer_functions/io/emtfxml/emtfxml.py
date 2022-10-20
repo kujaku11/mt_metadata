@@ -563,28 +563,34 @@ class EMTFXML(emtf_xml.EMTF):
                 self.logger.debug("run has no comments")
             f.errors = run["errors"]
 
-            if isinstance(run["magnetometer"], list):
-                f.magnetometer = []
-                for mag in run["magnetometer"]:
+            try:
+                if isinstance(run["magnetometer"], list):
+                    f.magnetometer = []
+                    for mag in run["magnetometer"]:
+                        m = meta_classes["magnetometer"]()
+                        m.from_dict({"magnetometer": mag})
+                        f.magnetometer.append(m)
+                else:
+                    f.magnetometer = []
                     m = meta_classes["magnetometer"]()
-                    m.from_dict({"magnetometer": mag})
+                    m.from_dict({"magnetometer": run["magnetometer"]})
                     f.magnetometer.append(m)
-            else:
-                f.magnetometer = []
-                m = meta_classes["magnetometer"]()
-                m.from_dict({"magnetometer": run["magnetometer"]})
-                f.magnetometer.append(m)
+            except KeyError:
+                self.logger.debug("run has no magnetotmeter information")
 
-            if isinstance(run["dipole"], list):
-                f.dipole = []
-                for mag in run["dipole"]:
+            try:
+                if isinstance(run["dipole"], list):
+                    f.dipole = []
+                    for mag in run["dipole"]:
+                        m = meta_classes["dipole"]()
+                        m.from_dict({"dipole": mag})
+                        f.dipole.append(m)
+                else:
                     m = meta_classes["dipole"]()
-                    m.from_dict({"dipole": mag})
+                    m.from_dict({"dipole": run["dipole"]})
                     f.dipole.append(m)
-            else:
-                m = meta_classes["dipole"]()
-                m.from_dict({"dipole": run["dipole"]})
-                f.dipole.append(m)
+            except KeyError:
+                self.logger.debug("run has no dipole information")
 
             self.field_notes.append(f)
 
@@ -663,7 +669,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c_list = [c_list]
                 ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
 
-            except (KeyError):
+            except (KeyError, TypeError):
                 pass
 
             try:
@@ -673,7 +679,7 @@ class EMTFXML(emtf_xml.EMTF):
                 if not isinstance(c_list, list):
                     c_list = [c_list]
                 ch_list += [{"electric": ch_dict} for ch_dict in c_list]
-            except (KeyError):
+            except (KeyError, TypeError):
                 pass
 
             setattr(self.site_layout, ch, ch_list)
@@ -772,9 +778,7 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = (
-                self.copyright.citation.authors
-            )
+            survey_obj.citation_dataset.author = self.copyright.citation.authors
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -884,6 +888,8 @@ class EMTFXML(emtf_xml.EMTF):
         )
 
         for fn in self.field_notes:
+            if fn.sampling_rate == 0:
+                continue
             r = Run()
             r.id = fn.run
             r.data_logger.id = fn.instrument.id
@@ -905,18 +911,22 @@ class EMTFXML(emtf_xml.EMTF):
 
             else:
                 for mag in fn.magnetometer:
-                    comp = mag.name.lower()
+                    comp = mag.name
+                    if comp is None:
+                        continue
                     c = Magnetic()
-                    c.component = comp
+                    c.component = comp.lower()
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
                     r.add_channel(c)
 
             for dp in fn.dipole:
-                comp = dp.name.lower()
+                comp = dp.name
+                if comp is None:
+                    continue
                 c = Electric()
-                c.component = comp
+                c.component = comp.lower()
                 c.translated_azimuth = dp.azimuth
                 c.dipole_length = dp.length
                 for pot in dp.electrode:
