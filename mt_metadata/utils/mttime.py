@@ -39,7 +39,7 @@ leap_second_dict = {
     15: {"min": datetime.date(2009, 1, 1), "max": datetime.date(2012, 6, 30)},
     16: {"min": datetime.date(2012, 7, 1), "max": datetime.date(2015, 7, 1)},
     17: {"min": datetime.date(2015, 7, 1), "max": datetime.date(2017, 1, 1)},
-    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2022, 7, 1)},
+    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2022, 12, 1)},
 }
 
 
@@ -88,7 +88,6 @@ def calculate_leap_seconds(year, month, day):
             and given_date >= leap_second_dict[leap_key]["min"]
         ):
             return int(leap_key)
-
     return None
 
 
@@ -141,7 +140,6 @@ class MTime:
             if isinstance(time, str):
                 self.from_str(time)
                 self.logger.debug(f"Parsed {time} to {self.iso_str}")
-
             elif isinstance(time, (int, float)):
                 self.logger.debug(f"Input time {time}, assuming epoch seconds in UTC")
                 self.epoch_seconds = time
@@ -151,25 +149,19 @@ class MTime:
                     + "dt_object set to datetime64.tolist()."
                 )
                 self.dt_object = self.validate_tzinfo(time.tolist())
-
             elif isinstance(time, (datetime.datetime)):
                 self.logger.debug("Input time is a datetime.datetime object")
                 self.dt_object = self.validate_tzinfo(time)
-
             elif isinstance(time, pd._libs.tslibs.timestamps.Timestamp):
                 self.from_str(time.isoformat())
-
             elif hasattr(time, "isoformat"):
 
                 self.from_str(time.isoformat())
-
             else:
                 msg = "input time must be a string, float, or int, not {0}"
                 self.logger.error(msg.format(type(time)))
-
         else:
             self.from_str("1980-01-01 00:00:00")
-
         if gps_time:
             leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
             self.logger.debug(
@@ -186,13 +178,10 @@ class MTime:
     def __eq__(self, other):
         if isinstance(other, datetime.datetime):
             return bool(self.dt_object == other)
-
         elif isinstance(other, MTime):
             return bool(self.dt_object == other.dt_object)
-
         elif isinstance(other, str):
             return bool(self.iso_str == other)
-
         elif isinstance(other, (int, float)):
             return bool(self.epoch_seconds == float(other))
         else:
@@ -208,16 +197,12 @@ class MTime:
     def __lt__(self, other):
         if isinstance(other, datetime.datetime):
             return bool(self.dt_object < other)
-
         elif isinstance(other, MTime):
             return bool(self.dt_object < other.dt_object)
-
         elif isinstance(other, str):
             return bool(self.iso_str < other)
-
         elif isinstance(other, (int, float)):
             return bool(self.epoch_seconds < float(other))
-
         else:
             msg = "Cannot compare {0} of type {1} with MTime Object".format(
                 other, type(other)
@@ -228,13 +213,10 @@ class MTime:
     def __le__(self, other):
         if isinstance(other, datetime.datetime):
             return bool(self.dt_object <= other)
-
         elif isinstance(other, MTime):
             return bool(self.dt_object <= other.dt_object)
-
         elif isinstance(other, str):
             return bool(self.iso_str <= other)
-
         elif isinstance(other, (int, float)):
             return bool(self.epoch_seconds <= float(other))
         else:
@@ -250,13 +232,10 @@ class MTime:
     def __ge__(self, other):
         if isinstance(other, datetime.datetime):
             return bool(self.dt_object >= other)
-
         elif isinstance(other, MTime):
             return bool(self.dt_object >= other.dt_object)
-
         elif isinstance(other, str):
             return bool(self.iso_str >= other)
-
         elif isinstance(other, (int, float)):
             return bool(self.epoch_seconds >= float(other))
         else:
@@ -275,7 +254,6 @@ class MTime:
         if isinstance(other, (int, float)):
             other = datetime.timedelta(seconds=other)
             self.logger.debug("Assuming other time is in seconds")
-
         if not isinstance(other, (datetime.timedelta)):
             msg = (
                 "Adding times does not make sense, must use "
@@ -285,7 +263,6 @@ class MTime:
             )
             self.logger.error(msg)
             raise MTTimeError(msg)
-
         return MTime(self.dt_object + other)
 
     def __sub__(self, other):
@@ -310,14 +287,12 @@ class MTime:
             other_seconds = other.astype(np.float)
         elif isinstance(other, (datetime.datetime)):
             other_seconds = other.timestamp()
-
         else:
             msg = "Cannot compare {0} of type {1} with MTime Object".format(
                 other, type(other)
             )
             self.logger.error(msg)
             raise MTTimeError(msg)
-
         return self.epoch_seconds - other_seconds
 
     @property
@@ -357,7 +332,6 @@ class MTime:
         if dt_str is None:
             self.logger.warning("Time string is None, setting to 1980-01-01:00:00:00")
             dt_str = "1980-01-01T00:00:00"
-
         try:
             parsed_str = dtparser.isoparser(dt_str)
         except ValueError:
@@ -371,12 +345,10 @@ class MTime:
                 )
                 self.logger.error(msg)
                 raise MTTimeError(msg)
-
             except TypeError as error:
                 msg = "%s input is type(%s), %s"
                 self.logger.error(msg, error, type(dt_str), dt_str)
                 raise MTTimeError(msg % (error, type(dt_str), dt_str))
-
         self.dt_object = self.validate_tzinfo(parsed_str)
 
     def validate_tzinfo(self, dt_object):
@@ -385,18 +357,14 @@ class MTime:
         """
         if dt_object.tzinfo == datetime.timezone.utc:
             return dt_object
-
         elif isinstance(dt_object.tzinfo, tzutc):
             return dt_object.replace(tzinfo=datetime.timezone.utc)
-
         elif dt_object.tzinfo is None:
             return dt_object.replace(tzinfo=datetime.timezone.utc)
-
         # this seems to happen on linux systems
         elif isinstance(dt_object.tzinfo, tzlocal):
             self.logger.debug("Local timezone identified setting to UTC")
             return dt_object.replace(tzinfo=datetime.timezone.utc)
-
         elif dt_object.tzinfo != datetime.timezone.utc:
             raise ValueError("Time zone must be UTC")
 
