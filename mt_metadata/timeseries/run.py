@@ -35,13 +35,19 @@ dl_dict.add_dict(get_schema("battery", SCHEMA_FN_PATHS), "power_source")
 attr_dict.add_dict(dl_dict, "data_logger")
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "acquired_by", keys=["author", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS),
+    "acquired_by",
+    keys=["author", "comments"],
 )
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS), "metadata_by", keys=["author", "comments"]
+    get_schema("person", SCHEMA_FN_PATHS),
+    "metadata_by",
+    keys=["author", "comments"],
 )
 attr_dict.add_dict(
-    get_schema("provenance", SCHEMA_FN_PATHS), "provenance", keys=["comments", "log"]
+    get_schema("provenance", SCHEMA_FN_PATHS),
+    "provenance",
+    keys=["comments", "log"],
 )
 # =============================================================================
 
@@ -99,8 +105,8 @@ class Run(Base):
 
     def get_channel(self, component):
         """
-        Get a channel 
-        
+        Get a channel
+
         :param component: DESCRIPTION
         :type component: TYPE
         :return: DESCRIPTION
@@ -157,7 +163,28 @@ class Run(Base):
         channels = []
         fails = []
         for ii, channel in enumerate(value):
-            if not isinstance(channel, (Auxiliary, Electric, Magnetic)):
+            if isinstance(channel, dict):
+                try:
+                    ch_type = channel["type"]
+                    if ch_type is None:
+                        ch_type = channel["component"][0]
+
+                    if ch_type in ["electric", "e"]:
+                        ch = Electric()
+                    elif ch_type in ["magnetic", "b", "h"]:
+                        ch = Magnetic()
+                    else:
+                        ch = Auxiliary()
+
+                    ch.from_dict(channel)
+                    channels.append(ch)
+                except KeyError:
+                    msg = (
+                        f"Item {ii} is not type(channel); type={type(channel)}"
+                    )
+                    fails.append(msg)
+                    self.logger.error(msg)
+            elif not isinstance(channel, (Auxiliary, Electric, Magnetic)):
                 msg = f"Item {ii} is not type(channel); type={type(channel)}"
                 fails.append(msg)
                 self.logger.error(msg)

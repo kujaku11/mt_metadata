@@ -18,7 +18,8 @@ from mt_metadata import TF_EDI_PHOENIX
 # Phoenix
 # =============================================================================
 class TestPhoenixEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_PHOENIX)
 
     def test_header(self):
@@ -48,42 +49,44 @@ class TestPhoenixEDI(unittest.TestCase):
             self.assertTrue(self.edi_obj.Header.phoenix_edi)
 
     def test_info(self):
-        info_list = [
-            "RUN INFORMATION",
-            "PROCESSED FROM DFT TIME SERIES",
-            "Lat 22:49.423 S Lng 139:17.681 E",
-            "FILE: IEB0537A IEB0564M",
-            "MTU-DFT VERSION: TStoFT.38",
-            "MTU-RBS VERSION:R2012-0216-B22",
-            "Reference Field: Remote H - Ref.",
-            "RBS: 7  COH: 0.85  RHO VAR: 0.75",
-            "CUTOFF: 0.00 COH: 35 % VAR: 25 %",
-            "Notch Filters set for 50 Hz.",
-            "Comp   MTU box  S/N   Temp",
-            "Ex & Ey: MTU5A    2189   39 C",
-            "Hx & Hy: MTU5A    2189   39 C",
-            "Hz: MTU5A    2189   39 C",
-            "Rx & Ry: MTU5A    2779   40 C",
-            "STATION 1",
-            "Site Desc; BadR: 0 SatR: 54",
-            "Lat  22:49:254S Long 139:17:409E",
-            "Elevation: 158    M. DECL: 0.000",
-            "Reference Site: IEB0564M",
-            "Site Permitted by:",
-            "Site Layout by:",
-            "SYSTEM INFORMATION",
-            "MTU-Box Gains:E`s x 4 H`s x 4",
-            "MTU-Ref Serial Number: U-2779",
-            "Comp Chan#   Sensor     Azimuth",
-            "Ex1   1     100.0 M    0.0 DGtn",
-            "Ey1   2     100.0 M   90.0 DGtn",
-            "Hx1   3    COIL2318    0.0 DGtn",
-            "Hy1   4    COIL2319   90.0 DGtn",
-            "Hz1   5    COIL2320",
-            "RHx2   6    COIL2485    0.0 DGtn",
-            "RHy2   7    COIL2487   90.0 DGtn",
-            "Ebat:12.3V Hbat:12.3V Rbat:11.9V",
-        ]
+        info_list = sorted(
+            [
+                "RUN INFORMATION",
+                "PROCESSED FROM DFT TIME SERIES",
+                "Lat 22:49.423 S Lng 139:17.681 E",
+                "FILE: IEB0537A IEB0564M",
+                "MTU-DFT VERSION: TStoFT.38",
+                "MTU-RBS VERSION:R2012-0216-B22",
+                "Reference Field: Remote H - Ref.",
+                "RBS: 7  COH: 0.85  RHO VAR: 0.75",
+                "CUTOFF: 0.00 COH: 35 % VAR: 25 %",
+                "Notch Filters set for 50 Hz.",
+                "Comp   MTU box  S/N   Temp",
+                "Ex & Ey: MTU5A    2189   39 C",
+                "Hx & Hy: MTU5A    2189   39 C",
+                "Hz: MTU5A    2189   39 C",
+                "Rx & Ry: MTU5A    2779   40 C",
+                "STATION 1",
+                "Site Desc; BadR: 0 SatR: 54",
+                "Lat  22:49:254S Long 139:17:409E",
+                "Elevation: 158    M. DECL: 0.000",
+                "Reference Site: IEB0564M",
+                "Site Permitted by:",
+                "Site Layout by:",
+                "SYSTEM INFORMATION",
+                "MTU-Box Gains:E`s x 4 H`s x 4",
+                "MTU-Ref Serial Number: U-2779",
+                "Comp Chan#   Sensor     Azimuth",
+                "Ex1   1     100.0 M    0.0 DGtn",
+                "Ey1   2     100.0 M   90.0 DGtn",
+                "Hx1   3    COIL2318    0.0 DGtn",
+                "Hy1   4    COIL2319   90.0 DGtn",
+                "Hz1   5    COIL2320",
+                "RHx2   6    COIL2485    0.0 DGtn",
+                "RHy2   7    COIL2487   90.0 DGtn",
+                "Ebat:12.3V Hbat:12.3V Rbat:11.9V",
+            ]
+        )
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
 
@@ -91,6 +94,7 @@ class TestPhoenixEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "CH1"),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 5374.0537),
                 ("x", -50.0),
@@ -102,12 +106,15 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
                 ("acqchan", "CH2"),
+                ("azm", 116.61629962451384),
                 ("chtype", "EY"),
                 ("id", 5375.0537),
                 ("x", 22.4),
@@ -119,7 +126,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -135,7 +144,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -151,7 +162,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -167,7 +180,9 @@ class TestPhoenixEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
+        )
 
     def test_measurement_rrhx(self):
         ch = OrderedDict(
@@ -222,13 +237,19 @@ class TestPhoenixEDI(unittest.TestCase):
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(-22.82372, self.edi_obj.Measurement.reflat, 5)
+            self.assertAlmostEqual(
+                -22.82372, self.edi_obj.Measurement.reflat, 5
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflon, 5)
+            self.assertAlmostEqual(
+                139.294694, self.edi_obj.Measurement.reflon, 5
+            )
 
         with self.subTest("reflong"):
-            self.assertAlmostEqual(139.294694, self.edi_obj.Measurement.reflong, 5)
+            self.assertAlmostEqual(
+                139.294694, self.edi_obj.Measurement.reflong, 5
+            )
 
         with self.subTest("refelev"):
             self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
@@ -251,9 +272,13 @@ class TestPhoenixEDI(unittest.TestCase):
 
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
 
-        for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5):
+        for ii, ch in enumerate(
+            ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5
+        ):
             with self.subTest(msg=ch):
-                self.assertEqual(str(float(d_list[ii])), getattr(self.edi_obj.Data, ch))
+                self.assertEqual(
+                    str(float(d_list[ii])), getattr(self.edi_obj.Data, ch)
+                )
 
 
 # =============================================================================

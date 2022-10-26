@@ -34,33 +34,49 @@ class EMeasurement(Base):
             "x2": "<.2f",
             "y2": "<.2f",
             "z2": "<.2f",
+            "azm": "<.2f",
             "acqchan": "<",
         }
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+        if self.azm == 0:
+            self.azm = self.azimuth
+
     def __str__(self):
-        return "\n".join([f"{k} = {v}" for k, v in self.to_dict(single=True).items()])
+        return "\n".join(
+            [f"{k} = {v}" for k, v in self.to_dict(single=True).items()]
+        )
 
     def __repr__(self):
         return self.__str__()
 
     @property
     def dipole_length(self):
-        if hasattr(self, "z"):
-            return np.sqrt(
-                (self.x2 - self.x) ** 2 + (self.y2 - self.y) ** 2 + self.z ** 2
-            )
-        else:
-            return np.sqrt((self.x2 - self.x) ** 2 + (self.y2 - self.y) ** 2)
+        try:
+            if hasattr(self, "z"):
+                return np.sqrt(
+                    (self.x2 - self.x) ** 2
+                    + (self.y2 - self.y) ** 2
+                    + self.z**2
+                )
+            else:
+                return np.sqrt(
+                    (self.x2 - self.x) ** 2 + (self.y2 - self.y) ** 2
+                )
+        except TypeError:
+            return 0
 
     @property
     def azimuth(self):
         if hasattr(self, "azm"):
-            return self.azm
+            if self.azm != 0:
+                return self.azm
         try:
-            return np.rad2deg(np.arctan2((self.y2 - self.y), (self.x2 - self.x)))
-        except ZeroDivisionError:
+            return np.rad2deg(
+                np.arctan2((self.y2 - self.y), (self.x2 - self.x))
+            )
+        except (ZeroDivisionError, TypeError):
             return 0.0
 
     @property
@@ -68,7 +84,9 @@ class EMeasurement(Base):
         if self.acqchan != None:
             if not isinstance(self.acqchan, (int, float)):
                 try:
-                    return [int("".join(i for i in self.acqchan if i.isdigit()))][0]
+                    return [
+                        int("".join(i for i in self.acqchan if i.isdigit()))
+                    ][0]
                 except (IndexError, ValueError):
                     return 0
             return self.acqchan

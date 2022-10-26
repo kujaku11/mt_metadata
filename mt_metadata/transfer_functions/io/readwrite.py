@@ -73,13 +73,21 @@ plugins = {
         "reader": read_zmm,
         "writer": write_zmm,
     },
-    "j": {"file_types": ["j"], "reader": read_jfile, "writer": write_jfile,},
+    "j": {
+        "file_types": ["j"],
+        "reader": read_jfile,
+        "writer": write_jfile,
+    },
     "emtfxml": {
         "file_types": ["xml"],
         "reader": read_emtfxml,
         "writer": write_emtfxml,
     },
-    "avg": {"file_types": ["avg"], "reader": read_avg, "writer": write_avg,},
+    "avg": {
+        "file_types": ["avg"],
+        "reader": read_avg,
+        "writer": write_avg,
+    },
 }
 
 
@@ -125,7 +133,7 @@ def get_writer(extension):
     raise ValueError(msg)
 
 
-def read_file(fn, file_type=None):
+def read_file(fn, file_type=None, **kwargs):
     """
 
     :param fn: full path to file
@@ -157,7 +165,7 @@ def read_file(fn, file_type=None):
     else:
         file_type, file_reader = get_reader(fn.suffix.replace(".", ""))
 
-    return file_reader(fn)
+    return file_reader(fn, **kwargs)
 
 
 def write_file(mt_object, fn, file_type=None, **kwargs):

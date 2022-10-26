@@ -17,7 +17,9 @@ Created on Mon Feb  8 21:25:40 2021
 # =============================================================================
 # Imports
 # =============================================================================
+from pathlib import Path
 from xml.etree import cElementTree as et
+import json
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (
@@ -50,24 +52,31 @@ class Experiment(Base):
         if len(self.surveys) > 0:
             lines.append(f"Number of Surveys: {len(self.surveys)}")
             for survey in self.surveys:
-                lines.append(f"\tSurvey ID: {survey.id}")
-                lines.append(f"\tNumber of Stations: {len(survey)}")
-                lines.append(f"\t{'-' * 20}")
+                lines.append(f"  Survey ID: {survey.id}")
+                lines.append(f"  Number of Stations: {len(survey)}")
+                lines.append(
+                    f"  Number of Filters: {len(survey.filters.keys())}"
+                )
+                lines.append(f"  {'-' * 20}")
+                for f_key, f_object in survey.filters.items():
+                    lines.append(f"    Filter Name: {f_key}")
+                    lines.append(f"    Filter Type: {f_object.type}")
+                    lines.append(f"    {'-' * 20}")
                 for station in survey.stations:
-                    lines.append(f"\t\tStation ID: {station.id}")
-                    lines.append(f"\t\tNumber of Runs: {len(station)}")
-                    lines.append(f"\t\t{'-' * 20}")
+                    lines.append(f"    Station ID: {station.id}")
+                    lines.append(f"    Number of Runs: {len(station)}")
+                    lines.append(f"    {'-' * 20}")
                     for run in station.runs:
-                        lines.append(f"\t\t\tRun ID: {run.id}")
-                        lines.append(f"\t\t\tNumber of Channels: {len(run)}")
+                        lines.append(f"      Run ID: {run.id}")
+                        lines.append(f"      Number of Channels: {len(run)}")
                         lines.append(
-                            "\t\t\tRecorded Channels: "
+                            "      Recorded Channels: "
                             + ", ".join(run.channels_recorded_all)
                         )
-                        lines.append(f"\t\t\tStart: {run.time_period.start}")
-                        lines.append(f"\t\t\tEnd:   {run.time_period.end}")
+                        lines.append(f"      Start: {run.time_period.start}")
+                        lines.append(f"      End:   {run.time_period.end}")
 
-                        lines.append(f"\t\t\t{'-' * 20}")
+                        lines.append(f"      {'-' * 20}")
 
         return "\n".join(lines)
 
@@ -75,7 +84,10 @@ class Experiment(Base):
         return self.__str__()
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+        return (
+            isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -127,6 +139,191 @@ class Experiment(Base):
         """Return names of surveys in experiment"""
         return [ss.id for ss in self.surveys]
 
+    def has_survey(self, survey_id):
+        """
+        Has survey id
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if survey_id in self.survey_names:
+            return True
+        return False
+
+    def survey_index(self, survey_id):
+        """
+        Get survey index
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_survey(survey_id):
+            return self.survey_names.index(survey_id)
+        return None
+
+    def add_survey(self, survey_obj):
+        """
+        Add a survey, if has the same name update that object.
+
+        :param survey_obj: DESCRIPTION
+        :type survey_obj: `:class:`mt_metadata.timeseries.Survey`
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(survey_obj, Survey):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Survey object not {type(survey_obj)}"
+            )
+
+        index = self.survey_index(survey_obj.id)
+        if index is not None:
+            self.surveys[index].update(survey_obj)
+            self.logger.warning(
+                f"survey {survey_obj.id} already exists, updating metadata"
+            )
+        else:
+            self.surveys.append(survey_obj)
+
+    def get_survey(self, survey_id):
+        """
+        Get a survey from the survey id
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        index = self.survey_index(survey_id)
+        if index is None:
+            self.logger.warning(f"Could not find survey {survey_id}")
+            return None
+        return self.surveys[index]
+
+    def to_dict(self, nested=False, required=True):
+        """
+        create a dictionary for the experiment object.
+
+        :param nested: DESCRIPTION, defaults to False
+        :type nested: TYPE, optional
+        :param single: DESCRIPTION, defaults to False
+        :type single: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        kwargs = {"nested": nested, "single": True, "required": required}
+
+        ex_dict = {"experiment": {"surveys": []}}
+        for survey in self.surveys:
+            survey_dict = survey.to_dict(**kwargs)
+            survey_dict["stations"] = []
+            survey_dict["filters"] = []
+            for station in survey.stations:
+                station_dict = station.to_dict(**kwargs)
+                station_dict["runs"] = []
+                for run in station.runs:
+                    run_dict = run.to_dict(**kwargs)
+                    run_dict["channels"] = []
+                    for channel in run.channels:
+                        run_dict["channels"].append(channel.to_dict(**kwargs))
+                    station_dict["runs"].append(run_dict)
+                survey_dict["stations"].append(station_dict)
+            for f_key, f_object in survey.filters.items():
+                survey_dict["filters"].append(f_object.to_dict(**kwargs))
+            ex_dict["experiment"]["surveys"].append(survey_dict)
+
+        return ex_dict
+
+    def from_dict(self, ex_dict):
+        """
+        fill from an input dictionary
+
+        :param ex_dict: DESCRIPTION
+        :type ex_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(ex_dict, dict):
+            msg = f"experiemnt input must be a dictionary not {type(ex_dict)}"
+            self.logger.debug(msg)
+            raise TypeError(msg)
+        if "experiment" not in ex_dict.keys():
+            return
+
+        for survey_dict in ex_dict["experiment"]["surveys"]:
+            survey_object = Survey()
+            survey_object.from_dict(survey_dict)
+            self.add_survey(survey_object)
+
+    def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
+        """
+        Write a json string from a given object, taking into account other
+        class objects contained within the given object.
+
+        :param nested: make the returned json nested
+        :type nested: [ True | False ] , default is False
+
+        """
+
+        if fn is not None:
+            with open(fn, "w") as fid:
+                json.dump(
+                    self.to_dict(nested=nested, required=required),
+                    fid,
+                    cls=helpers.NumpyEncoder,
+                    indent=indent,
+                )
+
+        else:
+            return json.dumps(
+                self.to_dict(nested=nested, required=required),
+                cls=helpers.NumpyEncoder,
+                indent=indent,
+            )
+
+    def from_json(self, json_str):
+        """
+        read in a json string and update attributes of an object
+
+        :param json_str: json string or file path
+        :type json_str: string or :class:`pathlib.Path`
+
+        """
+        if isinstance(json_str, str):
+            try:
+                json_path = Path(json_str)
+                if json_path.exists():
+                    with open(json_path, "r") as fid:
+                        json_dict = json.load(fid)
+            except OSError:
+                pass
+            json_dict = json.loads(json_str)
+        elif isinstance(json_str, Path):
+            if json_str.exists():
+                with open(json_str, "r") as fid:
+                    json_dict = json.load(fid)
+        elif not isinstance(json_str, (str, Path)):
+            msg = "Input must be valid JSON string not %"
+            self.logger.error(msg, type(json_str))
+            raise TypeError(msg % type(json_str))
+        self.from_dict(json_dict)
+
     def to_xml(self, fn=None, required=True):
         """
         Write XML version of the experiment
@@ -159,18 +356,30 @@ class Experiment(Base):
                                 and channel.positive.longitude == 0
                                 and channel.positive.elevation == 0
                             ):
-                                channel.positive.latitude = station.location.latitude
-                                channel.positive.longitude = station.location.longitude
-                                channel.positive.elevation = station.location.elevation
+                                channel.positive.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.positive.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.positive.elevation = (
+                                    station.location.elevation
+                                )
                         else:
                             if (
                                 channel.location.latitude == 0
                                 and channel.location.longitude == 0
                                 and channel.location.elevation == 0
                             ):
-                                channel.location.latitude = station.location.latitude
-                                channel.location.longitude = station.location.longitude
-                                channel.location.elevation = station.location.elevation
+                                channel.location.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.location.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.location.elevation = (
+                                    station.location.elevation
+                                )
 
                         run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
@@ -181,30 +390,6 @@ class Experiment(Base):
             with open(fn, "w") as fid:
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
-
-    def to_json(self, fn):
-        """
-        Write JSON version of the experiment
-
-        :param fn: DESCRIPTION
-        :type fn: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        pass
-
-    def to_pickle(self, fn):
-        """
-        Write a pickle version of the experiment
-
-        :param fn: DESCRIPTION
-        :type fn: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        pass
 
     def from_xml(self, fn=None, element=None):
         """
@@ -282,9 +467,9 @@ class Experiment(Base):
 
         return elements
 
-    def from_json(self, fn):
+    def to_pickle(self, fn):
         """
-        Read JSON version of experiment
+        Write a pickle version of the experiment
 
         :param fn: DESCRIPTION
         :type fn: TYPE

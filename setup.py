@@ -12,7 +12,7 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "concurrent-log-handler",
-    "numpy<=1.21",
+    "numpy",
     "pandas",
     "pyyaml",
     "obspy",
@@ -56,7 +56,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/kujaku11/mt_metadata",
-    version="0.1.9",
+    version="0.2.0",
     zip_safe=False,
-    package_data={"": ["data/mt_xml/*.xml", "data/stationxml/*xml"]},
+    package_data={"": ["data/mt_xml/*.xml", "data/stationxml/*.xml", "data/transfer_functions/*.edi"]},
 )

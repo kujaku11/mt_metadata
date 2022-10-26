@@ -21,7 +21,8 @@ from mt_metadata import TF_XML
 
 
 class TestEMTFXML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.xml = EMTFXML(fn=TF_XML)
         self.maxDiff = None
 
@@ -41,11 +42,16 @@ class TestEMTFXML(unittest.TestCase):
         test_dict = OrderedDict(
             [
                 ("description", "The original used to produce the XML"),
-                ("filename", "NMX20b_NMX20_NMW20_COR21_NMY21-NMX20b_NMX20_UTS18.zmm"),
+                (
+                    "filename",
+                    "NMX20b_NMX20_NMW20_COR21_NMY21-NMX20b_NMX20_UTS18.zmm",
+                ),
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.attachment.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.attachment.to_dict(single=True)
+        )
 
     def test_external_url(self):
         test_dict = OrderedDict(
@@ -55,14 +61,23 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.external_url.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.external_url.to_dict(single=True)
+        )
 
     def test_primary_data(self):
         test_dict = OrderedDict(
-            [("filename", "NMX20b_NMX20_NMW20_COR21_NMY21-NMX20b_NMX20_UTS18.png")]
+            [
+                (
+                    "filename",
+                    "NMX20b_NMX20_NMW20_COR21_NMY21-NMX20b_NMX20_UTS18.png",
+                )
+            ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.primary_data.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.primary_data.to_dict(single=True)
+        )
 
     def test_provenance(self):
         test_dict = OrderedDict(
@@ -70,7 +85,10 @@ class TestEMTFXML(unittest.TestCase):
                 ("create_time", "2021-03-17T14:47:44+00:00"),
                 ("creating_application", "EMTF File Conversion Utilities 4.0"),
                 ("creator.email", "pbedrosian@usgs.gov"),
-                ("creator.name", "Jade Crosbie, Paul Bedrosian and Anna Kelbert"),
+                (
+                    "creator.name",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
                 ("creator.org", "U.S. Geological Survey"),
                 (
                     "creator.org_url",
@@ -78,7 +96,10 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("submitter.email", "akelbert@usgs.gov"),
                 ("submitter.name", "Anna Kelbert"),
-                ("submitter.org", "U.S. Geological Survey, Geomagnetism Program"),
+                (
+                    "submitter.org",
+                    "U.S. Geological Survey, Geomagnetism Program",
+                ),
                 (
                     "submitter.org_url",
                     "https://www.usgs.gov/natural-hazards/geomagnetism",
@@ -86,7 +107,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.provenance.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.provenance.to_dict(single=True)
+        )
 
     def test_copyright(self):
         test_dict = OrderedDict(
@@ -99,7 +122,10 @@ class TestEMTFXML(unittest.TestCase):
                     "citation.authors",
                     "Schultz, A., Pellerin, L., Bedrosian, P., Kelbert, A., Crosbie, J.",
                 ),
-                ("citation.survey_d_o_i", "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH"),
+                (
+                    "citation.survey_d_o_i",
+                    "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH",
+                ),
                 (
                     "citation.title",
                     "USMTArray South Magnetotelluric Transfer Functions",
@@ -113,7 +139,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.copyright.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.copyright.to_dict(single=True)
+        )
 
     def test_site(self):
         test_dict = OrderedDict(
@@ -394,7 +422,9 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.data_types.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.data_types.to_dict(single=True)
+        )
 
     def test_site_layout(self):
         test_dict = OrderedDict(
@@ -473,12 +503,16 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.site_layout.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.site_layout.to_dict(single=True)
+        )
 
     def test_period_range(self):
         test_dict = OrderedDict([("max", 29127.11), ("min", 4.65455)])
 
-        self.assertDictEqual(test_dict, self.xml.period_range.to_dict(single=True))
+        self.assertDictEqual(
+            test_dict, self.xml.period_range.to_dict(single=True)
+        )
 
     def test_z(self):
         with self.subTest(msg="shape"):
@@ -503,8 +537,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.z[-1],
                     np.array(
                         [
-                            [0.00483462 + 0.00983358j, 0.02643963 + 0.05098311j],
-                            [-0.02203037 - 0.03744689j, -0.00295362 - 0.01293358j],
+                            [
+                                0.00483462 + 0.00983358j,
+                                0.02643963 + 0.05098311j,
+                            ],
+                            [
+                                -0.02203037 - 0.03744689j,
+                                -0.00295362 - 0.01293358j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -520,8 +560,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.z_invsigcov[0],
                     np.array(
                         [
-                            [0.8745101 - 2.905133e-08j, -0.4293981 + 1.663000e-01j],
-                            [-0.4293981 - 1.663000e-01j, 1.39159 - 7.486698e-10j],
+                            [
+                                0.8745101 - 2.905133e-08j,
+                                -0.4293981 + 1.663000e-01j,
+                            ],
+                            [
+                                -0.4293981 - 1.663000e-01j,
+                                1.39159 - 7.486698e-10j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -533,8 +579,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.z_invsigcov[-1],
                     np.array(
                         [
-                            [9.120293e-08 - 2.13634e-16j, 5.066908e-08 + 2.26600e-08j],
-                            [5.066908e-08 - 2.26600e-08j, 1.086271e-07 + 1.02634e-16j],
+                            [
+                                9.120293e-08 - 2.13634e-16j,
+                                5.066908e-08 + 2.26600e-08j,
+                            ],
+                            [
+                                5.066908e-08 - 2.26600e-08j,
+                                1.086271e-07 + 1.02634e-16j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -569,8 +621,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.z_residcov[-1],
                     np.array(
                         [
-                            [86.38148 + 0.000000e00j, -31.70986 + 1.281000e00j],
-                            [-31.70986 - 1.281000e00j, 45.52852 - 2.775558e-17j],
+                            [
+                                86.38148 + 0.000000e00j,
+                                -31.70986 + 1.281000e00j,
+                            ],
+                            [
+                                -31.70986 - 1.281000e00j,
+                                45.52852 - 2.775558e-17j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -584,7 +642,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t[0],
-                    np.array([[-0.09386985 + 0.00620671j, 0.04601304 + 0.03035755j]]),
+                    np.array(
+                        [[-0.09386985 + 0.00620671j, 0.04601304 + 0.03035755j]]
+                    ),
                 ).all()
             )
 
@@ -592,7 +652,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.xml.data.t[-1],
-                    np.array([[-0.03648688 + 0.08738894j, 0.1750294 + 0.1666582j]]),
+                    np.array(
+                        [[-0.03648688 + 0.08738894j, 0.1750294 + 0.1666582j]]
+                    ),
                 ).all()
             )
 
@@ -606,8 +668,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.t_invsigcov[0],
                     np.array(
                         [
-                            [0.8745101 - 2.905133e-08j, -0.4293981 + 1.663000e-01j],
-                            [-0.4293981 - 1.663000e-01j, 1.39159 - 7.486698e-10j],
+                            [
+                                0.8745101 - 2.905133e-08j,
+                                -0.4293981 + 1.663000e-01j,
+                            ],
+                            [
+                                -0.4293981 - 1.663000e-01j,
+                                1.39159 - 7.486698e-10j,
+                            ],
                         ]
                     ),
                 ).all()
@@ -619,8 +687,14 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.data.t_invsigcov[-1],
                     np.array(
                         [
-                            [9.120293e-08 - 2.13634e-16j, 5.066908e-08 + 2.26600e-08j],
-                            [5.066908e-08 - 2.26600e-08j, 1.086271e-07 + 1.02634e-16j],
+                            [
+                                9.120293e-08 - 2.13634e-16j,
+                                5.066908e-08 + 2.26600e-08j,
+                            ],
+                            [
+                                5.066908e-08 - 2.26600e-08j,
+                                1.086271e-07 + 1.02634e-16j,
+                            ],
                         ]
                     ),
                 ).all()

@@ -1,5 +1,5 @@
-
-# History
+History
+=========
 
 
 0.1.0 (2020-12-30)
@@ -62,4 +62,10 @@
 * Bug fixes (mainly in the transfer functions)
 * Combined timeseries and transfer_function metadata where similar, so now transfer_function metadata imports from timeseries when applicable.  Reduces files and redundancy.
 * Updated documentation
+
+0.2.0 (2022-09-10)
+---------------------
+
+* minor bug fixes
+* update reading .AVG files
 

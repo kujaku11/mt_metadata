@@ -75,27 +75,41 @@ class TestSurvey(unittest.TestCase):
         self.assertDictEqual(self.meta_dict, self.survey_object.to_dict())
 
     def test_in_out_json(self):
-        survey_json = json.dumps(self.meta_dict)
-        self.survey_object.from_json((survey_json))
-        self.assertDictEqual(self.meta_dict, self.survey_object.to_dict())
+        with self.subTest("JSON Dumps"):
+            survey_json = json.dumps(self.meta_dict)
+            self.survey_object.from_json((survey_json))
+            self.assertDictEqual(self.meta_dict, self.survey_object.to_dict())
 
-        survey_json = self.survey_object.to_json(nested=True)
-        self.survey_object.from_json(survey_json)
-        self.assertDictEqual(self.meta_dict, self.survey_object.to_dict())
+        with self.subTest("json to dict"):
+            survey_json = self.survey_object.to_json(nested=True)
+            self.survey_object.from_json(survey_json)
+            self.assertDictEqual(self.meta_dict, self.survey_object.to_dict())
 
     def test_start_date(self):
-        self.survey_object.time_period.start_date = "2020/01/02"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        with self.subTest("input date"):
+            self.survey_object.time_period.start_date = "2020/01/02"
+            self.assertEqual(
+                self.survey_object.time_period.start_date, "2020-01-02"
+            )
 
-        self.survey_object.start_date = "01-02-2020T12:20:30.450000+00:00"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        with self.subTest("Input datetime"):
+            self.survey_object.start_date = "01-02-2020T12:20:30.450000+00:00"
+            self.assertEqual(
+                self.survey_object.time_period.start_date, "2020-01-02"
+            )
 
     def test_end_date(self):
-        self.survey_object.time_period.start_date = "2020/01/02"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        with self.subTest("input date"):
+            self.survey_object.time_period.end_date = "2020/01/02"
+            self.assertEqual(
+                self.survey_object.time_period.end_date, "2020-01-02"
+            )
 
-        self.survey_object.start_date = "01-02-2020T12:20:30.45Z"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        with self.subTest("Input datetime"):
+            self.survey_object.end_date = "01-02-2020T12:20:30.45Z"
+            self.assertEqual(
+                self.survey_object.time_period.end_date, "2020-01-02"
+            )
 
     def test_latitude(self):
         self.survey_object.southeast_corner.latitude = "40:10:05.123"
@@ -113,25 +127,53 @@ class TestSurvey(unittest.TestCase):
         self.survey_object.from_dict(self.meta_dict)
         self.assertEqual(self.survey_object.acquired_by.author, "MT")
 
-    def test_set_stations(self):
-        self.survey_object.stations = [Station(id="one")]
-        self.assertEqual(len(self.survey_object.stations), 1)
-        self.assertListEqual(["one"], self.survey_object.station_names)
+    def test_add_station(self):
+        self.survey_object.add_station(Station(id="one"))
+
+        with self.subTest("length"):
+            self.assertEqual(len(self.survey_object.stations), 1)
+
+        with self.subTest("staiton names"):
+            self.assertListEqual(["one"], self.survey_object.station_names)
+
+        with self.subTest("has station"):
+            self.assertTrue(self.survey_object.has_station("one"))
+
+        with self.subTest("index"):
+            self.assertEqual(0, self.survey_object.station_index("one"))
+
+    def test_add_stations_fail(self):
+        self.assertRaises(TypeError, self.survey_object.add_station, 10)
+
+    def test_get_station(self):
+        input_station = Station(id="one")
+        self.survey_object.add_station(input_station)
+        s = self.survey_object.get_station("one")
+        self.assertTrue(input_station == s)
 
     def test_set_stations_fail(self):
         def set_stations(value):
             self.survey_object.stations = value
 
-        self.assertRaises(TypeError, set_stations, 10)
-        self.assertRaises(TypeError, set_stations, [Station(), Survey()])
+        with self.subTest("integer input"):
+            self.assertRaises(TypeError, set_stations, 10)
+
+        with self.subTest("bad object"):
+            self.assertRaises(TypeError, set_stations, [Station(), Survey()])
 
     def test_add_surveys(self):
         survey_02 = Survey()
         survey_02.stations.append(Station(id="two"))
         self.survey_object.stations.append(Station(id="one"))
         self.survey_object += survey_02
-        self.assertEqual(len(self.survey_object), 2)
-        self.assertListEqual(["one", "two"], self.survey_object.station_names)
+
+        with self.subTest("length"):
+            self.assertEqual(len(self.survey_object), 2)
+
+        with self.subTest("compare list"):
+            self.assertListEqual(
+                ["one", "two"], self.survey_object.station_names
+            )
 
 
 # =============================================================================

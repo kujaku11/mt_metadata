@@ -1,0 +1,25 @@
+{
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "name of the job",
+        "options": [],
+        "alias": [],
+        "example": "yellowstone",
+    	"default": null
+    },
+	 "for": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "who the job is for",
+        "options": [],
+        "alias": [],
+        "example": "NSF",
+    	"default": null
+    }
+    
+}

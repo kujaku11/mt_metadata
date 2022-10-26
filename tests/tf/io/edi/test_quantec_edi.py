@@ -18,7 +18,8 @@ from mt_metadata import TF_EDI_QUANTEC
 # Quantec
 # =============================================================================
 class TestQuantecEDI(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.edi_obj = edi.EDI(fn=TF_EDI_QUANTEC)
 
     def test_header(self):
@@ -57,6 +58,7 @@ class TestQuantecEDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 14.001),
                 ("x", -50.0),
@@ -68,12 +70,15 @@ class TestQuantecEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
                 ("acqchan", None),
+                ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 15.001),
                 ("x", 0.0),
@@ -85,7 +90,9 @@ class TestQuantecEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -101,7 +108,9 @@ class TestQuantecEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -117,7 +126,9 @@ class TestQuantecEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -133,7 +144,9 @@ class TestQuantecEDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
+        )
 
     def test_measurement_rrhx(self):
         ch = OrderedDict(
@@ -187,10 +200,14 @@ class TestQuantecEDI(unittest.TestCase):
         )
 
         with self.subTest("reflat"):
-            self.assertAlmostEqual(-23.05113, self.edi_obj.Measurement.reflat, 5)
+            self.assertAlmostEqual(
+                -23.05113, self.edi_obj.Measurement.reflat, 5
+            )
 
         with self.subTest("reflon"):
-            self.assertAlmostEqual(139.46753, self.edi_obj.Measurement.reflon, 5)
+            self.assertAlmostEqual(
+                139.46753, self.edi_obj.Measurement.reflon, 5
+            )
 
         with self.subTest("refelev"):
             self.assertAlmostEqual(122.0, self.edi_obj.Measurement.refelev, 2)
@@ -208,7 +225,9 @@ class TestQuantecEDI(unittest.TestCase):
         self.assertListEqual(d_list, self.edi_obj.Data.data_list)
 
         d_list = d_list[-1].split()
-        for ii, ch in enumerate(["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]):
+        for ii, ch in enumerate(
+            ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]
+        ):
             with self.subTest(ch):
                 self.assertEqual(d_list[ii], getattr(self.edi_obj.Data, ch))
 

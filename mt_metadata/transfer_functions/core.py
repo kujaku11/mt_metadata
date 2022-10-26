@@ -13,12 +13,24 @@ from copy import deepcopy
 import numpy as np
 import xarray as xr
 
-from mt_metadata.transfer_functions.tf import Survey, Station, Run, Electric, Magnetic
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
 from mt_metadata.base.helpers import validate_name
 
-
+DEFAULT_CHANNEL_NOMENCLATURE = {
+    "hx": "hx",
+    "hy": "hy",
+    "hz": "hz",
+    "ex": "ex",
+    "ey": "ey",
+}
 # =============================================================================
 class TF:
     """
@@ -40,7 +52,7 @@ class TF:
         self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
 
         # set metadata for the station
-        self.survey_metadata = Survey()
+        self.survey_metadata = Survey(id="unknown_survey")
         self.station_metadata = Station()
         self.station_metadata.add_run(Run())
         self.station_metadata.runs[0].ex = Electric(component="ex")
@@ -48,6 +60,9 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
+        self.channel_nomenclature = kwargs.get(
+            "channel_nomenclature", DEFAULT_CHANNEL_NOMENCLATURE
+        )
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -68,42 +83,57 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
+        # unpack channel nomenclature dict
+        self.ex = self.channel_nomenclature["ex"]
+        self.ey = self.channel_nomenclature["ey"]
+        self.hx = self.channel_nomenclature["hx"]
+        self.hy = self.channel_nomenclature["hy"]
+        self.hz = self.channel_nomenclature["hz"]
+        self.ex_ey = [self.ex, self.ey]
+        self.hx_hy = [self.hx, self.hy]
+        self.ex_ey_hz = [self.ex, self.ey, self.hz]
 
         self._ch_input_dict = {
-            "impedance": ["hx", "hy"],
-            "tipper": ["hx", "hy"],
-            "impedance_error": ["hx", "hy"],
-            "tipper_error": ["hx", "hy"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["hx", "hy"],
-            "tf_error": ["hx", "hy"],
+            "impedance": self.hx_hy,
+            "tipper": self.hx_hy,
+            "impedance_error": self.hx_hy,
+            "impedance_model_error": self.hx_hy,
+            "tipper_error": self.hx_hy,
+            "tipper_model_error": self.hx_hy,
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.hx_hy,
+            "tf_error": self.hx_hy,
         }
 
         self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "impedance_error": ["ex", "ey"],
-            "tipper_error": ["hz"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["ex", "ey", "hz"],
-            "tf_error": ["ex", "ey", "hz"],
+            "impedance": self.ex_ey,
+            "tipper": [self.hz],
+            "impedance_error": self.ex_ey,
+            "impedance_model_error": self.ex_ey,
+            "tipper_error": [self.hz],
+            "tipper_model_error": [self.hz],
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.ex_ey_hz,
+            "tf_error": self.ex_ey_hz,
         }
 
         self._transfer_function = self._initialize_transfer_function()
-
-        self.fn = fn
 
         # provide key words to fill values if an edi file does not exist
         for key in list(kwargs.keys()):
             setattr(self, key, kwargs[key])
 
+        self.fn = fn
+
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
+        lines.append(
+            f"\tAcquired by:       {self.station_metadata.acquired_by.author}"
+        )
         lines.append(
             f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
         )
@@ -197,6 +227,17 @@ class TF:
             name="transfer_function_error",
         )
 
+        tf_model_err = xr.DataArray(
+            data=0,
+            dims=["period", "output", "input"],
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["tf"],
+                "input": self._ch_input_dict["tf"],
+            },
+            name="transfer_function_model_error",
+        )
+
         inv_signal_power = xr.DataArray(
             data=0 + 0j,
             dims=["period", "output", "input"],
@@ -224,6 +265,7 @@ class TF:
             {
                 tf.name: tf,
                 tf_err.name: tf_err,
+                tf_model_err.name: tf_model_err,
                 inv_signal_power.name: inv_signal_power,
                 residual_covariance.name: residual_covariance,
             }
@@ -243,17 +285,8 @@ class TF:
         if value is None:
             self._fn = None
             return
-        try:
-            self._fn = Path(value)
-            self.save_dir = self._fn.parent
-            if self._fn.exists():
-
-                self.read_tf_file(self._fn)
-            else:
-                self.logger.warning(f"Could not find {self._fn} skip reading.")
-        except TypeError as error:
-            self.logger.exception(error)
-            self._fn = None
+        self._fn = Path(value)
+        self.save_dir = self._fn.parent
 
     @property
     def latitude(self):
@@ -325,7 +358,9 @@ class TF:
             "impedance": (2, 2),
             "tipper": (1, 2),
             "impedance_error": (2, 2),
+            "impedance_model_error": (2, 2),
             "tipper_error": (1, 2),
+            "tipper_model_error": (1, 2),
             "isp": (2, 2),
             "res": (3, 3),
             "transfer_function": (3, 2),
@@ -382,10 +417,13 @@ class TF:
             and not self.has_tipper()
             and not self.has_impedance()
         ):
-            self._transfer_function = self._initialize_transfer_function(da.period)
+            self._transfer_function = self._initialize_transfer_function(
+                da.period
+            )
             return da
         elif (
-            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
+            self._transfer_function.transfer_function.data.shape[0]
+            == da.data.shape[0]
         ):
             return da
         else:
@@ -404,6 +442,9 @@ class TF:
         :rtype: TYPE
 
         """
+        if value is None:
+            return
+
         key_dict = {
             "tf": "transfer_function",
             "impedance": "transfer_function",
@@ -412,9 +453,13 @@ class TF:
             "res": "residual_covariance",
             "transfer_function": "transfer_function",
             "impedance_error": "transfer_function_error",
+            "impedance_model_error": "transfer_function_model_error",
             "tipper_error": "transfer_function_error",
+            "tipper_model_error": "transfer_function_model_error",
             "tf_error": "transfer_function_error",
+            "tf_model_error": "transfer_function_model_error",
             "transfer_function_error": "transfer_function_error",
+            "transfer_function_model_error": "transfer_function_model_error",
         }
         key = key_dict[atype]
         ch_in = self._ch_input_dict[atype]
@@ -447,10 +492,11 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "ex" in outputs or "ey" in outputs or "hz" in outputs:
+        if self.ex in outputs or self.ey in outputs or self.hz in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tf"], output=self._ch_output_dict["tf"]
+                    input=self._ch_input_dict["tf"],
+                    output=self._ch_output_dict["tf"],
                 ).data
                 == 0
             ):
@@ -468,7 +514,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function.sel(
-                input=["hx", "hy"], output=["ex", "ey", "hz"]
+                input=self.hx_hy, output=self.ex_ey_hz
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -500,7 +546,7 @@ class TF:
         """
         if self.has_transfer_function():
             ds = self.dataset.transfer_function_error.sel(
-                input=["hx", "hy"], output=["ex", "ey", "hz"]
+                input=self.hx_hy, output=self.ex_ey_hz
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -522,6 +568,38 @@ class TF:
         """
         self._set_data_array(value, "tf_error")
 
+    @property
+    def transfer_function_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_transfer_function():
+            ds = self.dataset.transfer_function_model_error.sel(
+                input=self.hx_hy, output=self.ex_ey_hz
+            )
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                ds.attrs[key] = value
+            return ds
+
+    @transfer_function_model_error.setter
+    def transfer_function_model_error(self, value):
+        """
+        Set the impedance from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tf_model_error")
+
     def has_impedance(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -534,7 +612,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "ex" in outputs or "ey" in outputs:
+        if self.ex in outputs or self.ey in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["impedance"],
@@ -615,6 +693,41 @@ class TF:
         """
         self._set_data_array(value, "impedance_error")
 
+    @property
+    def impedance_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_impedance():
+            z_err = self.dataset.transfer_function_model_error.sel(
+                input=self._ch_input_dict["impedance"],
+                output=self._ch_output_dict["impedance"],
+            )
+            z_err.name = "impedance_model_error"
+
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                z_err.attrs[key] = value
+            return z_err
+
+    @impedance_model_error.setter
+    def impedance_model_error(self, value):
+        """
+        Set the impedance model errors from values
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "impedance_model_error")
+
     def has_tipper(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -627,7 +740,7 @@ class TF:
         outputs = self._transfer_function.transfer_function.coords[
             "output"
         ].data.tolist()
-        if "hz" in outputs:
+        if self.hz in outputs:
             if np.all(
                 self._transfer_function.transfer_function.sel(
                     input=self._ch_input_dict["tipper"],
@@ -706,6 +819,39 @@ class TF:
         """
         self._set_data_array(value, "tipper_error")
 
+    @property
+    def tipper_model_error(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.has_tipper():
+            t = self.dataset.transfer_function_model_error.sel(
+                input=self._ch_input_dict["tipper"],
+                output=self._ch_output_dict["tipper"],
+            )
+            t.name = "tipper_model_error"
+            for key, mkey in self._dataset_attr_dict.items():
+                obj, attr = mkey.split(".", 1)
+                value = getattr(self, obj).get_attr_from_name(attr)
+
+                t.attrs[key] = value
+            return t
+
+    @tipper_model_error.setter
+    def tipper_model_error(self, value):
+        """
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        self._set_data_array(value, "tipper_model_error")
+
     def has_inverse_signal_power(self):
         """
         Check to see if the transfer function is not 0 and has
@@ -718,7 +864,8 @@ class TF:
 
         if np.all(
             self._transfer_function.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
+                input=self._ch_input_dict["isp"],
+                output=self._ch_output_dict["isp"],
             ).data
             == 0
         ):
@@ -729,7 +876,8 @@ class TF:
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
             ds = self.dataset.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"], output=self._ch_output_dict["isp"]
+                input=self._ch_input_dict["isp"],
+                output=self._ch_output_dict["isp"],
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -767,7 +915,8 @@ class TF:
 
         if np.all(
             self._transfer_function.residual_covariance.sel(
-                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
+                input=self._ch_input_dict["res"],
+                output=self._ch_output_dict["res"],
             ).data
             == 0
         ):
@@ -778,7 +927,8 @@ class TF:
     def residual_covariance(self):
         if self.has_residual_covariance():
             ds = self.dataset.residual_covariance.sel(
-                input=self._ch_input_dict["res"], output=self._ch_output_dict["res"]
+                input=self._ch_input_dict["res"],
+                output=self._ch_output_dict["res"],
             )
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -815,36 +965,43 @@ class TF:
         :rtype: TYPE
 
         """
-
         sigma_e = self.residual_covariance.loc[
-            dict(input=["ex", "ey"], output=["ex", "ey"])
+            dict(input=self.ex_ey, output=self.ex_ey)
         ]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=self.hx_hy, output=self.hx_hy)
         ]
 
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=["ex"], output=["ex"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
         z_err[:, 1, 0] = np.real(
-            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 1, 1] = np.real(
-            sigma_e.loc[dict(input=["ey"], output=["ey"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=["hx", "hy"], output=["ex", "ey"])
+            dict(input=self.hx_hy, output=self.ex_ey)
         ] = z_err
 
     def _compute_tipper_error_from_covariance(self):
@@ -859,26 +1016,31 @@ class TF:
         :rtype: TYPE
 
         """
-
-        sigma_e = self.residual_covariance.loc[dict(input=["hz"], output=["hz"])]
+        sigma_e = self.residual_covariance.loc[
+            dict(input=[self.hz], output=[self.hz])
+        ]
         sigma_s = self.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=self.hx_hy, output=self.hx_hy)
         ]
 
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.real(
-            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
-            * sigma_s.loc[dict(input=["hx"], output=["hx"])].data.flatten()
+            sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         t_err[:, 0, 1] = np.real(
-            sigma_e.loc[dict(input=["hz"], output=["hz"])].data.flatten()
-            * sigma_s.loc[dict(input=["hy"], output=["hy"])].data.flatten()
+            sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
 
         self.dataset.transfer_function_error.loc[
-            dict(input=["hx", "hy"], output=["hz"])
+            dict(input=self.hx_hy, output=[self.hz])
         ] = t_err
 
     def _compute_error_from_covariance(self):
@@ -910,7 +1072,9 @@ class TF:
             else:
                 self.dataset["period"] = value
         else:
-            self._transfer_function = self._initialize_transfer_function(periods=value)
+            self._transfer_function = self._initialize_transfer_function(
+                periods=value
+            )
         return
 
     @property
@@ -936,20 +1100,36 @@ class TF:
         self.station_metadata.id = validate_name(station_name)
 
     @property
+    def survey(self):
+        """
+        Survey ID
+        """
+        return self.survey_metadata.id
+
+    @survey.setter
+    def survey(self, survey_id):
+        """
+        set survey id
+        """
+        if survey_id is None:
+            survey_id = "unkown_survey"
+        self.survey_metadata.id = validate_name(survey_id)
+
+    @property
     def tf_id(self):
-        """ transfer function id """
+        """transfer function id"""
         return self.station_metadata.transfer_function.id
 
     @tf_id.setter
     def tf_id(self, value):
-        """ set transfer function id """
+        """set transfer function id"""
         self.station_metadata.transfer_function.id = validate_name(value)
 
     def to_ts_station_metadata(self):
         """
-        need a convinience function to translate to ts station metadata 
+        need a convinience function to translate to ts station metadata
         for MTH5
-        
+
         """
 
         from mt_metadata.timeseries import Station as TSStation
@@ -966,9 +1146,9 @@ class TF:
 
     def from_ts_station_metadata(self, ts_station_metadata):
         """
-        need a convinience function to translate to ts station metadata 
+        need a convinience function to translate to ts station metadata
         for MTH5
-        
+
         """
 
         for key, value in ts_station_metadata.to_dict(single=True).items():
@@ -978,7 +1158,12 @@ class TF:
                 continue
 
     def write_tf_file(
-        self, fn=None, save_dir=None, fn_basename=None, file_type="edi", **kwargs,
+        self,
+        fn=None,
+        save_dir=None,
+        fn_basename=None,
+        file_type="edi",
+        **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
@@ -996,7 +1181,7 @@ class TF:
 
         :param file_type: [ 'edi' | 'xml' | "zmm" ]
         :type file_type: string
-        
+
         keyword arguments include
 
         :param longitude_format:  whether to write longitude as longitude or LONG.
@@ -1028,7 +1213,9 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
+                fn_basename = fn_basename.with_name(
+                    f"{fn_basename.name}.{file_type}"
+                )
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
@@ -1043,7 +1230,7 @@ class TF:
 
         return write_file(self, fn, file_type=file_type, **kwargs)
 
-    def read_tf_file(self, fn, file_type=None):
+    def read_tf_file(self, fn=None, file_type=None, **kwargs):
         """
 
         Read an TF response file.
@@ -1066,10 +1253,14 @@ class TF:
             >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
 
         """
+        if fn is not None:
+            self.fn = fn
 
-        tf_obj = read_file(fn, file_type=file_type)
+        tf_obj = read_file(self.fn, file_type=file_type, **kwargs)
         if tf_obj.station_metadata.transfer_function.id is None:
-            tf_obj.station_metadata.transfer_function.id = tf_obj.station_metadata.id
+            tf_obj.station_metadata.transfer_function.id = (
+                tf_obj.station_metadata.id
+            )
         self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
 

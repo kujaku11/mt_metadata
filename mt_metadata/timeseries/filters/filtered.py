@@ -65,7 +65,9 @@ class Filtered(Base):
             self.logger.debug(
                 "Filter names and applied lists are not the "
                 + "same size. Be sure to check the inputs."
-                + " names = {0}, applied = {1}".format(self._name, self._applied)
+                + " names = {0}, applied = {1}".format(
+                    self._name, self._applied
+                )
             )
 
     @property
@@ -87,7 +89,9 @@ class Filtered(Base):
                 applied = applied.replace("[", "").replace("]", "")
 
             if applied.count(",") > 0:
-                applied_list = [ss.strip().lower() for ss in applied.split(",")]
+                applied_list = [
+                    ss.strip().lower() for ss in applied.split(",")
+                ]
             else:
                 applied_list = [ss.lower() for ss in applied.split()]
         elif isinstance(applied, list):
@@ -130,7 +134,9 @@ class Filtered(Base):
             self.logger.debug(
                 "Filter names and applied lists are not the "
                 + "same size. Be sure to check the inputs."
-                + ". name = {0}, applied = {1}".format(self._name, self._applied)
+                + ". name = {0}, applied = {1}".format(
+                    self._name, self._applied
+                )
             )
 
     def _check_consistency(self):
@@ -151,7 +157,7 @@ class Filtered(Base):
                     return True
                 elif len(self._applied) > 1:
                     if len(self._applied) != len(self._name):
-                        self.logger.waring(
+                        self.logger.warning(
                             "Applied and filter names "
                             + "should be the same length. "
                             + "Appied={0}, names={1}".format(

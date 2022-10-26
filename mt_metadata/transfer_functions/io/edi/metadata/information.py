@@ -125,7 +125,9 @@ class Information(Base):
                     self._phoenix_file = True
                 if self._phoenix_file and len(line) > self._phoenix_col_width:
                     info_list.append(line[0 : self._phoenix_col_width].strip())
-                    phoenix_list_02.append(line[self._phoenix_col_width :].strip())
+                    phoenix_list_02.append(
+                        line[self._phoenix_col_width :].strip()
+                    )
                 else:
                     line = line.strip()
                     if len(line) > 1:
@@ -151,7 +153,11 @@ class Information(Base):
             l_list = [None, ""]
             # phoenix has lat an lon information in the notes but separated by
             # a space instead of an = or :
-            if "lat" in ll.lower() or "lon" in ll.lower() or "lng" in ll.lower():
+            if (
+                "lat" in ll.lower()
+                or "lon" in ll.lower()
+                or "lng" in ll.lower()
+            ):
                 l_list = ll.split()
                 if len(l_list) == 2:
                     self.info_dict[l_list[0]] = l_list[1]
@@ -205,7 +211,7 @@ class Information(Base):
             self.info_list = self._validate_info_list(info_list)
 
         info_lines = [">INFO\n"]
-        for line in self.info_list:
+        for line in sorted(list(set(self.info_list))):
             info_lines.append(f"{' '*4}{line}\n")
 
         return info_lines
@@ -218,7 +224,8 @@ class Information(Base):
         """
 
         new_info_list = []
-        for line in info_list:
+        # try to remove repeating lines
+        for line in sorted(list(set(info_list))):
             # get rid of empty lines
             lt = str(line).strip()
             if len(lt) > 1:
@@ -251,7 +258,9 @@ class Information(Base):
                     values = value.split(",")
                     if len(values) == len(new_key):
                         for vkey, item in zip(new_key, values):
-                            item_value = item.lower().split("=")[1].replace("mv", "")
+                            item_value = (
+                                item.lower().split("=")[1].replace("mv", "")
+                            )
                             new_dict[vkey] = item_value
                     else:
                         self.logger.warngin("could not parse line %s", value)
@@ -281,6 +290,8 @@ class Information(Base):
                 new_dict[key] = value
 
         if processing_parameters != []:
-            new_dict["transfer_function.processing_parameters"] = processing_parameters
+            new_dict[
+                "transfer_function.processing_parameters"
+            ] = processing_parameters
 
         self.info_dict = new_dict

@@ -33,6 +33,7 @@ from mt_metadata.transfer_functions.tf import (
 from mt_metadata.utils import mttime
 from mt_metadata import __version__
 
+
 meta_classes = dict(
     [
         (validate_attribute(k), v)
@@ -142,7 +143,7 @@ class EMTFXML(emtf_xml.EMTF):
     This is meant to follow Anna's XML schema for transfer functions
     """
 
-    def __init__(self, fn=None):
+    def __init__(self, fn=None, **kwargs):
         super().__init__()
         self._root_dict = None
         self.logger = setup_logger(self.__class__.__name__)
@@ -214,6 +215,9 @@ class EMTFXML(emtf_xml.EMTF):
             "data": self._write_data,
         }
 
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
         if self.fn != None:
             self.read()
 
@@ -221,11 +225,21 @@ class EMTFXML(emtf_xml.EMTF):
         lines = [f"Station: {self.station_metadata.id}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
-        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        lines.append(
+            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
+        )
+        lines.append(
+            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
+        )
+        lines.append(
+            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
+        )
+        lines.append(
+            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
+        )
+        lines.append(
+            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
+        )
         lines.append("\tDeclination:   ")
         lines.append(
             f"\t\tValue:     {self.station_metadata.location.declination.value}"
@@ -261,8 +275,12 @@ class EMTFXML(emtf_xml.EMTF):
         lines = []
         lines.append(f"station='{self.station_metadata.id}'")
         lines.append(f"latitude={self.station_metadata.location.latitude:.2f}")
-        lines.append(f"longitude={self.station_metadata.location.longitude:.2f}")
-        lines.append(f"elevation={self.station_metadata.location.elevation:.2f}")
+        lines.append(
+            f"longitude={self.station_metadata.location.longitude:.2f}"
+        )
+        lines.append(
+            f"elevation={self.station_metadata.location.elevation:.2f}"
+        )
 
         return f"EMTFXML({(', ').join(lines)})"
 
@@ -355,7 +373,8 @@ class EMTFXML(emtf_xml.EMTF):
                 self._writer_dict[key](emtf_element, key, value)
             else:
                 self._write_element(
-                    emtf_element, value,
+                    emtf_element,
+                    value,
                 )
 
         with open(fn, "w") as fid:
@@ -413,10 +432,14 @@ class EMTFXML(emtf_xml.EMTF):
         self.data_types.data_types_list = []
         if self.data.z is not None:
             if not np.all(self.data.z == 0.0):
-                self.data_types.data_types_list.append(data_types_dict["impedance"])
+                self.data_types.data_types_list.append(
+                    data_types_dict["impedance"]
+                )
         if self.data.t is not None:
             if not np.all(self.data.t == 0.0):
-                self.data_types.data_types_list.append(data_types_dict["tipper"])
+                self.data_types.data_types_list.append(
+                    data_types_dict["tipper"]
+                )
 
     def _read_single(self, root_dict, key):
         try:
@@ -531,31 +554,43 @@ class EMTFXML(emtf_xml.EMTF):
             f.sampling_rate = run["sampling_rate"]
             f.start = run["start"]
             f.end = run["end"]
-            f.comments.from_dict({"comments": run["comments"]})
+            try:
+                if isinstance(run["comments"], list):
+                    f.comments.from_dict({"comments": run["comments"][0]})
+                else:
+                    f.comments.from_dict({"comments": run["comments"]})
+            except KeyError:
+                self.logger.debug("run has no comments")
             f.errors = run["errors"]
 
-            if isinstance(run["magnetometer"], list):
-                f.magnetometer = []
-                for mag in run["magnetometer"]:
+            try:
+                if isinstance(run["magnetometer"], list):
+                    f.magnetometer = []
+                    for mag in run["magnetometer"]:
+                        m = meta_classes["magnetometer"]()
+                        m.from_dict({"magnetometer": mag})
+                        f.magnetometer.append(m)
+                else:
+                    f.magnetometer = []
                     m = meta_classes["magnetometer"]()
-                    m.from_dict({"magnetometer": mag})
+                    m.from_dict({"magnetometer": run["magnetometer"]})
                     f.magnetometer.append(m)
-            else:
-                f.magnetometer = []
-                m = meta_classes["magnetometer"]()
-                m.from_dict({"magnetometer": run["magnetometer"]})
-                f.magnetometer.append(m)
+            except KeyError:
+                self.logger.debug("run has no magnetotmeter information")
 
-            if isinstance(run["dipole"], list):
-                f.dipole = []
-                for mag in run["dipole"]:
+            try:
+                if isinstance(run["dipole"], list):
+                    f.dipole = []
+                    for mag in run["dipole"]:
+                        m = meta_classes["dipole"]()
+                        m.from_dict({"dipole": mag})
+                        f.dipole.append(m)
+                else:
                     m = meta_classes["dipole"]()
-                    m.from_dict({"dipole": mag})
+                    m.from_dict({"dipole": run["dipole"]})
                     f.dipole.append(m)
-            else:
-                m = meta_classes["dipole"]()
-                m.from_dict({"dipole": run["dipole"]})
-                f.dipole.append(m)
+            except KeyError:
+                self.logger.debug("run has no dipole information")
 
             self.field_notes.append(f)
 
@@ -563,7 +598,9 @@ class EMTFXML(emtf_xml.EMTF):
         """ """
 
         for fn in self.field_notes:
-            fn_element = self._convert_tag_to_capwords(fn.to_xml(required=False))
+            fn_element = self._convert_tag_to_capwords(
+                fn.to_xml(required=False)
+            )
             for dp in fn.dipole:
                 dp_element = self._convert_tag_to_capwords(dp.to_xml())
                 for electrode in dp.electrode:
@@ -584,9 +621,9 @@ class EMTFXML(emtf_xml.EMTF):
 
         """
 
-        self.statistical_estimates.estimates_list = root_dict["statistical_estimates"][
-            "estimate"
-        ]
+        self.statistical_estimates.estimates_list = root_dict[
+            "statistical_estimates"
+        ]["estimate"]
 
     def _write_statistical_estimates(self, parent, key, attributes={}):
         section = self._write_single(parent, key, None)
@@ -632,7 +669,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c_list = [c_list]
                 ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
 
-            except (KeyError):
+            except (KeyError, TypeError):
                 pass
 
             try:
@@ -642,7 +679,7 @@ class EMTFXML(emtf_xml.EMTF):
                 if not isinstance(c_list, list):
                     c_list = [c_list]
                 ch_list += [{"electric": ch_dict} for ch_dict in c_list]
-            except (KeyError):
+            except (KeyError, TypeError):
                 pass
 
             setattr(self.site_layout, ch, ch_list)
@@ -696,7 +733,9 @@ class EMTFXML(emtf_xml.EMTF):
                 new_key = validate_attribute(key)
                 res[new_key] = root_dict[key]
                 if isinstance(res[new_key], (dict, OrderedDict, list)):
-                    res[new_key] = self._convert_keys_to_lower_case(res[new_key])
+                    res[new_key] = self._convert_keys_to_lower_case(
+                        res[new_key]
+                    )
         elif isinstance(root_dict, list):
             res = []
             for item in root_dict:
@@ -742,7 +781,9 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.citation_dataset.author = self.copyright.citation.authors
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
-            survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
+            survey_obj.citation_dataset.doi = (
+                self.copyright.citation.survey_d_o_i
+            )
             survey_obj.country = self.site.country
             survey_obj.datum = self.site.location.datum
             survey_obj.geographic_name = self.site.survey
@@ -785,9 +826,9 @@ class EMTFXML(emtf_xml.EMTF):
         s = Station()
         # if self._root_dict is not None:
         s.acquired_by.author = self.site.acquired_by
-        s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [
-            d.name for d in self.site_layout.output_channels
-        ]
+        s.channels_recorded = [
+            d.name for d in self.site_layout.input_channels
+        ] + [d.name for d in self.site_layout.output_channels]
         s.data_type = self.sub_type.lower().split("_")[0]
         s.geographic_name = self.site.name
         s.id = self.site.id
@@ -812,8 +853,12 @@ class EMTFXML(emtf_xml.EMTF):
 
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
-        s.transfer_function.sign_convention = self.processing_info.sign_convention
-        s.transfer_function.processed_by.author = self.processing_info.processed_by
+        s.transfer_function.sign_convention = (
+            self.processing_info.sign_convention
+        )
+        s.transfer_function.processed_by.author = (
+            self.processing_info.processed_by
+        )
         s.transfer_function.software.author = (
             self.processing_info.processing_software.author
         )
@@ -824,8 +869,8 @@ class EMTFXML(emtf_xml.EMTF):
             self.processing_info.processing_software.last_mod
         )
         if self.processing_info.processing_tag is not None:
-            s.transfer_function.remote_references = self.processing_info.processing_tag.split(
-                "_"
+            s.transfer_function.remote_references = (
+                self.processing_info.processing_tag.split("_")
             )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
@@ -838,9 +883,13 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.data_quality.good_to_period = (
             self.site.data_quality_notes.good_to_period
         )
-        s.transfer_function.data_quality.rating = self.site.data_quality_notes.rating
+        s.transfer_function.data_quality.rating = (
+            self.site.data_quality_notes.rating
+        )
 
         for fn in self.field_notes:
+            if fn.sampling_rate == 0:
+                continue
             r = Run()
             r.id = fn.run
             r.data_logger.id = fn.instrument.id
@@ -862,18 +911,22 @@ class EMTFXML(emtf_xml.EMTF):
 
             else:
                 for mag in fn.magnetometer:
-                    comp = mag.name.lower()
+                    comp = mag.name
+                    if comp is None:
+                        continue
                     c = Magnetic()
-                    c.component = comp
+                    c.component = comp.lower()
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
                     r.add_channel(c)
 
             for dp in fn.dipole:
-                comp = dp.name.lower()
+                comp = dp.name
+                if comp is None:
+                    continue
                 c = Electric()
-                c.component = comp
+                c.component = comp.lower()
                 c.translated_azimuth = dp.azimuth
                 c.dipole_length = dp.length
                 for pot in dp.electrode:
@@ -888,7 +941,8 @@ class EMTFXML(emtf_xml.EMTF):
                 r.add_channel(c)
 
             for ch in (
-                self.site_layout.input_channels + self.site_layout.output_channels
+                self.site_layout.input_channels
+                + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
                 if c.component in ["hx", "hy", "hz"]:
@@ -952,8 +1006,12 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
 
-        self.processing_info.sign_convention = sm.transfer_function.sign_convention
-        self.processing_info.processed_by = sm.transfer_function.processed_by.author
+        self.processing_info.sign_convention = (
+            sm.transfer_function.sign_convention
+        )
+        self.processing_info.processed_by = (
+            sm.transfer_function.processed_by.author
+        )
         self.processing_info.processing_software.author = (
             sm.transfer_function.software.author
         )
@@ -1070,7 +1128,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.field_notes.append(fn)
 
 
-def read_emtfxml(fn):
+def read_emtfxml(fn, **kwargs):
     """
     read an EMTF XML file
 
@@ -1082,7 +1140,7 @@ def read_emtfxml(fn):
     """
     from mt_metadata.transfer_functions.core import TF
 
-    obj = EMTFXML()
+    obj = EMTFXML(**kwargs)
     obj.read(fn)
 
     emtf = TF()
@@ -1127,6 +1185,15 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
 
     from mt_metadata.transfer_functions.core import TF
 
+    ex_ey = [
+        tf_object.channel_nomenclature["ex"],
+        tf_object.channel_nomenclature["ey"],
+    ]
+    hx_hy = [
+        tf_object.channel_nomenclature["hx"],
+        tf_object.channel_nomenclature["hy"],
+    ]
+
     if not isinstance(tf_object, TF):
         raise ValueError(
             "Input must be an mt_metadata.transfer_functions.core.TF object"
@@ -1143,25 +1210,34 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
     if tf_object.has_impedance():
         tags += ["impedance"]
         emtf.data.z = tf_object.impedance.data
-        emtf.data.z_var = tf_object.impedance_error.data ** 2
-    if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
+        emtf.data.z_var = tf_object.impedance_error.data**2
+    if (
+        tf_object.has_residual_covariance()
+        and tf_object.has_inverse_signal_power()
+    ):
         emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=hx_hy, output=hx_hy)
         ].data
         emtf.data.z_residcov = tf_object.residual_covariance.loc[
-            dict(input=["ex", "ey"], output=["ex", "ey"])
+            dict(input=ex_ey, output=ex_ey)
         ].data
     if tf_object.has_tipper():
         tags += ["tipper"]
         emtf.data.t = tf_object.tipper.data
         emtf.data.t_var = tf_object.tipper_error.data
 
-    if tf_object.has_residual_covariance() and tf_object.has_inverse_signal_power():
+    if (
+        tf_object.has_residual_covariance()
+        and tf_object.has_inverse_signal_power()
+    ):
         emtf.data.t_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=["hx", "hy"], output=["hx", "hy"])
+            dict(input=hx_hy, output=hx_hy)
         ].data
         emtf.data.t_residcov = tf_object.residual_covariance.loc[
-            dict(input=["hz"], output=["hz"])
+            dict(
+                input=[tf_object.channel_nomenclature["hz"]],
+                output=[tf_object.channel_nomenclature["hz"]],
+            )
         ].data
 
     emtf.tags = ", ".join(tags)

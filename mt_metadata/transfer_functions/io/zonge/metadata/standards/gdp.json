@@ -1,0 +1,47 @@
+{
+    "date": {
+        "type": "string",
+        "required": false,
+        "style": "date time",
+        "units": null,
+        "description": "start date of the measurement",
+        "options": [],
+        "alias": [],
+        "example": "01/01/2020",
+    		"default": null
+    },
+	 "time": {
+        "type": "string",
+        "required": false,
+        "style": "date time",
+        "units": null,
+        "description": "start time of the measurement",
+        "options": [],
+        "alias": [],
+        "example": "12:00:00",
+    		"default": null
+    },
+    "type": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Type of GPD",
+        "options": [],
+        "alias": [],
+        "example": "zen",
+    		"default": null
+    },
+    "prog_ver": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "version of hadware in the GDP",
+        "options": [],
+        "alias": [],
+        "example": 0,
+    		"default": null
+    }
+    
+}
