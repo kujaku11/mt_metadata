@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -24,6 +25,7 @@ from . import (
     TimePeriod,
     Run,
 )
+from mt_metadata.utils.dict_list import ListDict
 
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
@@ -61,13 +63,12 @@ class Station(Base):
 
         self.fdsn = Fdsn()
         self.channels_recorded = []
-        self.run_list = []
         self.orientation = Orientation()
         self.acquired_by = Person()
         self.provenance = Provenance()
         self.location = Location()
         self.time_period = TimePeriod()
-        self.runs = []
+        self.runs = ListDict()
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __add__(self, other):
@@ -121,12 +122,17 @@ class Station(Base):
         :rtype: TYPE
 
         """
-        index = self.run_index(run_obj.id)
-        if index is not None:
-            self.logger.warning(
-                f"Run {run_obj.id} is being overwritten with current information"
+
+        if not isinstance(run_obj, Run):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Run object not {type(run_obj)}"
             )
-            self.runs[index] = run_obj
+
+        if self.has_run(run_obj.id):
+            self.runs[run_obj.id].update(run_obj)
+            self.logger.warning(
+                f"Station {run_obj.id} already exists, updating metadata"
+            )
         else:
             self.runs.append(run_obj)
 
@@ -141,9 +147,25 @@ class Station(Base):
         """
 
         if self.has_run(run_id):
-            return self.runs[self.run_index(run_id)]
+            return self.runs[run_id]
         self.logger.warning(f"Could not find {run_id} in runs.")
         return None
+
+    def remove_run(self, run_id):
+        """
+        remove a run from the survey
+
+        :param run_id: DESCRIPTION
+        :type run_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_run(run_id):
+            self.runs.remove(run_id)
+        else:
+            self.logger.warning(f"Could not find {run_id} to remove.")
 
     @property
     def runs(self):
@@ -153,34 +175,41 @@ class Station(Base):
     @runs.setter
     def runs(self, value):
         """set the run list"""
-        if not hasattr(value, "__iter__"):
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input station_list must be an iterable, should be a list "
+                "input run_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        runs = []
+
         fails = []
-        for ii, run in enumerate(value):
-            if isinstance(run, dict):
+        self._runs = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, run in enumerate(value_list):
+
+            if isinstance(run, (dict, OrderedDict)):
                 r = Run()
-                r.from_dict(run)
-                runs.append(r)
+                r.from_dict(Run)
+                self._runs.append(r)
             elif not isinstance(run, Run):
                 msg = f"Item {ii} is not type(Run); type={type(run)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                runs.append(run)
+                self._runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-        self._runs = runs
 
     @property
     def run_list(self):
         """Return names of run in survey"""
-        return [ss.id for ss in self.runs]
+        return self.runs.keys()
 
     @run_list.setter
     def run_list(self, value):

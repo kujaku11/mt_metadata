@@ -91,23 +91,27 @@ class TestStation(unittest.TestCase):
     def test_start(self):
         self.station_object.time_period.start = "2020/01/02T12:20:40.4560Z"
         self.assertEqual(
-            self.station_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.start,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
         self.station_object.time_period.start = "01/02/20T12:20:40.4560"
         self.assertEqual(
-            self.station_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.start,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
     def test_end_date(self):
         self.station_object.time_period.end = "2020/01/02T12:20:40.4560Z"
         self.assertEqual(
-            self.station_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.end,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
         self.station_object.time_period.end = "01/02/20T12:20:40.4560"
         self.assertEqual(
-            self.station_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.end,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
     def test_latitude(self):
@@ -124,27 +128,48 @@ class TestStation(unittest.TestCase):
 
     def test_declination(self):
         self.station_object.location.declination.value = "10.980"
-        self.assertEqual(self.station_object.location.declination.value, 10.980)
+        self.assertEqual(
+            self.station_object.location.declination.value, 10.980
+        )
 
-    def test_set_runs(self):
+    def test_set_runs_from_list(self):
         self.station_object.runs = [Run(id="one")]
-        self.assertEqual(len(self.station_object), 1)
-        self.assertListEqual(["one"], self.station_object.run_list)
+        with self.subTest("length"):
+            self.assertEqual(len(self.station_object), 1)
+        with self.subTest("list equal"):
+            self.assertListEqual(["one"], self.station_object.run_list)
+
+    def test_set_runs_from_dict(self):
+        self.station_object.runs = {"one": Run(id="one")}
+        with self.subTest("length"):
+            self.assertEqual(len(self.station_object), 1)
+        with self.subTest("list equal"):
+            self.assertListEqual(["one"], self.station_object.run_list)
 
     def test_set_runs_fail(self):
         def set_runs(value):
             self.station_object.runs = value
 
-        self.assertRaises(TypeError, set_runs, 10)
-        self.assertRaises(TypeError, set_runs, [Run(), Station()])
+        with self.subTest("Fail from input int"):
+            self.assertRaises(TypeError, set_runs, 10)
 
-    def test_add_stations(self):
+        with self.subTest("Fail from input list"):
+            self.assertRaises(TypeError, set_runs, [Run(), Station()])
+
+    def test_add_rns(self):
         station_02 = Station()
         station_02.runs.append(Run(id="two"))
         self.station_object.runs.append(Run(id="one"))
         self.station_object += station_02
-        self.assertEqual(len(self.station_object), 2)
-        self.assertListEqual(["one", "two"], self.station_object.run_list)
+        with self.subTest("length"):
+            self.assertEqual(len(self.station_object), 2)
+        with self.subTest("list equal"):
+            self.assertListEqual(["one", "two"], self.station_object.run_list)
+
+    def test_remove_runs(self):
+        self.station_object.runs.append(Run(id="one"))
+        self.station_object.remove_run("one")
+        self.assertListEqual([], self.station_object.run_list)
 
 
 # =============================================================================

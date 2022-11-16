@@ -175,6 +175,11 @@ class TestSurvey(unittest.TestCase):
                 ["one", "two"], self.survey_object.station_names
             )
 
+    def test_remove_station(self):
+        self.survey_object.stations.append(Station(id="one"))
+        self.survey_object.remove_station("one")
+        self.assertEqual([], self.survey_object.station_names)
+
 
 # =============================================================================
 # run

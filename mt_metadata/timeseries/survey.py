@@ -93,7 +93,7 @@ class Survey(Base):
         """set the station list"""
         if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input survey_list must be an iterable, should be a list or dict "
+                "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
@@ -277,6 +277,22 @@ class Survey(Base):
         else:
             self.logger.warning(f"Could not find station {station_id}")
             return None
+
+    def remove_station(self, station_id):
+        """
+        remove a station from the survey
+
+        :param station_id: DESCRIPTION
+        :type station_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_station(station_id):
+            self.stations.remove(station_id)
+        else:
+            self.logger.warning(f"Could not find {station_id} to remove.")
 
     def update_bounding_box(self):
         """
