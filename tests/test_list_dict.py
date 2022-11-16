@@ -66,7 +66,7 @@ class TestListDictFromSurvey(unittest.TestCase):
     def setUpClass(self):
         self.ld = ListDict()
         self.survey = Survey(id="test")
-        self.ld[0] = self.survey
+        self.ld.append(self.survey)
         self.maxDiff = None
 
     def test_in_keys(self):
@@ -89,7 +89,7 @@ class TestListDictFromStation(unittest.TestCase):
     def setUpClass(self):
         self.ld = ListDict()
         self.station = Station(id="test")
-        self.ld[0] = self.station
+        self.ld.append(self.station)
         self.maxDiff = None
 
     def test_in_keys(self):
@@ -136,7 +136,7 @@ class TestListDictFromChannel(unittest.TestCase):
     def setUpClass(self):
         self.ld = ListDict()
         self.channel = Channel(component="test")
-        self.ld[0] = self.channel
+        self.ld.append(self.channel)
         self.maxDiff = None
 
     def test_in_keys(self):
@@ -152,6 +152,20 @@ class TestListDictFromChannel(unittest.TestCase):
             self.channel.to_dict(single=True),
             self.ld["test"].to_dict(single=True),
         )
+
+
+class TestListDictRemove(unittest.TestCase):
+    def setUp(self):
+        self.ld = ListDict()
+        self.ld["a"] = 0
+
+    def test_remove_by_key(self):
+        self.ld.remove("a")
+        self.assertListEqual([], self.ld.keys())
+
+    def test_remove_by_index(self):
+        self.ld.remove(0)
+        self.assertListEqual([], self.ld.keys())
 
 
 # =============================================================================

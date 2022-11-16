@@ -23,6 +23,7 @@ from .filters import (
     FIRFilter,
     FrequencyResponseTableFilter,
 )
+from mt_metadata.utils.dict_list import ListDict
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
@@ -64,7 +65,7 @@ class Survey(Base):
         self.project_lead = Person()
         self.southeast_corner = Location()
         self.time_period = TimePeriod()
-        self.stations = []
+        self.stations = ListDict()
         self.filters = {}
 
         super().__init__(attr_dict=attr_dict, **kwargs)
@@ -90,35 +91,41 @@ class Survey(Base):
     @stations.setter
     def stations(self, value):
         """set the station list"""
-        if not hasattr(value, "__iter__"):
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input survey_list must be an iterable, should be a list "
+                "input survey_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        stations = []
+
         fails = []
-        for ii, station in enumerate(value):
+        self._stations = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, station in enumerate(value_list):
+
             if isinstance(station, (dict, OrderedDict)):
                 s = Station()
                 s.from_dict(station)
-                stations.append(s)
+                self._stations.append(s)
             elif not isinstance(station, Station):
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                stations.append(station)
+                self._stations.append(station)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._stations = stations
 
     @property
     def station_names(self):
         """Return names of station in survey"""
-        return [ss.id for ss in self.stations]
+        return self.stations.keys()
 
     @property
     def filters(self):
@@ -246,9 +253,8 @@ class Survey(Base):
                 f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
             )
 
-        index = self.station_index(station_obj.id)
-        if index is not None:
-            self.stations[index].update(station_obj)
+        if self.has_station(station_obj.id):
+            self.stations[station_obj.id].update(station_obj)
             self.logger.warning(
                 f"Station {station_obj.id} already exists, updating metadata"
             )
@@ -266,11 +272,11 @@ class Survey(Base):
 
         """
 
-        index = self.station_index(station_id)
-        if index is None:
+        if self.has_station(station_id):
+            return self.stations[station_id]
+        else:
             self.logger.warning(f"Could not find station {station_id}")
             return None
-        return self.stations[index]
 
     def update_bounding_box(self):
         """

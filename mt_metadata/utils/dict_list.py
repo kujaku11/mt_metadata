@@ -23,6 +23,12 @@ class ListDict:
     def __repr__(self):
         return self._home.__repr__()
 
+    def __eq__(self, other):
+        return self._home.__eq__(other)
+
+    def __len__(self):
+        return self._home.__len__()
+
     def _get_key_from_index(self, index):
         try:
             return next(
@@ -31,6 +37,25 @@ class ListDict:
 
         except StopIteration:
             raise KeyError(f"Could not find {index}")
+
+    def _get_key_from_object(self, obj):
+        """
+        Get the key from the metadata object
+
+        :param obj: DESCRIPTION
+        :type obj: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if hasattr(obj, "id"):
+            return obj.id
+        elif hasattr(obj, "component"):
+            return obj.component
+        else:
+            raise TypeError(
+                "could not identify an appropriate key from object"
+            )
 
     def __getitem__(self, value):
 
@@ -56,12 +81,9 @@ class ListDict:
             try:
                 key = self._get_key_from_index(index)
             except KeyError:
-
-                if hasattr(value, "id"):
-                    key = value.id
-                elif hasattr(value, "component"):
-                    key = value.component
-                else:
+                try:
+                    key = self._get_key_from_object(value)
+                except TypeError:
                     key = str(index)
 
             self._home[key] = value
@@ -77,3 +99,61 @@ class ListDict:
 
     def items(self):
         return self._home.items()
+
+    def append(self, obj):
+        """
+        Append an object
+
+        :param obj: DESCRIPTION
+        :type obj: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        try:
+            key = self._get_key_from_object(obj)
+        except TypeError:
+            key = str(len(self.keys()))
+
+        self._home[key] = obj
+
+    def remove(self, key):
+        """
+        remove an item based on key or index
+
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if isinstance(key, str):
+            self._home.__delitem__(key)
+
+        elif isinstance(key, int):
+            key = self._get_key_from_index(key)
+            self._home.__delitem__(key)
+        else:
+            raise TypeError(
+                "could not identify an appropriate key from object"
+            )
+
+    def extend(self, other):
+        """
+        extend the dictionary from another ListDict object
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if isinstance(other, ListDict):
+            for key, value in other.items():
+                self._home[key] = value
+
+        else:
+            raise TypeError(f"Cannot extend from {type(other)}")
