@@ -17,6 +17,7 @@ Created on Mon Feb  8 21:25:40 2021
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from pathlib import Path
 from xml.etree import cElementTree as et
 import json
@@ -31,6 +32,7 @@ from .filters import (
 )
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import Base, helpers
+from mt_metadata.utils.dict_list import ListDict
 
 # =============================================================================
 
@@ -113,31 +115,42 @@ class Experiment(Base):
     @surveys.setter
     def surveys(self, value):
         """set the survey list"""
-        if not hasattr(value, "__iter__"):
+
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input surveys must be an iterable, should be a list "
+                "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        surveys = []
+
         fails = []
-        for ii, survey in enumerate(value):
-            if not isinstance(survey, Survey):
+        self._surveys = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, survey in enumerate(value_list):
+
+            if isinstance(survey, (dict, OrderedDict)):
+                s = Survey()
+                s.from_dict(survey)
+                self._stations.append(s)
+            elif not isinstance(survey, Survey):
                 msg = f"Item {ii} is not type(Survey); type={type(survey)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                surveys.append(survey)
+                self._surveys.append(survey)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._surveys = surveys
 
     @property
     def survey_names(self):
         """Return names of surveys in experiment"""
-        return [ss.id for ss in self.surveys]
+        return self.surveys.keys()
 
     def has_survey(self, survey_id):
         """
@@ -184,9 +197,8 @@ class Experiment(Base):
                 f"Input must be a mt_metadata.timeseries.Survey object not {type(survey_obj)}"
             )
 
-        index = self.survey_index(survey_obj.id)
-        if index is not None:
-            self.surveys[index].update(survey_obj)
+        if self.has_survey(survey_obj.id):
+            self.surveys[survey_obj.id].update(survey_obj)
             self.logger.warning(
                 f"survey {survey_obj.id} already exists, updating metadata"
             )
@@ -204,11 +216,11 @@ class Experiment(Base):
 
         """
 
-        index = self.survey_index(survey_id)
-        if index is None:
+        if self.has_survey(survey_id):
+            return self.surveys[survey_id]
+        else:
             self.logger.warning(f"Could not find survey {survey_id}")
             return None
-        return self.surveys[index]
 
     def to_dict(self, nested=False, required=True):
         """
@@ -420,11 +432,9 @@ class Experiment(Base):
             stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
-                run_list = []
                 runs = self._pop_dictionary(station_dict, "run")
                 for run_dict in runs:
                     run_obj = Run()
-                    channel_list = []
                     for ch in ["electric", "magnetic", "auxiliary"]:
                         try:
                             for ch_dict in self._pop_dictionary(run_dict, ch):
@@ -435,18 +445,15 @@ class Experiment(Base):
                                 elif ch == "auxiliary":
                                     channel = Auxiliary()
                                 channel.from_dict(ch_dict)
-                                channel_list.append(channel)
+                                run_obj.add_channel(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
                     run_obj.from_dict(run_dict)
-                    run_obj.channels = channel_list
-                    run_list.append(run_obj)
-
+                    station_obj.add_run(run_obj)
                 station_obj.from_dict(station_dict)
-                station_obj.runs = run_list
-                survey_obj.stations.append(station_obj)
+                survey_obj.add_station(station_obj)
             survey_obj.from_dict(survey_dict)
-            self.surveys.append(survey_obj)
+            self.add_survey(survey_obj)
 
     def _pop_dictionary(self, in_dict, element):
         """

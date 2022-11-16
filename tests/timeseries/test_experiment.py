@@ -123,7 +123,9 @@ class TestBuildExperiment(unittest.TestCase):
         experiment_xml = self.experiment.to_xml(required=False)
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
-        self.assertEqual(self.experiment, experiment_02)
+        self.assertDictEqual(
+            self.experiment.to_dict(), experiment_02.to_dict()
+        )
 
     def test_survey_time_period(self):
         with self.subTest("start"):
@@ -205,7 +207,7 @@ class TestBuildExperiment(unittest.TestCase):
         ex = Experiment()
         ex.from_dict(d)
 
-        self.assertTrue(ex == self.experiment)
+        self.assertDictEqual(ex.to_dict(), self.experiment.to_dict())
 
     def test_from_dict_fail(self):
         self.assertRaises(TypeError, self.experiment.from_dict, 10)

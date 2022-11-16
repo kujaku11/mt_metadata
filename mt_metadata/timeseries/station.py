@@ -195,7 +195,7 @@ class Station(Base):
 
             if isinstance(run, (dict, OrderedDict)):
                 r = Run()
-                r.from_dict(Run)
+                r.from_dict(run)
                 self._runs.append(r)
             elif not isinstance(run, Run):
                 msg = f"Item {ii} is not type(Run); type={type(run)}"

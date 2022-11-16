@@ -180,6 +180,25 @@ class TestSurvey(unittest.TestCase):
         self.survey_object.remove_station("one")
         self.assertEqual([], self.survey_object.station_names)
 
+    def test_update_time_period(self):
+        s = Station(id="001")
+        s.time_period.start = "2020-01-01T00:00:00"
+        s.time_period.end = "2020-12-01T12:12:12"
+        self.survey_object.add_station(s)
+        self.survey_object.update_time_period()
+
+        with self.subTest("Test new start"):
+            self.assertEqual(
+                self.survey_object.time_period.start,
+                "2020-01-01T00:00:00+00:00",
+            )
+
+        with self.subTest("Test new end"):
+            self.assertEqual(
+                self.survey_object.time_period.end,
+                "2020-12-01T12:12:12+00:00",
+            )
+
 
 # =============================================================================
 # run

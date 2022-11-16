@@ -171,6 +171,25 @@ class TestStation(unittest.TestCase):
         self.station_object.remove_run("one")
         self.assertListEqual([], self.station_object.run_list)
 
+    def test_update_time_period(self):
+        r = Run(id="001")
+        r.time_period.start = "2020-01-01T00:00:00"
+        r.time_period.end = "2020-12-01T12:12:12"
+        self.station_object.add_run(r)
+        self.station_object.update_time_period()
+
+        with self.subTest("Test new start"):
+            self.assertEqual(
+                self.station_object.time_period.start,
+                "2020-01-01T00:00:00+00:00",
+            )
+
+        with self.subTest("Test new end"):
+            self.assertEqual(
+                self.station_object.time_period.end,
+                "2020-12-01T12:12:12+00:00",
+            )
+
 
 # =============================================================================
 # run

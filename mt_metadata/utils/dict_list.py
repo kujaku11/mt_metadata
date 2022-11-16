@@ -89,7 +89,7 @@ class ListDict:
             self._home[key] = value
 
     def __iter__(self):
-        return self._home.__iter__()
+        return iter(self.values())
 
     def keys(self):
         return list(self._home.keys())

@@ -168,6 +168,23 @@ class TestRun(unittest.TestCase):
         self.run_object.remove_channel("ex")
         self.assertListEqual([], self.run_object.channels_recorded_all)
 
+    def test_update_time_period(self):
+        ch = Electric(component="ex")
+        ch.time_period.start = "2020-01-01T00:00:00"
+        ch.time_period.end = "2020-12-01T12:12:12"
+        self.run_object.add_channel(ch)
+        self.run_object.update_time_period()
+
+        with self.subTest("Test new start"):
+            self.assertEqual(
+                self.run_object.time_period.start, "2020-01-01T00:00:00+00:00"
+            )
+
+        with self.subTest("Test new end"):
+            self.assertEqual(
+                self.run_object.time_period.end, "2020-12-01T12:12:12+00:00"
+            )
+
 
 # =============================================================================
 # run
