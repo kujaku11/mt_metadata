@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -24,6 +25,7 @@ from . import (
     Magnetic,
     Auxiliary,
 )
+from mt_metadata.utils.dict_list import ListDict
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
@@ -63,7 +65,7 @@ class Run(Base):
         self.data_logger = DataLogger()
         self.metadata_by = Person()
         self.fdsn = Fdsn()
-        self.channels = []
+        self.channels = ListDict()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -115,10 +117,7 @@ class Run(Base):
         """
 
         if self.has_channel(component):
-            return self.channels_dict[component]
-
-        else:
-            return None
+            return self.channels[component]
 
     def add_channel(self, channel_obj):
         """
@@ -139,11 +138,30 @@ class Run(Base):
             self.logger.error(msg)
             raise ValueError(msg)
 
-        index = self.channel_index(channel_obj.component)
-        if index is not None:
-            self.channels[index] = channel_obj
+        if self.has_channel(channel_obj.component):
+            self.channels[channel_obj.component].update(channel_obj)
+            self.logger.warning(
+                f"Run {channel_obj.component} already exists, updating metadata"
+            )
+
         else:
             self.channels.append(channel_obj)
+
+    def remove_channel(self, channel_id):
+        """
+        remove a run from the survey
+
+        :param run_id: DESCRIPTION
+        :type run_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_channel(channel_id):
+            self.channels.remove(channel_id)
+        else:
+            self.logger.warning(f"Could not find {channel_id} to remove.")
 
     @property
     def channels(self):
@@ -153,17 +171,26 @@ class Run(Base):
     @channels.setter
     def channels(self, value):
         """set the channel list"""
-        if not hasattr(value, "__iter__"):
+
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input channels must be an iterable, should be a list "
+                "input run_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        channels = []
+
         fails = []
-        for ii, channel in enumerate(value):
-            if isinstance(channel, dict):
+        self._channels = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, channel in enumerate(value_list):
+
+            if isinstance(channel, (dict, OrderedDict)):
                 try:
                     ch_type = channel["type"]
                     if ch_type is None:
@@ -177,7 +204,7 @@ class Run(Base):
                         ch = Auxiliary()
 
                     ch.from_dict(channel)
-                    channels.append(ch)
+                    self._channels.append(ch)
                 except KeyError:
                     msg = (
                         f"Item {ii} is not type(channel); type={type(channel)}"
@@ -189,15 +216,9 @@ class Run(Base):
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                channels.append(channel)
+                self._channels.append(channel)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._channels = channels
-
-    @property
-    def channels_dict(self):
-        return dict([(c.component, c) for c in self.channels])
 
     @property
     def n_channels(self):
@@ -211,12 +232,16 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        return [ch.component for ch in self.channels]
+        return [ch.component for ch in self.channels.values()]
 
     @property
     def channels_recorded_electric(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Electric)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Electric)
+            ]
         )
 
     @channels_recorded_electric.setter
@@ -240,7 +265,11 @@ class Run(Base):
     @property
     def channels_recorded_magnetic(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Magnetic)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Magnetic)
+            ]
         )
 
     @channels_recorded_magnetic.setter
@@ -264,7 +293,11 @@ class Run(Base):
     @property
     def channels_recorded_auxiliary(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Auxiliary)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Auxiliary)
+            ]
         )
 
     @channels_recorded_auxiliary.setter
