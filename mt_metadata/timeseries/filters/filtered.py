@@ -45,7 +45,7 @@ class Filtered(Base):
     @name.setter
     def name(self, names):
         if names is None:
-            self._name = ["none"]
+            self._name = []
             return
 
         if isinstance(names, str):
@@ -141,7 +141,7 @@ class Filtered(Base):
 
     def _check_consistency(self):
         # check for consistency
-        if self._name is not None:
+        if self._name != []:
             if self._applied is None:
                 self.logger.warning("Need to input filter.applied")
                 return False
@@ -165,5 +165,7 @@ class Filtered(Base):
                             )
                         )
                         return False
+        elif self._name == [] and self._applied == [False]:
+            return True
         else:
             return False

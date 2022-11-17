@@ -96,8 +96,6 @@ class TestBuildExperiment(unittest.TestCase):
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(id=survey)
-            survey_obj.acquired_by.author = "None"
-            survey_obj.project_lead.author = "None"
             survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
                 station_obj = Station(id=station, **kwargs)
@@ -120,7 +118,7 @@ class TestBuildExperiment(unittest.TestCase):
             self.experiment.surveys.append(survey_obj)
 
     def test_write_xml(self):
-        experiment_xml = self.experiment.to_xml(required=False)
+        experiment_xml = self.experiment.to_xml(required=True)
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
         self.assertDictEqual(
@@ -205,7 +203,7 @@ class TestBuildExperiment(unittest.TestCase):
 
         d = self.experiment.to_dict()
         ex = Experiment()
-        ex.from_dict(d)
+        ex.from_dict(d, skip_none=False)
 
         self.assertDictEqual(ex.to_dict(), self.experiment.to_dict())
 

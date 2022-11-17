@@ -62,7 +62,7 @@ class Station(Base):
     def __init__(self, **kwargs):
 
         self.fdsn = Fdsn()
-        self.channels_recorded = []
+        self._channels_recorded = []
         self.orientation = Orientation()
         self.acquired_by = Person()
         self.provenance = Provenance()
@@ -82,6 +82,46 @@ class Station(Base):
 
     def __len__(self):
         return len(self.runs)
+
+    @property
+    def channels_recorded(self):
+        """
+        A list of all channels recorded
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        ch_list = []
+        for run in self.runs:
+            ch_list += run.keys()
+        ch_list = sorted(set(ch_list))
+        if self._channels_recorded == []:
+            return ch_list
+
+        elif ch_list == []:
+            return self._channels_recorded
+
+        elif len(self._channels_recorded) != ch_list:
+            return ch_list
+
+    @channels_recorded.setter
+    def channels_recorded(self, value):
+        """
+        set channels_recorded
+
+        """
+        if value in [None, "None", "none", "NONE", "null"]:
+            return
+        elif isinstance(value, (list, tuple)):
+            self._channels_recorded = value
+
+        else:
+            print(value)
+            raise TypeError(
+                "'channels_recorded' must be set with a list not "
+                f"{type(value)}."
+            )
 
     def has_run(self, run_id):
         """

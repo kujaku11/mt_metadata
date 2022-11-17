@@ -260,7 +260,7 @@ class Experiment(Base):
 
         return ex_dict
 
-    def from_dict(self, ex_dict):
+    def from_dict(self, ex_dict, skip_none=True):
         """
         fill from an input dictionary
 
@@ -280,7 +280,7 @@ class Experiment(Base):
 
         for survey_dict in ex_dict["experiment"]["surveys"]:
             survey_object = Survey()
-            survey_object.from_dict(survey_dict)
+            survey_object.from_dict(survey_dict, skip_none=skip_none)
             self.add_survey(survey_object)
 
     def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
@@ -309,7 +309,7 @@ class Experiment(Base):
                 indent=indent,
             )
 
-    def from_json(self, json_str):
+    def from_json(self, json_str, skip_none=True):
         """
         read in a json string and update attributes of an object
 
@@ -334,7 +334,7 @@ class Experiment(Base):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise TypeError(msg % type(json_str))
-        self.from_dict(json_dict)
+        self.from_dict(json_dict, skip_none=skip_none)
 
     def to_xml(self, fn=None, required=True, sort=True):
         """
@@ -411,7 +411,7 @@ class Experiment(Base):
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
 
-    def from_xml(self, fn=None, element=None, sort=True):
+    def from_xml(self, fn=None, element=None, sort=True, skip_none=True):
         """
 
         :param fn: DESCRIPTION, defaults to None
@@ -433,7 +433,7 @@ class Experiment(Base):
         for survey_element in list(experiment_element):
             survey_dict = helpers.element_to_dict(survey_element)
             survey_obj = Survey()
-            survey_obj.from_dict(survey_dict)
+            survey_obj.from_dict(survey_dict, skip_none=skip_none)
             fd = survey_dict["survey"].pop("filters")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
@@ -441,11 +441,11 @@ class Experiment(Base):
             stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
-                station_obj.from_dict(station_dict)
+                station_obj.from_dict(station_dict, skip_none=skip_none)
                 runs = self._pop_dictionary(station_dict, "run")
                 for run_dict in runs:
                     run_obj = Run()
-                    run_obj.from_dict(run_dict)
+                    run_obj.from_dict(run_dict, skip_none=skip_none)
                     for ch in ["electric", "magnetic", "auxiliary"]:
                         try:
                             for ch_dict in self._pop_dictionary(run_dict, ch):
@@ -455,7 +455,7 @@ class Experiment(Base):
                                     channel = Magnetic()
                                 elif ch == "auxiliary":
                                     channel = Auxiliary()
-                                channel.from_dict(ch_dict)
+                                channel.from_dict(ch_dict, skip_none=skip_none)
                                 run_obj.add_channel(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
