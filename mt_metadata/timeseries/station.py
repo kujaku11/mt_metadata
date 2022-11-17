@@ -130,7 +130,7 @@ class Station(Base):
 
         if self.has_run(run_obj.id):
             self.runs[run_obj.id].update(run_obj)
-            self.logger.warning(
+            self.logger.debug(
                 f"Station {run_obj.id} already exists, updating metadata"
             )
         else:
@@ -233,7 +233,7 @@ class Station(Base):
                     self.logger.error(msg)
                     raise ValueError(msg)
             run = run.replace("'", "").replace('"', "")
-            self.runs.append(Run(id=run))
+            self.add_run(Run(id=run))
 
     def update_time_period(self):
         """

@@ -82,6 +82,49 @@ class Run(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
+    def update(self, other, match=[]):
+        """
+        Update attribute values from another like element, skipping None
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if not isinstance(other, type(self)):
+            self.logger.warning(
+                "Cannot update %s with %s", type(self), type(other)
+            )
+        for k in match:
+            if self.get_attr_from_name(k) != other.get_attr_from_name(k):
+                msg = "%s is not equal %s != %s"
+                self.logger.error(
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
+                )
+                raise ValueError(
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
+                )
+        for k, v in other.to_dict(single=True).items():
+            if hasattr(v, "size"):
+                if v.size > 0:
+                    self.set_attr_from_name(k, v)
+            else:
+                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+                    self.set_attr_from_name(k, v)
+
+        ## Need this because channels are set when setting channels_recorded
+        ## and it initiates an empty channel, but we need to fill it with
+        ## the appropriate metadata.
+        for ch in other.channels:
+            self.add_channel(ch)
+
     def has_channel(self, component):
         """
         Check to see if the channel already exists
@@ -140,7 +183,7 @@ class Run(Base):
 
         if self.has_channel(channel_obj.component):
             self.channels[channel_obj.component].update(channel_obj)
-            self.logger.warning(
+            self.logger.debug(
                 f"Run {channel_obj.component} already exists, updating metadata"
             )
 
@@ -254,9 +297,9 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Electric(component=entry))
+                self.add_channel(Electric(component=entry))
             elif isinstance(entry, Electric):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type Electric not {type(entry)}"
                 self.logger.error(msg)
@@ -282,9 +325,9 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Magnetic(component=entry))
+                self.add_channel(Magnetic(component=entry))
             elif isinstance(entry, Magnetic):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type Magnetic not {type(entry)}"
                 self.logger.error(msg)
@@ -310,9 +353,9 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Auxiliary(component=entry))
+                self.add_channel(Auxiliary(component=entry))
             elif isinstance(entry, Auxiliary):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type Auxiliary not {type(entry)}"
                 self.logger.error(msg)

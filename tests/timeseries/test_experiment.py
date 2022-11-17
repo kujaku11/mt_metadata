@@ -105,13 +105,13 @@ class TestBuildExperiment(unittest.TestCase):
                     run_obj = Run(id=run, **kwargs)
                     for ch in ["ex", "ey"]:
                         ch_obj = Electric(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     for ch in ["hx", "hy", "hz"]:
                         ch_obj = Magnetic(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     for ch in ["temperature", "voltage"]:
                         ch_obj = Auxiliary(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     run_obj.update_time_period()
                     station_obj.runs.append(run_obj)
                     station_obj.update_time_period()

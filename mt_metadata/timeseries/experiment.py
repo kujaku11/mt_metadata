@@ -199,7 +199,7 @@ class Experiment(Base):
 
         if self.has_survey(survey_obj.id):
             self.surveys[survey_obj.id].update(survey_obj)
-            self.logger.warning(
+            self.logger.debug(
                 f"survey {survey_obj.id} already exists, updating metadata"
             )
         else:
@@ -432,9 +432,11 @@ class Experiment(Base):
             stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
+                station_obj.from_dict(station_dict)
                 runs = self._pop_dictionary(station_dict, "run")
                 for run_dict in runs:
                     run_obj = Run()
+                    run_obj.from_dict(run_dict)
                     for ch in ["electric", "magnetic", "auxiliary"]:
                         try:
                             for ch_dict in self._pop_dictionary(run_dict, ch):
@@ -448,9 +450,8 @@ class Experiment(Base):
                                 run_obj.add_channel(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
-                    run_obj.from_dict(run_dict)
+
                     station_obj.add_run(run_obj)
-                station_obj.from_dict(station_dict)
                 survey_obj.add_station(station_obj)
             survey_obj.from_dict(survey_dict)
             self.add_survey(survey_obj)
