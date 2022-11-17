@@ -13,6 +13,15 @@ from collections import OrderedDict
 
 
 class ListDict:
+    """
+    Hack together an object that acts like a dictionary and list such that a
+    user can get an item by index or key.
+
+    This is the first attempt, seems to work, might think about inheriting
+    an OrderedDict and overloading.
+
+    """
+
     def __init__(self):
 
         self._home = OrderedDict()

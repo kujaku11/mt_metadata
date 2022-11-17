@@ -137,10 +137,8 @@ class Survey(Base):
         """
         Set the filters dictionary
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: dictionary of filter objects
+        :type value: dictionary
 
         """
 
@@ -215,10 +213,10 @@ class Survey(Base):
         """
         Has station id
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: True if exists or False if not
+        :rtype: boolean
 
         """
         if station_id in self.station_names:
@@ -229,10 +227,10 @@ class Survey(Base):
         """
         Get station index
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: index value if station is found
+        :rtype: integer
 
         """
 
@@ -244,10 +242,8 @@ class Survey(Base):
         """
         Add a station, if has the same name update that object.
 
-        :param station_obj: DESCRIPTION
+        :param station_obj: station object to add
         :type station_obj: `:class:`mt_metadata.timeseries.Station`
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
 
@@ -268,10 +264,10 @@ class Survey(Base):
         """
         Get a station from the station id
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: station object
+        :rtype: :class:`mt_metadata.timeseries.Station`
 
         """
 
@@ -285,10 +281,8 @@ class Survey(Base):
         """
         remove a station from the survey
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
 
         """
 
@@ -300,9 +294,6 @@ class Survey(Base):
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
-
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
         lat = []

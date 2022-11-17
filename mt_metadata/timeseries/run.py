@@ -129,10 +129,10 @@ class Run(Base):
         """
         Check to see if the channel already exists
 
-        :param component: DESCRIPTION
-        :type component: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param component: channel component to look for
+        :type component: string
+        :return: True if found, False if not
+        :rtype: boolean
 
         """
 
@@ -152,10 +152,10 @@ class Run(Base):
         """
         Get a channel
 
-        :param component: DESCRIPTION
-        :type component: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param component: channel component to look for
+        :type component: string
+        :return: channel object based on channel type
+        :rtype: :class:`mt_metadata.timeseries.Channel`
 
         """
 
@@ -166,10 +166,8 @@ class Run(Base):
         """
         Add a channel to the list, check if one exists if it does overwrite it
 
-        :param channel_obj: DESCRIPTION
-        :type channel_obj: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param channel_obj: channel object to add
+        :type channel_obj: :class:`mt_metadata.timeseries.Channel`
 
         """
         if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
@@ -194,10 +192,8 @@ class Run(Base):
         """
         remove a run from the survey
 
-        :param run_id: DESCRIPTION
-        :type run_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param component: channel component to look for
+        :type component: string
 
         """
 

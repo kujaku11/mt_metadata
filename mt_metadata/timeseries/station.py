@@ -88,8 +88,8 @@ class Station(Base):
         """
         A list of all channels recorded
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :return: list of all unique channels recorded for the station
+        :rtype: list
 
         """
         ch_list = []
@@ -127,10 +127,10 @@ class Station(Base):
         """
         Check to see if the run id already exists
 
-        :param run_id: DESCRIPTION
-        :type run_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param run_id: run id verbatim
+        :type run_id: string
+        :return: Tru if exists, False if not
+        :rtype: boolean
 
         """
         if run_id in self.run_list:
@@ -141,10 +141,10 @@ class Station(Base):
         """
         Get the index of the run_id
 
-        :param run_id: DESCRIPTION
-        :type run_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param run_id: run id verbatim
+        :type run_id: string
+        :return: index of the run
+        :rtype: integer
 
         """
 
@@ -156,10 +156,8 @@ class Station(Base):
         """
         Add a run, if one of the same name exists overwrite it.
 
-        :param run_obj: DESCRIPTION
-        :type run_obj: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param run_obj: run object to add
+        :type run_obj: :class:`mt_metadata.timeseries.Run`
 
         """
 
@@ -195,10 +193,8 @@ class Station(Base):
         """
         remove a run from the survey
 
-        :param run_id: DESCRIPTION
-        :type run_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param run_id: run id verbatim
+        :type run_id: string
 
         """
 
