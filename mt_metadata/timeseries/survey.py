@@ -144,11 +144,14 @@ class Survey(Base):
 
         """
 
-        filters = {}
+        filters = ListDict()
         fails = []
+        if value is None:
+            return
+
         if isinstance(value, list):
             if len(value) > 0:
-                if isinstance(value[0], (dict, OrderedDict)):
+                if isinstance(value[0], (dict, OrderedDict, ListDict)):
                     for ff in value:
                         f_type = ff["type"]
                         if f_type is None:
@@ -173,7 +176,7 @@ class Survey(Base):
                         f.from_dict(ff)
                         filters[f.name] = f
 
-        elif not isinstance(value, dict):
+        elif not isinstance(value, (dict, OrderedDict, ListDict)):
             msg = (
                 "Filters must be a dictionary with keys = names of filters, "
                 f"not {type(value)}"

@@ -157,3 +157,29 @@ class ListDict:
 
         else:
             raise TypeError(f"Cannot extend from {type(other)}")
+
+    def sort(self, inplace=True):
+        """
+        sort the dictionary keys into alphabetical order
+        """
+
+        od = OrderedDict()
+        for key in sorted(self._home.keys()):
+            od[key] = self._home[key]
+
+        if inplace:
+            self._home = od
+        else:
+            return od
+
+    def update(self, other):
+        """
+        Update from another ListDict
+        """
+
+        if not isinstance(other, (ListDict)):
+            raise TypeError(
+                f"Cannot update from {type(other)}, must be a ListDict"
+            )
+
+        self._home.update(other)
