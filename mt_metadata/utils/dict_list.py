@@ -177,9 +177,10 @@ class ListDict:
         Update from another ListDict
         """
 
-        if not isinstance(other, (ListDict)):
+        if not isinstance(other, (ListDict, dict, OrderedDict)):
             raise TypeError(
-                f"Cannot update from {type(other)}, must be a ListDict"
+                f"Cannot update from {type(other)}, must be a "
+                "ListDict, dict, OrderedDict"
             )
 
         self._home.update(other)

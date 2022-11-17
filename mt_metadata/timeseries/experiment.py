@@ -432,20 +432,20 @@ class Experiment(Base):
         # need to set the lists for each layer, otherwise you get duplicates.
         for survey_element in list(experiment_element):
             survey_dict = helpers.element_to_dict(survey_element)
+            stations = self._pop_dictionary(survey_dict["survey"], "station")
             survey_obj = Survey()
             survey_obj.from_dict(survey_dict, skip_none=skip_none)
             fd = survey_dict["survey"].pop("filters")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
 
-            stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
-                station_obj.from_dict(station_dict, skip_none=skip_none)
                 runs = self._pop_dictionary(station_dict, "run")
+                station_obj.from_dict(station_dict, skip_none=skip_none)
                 for run_dict in runs:
                     run_obj = Run()
-                    run_obj.from_dict(run_dict, skip_none=skip_none)
+
                     for ch in ["electric", "magnetic", "auxiliary"]:
                         try:
                             for ch_dict in self._pop_dictionary(run_dict, ch):
@@ -459,6 +459,7 @@ class Experiment(Base):
                                 run_obj.add_channel(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
+                    run_obj.from_dict(run_dict, skip_none=skip_none)
                     station_obj.add_run(run_obj)
                 survey_obj.add_station(station_obj)
             self.add_survey(survey_obj)
