@@ -191,6 +191,27 @@ class TestStation(unittest.TestCase):
             )
 
 
+class TestStationChannelsRecorded(unittest.TestCase):
+    def setUp(self):
+        self.station = Station()
+
+    def test_full_channels(self):
+        self.station.channels_recorded = ["Ex", "Ey", "Hx", "Hy"]
+        self.assertListEqual(
+            ["Ex", "Ey", "Hx", "Hy"], self.station.channels_recorded
+        )
+
+    def test_null(self):
+        self.station.channels_recorded = None
+        self.assertEqual([], self.station.channels_recorded)
+
+    def test_fail(self):
+        def set_channels(values):
+            self.station.channels_recorded = values
+
+        self.assertRaises(TypeError, set_channels, 10)
+
+
 # =============================================================================
 # run
 # =============================================================================
