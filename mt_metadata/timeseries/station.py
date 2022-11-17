@@ -94,7 +94,7 @@ class Station(Base):
         """
         ch_list = []
         for run in self.runs:
-            ch_list += run.keys()
+            ch_list += run.channels_recorded_all
         ch_list = sorted(set(ch_list))
         if self._channels_recorded == []:
             return ch_list

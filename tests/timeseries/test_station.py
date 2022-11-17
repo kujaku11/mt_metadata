@@ -211,6 +211,25 @@ class TestStationChannelsRecorded(unittest.TestCase):
 
         self.assertRaises(TypeError, set_channels, 10)
 
+    def test_from_run(self):
+        r = Run(id="666")
+        r.channels_recorded_electric = ["ex", "ey"]
+
+        r2 = Run(id="667")
+        r.channels_recorded_magnetic = ["hx", "hy", "hz"]
+
+        r3 = Run(id="668")
+        r.channels_recorded_auxiliary = ["temperature", "voltage"]
+
+        self.station.add_run(r)
+        self.station.add_run(r2)
+        self.station.add_run(r3)
+
+        self.assertListEqual(
+            sorted(["ex", "ey", "hx", "hy", "hz", "temperature", "voltage"]),
+            self.station.channels_recorded,
+        )
+
 
 # =============================================================================
 # run
