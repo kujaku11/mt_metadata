@@ -23,7 +23,7 @@ from .filters import (
     FIRFilter,
     FrequencyResponseTableFilter,
 )
-from mt_metadata.utils.dict_list import ListDict
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)

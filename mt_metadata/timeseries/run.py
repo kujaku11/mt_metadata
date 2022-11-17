@@ -25,7 +25,7 @@ from . import (
     Magnetic,
     Auxiliary,
 )
-from mt_metadata.utils.dict_list import ListDict
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)

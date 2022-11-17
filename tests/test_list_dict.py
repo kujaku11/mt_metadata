@@ -8,7 +8,7 @@ Created on Wed Nov 16 12:22:08 2022
 # Imports
 # =============================================================================
 import unittest
-from mt_metadata.utils.dict_list import ListDict
+from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.timeseries import Survey, Station, Run, Channel
 
 # =============================================================================

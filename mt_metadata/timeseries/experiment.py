@@ -32,7 +32,7 @@ from .filters import (
 )
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import Base, helpers
-from mt_metadata.utils.dict_list import ListDict
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 

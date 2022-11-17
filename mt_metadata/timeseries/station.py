@@ -25,7 +25,7 @@ from . import (
     TimePeriod,
     Run,
 )
-from mt_metadata.utils.dict_list import ListDict
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
