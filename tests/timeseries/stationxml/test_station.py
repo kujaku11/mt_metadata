@@ -26,7 +26,8 @@ class TestReadXMLStation01(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
         self.xml_station = self.inventory.networks[0].stations[0]
 
@@ -34,20 +35,33 @@ class TestReadXMLStation01(unittest.TestCase):
         self.mt_station = self.converter.xml_to_mt(self.xml_station)
 
     def test_time_period(self):
-        self.assertEqual(self.mt_station.time_period.start, "2020-06-02T18:41:43+00:00")
-        self.assertEqual(self.mt_station.time_period.end, "2020-07-13T21:46:12+00:00")
+        with self.subTest("start"):
+            self.assertEqual(
+                self.mt_station.time_period.start, "2020-06-02T18:41:43+00:00"
+            )
+        with self.subTest("end"):
+            self.assertEqual(
+                self.mt_station.time_period.end, "2020-07-13T21:46:12+00:00"
+            )
 
     def test_code(self):
-        self.assertEqual(self.mt_station.fdsn.id, "CAS04")
-        self.assertEqual(self.mt_station.id, "CAS04")
+        with self.subTest("station fdsn id"):
+            self.assertEqual(self.mt_station.fdsn.id, "CAS04")
+        with self.subTest("station id"):
+            self.assertEqual(self.mt_station.id, "CAS04")
 
     def test_location(self):
-        self.assertEqual(self.mt_station.location.latitude, 37.633351)
-        self.assertEqual(self.mt_station.location.longitude, -121.468382)
-        self.assertEqual(self.mt_station.location.elevation, 329.3875)
+        with self.subTest("latitude"):
+            self.assertEqual(self.mt_station.location.latitude, 37.633351)
+        with self.subTest("longitude"):
+            self.assertEqual(self.mt_station.location.longitude, -121.468382)
+        with self.subTest("elevation"):
+            self.assertEqual(self.mt_station.location.elevation, 329.3875)
 
     def test_geographic_name(self):
-        self.assertEqual(self.mt_station.geographic_name, "Corral Hollow, CA, USA")
+        self.assertEqual(
+            self.mt_station.geographic_name, "Corral Hollow, CA, USA"
+        )
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, [])
@@ -58,7 +72,8 @@ class TestMTStationToXML01(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
         self.base_xml_station = self.inventory.networks[0].stations[0]
 
@@ -68,26 +83,43 @@ class TestMTStationToXML01(unittest.TestCase):
         self.maxDiff = None
 
     def test_time_period(self):
-        self.assertEqual(
-            self.base_xml_station.start_date, self.test_xml_station.start_date
-        )
-        self.assertEqual(self.base_xml_station.end_date, self.test_xml_station.end_date)
+        with self.subTest("start_date"):
+            self.assertEqual(
+                self.base_xml_station.start_date,
+                self.test_xml_station.start_date,
+            )
+        with self.subTest("end_date"):
+            self.assertEqual(
+                self.base_xml_station.end_date, self.test_xml_station.end_date
+            )
 
     def test_code(self):
-        self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
-        # the original file does not have an alternate code
-        self.assertNotEqual(
-            self.base_xml_station.alternate_code, self.test_xml_station.alternate_code
-        )
+        with self.subTest("station code"):
+            self.assertEqual(
+                self.base_xml_station.code, self.test_xml_station.code
+            )
+        with self.subTest("alternate code"):
+            # the original file does not have an alternate code
+            self.assertNotEqual(
+                self.base_xml_station.alternate_code,
+                self.test_xml_station.alternate_code,
+            )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_station.latitude, self.test_xml_station.latitude)
-        self.assertEqual(
-            self.base_xml_station.longitude, self.test_xml_station.longitude
-        )
-        self.assertEqual(
-            self.base_xml_station.elevation, self.test_xml_station.elevation
-        )
+        with self.subTest("latitude"):
+            self.assertEqual(
+                self.base_xml_station.latitude, self.test_xml_station.latitude
+            )
+        with self.subTest("longitude"):
+            self.assertEqual(
+                self.base_xml_station.longitude,
+                self.test_xml_station.longitude,
+            )
+        with self.subTest("elevation"):
+            self.assertEqual(
+                self.base_xml_station.elevation,
+                self.test_xml_station.elevation,
+            )
 
     def test_site(self):
         self.assertEqual(
@@ -100,7 +132,8 @@ class TestReadXMLStation02(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
         self.xml_station = self.inventory.networks[0].stations[0]
 
@@ -110,38 +143,71 @@ class TestReadXMLStation02(unittest.TestCase):
         self.maxDiff = None
 
     def test_time_period(self):
-        self.assertEqual(self.mt_station.time_period.start, "2020-06-08T22:57:13+00:00")
-        self.assertEqual(self.mt_station.time_period.end, "2020-07-17T21:15:32+00:00")
+        with self.subTest("start"):
+            self.assertEqual(
+                self.mt_station.time_period.start, "2020-06-08T22:57:13+00:00"
+            )
+        with self.subTest("end"):
+            self.assertEqual(
+                self.mt_station.time_period.end, "2020-07-17T21:15:32+00:00"
+            )
 
     def test_code(self):
-        self.assertEqual(self.mt_station.fdsn.id, "REW09")
-        self.assertEqual(self.mt_station.id, "REW09")
+        with self.subTest("fdsn code"):
+            self.assertEqual(self.mt_station.fdsn.id, "REW09")
+        with self.subTest("station id"):
+            self.assertEqual(self.mt_station.id, "REW09")
 
     def test_location(self):
-        self.assertEqual(self.mt_station.location.latitude, 35.1469128125)
-        self.assertEqual(self.mt_station.location.longitude, -117.160798541667)
-        self.assertEqual(self.mt_station.location.elevation, 887.775)
+        with self.subTest("latitude"):
+            self.assertEqual(self.mt_station.location.latitude, 35.1469128125)
+        with self.subTest("longitude"):
+            self.assertEqual(
+                self.mt_station.location.longitude, -117.160798541667
+            )
+        with self.subTest("elevation"):
+            self.assertEqual(self.mt_station.location.elevation, 887.775)
 
     def test_geographic_name(self):
-        self.assertEqual(self.mt_station.geographic_name, "Opal Mountain, CA, USA")
+        self.assertEqual(
+            self.mt_station.geographic_name, "Opal Mountain, CA, USA"
+        )
 
     def test_provenance(self):
-        self.assertEqual(
-            self.mt_station.provenance.software.author, "Anna Kelbert, USGS"
-        )
-        self.assertEqual(self.mt_station.provenance.software.name, "mth5_metadata.m")
-        self.assertEqual(self.mt_station.provenance.software.version, "2021-02-01")
+        with self.subTest("author"):
+            self.assertEqual(
+                self.mt_station.provenance.software.author,
+                "Anna Kelbert, USGS",
+            )
+        with self.subTest("software name"):
+            self.assertEqual(
+                self.mt_station.provenance.software.name, "mth5_metadata.m"
+            )
+        with self.subTest("software version"):
+            self.assertEqual(
+                self.mt_station.provenance.software.version, "2021-02-01"
+            )
 
     def test_declination(self):
-        self.assertEqual(self.mt_station.location.declination.value, -666)
-        self.assertEqual(self.mt_station.location.declination.model, "IGRF-13")
-        self.assertEqual(
-            self.mt_station.location.declination.comments, "igrf.m by Drew Compston"
-        )
+        with self.subTest("value"):
+            self.assertEqual(self.mt_station.location.declination.value, -666)
+        with self.subTest("model"):
+            self.assertEqual(
+                self.mt_station.location.declination.model, "IGRF-13"
+            )
+        with self.subTest("comments"):
+            self.assertEqual(
+                self.mt_station.location.declination.comments,
+                "igrf.m by Drew Compston",
+            )
 
     def test_orientation(self):
-        self.assertEqual(self.mt_station.orientation.method, "compass")
-        self.assertEqual(self.mt_station.orientation.reference_frame, "geographic")
+        with self.subTest("method"):
+            self.assertEqual(self.mt_station.orientation.method, "compass")
+        with self.subTest("reference frame"):
+            self.assertEqual(
+                self.mt_station.orientation.reference_frame, "geographic"
+            )
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, ["a", "b", "c", "d", "e"])
@@ -373,6 +439,7 @@ class TestMTStationToXML02(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
+    @classmethod
     def setUp(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
         self.base_xml_station = self.inventory.networks[0].stations[0]
@@ -384,25 +451,42 @@ class TestMTStationToXML02(unittest.TestCase):
         self.maxDiff = None
 
     def test_time_period(self):
-        self.assertEqual(
-            self.base_xml_station.start_date, self.test_xml_station.start_date
-        )
-        self.assertEqual(self.base_xml_station.end_date, self.test_xml_station.end_date)
+        with self.subTest("start"):
+            self.assertEqual(
+                self.base_xml_station.start_date,
+                self.test_xml_station.start_date,
+            )
+        with self.subTest("end"):
+            self.assertEqual(
+                self.base_xml_station.end_date, self.test_xml_station.end_date
+            )
 
     def test_code(self):
-        self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
-        self.assertEqual(
-            self.base_xml_station.alternate_code, self.test_xml_station.alternate_code
-        )
+        with self.subTest("fdsn code"):
+            self.assertEqual(
+                self.base_xml_station.code, self.test_xml_station.code
+            )
+        with self.subTest("alternate code"):
+            self.assertEqual(
+                self.base_xml_station.alternate_code,
+                self.test_xml_station.alternate_code,
+            )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_station.latitude, self.test_xml_station.latitude)
-        self.assertEqual(
-            self.base_xml_station.longitude, self.test_xml_station.longitude
-        )
-        self.assertEqual(
-            self.base_xml_station.elevation, self.test_xml_station.elevation
-        )
+        with self.subTest("latitude"):
+            self.assertEqual(
+                self.base_xml_station.latitude, self.test_xml_station.latitude
+            )
+        with self.subTest("longitude"):
+            self.assertEqual(
+                self.base_xml_station.longitude,
+                self.test_xml_station.longitude,
+            )
+        with self.subTest("elevation"):
+            self.assertEqual(
+                self.base_xml_station.elevation,
+                self.test_xml_station.elevation,
+            )
 
     def test_site(self):
         self.assertEqual(
@@ -410,17 +494,24 @@ class TestMTStationToXML02(unittest.TestCase):
         )
 
     def test_equipments(self):
-        self.assertEqual(
-            len(self.base_xml_station.equipments), len(self.test_xml_station.equipments)
-        )
+        with self.subTest("length"):
+            self.assertEqual(
+                len(self.base_xml_station.equipments),
+                len(self.test_xml_station.equipments),
+            )
         for be, te in zip(
             self.base_xml_station.equipments, self.test_xml_station.equipments
         ):
-            self.assertEqual(be.resource_id, te.resource_id)
-            self.assertEqual(be.manufacturer, te.manufacturer)
-            self.assertEqual(be.serial_number, te.serial_number)
-            self.assertEqual(be.installation_date, te.installation_date)
-            self.assertEqual(be.removal_date, te.removal_date)
+            with self.subTest("id"):
+                self.assertEqual(be.resource_id, te.resource_id)
+            with self.subTest("manufacturer"):
+                self.assertEqual(be.manufacturer, te.manufacturer)
+            with self.subTest("serial number"):
+                self.assertEqual(be.serial_number, te.serial_number)
+            with self.subTest("installation date"):
+                self.assertEqual(be.installation_date, te.installation_date)
+            with self.subTest("removal date"):
+                self.assertEqual(be.removal_date, te.removal_date)
 
     def test_comments(self):
         for bc in self.base_xml_station.comments:
@@ -429,14 +520,17 @@ class TestMTStationToXML02(unittest.TestCase):
                     if bc.value:
                         bk, bv = self.converter.read_xml_comment(bc)
                         tk, tv = self.converter.read_xml_comment(tc)
-                        self.assertEqual(bk, tk)
+                        with self.subTest("comments"):
+                            self.assertEqual(bk, tk)
                         if isinstance(bv, dict):
                             for kk, vv in bv.items():
                                 if vv not in ["", None]:
-                                    self.assertEqual(tv[kk], vv)
+                                    with self.subTest("comments 02"):
+                                        self.assertEqual(tv[kk], vv)
 
                         else:
-                            self.assertEqual(bv, tv)
+                            with self.subTest("comments string"):
+                                self.assertEqual(bv, tv)
 
                     continue
 

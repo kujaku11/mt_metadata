@@ -22,10 +22,15 @@ from obspy.core import inventory
 
 
 class TestTranslationXML2MTML2XML(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.translator = XMLInventoryMTExperiment()
-        self.mtml = self.translator.xml_to_mt(stationxml_fn=STATIONXML_MAGNETIC)
-        self.original_xml = inventory.read_inventory(STATIONXML_MAGNETIC.as_posix())
+        self.mtml = self.translator.xml_to_mt(
+            stationxml_fn=STATIONXML_MAGNETIC
+        )
+        self.original_xml = inventory.read_inventory(
+            STATIONXML_MAGNETIC.as_posix()
+        )
         self.new_xml = self.translator.mt_to_xml(self.mtml)
         self.maxDiff = None
 
@@ -69,7 +74,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertDictEqual(original_comment_dict, new_comment_dict)
 
     def test_network_identifier(self):
-        self.assertListEqual(self.network_0.identifiers, self.network_1.identifiers)
+        self.assertListEqual(
+            self.network_0.identifiers, self.network_1.identifiers
+        )
 
     def test_network_code(self):
         self.assertEqual(self.network_0.code, self.network_1.code)
@@ -82,7 +89,8 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
     def test_network_operator(self):
         with self.subTest(msg="test ogency"):
             self.assertEqual(
-                self.network_0.operators[0].agency, self.network_1.operators[0].agency
+                self.network_0.operators[0].agency,
+                self.network_1.operators[0].agency,
             )
 
         with self.subTest(msg="test names"):
@@ -110,7 +118,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertEqual(self.station_0.code, self.station_1.code)
 
     def test_station_alternate_code(self):
-        self.assertEqual(self.station_0.alternate_code, self.station_1.alternate_code)
+        self.assertEqual(
+            self.station_0.alternate_code, self.station_1.alternate_code
+        )
 
     def test_station_restricted(self):
         self.assertEqual(
@@ -142,7 +152,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
 
     def test_station_location(self):
         with self.subTest(msg="latitude"):
-            self.assertAlmostEqual(self.station_0.latitude, self.station_1.latitude, 4)
+            self.assertAlmostEqual(
+                self.station_0.latitude, self.station_1.latitude, 4
+            )
         with self.subTest(msg="longitude"):
             self.assertAlmostEqual(
                 self.station_0.longitude, self.station_1.longitude, 4
@@ -156,7 +168,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         self.assertEqual(self.station_0.site.name, self.station_1.site.name)
 
     def test_station_equipment(self):
-        for eq_0, eq_1 in zip(self.station_0.equipments, self.station_1.equipments):
+        for eq_0, eq_1 in zip(
+            self.station_0.equipments, self.station_1.equipments
+        ):
             for attr in [
                 "resource_id",
                 "type",
@@ -183,7 +197,8 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
 
     def test_channel_alternate_code(self):
         self.assertEqual(
-            self.channel_0.alternate_code.lower(), self.channel_1.alternate_code.lower()
+            self.channel_0.alternate_code.lower(),
+            self.channel_1.alternate_code.lower(),
         )
 
     def test_channel_restricted(self):
@@ -211,7 +226,9 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
 
     def test_channel_location(self):
         with self.subTest(msg="latitude"):
-            self.assertAlmostEqual(self.channel_0.latitude, self.channel_1.latitude, 4)
+            self.assertAlmostEqual(
+                self.channel_0.latitude, self.channel_1.latitude, 4
+            )
         with self.subTest(msg="longitude"):
             self.assertAlmostEqual(
                 self.channel_0.longitude, self.channel_1.longitude, 4
@@ -223,14 +240,20 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
 
     def test_channel_orientation(self):
         with self.subTest(msg="azimuth"):
-            self.assertAlmostEqual(self.channel_0.azimuth, self.channel_1.azimuth, 4)
+            self.assertAlmostEqual(
+                self.channel_0.azimuth, self.channel_1.azimuth, 4
+            )
         with self.subTest(msg="dip"):
             self.assertAlmostEqual(self.channel_0.dip, self.channel_1.dip, 4)
         with self.subTest(msg="depth"):
-            self.assertAlmostEqual(self.channel_0.depth, self.channel_1.depth, 4)
+            self.assertAlmostEqual(
+                self.channel_0.depth, self.channel_1.depth, 4
+            )
 
     def test_channel_sample_rate(self):
-        self.assertEqual(self.channel_0.sample_rate, self.channel_1.sample_rate)
+        self.assertEqual(
+            self.channel_0.sample_rate, self.channel_1.sample_rate
+        )
 
     def test_channel_calibration_units(self):
         self.assertEqual(
@@ -238,7 +261,13 @@ class TestTranslationXML2MTML2XML(unittest.TestCase):
         )
 
     def test_channel_sensor(self):
-        for attr in ["type", "description", "manufacturer", "model", "serial_number"]:
+        for attr in [
+            "type",
+            "description",
+            "manufacturer",
+            "model",
+            "serial_number",
+        ]:
             with self.subTest(msg=attr):
                 self.assertEqual(
                     getattr(getattr(self.channel_0, "sensor"), attr),
