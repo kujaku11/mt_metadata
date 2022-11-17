@@ -17,7 +17,9 @@ from collections import OrderedDict
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
 from mt_metadata import STATIONXML_01, STATIONXML_02
-from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
+from mt_metadata.timeseries.filters.obspy_stages import (
+    create_filter_from_stage,
+)
 
 # =============================================================================
 
@@ -29,7 +31,8 @@ class TestParseSerialID(unittest.TestCase):
     'positive: pid, negative: nid'
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.converter = XMLChannelMTChannel()
         self.pid = "2004007"
         self.nid = "2004008"
@@ -43,12 +46,16 @@ class TestParseSerialID(unittest.TestCase):
         self.assertEqual(test_nid, self.nid)
 
     def test_pares_comma_only(self):
-        test_pid, test_nid = self.converter._parse_electrode_ids(self.comma_only_str)
+        test_pid, test_nid = self.converter._parse_electrode_ids(
+            self.comma_only_str
+        )
         self.assertEqual(test_pid, self.pid)
         self.assertEqual(test_nid, self.nid)
 
     def test_pares_basic(self):
-        test_pid, test_nid = self.converter._parse_electrode_ids(self.generic_str)
+        test_pid, test_nid = self.converter._parse_electrode_ids(
+            self.generic_str
+        )
         self.assertEqual(test_pid, "basic")
         self.assertEqual(test_nid, "basic")
 
@@ -58,7 +65,8 @@ class TestParseDipole(unittest.TestCase):
     Test parsing a dipole length string
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.converter = XMLChannelMTChannel()
         self.dipole_length = 100.0
         self.dipole_str = f"{self.dipole_length} meters"
@@ -73,7 +81,8 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
     Test reading XML channel to MT Channel
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
         self.xml_hy = self.inventory.networks[0].stations[0].channels[0]
         self.xml_ey = self.inventory.networks[0].stations[0].channels[1]
@@ -160,14 +169,20 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("negative.latitude", 37.633351),
                         ("negative.longitude", -121.468382),
                         ("negative.manufacturer", "Oregon State University"),
-                        ("negative.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "negative.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("negative.type", "electrode"),
                         ("positive.elevation", 329.4),
                         ("positive.id", "200402F"),
                         ("positive.latitude", 37.633351),
                         ("positive.longitude", -121.468382),
                         ("positive.manufacturer", "Oregon State University"),
-                        ("positive.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "positive.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("positive.type", "electrode"),
                         ("sample_rate", 1.0),
                         ("time_period.end", "2020-07-13T21:46:12+00:00"),
@@ -185,7 +200,8 @@ class TestXMLChannelSingleStation(unittest.TestCase):
     Test reading XML channel to MT Channel
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
         self.xml_hx = self.inventory.networks[0].stations[0].channels[0]
         self.xml_hy = self.inventory.networks[0].stations[0].channels[1]
@@ -359,14 +375,20 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("negative.latitude", 35.1469128125),
                         ("negative.longitude", -117.160798541667),
                         ("negative.manufacturer", "Oregon State University"),
-                        ("negative.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "negative.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("negative.type", "electrode"),
                         ("positive.elevation", 887.775),
                         ("positive.id", "2004007"),
                         ("positive.latitude", 35.1469128125),
                         ("positive.longitude", -117.160798541667),
                         ("positive.manufacturer", "Oregon State University"),
-                        ("positive.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "positive.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("positive.type", "electrode"),
                         ("sample_rate", 1.0),
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
@@ -409,14 +431,20 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("negative.latitude", 35.1469128125),
                         ("negative.longitude", -117.160798541667),
                         ("negative.manufacturer", "Oregon State University"),
-                        ("negative.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "negative.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("negative.type", "electrode"),
                         ("positive.elevation", 887.775),
                         ("positive.id", "2004002"),
                         ("positive.latitude", 35.1469128125),
                         ("positive.longitude", -117.160798541667),
                         ("positive.manufacturer", "Oregon State University"),
-                        ("positive.model", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
+                        (
+                            "positive.model",
+                            "Pb-PbCl2 kaolin gel Petiau 2 chamber type",
+                        ),
                         ("positive.type", "electrode"),
                         ("sample_rate", 1.0),
                         ("time_period.end", "2020-06-25T17:57:40+00:00"),
@@ -434,9 +462,12 @@ class TestMTChannelToXML01HY(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[0]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[0]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -447,25 +478,33 @@ class TestMTChannelToXML01HY(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E
         with self.subTest(msg="Test Channel Code"):
-            self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+            self.assertEqual(
+                self.base_xml_channel.code, self.test_xml_channel.code
+            )
 
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
@@ -484,15 +523,18 @@ class TestMTChannelToXML01HY(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
-                self.base_xml_channel.alternate_code, xml_channel.alternate_code
+                self.base_xml_channel.alternate_code,
+                xml_channel.alternate_code,
             )
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -519,15 +561,20 @@ class TestMTChannelToXML01HY(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
 
 class TestMTChannelToXML01EX(unittest.TestCase):
@@ -535,9 +582,12 @@ class TestMTChannelToXML01EX(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[1]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[1]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -548,26 +598,35 @@ class TestMTChannelToXML01EX(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertNotEqual(
-            self.base_xml_channel.alternate_code, self.test_xml_channel.alternate_code
+            self.base_xml_channel.alternate_code,
+            self.test_xml_channel.alternate_code,
         )
 
     def test_code_unforced(self):
@@ -581,15 +640,18 @@ class TestMTChannelToXML01EX(unittest.TestCase):
 
         with self.subTest(msg="Test Channel Alternate Code"):
             self.assertNotEqual(
-                self.base_xml_channel.alternate_code, xml_channel.alternate_code
+                self.base_xml_channel.alternate_code,
+                xml_channel.alternate_code,
             )
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -616,15 +678,20 @@ class TestMTChannelToXML01EX(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
 
 class TestMTChannelToXML02HX(unittest.TestCase):
@@ -632,9 +699,12 @@ class TestMTChannelToXML02HX(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[0]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[0]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -645,24 +715,32 @@ class TestMTChannelToXML02HX(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -685,10 +763,12 @@ class TestMTChannelToXML02HX(unittest.TestCase):
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -715,15 +795,20 @@ class TestMTChannelToXML02HX(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
     def test_comments(self):
         for comment_base, comment_test in zip(
@@ -738,9 +823,12 @@ class TestMTChannelToXML02HY(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[1]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[1]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -751,24 +839,32 @@ class TestMTChannelToXML02HY(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -791,10 +887,12 @@ class TestMTChannelToXML02HY(unittest.TestCase):
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -821,15 +919,20 @@ class TestMTChannelToXML02HY(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
     def test_comments(self):
         for comment_base, comment_test in zip(
@@ -844,9 +947,12 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[2]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[2]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -857,24 +963,32 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -897,10 +1011,12 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -927,15 +1043,20 @@ class TestMTChannelToXML02HZ(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
     def test_comments(self):
         for comment_base, comment_test in zip(
@@ -950,9 +1071,12 @@ class TestMTChannelToXML02EX(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[3]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[3]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -963,24 +1087,32 @@ class TestMTChannelToXML02EX(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -1003,10 +1135,12 @@ class TestMTChannelToXML02EX(unittest.TestCase):
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -1033,15 +1167,20 @@ class TestMTChannelToXML02EX(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
     def test_comments(self):
         for comment_base, comment_test in zip(
@@ -1056,9 +1195,12 @@ class TestMTChannelToXML02EY(unittest.TestCase):
     Test reading network into MT mt_station object
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_channel = self.inventory.networks[0].stations[0].channels[4]
+        self.base_xml_channel = (
+            self.inventory.networks[0].stations[0].channels[4]
+        )
 
         self.converter = XMLChannelMTChannel()
         self.mt_channel, self.filters_dict = self.converter.xml_to_mt(
@@ -1069,24 +1211,32 @@ class TestMTChannelToXML02EY(unittest.TestCase):
         )
 
     def test_location(self):
-        self.assertEqual(self.base_xml_channel.latitude, self.test_xml_channel.latitude)
+        self.assertEqual(
+            self.base_xml_channel.latitude, self.test_xml_channel.latitude
+        )
         self.assertEqual(
             self.base_xml_channel.longitude, self.test_xml_channel.longitude
         )
         self.assertEqual(
             self.base_xml_channel.elevation, self.test_xml_channel.elevation
         )
-        self.assertEqual(self.base_xml_channel.depth, self.test_xml_channel.depth)
+        self.assertEqual(
+            self.base_xml_channel.depth, self.test_xml_channel.depth
+        )
 
     def test_time_period(self):
         self.assertEqual(
             self.base_xml_channel.start_date, self.test_xml_channel.start_date
         )
-        self.assertEqual(self.base_xml_channel.end_date, self.test_xml_channel.end_date)
+        self.assertEqual(
+            self.base_xml_channel.end_date, self.test_xml_channel.end_date
+        )
 
     def test_code(self):
         # the codes are not the same because the azimuth is more than 5 degrees from E        self.assertNotEqual(self.base_xml_channel.code,
-        self.assertEqual(self.base_xml_channel.code, self.test_xml_channel.code)
+        self.assertEqual(
+            self.base_xml_channel.code, self.test_xml_channel.code
+        )
         self.assertEqual(
             self.base_xml_channel.alternate_code.lower(),
             self.test_xml_channel.alternate_code.lower(),
@@ -1109,10 +1259,12 @@ class TestMTChannelToXML02EY(unittest.TestCase):
 
     def test_sensor(self):
         self.assertEqual(
-            self.base_xml_channel.sensor.type, self.test_xml_channel.sensor.type
+            self.base_xml_channel.sensor.type,
+            self.test_xml_channel.sensor.type,
         )
         self.assertEqual(
-            self.base_xml_channel.sensor.model, self.test_xml_channel.sensor.model
+            self.base_xml_channel.sensor.model,
+            self.test_xml_channel.sensor.model,
         )
         self.assertEqual(
             self.base_xml_channel.sensor.manufacturer,
@@ -1139,15 +1291,20 @@ class TestMTChannelToXML02EY(unittest.TestCase):
 
     def test_sample_rate(self):
         self.assertEqual(
-            self.base_xml_channel.sample_rate, self.test_xml_channel.sample_rate
+            self.base_xml_channel.sample_rate,
+            self.test_xml_channel.sample_rate,
         )
 
     def test_azimuth(self):
-        self.assertEqual(self.base_xml_channel.azimuth, self.test_xml_channel.azimuth)
+        self.assertEqual(
+            self.base_xml_channel.azimuth, self.test_xml_channel.azimuth
+        )
         self.assertEqual(self.base_xml_channel.dip, self.test_xml_channel.dip)
 
     def test_types(self):
-        self.assertEqual(self.base_xml_channel.types, self.test_xml_channel.types)
+        self.assertEqual(
+            self.base_xml_channel.types, self.test_xml_channel.types
+        )
 
     def test_comments(self):
         for comment_base, comment_test in zip(
