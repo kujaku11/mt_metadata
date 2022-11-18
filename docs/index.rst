@@ -48,6 +48,7 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     authors
     history
     conventions
+	source/notebooks/ts_metadata_examples.ipynb
     
 .. toctree::
     :maxdepth: 1
