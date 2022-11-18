@@ -7,6 +7,10 @@ Welcome to MT Metadata documentation!
 .. image:: https://img.shields.io/conda/v/conda-forge/mt-metadata.svg
     :target: https://anaconda.org/conda-forge/mt-metadata
     :alt: Latest conda-forge version
+	
+.. image:: https://readthedocs.org/projects/mt-metadata/badge/?version=latest
+    :target: https://mt-metadata.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 		
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
     :target: https://github.com/kujaku11/mt_metadata/blob/main/LICENSE
@@ -48,7 +52,7 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     authors
     history
     conventions
-	source/notebooks/ts_metadata_examples.ipynb
+    source/notebooks/ts_metadata_examples.ipynb
     
 .. toctree::
     :maxdepth: 1
