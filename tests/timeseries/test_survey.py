@@ -38,7 +38,7 @@ class TestSurvey(unittest.TestCase):
                 "citation_dataset.doi": "http://doi.####",
                 "citation_journal.doi": None,
                 "comments": "comments",
-                "country": "Canada",
+                "country": ["Canada"],
                 "datum": "WGS84",
                 "geographic_name": "earth",
                 "name": "entire survey of the earth",

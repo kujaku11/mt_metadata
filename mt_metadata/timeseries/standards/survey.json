@@ -21,17 +21,6 @@
         "example": "long survey",
 		"default": null
     },
-    "country": {
-        "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Country(s) the survey located in. If multiple input as comma separated names.",
-        "options": [],
-        "alias": [],
-        "example": "\"[USA, Canada]\"",
-		"default": null
-    },
     "datum": {
         "type": "string",
         "required": true,
