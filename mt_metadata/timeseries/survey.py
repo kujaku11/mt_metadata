@@ -15,7 +15,15 @@ from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Person, Citation, Location, TimePeriod, Fdsn, Station
+from . import (
+    Person,
+    Citation,
+    Location,
+    TimePeriod,
+    Fdsn,
+    Station,
+    FundingSource,
+)
 from .filters import (
     PoleZeroFilter,
     CoefficientFilter,
@@ -32,6 +40,10 @@ attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
     keys=["author", "comments"],
+)
+attr_dict.add_dict(
+    get_schema("funding_source", SCHEMA_FN_PATHS),
+    "funding_source",
 )
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
@@ -63,6 +75,7 @@ class Survey(Base):
         self.citation_journal = Citation()
         self.northwest_corner = Location()
         self.project_lead = Person()
+        self.funding_source = FundingSource()
         self.southeast_corner = Location()
         self.time_period = TimePeriod()
         self.stations = ListDict()

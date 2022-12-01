@@ -58,6 +58,7 @@ from .data_quality import DataQuality
 from .citation import Citation
 from .copyright import Copyright
 from .person import Person
+from .funding_source import FundingSource
 from .software import Software
 from .provenance import Provenance
 from .diagnostic import Diagnostic
@@ -91,6 +92,7 @@ __all__ = [
     "Copyright",
     "Provenance",
     "Person",
+    "FundingSource",
     "Diagnostic",
     "Battery",
     "Electrode",
