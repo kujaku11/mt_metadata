@@ -23,6 +23,7 @@ from . import (
     Fdsn,
     Station,
     FundingSource,
+    GeographicLocation,
 )
 from .filters import (
     PoleZeroFilter,
@@ -56,6 +57,11 @@ attr_dict.add_dict(
     get_schema("location", SCHEMA_FN_PATHS),
     "southeast_corner",
     keys=["latitude", "longitude"],
+)
+attr_dict.add_dict(
+    get_schema("geographic_location", SCHEMA_FN_PATHS),
+    None,
+    keys=["country", "state"],
 )
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),

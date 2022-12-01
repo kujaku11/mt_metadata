@@ -1,131 +1,79 @@
 {
-    "latitude": {
-        "type": "float",
-        "required": true,
-        "style": "number",
-        "units": "degrees",
-        "description": "latitude of location in datum specified at survey level",
-        "options": [],
-        "alias": [
-            "lat"
-        ],
-        "example": "23.134",
-		"default": 0.0
-    },
-    "longitude": {
-        "type": "float",
-        "required": true,
-        "style": "number",
-        "units": "degrees",
-        "description": "longitude of location in datum specified at survey level",
-        "options": [],
-        "alias": [
-            "lon",
-            "long"
-        ],
-        "example": "14.23",
-		"default": 0.0
-    },
-    "elevation": {
-        "type": "float",
-        "required": true,
-        "style": "number",
-        "units": "meters",
-        "description": "elevation of location in datum specified at survey level",
-        "options": [],
-        "alias": [
-            "elev"
-        ],
-        "example": "123.4",
-		"default": 0.0
-    },
-	"datum": {
+    "country": {
         "type": "string",
         "required": false,
-        "style": "controlled vocabulary",
+        "style": "name list",
         "units": null,
-        "description": "Datum of the location values.  Usually a well known datum like WGS84.",
-        "options": ["WGS84", "NAD83", "other"],
-        "alias": [],
-        "example": "WGS84",
-		"default": "WGS84"
-    },
-    "x": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative distance to the center of the station",
-        "options": [],
-        "alias": [
-            "east",
-            "easting"
-        ],
-        "example": "10.0",
-		"default": null
-    },
-    "x2": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative distance to the center of the station",
-        "options": [],
-        "alias": [
-            "east",
-            "easting"
-        ],
-        "example": "10.0",
-		"default": null
-    },
-    "y": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative distance to the center of the station",
-        "options": [],
-        "alias": [
-            "north",
-            "northing"
-        ],
-        "example": "10.0",
-		"default": null
-    },
-    "y2": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative distance to the center of the station",
-        "options": [],
-        "alias": [
-            "north",
-            "northing"
-        ],
-        "example": "10.0",
-		"default": null
-    },
-    "z": {
-        "type": "float",
-        "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative elevation to the center of the station",
+        "description": "Country of the geographic location, should be spelled out in full. Can be a list of countries.",
         "options": [],
         "alias": [],
-        "example": "10.0",
-		"default": null
+        "example": "United States of America",
+    	  "default": null
     },
-	"z2": {
-        "type": "float",
+	 "state": {
+        "type": "string",
         "required": false,
-        "style": "number",
-        "units": "meters",
-        "description": "relative elevation to the center of the station",
+        "style": "name list",
+        "units": null,
+        "description": "State or province of the geographic location, should be spelled out in full. Can be a list of states or provinces.",
         "options": [],
         "alias": [],
-        "example": "10.0",
+        "example": "[Colorado, Utah]",
+		"default": null
+    },
+	 "county": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "County of the geographic location, should be spelled out in full. Can be a list of counties.",
+        "options": [],
+        "alias": [],
+        "example": "[Douglass, Fayet]",
+		"default": null
+    },
+	 "township": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Township or city name or code.",
+        "options": [],
+        "alias": [],
+        "example": "090",
+		"default": null
+    },
+	 "section": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Section name or code.",
+        "options": [],
+        "alias": [],
+        "example": "012",
+		"default": null
+    },
+	 "quarter": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Quarter section code.",
+        "options": [],
+        "alias": [],
+        "example": "400",
+		"default": null
+    },
+	 "parcel": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Land parcel ID.",
+        "options": [],
+        "alias": [],
+        "example": "46b29a",
 		"default": null
     }
 }

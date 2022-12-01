@@ -51,6 +51,7 @@ Created on Sun Apr 24 20:50:41 2020
 ### !!! DO NOT CHANGE THE ORDER !!!
 from .declination import Declination
 from .location import Location
+from .geographic_location import GeographicLocation
 from .instrument import Instrument
 from .fdsn import Fdsn
 from .rating import Rating
@@ -84,6 +85,7 @@ __all__ = [
     "Standards",
     "Declination",
     "Location",
+    "GeographicLocation",
     "Instrument",
     "Fdsn",
     "Rating",

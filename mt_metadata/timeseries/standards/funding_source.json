@@ -53,7 +53,6 @@
         "alias": [],
         "example": "expert digger",
 		"default": null
-    }
     },
     "grant_id": {
         "type": "string",
