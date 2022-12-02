@@ -38,7 +38,7 @@ attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
-    keys=["name", "comments"],
+    keys=["name", "comments", "organization"],
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(

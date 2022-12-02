@@ -39,7 +39,7 @@ attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
-    keys=["author", "comments"],
+    keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
     get_schema("funding_source", SCHEMA_FN_PATHS),

@@ -39,12 +39,12 @@ attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
-    keys=["author", "comments"],
+    keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "metadata_by",
-    keys=["author", "comments"],
+    keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
     get_schema("provenance", SCHEMA_FN_PATHS),
@@ -297,7 +297,9 @@ class Run(Base):
             elif isinstance(entry, Electric):
                 self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Electric not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Electric not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -325,7 +327,9 @@ class Run(Base):
             elif isinstance(entry, Magnetic):
                 self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Magnetic not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Magnetic not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 

@@ -23,7 +23,7 @@
     },
     "organization": {
         "type": "string",
-        "required": true,
+        "required": false,
         "style": "free form",
         "units": null,
         "description": "Organization full name",
@@ -34,7 +34,7 @@
     },
     "email": {
         "type": "string",
-        "required": true,
+        "required": false,
         "style": "email",
         "units": null,
         "description": "Email of the contact person",
