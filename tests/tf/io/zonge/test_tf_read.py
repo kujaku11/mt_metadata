@@ -32,7 +32,6 @@ class TestEMTFXML(unittest.TestCase):
             [
                 ("citation_dataset.doi", None),
                 ("citation_journal.doi", None),
-                ("country", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
                 ("id", None),
@@ -71,7 +70,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.software.author", "none"),
+                ("provenance.software.author", None),
                 ("provenance.software.name", None),
                 ("provenance.software.version", None),
                 ("provenance.submitter.email", None),
