@@ -23,6 +23,7 @@ from .filters import (
     FIRFilter,
     FrequencyResponseTableFilter,
 )
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
@@ -64,7 +65,7 @@ class Survey(Base):
         self.project_lead = Person()
         self.southeast_corner = Location()
         self.time_period = TimePeriod()
-        self.stations = []
+        self.stations = ListDict()
         self.filters = {}
 
         super().__init__(attr_dict=attr_dict, **kwargs)
@@ -90,35 +91,41 @@ class Survey(Base):
     @stations.setter
     def stations(self, value):
         """set the station list"""
-        if not hasattr(value, "__iter__"):
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input survey_list must be an iterable, should be a list "
+                "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        stations = []
+
         fails = []
-        for ii, station in enumerate(value):
+        self._stations = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, station in enumerate(value_list):
+
             if isinstance(station, (dict, OrderedDict)):
                 s = Station()
                 s.from_dict(station)
-                stations.append(s)
+                self._stations.append(s)
             elif not isinstance(station, Station):
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                stations.append(station)
+                self._stations.append(station)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._stations = stations
 
     @property
     def station_names(self):
         """Return names of station in survey"""
-        return [ss.id for ss in self.stations]
+        return self.stations.keys()
 
     @property
     def filters(self):
@@ -130,18 +137,19 @@ class Survey(Base):
         """
         Set the filters dictionary
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param value: dictionary of filter objects
+        :type value: dictionary
 
         """
 
-        filters = {}
+        filters = ListDict()
         fails = []
+        if value is None:
+            return
+
         if isinstance(value, list):
             if len(value) > 0:
-                if isinstance(value[0], (dict, OrderedDict)):
+                if isinstance(value[0], (dict, OrderedDict, ListDict)):
                     for ff in value:
                         f_type = ff["type"]
                         if f_type is None:
@@ -166,7 +174,7 @@ class Survey(Base):
                         f.from_dict(ff)
                         filters[f.name] = f
 
-        elif not isinstance(value, dict):
+        elif not isinstance(value, (dict, OrderedDict, ListDict)):
             msg = (
                 "Filters must be a dictionary with keys = names of filters, "
                 f"not {type(value)}"
@@ -205,10 +213,10 @@ class Survey(Base):
         """
         Has station id
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: True if exists or False if not
+        :rtype: boolean
 
         """
         if station_id in self.station_names:
@@ -219,10 +227,10 @@ class Survey(Base):
         """
         Get station index
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: index value if station is found
+        :rtype: integer
 
         """
 
@@ -234,10 +242,8 @@ class Survey(Base):
         """
         Add a station, if has the same name update that object.
 
-        :param station_obj: DESCRIPTION
+        :param station_obj: station object to add
         :type station_obj: `:class:`mt_metadata.timeseries.Station`
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
 
@@ -246,9 +252,8 @@ class Survey(Base):
                 f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
             )
 
-        index = self.station_index(station_obj.id)
-        if index is not None:
-            self.stations[index].update(station_obj)
+        if self.has_station(station_obj.id):
+            self.stations[station_obj.id].update(station_obj)
             self.logger.warning(
                 f"Station {station_obj.id} already exists, updating metadata"
             )
@@ -259,25 +264,36 @@ class Survey(Base):
         """
         Get a station from the station id
 
-        :param station_id: DESCRIPTION
-        :type station_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: station object
+        :rtype: :class:`mt_metadata.timeseries.Station`
 
         """
 
-        index = self.station_index(station_id)
-        if index is None:
+        if self.has_station(station_id):
+            return self.stations[station_id]
+        else:
             self.logger.warning(f"Could not find station {station_id}")
             return None
-        return self.stations[index]
+
+    def remove_station(self, station_id):
+        """
+        remove a station from the survey
+
+        :param station_id: station id verbatim
+        :type station_id: string
+
+        """
+
+        if self.has_station(station_id):
+            self.stations.remove(station_id)
+        else:
+            self.logger.warning(f"Could not find {station_id} to remove.")
 
     def update_bounding_box(self):
         """
         Update the bounding box of the survey from the station information
-
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
         lat = []

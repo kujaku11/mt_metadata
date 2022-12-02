@@ -62,7 +62,9 @@ class TestRun(unittest.TestCase):
         }
 
         self.meta_dict = {
-            "run": OrderedDict(sorted(self.meta_dict["run"].items(), key=itemgetter(0)))
+            "run": OrderedDict(
+                sorted(self.meta_dict["run"].items(), key=itemgetter(0))
+            )
         }
         self.run_object = Run()
 
@@ -82,62 +84,106 @@ class TestRun(unittest.TestCase):
 
     def test_start(self):
         self.run_object.time_period.start = "2020/01/02T12:20:40.4560Z"
-        self.assertEqual(
-            self.run_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
-        )
+        with self.subTest("from Z time"):
+            self.assertEqual(
+                self.run_object.time_period.start,
+                "2020-01-02T12:20:40.456000+00:00",
+            )
 
         self.run_object.time_period.start = "01/02/20T12:20:40.4560"
-        self.assertEqual(
-            self.run_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
-        )
+        with self.subTest("from mixed"):
+            self.assertEqual(
+                self.run_object.time_period.start,
+                "2020-01-02T12:20:40.456000+00:00",
+            )
 
     def test_end_date(self):
         self.run_object.time_period.end = "2020/01/02T12:20:40.4560Z"
-        self.assertEqual(
-            self.run_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
-        )
+        with self.subTest("from Z time"):
+            self.assertEqual(
+                self.run_object.time_period.end,
+                "2020-01-02T12:20:40.456000+00:00",
+            )
 
         self.run_object.time_period.end = "01/02/20T12:20:40.4560"
-        self.assertEqual(
-            self.run_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
-        )
+        with self.subTest("from mixed"):
+            self.assertEqual(
+                self.run_object.time_period.end,
+                "2020-01-02T12:20:40.456000+00:00",
+            )
 
     def test_n_channels(self):
         self.run_object.from_dict(self.meta_dict)
-        self.assertEqual(self.run_object.n_channels, 6)
-        self.assertEqual(len(self.run_object), 6)
+        with self.subTest("n_channels"):
+            self.assertEqual(self.run_object.n_channels, 6)
+        with self.subTest("length"):
+            self.assertEqual(len(self.run_object), 6)
 
     def test_set_channels(self):
         self.run_object.channels = [Electric(component="ez")]
-        self.assertEqual(len(self.run_object), 1)
-        self.assertListEqual(["ez"], self.run_object.channels_recorded_all)
+        with self.subTest("length"):
+            self.assertEqual(len(self.run_object), 1)
+        with self.subTest("in list"):
+            self.assertListEqual(["ez"], self.run_object.channels_recorded_all)
 
     def test_set_channels_fail(self):
         def set_channels(value):
             self.run_object.channels = value
 
-        self.assertRaises(TypeError, set_channels, 10)
-        self.assertRaises(TypeError, set_channels, [Run(), Electric()])
+        with self.subTest("fail from input int"):
+            self.assertRaises(TypeError, set_channels, 10)
+        with self.subTest("fail from mixed input"):
+            self.assertRaises(TypeError, set_channels, [Run(), Electric()])
 
     def test_add_channels(self):
-        station_02 = Run()
-        station_02.channels.append(Electric(component="ex"))
-        station_02.channels.append(Magnetic(component="hx"))
-        station_02.channels.append(Auxiliary(component="temperature"))
+        run_02 = Run()
+        run_02.channels.append(Electric(component="ex"))
+        run_02.channels.append(Magnetic(component="hx"))
+        run_02.channels.append(Auxiliary(component="temperature"))
         self.run_object.channels.append(Electric(component="ey"))
-        self.run_object += station_02
-        self.assertEqual(len(self.run_object), 4)
-        self.assertListEqual(
-            sorted(["ex", "ey", "hx", "temperature"]),
-            sorted(self.run_object.channels_recorded_all),
-        )
-        self.assertListEqual(
-            sorted(["ex", "ey"]), self.run_object.channels_recorded_electric
-        )
-        self.assertListEqual(["hx"], self.run_object.channels_recorded_magnetic)
-        self.assertListEqual(
-            ["temperature"], self.run_object.channels_recorded_auxiliary
-        )
+        self.run_object += run_02
+        with self.subTest("length"):
+            self.assertEqual(len(self.run_object), 4)
+        with self.subTest("In list all"):
+            self.assertListEqual(
+                sorted(["ex", "ey", "hx", "temperature"]),
+                sorted(self.run_object.channels_recorded_all),
+            )
+        with self.subTest("in list electric"):
+            self.assertListEqual(
+                sorted(["ex", "ey"]),
+                self.run_object.channels_recorded_electric,
+            )
+        with self.subTest("in list magnetic"):
+            self.assertListEqual(
+                ["hx"], self.run_object.channels_recorded_magnetic
+            )
+        with self.subTest("in list auxiliary"):
+            self.assertListEqual(
+                ["temperature"], self.run_object.channels_recorded_auxiliary
+            )
+
+    def test_remove_channel(self):
+        self.run_object.channels.append(Electric(component="ex"))
+        self.run_object.remove_channel("ex")
+        self.assertListEqual([], self.run_object.channels_recorded_all)
+
+    def test_update_time_period(self):
+        ch = Electric(component="ex")
+        ch.time_period.start = "2020-01-01T00:00:00"
+        ch.time_period.end = "2020-12-01T12:12:12"
+        self.run_object.add_channel(ch)
+        self.run_object.update_time_period()
+
+        with self.subTest("Test new start"):
+            self.assertEqual(
+                self.run_object.time_period.start, "2020-01-01T00:00:00+00:00"
+            )
+
+        with self.subTest("Test new end"):
+            self.assertEqual(
+                self.run_object.time_period.end, "2020-12-01T12:12:12+00:00"
+            )
 
 
 # =============================================================================

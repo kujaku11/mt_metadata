@@ -12,7 +12,6 @@ Created on Tue Feb 23 23:13:19 2021
 # Imports
 # =============================================================================
 import unittest
-from collections import OrderedDict
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
@@ -22,7 +21,8 @@ from mt_metadata import STATIONXML_01, STATIONXML_02
 
 
 class TestInventory01(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_01.as_posix())
         self.translator = XMLInventoryMTExperiment()
         self.maxDiff = None
@@ -30,7 +30,9 @@ class TestInventory01(unittest.TestCase):
         self.experiment = self.translator.xml_to_mt(self.inventory)
 
     def test_num_networks(self):
-        self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
+        self.assertEqual(
+            len(self.inventory.networks), len(self.experiment.surveys)
+        )
 
     def test_num_stations(self):
         self.assertEqual(
@@ -46,7 +48,8 @@ class TestInventory01(unittest.TestCase):
 
 
 class TestInventory02(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
         self.translator = XMLInventoryMTExperiment()
         self.maxDiff = None
@@ -54,7 +57,9 @@ class TestInventory02(unittest.TestCase):
         self.experiment = self.translator.xml_to_mt(self.inventory)
 
     def test_num_networks(self):
-        self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
+        self.assertEqual(
+            len(self.inventory.networks), len(self.experiment.surveys)
+        )
 
     def test_num_stations(self):
         self.assertEqual(

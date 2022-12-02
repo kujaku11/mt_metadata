@@ -1029,14 +1029,30 @@ def write_zmm(tf_object, fn=None):
         if tf_object.has_impedance():
             zmm_obj.num_channels = 4
             number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
-    for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
-        if "rr" in comp:
-            continue
-        ch = getattr(tf_object.station_metadata.runs[0], comp)
-        c = Channel()
-        c.from_dict(ch.to_dict(single=True))
-        c.number = number_dict[c.channel]
-        setattr(zmm_obj, c.channel, c)
+    if tf_object.station_metadata.runs == []:
+        run = Run()
+        for ch, ch_num in number_dict.items():
+            c = Channel()
+            c.channel = ch
+            c.number = ch_num
+            setattr(zmm_obj, c.channel, c)
+            if ch in ["ex", "ey"]:
+                rc = Electric(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+            elif ch in ["hx", "hy", "hz"]:
+                rc = Magnetic(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+        tf_object.station_metadata.add_run(run)
+
+    else:
+        for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
+            if "rr" in comp:
+                continue
+            ch = getattr(tf_object.station_metadata.runs[0], comp)
+            c = Channel()
+            c.from_dict(ch.to_dict(single=True))
+            c.number = number_dict[c.channel]
+            setattr(zmm_obj, c.channel, c)
     zmm_obj.survey_metadata.update(tf_object.survey_metadata)
     zmm_obj.num_freq = tf_object.period.size
 

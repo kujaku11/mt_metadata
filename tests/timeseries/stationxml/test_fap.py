@@ -11,7 +11,9 @@ from obspy.core import inventory
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 from mt_metadata import STATIONXML_FAP
-from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
+from mt_metadata.timeseries.filters.obspy_stages import (
+    create_filter_from_stage,
+)
 
 
 class TestFAPFilter(unittest.TestCase):
@@ -19,7 +21,8 @@ class TestFAPFilter(unittest.TestCase):
     Test filter translation from :class:`obspy.inventory.Network
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.inventory = inventory.read_inventory(STATIONXML_FAP.as_posix())
         self.fir_stage = (
             self.inventory.networks[0]
@@ -40,7 +43,10 @@ class TestFAPFilter(unittest.TestCase):
 
     def test_amplitudes(self):
         self.assertTrue(
-            np.all(np.isclose(self.fir_stage.amplitudes, self.fir.amplitudes) == True)
+            np.all(
+                np.isclose(self.fir_stage.amplitudes, self.fir.amplitudes)
+                == True
+            )
         )
 
     def test_phases(self):
@@ -50,7 +56,10 @@ class TestFAPFilter(unittest.TestCase):
 
     def test_frequencies(self):
         self.assertTrue(
-            np.all(np.isclose(self.fir_stage.frequencies, self.fir.frequencies) == True)
+            np.all(
+                np.isclose(self.fir_stage.frequencies, self.fir.frequencies)
+                == True
+            )
         )
 
     def test_units_in(self):
@@ -71,7 +80,8 @@ class TestFAPTranslation(unittest.TestCase):
     Test the translation of a FAP table from stationXML -> MTXML -> StationXML
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.translator = XMLInventoryMTExperiment()
 
         self.inventory = inventory.read_inventory(STATIONXML_FAP.as_posix())
@@ -81,20 +91,27 @@ class TestFAPTranslation(unittest.TestCase):
         self.new_inventory = self.translator.mt_to_xml(self.experiment)
 
     def test_has_surveys(self):
-        self.assertEqual(len(self.inventory.networks), len(self.experiment.surveys))
-        self.assertEqual(
-            self.inventory.networks[0].code, self.experiment.surveys[0].fdsn.network
-        )
+        with self.subTest("length equal"):
+            self.assertEqual(
+                len(self.inventory.networks), len(self.experiment.surveys)
+            )
+        with self.subTest("codes equal"):
+            self.assertEqual(
+                self.inventory.networks[0].code,
+                self.experiment.surveys[0].fdsn.network,
+            )
 
     def test_has_stations(self):
-        self.assertEqual(
-            len(self.inventory.networks[0].stations),
-            len(self.experiment.surveys[0].stations),
-        )
-        self.assertEqual(
-            self.inventory.networks[0].stations[0].code,
-            self.experiment.surveys[0].stations[0].fdsn.id,
-        )
+        with self.subTest("length equal"):
+            self.assertEqual(
+                len(self.inventory.networks[0].stations),
+                len(self.experiment.surveys[0].stations),
+            )
+        with self.subTest("codes equal"):
+            self.assertEqual(
+                self.inventory.networks[0].stations[0].code,
+                self.experiment.surveys[0].stations[0].fdsn.id,
+            )
 
     def test_has_channels(self):
         self.assertEqual(
@@ -104,7 +121,8 @@ class TestFAPTranslation(unittest.TestCase):
 
     def test_has_filters(self):
         self.assertIn(
-            "frequency response table_00", self.experiment.surveys[0].filters.keys()
+            "frequency response table_00",
+            self.experiment.surveys[0].filters.keys(),
         )
 
         self.assertIn(
@@ -128,9 +146,12 @@ class TestFAPTranslation(unittest.TestCase):
         fap_elements_1 = fap_1.response_list_elements
         self.assertEqual(len(fap_elements_0), len(fap_elements_1))
         for element_1, element_2 in zip(fap_elements_0, fap_elements_1):
-            self.assertEqual(element_1.frequency, element_2.frequency)
-            self.assertEqual(element_1.amplitude, element_2.amplitude)
-            self.assertEqual(element_1.phase, element_2.phase)
+            with self.subTest("frequency"):
+                self.assertEqual(element_1.frequency, element_2.frequency)
+            with self.subTest("amplitude"):
+                self.assertEqual(element_1.amplitude, element_2.amplitude)
+            with self.subTest("phase"):
+                self.assertEqual(element_1.phase, element_2.phase)
 
     def test_mt_translation_fap_elements(self):
         fap = (
@@ -139,10 +160,15 @@ class TestFAPTranslation(unittest.TestCase):
             .channels[0]
             .response.response_stages[0]
         )
-        mt_fap = self.experiment.surveys[0].filters["frequency response table_00"]
+        mt_fap = self.experiment.surveys[0].filters[
+            "frequency response table_00"
+        ]
         fap_elements = fap.response_list_elements
         self.assertEqual(len(fap_elements), mt_fap.frequencies.size)
         for ii, element_1 in enumerate(fap_elements):
-            self.assertEqual(element_1.frequency, mt_fap.frequencies[ii])
-            self.assertEqual(element_1.amplitude, mt_fap.amplitudes[ii])
-            self.assertEqual(element_1.phase, mt_fap.phases[ii])
+            with self.subTest("frequency"):
+                self.assertEqual(element_1.frequency, mt_fap.frequencies[ii])
+            with self.subTest("amplitude"):
+                self.assertEqual(element_1.amplitude, mt_fap.amplitudes[ii])
+            with self.subTest("phase"):
+                self.assertEqual(element_1.phase, mt_fap.phases[ii])
