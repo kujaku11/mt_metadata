@@ -54,6 +54,9 @@ attr_dict.add_dict(
     "provenance.submitter",
     keys=["author", "email", "organization"],
 )
+attr_dict["provenance.submitter.email"]["required"] = True
+attr_dict["provenance.submitter.organization"]["required"] = True
+
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 # =============================================================================
 class Station(Base):

@@ -67,6 +67,9 @@ attr_dict.add_dict(
     "project_lead",
     keys=["author", "email", "organization"],
 )
+attr_dict["project_lead.email"]["required"] = True
+attr_dict["project_lead.organization"]["required"] = True
+
 attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
 # =============================================================================
 class Survey(Base):
