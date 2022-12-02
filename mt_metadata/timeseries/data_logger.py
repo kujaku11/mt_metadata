@@ -14,7 +14,7 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import TimingSystem, Software, Battery
+from . import TimingSystem, Software, Battery, Instrument
 
 # =============================================================================
 attr_dict = get_schema("instrument", SCHEMA_FN_PATHS)
@@ -38,5 +38,6 @@ class DataLogger(Base):
         self.timing_system = TimingSystem()
         self.firmware = Software()
         self.power_source = Battery()
+        self.data_storage = Instrument()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
