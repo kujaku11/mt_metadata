@@ -40,6 +40,9 @@ class TestSurvey(unittest.TestCase):
                 "comments": "comments",
                 "country": ["Canada"],
                 "datum": "WGS84",
+                "funding_source.name": ["NSF"],
+                "funding_source.organization": ["US governement"],
+                "funding_source.grant_id": ["a345"],
                 "geographic_name": "earth",
                 "name": "entire survey of the earth",
                 "northwest_corner.latitude": 80.0,
@@ -51,6 +54,7 @@ class TestSurvey(unittest.TestCase):
                 "release_license": "CC-0",
                 "southeast_corner.latitude": -80.0,
                 "southeast_corner.longitude": -179.9,
+                "state": ["Manitoba"],
                 "summary": "Summary paragraph",
                 "time_period.end_date": "1980-01-01",
                 "time_period.start_date": "2080-01-01",
@@ -122,6 +126,36 @@ class TestSurvey(unittest.TestCase):
         self.assertAlmostEqual(
             self.survey_object.southeast_corner.longitude, -115.57361, places=5
         )
+
+    def test_funding_source(self):
+        with self.subTest("name"):
+            self.survey_object.funding_source.name = "NSF"
+            self.assertListEqual(
+                self.survey_object.funding_source.name, ["NSF"]
+            )
+        with self.subTest("organization"):
+            self.survey_object.funding_source.organization = (
+                "US governement, DOE"
+            )
+            self.assertListEqual(
+                self.survey_object.funding_source.organization,
+                ["US governement", "DOE"],
+            )
+        with self.subTest("grant_id"):
+            self.survey_object.funding_source.grant_id = "a345"
+            self.assertListEqual(
+                self.survey_object.funding_source.grant_id, ["a345"]
+            )
+
+    def test_geographic_location(self):
+        with self.subTest("country"):
+            self.survey_object.country = "Canada"
+            self.assertListEqual(self.survey_object.country, ["Canada"])
+        with self.subTest("state"):
+            self.survey_object.state = "Manitoba, Saskatchewan"
+            self.assertListEqual(
+                self.survey_object.state, ["Manitoba", "Saskatchewan"]
+            )
 
     def test_acuired_by(self):
         self.survey_object.from_dict(self.meta_dict)

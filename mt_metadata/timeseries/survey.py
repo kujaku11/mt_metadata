@@ -23,7 +23,6 @@ from . import (
     Fdsn,
     Station,
     FundingSource,
-    GeographicLocation,
 )
 from .filters import (
     PoleZeroFilter,
