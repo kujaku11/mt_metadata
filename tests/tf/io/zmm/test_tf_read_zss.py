@@ -32,7 +32,6 @@ class TestEMTFXML(unittest.TestCase):
             [
                 ("citation_dataset.doi", None),
                 ("citation_journal.doi", None),
-                ("country", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
                 ("id", None),
@@ -71,7 +70,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.software.author", "none"),
+                ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
@@ -137,9 +136,7 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
-                    ),
+                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -190,9 +187,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (44, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):
