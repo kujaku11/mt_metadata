@@ -18,9 +18,17 @@ from . import TimingSystem, Software, Battery
 
 # =============================================================================
 attr_dict = get_schema("instrument", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("timing_system", SCHEMA_FN_PATHS), "timing_system")
+attr_dict.add_dict(
+    get_schema("timing_system", SCHEMA_FN_PATHS), "timing_system"
+)
 attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "firmware")
 attr_dict.add_dict(get_schema("battery", SCHEMA_FN_PATHS), "power_source")
+attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "data_storage")
+attr_dict["data_storage.id"]["required"] = False
+attr_dict["data_storage.manufacturer"]["required"] = False
+attr_dict["data_storage.type"]["required"] = False
+
+
 # =============================================================================
 class DataLogger(Base):
     __doc__ = write_lines(attr_dict)

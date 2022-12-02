@@ -26,6 +26,9 @@
             "Hx",
             "Hy",
             "Hz",
+            "Bx",
+            "By",
+            "Bz",
             "T",
             "Battery",
             "other"
