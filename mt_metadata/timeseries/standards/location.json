@@ -39,6 +39,39 @@
         "example": "123.4",
 		"default": 0.0
     },
+    "latitude_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "uncertainty in latitude estimation in degrees",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "longitude_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "uncertainty in longitude estimation in degrees",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "elevation_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "uncertainty in elevation estimation",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
 	"datum": {
         "type": "string",
         "required": false,

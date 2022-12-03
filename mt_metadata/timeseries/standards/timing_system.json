@@ -42,5 +42,17 @@
         "alias": [],
         "example": "0.0002",
 		"default": 0.0
+    },
+    "n_satellites": {
+        "type": "int",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Number of satellites used for timing.",
+        "options": [],
+        "alias": [],
+        "example": "6",
+		"default": 0
     }
+    
 }
