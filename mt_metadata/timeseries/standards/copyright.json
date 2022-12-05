@@ -523,6 +523,6 @@
         ],
         "alias": [],
         "example": "CC BY",
-		"default": "CC-0"
+		"default": "CC0-1.0"
     }
 }

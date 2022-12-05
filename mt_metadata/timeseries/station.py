@@ -58,6 +58,9 @@ attr_dict["provenance.submitter.email"]["required"] = True
 attr_dict["provenance.submitter.organization"]["required"] = True
 
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
+attr_dict["release_status"]["required"] = False
+attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), None, keys=["doi"])
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
