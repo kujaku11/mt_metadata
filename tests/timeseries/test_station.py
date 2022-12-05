@@ -58,6 +58,7 @@ class TestStation(unittest.TestCase):
                 "provenance.submitter.author": "name",
                 "provenance.submitter.email": "test@here.org",
                 "provenance.submitter.organization": "submitter org",
+                "release_license": "CC0-1.0",
                 "run_list": [],
                 "time_period.end": "1980-01-01T00:00:00+00:00",
                 "time_period.start": "1980-01-01T00:00:00+00:00",
@@ -128,9 +129,7 @@ class TestStation(unittest.TestCase):
 
     def test_declination(self):
         self.station_object.location.declination.value = "10.980"
-        self.assertEqual(
-            self.station_object.location.declination.value, 10.980
-        )
+        self.assertEqual(self.station_object.location.declination.value, 10.980)
 
     def test_set_runs_from_list(self):
         self.station_object.runs = [Run(id="one")]
