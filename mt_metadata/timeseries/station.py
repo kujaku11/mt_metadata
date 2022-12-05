@@ -34,6 +34,10 @@ location_dict = get_schema("location", SCHEMA_FN_PATHS)
 location_dict.add_dict(
     get_schema("declination", SCHEMA_FN_PATHS), "declination"
 )
+location_dict.add_dict(
+    get_schema("geographic_location", SCHEMA_FN_PATHS),
+    None,
+)
 attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
