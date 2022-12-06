@@ -88,7 +88,9 @@ class XMLInventoryMTExperiment:
                             run_channel.time_period.start = (
                                 mt_run.time_period.start
                             )
-                            run_channel.time_period.end = mt_run.time_period.end
+                            run_channel.time_period.end = (
+                                mt_run.time_period.end
+                            )
                             mt_run.add_channel(run_channel)
                     # if there are runs already try to match by start, end, sample_rate
                     # initialized runs have a sample rate of 0.  This could be an
@@ -125,7 +127,14 @@ class XMLInventoryMTExperiment:
             if xml_network.stations:
                 mt_survey.update_bounding_box()
                 mt_survey.update_time_period()
-            mt_experiment.surveys.append(mt_survey)
+            # need to check if the network/survey already exists, the files
+            # from make_mth5_from_iris have multiples of the same network
+            if mt_survey.id in mt_experiment.surveys.keys():
+                mt_experiment.surveys[mt_survey.id].stations.update(
+                    mt_survey.stations
+                )
+            else:
+                mt_experiment.surveys.append(mt_survey)
         if mt_fn:
             mt_experiment.to_xml(fn=mt_fn)
         return mt_experiment
@@ -277,7 +286,9 @@ class XMLInventoryMTExperiment:
         """
 
         if xml_channel_01.code != xml_channel_02.code:
-            self.logger.debug(f"{xml_channel_01.code} != {xml_channel_02.code}")
+            self.logger.debug(
+                f"{xml_channel_01.code} != {xml_channel_02.code}"
+            )
             return False
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
             self.logger.debug(
@@ -303,7 +314,9 @@ class XMLInventoryMTExperiment:
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
             )
             return False
-        if round(xml_channel_01.azimuth, 2) != round(xml_channel_02.azimuth, 2):
+        if round(xml_channel_01.azimuth, 2) != round(
+            xml_channel_02.azimuth, 2
+        ):
             self.logger.debug(
                 f"{round(xml_channel_01.azimuth, 2)} != {round(xml_channel_02.azimuth, 2)}"
             )
