@@ -114,6 +114,9 @@ STATIONXML_FAP = DATA_DIR.joinpath(
 STATIONXML_FIR = DATA_DIR.joinpath(
     "data/stationxml/station_xml_with_fir_example.xml"
 )
+STATIONXML_MULTIPLE_NETWORKS = DATA_DIR.joinpath(
+    "data/stationxml/multiple_networks_example.xml"
+)
 
 ### MT EXPERIMENT files
 MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(

@@ -15,7 +15,11 @@ import unittest
 
 from obspy import read_inventory
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata import STATIONXML_01, STATIONXML_02
+from mt_metadata import (
+    STATIONXML_01,
+    STATIONXML_02,
+    STATIONXML_MULTIPLE_NETWORKS,
+)
 
 # =============================================================================
 
@@ -67,10 +71,28 @@ class TestInventory02(unittest.TestCase):
             len(self.experiment.surveys[0].stations),
         )
 
-    # def test_num_channels(self):
-    #     self.assertEqual(len(self.inventory.networks[0].stations[0].channels),
-    #                      len(self.experiment.surveys[0].stations[0].runs) *
-    #                      len(self.experiment.surveys[0].stations[0].channels))
+
+class TestInventoryMultipleNetworks(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.inventory = read_inventory(
+            STATIONXML_MULTIPLE_NETWORKS.as_posix()
+        )
+        self.translator = XMLInventoryMTExperiment()
+        self.maxDiff = None
+
+        self.experiment = self.translator.xml_to_mt(self.inventory)
+
+    def test_surveys(self):
+        self.assertListEqual(
+            ["Kansas 2017 Long Period"], self.experiment.surveys.keys()
+        )
+
+    def test_stations(self):
+        self.assertListEqual(
+            ["MTF20", "WYYS2", "MTC20", "WYYS3"],
+            self.experiment.surveys["Kansas 2017 Long Period"].stations.keys(),
+        )
 
 
 # =============================================================================
