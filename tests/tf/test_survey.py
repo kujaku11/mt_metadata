@@ -38,7 +38,7 @@ class TestSurvey(unittest.TestCase):
                 "citation_dataset.doi": "http://doi.####",
                 "citation_journal.doi": None,
                 "comments": "comments",
-                "country": "Canada",
+                "country": ["Canada"],
                 "datum": "WGS84",
                 "geographic_name": "earth",
                 "name": "entire survey of the earth",
@@ -85,17 +85,25 @@ class TestSurvey(unittest.TestCase):
 
     def test_start_date(self):
         self.survey_object.time_period.start_date = "2020/01/02"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        self.assertEqual(
+            self.survey_object.time_period.start_date, "2020-01-02"
+        )
 
         self.survey_object.start_date = "01-02-2020T12:20:30.450000+00:00"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        self.assertEqual(
+            self.survey_object.time_period.start_date, "2020-01-02"
+        )
 
     def test_end_date(self):
         self.survey_object.time_period.start_date = "2020/01/02"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        self.assertEqual(
+            self.survey_object.time_period.start_date, "2020-01-02"
+        )
 
         self.survey_object.start_date = "01-02-2020T12:20:30.45Z"
-        self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
+        self.assertEqual(
+            self.survey_object.time_period.start_date, "2020-01-02"
+        )
 
     def test_latitude(self):
         self.survey_object.southeast_corner.latitude = "40:10:05.123"

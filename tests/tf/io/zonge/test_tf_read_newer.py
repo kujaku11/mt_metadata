@@ -20,7 +20,7 @@ from mt_metadata.transfer_functions.core import TF
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestReadAVGNewer(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG_NEWER)
@@ -32,7 +32,6 @@ class TestEMTFXML(unittest.TestCase):
             [
                 ("citation_dataset.doi", None),
                 ("citation_journal.doi", None),
-                ("country", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
                 ("id", None),
@@ -42,7 +41,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
-                ("release_license", "CC-0"),
+                ("release_license", "CC0-1.0"),
                 ("southeast_corner.latitude", 0.0),
                 ("southeast_corner.longitude", 0.0),
                 ("summary", None),
@@ -71,11 +70,12 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.software.author", "none"),
+                ("provenance.software.author", None),
                 ("provenance.software.name", None),
                 ("provenance.software.version", None),
                 ("provenance.submitter.email", None),
                 ("provenance.submitter.organization", None),
+                ("release_license", "CC0-1.0"),
                 ("run_list", ["001"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "2017-06-30T21:30:19+00:00"),

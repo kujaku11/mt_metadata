@@ -34,11 +34,15 @@ location_dict = get_schema("location", SCHEMA_FN_PATHS)
 location_dict.add_dict(
     get_schema("declination", SCHEMA_FN_PATHS), "declination"
 )
+location_dict.add_dict(
+    get_schema("geographic_location", SCHEMA_FN_PATHS),
+    None,
+)
 attr_dict.add_dict(location_dict, "location")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
-    keys=["name", "comments"],
+    keys=["name", "comments", "organization"],
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
@@ -54,7 +58,14 @@ attr_dict.add_dict(
     "provenance.submitter",
     keys=["author", "email", "organization"],
 )
+attr_dict["provenance.submitter.email"]["required"] = True
+attr_dict["provenance.submitter.organization"]["required"] = True
+
 attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
+attr_dict["release_license"]["required"] = False
+attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), None, keys=["doi"])
+attr_dict["doi"]["required"] = False
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)

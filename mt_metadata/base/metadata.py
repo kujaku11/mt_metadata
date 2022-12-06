@@ -317,7 +317,6 @@ class Base:
             "end_date",
             "start",
             "end",
-            "name",
             "applied",
             "logger",
             "changed",
