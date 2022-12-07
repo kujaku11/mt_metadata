@@ -294,12 +294,12 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Electric(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Electric):
                 self.add_channel(entry)
             else:
-                msg = (
-                    f"entry must be a string or type Electric not {type(entry)}"
-                )
+                msg = f"entry must be a string or type Electric not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -324,12 +324,12 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Magnetic(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Magnetic):
                 self.add_channel(entry)
             else:
-                msg = (
-                    f"entry must be a string or type Magnetic not {type(entry)}"
-                )
+                msg = f"entry must be a string or type Magnetic not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -354,6 +354,8 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Auxiliary(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Auxiliary):
                 self.add_channel(entry)
             else:

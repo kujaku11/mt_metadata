@@ -259,7 +259,7 @@
                     <comments/>
                 </metadata_by>
                 <mth5_type>None</mth5_type>
-                <sample_rate units="samples per second" type="float">None</sample_rate>
+                <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-06-08T23:54:50+00:00</end>
                     <start>2020-06-08T22:57:13+00:00</start>
@@ -546,7 +546,7 @@
                     <comments>A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.</comments>
                 </metadata_by>
                 <mth5_type>None</mth5_type>
-                <sample_rate units="samples per second" type="float">None</sample_rate>
+                <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-06-25T17:57:40+00:00</end>
                     <start>2020-06-09T00:08:03+00:00</start>
@@ -833,7 +833,7 @@
                     <comments/>
                 </metadata_by>
                 <mth5_type>None</mth5_type>
-                <sample_rate units="samples per second" type="float">None</sample_rate>
+                <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-04T01:16:15+00:00</end>
                     <start>2020-06-25T19:57:57+00:00</start>
@@ -1120,7 +1120,7 @@
                     <comments/>
                 </metadata_by>
                 <mth5_type>None</mth5_type>
-                <sample_rate units="samples per second" type="float">None</sample_rate>
+                <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-04T03:07:30+00:00</end>
                     <start>2020-07-04T02:59:02+00:00</start>
@@ -1407,7 +1407,7 @@
                     <comments/>
                 </metadata_by>
                 <mth5_type>None</mth5_type>
-                <sample_rate units="samples per second" type="float">None</sample_rate>
+                <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-17T21:15:32+00:00</end>
                     <start>2020-07-04T03:28:45+00:00</start>
