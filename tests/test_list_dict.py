@@ -44,6 +44,18 @@ class TestListDict(unittest.TestCase):
     def test_items(self):
         self.assertTupleEqual((("a", 10),), tuple(self.ld.items()))
 
+    def test_get_index_from_key(self):
+        self.assertEqual(0, self.ld._get_index_from_key("a"))
+
+    def test_get_index_from_key_fail(self):
+        self.assertRaises(KeyError, self.ld._get_index_from_key, "b")
+
+    def test_get_key_from_index(self):
+        self.assertEqual("a", self.ld._get_key_from_index(0))
+
+    def test_get_key_from_index_fail(self):
+        self.assertRaises(KeyError, self.ld._get_key_from_index, 2)
+
 
 class TestListDictSetIndex(unittest.TestCase):
     @classmethod
