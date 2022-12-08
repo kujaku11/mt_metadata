@@ -47,6 +47,15 @@ class ListDict:
         except StopIteration:
             raise KeyError(f"Could not find {index}")
 
+    def _get_index_from_key(self, key):
+        try:
+            return next(
+                index for index, k in enumerate(self._home) if k == key
+            )
+
+        except StopIteration:
+            raise KeyError(f"Could not find {key}")
+
     def _get_key_from_object(self, obj):
         """
         Get the key from the metadata object
