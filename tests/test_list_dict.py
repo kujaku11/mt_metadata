@@ -232,6 +232,18 @@ class TestListDictSlice(unittest.TestCase):
         b = self.ld[:"d"]
         self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
 
+    def test_slice_mixed_01(self):
+        b = self.ld[1:"d"]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2)]))
+
+    def test_slice_mixed_02(self):
+        b = self.ld["a":-1]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
+
+    def test_slice_mixed_03(self):
+        b = self.ld[0:"b"]
+        self.assertTrue(b == ListDict([("a", 0)]))
+
 
 # =============================================================================
 # Run test
