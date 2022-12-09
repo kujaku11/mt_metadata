@@ -182,38 +182,31 @@ class TestListDictRemove(unittest.TestCase):
 class TestListDictSlice(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.ld = ListDict()
-        self.ld["a"] = 0
-        self.ld["b"] = 1
-        self.ld["c"] = 2
-        self.ld["d"] = 3
+        self.ld = ListDict([("a", 0), ("b", 1), ("c", 2), ("d", 3)])
 
     def test_slice_01(self):
         b = self.ld[0:1]
-        ld = ListDict()
-        ld["a"] = 0
-        self.assertTrue(b == ld)
+        self.assertTrue(b == ListDict([("a", 0)]))
 
     def test_slice_02(self):
         b = self.ld[0:2]
-        ld = ListDict()
-        ld["a"] = 0
-        ld["b"] = 1
-        self.assertTrue(b == ld)
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1)]))
 
     def test_slice_03(self):
         b = self.ld[1:2]
-        ld = ListDict()
-        ld["b"] = 1
-        self.assertTrue(b == ld)
+        self.assertTrue(b == ListDict([("b", 1)]))
 
     def test_slice_04(self):
         b = self.ld[1:-1]
-        ld = ListDict()
-        ld["b"] = 1
-        ld["c"] = 2
-        ld["d"] = 3
-        self.assertTrue(b == ld)
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2)]))
+
+    def test_slice_05(self):
+        b = self.ld[1:]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2), ("d", 3)]))
+
+    def test_slice_06(self):
+        b = self.ld[:-1]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
 
 
 # =============================================================================

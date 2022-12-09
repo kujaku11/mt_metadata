@@ -24,9 +24,12 @@ class ListDict:
 
     """
 
-    def __init__(self):
+    def __init__(self, values=None):
 
-        self._home = OrderedDict()
+        if values is not None:
+            self._home = OrderedDict(values)
+        else:
+            self._home = OrderedDict()
 
     def __str__(self):
         return "Keys In Order: " + ", ".join(list(self._home.keys()))
@@ -42,18 +45,14 @@ class ListDict:
 
     def _get_key_from_index(self, index):
         try:
-            return next(
-                key for ii, key in enumerate(self._home) if ii == index
-            )
+            return next(key for ii, key in enumerate(self._home) if ii == index)
 
         except StopIteration:
             raise KeyError(f"Could not find {index}")
 
     def _get_index_from_key(self, key):
         try:
-            return next(
-                index for index, k in enumerate(self._home) if k == key
-            )
+            return next(index for index, k in enumerate(self._home) if k == key)
 
         except StopIteration:
             raise KeyError(f"Could not find {key}")
@@ -73,11 +72,9 @@ class ListDict:
         elif hasattr(obj, "component"):
             return obj.component
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
 
-    def _key_slice_to_index_slice(self, items, key_slice):
+    def _get_index_slice_from_key_slice(self, items, key_slice):
         try:
             if key_slice.start is None:
                 start = None
@@ -112,11 +109,21 @@ class ListDict:
             return self._home[key]
 
         elif isinstance(value, slice):
-            ld = ListDict()
-            if isinstance(value.start, int):
-                for k, v in list(self.items())[value]:
-                    ld[k] = v
-                return ld
+            if isinstance(value.start, int) or isinstance(value.stop, int):
+                return ListDict(list(self.items())[value])
+
+            elif isinstance(value.start, str) or isinstance(value.stop, str):
+                return ListDict(
+                    list(self.items())[
+                        self._get_index_slice_from_key_slice(
+                            self.items(), value
+                        )
+                    ]
+                )
+            else:
+                raise TypeError(
+                    "Slice Index must be a string or integer value."
+                )
 
         else:
             raise TypeError("Index must be a string or integer value.")
@@ -185,9 +192,7 @@ class ListDict:
             key = self._get_key_from_index(key)
             self._home.__delitem__(key)
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
 
     def extend(self, other):
         """
