@@ -74,26 +74,33 @@ class ListDict:
         else:
             raise TypeError("could not identify an appropriate key from object")
 
-    def _get_index_slice_from_key_slice(self, items, key_slice):
-        try:
-            if key_slice.start is None:
-                start = None
-            else:
-                start = next(
-                    idx
-                    for idx, (key, value) in enumerate(items)
-                    if key == key_slice.start
-                )
-            if key_slice.stop is None:
-                stop = None
-            else:
-                stop = next(
-                    idx
-                    for idx, (key, value) in enumerate(items)
-                    if key == key_slice.stop
-                )
-        except StopIteration:
-            raise KeyError
+    def _get_index_slice_from_slice(self, items, key_slice):
+        """
+        Get the slice index values from either an integer or key value
+
+        :param items: DESCRIPTION
+        :type items: TYPE
+        :param key_slice: DESCRIPTION
+        :type key_slice: TYPE
+        :raises TypeError: DESCRIPTION
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if key_slice.start is None or isinstance(key_slice.start, int):
+            start = key_slice.start
+        elif isinstance(key_slice.start, str):
+            start = self._get_index_from_key(key_slice.start)
+        else:
+            raise TypeError("Slice start must be type int or str")
+
+        if key_slice.stop is None or isinstance(key_slice.stop, int):
+            stop = key_slice.stop
+        elif isinstance(key_slice.stop, str):
+            stop = self._get_index_from_key(key_slice.stop)
+        else:
+            raise TypeError("Slice stop must be type int or str")
+
         return slice(start, stop, key_slice.step)
 
     def __getitem__(self, value):
@@ -109,21 +116,11 @@ class ListDict:
             return self._home[key]
 
         elif isinstance(value, slice):
-            if isinstance(value.start, int) or isinstance(value.stop, int):
-                return ListDict(list(self.items())[value])
-
-            elif isinstance(value.start, str) or isinstance(value.stop, str):
-                return ListDict(
-                    list(self.items())[
-                        self._get_index_slice_from_key_slice(
-                            self.items(), value
-                        )
-                    ]
-                )
-            else:
-                raise TypeError(
-                    "Slice Index must be a string or integer value."
-                )
+            return ListDict(
+                list(self.items())[
+                    self._get_index_slice_from_slice(self.items(), value)
+                ]
+            )
 
         else:
             raise TypeError("Index must be a string or integer value.")
