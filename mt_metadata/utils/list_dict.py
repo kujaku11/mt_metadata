@@ -20,6 +20,8 @@ class ListDict:
     This is the first attempt, seems to work, might think about inheriting
     an OrderedDict and overloading.
 
+    TODO: need to be able to initiate with a list or tuple of objects
+
     """
 
     def __init__(self):
@@ -33,7 +35,7 @@ class ListDict:
         return self._home.__repr__()
 
     def __eq__(self, other):
-        return self._home.__eq__(other)
+        return self._home.__eq__(other._home)
 
     def __len__(self):
         return self._home.__len__()
@@ -75,6 +77,28 @@ class ListDict:
                 "could not identify an appropriate key from object"
             )
 
+    def _key_slice_to_index_slice(self, items, key_slice):
+        try:
+            if key_slice.start is None:
+                start = None
+            else:
+                start = next(
+                    idx
+                    for idx, (key, value) in enumerate(items)
+                    if key == key_slice.start
+                )
+            if key_slice.stop is None:
+                stop = None
+            else:
+                stop = next(
+                    idx
+                    for idx, (key, value) in enumerate(items)
+                    if key == key_slice.stop
+                )
+        except StopIteration:
+            raise KeyError
+        return slice(start, stop, key_slice.step)
+
     def __getitem__(self, value):
 
         if isinstance(value, str):
@@ -88,19 +112,11 @@ class ListDict:
             return self._home[key]
 
         elif isinstance(value, slice):
-            return_list = OrderedDict()
-            if value.step is not None:
-                indexes = range(value.start, value.stop, value.step)
-            else:
-                indexes = range(value.start, value.stop)
-            for ii in indexes:
-                key = self._get_key_from_index(ii)
-
-                return_list[key] = self._home[key]
-
             ld = ListDict()
-            ld.update(return_list)
-            return ld
+            if isinstance(value.start, int):
+                for k, v in list(self.items())[value]:
+                    ld[k] = v
+                return ld
 
         else:
             raise TypeError("Index must be a string or integer value.")
