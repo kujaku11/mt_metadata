@@ -191,7 +191,7 @@ class ListDict:
         else:
             raise TypeError("could not identify an appropriate key from object")
 
-    def extend(self, other):
+    def extend(self, other, skip_keys=[]):
         """
         extend the dictionary from another ListDict object
 
@@ -201,9 +201,13 @@ class ListDict:
         :rtype: TYPE
 
         """
+        if isinstance(skip_keys, str):
+            skip_keys = [skip_keys]
 
-        if isinstance(other, ListDict):
+        if isinstance(other, (ListDict, dict, OrderedDict)):
             for key, value in other.items():
+                if key in skip_keys:
+                    continue
                 self._home[key] = value
 
         else:
