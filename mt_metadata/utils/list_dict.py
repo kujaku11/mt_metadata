@@ -87,6 +87,21 @@ class ListDict:
             key = self._get_key_from_index(value)
             return self._home[key]
 
+        elif isinstance(value, slice):
+            return_list = OrderedDict()
+            if value.step is not None:
+                indexes = range(value.start, value.stop, value.step)
+            else:
+                indexes = range(value.start, value.stop)
+            for ii in indexes:
+                key = self._get_key_from_index(ii)
+
+                return_list[key] = self._home[key]
+
+            ld = ListDict()
+            ld.update(return_list)
+            return ld
+
         else:
             raise TypeError("Index must be a string or integer value.")
 
