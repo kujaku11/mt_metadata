@@ -195,6 +195,14 @@ class Base:
                 continue
         return copied
 
+    def copy(self):
+        """
+        Copy object
+
+        """
+
+        return self.__deepcopy__()
+
     def get_attribute_list(self):
         """
         return a list of the attributes
