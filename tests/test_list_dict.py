@@ -36,7 +36,7 @@ class TestListDict(unittest.TestCase):
         self.assertRaises(KeyError, self.ld._get_key_from_index, 1)
 
     def test_str(self):
-        self.assertEqual("Keys In Order: a", self.ld.__str__())
+        self.assertEqual("Contents:\n------------\n\ta = 10", self.ld.__str__())
 
     def test_repr(self):
         self.assertEqual("OrderedDict([('a', 10)])", self.ld.__repr__())
