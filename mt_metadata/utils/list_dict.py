@@ -20,19 +20,18 @@ class ListDict:
     This is the first attempt, seems to work, might think about inheriting
     an OrderedDict and overloading.
 
-    TODO: need to be able to initiate with a list or tuple of objects
-
     """
 
-    def __init__(self, values=None):
+    def __init__(self, values={}):
 
-        if values is not None:
-            self._home = OrderedDict(values)
-        else:
-            self._home = OrderedDict()
+        self._home = OrderedDict(values)
 
     def __str__(self):
-        return "Keys In Order: " + ", ".join(list(self._home.keys()))
+        lines = ["Contents:", "-" * 12]
+        for k, v in self._home.items():
+            lines.append(f"\t{k} = {v}")
+
+        return "\n".join(lines)
 
     def __repr__(self):
         return self._home.__repr__()
@@ -140,6 +139,11 @@ class ListDict:
                     key = str(index)
 
             self._home[key] = value
+
+        elif isinstance(index, slice):
+            raise NotImplementedError(
+                "Setting values from slice is not implemented yet"
+            )
 
     def __iter__(self):
         return iter(self.values())
