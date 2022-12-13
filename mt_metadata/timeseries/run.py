@@ -299,7 +299,9 @@ class Run(Base):
             elif isinstance(entry, Electric):
                 self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Electric not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Electric not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -329,7 +331,9 @@ class Run(Base):
             elif isinstance(entry, Magnetic):
                 self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Magnetic not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Magnetic not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
@@ -370,8 +374,10 @@ class Run(Base):
         start = []
         end = []
         for channel in self.channels:
-            start.append(channel.time_period.start)
-            end.append(channel.time_period.end)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(channel.time_period.start)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(channel.time_period.end)
 
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":

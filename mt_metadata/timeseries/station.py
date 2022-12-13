@@ -292,8 +292,10 @@ class Station(Base):
         start = []
         end = []
         for run in self.runs:
-            start.append(run.time_period.start)
-            end.append(run.time_period.end)
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(run.time_period.start)
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(run.time_period.end)
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":
                 self.time_period.start = min(start)

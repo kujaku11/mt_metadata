@@ -335,8 +335,10 @@ class Survey(Base):
         start = []
         end = []
         for station in self.stations:
-            start.append(station.time_period.start)
-            end.append(station.time_period.end)
+            if station.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(station.time_period.start)
+            if station.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(station.time_period.end)
 
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":

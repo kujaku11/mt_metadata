@@ -261,7 +261,7 @@
                 <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
-                    <end>2020-06-08T23:54:50+00:00</end>
+                    <end>2020-06-08T23:54:49+00:00</end>
                     <start>2020-06-08T22:57:13+00:00</start>
                 </time_period>
                 <magnetic>
@@ -300,7 +300,7 @@
                         <model>fluxgate NIMS</model>
                     </sensor>
                     <time_period>
-                        <end>2020-06-08T23:54:50+00:00</end>
+                        <end>2020-06-08T23:54:49+00:00</end>
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>magnetic</type>
@@ -342,7 +342,7 @@
                         <model>fluxgate NIMS</model>
                     </sensor>
                     <time_period>
-                        <end>2020-06-08T23:54:50+00:00</end>
+                        <end>2020-06-08T23:54:49+00:00</end>
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>magnetic</type>
@@ -384,7 +384,7 @@
                         <model>fluxgate NIMS</model>
                     </sensor>
                     <time_period>
-                        <end>2020-06-08T23:54:50+00:00</end>
+                        <end>2020-06-08T23:54:49+00:00</end>
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>magnetic</type>
@@ -440,7 +440,7 @@
                     </positive>
                     <sample_rate units="samples per second" type="float">1.0</sample_rate>
                     <time_period>
-                        <end>2020-06-08T23:54:50+00:00</end>
+                        <end>2020-06-08T23:54:49+00:00</end>
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>electric</type>
@@ -496,7 +496,7 @@
                     </positive>
                     <sample_rate units="samples per second" type="float">1.0</sample_rate>
                     <time_period>
-                        <end>2020-06-08T23:54:50+00:00</end>
+                        <end>2020-06-08T23:54:49+00:00</end>
                         <start>2020-06-08T22:57:13+00:00</start>
                     </time_period>
                     <type>electric</type>
