@@ -191,7 +191,9 @@ class Base:
                 copied.set_attr_from_name(
                     key, deepcopy(self.get_attr_from_name(key), memodict)
                 )
-            except AttributeError:
+            # Need the TypeError for objects that have no __reduce__ method
+            # like H5 references.
+            except (AttributeError, TypeError):
                 continue
         return copied
 
