@@ -22,30 +22,39 @@ class ListDict:
 
     """
 
-    def __init__(self):
+    def __init__(self, values={}):
 
-        self._home = OrderedDict()
+        self._home = OrderedDict(values)
 
     def __str__(self):
-        return "Keys In Order: " + ", ".join(list(self._home.keys()))
+        lines = ["Contents:", "-" * 12]
+        for k, v in self._home.items():
+            lines.append(f"\t{k} = {v}")
+
+        return "\n".join(lines)
 
     def __repr__(self):
         return self._home.__repr__()
 
     def __eq__(self, other):
-        return self._home.__eq__(other)
+        return self._home.__eq__(other._home)
 
     def __len__(self):
         return self._home.__len__()
 
     def _get_key_from_index(self, index):
         try:
-            return next(
-                key for ii, key in enumerate(self._home) if ii == index
-            )
+            return next(key for ii, key in enumerate(self._home) if ii == index)
 
         except StopIteration:
             raise KeyError(f"Could not find {index}")
+
+    def _get_index_from_key(self, key):
+        try:
+            return next(index for index, k in enumerate(self._home) if k == key)
+
+        except StopIteration:
+            raise KeyError(f"Could not find {key}")
 
     def _get_key_from_object(self, obj):
         """
@@ -62,9 +71,36 @@ class ListDict:
         elif hasattr(obj, "component"):
             return obj.component
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
+
+    def _get_index_slice_from_slice(self, items, key_slice):
+        """
+        Get the slice index values from either an integer or key value
+
+        :param items: DESCRIPTION
+        :type items: TYPE
+        :param key_slice: DESCRIPTION
+        :type key_slice: TYPE
+        :raises TypeError: DESCRIPTION
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if key_slice.start is None or isinstance(key_slice.start, int):
+            start = key_slice.start
+        elif isinstance(key_slice.start, str):
+            start = self._get_index_from_key(key_slice.start)
+        else:
+            raise TypeError("Slice start must be type int or str")
+
+        if key_slice.stop is None or isinstance(key_slice.stop, int):
+            stop = key_slice.stop
+        elif isinstance(key_slice.stop, str):
+            stop = self._get_index_from_key(key_slice.stop)
+        else:
+            raise TypeError("Slice stop must be type int or str")
+
+        return slice(start, stop, key_slice.step)
 
     def __getitem__(self, value):
 
@@ -77,6 +113,13 @@ class ListDict:
         elif isinstance(value, int):
             key = self._get_key_from_index(value)
             return self._home[key]
+
+        elif isinstance(value, slice):
+            return ListDict(
+                list(self.items())[
+                    self._get_index_slice_from_slice(self.items(), value)
+                ]
+            )
 
         else:
             raise TypeError("Index must be a string or integer value.")
@@ -96,6 +139,11 @@ class ListDict:
                     key = str(index)
 
             self._home[key] = value
+
+        elif isinstance(index, slice):
+            raise NotImplementedError(
+                "Setting values from slice is not implemented yet"
+            )
 
     def __iter__(self):
         return iter(self.values())
@@ -145,11 +193,9 @@ class ListDict:
             key = self._get_key_from_index(key)
             self._home.__delitem__(key)
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
 
-    def extend(self, other):
+    def extend(self, other, skip_keys=[]):
         """
         extend the dictionary from another ListDict object
 
@@ -159,9 +205,13 @@ class ListDict:
         :rtype: TYPE
 
         """
+        if isinstance(skip_keys, str):
+            skip_keys = [skip_keys]
 
-        if isinstance(other, ListDict):
+        if isinstance(other, (ListDict, dict, OrderedDict)):
             for key, value in other.items():
+                if key in skip_keys:
+                    continue
                 self._home[key] = value
 
         else:

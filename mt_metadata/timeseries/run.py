@@ -294,6 +294,8 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Electric(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Electric):
                 self.add_channel(entry)
             else:
@@ -324,6 +326,8 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Magnetic(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Magnetic):
                 self.add_channel(entry)
             else:
@@ -354,6 +358,8 @@ class Run(Base):
         for entry in value:
             if isinstance(entry, str):
                 self.add_channel(Auxiliary(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Auxiliary):
                 self.add_channel(entry)
             else:
@@ -368,8 +374,10 @@ class Run(Base):
         start = []
         end = []
         for channel in self.channels:
-            start.append(channel.time_period.start)
-            end.append(channel.time_period.end)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(channel.time_period.start)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(channel.time_period.end)
 
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":

@@ -36,13 +36,25 @@ class TestListDict(unittest.TestCase):
         self.assertRaises(KeyError, self.ld._get_key_from_index, 1)
 
     def test_str(self):
-        self.assertEqual("Keys In Order: a", self.ld.__str__())
+        self.assertEqual("Contents:\n------------\n\ta = 10", self.ld.__str__())
 
     def test_repr(self):
         self.assertEqual("OrderedDict([('a', 10)])", self.ld.__repr__())
 
     def test_items(self):
         self.assertTupleEqual((("a", 10),), tuple(self.ld.items()))
+
+    def test_get_index_from_key(self):
+        self.assertEqual(0, self.ld._get_index_from_key("a"))
+
+    def test_get_index_from_key_fail(self):
+        self.assertRaises(KeyError, self.ld._get_index_from_key, "b")
+
+    def test_get_key_from_index(self):
+        self.assertEqual("a", self.ld._get_key_from_index(0))
+
+    def test_get_key_from_index_fail(self):
+        self.assertRaises(KeyError, self.ld._get_key_from_index, 2)
 
 
 class TestListDictSetIndex(unittest.TestCase):
@@ -165,6 +177,72 @@ class TestListDictRemove(unittest.TestCase):
     def test_remove_by_index(self):
         self.ld.remove(0)
         self.assertListEqual([], self.ld.keys())
+
+
+class TestListDictSlice(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.ld = ListDict([("a", 0), ("b", 1), ("c", 2), ("d", 3)])
+
+    def test_slice_01(self):
+        b = self.ld[0:1]
+        self.assertTrue(b == ListDict([("a", 0)]))
+
+    def test_slice_02(self):
+        b = self.ld[0:2]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1)]))
+
+    def test_slice_03(self):
+        b = self.ld[1:2]
+        self.assertTrue(b == ListDict([("b", 1)]))
+
+    def test_slice_04(self):
+        b = self.ld[1:-1]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2)]))
+
+    def test_slice_05(self):
+        b = self.ld[1:]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2), ("d", 3)]))
+
+    def test_slice_06(self):
+        b = self.ld[:-1]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
+
+    def test_slice_keys_01(self):
+        b = self.ld["a":"b"]
+        self.assertTrue(b == ListDict([("a", 0)]))
+
+    def test_slice_keys_02(self):
+        b = self.ld["a":"c"]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1)]))
+
+    def test_slice_keys_03(self):
+        b = self.ld["b":"c"]
+        self.assertTrue(b == ListDict([("b", 1)]))
+
+    def test_slice_keys_04(self):
+        b = self.ld["b":"d"]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2)]))
+
+    def test_slice_keys_05(self):
+        b = self.ld["b":]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2), ("d", 3)]))
+
+    def test_slice_keys_06(self):
+        b = self.ld[:"d"]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
+
+    def test_slice_mixed_01(self):
+        b = self.ld[1:"d"]
+        self.assertTrue(b == ListDict([("b", 1), ("c", 2)]))
+
+    def test_slice_mixed_02(self):
+        b = self.ld["a":-1]
+        self.assertTrue(b == ListDict([("a", 0), ("b", 1), ("c", 2)]))
+
+    def test_slice_mixed_03(self):
+        b = self.ld[0:"b"]
+        self.assertTrue(b == ListDict([("a", 0)]))
 
 
 # =============================================================================

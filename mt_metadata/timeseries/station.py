@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+import numpy as np
 from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
@@ -122,13 +123,15 @@ class Station(Base):
         set channels_recorded
 
         """
+        if isinstance(value, np.ndarray):
+            value = value.tolist()
+
         if value in [None, "None", "none", "NONE", "null"]:
             return
         elif isinstance(value, (list, tuple)):
             self._channels_recorded = value
 
         else:
-            print(value)
             raise TypeError(
                 "'channels_recorded' must be set with a list not "
                 f"{type(value)}."
@@ -289,8 +292,10 @@ class Station(Base):
         start = []
         end = []
         for run in self.runs:
-            start.append(run.time_period.start)
-            end.append(run.time_period.end)
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(run.time_period.start)
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(run.time_period.end)
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":
                 self.time_period.start = min(start)
