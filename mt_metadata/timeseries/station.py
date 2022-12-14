@@ -107,7 +107,7 @@ class Station(Base):
         ch_list = []
         for run in self.runs:
             ch_list += run.channels_recorded_all
-        ch_list = sorted(set(ch_list))
+        ch_list = sorted(set([cc for cc in ch_list if cc is not None]))
         if self._channels_recorded == []:
             return ch_list
 
