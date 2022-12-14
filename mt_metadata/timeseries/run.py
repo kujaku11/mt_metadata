@@ -271,7 +271,11 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        return [ch.component for ch in self.channels.values()]
+        return [
+            ch.component
+            for ch in self.channels.values()
+            if ch.component is not None
+        ]
 
     @property
     def channels_recorded_electric(self):
@@ -279,7 +283,7 @@ class Run(Base):
             [
                 ch.component
                 for ch in self.channels.values()
-                if isinstance(ch, Electric)
+                if isinstance(ch, Electric) and ch.component is not None
             ]
         )
 
@@ -311,7 +315,7 @@ class Run(Base):
             [
                 ch.component
                 for ch in self.channels.values()
-                if isinstance(ch, Magnetic)
+                if isinstance(ch, Magnetic) and ch.component is not None
             ]
         )
 
@@ -343,7 +347,7 @@ class Run(Base):
             [
                 ch.component
                 for ch in self.channels.values()
-                if isinstance(ch, Auxiliary)
+                if isinstance(ch, Auxiliary) and ch.component is not None
             ]
         )
 
