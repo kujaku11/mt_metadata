@@ -90,7 +90,7 @@ class TestEMeasurementAZM(unittest.TestCase):
             if k != "azm":
                 self.assertEqual(v, getattr(self.ex, k))
             else:
-                self.assertalmostEqual(5.7105931374996, getattr(self.ex, k))
+                self.assertAlmostEqual(5.7105931374996, getattr(self.ex, k))
 
 
 class TestHMeasurement(unittest.TestCase):
