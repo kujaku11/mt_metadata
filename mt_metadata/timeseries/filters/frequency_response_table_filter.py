@@ -124,6 +124,7 @@ class FrequencyResponseTableFilter(FilterBase):
         :type value: np.ndarray
 
         """
+
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_phases = np.array(value, dtype=float)
 
@@ -224,13 +225,14 @@ class FrequencyResponseTableFilter(FilterBase):
 
         phase_response = interp1d(
             self.frequencies,
-            self.phases,
+            self._empirical_phases,
             kind=interpolation_method,
             fill_value="extrapolate",
         )
+
         amplitude_response = interp1d(
             self.frequencies,
-            self.amplitudes,
+            self._empirical_amplitudes,
             kind=interpolation_method,
             fill_value="extrapolate",
         )

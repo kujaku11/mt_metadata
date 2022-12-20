@@ -206,9 +206,7 @@ class ChannelResponseFilter(Base):
         :return: all the time delay filters as a list
 
         """
-        delay_filters = [
-            x for x in self.filters_list if x.type == "time delay"
-        ]
+        delay_filters = [x for x in self.filters_list if x.type == "time delay"]
         return delay_filters
 
     @property
@@ -361,15 +359,13 @@ class ChannelResponseFilter(Base):
         units_out_obj = get_unit_object(self.units_out)
 
         total_response = inventory.Response()
-        total_response.instrument_sensitivity = (
-            inventory.InstrumentSensitivity(
-                total_sensitivity,
-                self.normalization_frequency,
-                units_in_obj.abbreviation,
-                units_out_obj.abbreviation,
-                input_units_description=units_in_obj.name,
-                output_units_description=units_out_obj.name,
-            )
+        total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
+            total_sensitivity,
+            self.normalization_frequency,
+            units_in_obj.abbreviation,
+            units_out_obj.abbreviation,
+            input_units_description=units_in_obj.name,
+            output_units_description=units_out_obj.name,
         )
 
         for ii, f in enumerate(self.filters_list, 1):
