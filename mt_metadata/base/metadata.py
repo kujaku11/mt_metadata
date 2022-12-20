@@ -186,14 +186,16 @@ class Base:
 
         """
         copied = type(self)()
-        for key in self.to_dict(single=True).keys():
+        for key in self.to_dict(single=True, required=False).keys():
             try:
+
                 copied.set_attr_from_name(
                     key, deepcopy(self.get_attr_from_name(key), memodict)
                 )
             # Need the TypeError for objects that have no __reduce__ method
             # like H5 references.
-            except (AttributeError, TypeError):
+            except (AttributeError, TypeError) as error:
+                self.logger.debug(error)
                 continue
         return copied
 
