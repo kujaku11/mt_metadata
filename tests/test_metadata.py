@@ -63,20 +63,25 @@ class TestBase(unittest.TestCase):
     def test_validate_type(self):
 
         with self.subTest("float"):
-            self.assertEqual(10.0, self.base_object._validate_type("10", "float"))
+            self.assertEqual(
+                10.0, self.base_object._validate_type("10", "float")
+            )
         with self.subTest("integer"):
             self.assertEqual(10, self.base_object._validate_type("10", int))
         with self.subTest("string"):
             self.assertEqual("10", self.base_object._validate_type(10, str))
         with self.subTest("bool"):
-            self.assertEqual(True, self.base_object._validate_type("true", bool))
+            self.assertEqual(
+                True, self.base_object._validate_type("true", bool)
+            )
 
     def test_list_validation_type(self):
 
         number_list = [10, "11", 12.6, "13.3"]
         with self.subTest("int"):
             self.assertEqual(
-                [10, 11, 12, 13], self.base_object._validate_type(number_list, int)
+                [10, 11, 12, 13],
+                self.base_object._validate_type(number_list, int),
             )
         with self.subTest("float"):
             self.assertEqual(
@@ -90,18 +95,31 @@ class TestBase(unittest.TestCase):
             )
         with self.subTest("bool"):
             self.assertEqual(
-                [True, False], self.base_object._validate_type(["true", "False"], bool)
+                [True, False],
+                self.base_object._validate_type(["true", "False"], bool),
             )
 
     def test_update(self):
         other = Base()
-        other.add_base_attribute(self.extra_name, self.extra_value, self.extra_v_dict)
+        other.add_base_attribute(
+            self.extra_name, self.extra_value, self.extra_v_dict
+        )
 
         other.extra_attribute = 12
 
         self.base_object.update(other)
 
         self.assertEqual(self.base_object, other)
+
+    def test_copy(self):
+        other = Base()
+        other.add_base_attribute(
+            self.extra_name, self.extra_value, self.extra_v_dict
+        )
+        other.extra_attribute = 12
+
+        new = other.copy()
+        self.assertEqual(other, new)
 
 
 # =============================================================================
