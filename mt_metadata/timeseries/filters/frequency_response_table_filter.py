@@ -131,13 +131,13 @@ class FrequencyResponseTableFilter(FilterBase):
 
                 if self._empirical_phases.mean() > 1000 * np.pi / 2:
                     self.logger.warning(
-                        "Phases appear to be in milli radians attempting to conver to radians"
+                        "Phases appear to be in milli radians attempting to convert to radians"
                     )
                     self._empirical_phases = self._empirical_phases / 1000
 
                 elif np.abs(self._empirical_phases).max() > 6 * np.pi:
                     self.logger.warning(
-                        "Phases appear to be in degrees attempting to conver to radians"
+                        "Phases appear to be in degrees attempting to convert to radians"
                     )
                     self._empirical_phases = np.deg2rad(self._empirical_phases)
 
