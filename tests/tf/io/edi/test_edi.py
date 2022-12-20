@@ -64,7 +64,10 @@ class TestEMeasurement(unittest.TestCase):
 
     def test_attr(self):
         for k, v in self.e_dict.items():
-            self.assertEqual(v, getattr(self.ex, k))
+            if isinstance(v, (float, int)):
+                self.assertAlmostEqual(v, getattr(self.ex, k))
+            else:
+                self.assertEqual(v, getattr(self.ex, k))
 
 
 class TestEMeasurementAZM(unittest.TestCase):
@@ -87,7 +90,7 @@ class TestEMeasurementAZM(unittest.TestCase):
             if k != "azm":
                 self.assertEqual(v, getattr(self.ex, k))
             else:
-                self.assertEqual(5.710593137499642, getattr(self.ex, k))
+                self.assertalmostEqual(5.7105931374996, getattr(self.ex, k))
 
 
 class TestHMeasurement(unittest.TestCase):
