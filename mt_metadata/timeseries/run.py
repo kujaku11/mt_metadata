@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -175,9 +175,10 @@ class Run(Base):
             self.logger.error(msg)
             raise ValueError(msg)
         if channel_obj.component is None:
-            msg = "component cannot be empty"
-            self.logger.error(msg)
-            raise ValueError(msg)
+            if not isinstance(channel_obj, Auxiliary):
+                msg = "component cannot be empty"
+                self.logger.error(msg)
+                raise ValueError(msg)
 
         if self.has_channel(channel_obj.component):
             self.channels[channel_obj.component].update(channel_obj)
