@@ -399,18 +399,36 @@ class EDI(object):
                     obj[:, ii, jj] = (
                         data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
                     )
-                    error_key = [
-                        k for k in data_dict.keys() if key in k and "var" in k
-                    ][0]
-                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
+                    try:
+                        error_key = [
+                            k
+                            for k in data_dict.keys()
+                            if key in k and "var" in k
+                        ][0]
+                        error_obj[:, ii, jj] = (
+                            np.abs(data_dict[error_key]) ** 0.5
+                        )
+                    except IndexError:
+                        self.logger.debug(
+                            f"Could not find error information for {key}"
+                        )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
                         data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
-                    error_key = [
-                        k for k in data_dict.keys() if key in k and "var" in k
-                    ][0]
-                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
+                    try:
+                        error_key = [
+                            k
+                            for k in data_dict.keys()
+                            if key in k and "var" in k
+                        ][0]
+                        error_obj[:, ii, jj] = (
+                            np.abs(data_dict[error_key]) ** 0.5
+                        )
+                    except IndexError:
+                        self.logger.debug(
+                            f"Could not find error information for {key}"
+                        )
                 elif key.startswith("r") or key.startswith("p"):
                     self.logger.debug(
                         "Reading RHO and PHS to compute impedance"

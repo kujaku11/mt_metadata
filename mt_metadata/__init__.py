@@ -147,6 +147,9 @@ TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
 TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
     "data/transfer_functions/spectra_out.edi"
 )
+TF_EDI_NO_ERROR = DATA_DIR.joinpath(
+    "data/transfer_functions/example_no_error.edi"
+)
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
 TF_AVG_TIPPER = DATA_DIR.joinpath(
     "data/transfer_functions/example_zonge_with_tipper.avg"
