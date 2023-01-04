@@ -210,6 +210,8 @@ class TestNoErrorEDI(unittest.TestCase):
             self.assertTupleEqual(self.edi_obj.t.shape, (47, 1, 2))
         with self.subTest("err shape"):
             self.assertTupleEqual(self.edi_obj.t_err.shape, (47, 1, 2))
+        with self.subTest("has zero"):
+            self.assertEqual(self.edi_obj.t_err[0, 0, 0], 0)
 
     def test_rotation_angle(self):
         with self.subTest("all zeros"):
