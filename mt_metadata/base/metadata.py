@@ -180,6 +180,7 @@ class Base:
     def __deepcopy__(self, memodict={}):
         """
         Need to skip copying the logger
+        need to copy properties as well.
 
         :return: DESCRIPTION
         :rtype: TYPE
@@ -197,6 +198,8 @@ class Base:
             except (AttributeError, TypeError) as error:
                 self.logger.debug(error)
                 continue
+        # need to copy and properties
+
         return copied
 
     def copy(self):
