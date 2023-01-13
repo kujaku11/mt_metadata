@@ -199,6 +199,15 @@ class Base:
                 self.logger.debug(error)
                 continue
         # need to copy and properties
+        for key in self.__dict__.keys():
+            if key.startswith("_"):
+                test_property = getattr(self.__class__, key[1:], None)
+                if isinstance(test_property, property):
+                    value = getattr(self, key[1:])
+                    if hasattr(value, "copy"):
+                        setattr(copied, key[1:], value.copy())
+                    else:
+                        setattr(copied, key[1:], value)
 
         return copied
 

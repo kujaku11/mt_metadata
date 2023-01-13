@@ -8,6 +8,7 @@ Created on Wed Nov 16 11:08:25 2022
 # Imports
 # =============================================================================
 from collections import OrderedDict
+from copy import deepcopy
 
 # =============================================================================
 
@@ -72,6 +73,31 @@ class ListDict:
             return obj.component
         else:
             raise TypeError("could not identify an appropriate key from object")
+
+    def __deepcopy__(self, memodict={}):
+        """
+        Need to skip copying the logger
+        need to copy properties as well.
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        copied = type(self)()
+        for key, value in self.items():
+            if hasattr(value, "copy"):
+                value = value.copy()
+            copied[key] = value
+
+        return copied
+
+    def copy(self):
+        """
+        Copy object
+
+        """
+
+        return self.__deepcopy__()
 
     def _get_index_slice_from_slice(self, items, key_slice):
         """
