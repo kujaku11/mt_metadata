@@ -56,6 +56,10 @@ class TestListDict(unittest.TestCase):
     def test_get_key_from_index_fail(self):
         self.assertRaises(KeyError, self.ld._get_key_from_index, 2)
 
+    def test_copy(self):
+        lc = self.ld.copy()
+        self.assertEqual(self.ld, lc)
+
 
 class TestListDictSetIndex(unittest.TestCase):
     @classmethod

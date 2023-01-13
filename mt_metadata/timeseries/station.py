@@ -283,7 +283,8 @@ class Station(Base):
                     self.logger.error(msg)
                     raise ValueError(msg)
             run = run.replace("'", "").replace('"', "")
-            self.add_run(Run(id=run))
+            if run not in self.runs.keys():
+                self.add_run(Run(id=run))
 
     def update_time_period(self):
         """
