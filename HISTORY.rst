@@ -69,3 +69,22 @@ History
 * minor bug fixes
 * update reading .AVG files
 
+0.2.1 (2023-01-18)
+---------------------
+
+* Update setup.py 
+* updating reading emtfxml files 
+* Fix issue 95 
+* Add model error 
+* Make sure filter names are unique 
+* Fix Empty Z file
+* Add metadata 
+* added test for multiple networks in stationxml 
+* updating to make mth5 work with single metadata object in ChannelTS and RunTS 
+* added test for null channel component 
+* Mth5 patch129 fixes 
+* Update edi.py 
+* add a line to allow aux channel component to be empty 
+* Update edi.py 
+* Mth5 patch129 fixes 
+
