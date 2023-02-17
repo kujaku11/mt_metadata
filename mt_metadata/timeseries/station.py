@@ -131,6 +131,9 @@ class Station(Base):
         elif isinstance(value, (list, tuple)):
             self._channels_recorded = value
 
+        elif isinstance(value, (str)):
+            value = value.split(",")
+
         else:
             raise TypeError(
                 "'channels_recorded' must be set with a list not "
