@@ -86,5 +86,9 @@ History
 * Update edi.py 
 * add a line to allow aux channel component to be empty 
 * Update edi.py 
-* Mth5 patch129 fixes 
+* Mth5 patch129 fixes
 
+0.2.2 (2023-02-17)
+--------------------- 
+
+* Fixed bug in Station.channels_recorded when a string is input
