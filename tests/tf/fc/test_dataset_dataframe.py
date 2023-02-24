@@ -10,7 +10,7 @@ Created on Fri Mar 25 11:46:46 2022
 # =============================================================================
 import unittest
 
-from aurora.config import Station, Run
+from mt_metadata.transfer_functions.fourier_coefficients import Station, Run
 from mt_metadata.timeseries import TimePeriod
 
 # =============================================================================
@@ -69,7 +69,8 @@ class TestStationDataset(unittest.TestCase):
             self.assertTrue((df2 == df).all().all())
         with self.subTest("dict"):
             self.assertDictEqual(
-                station_2.to_dict(single=True), self.station.to_dict(single=True)
+                station_2.to_dict(single=True),
+                self.station.to_dict(single=True),
             )
 
 

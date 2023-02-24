@@ -6,7 +6,11 @@ Created on Thu Feb 24 14:11:24 2022
 """
 
 import unittest
-from aurora.config import Station, Channel, Stations
+from mt_metadata.transfer_functions.fourier_coefficients import (
+    Station,
+    Channel,
+    Stations,
+)
 
 
 class TestStation(unittest.TestCase):
