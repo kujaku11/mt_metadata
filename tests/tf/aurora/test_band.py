@@ -6,23 +6,23 @@ Created on Thu Feb 24 14:11:24 2022
 """
 
 import unittest
-from mt_metadata.transfer_functions.fourier_coefficients import Regression
+from mt_metadata.transfer_functions.processing.aurora import Band
 
 
-class TestRegression(unittest.TestCase):
+class TestBand(unittest.TestCase):
     """
     Test Station metadata
     """
 
     def setUp(self):
-        self.regression = Regression()
+        self.band = Band()
 
     def test_initialization(self):
-        for key in self.regression.get_attribute_list():
+        for key in self.band.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
-                    self.regression.get_attr_from_name(key),
-                    self.regression._attr_dict[key]["default"],
+                    self.band.get_attr_from_name(key),
+                    self.band._attr_dict[key]["default"],
                 )
 
 

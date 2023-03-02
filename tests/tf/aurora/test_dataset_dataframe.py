@@ -10,7 +10,7 @@ Created on Fri Mar 25 11:46:46 2022
 # =============================================================================
 import unittest
 
-from mt_metadata.transfer_functions.fourier_coefficients import Station, Run
+from mt_metadata.transfer_functions.processing.aurora import Station, Run
 from mt_metadata.timeseries import TimePeriod
 
 # =============================================================================

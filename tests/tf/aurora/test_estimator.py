@@ -6,23 +6,23 @@ Created on Thu Feb 24 14:11:24 2022
 """
 
 import unittest
-from mt_metadata.transfer_functions.fourier_coefficients import Decimation
+from mt_metadata.transfer_functions.processing.aurora import Estimator
 
 
-class TestDecimation(unittest.TestCase):
+class TestEstimator(unittest.TestCase):
     """
     Test Station metadata
     """
 
     def setUp(self):
-        self.decimation = Decimation()
+        self.estimator = Estimator()
 
     def test_initialization(self):
-        for key in self.decimation.get_attribute_list():
+        for key in self.estimator.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
-                    self.decimation.get_attr_from_name(key),
-                    self.decimation._attr_dict[key]["default"],
+                    self.estimator.get_attr_from_name(key),
+                    self.estimator._attr_dict[key]["default"],
                 )
 
 

@@ -6,23 +6,23 @@ Created on Thu Feb 24 14:11:24 2022
 """
 
 import unittest
-from mt_metadata.transfer_functions.fourier_coefficients import Estimator
+from mt_metadata.transfer_functions.processing.aurora import Regression
 
 
-class TestEstimator(unittest.TestCase):
+class TestRegression(unittest.TestCase):
     """
     Test Station metadata
     """
 
     def setUp(self):
-        self.estimator = Estimator()
+        self.regression = Regression()
 
     def test_initialization(self):
-        for key in self.estimator.get_attribute_list():
+        for key in self.regression.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
-                    self.estimator.get_attr_from_name(key),
-                    self.estimator._attr_dict[key]["default"],
+                    self.regression.get_attr_from_name(key),
+                    self.regression._attr_dict[key]["default"],
                 )
 
 
