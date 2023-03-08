@@ -778,7 +778,9 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.author = (
+                self.copyright.citation.authors
+            )
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -1200,9 +1202,18 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
         )
 
     emtf = EMTFXML()
-    emtf.description = "Magnetotelluric transfer functions"
     emtf.survey_metadata = tf_object.survey_metadata
     emtf.station_metadata = tf_object.station_metadata
+
+    if emtf.description is None:
+        emtf.description = "Magnetotelluric Transfer Functions"
+
+    if emtf.product_id is None:
+        emtf.product_id = (
+            f"{emtf.station_metadata.acquired_by.name}."
+            f"{emtf.station_metadata.id}."
+            f"{emtf.station_metadata.time_period._start_dt.year}"
+        )
     tags = []
 
     emtf.data.period = tf_object.period
