@@ -1,0 +1,13 @@
+{
+    "angle_to_geographic_north": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "Angle to geographic north of the station orientation",
+        "options": [],
+        "alias": [],
+        "example": 0,
+		"default": 0
+    }
+}

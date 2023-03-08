@@ -28,6 +28,7 @@ from .provenance import Provenance
 from .copyright import Copyright
 from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
+from .orientation import Orientation
 from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
@@ -61,6 +62,7 @@ __all__ = [
     "Comment",
     "DataQualityNotes",
     "DataQualityWarnings",
+    "Orientation",
     "Site",
     "Electrode",
     "Dipole",

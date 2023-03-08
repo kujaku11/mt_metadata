@@ -14,14 +14,13 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import Location, Orientation
 from . import DataQualityNotes, DataQualityWarnings, Comment
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
 attr_dict = get_schema("site", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Location()._attr_dict, "location")
-attr_dict.add_dict(Orientation()._attr_dict, "orientation")
+attr_dict.add_dict(get_schema("location", SCHEMA_FN_PATHS), "location")
+attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
 attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
 attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
@@ -31,8 +30,6 @@ class Site(Base):
 
     def __init__(self, **kwargs):
         self._year_collected = None
-        self.location = Location()
-        self.orientation = Orientation()
         self.data_quality_notes = DataQualityNotes()
         self.data_quality_warnings = DataQualityWarnings()
         self._run_list = []
