@@ -17,6 +17,7 @@ from .standards import SCHEMA_FN_PATHS
 from . import Dipole, Magnetometer, Comment
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.transfer_functions.tf import Instrument
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
@@ -75,7 +76,9 @@ class FieldNotes(Base):
         self.end = input_dict["end"]
         try:
             if isinstance(input_dict["comments"], list):
-                self.comments.from_dict({"comments": input_dict["comments"][0]})
+                self.comments.from_dict(
+                    {"comments": input_dict["comments"][0]}
+                )
             else:
                 self.comments.from_dict({"comments": input_dict["comments"]})
         except KeyError:
@@ -123,15 +126,3 @@ class FieldNotes(Base):
 
         """
         return helpers.to_xml(string=string, required=required)
-
-        # fn_element = self._convert_tag_to_capwords(
-        #     fn.to_xml(required=False)
-        # )
-        # for dp in fn.dipole:
-        #     dp_element = self._convert_tag_to_capwords(dp.to_xml())
-        #     for electrode in dp.electrode:
-        #         self._write_element(dp_element, electrode)
-        #     fn_element.append(dp_element)
-        # for mag in fn.magnetometer:
-        #     self._write_element(fn_element, mag)
-        # parent.append(fn_element)

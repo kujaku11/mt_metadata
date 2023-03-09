@@ -11,7 +11,9 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
+from xml.etree import cElementTree as et
+
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Magnetic, Electric
@@ -76,3 +78,64 @@ class SiteLayout(Base):
 
             ch.from_dict(item)
             self._output_channels.append(ch)
+
+    def read_dict(self, input_dict):
+        """
+        read site layout into the proper input/output channels
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        # read input channels
+        for ch in ["input_channels", "output_channels"]:
+            ch_list = []
+            try:
+                c_list = input_dict["site_layout"][ch]["magnetic"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
+
+            except (KeyError, TypeError):
+                pass
+
+            try:
+                c_list = input_dict["site_layout"][ch]["electric"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"electric": ch_dict} for ch_dict in c_list]
+            except (KeyError, TypeError):
+                pass
+
+            setattr(self, ch, ch_list)
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        root = et.Element(self.__class__.__name__.capitalize())
+
+        section = et.SubElement(root, "InputChannels")
+        for ch in self.input_channels:
+            section.append(ch.to_xml(required=required))
+        section = et.SubElement(root, "OutputChannels")
+        for ch in self.output_channels:
+            section.append(ch.to_xml(required=required))
+
+        if string:
+            return element_to_string(root)
+        return root
