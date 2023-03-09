@@ -361,7 +361,14 @@ class TransferFunction(Base):
         for key in self.array_dict.keys():
             if self.array_dict[key] is None:
                 continue
-            arr = self.array_dict[key][index]
+            arr = np.nan_to_num(self.array_dict[key][index])
+
+            # set zeros to empty value of 1E32
+            if arr.dtype == complex:
+                arr[np.where(arr == 0)] = 1e32 + 1e32j
+            else:
+                arr[np.where(arr == 0)] = 1e32
+
             attr_dict = {
                 "type": self.dtype_dict[arr.dtype.name],
                 "size": str(arr.shape)[1:-1].replace(",", ""),

@@ -315,7 +315,7 @@ class EMTFXML(emtf_xml.EMTF):
         if self.site._run_list is None:
             self.site._run_list = []
 
-    def write(self, fn):
+    def write(self, fn, skip_field_notes=False):
         """
         Write an xml
         :param fn: DESCRIPTION
@@ -330,20 +330,10 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_statistical_estimates()
         self._get_data_types()
 
-        # if (
-        #     self.site.location.x == 0
-        #     and self.site.location.x2 == 0
-        #     and self.site.location.y == 0
-        #     and self.site.location.y2 == 0
-        #     and self.site.location.z == 0
-        # ):
-        #     self.site.location.x = None
-        #     self.site.location.y = None
-        #     self.site.location.z = None
-        #     self.site.location.x2 = None
-        #     self.site.location.y2 = None
-
         for key in self.element_keys:
+            if skip_field_notes:
+                if key == "field_notes":
+                    continue
             value = getattr(self, key)
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
                 element = value.to_xml()
@@ -890,7 +880,7 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
     if tf_object.has_tipper():
         tags += ["tipper"]
         emtf.data.t = tf_object.tipper.data
-        emtf.data.t_var = tf_object.tipper_error.data
+        emtf.data.t_var = tf_object.tipper_error.data**2
 
     if (
         tf_object.has_residual_covariance()
@@ -909,6 +899,9 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
     emtf.tags = ", ".join(tags)
     emtf.period_range.min = emtf.data.period.min()
     emtf.period_range.max = emtf.data.period.max()
-    emtf.write(fn=fn)
+    if "skip_field_notes" in kwargs.keys():
+        emtf.write(fn=fn, skip_field_notes=kwargs["skip_field_notes"])
+    else:
+        emtf.write(fn=fn)
 
     return emtf
