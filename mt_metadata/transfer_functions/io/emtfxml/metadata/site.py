@@ -108,20 +108,4 @@ class Site(Base):
     def to_xml(self, string=False, required=True):
         """ """
 
-        root = et.Element(
-            self.__class__.__name__.capitalize(),
-        )
-
-        for attr in helpers._get_attributes(self):
-            c_attr = getattr(self, attr)
-            if hasattr(c_attr, "to_xml") and callable(
-                getattr(c_attr, "to_xml")
-            ):
-                root.append(c_attr.to_xml(required=required))
-            else:
-                helpers._write_single(root, attr, c_attr)
-
-        if not string:
-            return root
-        else:
-            return element_to_string(root)
+        return helpers.to_xml(self, string=string, required=required)

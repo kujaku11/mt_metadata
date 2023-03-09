@@ -10,6 +10,8 @@ Created on Wed Mar  8 19:53:04 2023
 # =============================================================================
 from xml.etree import cElementTree as et
 
+from mt_metadata.base.helpers import element_to_string
+
 # =============================================================================
 
 
@@ -100,3 +102,23 @@ def _convert_keys_to_lower_case(root_dict):
             item = _convert_keys_to_lower_case(item)
             res.append(item)
     return res
+
+
+def to_xml(cls, string=False, required=True):
+    """ """
+
+    root = et.Element(
+        cls.__class__.__name__.capitalize(),
+    )
+
+    for attr in _get_attributes(cls):
+        c_attr = getattr(cls, attr)
+        if hasattr(c_attr, "to_xml") and callable(getattr(c_attr, "to_xml")):
+            root.append(c_attr.to_xml(required=required))
+        else:
+            _write_single(root, attr, c_attr)
+
+    if not string:
+        return root
+    else:
+        return element_to_string(root)
