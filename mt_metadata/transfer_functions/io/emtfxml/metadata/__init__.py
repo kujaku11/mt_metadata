@@ -37,7 +37,7 @@ from .magnetometer import Magnetometer
 from .instrument import Instrument
 from .run import Run
 from .field_notes import FieldNotes
-from .software import Software
+from .software import ProcessingSoftware
 from .remote_ref import RemoteRef
 from .remote_info import RemoteInfo
 from .processing_info import ProcessingInfo
@@ -74,7 +74,7 @@ __all__ = [
     "Instrument",
     "Run",
     "FieldNotes",
-    "Software",
+    "ProcessingSoftware",
     "RemoteRef",
     "RemoteInfo",
     "ProcessingInfo",

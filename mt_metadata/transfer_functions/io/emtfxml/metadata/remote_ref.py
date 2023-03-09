@@ -52,6 +52,4 @@ class RemoteRef(Base):
 
         if self.type is None:
             self.type = ""
-        return et.Element(
-            self.__class__.__name__.capitalize(), {"type": self.type}
-        )
+        return et.Element(self.__class__.__name__, {"type": self.type})

@@ -70,7 +70,7 @@ class StatisticalEstimates(Base):
 
         """
 
-        root = et.Element(self.__class__.__name__.capitalize())
+        root = et.Element(self.__class__.__name__)
 
         for estimate in self.estimates_list:
             root.append(estimate.to_xml(required=required))

@@ -515,9 +515,19 @@ def element_to_dict(element):
                     pop_units = True
                     continue
             if k in ["type"]:
+
                 if len(element.attrib.keys()) <= 1:
-                    pop_type = True
-                    continue
+                    if v in [
+                        "float",
+                        "string",
+                        "integer",
+                        "boolean",
+                        "list",
+                        "tuple",
+                    ]:
+                        pop_type = True
+                        continue
+
             meta_dict[element.tag][k] = v
         if pop_units:
             element.attrib.pop("units")

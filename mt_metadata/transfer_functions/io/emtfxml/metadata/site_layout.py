@@ -129,7 +129,7 @@ class SiteLayout(Base):
 
         """
 
-        root = et.Element(self.__class__.__name__.capitalize())
+        root = et.Element(self.__class__.__name__)
 
         section = et.SubElement(root, "InputChannels")
         for ch in self.input_channels:

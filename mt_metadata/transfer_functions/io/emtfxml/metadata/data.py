@@ -407,7 +407,8 @@ class TransferFunction(Base):
         :rtype: TYPE
 
         """
-        root = et.Element(self.__class__.__name__.capitalize())
+        root = et.Element("Data", {"count": f"{self.n_periods:.0f}"})
+
         for index in range(self.period.size):
             self.write_block(root, index)
 

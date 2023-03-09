@@ -49,6 +49,9 @@ class Electric(Base):
                 "x": f"{self.x:.3f}",
                 "y": f"{self.y:.3f}",
                 "z": f"{self.z:.3f}",
+                "x2": f"{self.x:.3f}",
+                "y2": f"{self.y:.3f}",
+                "z2": f"{self.z:.3f}",
             },
         )
 

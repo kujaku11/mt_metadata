@@ -122,6 +122,7 @@ class Site(Base):
                 "acquired_by",
                 "start",
                 "end",
+                "run_list",
                 "data_quality_notes",
                 "data_quality_warnings",
             ],

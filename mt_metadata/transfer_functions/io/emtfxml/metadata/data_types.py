@@ -70,7 +70,7 @@ class DataTypes(Base):
 
         """
 
-        root = et.Element(self.__class__.__name__.capitalize())
+        root = et.Element(self.__class__.__name__)
 
         for dtype in self.data_types_list:
             root.append(dtype.to_xml(required=required))

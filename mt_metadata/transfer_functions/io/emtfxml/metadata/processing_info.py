@@ -14,13 +14,13 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Software, RemoteRef, RemoteInfo
+from . import ProcessingSoftware, RemoteRef, RemoteInfo
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 
 # =============================================================================
 attr_dict = get_schema("processing_info", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Software()._attr_dict, "processing_software")
+attr_dict.add_dict(ProcessingSoftware()._attr_dict, "processing_software")
 attr_dict.add_dict(RemoteRef()._attr_dict, "remote_ref")
 attr_dict.add_dict(RemoteInfo()._attr_dict, "remote_info")
 
@@ -36,7 +36,7 @@ class ProcessingInfo(Base):
     def __init__(self, **kwargs):
 
         self.remote_ref = RemoteRef()
-        self.processing_software = Software()
+        self.processing_software = ProcessingSoftware()
         self.remote_info = RemoteInfo()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
@@ -64,4 +64,15 @@ class ProcessingInfo(Base):
 
         """
 
-        return helpers.to_xml(self, string=string, required=required)
+        return helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=[
+                "sign_convention",
+                "remote_ref",
+                "processed_by",
+                "processing_software",
+                "processing_tag",
+            ],
+        )

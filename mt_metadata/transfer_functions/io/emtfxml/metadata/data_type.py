@@ -11,9 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from xml.etree import cElementTree as et
-
-from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
@@ -53,22 +51,18 @@ class DataType(Base):
 
         """
 
-        root = et.Element(
-            self.__class__.__name__.capitalize(),
-            {
-                "name": self.name,
-                "type": self.type,
-                "output": self.output,
-                "input": self.input,
-                "units": self.units,
-            },
+        element = helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=["description", "external_url", "intention", "tag"],
         )
+        element.attrib = {
+            "name": self.name,
+            "type": self.type,
+            "output": self.output,
+            "input": self.input,
+            "units": self.units,
+        }
 
-        et.SubElement(root, "Description").text = self.description
-        et.SubElement(root, "ExternalUrl").text = self.external_url
-        et.SubElement(root, "Intention").text = self.intention
-        et.SubElement(root, "tag").text = self.tag
-
-        if string:
-            return element_to_string(root)
-        return root
+        return element
