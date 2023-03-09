@@ -20,7 +20,7 @@ from .standards import SCHEMA_FN_PATHS
 # =============================================================================
 attr_dict = get_schema("magnetometer", SCHEMA_FN_PATHS)
 # =============================================================================
-class Magnetometer(Base):
+class Instrument(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):

@@ -181,8 +181,8 @@ class EMTFXML(emtf_xml.EMTF):
             "provenance",
             "copyright",
             "site",
-            "processing_info",
             "field_notes",
+            "processing_info",
             "statistical_estimates",
             "data_types",
             "site_layout",
@@ -330,28 +330,38 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_statistical_estimates()
         self._get_data_types()
 
-        if (
-            self.site.location.x == 0
-            and self.site.location.x2 == 0
-            and self.site.location.y == 0
-            and self.site.location.y2 == 0
-            and self.site.location.z == 0
-        ):
-            self.site.location.x = None
-            self.site.location.y = None
-            self.site.location.z = None
-            self.site.location.x2 = None
-            self.site.location.y2 = None
+        # if (
+        #     self.site.location.x == 0
+        #     and self.site.location.x2 == 0
+        #     and self.site.location.y == 0
+        #     and self.site.location.y2 == 0
+        #     and self.site.location.z == 0
+        # ):
+        #     self.site.location.x = None
+        #     self.site.location.y = None
+        #     self.site.location.z = None
+        #     self.site.location.x2 = None
+        #     self.site.location.y2 = None
 
         for key in self.element_keys:
             value = getattr(self, key)
-            if key in self._writer_dict.keys():
-                self._writer_dict[key](emtf_element, key, value)
+            if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
+                element = value.to_xml()
+                if isinstance(element, list):
+                    for item in element:
+                        emtf_element.append(
+                            emtf_helpers._convert_tag_to_capwords(item)
+                        )
+                else:
+                    emtf_element.append(
+                        emtf_helpers._convert_tag_to_capwords(element)
+                    )
             else:
-                self._write_element(
-                    emtf_element,
-                    value,
+                emtf_helpers._write_single(
+                    emtf_element, key, getattr(self, key)
                 )
+
+        emtf_element = emtf_helpers._remove_null_values(emtf_element)
 
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))

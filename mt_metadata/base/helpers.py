@@ -53,7 +53,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     """
     Takes the attribute dictionary from the json and parses it into a table
     Returns a string representation of this table.  This overwrites the doc.
-    
+
     :param attr_dict: attribute dictionary
     :type attr_dict: dict
     :param c1: cloumn 1 width, defaults to 45
@@ -77,7 +77,9 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     lines = [
         hline,
-        line.format("**Metadata Key**", c1, "**Description**", c2, "**Example**", c3),
+        line.format(
+            "**Metadata Key**", c1, "**Description**", c2, "**Example**", c3
+        ),
         mline,
     ]
 
@@ -87,13 +89,20 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         d_lines = wrap_description(entry["description"], c2)
         e_lines = wrap_description(entry["example"], c3)
         # line 1 is with the entry
-        lines.append(line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3))
+        lines.append(
+            line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3)
+        )
         # line 2 skip an entry in the
         lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
         # line 3 required
         lines.append(
             line.format(
-                f"Required: {entry['required']}", c1, d_lines[2], c2, e_lines[2], c3
+                f"Required: {entry['required']}",
+                c1,
+                d_lines[2],
+                c2,
+                e_lines[2],
+                c3,
             )
         )
         # line 4 blank
@@ -101,7 +110,9 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 5 units
         lines.append(
-            line.format(f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3)
+            line.format(
+                f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3
+            )
         )
 
         # line 6 blank
@@ -109,7 +120,9 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 7 type
         lines.append(
-            line.format(f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3)
+            line.format(
+                f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3
+            )
         )
 
         # line 8 blank
@@ -117,7 +130,9 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 9 type
         lines.append(
-            line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
+            line.format(
+                f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3
+            )
         )
 
         # line 10 blank
@@ -126,7 +141,12 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         # line 11 type
         lines.append(
             line.format(
-                f"Default: {entry['default']}", c1, d_lines[10], c2, e_lines[10], c3
+                f"Default: {entry['default']}",
+                c1,
+                d_lines[10],
+                c2,
+                e_lines[10],
+                c3,
             )
         )
 
@@ -141,7 +161,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
 def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     """
-    
+
     :param key: key to write from attr dict
     :type key: string
     :param attr_dict: attribute dictionary
@@ -177,7 +197,9 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
-        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
+        line.format(
+            f"**{key}**", c1, "**Description**", c2, "**Example**", c3
+        ),
         mline,
     ]
 
@@ -186,7 +208,12 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 1 is with the entry
     lines.append(
         line.format(
-            f"**Required**: {attr_dict['required']}", c1, d_lines[0], c2, e_lines[0], c3
+            f"**Required**: {attr_dict['required']}",
+            c1,
+            d_lines[0],
+            c2,
+            e_lines[0],
+            c3,
         )
     )
     # line 2 skip an entry in the
@@ -194,7 +221,12 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 3 required
     lines.append(
         line.format(
-            f"**Units**: {attr_dict['units']}", c1, d_lines[2], c2, e_lines[2], c3
+            f"**Units**: {attr_dict['units']}",
+            c1,
+            d_lines[2],
+            c2,
+            e_lines[2],
+            c3,
         )
     )
     # line 4 blank
@@ -203,7 +235,12 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 5 units
     lines.append(
         line.format(
-            f"**Type**: {attr_dict['type']}", c1, d_lines[4], c2, e_lines[4], c3
+            f"**Type**: {attr_dict['type']}",
+            c1,
+            d_lines[4],
+            c2,
+            e_lines[4],
+            c3,
         )
     )
 
@@ -213,7 +250,12 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 7 type
     lines.append(
         line.format(
-            f"**Style**: {attr_dict['style']}", c1, d_lines[6], c2, e_lines[6], c3
+            f"**Style**: {attr_dict['style']}",
+            c1,
+            d_lines[6],
+            c2,
+            e_lines[6],
+            c3,
         )
     )
 
@@ -223,7 +265,12 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 9 type
     lines.append(
         line.format(
-            f"**Default**: {attr_dict['default']}", c1, d_lines[8], c2, e_lines[8], c3
+            f"**Default**: {attr_dict['default']}",
+            c1,
+            d_lines[8],
+            c2,
+            e_lines[8],
+            c3,
         )
     )
 
@@ -449,7 +496,9 @@ def element_to_dict(element):
             for k, v in dc.items():
                 child_dict[k].append(v)
         meta_dict = {
-            element.tag: {k: v[0] if len(v) == 1 else v for k, v in child_dict.items()}
+            element.tag: {
+                k: v[0] if len(v) == 1 else v for k, v in child_dict.items()
+            }
         }
         if "item" in meta_dict[element.tag].keys():
             meta_dict[element.tag] = meta_dict[element.tag]["item"]
@@ -488,7 +537,14 @@ def element_to_dict(element):
 
 
 def element_to_string(element):
-    return minidom.parseString(et.tostring(element).decode()).toprettyxml(indent="    ")
+    return (
+        minidom.parseString(et.tostring(element).decode())
+        .toprettyxml(
+            indent="    ",
+            encoding="UTF-8",
+        )
+        .decode()
+    )
 
 
 # =============================================================================
@@ -532,8 +588,8 @@ class NumpyEncoder(json.JSONEncoder):
 
 def validate_name(name, pattern=None):
     """
-    Validate name 
-    
+    Validate name
+
     :param name: DESCRIPTION
     :type name: TYPE
     :param pattern: DESCRIPTION, defaults to None

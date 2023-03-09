@@ -14,9 +14,8 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Dipole, Magnetometer, Comment
+from . import Dipole, Magnetometer, Comment, Instrument
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.transfer_functions.tf import Instrument
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
@@ -114,7 +113,7 @@ class Run(Base):
         except KeyError:
             self.logger.debug("run has no dipole information")
 
-    def to_xml(self, string=True, required=False):
+    def to_xml(self, string=False, required=True):
         """
 
         :param string: DESCRIPTION, defaults to True
@@ -125,9 +124,23 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        element = helpers.to_xml(string=False, required=required)
+        element = helpers.to_xml(
+            self,
+            string=False,
+            required=required,
+            order=[
+                "instrument",
+                "magnetometer",
+                "dipole",
+                "comments",
+                "errors",
+                "sampling_rate",
+                "start",
+                "end",
+            ],
+        )
         element.attrib = {"run": self.run}
-        element.tag = "FieldNotes"
+        element.tag = "field_notes"
 
         if string:
             return element_to_string(element)

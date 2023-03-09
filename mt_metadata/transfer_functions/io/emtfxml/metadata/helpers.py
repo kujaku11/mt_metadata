@@ -35,7 +35,12 @@ def _capwords(value):
 
     """
 
-    return value.replace("_", " ").title().replace(" ", "")
+    if value.count("_") > 0:
+        return value.replace("_", " ").title().replace(" ", "")
+    elif sum(1 for c in value if c.isupper()) == 0:
+        return value.title()
+
+    return value
 
 
 def _convert_tag_to_capwords(element):
@@ -64,7 +69,7 @@ def _read_single(cls, root_dict, key):
 
 def _write_single(parent, key, value, attributes={}):
     element = et.SubElement(parent, _capwords(key), attributes)
-    if value is not None:
+    if value not in [None, "", "null"]:
         element.text = str(value)
     return element
 
@@ -106,17 +111,46 @@ def _convert_keys_to_lower_case(root_dict):
     return res
 
 
-def to_xml(cls, string=False, required=True):
+def _remove_null_values(element, replace=""):
+    """
+    remove null values
+
+    :param element: DESCRIPTION
+    :type element: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    for item in element.iter():
+        if item.text in [None, "", "null"]:
+            if replace == False:
+                element.remove(item)
+            else:
+                item.text = replace
+        for key, value in item.attrib.items():
+            if value in [None, "", "null"]:
+                if replace == False:
+                    element.remove(item)
+                else:
+                    item.attrib[key] = replace
+
+    return element
+
+
+def to_xml(cls, string=False, required=True, order=None):
     """ """
 
-    root = et.Element(
-        cls.__class__.__name__.capitalize(),
-    )
+    root = et.Element(cls.__class__.__name__)
 
-    for attr in _get_attributes(cls):
+    if order is None:
+        order = _get_attributes(cls)
+    for attr in order:
         c_attr = getattr(cls, attr)
         if hasattr(c_attr, "to_xml") and callable(getattr(c_attr, "to_xml")):
             root.append(c_attr.to_xml(required=required))
+        elif isinstance(c_attr, list):
+            for item in c_attr:
+                root.append(item.to_xml(required=required))
         else:
             _write_single(root, attr, c_attr)
 

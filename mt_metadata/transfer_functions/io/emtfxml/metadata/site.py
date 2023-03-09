@@ -106,4 +106,23 @@ class Site(Base):
     def to_xml(self, string=False, required=True):
         """ """
 
-        return helpers.to_xml(self, string=string, required=required)
+        return helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=[
+                "project",
+                "survey",
+                "year_collected",
+                "country",
+                "id",
+                "name",
+                "location",
+                "orientation",
+                "acquired_by",
+                "start",
+                "end",
+                "data_quality_notes",
+                "data_quality_warnings",
+            ],
+        )

@@ -11,7 +11,8 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
+from xml.etree import cElementTree as et
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
@@ -34,3 +35,17 @@ class Electrode(Base):
     @comments.setter
     def comments(self, value):
         self.value = value
+
+    def to_xml(self, string=False, required=False):
+        """ """
+
+        root = et.Element(
+            self.__class__.__name__,
+            {"location": self.location, "number": self.number},
+        )
+
+        root.text = self.comments
+
+        if string:
+            return element_to_string(root)
+        return root
