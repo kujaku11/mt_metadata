@@ -11,6 +11,7 @@ import numpy as np
 from xml.etree import cElementTree as et
 
 from mt_metadata.base import Base
+from mt_metadata.base.helpers import element_to_string
 
 # =============================================================================
 
@@ -396,7 +397,7 @@ class TransferFunction(Base):
 
         return period_element
 
-    def write_data(self, parent):
+    def to_xml(self, string=False, required=True):
         """
         Write data blocks
 
@@ -406,5 +407,10 @@ class TransferFunction(Base):
         :rtype: TYPE
 
         """
+        root = et.Element(self.__class__.__name__.capitalize())
         for index in range(self.period.size):
-            self.write_block(parent, index)
+            self.write_block(root, index)
+
+        if string:
+            return element_to_string(root)
+        return root

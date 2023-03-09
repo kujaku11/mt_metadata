@@ -56,7 +56,7 @@ class DataTypes(Base):
 
         """
 
-        self.estimates_list = input_dict["data_types"]["data_type"]
+        self.data_types_list = input_dict["data_types"]["data_type"]
 
     def to_xml(self, string=False, required=True):
         """

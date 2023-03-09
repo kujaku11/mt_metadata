@@ -298,7 +298,7 @@ class EMTFXML(emtf_xml.EMTF):
         root = et.parse(self.fn).getroot()
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
-        root_dict = self._convert_keys_to_lower_case(root_dict)
+        root_dict = emtf_helpers._convert_keys_to_lower_case(root_dict)
         self._root_dict = root_dict
 
         for element in self.element_keys:

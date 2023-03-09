@@ -8,8 +8,10 @@ Created on Wed Mar  8 19:53:04 2023
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from xml.etree import cElementTree as et
 
+from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.base.helpers import element_to_string
 
 # =============================================================================
@@ -71,7 +73,7 @@ def _read_element(cls, root_dict, element_name):
     try:
         value = root_dict[element_name]
         element_dict = {element_name: value}
-        getattr(cls, element_name).from_dict(element_dict)
+        cls.from_dict(element_dict)
 
     except KeyError:
         print(f"No {element_name} in EMTF XML")

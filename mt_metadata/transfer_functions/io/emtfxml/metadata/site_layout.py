@@ -39,6 +39,7 @@ class SiteLayout(Base):
 
     @input_channels.setter
     def input_channels(self, value):
+        self._input_channels = []
         if not isinstance(value, list):
             value = [value]
 
@@ -62,6 +63,7 @@ class SiteLayout(Base):
 
     @output_channels.setter
     def output_channels(self, value):
+        self._output_channels = []
         if not isinstance(value, list):
             value = [value]
 
