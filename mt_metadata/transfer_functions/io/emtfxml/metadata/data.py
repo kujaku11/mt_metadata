@@ -52,11 +52,20 @@ class TransferFunction(Base):
         self.write_dict = {
             "z": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
             "z_var": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
-            "z_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
-            "z_residcov": {"out": {0: "ex", 1: "ey"}, "in": {0: "ex", 1: "ey"}},
+            "z_invsigcov": {
+                "out": {0: "hx", 1: "hy"},
+                "in": {0: "hx", 1: "hy"},
+            },
+            "z_residcov": {
+                "out": {0: "ex", 1: "ey"},
+                "in": {0: "ex", 1: "ey"},
+            },
             "t": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
             "t_var": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
-            "t_invsigcov": {"out": {0: "hx", 1: "hy"}, "in": {0: "hx", 1: "hy"}},
+            "t_invsigcov": {
+                "out": {0: "hx", 1: "hy"},
+                "in": {0: "hx", 1: "hy"},
+            },
             "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
 
@@ -83,9 +92,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._period = np.array(value, dtype=float)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -106,9 +113,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -129,9 +134,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_var = np.array(value, dtype=float)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -152,9 +155,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_invsigcov = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -175,9 +176,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_residcov = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -198,9 +197,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -221,9 +218,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_var = np.array(value, dtype=float)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -244,9 +239,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_invsigcov = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -267,9 +260,7 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_residcov = np.array(value, dtype=complex)
         else:
-            msg = (
-                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
-            )
+            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -334,7 +325,7 @@ class TransferFunction(Base):
                     value = dtype(item["value"])
                 self.array_dict[comp][period_index, index_0, index_1] = value
 
-    def read_data(self, root_dict):
+    def read_dict(self, root_dict):
         """
         read root_dict["data"]
         :param root_dict: DESCRIPTION
@@ -361,7 +352,9 @@ class TransferFunction(Base):
         """
 
         period_element = et.SubElement(
-            parent, "Period", {"value": f"{self.period[index]:.6e}", "units": "secs"}
+            parent,
+            "Period",
+            {"value": f"{self.period[index]:.6e}", "units": "secs"},
         )
 
         for key in self.array_dict.keys():
@@ -388,7 +381,9 @@ class TransferFunction(Base):
                     ch_in = idx_dict["in"][jj]
                     a_dict = {}
                     try:
-                        a_dict["name"] = self.name_dict[ch_out + ch_in].capitalize()
+                        a_dict["name"] = self.name_dict[
+                            ch_out + ch_in
+                        ].capitalize()
                     except KeyError:
                         pass
                     a_dict["output"] = ch_out.capitalize()
