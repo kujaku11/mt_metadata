@@ -19,6 +19,9 @@ from xml.etree import cElementTree as et
 import numpy as np
 
 from . import metadata as emtf_xml
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
+    helpers as emtf_helpers,
+)
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
@@ -778,9 +781,7 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = (
-                self.copyright.citation.authors
-            )
+            survey_obj.citation_dataset.author = self.copyright.citation.authors
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
