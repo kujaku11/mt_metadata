@@ -67,60 +67,49 @@ class FieldNotes(Base):
         :rtype: TYPE
 
         """
-        field_notes = []
-        if not isinstance(input_dict["field_notes"], list):
-            field_notes = [input_dict["field_notes"]]
-        else:
-            field_notes = input_dict["field_notes"]
 
-        for run in field_notes:
-            f = FieldNotes()
-            f.run = run["run"]
-            f.instrument.from_dict({"instrument": run["instrument"]})
-            f.sampling_rate = run["sampling_rate"]
-            f.start = run["start"]
-            f.end = run["end"]
-            try:
-                if isinstance(run["comments"], list):
-                    f.comments.from_dict({"comments": run["comments"][0]})
-                else:
-                    f.comments.from_dict({"comments": run["comments"]})
-            except KeyError:
-                self.logger.debug("run has no comments")
-            f.errors = run["errors"]
+        self.run = input_dict["run"]
+        self.instrument.from_dict({"instrument": input_dict["instrument"]})
+        self.sampling_rate = input_dict["sampling_rate"]
+        self.start = input_dict["start"]
+        self.end = input_dict["end"]
+        try:
+            if isinstance(input_dict["comments"], list):
+                self.comments.from_dict({"comments": input_dict["comments"][0]})
+            else:
+                self.comments.from_dict({"comments": input_dict["comments"]})
+        except KeyError:
+            self.logger.debug("run has no comments")
+        self.errors = input_dict["errors"]
 
-            try:
-                if isinstance(run["magnetometer"], list):
-                    f.magnetometer = []
-                    for mag in run["magnetometer"]:
-                        m = Magnetometer()
-                        m.from_dict({"magnetometer": mag})
-                        f.magnetometer.append(m)
-                else:
-                    f.magnetometer = []
+        try:
+            if isinstance(input_dict["magnetometer"], list):
+                self.magnetometer = []
+                for mag in input_dict["magnetometer"]:
                     m = Magnetometer()
-                    m.from_dict({"magnetometer": run["magnetometer"]})
-                    f.magnetometer.append(m)
-            except KeyError:
-                self.logger.debug("run has no magnetotmeter information")
+                    m.from_dict({"magnetometer": mag})
+                    self.magnetometer.append(m)
+            else:
+                self.magnetometer = []
+                m = Magnetometer()
+                m.from_dict({"magnetometer": input_dict["magnetometer"]})
+                self.magnetometer.append(m)
+        except KeyError:
+            self.logger.debug("run has no magnetotmeter information")
 
-            try:
-                if isinstance(run["dipole"], list):
-                    f.dipole = []
-                    for mag in run["dipole"]:
-                        m = Dipole()
-                        m.from_dict({"dipole": mag})
-                        f.dipole.append(m)
-                else:
+        try:
+            if isinstance(input_dict["dipole"], list):
+                self.dipole = []
+                for mag in input_dict["dipole"]:
                     m = Dipole()
-                    m.from_dict({"dipole": run["dipole"]})
-                    f.dipole.append(m)
-            except KeyError:
-                self.logger.debug("run has no dipole information")
-
-            field_notes.append(f)
-
-        return field_notes
+                    m.from_dict({"dipole": mag})
+                    self.dipole.append(m)
+            else:
+                m = Dipole()
+                m.from_dict({"dipole": input_dict["dipole"]})
+                self.dipole.append(m)
+        except KeyError:
+            self.logger.debug("run has no dipole information")
 
     def to_xml(self, string=True, required=False):
         """
@@ -133,15 +122,16 @@ class FieldNotes(Base):
         :rtype: TYPE
 
         """
-        for fn in self.field_notes:
-            fn_element = self._convert_tag_to_capwords(
-                fn.to_xml(required=False)
-            )
-            for dp in fn.dipole:
-                dp_element = self._convert_tag_to_capwords(dp.to_xml())
-                for electrode in dp.electrode:
-                    self._write_element(dp_element, electrode)
-                fn_element.append(dp_element)
-            for mag in fn.magnetometer:
-                self._write_element(fn_element, mag)
-            parent.append(fn_element)
+        return helpers.to_xml(string=string, required=required)
+
+        # fn_element = self._convert_tag_to_capwords(
+        #     fn.to_xml(required=False)
+        # )
+        # for dp in fn.dipole:
+        #     dp_element = self._convert_tag_to_capwords(dp.to_xml())
+        #     for electrode in dp.electrode:
+        #         self._write_element(dp_element, electrode)
+        #     fn_element.append(dp_element)
+        # for mag in fn.magnetometer:
+        #     self._write_element(fn_element, mag)
+        # parent.append(fn_element)
