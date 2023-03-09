@@ -191,33 +191,6 @@ class EMTFXML(emtf_xml.EMTF):
             "period_range",
         ]
 
-        self._reader_dict = {
-            "description": self._read_description,
-            "product_id": self._read_product_id,
-            "sub_type": self._read_sub_type,
-            "notes": self._read_notes,
-            "tags": self._read_tags,
-            "field_notes": self._read_field_notes,
-            "statistical_estimates": self._read_statistical_estimates,
-            "site_layout": self._read_site_layout,
-            "data_types": self._read_data_types,
-            "data": self._read_data,
-        }
-
-        self._writer_dict = {
-            "description": self._write_single,
-            "product_id": self._write_single,
-            "sub_type": self._write_single,
-            "notes": self._write_single,
-            "tags": self._write_single,
-            "provenance": self._write_provenance,
-            "field_notes": self._write_field_notes,
-            "statistical_estimates": self._write_statistical_estimates,
-            "data_types": self._write_data_types,
-            "site_layout": self._write_site_layout,
-            "data": self._write_data,
-        }
-
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -329,10 +302,11 @@ class EMTFXML(emtf_xml.EMTF):
         self._root_dict = root_dict
 
         for element in self.element_keys:
-            if element in self._reader_dict.keys():
-                self._reader_dict[element](root_dict)
+            attr = getattr(self, element)
+            if hasattr(attr, "read_dict"):
+                attr.read_dict(root_dict)
             else:
-                self._read_element(root_dict, element)
+                emtf_helpers._read_single(self, root_dict, element)
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
@@ -444,62 +418,11 @@ class EMTFXML(emtf_xml.EMTF):
                     data_types_dict["tipper"]
                 )
 
-    def _read_single(self, root_dict, key):
-        try:
-            setattr(self, key, root_dict[key])
-        except KeyError:
-            self.logger.debug("no description in xml")
-
     def _write_single(self, parent, key, value, attributes={}):
         element = et.SubElement(parent, self._capwords(key), attributes)
         if value is not None:
             element.text = str(value)
         return element
-
-    def _read_description(self, root_dict):
-        self._read_single(root_dict, "description")
-
-    def _read_product_id(self, root_dict):
-        self._read_single(root_dict, "product_id")
-
-    def _read_sub_type(self, root_dict):
-        self._read_single(root_dict, "sub_type")
-
-    def _read_notes(self, root_dict):
-        self._read_single(root_dict, "notes")
-
-    def _read_tags(self, root_dict):
-        self._read_single(root_dict, "tags")
-
-    def _read_element(self, root_dict, element_name):
-        """
-        generic read an element given a name
-
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :param element_name: DESCRIPTION
-        :type element_name: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-
-        element_name = validate_attribute(element_name)
-        if element_name in ["field_notes"]:
-            self._read_field_notes(root_dict)
-        elif element_name in ["statistical_estimates"]:
-            self._read_statistical_estimates(root_dict)
-        elif element_name in ["site_layout"]:
-            self._read_site_layout(root_dict)
-        else:
-            try:
-                value = root_dict[element_name]
-                element_dict = {element_name: value}
-                getattr(self, element_name).from_dict(element_dict)
-
-            except KeyError:
-                print(f"No {element_name} in EMTF XML")
-                self.logger.debug(f"No {element_name} in EMTF XML")
 
     def _write_element(self, parent, value, attributes={}):
         """

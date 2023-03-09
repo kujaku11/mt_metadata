@@ -177,9 +177,7 @@ class Location(Base):
         position_str = "{0}:{1:02.0f}:{2:05.2f}".format(
             sign * int(deg), int(minutes), sec
         )
-        self.logger.debug(
-            "Converted {0} to {1}".format(position, position_str)
-        )
+        self.logger.debug("Converted {0} to {1}".format(position, position_str))
 
         return position_str
 
@@ -258,6 +256,8 @@ class Location(Base):
         """
         if self.datum is None:
             self.datum = "WGS84"
+        if self.declination.epoch is None:
+            self.declination.epoch = "1995"
 
         root = et.Element(
             self.__class__.__name__.capitalize(), {"datum": self.datum}

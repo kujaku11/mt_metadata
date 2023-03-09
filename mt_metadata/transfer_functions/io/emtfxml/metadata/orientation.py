@@ -43,6 +43,8 @@ class Orientation(Base):
         """
 
         if self.layout == "orthogonal":
+            if self.angle_to_geographic_north is None:
+                self.angle_to_geographic_north = 0.0
             root = et.Element(
                 self.__class__.__name__.capitalize(),
                 {

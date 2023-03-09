@@ -11,7 +11,9 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
+from xml.etree import cElementTree as et
+
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import (
@@ -22,6 +24,7 @@ from . import (
     Orientation,
 )
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("site", SCHEMA_FN_PATHS)
@@ -90,3 +93,24 @@ class Site(Base):
             value = value.split(delimiter)
 
         self._run_list = value
+
+    def to_xml(self, string=False, required=True):
+        """ """
+
+        root = et.Element(
+            self.__class__.__name__.capitalize(),
+        )
+
+        for attr in helpers._get_attributes(self):
+            c_attr = getattr(self, attr)
+            if hasattr(c_attr, "to_xml") and callable(
+                getattr(c_attr, "to_xml")
+            ):
+                root.append(c_attr.to_xml(required=required))
+            else:
+                helpers._write_single(root, attr, c_attr)
+
+        if not string:
+            return root
+        else:
+            return element_to_string(root)

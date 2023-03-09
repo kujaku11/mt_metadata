@@ -13,6 +13,44 @@ from xml.etree import cElementTree as et
 # =============================================================================
 
 
+def _get_attributes(cls):
+    return [
+        f for f in cls.__dict__.keys() if f[0] != "_" and f not in ["logger"]
+    ]
+
+
+def _capwords(value):
+    """
+    convert to capwords, could use string.capwords, but this seems
+    easy enough
+
+    :param value: DESCRIPTION
+    :type value: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+
+    return value.replace("_", " ").title().replace(" ", "")
+
+
+def _convert_tag_to_capwords(element):
+    """
+    convert back to capwords representation for the tag
+
+    :param element: DESCRIPTION
+    :type element: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+
+    for item in element.iter():
+        item.tag = _capwords(item.tag)
+
+    return element
+
+
 def _read_single(cls, root_dict, key):
     try:
         setattr(cls, key, root_dict[key])
@@ -20,8 +58,8 @@ def _read_single(cls, root_dict, key):
         cls.logger.debug("no description in xml")
 
 
-def _write_single(cls, parent, key, value, attributes={}):
-    element = et.SubElement(parent, cls._capwords(key), attributes)
+def _write_single(parent, key, value, attributes={}):
+    element = et.SubElement(parent, _capwords(key), attributes)
     if value is not None:
         element.text = str(value)
     return element
@@ -62,35 +100,3 @@ def _convert_keys_to_lower_case(root_dict):
             item = _convert_keys_to_lower_case(item)
             res.append(item)
     return res
-
-
-def _capwords(value):
-    """
-    convert to capwords, could use string.capwords, but this seems
-    easy enough
-
-    :param value: DESCRIPTION
-    :type value: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-
-    return value.replace("_", " ").title().replace(" ", "")
-
-
-def _convert_tag_to_capwords(element):
-    """
-    convert back to capwords representation for the tag
-
-    :param element: DESCRIPTION
-    :type element: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-
-    for item in element.iter():
-        item.tag = _capwords(item.tag)
-
-    return element
