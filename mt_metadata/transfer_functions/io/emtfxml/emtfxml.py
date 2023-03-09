@@ -449,7 +449,7 @@ class EMTFXML(emtf_xml.EMTF):
 
     def _write_single(self, parent, key, value, attributes={}):
         element = et.SubElement(parent, self._capwords(key), attributes)
-        if value:
+        if value is not None:
             element.text = str(value)
         return element
 
@@ -1210,7 +1210,7 @@ def write_emtfxml(tf_object, fn=None, **kwargs):
 
     if emtf.product_id is None:
         emtf.product_id = (
-            f"{emtf.station_metadata.acquired_by.name}."
+            f"{emtf.survey_metadata.project}."
             f"{emtf.station_metadata.id}."
             f"{emtf.station_metadata.time_period._start_dt.year}"
         )

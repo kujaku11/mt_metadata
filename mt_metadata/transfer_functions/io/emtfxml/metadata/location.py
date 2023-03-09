@@ -13,14 +13,16 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 import numpy as np
 
-from mt_metadata.base.helpers import write_lines
+from xml.etree import cElementTree as et
+
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Declination
+from mt_metadata.transfer_functions.tf import Declination
 
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
+attr_dict.add_dict(Declination()._attr_dict, "declination")
 # =============================================================================
 class Location(Base):
     __doc__ = write_lines(attr_dict)
@@ -241,3 +243,37 @@ class Location(Base):
             self.logger.warning(msg)
 
         return seconds
+
+    def to_xml(self, string=False, required=True):
+        """
+        Overwrite to XML to follow EMTF XML format
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if self.datum is None:
+            self.datum = "WGS84"
+
+        root = et.Element(
+            self.__class__.__name__.capitalize(), {"datum": self.datum}
+        )
+        lat = et.SubElement(root, "Latitude")
+        lat.text = f"{self.latitude:.6f}"
+        lon = et.SubElement(root, "Longitude")
+        lon.text = f"{self.longitude:.6f}"
+        elev = et.SubElement(root, "Elevation", {"units": "meters"})
+        elev.text = f"{self.elevation:.3f}"
+        dec = et.SubElement(
+            root, "Declination", {"epoch": self.declination.epoch}
+        )
+        dec.text = f"{self.declination.value:.3f}"
+
+        if not string:
+            return root
+        else:
+            return element_to_string(root)

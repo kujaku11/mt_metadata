@@ -14,7 +14,13 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import DataQualityNotes, DataQualityWarnings, Comment
+from . import (
+    DataQualityNotes,
+    DataQualityWarnings,
+    Comment,
+    Location,
+    Orientation,
+)
 from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
@@ -32,6 +38,8 @@ class Site(Base):
         self._year_collected = None
         self.data_quality_notes = DataQualityNotes()
         self.data_quality_warnings = DataQualityWarnings()
+        self.orientation = Orientation()
+        self.location = Location()
         self._run_list = []
         self._start_dt = MTime()
         self._end_dt = MTime()
