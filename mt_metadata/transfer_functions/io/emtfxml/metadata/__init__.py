@@ -34,6 +34,7 @@ from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
 from .magnetometer import Magnetometer
+from .run import Run
 from .field_notes import FieldNotes
 from .software import Software
 from .remote_ref import RemoteRef
@@ -69,6 +70,7 @@ __all__ = [
     "Electrode",
     "Dipole",
     "Magnetometer",
+    "Run",
     "FieldNotes",
     "Software",
     "RemoteRef",

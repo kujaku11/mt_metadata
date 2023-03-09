@@ -162,17 +162,12 @@ class TestEMTFXML(unittest.TestCase):
                 ("end", "2020-10-07T20:28:00+00:00"),
                 ("id", "NMX20"),
                 ("location.datum", "WGS84"),
-                ("location.declination.epoch", "2020.0"),
-                ("location.declination.model", "WMM"),
-                ("location.declination.value", 9.09),
                 ("location.elevation", 1940.05),
                 ("location.latitude", 34.470528),
                 ("location.longitude", -108.712288),
                 ("name", "Nations Draw, NM, USA"),
                 ("orientation.angle_to_geographic_north", 0.0),
-                ("orientation.method", None),
-                ("orientation.reference_frame", "geographic"),
-                ("orientation.value", "orthogonal"),
+                ("orientation.layout", "orthogonal"),
                 ("project", "USMTArray"),
                 ("run_list", "NMX20a NMX20b"),
                 ("start", "2020-09-20T19:03:06+00:00"),
@@ -228,7 +223,8 @@ class TestEMTFXML(unittest.TestCase):
         for ii, item in enumerate(test_list):
             with self.subTest(msg=ii):
                 self.assertDictEqual(
-                    item, self.xml.field_notes[ii].to_dict(single=True)
+                    item,
+                    self.xml.field_notes.run_list[ii].to_dict(single=True),
                 )
 
     def test_statistical_estimates(self):

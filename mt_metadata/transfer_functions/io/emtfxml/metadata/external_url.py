@@ -37,4 +37,4 @@ class ExternalUrl(Base):
         :rtype: TYPE
 
         """
-        helpers._read_single(self, input_dict, "external_url")
+        helpers._read_element(self, input_dict, "external_url")

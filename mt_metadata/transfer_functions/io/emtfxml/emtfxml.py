@@ -159,8 +159,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         # not sure why we need to do this, but if you don't FieldNotes end
         # as a string.
-        self.field_notes = []
-        self.field_notes.append(emtf_xml.FieldNotes())
+        self.field_notes = emtf_xml.FieldNotes()
         self.processing_info = emtf_xml.ProcessingInfo()
         self.statistical_estimates = emtf_xml.StatisticalEstimates()
         self.data_types = emtf_xml.DataTypes()
@@ -500,6 +499,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
+        s.transfer_function.id = self.site.id
         s.transfer_function.sign_convention = (
             self.processing_info.sign_convention
         )
@@ -534,8 +534,8 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.data_quality_notes.rating
         )
 
-        for fn in self.field_notes:
-            if fn.sampling_rate == 0:
+        for fn in self.field_notes.run_list:
+            if fn.sampling_rate in [0, None]:
                 continue
             r = Run()
             r.id = fn.run
@@ -688,9 +688,9 @@ class EMTFXML(emtf_xml.EMTF):
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
         #     {"type": self.processing_info.remote_ref.type}
         # )
-        self.field_notes = []
+        self.field_notes._run_list = []
         for r in sm.runs:
-            fn = emtf_xml.FieldNotes()
+            fn = emtf_xml.Run()
             fn.dipole = []
             fn.magnetometer = []
             fn.instrument.id = r.data_logger.id
@@ -772,7 +772,7 @@ class EMTFXML(emtf_xml.EMTF):
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
 
-            self.field_notes.append(fn)
+            self.field_notes._run_list.append(fn)
 
 
 def read_emtfxml(fn, **kwargs):
