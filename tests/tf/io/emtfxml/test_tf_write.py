@@ -87,6 +87,42 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         self.assertDictEqual(d0, d1)
 
+    def test_copyright(self):
+        with self.subTest("attribute"):
+            self.assertEqual(self.x0.copyright, self.x1.copyright)
+
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.copyright.to_xml(string=True),
+                self.x1.copyright.to_xml(string=True),
+            )
+
+    def test_site(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.site.to_dict(single=True),
+                self.x1.site.to_dict(single=True),
+            )
+
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.site.to_xml(string=True),
+                self.x1.site.to_xml(string=True),
+            )
+
+    def test_field_notes(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.field_notes.to_dict(single=True),
+                self.x1.field_notes.to_dict(single=True),
+            )
+
+        with self.subTest("to_xml"):
+            self.assertListEqual(
+                self.x0.field_notes.to_xml(string=True),
+                self.x1.field_notes.to_xml(string=True),
+            )
+
     # def test_element_object(self):
     #     for key in self.x1.element_keys:
     #         with self.subTest(key):

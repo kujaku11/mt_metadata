@@ -41,7 +41,7 @@ class Electrode(Base):
 
         root = et.Element(
             self.__class__.__name__,
-            {"location": self.location, "number": self.number},
+            {"location": self.location.upper(), "number": self.number},
         )
 
         root.text = self.comments
