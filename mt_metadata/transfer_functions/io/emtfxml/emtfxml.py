@@ -51,7 +51,7 @@ meta_classes["instrument"] = Instrument
 estimates_dict = {
     "variance": emtf_xml.Estimate(
         name="VAR",
-        type="complex",
+        type="real",
         description="Variance",
         external_url="http://www.iris.edu/dms/products/emtf/variance.html",
         intention="error estimate",
@@ -417,6 +417,31 @@ class EMTFXML(emtf_xml.EMTF):
                     data_types_dict["tipper"]
                 )
 
+    def _split_comments(self, comments):
+        """
+
+        :param comments: DESCRIPTION
+        :type comments: TYPE
+        :raises AttributeError: DESCRIPTION
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        other = []
+        for comment in comments.split(";"):
+            if comment.count(":") >= 1:
+                key, value = comment.split(":", 1)
+                try:
+                    self.set_attr_from_name(key.strip(), value.strip())
+                except:
+                    raise AttributeError(f"Cannot set attribute {key}.")
+            else:
+                other.append(comment)
+        try:
+            self.site.comments.value = "; ".join(other)
+        except AttributeError:
+            pass
+
     @property
     def survey_metadata(self):
         survey_obj = Survey()
@@ -473,17 +498,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
 
-        other = []
-        for comment in sm.comments.split(";"):
-            if comment.count(":") >= 1:
-                key, value = comment.split(":", 1)
-                try:
-                    self.set_attr_from_name(key.strip(), value.strip())
-                except:
-                    raise AttributeError(f"Cannot set attribute {key}.")
-            else:
-                other.append(comment)
-        self.site.comments.value = ", ".join(other)
+        self._split_comments(sm.comments)
 
     @property
     def station_metadata(self):
@@ -554,7 +569,7 @@ class EMTFXML(emtf_xml.EMTF):
             )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
-            {"type": self.processing_info.remote_ref.type}
+            {"remote_ref.type": self.processing_info.remote_ref.type}
         )
 
         s.transfer_function.data_quality.good_from_period = (
@@ -578,6 +593,14 @@ class EMTFXML(emtf_xml.EMTF):
             r.sample_rate = fn.sampling_rate
             r.time_period.start = fn.start
             r.time_period.end = fn.end
+            comments = []
+            if fn.comments.author not in [None, ""]:
+                comments.append(f"comments.author:{fn.comments.author}")
+            if fn.comments.value not in [None, ""]:
+                comments.append(f"comments.value:{fn.comments.value}")
+            if fn.errors not in [None, ""]:
+                comments.append(f"errors:{fn.errors}")
+            r.comments = "; ".join(comments)
 
             # need to set azimuths from site layout with the x, y, z postions.
             if len(fn.magnetometer) == 1:
@@ -616,13 +639,13 @@ class EMTFXML(emtf_xml.EMTF):
                         c.positive.id = pot.number
                         c.positive.type = pot.value
                         c.positive.manufacturer = dp.manufacturer
-                        c.positive.type = dp.type
+                        c.positive.type = pot.comments
 
                     elif pot.location.lower() in ["s", "w"]:
                         c.negative.id = pot.number
                         c.negative.type = pot.value
                         c.negative.manufacturer = dp.manufacturer
-                        c.negative.type = dp.type
+                        c.negative.type = pot.comments
                 r.add_channel(c)
 
             for ch in (
@@ -674,15 +697,7 @@ class EMTFXML(emtf_xml.EMTF):
             sm.orientation.angle_to_geographic_north
         )
 
-        for comment in sm.comments.split(";"):
-            if comment.count(":") >= 1:
-                key, value = comment.split(":", 1)
-                try:
-                    self.set_attr_from_name(key.strip(), value.strip())
-                except:
-                    raise AttributeError(f"Cannot set attribute {key}.")
-            else:
-                self.site.comments.comment["comment"] = comment
+        self._split_comments(sm.comments)
 
         self.provenance.creating_application = sm.provenance.software.name
         self.provenance.create_time = sm.provenance.creation_time
@@ -719,6 +734,16 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_tag = "_".join(
             sm.transfer_function.remote_references
         )
+        for param in sm.transfer_function.processing_parameters:
+            if isinstance(param, dict):
+                for key, value in param.items():
+                    try:
+                        self.processing_info.set_attr_from_name(key, value)
+                    except Exception as error:
+                        self.logger.warning(
+                            f"Cannot set processing info attribute {param}"
+                        )
+                        self.logger.exception(error)
         self.site.run_list = sm.transfer_function.runs_processed
 
         self.site.data_quality_notes.good_from_period = (
@@ -748,6 +773,13 @@ class EMTFXML(emtf_xml.EMTF):
             fn.start = r.time_period.start
             fn.end = r.time_period.end
             fn.run = r.id
+            for comment in r.comments.split(";"):
+                if comment.count(":") >= 1:
+                    key, value = comment.split(":", 1)
+                    try:
+                        fn.set_attr_from_name(key.strip(), value.strip())
+                    except:
+                        raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:
@@ -790,16 +822,17 @@ class EMTFXML(emtf_xml.EMTF):
                     dp.azimuth = c.translated_azimuth
                     dp.length = c.dipole_length
                     dp.manufacturer = c.positive.manufacturer
-                    dp.type = c.positive.type
+                    dp.type = "wire"
                     # fill electrodes
                     pot_p = emtf_xml.Electrode()
                     pot_p.number = c.positive.id
                     pot_p.location = "n" if comp == "ex" else "e"
-                    pot_p.value = c.positive.type
+                    pot_p.comments = c.positive.type
+
                     dp.electrode.append(pot_p)
                     pot_n = emtf_xml.Electrode()
                     pot_n.number = c.negative.id
-                    pot_n.value = c.negative.type
+                    pot_n.comments = c.positive.type
                     pot_n.location = "s" if comp == "ex" else "w"
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)

@@ -75,9 +75,7 @@ class Run(Base):
         self.end = input_dict["end"]
         try:
             if isinstance(input_dict["comments"], list):
-                self.comments.from_dict(
-                    {"comments": input_dict["comments"][0]}
-                )
+                self.comments.from_dict({"comments": input_dict["comments"][0]})
             else:
                 self.comments.from_dict({"comments": input_dict["comments"]})
         except KeyError:
@@ -141,6 +139,8 @@ class Run(Base):
         )
         element.attrib = {"run": self.run}
         element.tag = "field_notes"
+
+        element.find("SamplingRate").attrib["units"] = "Hz"
 
         if string:
             return element_to_string(element)

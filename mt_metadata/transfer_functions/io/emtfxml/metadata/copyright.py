@@ -11,8 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from xml.etree import cElementTree as et
-from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Citation
@@ -45,6 +44,7 @@ class Copyright(Base):
 
     def to_xml(self, string=False, required=True):
         """ """
+        self.release_status = self.release_status.title()
         return helpers.to_xml(
             self,
             string=string,

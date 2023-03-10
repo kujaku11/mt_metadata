@@ -10,7 +10,7 @@ Created on Mon Sep  6 12:04:35 2021
 # =============================================================================
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
@@ -52,4 +52,8 @@ class RemoteRef(Base):
 
         if self.type is None:
             self.type = ""
-        return et.Element(self.__class__.__name__, {"type": self.type})
+
+        root = et.Element(self.__class__.__name__, {"type": self.type})
+        if string:
+            return element_to_string(root)
+        return root
