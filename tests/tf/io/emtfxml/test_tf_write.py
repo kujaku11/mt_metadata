@@ -29,6 +29,11 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         self.x0 = EMTFXML(TF_XML)
 
+    def test_element_object(self):
+        for key in self.x1.element_keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self.x0, key), getattr(self.x1, key))
+
 
 # =============================================================================
 # Run

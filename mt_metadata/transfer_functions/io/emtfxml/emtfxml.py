@@ -436,7 +436,16 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.time_period.start = self.site.start
             survey_obj.time_period.end = self.site.end
             survey_obj.summary = self.description
-            survey_obj.comments = self.copyright.acknowledgement
+            survey_obj.comments = "; ".join(
+                [
+                    f"{k}:{v}"
+                    for k, v in {
+                        "copyright.acknowledgement": self.copyright.acknowledgement,
+                        "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                    }.items()
+                    if v not in [None, ""]
+                ]
+            )
 
         return survey_obj
 
@@ -460,10 +469,21 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
-        self.copyright.citation.authors = sm.citation_dataset.authors
+        self.copyright.citation.authors = sm.citation_dataset.author
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
-        self.copyright.acknowledgement = sm.comments
+
+        other = []
+        for comment in sm.comments.split(";"):
+            if comment.count(":") >= 1:
+                key, value = comment.split(":", 1)
+                try:
+                    self.set_attr_from_name(key.strip(), value.strip())
+                except:
+                    raise AttributeError(f"Cannot set attribute {key}.")
+            else:
+                other.append(comment)
+        self.site.comments.value = ", ".join(other)
 
     @property
     def station_metadata(self):
@@ -497,6 +517,21 @@ class EMTFXML(emtf_xml.EMTF):
 
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
+
+        comments = {}
+        for key in [
+            "description",
+            "primary_data.filename",
+            "attachment.description",
+            "attachment.filename",
+            "site.data_quality_notes.comments.author",
+            "site.data_quality_notes.comments.value",
+        ]:
+            comments[key] = self.get_attr_from_name(key)
+        s.comments = "; ".join(
+            [f"{k}:{v}" for k, v in comments.items() if v not in [None, ""]]
+        )
+
         s.transfer_function.id = self.site.id
         s.transfer_function.sign_convention = (
             self.processing_info.sign_convention
@@ -552,6 +587,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = fn.magnetometer[0].id
                     c.sensor.name = fn.magnetometer[0].name
                     c.sensor.manufacturer = fn.magnetometer[0].manufacturer
+                    c.sensor.type = fn.magnetometer[0].type
                     r.add_channel(c)
 
             else:
@@ -564,6 +600,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
+                    c.sensor.type = mag.type
                     r.add_channel(c)
 
             for dp in fn.dipole:
@@ -578,11 +615,14 @@ class EMTFXML(emtf_xml.EMTF):
                     if pot.location.lower() in ["n", "e"]:
                         c.positive.id = pot.number
                         c.positive.type = pot.value
-                        c.positive.manufacture = dp.manufacturer
+                        c.positive.manufacturer = dp.manufacturer
+                        c.positive.type = dp.type
+
                     elif pot.location.lower() in ["s", "w"]:
                         c.negative.id = pot.number
                         c.negative.type = pot.value
-                        c.negative.manufacture = dp.manufacturer
+                        c.negative.manufacturer = dp.manufacturer
+                        c.negative.type = dp.type
                 r.add_channel(c)
 
             for ch in (
@@ -633,6 +673,16 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.orientation.angle_to_geographic_north = (
             sm.orientation.angle_to_geographic_north
         )
+
+        for comment in sm.comments.split(";"):
+            if comment.count(":") >= 1:
+                key, value = comment.split(":", 1)
+                try:
+                    self.set_attr_from_name(key.strip(), value.strip())
+                except:
+                    raise AttributeError(f"Cannot set attribute {key}.")
+            else:
+                self.site.comments.comment["comment"] = comment
 
         self.provenance.creating_application = sm.provenance.software.name
         self.provenance.create_time = sm.provenance.creation_time
@@ -704,7 +754,7 @@ class EMTFXML(emtf_xml.EMTF):
                     rch = getattr(r, comp)
                     mag = emtf_xml.Magnetometer()
                     mag.id = rch.sensor.id
-                    mag.name = comp.capitalize()
+                    mag.name = rch.sensor.name
                     mag.manufacturer = rch.sensor.manufacturer
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
@@ -727,6 +777,11 @@ class EMTFXML(emtf_xml.EMTF):
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
 
+                if rch.sensor.name in ["NIMS", "LEMI"] and rch.sensor.type in [
+                    "fluxgate"
+                ]:
+                    break
+
             for comp in ["ex", "ey"]:
                 try:
                     c = getattr(r, comp)
@@ -735,6 +790,7 @@ class EMTFXML(emtf_xml.EMTF):
                     dp.azimuth = c.translated_azimuth
                     dp.length = c.dipole_length
                     dp.manufacturer = c.positive.manufacturer
+                    dp.type = c.positive.type
                     # fill electrodes
                     pot_p = emtf_xml.Electrode()
                     pot_p.number = c.positive.id

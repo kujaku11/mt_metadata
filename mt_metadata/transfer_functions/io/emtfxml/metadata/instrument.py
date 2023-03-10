@@ -30,7 +30,9 @@ class Instrument(Base):
     def to_xml(self, string=False, required=False):
         """ """
 
-        root = et.Element(self.__class__.__name__, {"type": self.type})
+        root = et.Element(self.__class__.__name__)
+        if self.type not in [None, ""]:
+            root.attrib["type"] = self.type
 
         for key in ["manufacturer", "name", "id", "settings"]:
             value = getattr(self, key)
