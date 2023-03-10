@@ -422,9 +422,7 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = (
-                self.copyright.citation.authors
-            )
+            survey_obj.citation_dataset.author = self.copyright.citation.authors
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -459,7 +457,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.survey = sm.id
         else:
             self.site.survey = sm.geographic_name
-        self.site.country = sm.country
+        self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
         self.copyright.citation.authors = sm.citation_dataset.authors
@@ -530,7 +528,7 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.data_quality.good_to_period = (
             self.site.data_quality_notes.good_to_period
         )
-        s.transfer_function.data_quality.rating = (
+        s.transfer_function.data_quality.rating.value = (
             self.site.data_quality_notes.rating
         )
 
