@@ -45,17 +45,20 @@ class SiteLayout(Base):
 
         for item in value:
 
-            ch_type = list(item.keys())[0]
-            if ch_type in ["magnetic"]:
-                ch = Magnetic()
-            elif ch_type in ["electric"]:
-                ch = Electric()
-            else:
-                msg = "Channel type %s not supported"
-                self.logger.error(msg, ch_type)
-                raise ValueError(msg % ch_type)
-            ch.from_dict(item)
-            self._input_channels.append(ch)
+            if isinstance(item, (Magnetic, Electric)):
+                self._input_channels.append(item)
+            elif isinstance(item, dict):
+                ch_type = list(item.keys())[0]
+                if ch_type in ["magnetic"]:
+                    ch = Magnetic()
+                elif ch_type in ["electric"]:
+                    ch = Electric()
+                else:
+                    msg = "Channel type %s not supported"
+                    self.logger.error(msg, ch_type)
+                    raise ValueError(msg % ch_type)
+                ch.from_dict(item)
+                self._input_channels.append(ch)
 
     @property
     def output_channels(self):
@@ -68,18 +71,20 @@ class SiteLayout(Base):
             value = [value]
 
         for item in value:
-            ch_type = list(item.keys())[0]
-            if ch_type in ["magnetic"]:
-                ch = Magnetic()
-            elif ch_type in ["electric"]:
-                ch = Electric()
-            else:
-                msg = "Channel type %s not supported"
-                self.logger.error(msg, ch_type)
-                raise ValueError(msg % ch_type)
-
-            ch.from_dict(item)
-            self._output_channels.append(ch)
+            if isinstance(item, (Magnetic, Electric)):
+                self._output_channels.append(item)
+            elif isinstance(item, dict):
+                ch_type = list(item.keys())[0]
+                if ch_type in ["magnetic"]:
+                    ch = Magnetic()
+                elif ch_type in ["electric"]:
+                    ch = Electric()
+                else:
+                    msg = "Channel type %s not supported"
+                    self.logger.error(msg, ch_type)
+                    raise ValueError(msg % ch_type)
+                ch.from_dict(item)
+                self._output_channels.append(ch)
 
     def read_dict(self, input_dict):
         """
@@ -131,10 +136,14 @@ class SiteLayout(Base):
 
         root = et.Element(self.__class__.__name__)
 
-        section = et.SubElement(root, "InputChannels")
+        section = et.SubElement(
+            root, "InputChannels", attrib={"ref": "site", "units": "m"}
+        )
         for ch in self.input_channels:
             section.append(ch.to_xml(required=required))
-        section = et.SubElement(root, "OutputChannels")
+        section = et.SubElement(
+            root, "OutputChannels", attrib={"ref": "site", "units": "m"}
+        )
         for ch in self.output_channels:
             section.append(ch.to_xml(required=required))
 

@@ -68,7 +68,7 @@ estimates_dict = {
     "residual_covariance": emtf_xml.Estimate(
         name="RESIDCOV",
         type="complex",
-        description="residual_covariance (N)",
+        description="Residual Covariance (N)",
         external_url="http://www.iris.edu/dms/products/emtf/residual_covariance.html",
         intention="error estimate",
         tag="residual_covariance",
@@ -654,10 +654,10 @@ class EMTFXML(emtf_xml.EMTF):
             ):
                 c = getattr(r, ch.name.lower())
                 if c.component in ["hx", "hy", "hz"]:
-
                     c.location.x = ch.x
                     c.location.y = ch.y
                     c.location.z = ch.z
+
                 elif c.component in ["ex", "ey"]:
                     c.negative.x = ch.x
                     c.negative.y = ch.y
@@ -762,6 +762,8 @@ class EMTFXML(emtf_xml.EMTF):
         #     {"type": self.processing_info.remote_ref.type}
         # )
         self.field_notes._run_list = []
+        ch_in_dict = {}
+        ch_out_dict = {}
         for r in sm.runs:
             fn = emtf_xml.Run()
             fn.dipole = []
@@ -791,21 +793,6 @@ class EMTFXML(emtf_xml.EMTF):
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
 
-                    ch_in = emtf_xml.Magnetic()
-                    for item in ["x", "y", "z"]:
-                        if getattr(rch.location, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(rch.location, item)
-                        setattr(ch_in, item, value)
-
-                    ch_in.name = comp.capitalize()
-                    ch_in.orientation = rch.translated_azimuth
-
-                    if comp in ["hx", "hy"]:
-                        self.site_layout.input_channels.append(ch_in)
-                    else:
-                        self.site_layout.output_channels.append(ch_in)
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
 
@@ -837,29 +824,59 @@ class EMTFXML(emtf_xml.EMTF):
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)
 
-                    ch_out = emtf_xml.Electric()
-                    for item in ["x", "y", "z"]:
-                        if getattr(c.negative, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(c.negative, item)
-                        setattr(ch_out, item, value)
-
-                    for item in ["x2", "y2", "z2"]:
-                        if getattr(c.positive, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(c.positive, item)
-                        setattr(ch_out, item, value)
-
-                    ch_out.name = comp.capitalize()
-                    ch_out.orientation = c.translated_azimuth
-                    self.site_layout.output_channels.append(ch_out)
-
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
 
             self.field_notes._run_list.append(fn)
+
+            for comp in ["hx", "hy", "hz"]:
+                try:
+                    ch = getattr(r, comp)
+                    m_ch = emtf_xml.Magnetic()
+
+                    for item in ["x", "y", "z"]:
+                        if getattr(ch.location, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.location, item)
+                        setattr(m_ch, item, value)
+
+                    m_ch.name = comp.capitalize()
+                    m_ch.orientation = ch.translated_azimuth
+
+                    if comp in ["hx", "hy"]:
+                        ch_in_dict[comp] = m_ch
+                    else:
+                        ch_out_dict[comp] = m_ch
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
+
+            for comp in ["ex", "ey"]:
+                try:
+                    ch = getattr(r, comp)
+                    ch_out = emtf_xml.Electric()
+                    for item in ["x", "y", "z"]:
+                        if getattr(ch.negative, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.negative, item)
+                        setattr(ch_out, item, value)
+
+                    for item in ["x2", "y2", "z2"]:
+                        if getattr(ch.positive, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.positive, item)
+                        setattr(ch_out, item, value)
+
+                    ch_out.name = comp.capitalize()
+                    ch_out.orientation = ch.translated_azimuth
+                    ch_out_dict[comp] = ch_out
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
+
+        self.site_layout.input_channels = list(ch_in_dict.values())
+        self.site_layout.output_channels = list(ch_out_dict.values())
 
 
 def read_emtfxml(fn, **kwargs):
