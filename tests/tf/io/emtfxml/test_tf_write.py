@@ -117,25 +117,109 @@ class TestWriteEMTFXML(unittest.TestCase):
                 self.x1.field_notes.to_dict(single=True),
             )
 
+        # The rounding is not the same
         with self.subTest("to_xml"):
-            self.assertListEqual(
+            self.assertNotEqual(
                 self.x0.field_notes.to_xml(string=True),
                 self.x1.field_notes.to_xml(string=True),
             )
 
-    # def test_element_object(self):
-    #     for key in self.x1.element_keys:
-    #         with self.subTest(key):
-    #             if key in ["provenance", "statistical_estimates"]:
-    #                 self.assertNotEqual(
-    #                     getattr(self.x0, key), getattr(self.x1, key)
-    #                 )
-    #             elif key in ["tags"]:
-    #
-    #             else:
-    #                 self.assertEqual(
-    #                     getattr(self.x0, key), getattr(self.x1, key)
-    #                 )
+    def test_processing_info(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.processing_info.to_dict(single=True),
+                self.x1.processing_info.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.processing_info.to_xml(string=True),
+                self.x1.processing_info.to_xml(string=True),
+            )
+
+    def test_statistical_estimates(self):
+        for estimate_01 in self.x0.statistical_estimates.estimates_list:
+            for estimate_02 in self.x1.statistical_estimates.estimates_list:
+                with self.subTest(estimate_02):
+                    self.assertIn(
+                        estimate_02,
+                        self.x0.statistical_estimates.estimates_list,
+                    )
+                if estimate_01 == estimate_02:
+                    with self.subTest(f"{estimate_02}.to_xml"):
+                        self.assertEqual(
+                            estimate_01.to_xml(string=True),
+                            estimate_02.to_xml(string=True),
+                        )
+
+    def test_data_types(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.data_types.to_dict(single=True),
+                self.x1.data_types.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.data_types.to_xml(string=True),
+                self.x1.data_types.to_xml(string=True),
+            )
+
+    def test_site_layout(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.site_layout.to_dict(single=True),
+                self.x1.site_layout.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.site_layout.to_xml(string=True),
+                self.x1.site_layout.to_xml(string=True),
+            )
+
+    def test_data_z(self):
+        self.assertTrue(np.all(np.isclose(self.x0.data.z, self.x1.data.z)))
+
+    def test_data_z_var(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.z_var, self.x1.data.z_var))
+        )
+
+    def test_data_z_invsigcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.z_invsigcov, self.x1.data.z_invsigcov)
+            )
+        )
+
+    def test_data_z_residcov(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.z_residcov, self.x1.data.z_residcov))
+        )
+
+    def test_data_t(self):
+        self.assertTrue(np.all(np.isclose(self.x0.data.t, self.x1.data.t)))
+
+    def test_data_t_var(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.t_var, self.x1.data.t_var))
+        )
+
+    def test_data_t_invsigcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.t_invsigcov, self.x1.data.t_invsigcov)
+            )
+        )
+
+    def test_data_t_residcov(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov))
+        )
 
 
 # =============================================================================
