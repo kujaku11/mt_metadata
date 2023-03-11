@@ -221,6 +221,20 @@ class TestWriteEMTFXML(unittest.TestCase):
             np.all(np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov))
         )
 
+    def test_period_range(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.period_range.to_dict(single=True),
+                self.x1.period_range.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.period_range.to_xml(string=True),
+                self.x1.period_range.to_xml(string=True),
+            )
+
 
 # =============================================================================
 # Run
