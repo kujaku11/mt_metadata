@@ -11,7 +11,6 @@ Created on Fri Mar 10 08:52:43 2023
 import unittest
 
 import numpy as np
-from collections import OrderedDict
 from mt_metadata import TF_XML
 from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
@@ -20,6 +19,11 @@ from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
 
 class TestWriteEMTFXML(unittest.TestCase):
+    """
+    Compare the translation from an EMTF XML object to and MT object and back
+    to an EMTF XML object.
+    """
+
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_XML)
