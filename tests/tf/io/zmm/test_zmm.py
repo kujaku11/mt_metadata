@@ -17,7 +17,7 @@ class TestTranslateZmm(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf_obj = TF(TF_ZMM)
-        self.tf_obj.read_tf_file()
+        self.tf_obj.read()
         self.zmm_obj = zmm.ZMM(TF_ZMM)
         self.maxDiff = None
 

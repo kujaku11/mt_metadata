@@ -1155,7 +1155,7 @@ class TF:
             except AttributeError:
                 continue
 
-    def write_tf_file(
+    def write(
         self,
         fn=None,
         save_dir=None,
@@ -1228,7 +1228,7 @@ class TF:
 
         return write_file(self, fn, file_type=file_type, **kwargs)
 
-    def read_tf_file(self, fn=None, file_type=None, **kwargs):
+    def read(self, fn=None, file_type=None, **kwargs):
         """
 
         Read an TF response file.

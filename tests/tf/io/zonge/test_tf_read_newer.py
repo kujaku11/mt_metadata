@@ -24,7 +24,7 @@ class TestReadAVGNewer(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG_NEWER)
-        self.tf.read_tf_file(z_positive="up")
+        self.tf.read(z_positive="up")
         self.maxDiff = None
 
     def test_survey_metadata(self):

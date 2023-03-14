@@ -24,7 +24,7 @@ class TestEMTFXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_XML)
-        self.tf.read_tf_file()
+        self.tf.read()
         self.maxDiff = None
 
     def test_station_metadata(self):

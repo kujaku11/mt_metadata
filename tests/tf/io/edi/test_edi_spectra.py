@@ -222,9 +222,7 @@ class TestSpectraEDI(unittest.TestCase):
             )
 
         with self.subTest("refelev"):
-            self.assertAlmostEqual(
-                0.0, self.edi_spectra.Measurement.refelev, 2
-            )
+            self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
 
     def test_data_section(self):
         d_list = [
@@ -260,7 +258,7 @@ class TestToTF(unittest.TestCase):
     def setUpClass(self):
         self.edi = EDI(fn=TF_EDI_SPECTRA)
         self.tf = TF(fn=TF_EDI_SPECTRA)
-        self.tf.read_tf_file()
+        self.tf.read()
 
     def test_station_metadata(self):
         edi_st = self.edi.station_metadata.to_dict(single=True)

@@ -27,8 +27,8 @@ class TestWriteEMTFXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_XML)
-        self.tf.read_tf_file()
-        self.x1 = self.tf.write_tf_file(file_type="xml")
+        self.tf.read()
+        self.x1 = self.tf.write(file_type="xml")
         self.maxDiff = None
 
         self.x0 = EMTFXML(TF_XML)

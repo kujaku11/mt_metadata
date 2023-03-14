@@ -17,7 +17,7 @@ class TestTranslateZmm(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf_obj = TF(TF_ZSS_TIPPER)
-        self.tf_obj.read_tf_file()
+        self.tf_obj.read()
         self.zmm_obj = zmm.ZMM(TF_ZSS_TIPPER)
         self.maxDiff = None
 
@@ -31,9 +31,7 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertEqual(self.tf_obj.station, self.zmm_obj.station)
 
     def test_channels_recorded(self):
-        self.assertListEqual(
-            ["hx", "hy", "hz"], self.zmm_obj.channels_recorded
-        )
+        self.assertListEqual(["hx", "hy", "hz"], self.zmm_obj.channels_recorded)
 
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
