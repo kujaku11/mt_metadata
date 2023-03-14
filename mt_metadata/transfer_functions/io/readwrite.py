@@ -93,6 +93,11 @@ plugins = {
         "reader": read_emtfxml,
         "writer": write_emtfxml,
     },
+    "xml": {
+        "file_types": ["xml"],
+        "reader": read_emtfxml,
+        "writer": write_emtfxml,
+    },
     "avg": {
         "file_types": ["avg"],
         "reader": read_avg,
