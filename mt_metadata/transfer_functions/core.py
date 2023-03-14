@@ -60,9 +60,7 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
-        self.channel_nomenclature = kwargs.get(
-            "channel_nomenclature", DEFAULT_CHANNEL_NOMENCLATURE
-        )
+        self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
