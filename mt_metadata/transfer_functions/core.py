@@ -125,7 +125,9 @@ class TF:
         }
 
         self._read_write_dict = {
-            "edi": {"write": self.to_edi, "read": self.from_edi}
+            "edi": {"write": self.to_edi, "read": self.from_edi},
+            "xml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
+            "emtfxml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -1313,18 +1315,17 @@ class TF:
 
         return edi_obj
 
-    def from_edi(self, edi_object, **kwargs):
+    def from_edi(self, edi_obj, **kwargs):
         """
 
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        if isinstance(edi_object, (str, Path)):
+        if isinstance(edi_obj, (str, Path)):
+            self._fn = Path(edi_obj)
             edi_obj = EDI(**kwargs)
-            edi_obj.read(edi_object)
-
-        self._fn = edi_obj._fn
+            edi_obj.read(self._fn)
 
         if edi_obj.tf is not None:
             k_dict = OrderedDict(
@@ -1352,6 +1353,103 @@ class TF:
             )
         for tf_key, edi_key in k_dict.items():
             setattr(self, tf_key, getattr(edi_obj, edi_key))
+
+    def to_emtfxml(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        emtf = EMTFXML()
+        emtf.survey_metadata = self.survey_metadata
+        emtf.station_metadata = self.station_metadata
+
+        if emtf.description is None:
+            emtf.description = "Magnetotelluric Transfer Functions"
+
+        if emtf.product_id is None:
+            emtf.product_id = (
+                f"{emtf.survey_metadata.project}."
+                f"{emtf.station_metadata.id}."
+                f"{emtf.station_metadata.time_period._start_dt.year}"
+            )
+        tags = []
+
+        emtf.data.period = self.period
+
+        if self.has_impedance():
+            tags += ["impedance"]
+            emtf.data.z = self.impedance.data
+            emtf.data.z_var = self.impedance_error.data**2
+        if self.has_residual_covariance() and self.has_inverse_signal_power():
+            emtf.data.z_invsigcov = self.inverse_signal_power.loc[
+                dict(input=self.hx_hy, output=self.hx_hy)
+            ].data
+            emtf.data.z_residcov = self.residual_covariance.loc[
+                dict(input=self.ex_ey, output=self.ex_ey)
+            ].data
+        if self.has_tipper():
+            tags += ["tipper"]
+            emtf.data.t = self.tipper.data
+            emtf.data.t_var = self.tipper_error.data**2
+
+        if self.has_residual_covariance() and self.has_inverse_signal_power():
+            emtf.data.t_invsigcov = self.inverse_signal_power.loc[
+                dict(input=self.hx_hy, output=self.hx_hy)
+            ].data
+            emtf.data.t_residcov = self.residual_covariance.loc[
+                dict(
+                    input=[self.channel_nomenclature["hz"]],
+                    output=[self.channel_nomenclature["hz"]],
+                )
+            ].data
+
+        emtf.tags = ", ".join(tags)
+        emtf.period_range.min = emtf.data.period.min()
+        emtf.period_range.max = emtf.data.period.max()
+
+        return emtf
+
+    def from_emtfxml(self, emtfxml_obj, **kwargs):
+        """
+
+        :param emtfxml_object: DESCRIPTION
+        :type emtfxml_object: TYPE
+        :param **kwargs: DESCRIPTION
+        :type **kwargs: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if isinstance(emtfxml_obj, (str, Path)):
+            self._fn = Path(emtfxml_obj)
+            emtfxml_obj = EMTFXML(**kwargs)
+            emtfxml_obj.read(self._fn)
+
+        self.survey_metadata = emtfxml_obj.survey_metadata
+        self.station_metadata = emtfxml_obj.station_metadata
+
+        self.period = emtfxml_obj.data.period
+        self.impedance = emtfxml_obj.data.z
+        self.impedance_error = np.sqrt(emtfxml_obj.data.z_var)
+        self._transfer_function.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ] = emtfxml_obj.data.z_invsigcov
+        self._transfer_function.residual_covariance.loc[
+            dict(input=["ex", "ey"], output=["ex", "ey"])
+        ] = emtfxml_obj.data.z_residcov
+
+        self.tipper = emtfxml_obj.data.t
+        self.tipper_error = np.sqrt(emtfxml_obj.data.t_var)
+        self._transfer_function.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ] = emtfxml_obj.data.t_invsigcov
+        self._transfer_function.residual_covariance.loc[
+            dict(input=["hz"], output=["hz"])
+        ] = emtfxml_obj.data.t_residcov
 
 
 # ==============================================================================

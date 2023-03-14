@@ -491,7 +491,8 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.survey = sm.id
         else:
             self.site.survey = sm.geographic_name
-        self.site.country = ",".join(sm.country)
+        if self.site.country is not None:
+            self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
         self.copyright.citation.authors = sm.citation_dataset.author
