@@ -9,6 +9,7 @@
 # ==============================================================================
 from pathlib import Path
 from copy import deepcopy
+from collections import OrderedDict
 
 import numpy as np
 import xarray as xr
@@ -21,7 +22,13 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
+from mt_metadata.transfer_functions.io import (
+    EDI,
+    EMTFXML,
+    ZMM,
+    JFile,
+    ZongeMTAvg,
+)
 from mt_metadata.base.helpers import validate_name
 
 DEFAULT_CHANNEL_NOMENCLATURE = {
@@ -115,6 +122,10 @@ class TF:
             "res": self.ex_ey_hz,
             "tf": self.ex_ey_hz,
             "tf_error": self.ex_ey_hz,
+        }
+
+        self._read_write_dict = {
+            "edi": {"write": self.to_edi, "read": self.from_edi}
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -1221,9 +1232,13 @@ class TF:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
+
         fn = self.save_dir.joinpath(fn_basename)
 
-        return write_file(self, fn, file_type=file_type, **kwargs)
+        obj = self._read_write_dict[file_type]["write"]()
+        obj.write(fn, **kwargs)
+
+        return obj
 
     def read(self, fn=None, file_type=None, **kwargs):
         """
@@ -1251,13 +1266,92 @@ class TF:
         if fn is not None:
             self.fn = fn
 
-        tf_obj = read_file(self.fn, file_type=file_type, **kwargs)
-        if tf_obj.station_metadata.transfer_function.id is None:
-            tf_obj.station_metadata.transfer_function.id = (
-                tf_obj.station_metadata.id
-            )
-        self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
+        if file_type is None:
+            file_type = self.fn.suffix.lower()[1:]
+
+        self._read_write_dict[file_type]["read"](self.fn, **kwargs)
+
+    def to_edi(self):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        edi_obj = EDI()
+        if self.has_impedance():
+            edi_obj.z = self.impedance.data
+            edi_obj.z_err = self.impedance_error.data
+        if self.has_tipper():
+            edi_obj.t = self.tipper.data
+            edi_obj.t_err = self.tipper_error.data
+        edi_obj.frequency = 1.0 / self.period
+        edi_obj.rotation_angle = self._rotation_angle
+
+        # fill from survey metadata
+        edi_obj.survey_metadata = self.survey_metadata
+
+        # fill from station metadata
+        edi_obj.station_metadata = self.station_metadata
+
+        # input data section
+        edi_obj.Data.data_type = self.station_metadata.data_type
+        edi_obj.Data.nfreq = self.period.size
+        edi_obj.Data.sectid = self.station
+        edi_obj.Data.nchan = len(edi_obj.Measurement.channel_ids.keys())
+
+        edi_obj.Data.maxblks = 999
+        for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
+            if hasattr(edi_obj.Measurement, f"meas_{comp}"):
+                setattr(
+                    edi_obj.Data,
+                    comp,
+                    getattr(edi_obj.Measurement, f"meas_{comp}").id,
+                )
+
+        return edi_obj
+
+    def from_edi(self, edi_object, **kwargs):
+        """
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if isinstance(edi_object, (str, Path)):
+            edi_obj = EDI(**kwargs)
+            edi_obj.read(edi_object)
+
+        self._fn = edi_obj._fn
+
+        if edi_obj.tf is not None:
+            k_dict = OrderedDict(
+                {
+                    "period": "period",
+                    "transfer_function": "tf",
+                    "transfer_function_error": "tf_err",
+                    "inverse_signal_power": "signal_inverse_power",
+                    "residual_covariance": "residual_covariance",
+                    "survey_metadata": "survey_metadata",
+                    "station_metadata": "station_metadata",
+                }
+            )
+        else:
+            k_dict = OrderedDict(
+                {
+                    "period": "period",
+                    "impedance": "z",
+                    "impedance_error": "z_err",
+                    "tipper": "t",
+                    "tipper_error": "t_err",
+                    "survey_metadata": "survey_metadata",
+                    "station_metadata": "station_metadata",
+                }
+            )
+        for tf_key, edi_key in k_dict.items():
+            setattr(self, tf_key, getattr(edi_obj, edi_key))
 
 
 # ==============================================================================
