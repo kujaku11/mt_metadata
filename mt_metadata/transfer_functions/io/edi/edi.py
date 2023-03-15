@@ -1226,6 +1226,7 @@ class EDI(object):
         self.Measurement.refelev = sm.location.elevation
         self.Measurement.reflat = sm.location.latitude
         self.Measurement.reflon = sm.location.longitude
+        self.Measurement.refloc = sm.id
         self.Measurement.maxchan = len(sm.channels_recorded)
 
     def _get_electric_metadata(self, comp):

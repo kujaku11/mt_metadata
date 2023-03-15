@@ -108,6 +108,7 @@ class DefineMeasurement(Base):
             "maxchan",
             "maxrun",
             "maxmeas",
+            "refloc",
             "reflat",
             "reflon",
             "refelev",
@@ -317,7 +318,8 @@ class DefineMeasurement(Base):
             if key.upper() == "REFLON":
                 if longitude_format == "LONG":
                     key += "G"
-            measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
+            if value is not None:
+                measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number

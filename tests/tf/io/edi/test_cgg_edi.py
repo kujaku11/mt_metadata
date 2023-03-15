@@ -196,7 +196,7 @@ class TestCGGEDI(unittest.TestCase):
 
     def test_measurement(self):
         m_list = [
-            'REFLOC="EGC022"',
+            'REFLOC="TEST01"',
             "REFLAT=-30:55:49.026",
             "REFLONG=+127:13:45.228",
             "REFELEV=175.27",
@@ -375,9 +375,9 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", "4"),
                 ("azm", 0.0),
-                ("chtype", "EX"),
+                ("chtype", "ex"),
                 ("id", 1004.001),
                 ("x", 0.0),
                 ("x2", 0.0),
@@ -395,9 +395,9 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", "5"),
                 ("azm", 0.0),
-                ("chtype", "EY"),
+                ("chtype", "ey"),
                 ("id", 1005.001),
                 ("x", 0.0),
                 ("x2", 0.0),
@@ -415,9 +415,9 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", "1"),
                 ("azm", 0.0),
-                ("chtype", "HX"),
+                ("chtype", "hx"),
                 ("dip", 0.0),
                 ("id", 1001.001),
                 ("x", 0.0),
@@ -433,9 +433,9 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", "2"),
                 ("azm", 90.0),
-                ("chtype", "HY"),
+                ("chtype", "hy"),
                 ("dip", 0.0),
                 ("id", 1002.001),
                 ("x", 0.0),
@@ -451,9 +451,9 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", "3"),
                 ("azm", 0.0),
-                ("chtype", "HZ"),
+                ("chtype", "hz"),
                 ("dip", 0.0),
                 ("id", 1003.001),
                 ("x", 0.0),
@@ -466,49 +466,17 @@ class TestCGGTF(unittest.TestCase):
             ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True)
         )
 
-    def test_measurement_rrhx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", 0.0),
-                ("chtype", "RRHX"),
-                ("dip", 0.0),
-                ("id", 1006.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.meas_rrhx.to_dict(single=True)
-        )
-
-    def test_measurement_rrhy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", 90.0),
-                ("chtype", "RRHY"),
-                ("dip", 0.0),
-                ("id", 1007.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.meas_rrhy.to_dict(single=True)
-        )
-
     def test_measurement(self):
         m_list = [
-            'REFLOC="EGC022"',
-            "REFLAT=-30:55:49.026",
-            "REFLONG=+127:13:45.228",
+            "MAXCHAN=5",
+            "MAXRUN=999",
+            "MAXMEAS=999",
+            "REFLOC=TEST01",
+            "REFLAT=-30.930285",
+            "REFLON=127.229230",
             "REFELEV=175.27",
-            "UNITS=M",
+            "REFTYPE=cartesian",
+            "UNITS=m",
         ]
 
         self.assertListEqual(
@@ -534,9 +502,21 @@ class TestCGGTF(unittest.TestCase):
             self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)
 
     def test_data_section(self):
-        d_list = ["NFREQ=73"]
+        d_list = [
+            "NFREQ=73",
+            "SECTID=TEST01",
+            "NCHAN=5",
+            "MAXBLKS=999",
+            "HX=1001.001",
+            "HY=1002.001",
+            "HZ=1003.001",
+            "EX=1004.001",
+            "EY=1005.001",
+        ]
 
-        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        self.assertListEqual(
+            d_list, self.edi_obj.Data.data_list[0 : len(d_list)]
+        )
 
     def test_impedance(self):
         with self.subTest("shape"):

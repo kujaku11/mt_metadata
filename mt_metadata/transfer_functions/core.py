@@ -1298,7 +1298,9 @@ class TF:
             edi_obj.t = self.tipper.data
             edi_obj.t_err = self.tipper_error.data
         edi_obj.frequency = 1.0 / self.period
-        edi_obj.rotation_angle = self._rotation_angle
+        edi_obj.rotation_angle = np.repeat(
+            self._rotation_angle, self.period.size
+        )
 
         # fill from survey metadata
         edi_obj.survey_metadata = self.survey_metadata
@@ -1311,8 +1313,8 @@ class TF:
         edi_obj.Data.nfreq = self.period.size
         edi_obj.Data.sectid = self.station
         edi_obj.Data.nchan = len(edi_obj.Measurement.channel_ids.keys())
-
         edi_obj.Data.maxblks = 999
+
         for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
             if hasattr(edi_obj.Measurement, f"meas_{comp}"):
                 setattr(
@@ -1320,6 +1322,11 @@ class TF:
                     comp,
                     getattr(edi_obj.Measurement, f"meas_{comp}").id,
                 )
+
+        edi_obj.Data.read_data(edi_obj.Data.write_data())
+        edi_obj.Measurement.read_measurement(
+            edi_obj.Measurement.write_measurement()
+        )
 
         return edi_obj
 

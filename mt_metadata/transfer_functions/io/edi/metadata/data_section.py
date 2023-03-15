@@ -187,6 +187,7 @@ class DataSection(Base):
             data_lines = ["\n>spectrasect\n".upper()]
 
         for key in self._kw_list[0:4]:
+
             data_lines.append(f"{' '*4}{key.upper()}={getattr(self, key)}\n")
 
         # need to sort the list so it is descending order by channel number
