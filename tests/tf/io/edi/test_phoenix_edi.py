@@ -335,7 +335,8 @@ class TestFromTF(unittest.TestCase):
             if edi_key in [
                 "provenance.software.version",
                 "comments",
-                "transfer_function.processing_parameters",
+                "transfer_function.remote_references",
+                "time_period.end",
             ]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
