@@ -53,7 +53,7 @@ class Information(Base):
         }
 
         self.translation_dict = {
-            "operator": "station.acquired_by.author",
+            "operator": "run.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
             "ex_len": "run.ex.dipole_length",
