@@ -1060,6 +1060,9 @@ class EDI(object):
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate
+        if self.Header.enddate is not None:
+            sm.time_period.end = self.Header.enddate
+
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
@@ -1186,7 +1189,7 @@ class EDI(object):
                 if k in ["processing_parameters"]:
                     for item in v:
                         self.Info.info_list.append(
-                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
+                            f"transfer_function.{item.replace('=', ' = ')}"
                         )
                 else:
                     self.Info.info_list.append(f"transfer_function.{k} = {v}")

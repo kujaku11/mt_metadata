@@ -1308,6 +1308,8 @@ class TF:
         # fill from station metadata
         edi_obj.station_metadata = self.station_metadata
 
+        edi_obj.Info.read_info(edi_obj.Info.write_info())
+
         # input data section
         edi_obj.Data.data_type = self.station_metadata.data_type
         edi_obj.Data.nfreq = self.period.size
