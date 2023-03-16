@@ -345,6 +345,7 @@ class JFile:
         # provenance
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
+        sm.transfer_function.id = self.header.station
         sm.transfer_function.processed_date = MTime(
             self.fn.stat().st_ctime
         ).iso_str
