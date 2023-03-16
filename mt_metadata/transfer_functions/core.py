@@ -1268,7 +1268,7 @@ class TF:
 
         :Example: ::
 
-            >>> import mt_metadata.transfer_functions.core import TF
+            >>> import mt_metadata.transfer_functions import TF
             >>> tf_obj = TF()
             >>> tf_obj.read(fn=r"/home/mt/mt01.xml")
 
@@ -1293,7 +1293,7 @@ class TF:
         :return: EDI object
         :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
 
-        >>> from mt_metadata.transfer_functions.core import TF
+        >>> from mt_metadata.transfer_functions import TF
         >>> from mt_metadata import TF_XML
         >>> t = TF(TF_XML)
         >>> t.read()
@@ -1396,9 +1396,19 @@ class TF:
 
     def to_emtfxml(self):
         """
+        Convert TF to a :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+        object.
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :return: EMTFXML object
+        :rtype: :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> xml_object = t.to_emtfxml()
+        >>> xml_object.site.country = "Here"
+        >>> xml_object.write()
 
         """
 
@@ -1458,12 +1468,11 @@ class TF:
     def from_emtfxml(self, emtfxml_obj, **kwargs):
         """
 
-        :param emtfxml_object: DESCRIPTION
-        :type emtfxml_object: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param emtfxml_object: path to emtf xml file or EMTFXML object
+        :type emtfxml_object: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+        :param **kwargs: Keyword arguments for EMTFXML object
+        :type **kwargs: dictionary
 
         """
 
@@ -1502,8 +1511,12 @@ class TF:
     def to_jfile(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Translate TF object ot JFile object.
+
+        .. note:: Not Implemented yet
+
+        :return: JFile object
+        :rtype: :class:`mt_metadata.transfer_functions.io.jfile.JFile`
 
         """
 
@@ -1512,12 +1525,11 @@ class TF:
     def from_jfile(self, j_obj, **kwargs):
         """
 
-        :param jfile_obj: DESCRIPTION
-        :type jfile_obj: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param jfile_obj: path ot .j file or JFile object
+        :type jfile_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.jfile.JFile`
+        :param **kwargs: Keyword arguments for JFile object
+        :type **kwargs: dictionary
 
         """
         if isinstance(j_obj, (str, Path)):
@@ -1546,8 +1558,18 @@ class TF:
     def to_zmm(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
 
         """
 
@@ -1600,12 +1622,11 @@ class TF:
     def from_zmm(self, zmm_obj, **kwargs):
         """
 
-        :param zmm_obj: DESCRIPTION
-        :type zmm_obj: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
 
         """
 
@@ -1649,8 +1670,18 @@ class TF:
     def to_zrr(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
 
         """
         return self.to_zmm()
@@ -1658,12 +1689,11 @@ class TF:
     def from_zrr(self, zrr_obj, **kwargs):
         """
 
-        :param zrr_obj: DESCRIPTION
-        :type zrr_obj: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
 
         """
 
@@ -1672,8 +1702,18 @@ class TF:
     def to_zss(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
 
         """
         return self.to_zmm()
@@ -1681,12 +1721,11 @@ class TF:
     def from_zss(self, zss_obj, **kwargs):
         """
 
-        :param zss_obj: DESCRIPTION
-        :type zss_obj: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
 
         """
 
@@ -1695,8 +1734,13 @@ class TF:
     def to_avg(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Translate TF object to ZongeMTAvg object.
+
+        .. note:: Not Implemented yet
+
+        :return: ZongeMTAvg object
+        :rtype: :class:`mt_metadata.transfer_function.io.zonge.ZongeMTAvg`
+
 
         """
 
@@ -1705,12 +1749,11 @@ class TF:
     def from_avg(self, avg_obj, **kwargs):
         """
 
-        :param avg_obj: DESCRIPTION
-        :type avg_obj: TYPE
-        :param **kwargs: DESCRIPTION
-        :type **kwargs: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param avg_obj: path ot .avg file or ZongeMTAvg object
+        :type avg_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
+        :param **kwargs: Keyword arguments for ZongeMTAvg object
+        :type **kwargs: dictionary
 
         """
         if isinstance(avg_obj, (str, Path)):

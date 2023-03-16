@@ -407,6 +407,7 @@ class EMTFXML(emtf_xml.EMTF):
                 self.data_types.data_types_list.append(
                     data_types_dict["impedance"]
                 )
+
         if self.data.t is not None:
             if not np.all(self.data.t == 0.0):
                 self.data_types.data_types_list.append(
@@ -423,6 +424,8 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
+        if comments is None:
+            return
         other = []
         for comment in comments.split(";"):
             if comment.count(":") >= 1:
@@ -494,7 +497,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
-        self.copyright.citation.authors = sm.citation_dataset.author
+        self.copyright.citation.authors = sm.citation_dataset.authors
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
 
@@ -775,13 +778,16 @@ class EMTFXML(emtf_xml.EMTF):
             fn.start = r.time_period.start
             fn.end = r.time_period.end
             fn.run = r.id
-            for comment in r.comments.split(";"):
-                if comment.count(":") >= 1:
-                    key, value = comment.split(":", 1)
-                    try:
-                        fn.set_attr_from_name(key.strip(), value.strip())
-                    except:
-                        raise AttributeError(f"Cannot set attribute {key}.")
+            if r.comments is not None:
+                for comment in r.comments.split(";"):
+                    if comment.count(":") >= 1:
+                        key, value = comment.split(":", 1)
+                        try:
+                            fn.set_attr_from_name(key.strip(), value.strip())
+                        except:
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:
