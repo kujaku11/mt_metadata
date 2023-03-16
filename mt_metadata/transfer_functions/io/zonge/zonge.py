@@ -434,6 +434,7 @@ class ZongeMTAvg:
         sm.location.elevation = self.header.elevation
         sm.location.datum = self.header.datum.upper()
 
+        sm.transfer_function.id = self.header.station
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
         sm.transfer_function.software.version = (
