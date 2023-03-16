@@ -4,13 +4,17 @@ Created on Mon Sep 27 16:28:09 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 import numpy as np
 
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
 from mt_metadata import TF_ZMM
+
+# =============================================================================
 
 
 class TestTranslateZmm(unittest.TestCase):

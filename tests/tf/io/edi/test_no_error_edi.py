@@ -12,7 +12,7 @@ import unittest
 
 from collections import OrderedDict
 from mt_metadata.transfer_functions.io import edi
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata import TF_EDI_NO_ERROR
 
 # =============================================================================

@@ -4,13 +4,17 @@ Created on Mon Sep 27 16:28:09 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 import numpy as np
 
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
 from mt_metadata import TF_ZSS_TIPPER
+
+# =============================================================================
 
 
 class TestTranslateZmm(unittest.TestCase):
@@ -31,7 +35,9 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertEqual(self.tf_obj.station, self.zmm_obj.station)
 
     def test_channels_recorded(self):
-        self.assertListEqual(["hx", "hy", "hz"], self.zmm_obj.channels_recorded)
+        self.assertListEqual(
+            ["hx", "hy", "hz"], self.zmm_obj.channels_recorded
+        )
 
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):

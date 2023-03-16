@@ -15,7 +15,7 @@ from collections import OrderedDict
 from mt_metadata.transfer_functions.io.edi import EDI
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import TF_EDI_SPECTRA, TF_EDI_SPECTRA_OUT
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 
 # =============================================================================
 # CGG

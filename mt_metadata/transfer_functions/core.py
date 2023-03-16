@@ -1293,6 +1293,14 @@ class TF:
         :return: EDI object
         :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
 
+        >>> from mt_metadata.transfer_functions.core import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> edi_object = t.to_edi()
+        >>> edi_object.Header.acqby = "me"
+        >>> edi_object.write()
+
         """
 
         edi_obj = EDI()
@@ -1339,11 +1347,18 @@ class TF:
 
     def from_edi(self, edi_obj, **kwargs):
         """
+        Read in an EDI file or a
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param edi_obj: path to edi file or EDI object
+        :type edi_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.edi.EDI`
+        :param **kwargs: Key word arguments for an EDI object
+        :type **kwargs: dictionary
+        :raises TypeError: If input is incorrect
 
         """
+
         if isinstance(edi_obj, (str, Path)):
             self._fn = Path(edi_obj)
             edi_obj = EDI(**kwargs)
