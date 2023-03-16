@@ -1090,8 +1090,10 @@ class EDI(object):
                 if ch is None:
                     if comp in ["ex", "ey"]:
                         ch = metadata.Electric(component=comp)
+                        sm.runs[0].add_channel(ch)
                     elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
                         ch = metadata.Magnetic(component=comp)
+                        sm.runs[0].add_channel(ch)
                     else:
                         self.logger.warning(
                             f"Do not recognize channel {comp}, skipping..."
@@ -1120,7 +1122,7 @@ class EDI(object):
                 sm.run_list = []
                 for rr in runs:
                     if rr not in sm.runs:
-                        sm.add_runmetadata.Run(id=rr)
+                        sm.add_run(metadata.Run(id=rr))
                 sm.transfer_function.runs_processed = runs
             elif key == "sitename":
                 sm.geographic_name = value
@@ -1143,16 +1145,16 @@ class EDI(object):
                 rr.time_period.start = sm.time_period.start
             if rr.time_period.end == "1980-01-01T00:00:00+00:00":
                 rr.time_period.end = sm.time_period.end
-            rr.ex = self.ex_metadata
-            rr.ey = self.ey_metadata
-            rr.hx = self.hx_metadata
-            rr.hy = self.hy_metadata
+            rr.add_channel(self.ex_metadata)
+            rr.add_channel(self.ey_metadata)
+            rr.add_channel(self.hx_metadata)
+            rr.add_channel(self.hy_metadata)
             if self.hz_metadata.component in ["hz"]:
-                rr.hz = self.hz_metadata
+                rr.add_channel(self.hz_metadata)
             if self.rrhx_metadata.component in ["rrhx"]:
-                rr.rrhx = self.rrhx_metadata
+                rr.add_channel(self.rrhx_metadata)
             if self.rrhy_metadata.component in ["rrhy"]:
-                rr.rrhy = self.rrhy_metadata
+                rr.add_channel(self.rrhy_metadata)
         return sm
 
     @station_metadata.setter

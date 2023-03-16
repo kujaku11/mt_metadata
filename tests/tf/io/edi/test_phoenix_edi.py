@@ -266,20 +266,18 @@ class TestPhoenixEDI(unittest.TestCase):
                 ("maxblocks", 999),
                 ("nchan", 7),
                 ("nfreq", 80),
-                ("rx", "0"),
-                ("ry", "0"),
+                ("rrhx", "5376.0537"),
+                ("rrhy", "5377.0537"),
                 ("sectid", "14-IEB0537A"),
             ]
         )
 
         self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
 
-        for ii, ch in enumerate(
-            ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5
-        ):
+        for ch in ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]:
             with self.subTest(msg=ch):
                 self.assertEqual(
-                    str(float(d_list[ii])), getattr(self.edi_obj.Data, ch)
+                    str(float(d_list[ch])), getattr(self.edi_obj.Data, ch)
                 )
 
 
