@@ -1216,7 +1216,7 @@ class TF:
 
         :Example: ::
 
-            >>> tf_obj.write_mtf_file(file_type='xml')
+            >>> tf_obj.write(file_type='xml')
 
         """
 
@@ -1270,7 +1270,7 @@ class TF:
 
             >>> import mt_metadata.transfer_functions.core import TF
             >>> tf_obj = TF()
-            >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
+            >>> tf_obj.read(fn=r"/home/mt/mt01.xml")
 
         """
         if fn is not None:
@@ -1285,8 +1285,13 @@ class TF:
     def to_edi(self):
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Convert the TF object to a
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` object.  From there
+        attributes of an EDI object can be manipulated previous to writing
+        to a file.
+
+        :return: EDI object
+        :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
 
         """
 
