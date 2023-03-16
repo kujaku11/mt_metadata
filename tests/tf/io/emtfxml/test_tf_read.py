@@ -101,6 +101,13 @@ class TestEMTFXML(unittest.TestCase):
             [
                 ("acquired_by.author", "National Geoelectromagnetic Facility"),
                 (
+                    "citation_dataset.authors",
+                    (
+                        "Schultz, A., Pellerin, L., Bedrosian, P., Kelbert, A., "
+                        "Crosbie, J."
+                    ),
+                ),
+                (
                     "citation_dataset.doi",
                     "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH",
                 ),
