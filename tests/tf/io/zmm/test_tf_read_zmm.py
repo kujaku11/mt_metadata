@@ -261,7 +261,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -317,6 +319,120 @@ class TestEMTFXML(unittest.TestCase):
                     ),
                 ).all()
             )
+
+
+class TestTFToEMTFXML(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.tf = TF(fn=TF_ZMM)
+        self.tf.read()
+        self.maxDiff = None
+
+        self.zmm = self.tf.to_zmm()
+
+    def test_survey_metadata(self):
+        meta_dict = OrderedDict(
+            [
+                ("citation_dataset.doi", None),
+                ("citation_journal.doi", None),
+                ("datum", "WGS84"),
+                ("geographic_name", None),
+                ("id", None),
+                ("name", None),
+                ("northwest_corner.latitude", 0.0),
+                ("northwest_corner.longitude", 0.0),
+                ("project", None),
+                ("project_lead.email", None),
+                ("project_lead.organization", None),
+                ("release_license", "CC0-1.0"),
+                ("southeast_corner.latitude", 0.0),
+                ("southeast_corner.longitude", 0.0),
+                ("summary", None),
+                ("time_period.end_date", "1980-01-01"),
+                ("time_period.start_date", "1980-01-01"),
+            ]
+        )
+
+        self.assertDictEqual(
+            meta_dict, self.zmm.survey_metadata.to_dict(single=True)
+        )
+
+    def test_station_metadata(self):
+        meta_dict = OrderedDict(
+            [
+                ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
+                ("comments", "WITH FULL ERROR COVARINCE"),
+                ("data_type", "MT"),
+                ("geographic_name", None),
+                ("id", "300"),
+                ("location.declination.model", "WMM"),
+                ("location.declination.value", 13.1),
+                ("location.elevation", 0.0),
+                ("location.latitude", 34.727),
+                ("location.longitude", -115.735),
+                ("orientation.method", None),
+                ("orientation.reference_frame", "geographic"),
+                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.software.author", None),
+                ("provenance.software.name", "EMTF"),
+                ("provenance.software.version", "1"),
+                ("provenance.submitter.email", None),
+                ("provenance.submitter.organization", None),
+                ("release_license", "CC0-1.0"),
+                ("run_list", ["300a"]),
+                ("time_period.end", "1980-01-01T00:00:00+00:00"),
+                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.id", "300"),
+                ("transfer_function.processed_date", None),
+                ("transfer_function.processing_parameters", []),
+                ("transfer_function.remote_references", []),
+                ("transfer_function.runs_processed", ["300a"]),
+                ("transfer_function.sign_convention", None),
+                ("transfer_function.units", None),
+            ]
+        )
+
+        self.assertDictEqual(
+            meta_dict, self.zmm.station_metadata.to_dict(single=True)
+        )
+
+    def test_run_metadata(self):
+        meta_dict = OrderedDict(
+            [
+                ("channels_recorded_auxiliary", []),
+                ("channels_recorded_electric", ["ex", "ey"]),
+                ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
+                ("data_logger.firmware.author", None),
+                ("data_logger.firmware.name", None),
+                ("data_logger.firmware.version", None),
+                ("data_logger.id", None),
+                ("data_logger.manufacturer", None),
+                ("data_logger.timing_system.drift", 0.0),
+                ("data_logger.timing_system.type", "GPS"),
+                ("data_logger.timing_system.uncertainty", 0.0),
+                ("data_logger.type", None),
+                ("data_type", "BBMT"),
+                ("id", "300a"),
+                ("sample_rate", 8.0),
+                ("time_period.end", "1980-01-01T00:00:00+00:00"),
+                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+            ]
+        )
+
+        self.assertDictEqual(
+            meta_dict, self.zmm.station_metadata.runs[0].to_dict(single=True)
+        )
+
+    def test_transfer_function(self):
+        self.assertTrue(
+            (
+                np.nan_to_num(self.tf.dataset.transfer_function.data)
+                == np.nan_to_num(
+                    self.zmm._transfer_function.transfer_function.data
+                )
+            ).all()
+        )
 
 
 # =============================================================================

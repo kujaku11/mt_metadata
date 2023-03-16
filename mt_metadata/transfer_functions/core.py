@@ -1532,7 +1532,7 @@ class TF:
         """
 
         zmm_obj = ZMM()
-        zmm_obj.dataset = self.dataset
+        zmm_obj._transfer_function = self.dataset
         zmm_obj.station_metadata = self.station_metadata
 
         # need to set the channel numbers according to the z-file format
@@ -1548,7 +1548,7 @@ class TF:
             if self.has_impedance():
                 zmm_obj.num_channels = 4
                 number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
-        if self.station_metadata.runs == []:
+        if len(self.station_metadata.runs) == 0:
             run = Run()
             for ch, ch_num in number_dict.items():
                 c = ZChannel()
