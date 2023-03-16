@@ -10,6 +10,7 @@ Created on Sat Dec  4 18:52:52 2021
 
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base.helpers import validate_name
 
 # =============================================================================
 attr_dict = get_schema("data_section", SCHEMA_FN_PATHS)
@@ -149,6 +150,8 @@ class DataSection(Base):
                         value = int(value)
                     except ValueError:
                         pass
+                elif key in ["sectid"]:
+                    value = validate_name(value)
                 setattr(self, key, value)
             else:
                 if "//" in d_line:

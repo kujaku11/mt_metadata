@@ -12,6 +12,7 @@ import unittest
 
 from collections import OrderedDict
 from mt_metadata.transfer_functions.io import edi
+from mt_metadata.transfer_functions.core import TF
 from mt_metadata import TF_EDI_QUANTEC
 
 # =============================================================================
@@ -29,7 +30,7 @@ class TestQuantecEDI(unittest.TestCase):
             "coordinate_system": "geographic",
             "country": "Australia",
             "county": "Boulia",
-            "dataid": "Geoscience Australia",
+            "dataid": "TEST_01",
             "datum": "WGS84",
             "elevation": 122.0,
             "enddate": "2014-11-15T00:00:00+00:00",
@@ -213,23 +214,110 @@ class TestQuantecEDI(unittest.TestCase):
             self.assertAlmostEqual(122.0, self.edi_obj.Measurement.refelev, 2)
 
     def test_data_section(self):
-        d_list = [
-            'SECTID="IEA00184"',
-            "NCHAN=7",
-            "NFREQ=41",
-            "MAXBLKS=100",
-            "//7",
-            "11.001    12.001    13.001    14.001    15.001    11.001    12.001",
-        ]
+        d_list = OrderedDict(
+            [
+                ("ex", "14.001"),
+                ("ey", "15.001"),
+                ("hx", "11.001"),
+                ("hy", "12.001"),
+                ("hz", "13.001"),
+                ("maxblocks", 999),
+                ("nchan", 7),
+                ("nfreq", 41),
+                ("rrhx", "11.001"),
+                ("rrhy", "12.001"),
+                ("sectid", "TEST_01"),
+            ]
+        )
 
-        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
 
-        d_list = d_list[-1].split()
-        for ii, ch in enumerate(
-            ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]
-        ):
+        for ch in ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"]:
             with self.subTest(ch):
-                self.assertEqual(d_list[ii], getattr(self.edi_obj.Data, ch))
+                self.assertEqual(d_list[ch], getattr(self.edi_obj.Data, ch))
+
+
+class TestToTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.edi = edi.EDI(fn=TF_EDI_QUANTEC)
+        self.tf = TF(fn=TF_EDI_QUANTEC)
+        self.tf.read()
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error.data != 0).all())
+
+    def test_has_tipper(self):
+        self.assertTrue(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertTrue(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertTrue(self.tf.has_residual_covariance())
+
+
+class TestFromTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.tf = TF(fn=TF_EDI_QUANTEC)
+        self.tf.read()
+
+        self.edi = self.tf.to_edi()
+        self.maxDiff = None
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True, required=False)
+        for edi_key, edi_value in edi_st.items():
+            if edi_key in [
+                "comments",
+                "transfer_function.remote_references",
+            ]:
+                with self.subTest(edi_key):
+                    self.assertNotEqual(edi_value, tf_st[edi_key])
+            else:
+                with self.subTest(edi_key):
+                    self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error.data != 0).all())
+
+    def test_has_tipper(self):
+        self.assertTrue(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertTrue(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertTrue(self.tf.has_residual_covariance())
 
 
 # =============================================================================
