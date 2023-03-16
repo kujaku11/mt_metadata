@@ -1245,6 +1245,16 @@ class EDI(object):
         electric.negative.type = "electric"
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")
+            for attr in [
+                "negative.x",
+                "negative.y",
+                "positive.x2",
+                "positive.y2",
+                "measurement_azimuth",
+                "translated_azimuth",
+            ]:
+                if electric.get_attr_from_name(attr) is None:
+                    electric.set_attr_from_name(attr, 0)
             electric.dipole_length = meas.dipole_length
             electric.channel_id = meas.id
             electric.measurement_azimuth = meas.azimuth
@@ -1312,6 +1322,9 @@ class EDI(object):
         magnetic.sensor.type = "magnetic"
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")
+            for attr in ["location.x", "location.y", "location.z"]:
+                if magnetic.get_attr_from_name(attr) is None:
+                    magnetic.set_attr_from_name(attr, 0)
             magnetic.measurement_azimuth = meas.azm
             magnetic.translated_azimuth = meas.azm
             magnetic.component = meas.chtype

@@ -299,26 +299,15 @@ class TestCGGTF(unittest.TestCase):
             "H_SITE=E_SITE",
             "PROCESSING PARAMETERS:",
             "SITE INFO:",
-            "transfer_function.coordinate_system = geopgraphic",
-            "transfer_function.id = TEST01",
-            "transfer_function.processing_parameters.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
-            "transfer_function.remote_references = []",
-            "transfer_function.runs_processed = ['TEST01a']",
-            "transfer_function.software.name = L13ss",
-            "provenance.creation_time = 2014-10-07T00:00:00+00:00",
-            "provenance.software.version = Antlr3.Runtime:3.5.0.2;ContourEngine:1.0.41.8272;CoordinateSystemService:1.4.0.8439;DocumentCommon:1.4.0.8465;Fluent:2.1.0.0;GeoApi:1.7.0.0;hasp_net_windows:7.0.1.36183;Launcher:1.4.0.8471;MapDocument:1.4.0.8469;MTDocument:1.4.0.8459;MTDocumentDataProvider:1.4.0.8467;MTInversionCommon:1.4.0.8371;Ookii.Dialogs.Wpf:1.0.0.0;PlotElement:1.4.0.8466;PluginHost:1.4.0.8440;ProjNet:1.2.5085.21309;ShellEngine:1.4.0.8380;System.Windows.Interactivity:4.0.0.0;Utils:1.4.0.8449;Xceed.Wpf.AvalonDock:2.0.0.0;Xceed.Wpf.AvalonDock.Themes.Aero:2.0.0.0;Xceed.Wpf.Toolkit:1.9.0.0;",
             "TEST01a.acquired_by.author = Somebody",
             "TEST01a.channels_recorded_auxiliary = []",
             "TEST01a.channels_recorded_electric = ['ex', 'ey']",
-            "TEST01a.channels_recorded_magnetic = ['hx', 'hy', 'hz']",
+            "TEST01a.channels_recorded_magnetic = ['hx', 'hy', 'hz', 'rrhx', 'rrhy']",
             "TEST01a.data_logger.id = 222",
             "TEST01a.data_logger.timing_system.drift = 0.0",
             "TEST01a.data_logger.timing_system.type = GPS",
             "TEST01a.data_logger.timing_system.uncertainty = 0.0",
             "TEST01a.data_type = BBMT",
-            "TEST01a.id = TEST01a",
-            "TEST01a.sample_rate = 0.0",
-            "TEST01a.time_period.start = 2014-06-05T00:00:00+00:00",
             "TEST01a.ex.channel_id = 1004.001",
             "TEST01a.ex.channel_number = 0",
             "TEST01a.ex.component = ex",
@@ -344,15 +333,16 @@ class TestCGGTF(unittest.TestCase):
             "TEST01a.hx.channel_id = 1001.001",
             "TEST01a.hx.channel_number = 0",
             "TEST01a.hx.component = hx",
+            "TEST01a.hx.h_field_max.start = 169869.0",
             "TEST01a.hx.measurement_azimuth = 0.0",
             "TEST01a.hx.measurement_tilt = 0.0",
             "TEST01a.hx.sensor.id = MFS06e-246",
             "TEST01a.hx.sensor.type = magnetic",
-            "TEST01a.hx.translated_azimuth = 0.0",
             "TEST01a.hx.type = magnetic",
             "TEST01a.hy.channel_id = 1002.001",
             "TEST01a.hy.channel_number = 0",
             "TEST01a.hy.component = hy",
+            "TEST01a.hy.h_field_max.start = 164154.0",
             "TEST01a.hy.measurement_azimuth = 90.0",
             "TEST01a.hy.measurement_tilt = 0.0",
             "TEST01a.hy.sensor.id = MFS06e-249",
@@ -362,12 +352,39 @@ class TestCGGTF(unittest.TestCase):
             "TEST01a.hz.channel_id = 1003.001",
             "TEST01a.hz.channel_number = 0",
             "TEST01a.hz.component = hz",
+            "TEST01a.hz.h_field_max.start = 2653.0",
             "TEST01a.hz.measurement_azimuth = 0.0",
             "TEST01a.hz.measurement_tilt = 0.0",
             "TEST01a.hz.sensor.id = MFS06e-249",
             "TEST01a.hz.sensor.type = magnetic",
-            "TEST01a.hz.translated_azimuth = 0.0",
             "TEST01a.hz.type = magnetic",
+            "TEST01a.id = TEST01a",
+            "TEST01a.rrhx.channel_id = 1006.001",
+            "TEST01a.rrhx.channel_number = 0",
+            "TEST01a.rrhx.component = rrhx",
+            "TEST01a.rrhx.measurement_azimuth = 0.0",
+            "TEST01a.rrhx.measurement_tilt = 0.0",
+            "TEST01a.rrhx.sensor.type = magnetic",
+            "TEST01a.rrhx.translated_azimuth = 0.0",
+            "TEST01a.rrhx.type = magnetic",
+            "TEST01a.rrhy.channel_id = 1007.001",
+            "TEST01a.rrhy.channel_number = 0",
+            "TEST01a.rrhy.component = rrhy",
+            "TEST01a.rrhy.measurement_azimuth = 90.0",
+            "TEST01a.rrhy.measurement_tilt = 0.0",
+            "TEST01a.rrhy.sensor.type = magnetic",
+            "TEST01a.rrhy.translated_azimuth = 90.0",
+            "TEST01a.rrhy.type = magnetic",
+            "TEST01a.sample_rate = 0.0",
+            "TEST01a.time_period.start = 2014-06-05T00:00:00+00:00",
+            "provenance.creation_time = 2014-10-07T00:00:00+00:00",
+            "provenance.software.version = Antlr3.Runtime:3.5.0.2;ContourEngine:1.0.41.8272;CoordinateSystemService:1.4.0.8439;DocumentCommon:1.4.0.8465;Fluent:2.1.0.0;GeoApi:1.7.0.0;hasp_net_windows:7.0.1.36183;Launcher:1.4.0.8471;MapDocument:1.4.0.8469;MTDocument:1.4.0.8459;MTDocumentDataProvider:1.4.0.8467;MTInversionCommon:1.4.0.8371;Ookii.Dialogs.Wpf:1.0.0.0;PlotElement:1.4.0.8466;PluginHost:1.4.0.8440;ProjNet:1.2.5085.21309;ShellEngine:1.4.0.8380;System.Windows.Interactivity:4.0.0.0;Utils:1.4.0.8449;Xceed.Wpf.AvalonDock:2.0.0.0;Xceed.Wpf.AvalonDock.Themes.Aero:2.0.0.0;Xceed.Wpf.Toolkit:1.9.0.0;",
+            "transfer_function.coordinate_system = geopgraphic",
+            "transfer_function.id = TEST01",
+            "transfer_function.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
+            "transfer_function.remote_references = []",
+            "transfer_function.runs_processed = ['TEST01a']",
+            "transfer_function.software.name = L13ss",
         ]
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
@@ -467,56 +484,50 @@ class TestCGGTF(unittest.TestCase):
         )
 
     def test_measurement(self):
-        m_list = [
-            "MAXCHAN=5",
-            "MAXRUN=999",
-            "MAXMEAS=999",
-            "REFLOC=TEST01",
-            "REFLAT=-30.930285",
-            "REFLON=127.229230",
-            "REFELEV=175.27",
-            "REFTYPE=cartesian",
-            "UNITS=m",
-        ]
-
-        self.assertListEqual(
-            m_list, self.edi_obj.Measurement.measurement_list[0 : len(m_list)]
+        m_dict = OrderedDict(
+            [
+                ("maxchan", 7),
+                ("maxmeas", 999),
+                ("maxrun", 999),
+                ("refelev", 175.27),
+                ("reflat", -30.930285),
+                ("refloc", "TEST01"),
+                ("reflon", 127.22923),
+                ("reftype", "cartesian"),
+                ("units", "m"),
+            ]
         )
 
-        with self.subTest("reflat"):
-            self.assertAlmostEqual(
-                -30.930285, self.edi_obj.Measurement.reflat, 5
-            )
-
-        with self.subTest("reflon"):
-            self.assertAlmostEqual(
-                127.22923, self.edi_obj.Measurement.reflon, 5
-            )
-
-        with self.subTest("reflong"):
-            self.assertAlmostEqual(
-                127.22923, self.edi_obj.Measurement.reflong, 5
-            )
-
-        with self.subTest("refelev"):
-            self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)
+        for key, value in m_dict.items():
+            if key in ["reflat", "reflon", "refelev"]:
+                with self.subTest(key):
+                    self.assertAlmostEqual(
+                        value, getattr(self.edi_obj.Measurement, key), 5
+                    )
+            else:
+                with self.subTest(key):
+                    self.assertEqual(
+                        value, getattr(self.edi_obj.Measurement, key)
+                    )
 
     def test_data_section(self):
-        d_list = [
-            "NFREQ=73",
-            "SECTID=TEST01",
-            "NCHAN=5",
-            "MAXBLKS=999",
-            "HX=1001.001",
-            "HY=1002.001",
-            "HZ=1003.001",
-            "EX=1004.001",
-            "EY=1005.001",
-        ]
-
-        self.assertListEqual(
-            d_list, self.edi_obj.Data.data_list[0 : len(d_list)]
+        d_list = OrderedDict(
+            [
+                ("ex", "1004.001"),
+                ("ey", "1005.001"),
+                ("hx", "1001.001"),
+                ("hy", "1002.001"),
+                ("hz", "1003.001"),
+                ("maxblocks", 999),
+                ("nchan", 7),
+                ("nfreq", 73),
+                ("rrhx", "1006.001"),
+                ("rrhy", "1007.001"),
+                ("sectid", "TEST01"),
+            ]
         )
+
+        self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
 
     def test_impedance(self):
         with self.subTest("shape"):
