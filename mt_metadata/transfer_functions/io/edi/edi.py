@@ -1119,7 +1119,8 @@ class EDI(object):
                     runs = value.split()
                 sm.run_list = []
                 for rr in runs:
-                    sm.run_list.append(metadata.Run(id=rr))
+                    if rr not in sm.runs:
+                        sm.add_runmetadata.Run(id=rr)
                 sm.transfer_function.runs_processed = runs
             elif key == "sitename":
                 sm.geographic_name = value

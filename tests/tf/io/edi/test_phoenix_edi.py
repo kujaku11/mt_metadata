@@ -256,22 +256,23 @@ class TestPhoenixEDI(unittest.TestCase):
             self.assertAlmostEqual(158.0, self.edi_obj.Measurement.refelev, 2)
 
     def test_data_section(self):
-        d_list = [
-            'SECTID="14-IEB0537A"',
-            "NCHAN=7",
-            "NFREQ=80",
-            "MAXBLKS=80",
-            "// 7",
-            "05371.0537",
-            "05372.0537",
-            "05373.0537",
-            "05374.0537",
-            "05375.0537",
-            "05376.0537",
-            "05377.0537",
-        ]
+        d_list = OrderedDict(
+            [
+                ("ex", "5374.0537"),
+                ("ey", "5375.0537"),
+                ("hx", "5371.0537"),
+                ("hy", "5372.0537"),
+                ("hz", "5373.0537"),
+                ("maxblocks", 999),
+                ("nchan", 7),
+                ("nfreq", 80),
+                ("rx", "0"),
+                ("ry", "0"),
+                ("sectid", "14-IEB0537A"),
+            ]
+        )
 
-        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
 
         for ii, ch in enumerate(
             ["hx", "hy", "hz", "ex", "ey", "rrhx", "rrhy"], 5
@@ -333,10 +334,9 @@ class TestFromTF(unittest.TestCase):
         tf_st = self.tf.station_metadata.to_dict(single=True, required=False)
         for edi_key, edi_value in edi_st.items():
             if edi_key in [
-                "provenance.software.version",
                 "comments",
                 "transfer_function.remote_references",
-                "time_period.end",
+                "transfer_function.processing_parameters",
             ]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
