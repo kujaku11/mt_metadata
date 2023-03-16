@@ -11,7 +11,7 @@
         ],
         "alias": [],
         "example": "Unrestricted release",
-		"default": "Unrestricted release"
+		"default": "Unrestricted Release"
     },
     "conditions_of_use": {
         "type": "string",

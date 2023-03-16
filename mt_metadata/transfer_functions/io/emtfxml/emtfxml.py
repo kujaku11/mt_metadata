@@ -14,7 +14,6 @@ Created on Sat Sep  4 17:59:53 2021
 # =============================================================================
 import inspect
 from pathlib import Path
-from collections import OrderedDict
 from xml.etree import cElementTree as et
 import numpy as np
 
@@ -33,9 +32,6 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
-from mt_metadata.utils import mttime
-from mt_metadata import __version__
-
 
 meta_classes = dict(
     [
@@ -447,7 +443,9 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.author = (
+                self.copyright.citation.authors
+            )
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -467,6 +465,7 @@ class EMTFXML(emtf_xml.EMTF):
                     for k, v in {
                         "copyright.acknowledgement": self.copyright.acknowledgement,
                         "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                        "copyright.release_status": self.copyright.release_status,
                     }.items()
                     if v not in [None, ""]
                 ]
@@ -491,7 +490,7 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.survey = sm.id
         else:
             self.site.survey = sm.geographic_name
-        if self.site.country is not None:
+        if sm.country is not None:
             self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 

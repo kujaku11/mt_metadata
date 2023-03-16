@@ -112,7 +112,47 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 (
                     "comments",
-                    "copyright.acknowledgement:The USMTArray-CONUS South campaign was carried out through a cooperative agreement between\nthe U.S. Geological Survey (USGS) and Oregon State University (OSU). A subset of 40 stations\nin the SW US were funded through NASA grant 80NSSC19K0232.\nLand permitting, data acquisition, quality control and field processing were\ncarried out by Green Geophysics with project management and instrument/engineering\nsupport from OSU and Chaytus Engineering, respectively.\nProgram oversight, definitive data processing and data archiving were provided\nby the USGS Geomagnetism Program and the Geology, Geophysics and Geochemistry Science Centers.\nWe thank the U.S. Forest Service, the Bureau of Land Management, the National Park Service,\nthe Department of Defense, numerous state land offices and the many private landowners\nwho permitted land access to acquire the USMTArray data.; copyright.conditions_of_use:All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided that this data set is cited as the reference, and that the author(s) contributions are acknowledged as detailed in the Acknowledgements. Any papers cited in this file are only for reference. There is no requirement to cite these papers when the data are used. Whenever possible, we ask that the author(s) are notified prior to any publication that makes use of these data.\n While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, nor IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.",
+                    (
+                        "copyright.acknowledgement:The USMTArray-CONUS South "
+                        "campaign was carried out through a cooperative "
+                        "agreement between\nthe U.S. Geological Survey (USGS) "
+                        "and Oregon State University (OSU). A subset of 40 "
+                        "stations\nin the SW US were funded through NASA grant "
+                        "80NSSC19K0232.\nLand permitting, data acquisition, "
+                        "quality control and field processing were\ncarried out "
+                        "by Green Geophysics with project management and "
+                        "instrument/engineering\nsupport from OSU and Chaytus "
+                        "Engineering, respectively.\nProgram oversight, "
+                        "definitive data processing and data archiving were "
+                        "provided\nby the USGS Geomagnetism Program and the "
+                        "Geology, Geophysics and Geochemistry Science Centers."
+                        "\nWe thank the U.S. Forest Service, the Bureau of Land "
+                        "Management, the National Park Service,\nthe Department "
+                        "of Defense, numerous state land offices and the many "
+                        "private landowners\nwho permitted land access to "
+                        "acquire the USMTArray data.; "
+                        "copyright.conditions_of_use:All data and metadata for "
+                        "this survey are available free of charge and may be "
+                        "copied freely, duplicated and further distributed "
+                        "provided that this data set is cited as the reference, "
+                        "and that the author(s) contributions are acknowledged "
+                        "as detailed in the Acknowledgements. Any papers cited "
+                        "in this file are only for reference. There is no "
+                        "requirement to cite these papers when the data are "
+                        "used. Whenever possible, we ask that the author(s) are"
+                        " notified prior to any publication that makes use of "
+                        "these data.\n While the author(s) strive to provide "
+                        "data and metadata of best possible quality, neither "
+                        "the author(s) of this data set, nor IRIS make any "
+                        "claims, promises, or guarantees about the accuracy, "
+                        "completeness, or adequacy of this information, and "
+                        "expressly disclaim liability for errors and omissions "
+                        "in the contents of this file. Guidelines about the "
+                        "quality or limitations of the data and metadata, as "
+                        "obtained from the author(s), are included for "
+                        "informational purposes only.; "
+                        "copyright.release_status:Unrestricted Release"
+                    ),
                 ),
                 ("country", ["USA"]),
                 ("datum", "WGS84"),
@@ -478,7 +518,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (33, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest(msg="first element"):
             self.assertTrue(

@@ -1430,6 +1430,9 @@ class TF:
         emtf.period_range.min = emtf.data.period.min()
         emtf.period_range.max = emtf.data.period.max()
 
+        emtf._get_data_types()
+        emtf._get_statistical_estimates()
+
         return emtf
 
     def from_emtfxml(self, emtfxml_obj, **kwargs):
