@@ -302,7 +302,7 @@ class TestFromTF(unittest.TestCase):
         edi_st = self.edi.station_metadata.to_dict(single=True)
         tf_st = self.tf.station_metadata.to_dict(single=True)
         for edi_key, edi_value in edi_st.items():
-            if edi_key in ["provenance.software.version", "comments"]:
+            if edi_key in ["comments", "transfer_function.remote_references"]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
             else:
