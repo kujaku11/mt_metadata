@@ -323,13 +323,18 @@ class DefineMeasurement(Base):
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number
-        m_key_list = [
-            (kk.strip(), float(self.__dict__[kk].id))
-            for kk in list(self.__dict__.keys())
-            if kk.find("meas_") == 0
-        ]
+        m_key_list = []
+        for kk in list(self.__dict__.keys()):
+            if kk.find("meas_") == 0:
+                try:
+                    m_key_list.append(
+                        (kk.strip(), float(self.__dict__[kk].id))
+                    )
+                except TypeError:
+                    self.logger.debug(f"No {kk} information.")
+
         if len(m_key_list) == 0:
-            self.logger.info("No XMEAS information.")
+            self.logger.warning("No XMEAS information.")
         else:
             # need to sort the dictionary by chanel id
             chn_count = 1

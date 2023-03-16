@@ -13,6 +13,7 @@ import numpy as np
 
 from collections import OrderedDict
 from mt_metadata.transfer_functions.io import edi
+from mt_metadata.transfer_functions.core import TF
 from mt_metadata import TF_EDI_RHO_ONLY
 
 # =============================================================================
@@ -152,22 +153,27 @@ class TestMetronixEDI(unittest.TestCase):
         )
 
     def test_data_section(self):
-        d_list = [
-            'SECTID="s08"',
-            "NFREQ=28",
-            "HX=101.001",
-            "HY=102.001",
-            "EX=103.001",
-            "EY=104.001",
-        ]
+        d_list = OrderedDict(
+            [
+                ("ex", "103.001"),
+                ("ey", "104.001"),
+                ("hx", "101.001"),
+                ("hy", "102.001"),
+                ("hz", "0"),
+                ("maxblocks", 999),
+                ("nchan", 0),
+                ("nfreq", 28),
+                ("rrhx", "0"),
+                ("rrhy", "0"),
+                ("sectid", "s08"),
+            ]
+        )
 
-        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
 
-        for ii, ch in enumerate(["hx", "hy", "ex", "ey"], 2):
+        for ch in ["hx", "hy", "ex", "ey"]:
             with self.subTest(ch):
-                self.assertEqual(
-                    d_list[ii].split("=")[1], getattr(self.edi_obj.Data, ch)
-                )
+                self.assertEqual(d_list[ch], getattr(self.edi_obj.Data, ch))
 
     def test_z(self):
         with self.subTest("zxx"):
@@ -343,6 +349,91 @@ class TestMetronixEDI(unittest.TestCase):
         )
 
         self.assertTrue(np.isclose(phase_yx % -180, pyx % -180).all())
+
+
+class TestToTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.edi = edi.EDI(fn=TF_EDI_RHO_ONLY)
+        self.tf = TF(fn=TF_EDI_RHO_ONLY)
+        self.tf.read()
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error[:, 0, 1] != 0).all())
+        self.assertTrue((self.tf.impedance_error[:, 1, 0] != 0).all())
+
+    def test_has_tipper(self):
+        self.assertFalse(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertFalse(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertFalse(self.tf.has_residual_covariance())
+
+
+class TestFromTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.tf = TF(fn=TF_EDI_RHO_ONLY)
+        self.tf.read()
+
+        self.edi = self.tf.to_edi()
+        self.maxDiff = None
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True, required=False)
+        for edi_key, edi_value in edi_st.items():
+            if edi_key in [
+                "comments",
+                "transfer_function.remote_references",
+            ]:
+                with self.subTest(edi_key):
+                    self.assertNotEqual(edi_value, tf_st[edi_key])
+            else:
+                with self.subTest(edi_key):
+                    self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error[:, 0, 1] != 0).all())
+        self.assertTrue((self.tf.impedance_error[:, 1, 0] != 0).all())
+
+    def test_has_tipper(self):
+        self.assertFalse(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertFalse(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertFalse(self.tf.has_residual_covariance())
 
 
 # =============================================================================
