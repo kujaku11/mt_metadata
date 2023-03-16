@@ -446,7 +446,7 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = (
+            survey_obj.citation_dataset.authors = (
                 self.copyright.citation.authors
             )
             survey_obj.citation_dataset.title = self.copyright.citation.title
