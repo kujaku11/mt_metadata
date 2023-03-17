@@ -15,14 +15,6 @@ Subpackages
 Submodules
 ----------
 
-mt\_metadata.transfer\_functions.io.readwrite module
-----------------------------------------------------
-
-.. automodule:: mt_metadata.transfer_functions.io.readwrite
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 mt\_metadata.transfer\_functions.io.tools module
 ------------------------------------------------
 

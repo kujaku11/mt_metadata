@@ -12,7 +12,7 @@ import unittest
 
 import numpy as np
 from mt_metadata import TF_XML
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
 # =============================================================================
@@ -28,7 +28,7 @@ class TestWriteEMTFXML(unittest.TestCase):
     def setUpClass(self):
         self.tf = TF(fn=TF_XML)
         self.tf.read()
-        self.x1 = self.tf.write(file_type="xml")
+        self.x1 = self.tf.to_emtfxml()
         self.maxDiff = None
 
         self.x0 = EMTFXML(TF_XML)
@@ -56,7 +56,7 @@ class TestWriteEMTFXML(unittest.TestCase):
             self.assertEqual(self.x0.external_url, self.x1.external_url)
 
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.external_url.to_xml(string=True),
                 self.x1.external_url.to_xml(string=True),
             )
@@ -66,7 +66,7 @@ class TestWriteEMTFXML(unittest.TestCase):
             self.assertEqual(self.x0.primary_data, self.x1.primary_data)
 
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.primary_data.to_xml(string=True),
                 self.x1.primary_data.to_xml(string=True),
             )
@@ -96,7 +96,7 @@ class TestWriteEMTFXML(unittest.TestCase):
             self.assertEqual(self.x0.copyright, self.x1.copyright)
 
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.copyright.to_xml(string=True),
                 self.x1.copyright.to_xml(string=True),
             )
@@ -137,7 +137,7 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         # The rounding is not the same
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.processing_info.to_xml(string=True),
                 self.x1.processing_info.to_xml(string=True),
             )
@@ -152,7 +152,7 @@ class TestWriteEMTFXML(unittest.TestCase):
                     )
                 if estimate_01 == estimate_02:
                     with self.subTest(f"{estimate_02}.to_xml"):
-                        self.assertEqual(
+                        self.assertMultiLineEqual(
                             estimate_01.to_xml(string=True),
                             estimate_02.to_xml(string=True),
                         )
@@ -166,7 +166,7 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         # The rounding is not the same
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.data_types.to_xml(string=True),
                 self.x1.data_types.to_xml(string=True),
             )
@@ -180,7 +180,7 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         # The rounding is not the same
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.site_layout.to_xml(string=True),
                 self.x1.site_layout.to_xml(string=True),
             )
@@ -202,7 +202,9 @@ class TestWriteEMTFXML(unittest.TestCase):
 
     def test_data_z_residcov(self):
         self.assertTrue(
-            np.all(np.isclose(self.x0.data.z_residcov, self.x1.data.z_residcov))
+            np.all(
+                np.isclose(self.x0.data.z_residcov, self.x1.data.z_residcov)
+            )
         )
 
     def test_data_t(self):
@@ -222,7 +224,9 @@ class TestWriteEMTFXML(unittest.TestCase):
 
     def test_data_t_residcov(self):
         self.assertTrue(
-            np.all(np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov))
+            np.all(
+                np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov)
+            )
         )
 
     def test_period_range(self):
@@ -234,7 +238,7 @@ class TestWriteEMTFXML(unittest.TestCase):
 
         # The rounding is not the same
         with self.subTest("to_xml"):
-            self.assertEqual(
+            self.assertMultiLineEqual(
                 self.x0.period_range.to_xml(string=True),
                 self.x1.period_range.to_xml(string=True),
             )

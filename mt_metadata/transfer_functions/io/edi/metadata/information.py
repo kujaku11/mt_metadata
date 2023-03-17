@@ -53,7 +53,7 @@ class Information(Base):
         }
 
         self.translation_dict = {
-            "operator": "station.acquired_by.author",
+            "operator": "run.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
             "ex_len": "run.ex.dipole_length",
@@ -191,6 +191,18 @@ class Information(Base):
                 if len(l_list) == 2:
                     l_key = l_list[0].strip()
                     l_value = l_list[1].strip().replace('"', "")
+                    if l_value.find("[") > 0 and l_value.find("]") > 0:
+                        if l_value.count(",") >= 1:
+                            l_sep = ","
+                        elif l_value.count(";") >= 1:
+                            l_sep = ";"
+                        else:
+                            l_sep = ""
+                        l_value = (
+                            l_value.replace("[", "")
+                            .replace("[", "")
+                            .split(l_sep)
+                        )
                     self.info_dict[l_key] = l_value
 
             else:

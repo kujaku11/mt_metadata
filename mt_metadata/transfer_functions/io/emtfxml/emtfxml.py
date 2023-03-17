@@ -14,7 +14,6 @@ Created on Sat Sep  4 17:59:53 2021
 # =============================================================================
 import inspect
 from pathlib import Path
-from collections import OrderedDict
 from xml.etree import cElementTree as et
 import numpy as np
 
@@ -33,9 +32,6 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
-from mt_metadata.utils import mttime
-from mt_metadata import __version__
-
 
 meta_classes = dict(
     [
@@ -411,6 +407,7 @@ class EMTFXML(emtf_xml.EMTF):
                 self.data_types.data_types_list.append(
                     data_types_dict["impedance"]
                 )
+
         if self.data.t is not None:
             if not np.all(self.data.t == 0.0):
                 self.data_types.data_types_list.append(
@@ -427,6 +424,8 @@ class EMTFXML(emtf_xml.EMTF):
         :rtype: TYPE
 
         """
+        if comments is None:
+            return
         other = []
         for comment in comments.split(";"):
             if comment.count(":") >= 1:
@@ -447,7 +446,9 @@ class EMTFXML(emtf_xml.EMTF):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.authors = (
+                self.copyright.citation.authors
+            )
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -467,6 +468,7 @@ class EMTFXML(emtf_xml.EMTF):
                     for k, v in {
                         "copyright.acknowledgement": self.copyright.acknowledgement,
                         "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                        "copyright.release_status": self.copyright.release_status,
                     }.items()
                     if v not in [None, ""]
                 ]
@@ -491,10 +493,11 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.survey = sm.id
         else:
             self.site.survey = sm.geographic_name
-        self.site.country = ",".join(sm.country)
+        if sm.country is not None:
+            self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
-        self.copyright.citation.authors = sm.citation_dataset.author
+        self.copyright.citation.authors = sm.citation_dataset.authors
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
 
@@ -775,13 +778,16 @@ class EMTFXML(emtf_xml.EMTF):
             fn.start = r.time_period.start
             fn.end = r.time_period.end
             fn.run = r.id
-            for comment in r.comments.split(";"):
-                if comment.count(":") >= 1:
-                    key, value = comment.split(":", 1)
-                    try:
-                        fn.set_attr_from_name(key.strip(), value.strip())
-                    except:
-                        raise AttributeError(f"Cannot set attribute {key}.")
+            if r.comments is not None:
+                for comment in r.comments.split(";"):
+                    if comment.count(":") >= 1:
+                        key, value = comment.split(":", 1)
+                        try:
+                            fn.set_attr_from_name(key.strip(), value.strip())
+                        except:
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:
@@ -877,135 +883,3 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.site_layout.input_channels = list(ch_in_dict.values())
         self.site_layout.output_channels = list(ch_out_dict.values())
-
-
-def read_emtfxml(fn, **kwargs):
-    """
-    read an EMTF XML file
-
-    :param fn: DESCRIPTION
-    :type fn: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-    from mt_metadata.transfer_functions.core import TF
-
-    obj = EMTFXML(**kwargs)
-    obj.read(fn)
-
-    emtf = TF()
-    emtf._fn = obj.fn
-    emtf.survey_metadata = obj.survey_metadata
-    emtf.station_metadata = obj.station_metadata
-
-    emtf.period = obj.data.period
-    emtf.impedance = obj.data.z
-    emtf.impedance_error = np.sqrt(obj.data.z_var)
-    emtf._transfer_function.inverse_signal_power.loc[
-        dict(input=["hx", "hy"], output=["hx", "hy"])
-    ] = obj.data.z_invsigcov
-    emtf._transfer_function.residual_covariance.loc[
-        dict(input=["ex", "ey"], output=["ex", "ey"])
-    ] = obj.data.z_residcov
-
-    emtf.tipper = obj.data.t
-    emtf.tipper_error = np.sqrt(obj.data.t_var)
-    emtf._transfer_function.inverse_signal_power.loc[
-        dict(input=["hx", "hy"], output=["hx", "hy"])
-    ] = obj.data.t_invsigcov
-    emtf._transfer_function.residual_covariance.loc[
-        dict(input=["hz"], output=["hz"])
-    ] = obj.data.t_residcov
-
-    return emtf
-
-
-def write_emtfxml(tf_object, fn=None, **kwargs):
-    """
-    Write an XML file from a TF object
-
-    :param tf_obj: DESCRIPTION
-    :type tf_obj: TYPE
-    :param fn: DESCRIPTION, defaults to None
-    :type fn: TYPE, optional
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-
-    from mt_metadata.transfer_functions.core import TF
-
-    ex_ey = [
-        tf_object.channel_nomenclature["ex"],
-        tf_object.channel_nomenclature["ey"],
-    ]
-    hx_hy = [
-        tf_object.channel_nomenclature["hx"],
-        tf_object.channel_nomenclature["hy"],
-    ]
-
-    if not isinstance(tf_object, TF):
-        raise ValueError(
-            "Input must be an mt_metadata.transfer_functions.core.TF object"
-        )
-
-    emtf = EMTFXML()
-    emtf.survey_metadata = tf_object.survey_metadata
-    emtf.station_metadata = tf_object.station_metadata
-
-    if emtf.description is None:
-        emtf.description = "Magnetotelluric Transfer Functions"
-
-    if emtf.product_id is None:
-        emtf.product_id = (
-            f"{emtf.survey_metadata.project}."
-            f"{emtf.station_metadata.id}."
-            f"{emtf.station_metadata.time_period._start_dt.year}"
-        )
-    tags = []
-
-    emtf.data.period = tf_object.period
-
-    if tf_object.has_impedance():
-        tags += ["impedance"]
-        emtf.data.z = tf_object.impedance.data
-        emtf.data.z_var = tf_object.impedance_error.data**2
-    if (
-        tf_object.has_residual_covariance()
-        and tf_object.has_inverse_signal_power()
-    ):
-        emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=hx_hy, output=hx_hy)
-        ].data
-        emtf.data.z_residcov = tf_object.residual_covariance.loc[
-            dict(input=ex_ey, output=ex_ey)
-        ].data
-    if tf_object.has_tipper():
-        tags += ["tipper"]
-        emtf.data.t = tf_object.tipper.data
-        emtf.data.t_var = tf_object.tipper_error.data**2
-
-    if (
-        tf_object.has_residual_covariance()
-        and tf_object.has_inverse_signal_power()
-    ):
-        emtf.data.t_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=hx_hy, output=hx_hy)
-        ].data
-        emtf.data.t_residcov = tf_object.residual_covariance.loc[
-            dict(
-                input=[tf_object.channel_nomenclature["hz"]],
-                output=[tf_object.channel_nomenclature["hz"]],
-            )
-        ].data
-
-    emtf.tags = ", ".join(tags)
-    emtf.period_range.min = emtf.data.period.min()
-    emtf.period_range.max = emtf.data.period.max()
-    if "skip_field_notes" in kwargs.keys():
-        emtf.write(fn=fn, skip_field_notes=kwargs["skip_field_notes"])
-    else:
-        emtf.write(fn=fn)
-
-    return emtf

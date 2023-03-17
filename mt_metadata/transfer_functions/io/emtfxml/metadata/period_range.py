@@ -44,7 +44,7 @@ class PeriodRange(Base):
         """
 
         root = et.Element(
-            self.__class__.__name__.capitalize(),
+            self.__class__.__name__,
             {"min": f"{self.min:.9f}", "max": f"{self.max:.9f}"},
         )
         if string:

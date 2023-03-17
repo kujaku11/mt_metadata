@@ -15,6 +15,7 @@ from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
 from mt_metadata.utils.exceptions import MTTimeError
 from mt_metadata import __version__
+from mt_metadata.base.helpers import validate_name
 
 # =============================================================================
 attr_dict = get_schema("header", SCHEMA_FN_PATHS)
@@ -201,10 +202,15 @@ class Header(Location):
             if key == "declination":
                 setattr(self.declination, "value", value)
             else:
+                if key in ["dataid"]:
+                    value = validate_name(value)
                 setattr(self, key, value)
 
     def write_header(
-        self, longitude_format="LON", latlon_format="dms", required=True,
+        self,
+        longitude_format="LON",
+        latlon_format="dms",
+        required=True,
     ):
         """
         Write header information to a list of lines.

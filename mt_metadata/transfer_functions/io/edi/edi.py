@@ -1060,6 +1060,9 @@ class EDI(object):
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate
+        if self.Header.enddate is not None:
+            sm.time_period.end = self.Header.enddate
+
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
@@ -1087,8 +1090,10 @@ class EDI(object):
                 if ch is None:
                     if comp in ["ex", "ey"]:
                         ch = metadata.Electric(component=comp)
+                        sm.runs[0].add_channel(ch)
                     elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
                         ch = metadata.Magnetic(component=comp)
+                        sm.runs[0].add_channel(ch)
                     else:
                         self.logger.warning(
                             f"Do not recognize channel {comp}, skipping..."
@@ -1116,7 +1121,8 @@ class EDI(object):
                     runs = value.split()
                 sm.run_list = []
                 for rr in runs:
-                    sm.run_list.append(metadata.Run(id=rr))
+                    if rr not in sm.runs:
+                        sm.add_run(metadata.Run(id=rr))
                 sm.transfer_function.runs_processed = runs
             elif key == "sitename":
                 sm.geographic_name = value
@@ -1139,16 +1145,16 @@ class EDI(object):
                 rr.time_period.start = sm.time_period.start
             if rr.time_period.end == "1980-01-01T00:00:00+00:00":
                 rr.time_period.end = sm.time_period.end
-            rr.ex = self.ex_metadata
-            rr.ey = self.ey_metadata
-            rr.hx = self.hx_metadata
-            rr.hy = self.hy_metadata
+            rr.add_channel(self.ex_metadata)
+            rr.add_channel(self.ey_metadata)
+            rr.add_channel(self.hx_metadata)
+            rr.add_channel(self.hy_metadata)
             if self.hz_metadata.component in ["hz"]:
-                rr.hz = self.hz_metadata
+                rr.add_channel(self.hz_metadata)
             if self.rrhx_metadata.component in ["rrhx"]:
-                rr.rrhx = self.rrhx_metadata
+                rr.add_channel(self.rrhx_metadata)
             if self.rrhy_metadata.component in ["rrhy"]:
-                rr.rrhy = self.rrhy_metadata
+                rr.add_channel(self.rrhy_metadata)
         return sm
 
     @station_metadata.setter
@@ -1186,7 +1192,7 @@ class EDI(object):
                 if k in ["processing_parameters"]:
                     for item in v:
                         self.Info.info_list.append(
-                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
+                            f"transfer_function.{item.replace('=', ' = ')}"
                         )
                 else:
                     self.Info.info_list.append(f"transfer_function.{k} = {v}")
@@ -1226,6 +1232,7 @@ class EDI(object):
         self.Measurement.refelev = sm.location.elevation
         self.Measurement.reflat = sm.location.latitude
         self.Measurement.reflon = sm.location.longitude
+        self.Measurement.refloc = sm.id
         self.Measurement.maxchan = len(sm.channels_recorded)
 
     def _get_electric_metadata(self, comp):
@@ -1238,6 +1245,16 @@ class EDI(object):
         electric.negative.type = "electric"
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")
+            for attr in [
+                "negative.x",
+                "negative.y",
+                "positive.x2",
+                "positive.y2",
+                "measurement_azimuth",
+                "translated_azimuth",
+            ]:
+                if electric.get_attr_from_name(attr) is None:
+                    electric.set_attr_from_name(attr, 0)
             electric.dipole_length = meas.dipole_length
             electric.channel_id = meas.id
             electric.measurement_azimuth = meas.azimuth
@@ -1305,6 +1322,9 @@ class EDI(object):
         magnetic.sensor.type = "magnetic"
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")
+            for attr in ["location.x", "location.y", "location.z"]:
+                if magnetic.get_attr_from_name(attr) is None:
+                    magnetic.set_attr_from_name(attr, 0)
             magnetic.measurement_azimuth = meas.azm
             magnetic.translated_azimuth = meas.azm
             magnetic.component = meas.chtype
@@ -1348,116 +1368,3 @@ class EDI(object):
     @property
     def rrhy_metadata(self):
         return self._get_magnetic_metadata("rrhy")
-
-
-# =============================================================================
-#  Generic read and write
-# =============================================================================
-def read_edi(fn, **kwargs):
-    """
-
-    Read an edi file and return a :class:`mtpy.core.mt.MT` object
-
-    :param fn: DESCRIPTION
-    :type fn: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-    # need to add this here instead of the top is because of recursive
-    # importing.  This may not be the best way to do this but works for now
-    # so we don't have to break how MTpy structure is setup now.
-    from mt_metadata.transfer_functions.core import TF
-
-    st = MTime().now()
-
-    edi_obj = EDI(**kwargs)
-    edi_obj.read(fn)
-
-    tf_obj = TF()
-    tf_obj._fn = fn
-
-    if edi_obj.tf is not None:
-        k_dict = OrderedDict(
-            {
-                "period": "period",
-                "transfer_function": "tf",
-                "transfer_function_error": "tf_err",
-                "inverse_signal_power": "signal_inverse_power",
-                "residual_covariance": "residual_covariance",
-                "survey_metadata": "survey_metadata",
-                "station_metadata": "station_metadata",
-            }
-        )
-    else:
-        k_dict = OrderedDict(
-            {
-                "period": "period",
-                "impedance": "z",
-                "impedance_error": "z_err",
-                "tipper": "t",
-                "tipper_error": "t_err",
-                "survey_metadata": "survey_metadata",
-                "station_metadata": "station_metadata",
-            }
-        )
-    for tf_key, edi_key in k_dict.items():
-        setattr(tf_obj, tf_key, getattr(edi_obj, edi_key))
-    et = MTime().now()
-    tf_obj.logger.debug(
-        f"Reading EDI for {tf_obj.station} and conversion to MT took {et - st:.2f} seconds"
-    )
-
-    return tf_obj
-
-
-def write_edi(tf_object, fn=None, **kwargs):
-    """
-    Write an edi file from an :class:`mtpy.core.mt.MT` object
-
-    :param tf_object: DESCRIPTION
-    :type tf_object: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-    from mt_metadata.transfer_functions.core import TF
-
-    if not isinstance(tf_object, TF):
-        raise ValueError(
-            "Input must be an mt_metadata.transfer_functions.core object"
-        )
-    edi_obj = EDI()
-    if tf_object.has_impedance():
-        edi_obj.z = tf_object.impedance.data
-        edi_obj.z_err = tf_object.impedance_error.data
-    if tf_object.has_tipper():
-        edi_obj.t = tf_object.tipper.data
-        edi_obj.t_err = tf_object.tipper_error.data
-    edi_obj.frequency = 1.0 / tf_object.period
-    edi_obj.rotation_angle = tf_object._rotation_angle
-
-    # fill from survey metadata
-    edi_obj.survey_metadata = tf_object.survey_metadata
-
-    # fill from station metadata
-    edi_obj.station_metadata = tf_object.station_metadata
-
-    # input data section
-    edi_obj.Data.data_type = tf_object.station_metadata.data_type
-    edi_obj.Data.nfreq = tf_object.period.size
-    edi_obj.Data.sectid = tf_object.station
-    edi_obj.Data.nchan = len(edi_obj.Measurement.channel_ids.keys())
-
-    edi_obj.Data.maxblks = 999
-    for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
-        if hasattr(edi_obj.Measurement, f"meas_{comp}"):
-            setattr(
-                edi_obj.Data,
-                comp,
-                getattr(edi_obj.Measurement, f"meas_{comp}").id,
-            )
-    new_edi_fn = edi_obj.write(new_edi_fn=fn, **kwargs)
-    edi_obj._fn = new_edi_fn
-
-    return edi_obj
