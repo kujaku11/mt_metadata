@@ -414,7 +414,223 @@ class EMTFXML(emtf_xml.EMTF):
                     data_types_dict["tipper"]
                 )
 
-    def _split_comments(self, comments):
+    def _parse_comments_data_logger(self, key, value):
+        """
+
+        :param comments_list: DESCRIPTION
+        :type comments_list: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if "datalogger" in key:
+            key = key.replace("datalogger", "instrument")
+            key = key.split(".", 1)[1]
+
+        return key, value
+
+    def _parse_comments_data_quality(self, key, value):
+        """
+
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        key = f"site.{key.split('.', 1)[1]}"
+        key = key.replace("dataquality", "data_quality_notes")
+        if "comments" in key:
+            key = key.replace("comments", "comments.value")
+        if "author" in key:
+            key = key.replace("author", "comments.author")
+
+        if "rating" in key:
+            value = float(value)
+
+        return key, value
+
+    def _parse_comments_electric(self, key, value):
+        """
+
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        key = key.split(".", 1)[1]
+        key = key.replace("electrode_", "")
+        klist = key.split(".")
+        if len(klist) > 1:
+            comp = klist[0]
+            fkey = klist[1]
+        else:
+            comp = "ex"
+            fkey = klist[0]
+
+        if fkey in ["chtype", "manufacturer", "azm"]:
+            e_dict = {
+                "chtype": "name",
+                "manufacturer": "manufacturer",
+                "azm": "azimuth",
+            }
+
+            dipole_names = []
+            for d in self.field_notes.run_list[0].dipole:
+                if isinstance(d.name, str):
+                    dipole_names.append(d.name.lower())
+                else:
+                    dipole_names.append(d.name)
+            if comp.lower() in dipole_names:
+                index = dipole_names.index(comp)
+            elif None in dipole_names:
+                index = dipole_names.index(None)
+            else:
+                self.field_notes.run_list[0].magnetometer.append(
+                    emtf_xml.Dipole(name=comp)
+                )
+                index = -1
+
+            setattr(
+                self.field_notes.run_list[0].dipole[index],
+                e_dict[fkey],
+                value,
+            )
+        elif fkey in ["x", "x2", "y", "y2", "z", "z2"]:
+            if len(self.site_layout.output_channels) == 0:
+                self.site_layout.output_channels.append(
+                    emtf_xml.Electric(name=comp)
+                )
+            ch_names = [c.name for c in self.site_layout.output_channels]
+            if comp in ch_names:
+                index = ch_names.index(comp)
+            else:
+                index = 0
+            self.site_layout.output_channels[index].set_attr_from_name(
+                fkey, value
+            )
+        return None, None
+
+    def _parse_comments_magnetic(self, key, value):
+        """
+
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        key = key.split(".", 1)[1]
+        key = key.replace("magnetometer_", "")
+        klist = key.split(".")
+        if len(klist) > 1:
+            comp = klist[0]
+            fkey = klist[1]
+        else:
+            comp = "hx"
+            fkey = klist[0]
+
+        if fkey in ["chtype", "manufacturer", "azm", "type", "acqchan"]:
+            m_dict = {
+                "chtype": "name",
+                "manufacturer": "manufacturer",
+                "azm": "azimuth",
+                "type": "type",
+                "acqchan": "id",
+            }
+
+            mag_names = []
+            for d in self.field_notes.run_list[0].magnetometer:
+                if isinstance(d.name, str):
+                    mag_names.append(d.name.lower())
+                else:
+                    mag_names.append(d.name)
+            if comp.lower() in mag_names:
+                index = mag_names.index(comp)
+
+            elif None in mag_names:
+                index = mag_names.index(None)
+            else:
+                self.field_notes.run_list[0].magnetometer.append(
+                    emtf_xml.Magnetometer(name=comp)
+                )
+                index = -1
+
+            setattr(
+                self.field_notes.run_list[0].magnetometer[index],
+                m_dict[fkey],
+                value,
+            )
+        elif fkey in ["x", "y", "z"]:
+
+            if comp in ["hx", "hy"]:
+                if len(self.site_layout.output_channels) == 0:
+                    self.site_layout.input_channels.append(
+                        emtf_xml.Magnetic(name=comp)
+                    )
+                ch_names = [c.name for c in self.site_layout.output_channels]
+                if comp in ch_names:
+                    index = ch_names.index(comp)
+                else:
+                    index = 0
+                self.site_layout.output_channels[index].set_attr_from_name(
+                    fkey, value
+                )
+            elif comp in ["hz"]:
+                if len(self.site_layout.output_channels) == 0:
+                    self.site_layout.output_channels.append(
+                        emtf_xml.Magnetic(name=comp)
+                    )
+                ch_names = [c.name for c in self.site_layout.output_channels]
+                if comp in ch_names:
+                    index = ch_names.index(comp)
+                else:
+                    index = 0
+
+                self.site_layout.output_channels[index].set_attr_from_name(
+                    fkey, value
+                )
+        return None, None
+
+    def _parse_comments_processing(self, key, value):
+        """
+
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        key = key.replace("processing", "processing_info").replace(
+            "software", "processing_software"
+        )
+        if "author.name" in key:
+            key = key.replace("author.name", "author")
+        for item in [
+            "author.email",
+            "author.organization",
+            "author.organization_url",
+            "processing_software.version",
+            "author.organization",
+            "author.organization_url",
+        ]:
+            if item in key:
+                return None, None
+
+        return key, value
+
+    def _parse_comments(self, comments):
         """
 
         :param comments: DESCRIPTION
@@ -427,13 +643,41 @@ class EMTFXML(emtf_xml.EMTF):
         if comments is None:
             return
         other = []
+        if comments.count("\n") > 0 and comments.count("=") > 0:
+            comments = comments.replace("\n", ";").replace("=", ":")
         for comment in comments.split(";"):
             if comment.count(":") >= 1:
-                key, value = comment.split(":", 1)
-                try:
-                    self.set_attr_from_name(key.strip(), value.strip())
-                except:
-                    raise AttributeError(f"Cannot set attribute {key}.")
+                key, value = [c.strip() for c in comment.split(":", 1)]
+                if "fieldnotes" in key:
+                    if len(self.field_notes.run_list) == 0:
+                        self.field_notes.run_list.append(emtf_xml.Run())
+
+                if "datalogger" in key:
+                    key, value = self._parse_comments_data_logger(key, value)
+                    try:
+                        self.field_notes.run_list[0].set_attr_from_name(
+                            key, value
+                        )
+                        key = None
+                        value = None
+                    except:
+                        pass
+
+                elif "fieldnotes" in key and "dataquality" in key:
+                    key, value = self._parse_comments_data_quality(key, value)
+
+                elif "fieldnotes" in key and "electrode_" in key:
+                    key, value = self._parse_comments_electric(key, value)
+                elif "fieldnotes" in key and "magnetometer_" in key:
+                    key, value = self._parse_comments_magnetic(key, value)
+                elif "processing" in key:
+                    key, value = self._parse_comments_processing(key, value)
+
+                if key is not None and value is not None:
+                    try:
+                        self.set_attr_from_name(key, value)
+                    except:
+                        self.logger.warning(f"Cannot set attribute {key}.")
             else:
                 other.append(comment)
         try:
@@ -501,7 +745,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
 
-        self._split_comments(sm.comments)
+        self._parse_comments(sm.comments)
 
     @property
     def station_metadata(self):
@@ -700,8 +944,6 @@ class EMTFXML(emtf_xml.EMTF):
             sm.orientation.angle_to_geographic_north
         )
 
-        self._split_comments(sm.comments)
-
         self.provenance.creating_application = sm.provenance.software.name
         self.provenance.create_time = sm.provenance.creation_time
         self.provenance.creator.name = sm.provenance.creator.author
@@ -785,16 +1027,14 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(
-                                f"Cannot set attribute {key}."
-                            )
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:
                     rch = getattr(r, comp)
                     mag = emtf_xml.Magnetometer()
                     mag.id = rch.sensor.id
-                    mag.name = rch.sensor.name
+                    mag.name = comp
                     mag.manufacturer = rch.sensor.manufacturer
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
@@ -883,3 +1123,5 @@ class EMTFXML(emtf_xml.EMTF):
 
         self.site_layout.input_channels = list(ch_in_dict.values())
         self.site_layout.output_channels = list(ch_out_dict.values())
+
+        self._parse_comments(sm.comments)
