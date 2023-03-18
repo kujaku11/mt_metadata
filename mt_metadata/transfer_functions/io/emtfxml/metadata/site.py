@@ -106,6 +106,9 @@ class Site(Base):
     def to_xml(self, string=False, required=True):
         """ """
 
+        if self._end_dt < self._start_dt:
+            self.end = self.start
+
         return helpers.to_xml(
             self,
             string=string,
