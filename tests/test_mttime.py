@@ -9,6 +9,7 @@ import unittest
 from dateutil import parser as dtparser
 from dateutil import tz
 import pandas as pd
+import numpy as np
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.exceptions import MTTimeError
 
@@ -23,54 +24,123 @@ class TestMTime(unittest.TestCase):
         self.month = 1
         self.day = 2
         self.hour = 12
-        self.minute = 15
-        self.second = 20
-        self.ms = 123400
-        self.dt_str_01 = "2020-01-02 12:15:20.1234"
-        self.dt_true = "2020-01-02T12:15:20.123400+00:00"
+        self.minutes = 15
+        self.seconds = 20
+        self.microseconds = 123000
+        self.dt_str_01 = "2020-01-02 12:15:20.123"
+        self.dt_true = "2020-01-02T12:15:20.123000+00:00"
+        self.keys = [
+            "year",
+            "month",
+            "day",
+            "hour",
+            "minutes",
+            "seconds",
+            "microseconds",
+        ]
 
-        self.epoch_seconds = 1577967320.1234
+        self.epoch_seconds = 1577967320.123
         self.input_fail = "01294055"
-        self.mtime_obj = MTime()
 
     def test_string_input_date(self):
-        self.mtime_obj.from_str(self.date_str_01)
-        self.assertEqual(self.year, self.mtime_obj.year)
-        self.assertEqual(self.month, self.mtime_obj.month)
-        self.assertEqual(self.day, self.mtime_obj.day)
+        t = MTime(self.date_str_01)
+
+        for key in self.keys[0:3]:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
 
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
 
         t = MTime(stamp)
-        self.assertEqual(self.year, t.year)
-        self.assertEqual(self.month, t.month)
-        self.assertEqual(self.day, t.day)
-        self.assertEqual(self.hour, t.hour)
-        self.assertEqual(self.minute, t.minutes)
-        self.assertEqual(self.second, t.seconds)
-        self.assertEqual(self.ms, t.microseconds)
-        self.assertEqual(self.dt_true, t.iso_str)
-        self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
 
     def test_string_input_dt(self):
-        self.mtime_obj.from_str(self.dt_str_01)
-        self.assertEqual(self.year, self.mtime_obj.year)
-        self.assertEqual(self.month, self.mtime_obj.month)
-        self.assertEqual(self.day, self.mtime_obj.day)
-        self.assertEqual(self.hour, self.mtime_obj.hour)
-        self.assertEqual(self.minute, self.mtime_obj.minutes)
-        self.assertEqual(self.second, self.mtime_obj.seconds)
-        self.assertEqual(self.ms, self.mtime_obj.microseconds)
-        self.assertEqual(self.dt_true, self.mtime_obj.iso_str)
-        self.assertAlmostEqual(
-            self.epoch_seconds, self.mtime_obj.epoch_seconds, places=4
-        )
+        t = MTime()
+        t.from_str(self.dt_str_01)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
+    def test_np_datetime64_str(self):
+        ntime = np.datetime64(self.dt_str_01)
+        t = MTime(ntime)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
+    def test_np_datetime64_ns(self):
+        ntime = np.datetime64(int(self.epoch_seconds * 1e9), "ns")
+        t = MTime(ntime)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
+    def test_np_datetime64_us(self):
+        ntime = np.datetime64(int(self.epoch_seconds * 1e6), "us")
+        t = MTime(ntime)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
+    def test_np_datetime64_ms(self):
+        ntime = np.datetime64(int(self.epoch_seconds * 1e3), "ms")
+        t = MTime(ntime)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
 
     def test_input_fail(self):
-        self.assertRaises(
-            MTTimeError, self.mtime_obj.from_str, self.input_fail
-        )
+        t = MTime()
+        self.assertRaises(MTTimeError, t.from_str, self.input_fail)
 
     def test_compare_dt(self):
         dt_01 = MTime()
