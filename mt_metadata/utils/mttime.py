@@ -153,7 +153,16 @@ class MTime:
                     "Input time is a np.datetime64 "
                     + "dt_object set to datetime64.tolist()."
                 )
-                self.dt_object = self.validate_tzinfo(time.tolist())
+                t = time.tolist()
+                if isinstance(t, datetime.datetime):
+                    self.dt_object = self.validate_tzinfo(t)
+                elif isinstance(t, int):
+                    if "ns" in time.dtype.descr[0][1]:
+                        self.epoch_seconds = t / 1e9
+                    elif "us" in time.dtype.descr[0][1]:
+                        self.epoch_seconds = t / 1e6
+                    elif "ms" in time.dtype.descr[0][1]:
+                        self.epoch_seconds = t / 1e3
 
             elif isinstance(time, (datetime.datetime)):
                 self.logger.debug("Input time is a datetime.datetime object")
