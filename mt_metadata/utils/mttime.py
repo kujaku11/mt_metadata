@@ -334,6 +334,9 @@ class MTime:
 
         return self.epoch_seconds - other_seconds
 
+    def __hash__(self):
+        return hash(self.isoformat())
+
     @property
     def iso_str(self):
         return self.dt_object.isoformat()

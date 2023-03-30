@@ -17,7 +17,8 @@ from mt_metadata.utils.exceptions import MTTimeError
 # tests
 # =============================================================================
 class TestMTime(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.date_str_01 = "2020-01-02"
         self.date_str_01 = "01-02-20"
         self.year = 2020
@@ -165,6 +166,13 @@ class TestMTime(unittest.TestCase):
         if isinstance(dt_obj, tz.tzlocal):
             self.mtime_obj.logger.warning("Local Time Zone Found")
         self.assertIsInstance(dt_obj.tzinfo, tz.tzutc)
+
+    def test_hash(self):
+        t1 = MTime(self.dt_true)
+        t2 = MTime(self.dt_true)
+
+        t_set = list(set([t1, t2]))
+        self.assertListEqual(t_set, [t1.isoformat()])
 
 
 # =============================================================================
