@@ -141,17 +141,22 @@ class TestMTime(unittest.TestCase):
 
     def test_input_fail(self):
         t = MTime()
-        self.assertRaises(MTTimeError, t.from_str, self.input_fail)
+        self.assertRaises(ValueError, t.from_str, self.input_fail)
 
     def test_compare_dt(self):
         dt_01 = MTime()
         dt_02 = MTime()
 
-        self.assertTrue(dt_01 == dt_02)
-        self.assertTrue(dt_01 == dt_02.iso_str)
-        self.assertTrue(dt_01 == dt_02.epoch_seconds)
-        self.assertTrue(dt_01 >= dt_02)
-        self.assertTrue(dt_01 <= dt_02)
+        with self.subTest("dt"):
+            self.assertTrue(dt_01 == dt_02)
+        with self.subTest("isostring"):
+            self.assertTrue(dt_01 == dt_02.iso_str)
+        with self.subTest("epoch_seconds"):
+            self.assertTrue(dt_01 == dt_02.epoch_seconds)
+        with self.subTest("ge"):
+            self.assertTrue(dt_01 >= dt_02)
+        with self.subTest("le"):
+            self.assertTrue(dt_01 <= dt_02)
 
     def test_no_tz(self):
         dt_obj = dtparser.isoparse(self.dt_str_01)
