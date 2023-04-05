@@ -4,13 +4,17 @@ time test
 Created on Thu May 21 14:09:17 2020
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 from dateutil import parser as dtparser
 from dateutil import tz
 import pandas as pd
 import numpy as np
+
 from mt_metadata.utils.mttime import MTime
+from obspy import UTCDateTime
 
 # =============================================================================
 # tests
@@ -126,6 +130,20 @@ class TestMTime(unittest.TestCase):
     def test_np_datetime64_ms(self):
         ntime = np.datetime64(int(self.epoch_seconds * 1e3), "ms")
         t = MTime(ntime)
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
+    def test_obspy_utcdatetime(self):
+        t = MTime(UTCDateTime(self.dt_true))
 
         for key in self.keys:
             with self.subTest(key):

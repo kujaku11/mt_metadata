@@ -252,22 +252,25 @@ class MTime:
 
         """
 
-        if dt_str is None:
+        if isinstance(dt_str, pd.Timestamp):
+            stamp = dt_str.tz_convert("UTC")
+
+        elif hasattr(dt_str, "isoformat"):
+            stamp = pd.Timestamp(dt_str.isoformat())
+
+        else:
+            try:
+                stamp = pd.Timestamp(dt_str)
+            except (TypeError, ValueError):
+                msg = f"Could not parse {dt_str} into a readable date-time"
+                self.logger.error(msg)
+                raise ValueError(msg)
+
+        if isinstance(stamp, (type(pd.NaT), type(None))):
             self.logger.warning(
                 "Time string is None, setting to 1980-01-01:00:00:00"
             )
             stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
-        else:
-            if isinstance(dt_str, pd.Timestamp):
-                stamp = dt_str.tz_convert("UTC")
-
-            else:
-                try:
-                    stamp = pd.Timestamp(dt_str)
-                except (TypeError, ValueError):
-                    msg = f"Could not parse {dt_str} into a readable date-time"
-                    self.logger.error(msg)
-                    raise ValueError(msg)
 
         # check time zone and enforce UTC
         if stamp.tz is None:
