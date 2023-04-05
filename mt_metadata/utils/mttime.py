@@ -259,7 +259,7 @@ class MTime:
         """
 
         if isinstance(dt_str, pd.Timestamp):
-            stamp = dt_str.tz_convert("UTC")
+            stamp = dt_str
 
         elif hasattr(dt_str, "isoformat"):
             stamp = pd.Timestamp(dt_str.isoformat())
