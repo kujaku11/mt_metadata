@@ -11,13 +11,8 @@ import datetime
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-import pytz
-
-from dateutil import parser as dtparser
-from dateutil.tz.tz import tzutc, tzlocal
 
 from .mt_logger import setup_logger
-from .exceptions import MTTimeError
 from mt_metadata import LOG_LEVEL
 
 # =============================================================================
@@ -198,13 +193,11 @@ class MTime:
 
         if not isinstance(other, (pd.Timedelta)):
             msg = (
-                "Adding times does not make sense, must use "
-                + "datetime.timedelta to add time. \n"
-                + "\t>>> add_time = datetime.timedelta(seconds=10) \n"
-                + "\t>>> mtime_obj + add_time"
+                "Adding times stamps does not make sense, use either "
+                "pd.Timedelta or seconds as a float "
             )
             self.logger.error(msg)
-            raise MTTimeError(msg)
+            raise ValueError(msg)
 
         return MTime(self._time_stamp + other)
 
@@ -263,18 +256,29 @@ class MTime:
             self.logger.warning(
                 "Time string is None, setting to 1980-01-01:00:00:00"
             )
-            self._time_stamp = pd.Timestamp("1980-01-01T00:00:00", tz="UTC")
+            stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
         else:
             if isinstance(dt_str, pd.Timestamp):
-                self._time_stamp = dt_str.tz_convert("UTC")
+                stamp = dt_str.tz_convert("UTC")
 
             else:
                 try:
-                    self._time_stamp = pd.Timestamp(dt_str, tz="UTC")
+                    stamp = pd.Timestamp(dt_str)
                 except (TypeError, ValueError):
                     msg = f"Could not parse {dt_str} into a readable date-time"
                     self.logger.error(msg)
                     raise ValueError(msg)
+
+        # check time zone and enforce UTC
+        if stamp.tz is None:
+            stamp = stamp.tz_localize("UTC").tz_convert("UTC")
+
+        # there can be a machine round off error, if it is close to 1 round to
+        # microseconds
+        if round(stamp.nanosecond / 1000) == 1:
+            stamp = stamp.round(freq="us")
+
+        self._time_stamp = stamp
 
     @property
     def date(self):
@@ -335,6 +339,14 @@ class MTime:
     @microseconds.setter
     def microseconds(self, value):
         self._time_stamp = self._time_stamp.replace(microsecond=value)
+
+    @property
+    def nanoseconds(self):
+        return self._time_stamp.nanosecond
+
+    @nanoseconds.setter
+    def nanoseconds(self, value):
+        self._time_stamp = self._time_stamp.replace(nanosecond=value)
 
     def now(self):
         """

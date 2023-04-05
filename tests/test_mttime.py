@@ -11,7 +11,6 @@ from dateutil import tz
 import pandas as pd
 import numpy as np
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.utils.exceptions import MTTimeError
 
 # =============================================================================
 # tests
@@ -152,7 +151,7 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertTrue(dt_01 == dt_02.iso_str)
         with self.subTest("epoch_seconds"):
-            self.assertTrue(dt_01 == dt_02.epoch_seconds)
+            self.assertTrue(dt_01 == (dt_02.epoch_seconds * 1e9))
         with self.subTest("ge"):
             self.assertTrue(dt_01 >= dt_02)
         with self.subTest("le"):
