@@ -717,7 +717,7 @@ class Base:
             msg = "Input must be a Pandas.Series not type %s"
             self.logger.error(msg, type(pd_series))
             MTSchemaError(msg % type(pd_series))
-        for key, value in pd_series.iteritems():
+        for key, value in pd_series.items():
             self.set_attr_from_name(key, value)
 
     def to_series(self, required=True):
