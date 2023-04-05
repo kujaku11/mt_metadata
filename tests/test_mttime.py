@@ -10,6 +10,7 @@ Created on Thu May 21 14:09:17 2020
 import unittest
 from dateutil import parser as dtparser
 from dateutil import tz
+import datetime
 import pandas as pd
 import numpy as np
 
@@ -195,6 +196,46 @@ class TestMTime(unittest.TestCase):
 
         t_set = list(set([t1, t2]))
         self.assertListEqual(t_set, [t1.isoformat()])
+
+    def test_add_time(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + 30
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_datetime_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + datetime.timedelta(seconds=30)
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_np_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + np.timedelta64(30, "s")
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_fail(self):
+        t1 = MTime(self.dt_true)
+        self.assertRaises(ValueError, t1.__add__, self.dt_true)
+
+    def test_subtract_time(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + 30
+
+        self.assertEqual(30, t2 - t1)
 
 
 # =============================================================================

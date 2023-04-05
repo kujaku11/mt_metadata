@@ -95,11 +95,14 @@ def calculate_leap_seconds(year, month, day):
 # ==============================================================================
 class MTime:
     """
-    Date and Time container based on datetime and dateutil.parsers
+    Date and Time container based on :class:`pandas.Timestamp`
 
-    Will read in a string or a epoch seconds into a datetime.datetime object
-    assuming the time zone is UTC.  If UTC is not the timezone you need to
-    correct the time before inputing.  Use datetime.timezone to shift time.
+    Will read in a string or a epoch seconds into a :class:`pandas.Timestamp`
+    object assuming the time zone is UTC.  If UTC is not the timezone then
+    the time is corrected to UTC.
+
+    The benefit of using :class:`pandas.Timestamp` is that it can handle
+    nanoseconds.
 
     Outputs can be an ISO formatted string YYYY-MM-DDThh:mm:ss.ssssss+00:00:
 
@@ -107,7 +110,7 @@ class MTime:
         >>> t.iso_str
         '1980-01-01T00:00:00+00:00'
 
-    .. note:: if microseconds are 0 they are omitted.
+    .. note:: if microseconds are 0 they are omitted. Same with nanoseconds.
 
     or Epoch seconds (float):
 
@@ -183,18 +186,21 @@ class MTime:
 
     def __add__(self, other):
         """
-        add time only using datetime.timedelta, otherwise it does not make
+        add time only using pd.Timedelta, otherwise it does not make
         sense to at 2 times together.
 
         """
-        if isinstance(other, (int, float, datetime.timedelta, np.timede)):
+        if isinstance(other, (int, float)):
             other = pd.Timedelta(seconds=other)
             self.logger.debug("Assuming other time is in seconds")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
 
         if not isinstance(other, (pd.Timedelta)):
             msg = (
                 "Adding times stamps does not make sense, use either "
-                "pd.Timedelta or seconds as a float "
+                "pd.Timedelta or seconds as a float or int."
             )
             self.logger.error(msg)
             raise ValueError(msg)
