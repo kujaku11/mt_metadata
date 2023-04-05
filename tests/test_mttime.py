@@ -4,14 +4,18 @@ time test
 Created on Thu May 21 14:09:17 2020
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 from dateutil import parser as dtparser
 from dateutil import tz
+import datetime
 import pandas as pd
 import numpy as np
+
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.utils.exceptions import MTTimeError
+from obspy import UTCDateTime
 
 # =============================================================================
 # tests
@@ -139,19 +143,38 @@ class TestMTime(unittest.TestCase):
                 self.epoch_seconds, t.epoch_seconds, places=4
             )
 
+    def test_obspy_utcdatetime(self):
+        t = MTime(UTCDateTime(self.dt_true))
+
+        for key in self.keys:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+        with self.subTest("isostring"):
+            self.assertEqual(self.dt_true, t.iso_str)
+        with self.subTest("epoch seconds"):
+            self.assertAlmostEqual(
+                self.epoch_seconds, t.epoch_seconds, places=4
+            )
+
     def test_input_fail(self):
         t = MTime()
-        self.assertRaises(MTTimeError, t.from_str, self.input_fail)
+        self.assertRaises(ValueError, t.from_str, self.input_fail)
 
     def test_compare_dt(self):
         dt_01 = MTime()
         dt_02 = MTime()
 
-        self.assertTrue(dt_01 == dt_02)
-        self.assertTrue(dt_01 == dt_02.iso_str)
-        self.assertTrue(dt_01 == dt_02.epoch_seconds)
-        self.assertTrue(dt_01 >= dt_02)
-        self.assertTrue(dt_01 <= dt_02)
+        with self.subTest("dt"):
+            self.assertTrue(dt_01 == dt_02)
+        with self.subTest("isostring"):
+            self.assertTrue(dt_01 == dt_02.iso_str)
+        with self.subTest("epoch_seconds"):
+            self.assertTrue(dt_01 == (dt_02.epoch_seconds * 1e9))
+        with self.subTest("ge"):
+            self.assertTrue(dt_01 >= dt_02)
+        with self.subTest("le"):
+            self.assertTrue(dt_01 <= dt_02)
 
     def test_no_tz(self):
         dt_obj = dtparser.isoparse(self.dt_str_01)
@@ -173,6 +196,46 @@ class TestMTime(unittest.TestCase):
 
         t_set = list(set([t1, t2]))
         self.assertListEqual(t_set, [t1.isoformat()])
+
+    def test_add_time(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + 30
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_datetime_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + datetime.timedelta(seconds=30)
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_np_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + np.timedelta64(30, "s")
+
+        with self.subTest("result"):
+            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+
+        with self.subTest("type"):
+            self.assertIsInstance(t2, MTime)
+
+    def test_add_time_fail(self):
+        t1 = MTime(self.dt_true)
+        self.assertRaises(ValueError, t1.__add__, self.dt_true)
+
+    def test_subtract_time(self):
+        t1 = MTime(self.dt_true)
+        t2 = t1 + 30
+
+        self.assertEqual(30, t2 - t1)
 
 
 # =============================================================================
