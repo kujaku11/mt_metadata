@@ -273,7 +273,7 @@ class MTime:
                 raise ValueError(msg)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
-            self.logger.warning(
+            self.logger.debug(
                 "Time string is None, setting to 1980-01-01:00:00:00"
             )
             stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
