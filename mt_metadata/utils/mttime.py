@@ -129,6 +129,17 @@ class MTime:
         >>> t.year
         2020
 
+    .. note:: If the input data is greater than pandas.Timestamp.max then the
+     value is set to
+     :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'. Similarly,
+     If the input data is less than pandas.Timestamp.min then the value is
+     set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'
+
+
+    >>> t = MTime("3000-01-01")
+    [line 295] mt_metadata.utils.mttime.MTime.from_str -
+    INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
+
     """
 
     def __init__(self, time=None, gps_time=False):
