@@ -245,6 +245,14 @@ class TestMTime(unittest.TestCase):
         t1 = MTime("1400-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.min)
 
+    def test_utc_too_large(self):
+        t1 = MTime(UTCDateTime("3000-01-01"))
+        self.assertEqual(t1, pd.Timestamp.max)
+
+    def test_utc_too_small(self):
+        t1 = MTime(UTCDateTime("1400-01-01"))
+        self.assertEqual(t1, pd.Timestamp.min)
+
 
 # =============================================================================
 # Run

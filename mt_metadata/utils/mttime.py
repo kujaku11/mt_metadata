@@ -271,6 +271,40 @@ class MTime:
         )
         self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
+    def _fix_out_of_bounds_time_stamp(self, dt_str):
+        """
+
+        :param dt_str: DESCRIPTION
+        :type dt_str: TYPE
+        :raises ValueError: DESCRIPTION
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        t_min_max = False
+        try:
+            dt = dtparser(dt_str)
+
+            if dt.year > 2200:
+                self.logger.info(
+                    f"{dt_str} is too large setting to {pd.Timestamp.max}"
+                )
+                stamp = pd.Timestamp.max
+                t_min_max = True
+            elif dt.year < 1900:
+                self.logger.info(
+                    f"{dt_str} is too small setting to {pd.Timestamp.min}"
+                )
+                stamp = pd.Timestamp.min
+                t_min_max = True
+
+        except ValueError:
+            msg = f"Could not parse {dt_str} into a readable date-time"
+            self.logger.error(msg)
+            raise ValueError(msg)
+
+        return stamp, t_min_max
+
     def from_str(self, dt_str):
         """
         Parse a date-time string using dateutil.parser
@@ -293,32 +327,18 @@ class MTime:
                 t_min_max = True
 
         elif hasattr(dt_str, "isoformat"):
-            stamp = pd.Timestamp(dt_str.isoformat())
+            try:
+                stamp = pd.Timestamp(dt_str.isoformat())
+            except OutOfBoundsDatetime:
+                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
+                    dt_str.isoformat()
+                )
 
         else:
             try:
                 stamp = pd.Timestamp(dt_str)
             except (TypeError, ValueError, OutOfBoundsDatetime):
-                try:
-                    dt = dtparser(dt_str)
-
-                    if dt.year > 2200:
-                        self.logger.info(
-                            f"{dt_str} is too large setting to {pd.Timestamp.max}"
-                        )
-                        stamp = pd.Timestamp.max
-                        t_min_max = True
-                    elif dt.year < 1900:
-                        self.logger.info(
-                            f"{dt_str} is too small setting to {pd.Timestamp.min}"
-                        )
-                        stamp = pd.Timestamp.min
-                        t_min_max = True
-
-                except ValueError:
-                    msg = f"Could not parse {dt_str} into a readable date-time"
-                    self.logger.error(msg)
-                    raise ValueError(msg)
+                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt_str)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
             self.logger.debug(
