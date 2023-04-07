@@ -161,7 +161,19 @@ class MTime:
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        return bool(self._time_stamp == other._time_stamp)
+        epoch_seconds = bool(self._time_stamp.value == other._time_stamp.value)
+
+        tz = bool(self._time_stamp.tz == other._time_stamp.tz)
+
+        if epoch_seconds and tz:
+            return True
+        elif epoch_seconds and not tz:
+            self.logger.info(
+                "Time zones are not equal {self._time_stamp.tz} != {other.time_stamp.tz"
+            )
+            return False
+        elif not epoch_seconds:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -260,9 +272,14 @@ class MTime:
 
 
         """
-
+        t_min_max = False
         if isinstance(dt_str, pd.Timestamp):
             stamp = dt_str
+            if (
+                stamp.value == pd.Timestamp.max.value
+                or stamp.value == pd.Timestamp.min.value
+            ):
+                t_min_max = True
 
         elif hasattr(dt_str, "isoformat"):
             stamp = pd.Timestamp(dt_str.isoformat())
@@ -275,15 +292,17 @@ class MTime:
                     dt = dtparser(dt_str)
 
                     if dt.year > 2200:
-                        self.logger.warning(
+                        self.logger.info(
                             f"{dt_str} is too large setting to {pd.Timestamp.max}"
                         )
                         stamp = pd.Timestamp.max
+                        t_min_max = True
                     elif dt.year < 1900:
-                        self.logger.warning(
+                        self.logger.info(
                             f"{dt_str} is too small setting to {pd.Timestamp.min}"
                         )
                         stamp = pd.Timestamp.min
+                        t_min_max = True
 
                 except ValueError:
                     msg = f"Could not parse {dt_str} into a readable date-time"
@@ -302,7 +321,7 @@ class MTime:
 
         # there can be a machine round off error, if it is close to 1 round to
         # microseconds
-        if round(stamp.nanosecond / 1000) == 1:
+        if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
             stamp = stamp.round(freq="us")
 
         self._time_stamp = stamp
