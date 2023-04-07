@@ -13,7 +13,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "concurrent-log-handler",
     "numpy",
-    "pandas",
+    "pandas<=1.5.3",
     "pyyaml",
     "obspy",
     "matplotlib",
