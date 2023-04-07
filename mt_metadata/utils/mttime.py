@@ -8,9 +8,12 @@ Created on Wed May 13 19:10:46 2020
 # IMPORTS
 # =============================================================================
 import datetime
+from dateutil.parser import parse as dtparser
+from copy import deepcopy
 import numpy as np
 import pandas as pd
-from copy import deepcopy
+from pandas._libs.tslibs import OutOfBoundsDatetime
+
 
 from .mt_logger import setup_logger
 from mt_metadata import LOG_LEVEL
@@ -267,10 +270,25 @@ class MTime:
         else:
             try:
                 stamp = pd.Timestamp(dt_str)
-            except (TypeError, ValueError):
-                msg = f"Could not parse {dt_str} into a readable date-time"
-                self.logger.error(msg)
-                raise ValueError(msg)
+            except (TypeError, ValueError, OutOfBoundsDatetime):
+                try:
+                    dt = dtparser(dt_str)
+
+                    if dt.year > 2200:
+                        self.logger.warning(
+                            f"{dt_str} is too large setting to {pd.Timestamp.max}"
+                        )
+                        stamp = pd.Timestamp.max
+                    elif dt.year < 1900:
+                        self.logger.warning(
+                            f"{dt_str} is too small setting to {pd.Timestamp.min}"
+                        )
+                        stamp = pd.Timestamp.min
+
+                except ValueError:
+                    msg = f"Could not parse {dt_str} into a readable date-time"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
             self.logger.debug(
