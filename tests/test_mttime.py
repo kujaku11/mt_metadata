@@ -237,6 +237,14 @@ class TestMTime(unittest.TestCase):
 
         self.assertEqual(30, t2 - t1)
 
+    def test_too_large(self):
+        t1 = MTime("3000-01-01T00:00:00")
+        self.assertEqual(t1, pd.Timestamp.max)
+
+    def test_too_small(self):
+        t1 = MTime("1400-01-01T00:00:00")
+        self.assertEqual(t1, pd.Timestamp.min)
+
 
 # =============================================================================
 # Run

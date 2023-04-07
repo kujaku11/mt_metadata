@@ -8,9 +8,12 @@ Created on Wed May 13 19:10:46 2020
 # IMPORTS
 # =============================================================================
 import datetime
+from dateutil.parser import parse as dtparser
+from copy import deepcopy
 import numpy as np
 import pandas as pd
-from copy import deepcopy
+from pandas._libs.tslibs import OutOfBoundsDatetime
+
 
 from .mt_logger import setup_logger
 from mt_metadata import LOG_LEVEL
@@ -126,6 +129,17 @@ class MTime:
         >>> t.year
         2020
 
+    .. note:: If the input data is greater than pandas.Timestamp.max then the
+     value is set to
+     :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'. Similarly,
+     If the input data is less than pandas.Timestamp.min then the value is
+     set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'
+
+
+    >>> t = MTime("3000-01-01")
+    [line 295] mt_metadata.utils.mttime.MTime.from_str -
+    INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
+
     """
 
     def __init__(self, time=None, gps_time=False):
@@ -158,7 +172,19 @@ class MTime:
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        return bool(self._time_stamp == other._time_stamp)
+        epoch_seconds = bool(self._time_stamp.value == other._time_stamp.value)
+
+        tz = bool(self._time_stamp.tz == other._time_stamp.tz)
+
+        if epoch_seconds and tz:
+            return True
+        elif epoch_seconds and not tz:
+            self.logger.info(
+                "Time zones are not equal {self._time_stamp.tz} != {other.time_stamp.tz"
+            )
+            return False
+        elif not epoch_seconds:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -257,9 +283,14 @@ class MTime:
 
 
         """
-
+        t_min_max = False
         if isinstance(dt_str, pd.Timestamp):
             stamp = dt_str
+            if (
+                stamp.value == pd.Timestamp.max.value
+                or stamp.value == pd.Timestamp.min.value
+            ):
+                t_min_max = True
 
         elif hasattr(dt_str, "isoformat"):
             stamp = pd.Timestamp(dt_str.isoformat())
@@ -267,10 +298,27 @@ class MTime:
         else:
             try:
                 stamp = pd.Timestamp(dt_str)
-            except (TypeError, ValueError):
-                msg = f"Could not parse {dt_str} into a readable date-time"
-                self.logger.error(msg)
-                raise ValueError(msg)
+            except (TypeError, ValueError, OutOfBoundsDatetime):
+                try:
+                    dt = dtparser(dt_str)
+
+                    if dt.year > 2200:
+                        self.logger.info(
+                            f"{dt_str} is too large setting to {pd.Timestamp.max}"
+                        )
+                        stamp = pd.Timestamp.max
+                        t_min_max = True
+                    elif dt.year < 1900:
+                        self.logger.info(
+                            f"{dt_str} is too small setting to {pd.Timestamp.min}"
+                        )
+                        stamp = pd.Timestamp.min
+                        t_min_max = True
+
+                except ValueError:
+                    msg = f"Could not parse {dt_str} into a readable date-time"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
             self.logger.debug(
@@ -284,7 +332,7 @@ class MTime:
 
         # there can be a machine round off error, if it is close to 1 round to
         # microseconds
-        if round(stamp.nanosecond / 1000) == 1:
+        if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
             stamp = stamp.round(freq="us")
 
         self._time_stamp = stamp
