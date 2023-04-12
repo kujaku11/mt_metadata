@@ -83,8 +83,8 @@ class FilterBase(Base):
 
     @property
     def obspy_mapping(self):
-        """ 
-        
+        """
+
         :return: mapping to an obspy filter
         :rtype: dict
 
@@ -94,7 +94,7 @@ class FilterBase(Base):
     @property
     def name(self):
         """
-        
+
         :return: name of the filter
         :rtype: str
 
@@ -104,8 +104,8 @@ class FilterBase(Base):
     @name.setter
     def name(self, value):
         """
-        Set filter name 
-        
+        Set filter name
+
         :param value: name of filter
         :type value: sting
 
@@ -131,9 +131,9 @@ class FilterBase(Base):
     @property
     def calibration_date(self):
         """
-        
+
         :return: calibration date (YYYY-MM-DD)
-        :rtype: string 
+        :rtype: string
 
         """
         return self._calibration_dt.date
@@ -141,17 +141,17 @@ class FilterBase(Base):
     @calibration_date.setter
     def calibration_date(self, value):
         """
-        
+
         :param value: set calibration date (YYYY-MM-DD)
         :type value: string
 
         """
-        self._calibration_dt.from_str(value)
+        self._calibration_dt.parse(value)
 
     @property
     def total_gain(self):
         """
-        
+
         :return: Total gain of the filter
         :rtype: float
 
@@ -161,7 +161,7 @@ class FilterBase(Base):
     @property
     def units_in(self):
         """
-        
+
         :return: Input units of the filter
         :rtype: string
 
@@ -171,7 +171,7 @@ class FilterBase(Base):
     @units_in.setter
     def units_in(self, value):
         """
-        
+
         :param value: input units of the filter
         :type value: string
 
@@ -181,7 +181,7 @@ class FilterBase(Base):
     @property
     def units_out(self):
         """
-        
+
         :return: Output units of the filter
         :rtype: string
 
@@ -191,7 +191,7 @@ class FilterBase(Base):
     @units_out.setter
     def units_out(self, value):
         """
-        
+
         :param value: output units of the filter
         :type value: string
 
@@ -215,7 +215,7 @@ class FilterBase(Base):
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):
         """
-        
+
         :param cls: a filter object
         :type cls: filter object
         :param stage: Obspy stage filter
@@ -223,8 +223,8 @@ class FilterBase(Base):
         :param mapping: dictionary for mapping from an obspy stage,
             defaults to None
         :type mapping: dict, optional
-        :raises TypeError: If stage is not a 
-            :class:`obspy.inventory.response.ResponseStage` 
+        :raises TypeError: If stage is not a
+            :class:`obspy.inventory.response.ResponseStage`
         :return: the appropriate mt_metadata.timeseries.filter object
         :rtype: mt_metadata.timeseries.filter object
 
@@ -287,13 +287,19 @@ class FilterBase(Base):
 
         f_true = np.zeros_like(frequencies)
         for ii in range(0, f.size - window_len, 1):
-            cr_window = np.array(amp[ii : ii + window_len])  # / self.amplitudes.max()
-            test = abs(1 - np.log10(cr_window.min()) / np.log10(cr_window.max()))
+            cr_window = np.array(
+                amp[ii : ii + window_len]
+            )  # / self.amplitudes.max()
+            test = abs(
+                1 - np.log10(cr_window.min()) / np.log10(cr_window.max())
+            )
 
             if test <= tol:
                 f_true[(f >= f[ii]) & (f <= f[ii + window_len])] = 1
 
-        pb_zones = np.reshape(np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2))
+        pb_zones = np.reshape(
+            np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2)
+        )
 
         if pb_zones.shape[0] > 1:
             self.logger.debug(
@@ -357,7 +363,7 @@ class FilterBase(Base):
     @property
     def decimation_active(self):
         """
-        
+
         :return: if decimation is prescribed
         :rtype: bool
 

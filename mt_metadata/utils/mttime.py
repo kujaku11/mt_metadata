@@ -137,7 +137,7 @@ class MTime:
 
 
     >>> t = MTime("3000-01-01")
-    [line 295] mt_metadata.utils.mttime.MTime.from_str -
+    [line 295] mt_metadata.utils.mttime.MTime.parse -
     INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
 
     """
@@ -149,10 +149,11 @@ class MTime:
             fn="mt_time.log",
             level=LOG_LEVEL,
         )
+        self.gps_time = gps_time
 
-        self.from_str(time)
+        self.parse(time)
 
-        if gps_time:
+        if self.gps_time:
             leap_seconds = calculate_leap_seconds(
                 self.year, self.month, self.day
             )
@@ -244,10 +245,31 @@ class MTime:
 
         """
 
-        if not isinstance(other, MTime):
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(seconds=other)
+            self.logger.debug("Assuming other time is in seconds")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        else:
+            try:
+                other = MTime(other)
+            except ValueError as error:
+                raise TypeError(error)
+
+        if not isinstance(other, (pd.Timedelta, MTime)):
+            msg = "Subtracting times must be either timedelta or another time."
+            self.logger.error(msg)
+            raise ValueError(msg)
+
+        if isinstance(other, MTime):
             other = MTime(other)
 
-        return (self._time_stamp - other._time_stamp).total_seconds()
+            return (self._time_stamp - other._time_stamp).total_seconds()
+
+        elif isinstance(other, pd.Timedelta):
+            return MTime(self._time_stamp - other)
 
     def __hash__(self):
         return hash(self.isoformat())
@@ -267,7 +289,7 @@ class MTime:
     @epoch_seconds.setter
     def epoch_seconds(self, seconds):
         self.logger.debug(
-            "reading time from epoch seconds, assuming UTC " + "time zone"
+            "reading time from epoch seconds, assuming UTC time zone"
         )
         self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
@@ -305,7 +327,7 @@ class MTime:
 
         return stamp, t_min_max
 
-    def from_str(self, dt_str):
+    def parse(self, dt_str):
         """
         Parse a date-time string using dateutil.parser
 
@@ -332,6 +354,22 @@ class MTime:
             except OutOfBoundsDatetime:
                 stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
                     dt_str.isoformat()
+                )
+
+        elif isinstance(dt_str, (float, int)):
+            # using 3E8 which is about the start of GPS time
+            ratio = dt_str / 3e8
+            if ratio < 1 and self.gps_time:
+                raise ValueError(
+                    "Input is before GPS start time '1980/01/06', check value."
+                )
+            if dt_str / 3e8 < 1e3:
+                stamp = pd.Timestamp(dt_str, unit="s")
+                self.logger.debug("Assuming time input is in units of seconds")
+            else:
+                stamp = pd.Timestamp(dt_str, unit="ns")
+                self.logger.debug(
+                    "Assuming time input is in units of nanoseconds"
                 )
 
         else:

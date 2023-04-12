@@ -54,6 +54,21 @@ class TestMTime(unittest.TestCase):
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
+    def test_input_epoch_seconds(self):
+        t = MTime(self.epoch_seconds)
+
+        self.assertEqual(t, self.dt_true)
+
+    def test_input_epoch_nanoseconds(self):
+        t = MTime(self.epoch_seconds * 1e9)
+
+        self.assertEqual(t, self.dt_true)
+
+    def test_input_seconds_fail(self):
+        t = MTime(gps_time=True)
+
+        self.assertRaises(ValueError, t.parse, 10)
+
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
 
@@ -70,7 +85,7 @@ class TestMTime(unittest.TestCase):
 
     def test_string_input_dt(self):
         t = MTime()
-        t.from_str(self.dt_str_01)
+        t.parse(self.dt_str_01)
 
         for key in self.keys:
             with self.subTest(key):
@@ -159,7 +174,7 @@ class TestMTime(unittest.TestCase):
 
     def test_input_fail(self):
         t = MTime()
-        self.assertRaises(ValueError, t.from_str, self.input_fail)
+        self.assertRaises(ValueError, t.parse, self.input_fail)
 
     def test_compare_dt(self):
         dt_01 = MTime()
@@ -237,6 +252,12 @@ class TestMTime(unittest.TestCase):
 
         self.assertEqual(30, t2 - t1)
 
+    def test_subtract_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = pd.Timedelta(seconds=30)
+
+        self.assertEqual(MTime("2020-01-02T12:14:50.123000+00:00"), t1 - t2)
+
     def test_too_large(self):
         t1 = MTime("3000-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.max)
@@ -252,6 +273,11 @@ class TestMTime(unittest.TestCase):
     def test_utc_too_small(self):
         t1 = MTime(UTCDateTime("1400-01-01"))
         self.assertEqual(t1, pd.Timestamp.min)
+
+    def test_gps_time(self):
+        t1 = MTime(self.dt_true, gps_time=True)
+        gps_time = MTime(self.dt_true) - 13
+        self.assertTrue(gps_time, t1)
 
 
 # =============================================================================
