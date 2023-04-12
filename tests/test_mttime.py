@@ -64,6 +64,11 @@ class TestMTime(unittest.TestCase):
 
         self.assertEqual(t, self.dt_true)
 
+    def test_input_seconds_fail(self):
+        t = MTime(gps_time=True)
+
+        self.assertRaises(ValueError, t.parse, 10)
+
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
 
@@ -80,7 +85,7 @@ class TestMTime(unittest.TestCase):
 
     def test_string_input_dt(self):
         t = MTime()
-        t.from_str(self.dt_str_01)
+        t.parse(self.dt_str_01)
 
         for key in self.keys:
             with self.subTest(key):
@@ -169,7 +174,7 @@ class TestMTime(unittest.TestCase):
 
     def test_input_fail(self):
         t = MTime()
-        self.assertRaises(ValueError, t.from_str, self.input_fail)
+        self.assertRaises(ValueError, t.parse, self.input_fail)
 
     def test_compare_dt(self):
         dt_01 = MTime()

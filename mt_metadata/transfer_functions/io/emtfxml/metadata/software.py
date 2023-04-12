@@ -36,4 +36,4 @@ class Software(Base):
 
     @last_mod.setter
     def last_mod(self, value):
-        self._last_mod_dt.from_str(value)
+        self._last_mod_dt.parse(value)

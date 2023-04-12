@@ -137,7 +137,7 @@ class MTime:
 
 
     >>> t = MTime("3000-01-01")
-    [line 295] mt_metadata.utils.mttime.MTime.from_str -
+    [line 295] mt_metadata.utils.mttime.MTime.parse -
     INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
 
     """
@@ -149,10 +149,11 @@ class MTime:
             fn="mt_time.log",
             level=LOG_LEVEL,
         )
+        self.gps_time = gps_time
 
-        self.from_str(time)
+        self.parse(time)
 
-        if gps_time:
+        if self.gps_time:
             leap_seconds = calculate_leap_seconds(
                 self.year, self.month, self.day
             )
@@ -326,7 +327,7 @@ class MTime:
 
         return stamp, t_min_max
 
-    def from_str(self, dt_str):
+    def parse(self, dt_str):
         """
         Parse a date-time string using dateutil.parser
 
@@ -356,12 +357,20 @@ class MTime:
                 )
 
         elif isinstance(dt_str, (float, int)):
+            # using 3E8 which is about the start of GPS time
+            ratio = dt_str / 3e8
+            if ratio < 1 and self.gps_time:
+                raise ValueError(
+                    "Input is before GPS start time '1980/01/06', check value."
+                )
             if dt_str / 3e8 < 1e3:
                 stamp = pd.Timestamp(dt_str, unit="s")
-                self.logger.info("assuming input is in seconds")
+                self.logger.debug("Assuming time input is in units of seconds")
             else:
                 stamp = pd.Timestamp(dt_str, unit="ns")
-                self.logger.info("assuming input is in nanoseconds")
+                self.logger.debug(
+                    "Assuming time input is in units of nanoseconds"
+                )
 
         else:
             try:

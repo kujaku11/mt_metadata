@@ -46,4 +46,4 @@ class Provenance(Base):
 
     @creation_time.setter
     def creation_time(self, dt_str):
-        self._creation_dt.from_str(dt_str)
+        self._creation_dt.parse(dt_str)
