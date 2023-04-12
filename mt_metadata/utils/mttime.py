@@ -244,10 +244,31 @@ class MTime:
 
         """
 
-        if not isinstance(other, MTime):
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(seconds=other)
+            self.logger.debug("Assuming other time is in seconds")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        else:
+            try:
+                other = MTime(other)
+            except ValueError as error:
+                raise TypeError(error)
+
+        if not isinstance(other, (pd.Timedelta, MTime)):
+            msg = "Subtracting times must be either timedelta or another time."
+            self.logger.error(msg)
+            raise ValueError(msg)
+
+        if isinstance(other, MTime):
             other = MTime(other)
 
-        return (self._time_stamp - other._time_stamp).total_seconds()
+            return (self._time_stamp - other._time_stamp).total_seconds()
+
+        elif isinstance(other, pd.Timedelta):
+            return MTime(self._time_stamp - other)
 
     def __hash__(self):
         return hash(self.isoformat())

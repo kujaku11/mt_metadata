@@ -237,6 +237,12 @@ class TestMTime(unittest.TestCase):
 
         self.assertEqual(30, t2 - t1)
 
+    def test_subtract_timedelta(self):
+        t1 = MTime(self.dt_true)
+        t2 = pd.Timedelta(seconds=30)
+
+        self.assertEqual(MTime("2020-01-02T12:14:50.123000+00:00"), t1 - t2)
+
     def test_too_large(self):
         t1 = MTime("3000-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.max)
@@ -252,6 +258,11 @@ class TestMTime(unittest.TestCase):
     def test_utc_too_small(self):
         t1 = MTime(UTCDateTime("1400-01-01"))
         self.assertEqual(t1, pd.Timestamp.min)
+
+    def test_gps_time(self):
+        t1 = MTime(self.dt_true, gps_time=True)
+        gps_time = MTime(self.dt_true) - 13
+        self.assertTrue(gps_time, t1)
 
 
 # =============================================================================
