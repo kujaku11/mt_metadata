@@ -54,6 +54,16 @@ class TestMTime(unittest.TestCase):
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
+    def test_input_epoch_seconds(self):
+        t = MTime(self.epoch_seconds)
+
+        self.assertEqual(t, self.dt_true)
+
+    def test_input_epoch_nanoseconds(self):
+        t = MTime(self.epoch_seconds * 1e9)
+
+        self.assertEqual(t, self.dt_true)
+
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
 

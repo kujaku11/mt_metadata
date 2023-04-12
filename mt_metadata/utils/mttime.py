@@ -288,7 +288,7 @@ class MTime:
     @epoch_seconds.setter
     def epoch_seconds(self, seconds):
         self.logger.debug(
-            "reading time from epoch seconds, assuming UTC " + "time zone"
+            "reading time from epoch seconds, assuming UTC time zone"
         )
         self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
@@ -354,6 +354,14 @@ class MTime:
                 stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
                     dt_str.isoformat()
                 )
+
+        elif isinstance(dt_str, (float, int)):
+            if dt_str / 3e8 < 1e3:
+                stamp = pd.Timestamp(dt_str, unit="s")
+                self.logger.info("assuming input is in seconds")
+            else:
+                stamp = pd.Timestamp(dt_str, unit="ns")
+                self.logger.info("assuming input is in nanoseconds")
 
         else:
             try:
