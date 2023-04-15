@@ -179,7 +179,11 @@ class Processing(Base):
             decimation_obj.decimation.sample_rate = sr
 
     def assign_bands(
-        self, band_edges_dict, sample_rate, decimation_factors, num_samples_window
+        self,
+        band_edges_dict,
+        sample_rate,
+        decimation_factors,
+        num_samples_window,
     ):
         """
 
@@ -203,10 +207,12 @@ class Processing(Base):
                 sr = sample_rate
             else:
                 # careful with this hardcoded assumption of decimation by 4
-                d = d = decimation_factors[i_level]  # 4
+                d = decimation_factors[i_level]  # 4
                 sr = 1.0 * sample_rate / (d ** int(i_level))
             decimation_obj = DecimationLevel()
-            decimation_obj.decimation.level = int(i_level)  # self.decimations_dict[key]
+            decimation_obj.decimation.level = int(
+                i_level
+            )  # self.decimations_dict[key]
             decimation_obj.decimation.factor = d
             decimation_obj.decimation.sample_rate = sr
             decimation_obj.window.num_samples = num_samples_window[i_level]
@@ -258,8 +264,12 @@ class Processing(Base):
             decimation.reference_channels = channels
 
     def set_default_input_output_channels(self):
-        self.set_input_channels(self.channel_nomenclature.default_input_channels)
-        self.set_output_channels(self.channel_nomenclature.default_output_channels)
+        self.set_input_channels(
+            self.channel_nomenclature.default_input_channels
+        )
+        self.set_output_channels(
+            self.channel_nomenclature.default_output_channels
+        )
 
     def set_default_reference_channels(self):
         self.set_reference_channels(
@@ -302,7 +312,9 @@ class Processing(Base):
             local station id : mth5.mth5.MTH5
             remote station id: mth5.mth5.MTH5
         """
-        local_mth5_obj = initialize_mth5(self.stations.local.mth5_path, mode="r")
+        local_mth5_obj = initialize_mth5(
+            self.stations.local.mth5_path, mode="r"
+        )
         if self.stations.remote:
             remote_path = self.stations.remote[0].mth5_path
             remote_mth5_obj = initialize_mth5(remote_path, mode="r")

@@ -1,8 +1,8 @@
 {
     "decimation_level": {
-        "type": "number",
+        "type": "integer",
         "required": true,
-        "style": "integer",
+        "style": "number",
         "units": null,
         "description": "Decimation level, must be a positive integer starting at 0.",
         "options": [],
@@ -33,16 +33,16 @@
 		"default": 1
     },
 	"decimation_factor": {
-        "type": "number",
+        "type": "integer",
         "required": true,
-        "style": "integer",
+        "style": "number",
         "units": null,
         "description": "Decimation factor between initial sample rate and decimation sample rate.",
         "options": [],
         "alias": [],
         "example": 4,
 		"default": 1
-    }
+    },
 	"method": {
         "type": "string",
         "required": true,
@@ -65,7 +65,7 @@
         "example": "default",
 		"default": null
     },
-	"detrend_type": {
+	"pre_fft_detrend_type": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -76,10 +76,32 @@
         "example": "linear",
 		"default": "linear"
     },
+	"pre_fft_detrend_type_extra": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of extra detrend method before FFT after data have been windowed.",
+        "options": [],
+        "alias": [],
+        "example": "linear",
+		"default": "linear"
+    },
+	"decimation_factor": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Decimation factor between initial sample rate and decimation sample rate.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 1
+    },
 	"recoloring": {
         "type": "bool",
         "required": true,
-        "style": "boolean",
+        "style": "free form",
         "units": null,
         "description": "Whether the data are recolored [True] or not [False].",
         "options": [],
@@ -87,16 +109,15 @@
         "example": true,
 		"default": false
     },
-	"harmonics kept": {
-        "type": "number list",
+	"harmonic_indices_kept": {
+        "type": "integer",
         "required": true,
-        "style": "integer",
+        "style": "number list",
         "units": null,
-        "description": "List of harmonics kept, if all use -1",
+        "description": "List of harmonics indices kept, if all use -1",
         "options": [],
         "alias": [],
         "example": [0, 4, 8],
 		"default": [-1]
-    },
-	
+    }
 }
