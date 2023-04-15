@@ -12,11 +12,10 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions.processing.frequency_band import get_fft_harmonics
 from .standards import SCHEMA_FN_PATHS
 
 from . import Window, Decimation, Band, Regression, Estimator
-
-from aurora.time_series.frequency_domain_helpers import get_fft_harmonics
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
