@@ -11,9 +11,9 @@ from deprecated import deprecated
 import numpy as np
 from pathlib import Path
 
-from aurora.time_series.frequency_band import FrequencyBand
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions.processing.frequency_band import FrequencyBand
 from mth5.utils.helpers import initialize_mth5
 
 from .standards import SCHEMA_FN_PATHS
