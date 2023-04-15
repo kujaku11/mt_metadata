@@ -183,6 +183,10 @@ class Station(Base):
                 f"Input must be a mt_metadata.timeseries.Run object not {type(run_obj)}"
             )
 
+        if run_obj.id is None:
+            raise ValueError(
+                "The input run id is None. Input a string or integer."
+            )
         if self.has_run(run_obj.id):
             self.runs[run_obj.id].update(run_obj)
             self.logger.debug(

@@ -89,7 +89,7 @@ class Header(Location):
     @acqdate.setter
     def acqdate(self, value):
         try:
-            self._acqdate.from_str(value)
+            self._acqdate.parse(value)
         except MTTimeError as error:
             msg = f"Cannot set Header.acqdata with {value}. {error}"
             self.logger.debug(msg)
@@ -102,7 +102,7 @@ class Header(Location):
     @enddate.setter
     def enddate(self, value):
         try:
-            self._enddate.from_str(value)
+            self._enddate.parse(value)
         except MTTimeError as error:
             msg = f"Cannot set Header.enddata with {value}. {error}"
             self.logger.debug(msg)
@@ -114,7 +114,7 @@ class Header(Location):
     @filedate.setter
     def filedate(self, value):
         try:
-            self._filedate.from_str(value)
+            self._filedate.parse(value)
         except MTTimeError as error:
             msg = f"Cannot set Header.filedata with {value}. {error}"
             self.logger.debug(msg)
@@ -126,7 +126,7 @@ class Header(Location):
     @progdate.setter
     def progdate(self, value):
         try:
-            self._progdate.from_str(value)
+            self._progdate.parse(value)
         except MTTimeError as error:
             msg = f"Cannot set Header.progdata with {value}. {error}"
             self.logger.debug(msg)
@@ -204,7 +204,10 @@ class Header(Location):
                 setattr(self, key, value)
 
     def write_header(
-        self, longitude_format="LON", latlon_format="dms", required=True,
+        self,
+        longitude_format="LON",
+        latlon_format="dms",
+        required=True,
     ):
         """
         Write header information to a list of lines.
