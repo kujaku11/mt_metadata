@@ -161,8 +161,7 @@ class DecimationLevel(Base):
         -------
 
         """
-        from aurora.time_series.frequency_band import FrequencyBands
-
+        from mt_metadata.transfer_functions.processing.aurora.frequency_band import FrequencyBands
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 

@@ -103,6 +103,134 @@ class FrequencyBand(pd.Interval):
         return 1.0 / self.center_frequency
 
 
+class FrequencyBands(object):
+    """
+    This is just collection of FrequencyBand objects.
+    It is intended to be used at a single decimation level
+
+    The core underlying variable is "band_edges", a 2D array, with one row per
+    frequency band and two columns, one for the left-hand (lower bound) of the
+    frequency band and one for the right-hand (upper bound).
+
+    Note there are some "clever" ways to define the bands using a 1-D array but this
+    assumes the bands to be adjacent, and there is no good reason to bake this
+    constriant in -- band edges is thus 2-D.
+    """
+
+    def __init__(self, **kwargs):
+        """
+
+        Parameters
+        ----------
+        kwargs
+        band_edges: 2d numpy array
+        """
+        self.band_edges = kwargs.get("band_edges", None)
+
+    @property
+    def number_of_bands(self):
+        return self.band_edges.shape[0]
+
+    def validate(self):
+        """
+        placeholder for sanity checks.
+        Main reason this is here is in anticipation of supporting an append() method
+        to this class that accepts FrequencyBand objects.  In that case we may wish
+        to re-order the band edges.
+
+
+        """
+        band_centers = self.band_centers()
+
+        # check band centers are monotonically increasing
+        monotone_condition = np.all(band_centers[1:] > band_centers[:-1])
+        if monotone_condition:
+            pass
+        else:
+            print(
+                "Band Centers are Not Monotonic.  This probably means that "
+                "the bands are being defined in an adhoc / on the fly way"
+            )
+            print("This condition untested 20210720")
+            print("Attempting to reorganize bands")
+            # use np.argsort to rorganize the bands
+            self.band_edges = self.band_edges[np.argsort(band_centers), :]
+
+        # check other conditions?:
+
+        return
+
+    def bands(self, direction="increasing_frequency"):
+        """
+        make this a generator for iteration over bands
+        Returns
+        -------
+
+        """
+        band_indices = range(self.number_of_bands)
+        if direction == "increasing_period":
+            band_indices = np.flip(band_indices)
+        return (self.band(i_band) for i_band in band_indices)
+
+    def band(self, i_band):
+        """
+        Parameters
+        ----------
+        i_band: integer (zero-indexed)
+            Specifies the band to return
+
+        Returns
+        -------
+        frequency_band: FrequencyBand() object
+        """
+        frequency_band = FrequencyBand(
+            self.band_edges[i_band, 0],
+            self.band_edges[i_band, 1],
+        )
+
+        return frequency_band
+
+    def band_centers(self, frequency_or_period="frequency"):
+        """
+        Parameters
+        ----------
+        frequency_or_period : str
+            One of ["frequency" , "period"].  Determines if the vector of band
+            centers is returned in "Hz" or "s"
+
+        Returns
+        -------
+        band_centers : numpy array
+            center frequencies of the bands in Hz or in s
+        """
+        band_centers = np.full(self.number_of_bands, np.nan)
+        for i_band in range(self.number_of_bands):
+            frequency_band = self.band(i_band)
+            band_centers[i_band] = frequency_band.center_frequency
+        if frequency_or_period == "period":
+            band_centers = 1.0 / band_centers
+        return band_centers
+
+    def from_decimation_object(self, decimation_object):
+        """
+        Define band_edges array from config object,
+
+        Parameters
+        ----------
+        decimation_object: mt_metadata.transfer_functions.processing.aurora.Decimation
+        """
+        # replace below with decimation_object.delta_frequency ?
+        df = (
+            decimation_object.decimation.sample_rate
+            / decimation_object.window.num_samples
+        )
+        half_df = df / 2.0
+        # half_df /=100
+        lower_edges = (decimation_object.lower_bounds * df) - half_df
+        upper_edges = (decimation_object.upper_bounds * df) + half_df
+        band_edges = np.vstack((lower_edges, upper_edges)).T
+        self.band_edges = band_edges
+
 
 def get_fft_harmonics(samples_per_window, sample_rate):
     """
