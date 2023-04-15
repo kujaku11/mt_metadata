@@ -11,7 +11,6 @@ from deprecated import deprecated
 import numpy as np
 from pathlib import Path
 
-from aurora.config import BANDS_DEFAULT_FILE
 from aurora.time_series.frequency_band import FrequencyBand
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
