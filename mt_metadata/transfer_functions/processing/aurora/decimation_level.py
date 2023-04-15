@@ -12,7 +12,7 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.frequency_band import get_fft_harmonics
+from mt_metadata.transfer_functions.processing.aurora.frequency_band import get_fft_harmonics
 from .standards import SCHEMA_FN_PATHS
 
 from . import Window, Decimation, Band, Regression, Estimator
