@@ -17,7 +17,7 @@ attr_dict = get_schema("fc_channel", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 
 # =============================================================================
-class FCChannel(Base):
+class Channel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
