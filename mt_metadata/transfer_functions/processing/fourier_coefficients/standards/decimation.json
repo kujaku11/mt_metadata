@@ -21,7 +21,7 @@
         "example": "[ex, hy]",
 		"default": null
     },
-	"decimation_sample_rate": {
+	"sample_rate_decimation": {
         "type": "float",
         "required": true,
         "style": "number",
@@ -86,17 +86,6 @@
         "alias": [],
         "example": "linear",
 		"default": "linear"
-    },
-	"decimation_factor": {
-        "type": "integer",
-        "required": true,
-        "style": "number",
-        "units": null,
-        "description": "Decimation factor between initial sample rate and decimation sample rate.",
-        "options": [],
-        "alias": [],
-        "example": 4,
-		"default": 1
     },
 	"recoloring": {
         "type": "bool",
