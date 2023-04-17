@@ -13,11 +13,14 @@ from pathlib import Path
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.frequency_band import FrequencyBand
+from .frequency_band import FrequencyBand
 from mth5.utils.helpers import initialize_mth5
 
 from .standards import SCHEMA_FN_PATHS
-from . import DecimationLevel, Stations, Band, ChannelNomenclature
+from .decimation_level import DecimationLevel
+from .stations import Stations
+from .band import Band
+from .channel_nomenclature import ChannelNomenclature
 
 
 # =============================================================================
