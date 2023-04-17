@@ -13,7 +13,6 @@ from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
-from mt_metadata.utils.exceptions import MTTimeError
 from mt_metadata import __version__
 
 # =============================================================================
@@ -90,7 +89,7 @@ class Header(Location):
     def acqdate(self, value):
         try:
             self._acqdate.parse(value)
-        except MTTimeError as error:
+        except ValueError as error:
             msg = f"Cannot set Header.acqdata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -103,7 +102,7 @@ class Header(Location):
     def enddate(self, value):
         try:
             self._enddate.parse(value)
-        except MTTimeError as error:
+        except ValueError as error:
             msg = f"Cannot set Header.enddata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -115,7 +114,7 @@ class Header(Location):
     def filedate(self, value):
         try:
             self._filedate.parse(value)
-        except MTTimeError as error:
+        except ValueError as error:
             msg = f"Cannot set Header.filedata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -127,7 +126,7 @@ class Header(Location):
     def progdate(self, value):
         try:
             self._progdate.parse(value)
-        except MTTimeError as error:
+        except ValueError as error:
             msg = f"Cannot set Header.progdata with {value}. {error}"
             self.logger.debug(msg)
 
