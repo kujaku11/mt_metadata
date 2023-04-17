@@ -8,7 +8,6 @@ Created on Thu Feb 17 14:15:20 2022
 # Imports
 # =============================================================================
 import numpy as np
-import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
