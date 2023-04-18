@@ -229,7 +229,7 @@ class DataSection(Base):
         for ch_id in self.channel_ids:
             for key, value in ch_ids.items():
                 if isinstance(ch_id, (str)):
-                    ch_id = ch_id.lower().strip("ch")[-1]
+                    ch_id = ch_id.lower().split("ch")[-1]
                 try:
                     if float(ch_id) == value:
                         setattr(self, key.lower(), value)
