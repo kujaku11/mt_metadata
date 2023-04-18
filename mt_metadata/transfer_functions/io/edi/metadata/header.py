@@ -189,7 +189,7 @@ class Header(Location):
             if key in ["progvers"]:
                 if value.lower().find("mt-editor") != -1:
                     self.phoenix_edi = True
-            if key in ["coordinate_system"]:
+            elif key in ["coordinate_system"]:
                 value = value.lower()
                 if "geomagnetic" in value:
                     value = "geomagnetic"
@@ -197,6 +197,10 @@ class Header(Location):
                     value = "geographic"
                 elif "station" in value:
                     value = "station"
+            elif key in ["stdvers"]:
+                if value in ["N/A", "None", "null"]:
+                    value = "SEG 1.0"
+
             if key == "declination":
                 setattr(self.declination, "value", value)
             else:
