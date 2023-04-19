@@ -17,6 +17,7 @@ Created on Mon Feb  8 21:25:40 2021
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from pathlib import Path
 from xml.etree import cElementTree as et
 import json
@@ -31,6 +32,7 @@ from .filters import (
 )
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import Base, helpers
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 
@@ -113,31 +115,42 @@ class Experiment(Base):
     @surveys.setter
     def surveys(self, value):
         """set the survey list"""
-        if not hasattr(value, "__iter__"):
+
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input surveys must be an iterable, should be a list "
+                "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        surveys = []
+
         fails = []
-        for ii, survey in enumerate(value):
-            if not isinstance(survey, Survey):
+        self._surveys = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, survey in enumerate(value_list):
+
+            if isinstance(survey, (dict, OrderedDict)):
+                s = Survey()
+                s.from_dict(survey)
+                self._stations.append(s)
+            elif not isinstance(survey, Survey):
                 msg = f"Item {ii} is not type(Survey); type={type(survey)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                surveys.append(survey)
+                self._surveys.append(survey)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._surveys = surveys
 
     @property
     def survey_names(self):
         """Return names of surveys in experiment"""
-        return [ss.id for ss in self.surveys]
+        return self.surveys.keys()
 
     def has_survey(self, survey_id):
         """
@@ -184,10 +197,9 @@ class Experiment(Base):
                 f"Input must be a mt_metadata.timeseries.Survey object not {type(survey_obj)}"
             )
 
-        index = self.survey_index(survey_obj.id)
-        if index is not None:
-            self.surveys[index].update(survey_obj)
-            self.logger.warning(
+        if self.has_survey(survey_obj.id):
+            self.surveys[survey_obj.id].update(survey_obj)
+            self.logger.debug(
                 f"survey {survey_obj.id} already exists, updating metadata"
             )
         else:
@@ -204,11 +216,11 @@ class Experiment(Base):
 
         """
 
-        index = self.survey_index(survey_id)
-        if index is None:
+        if self.has_survey(survey_id):
+            return self.surveys[survey_id]
+        else:
             self.logger.warning(f"Could not find survey {survey_id}")
             return None
-        return self.surveys[index]
 
     def to_dict(self, nested=False, required=True):
         """
@@ -248,7 +260,7 @@ class Experiment(Base):
 
         return ex_dict
 
-    def from_dict(self, ex_dict):
+    def from_dict(self, ex_dict, skip_none=True):
         """
         fill from an input dictionary
 
@@ -268,7 +280,7 @@ class Experiment(Base):
 
         for survey_dict in ex_dict["experiment"]["surveys"]:
             survey_object = Survey()
-            survey_object.from_dict(survey_dict)
+            survey_object.from_dict(survey_dict, skip_none=skip_none)
             self.add_survey(survey_object)
 
     def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
@@ -297,7 +309,7 @@ class Experiment(Base):
                 indent=indent,
             )
 
-    def from_json(self, json_str):
+    def from_json(self, json_str, skip_none=True):
         """
         read in a json string and update attributes of an object
 
@@ -322,9 +334,9 @@ class Experiment(Base):
             msg = "Input must be valid JSON string not %"
             self.logger.error(msg, type(json_str))
             raise TypeError(msg % type(json_str))
-        self.from_dict(json_dict)
+        self.from_dict(json_dict, skip_none=skip_none)
 
-    def to_xml(self, fn=None, required=True):
+    def to_xml(self, fn=None, required=True, sort=True):
         """
         Write XML version of the experiment
 
@@ -336,6 +348,8 @@ class Experiment(Base):
         """
 
         experiment_element = et.Element(self.__class__.__name__)
+        if sort:
+            self.surveys.sort()
         for survey in self.surveys:
             survey.update_bounding_box()
             survey.update_time_period()
@@ -343,12 +357,18 @@ class Experiment(Base):
             filter_element = et.SubElement(survey_element, "filters")
             for key, value in survey.filters.items():
                 filter_element.append(value.to_xml(required=required))
+            if sort:
+                survey.stations.sort()
             for station in survey.stations:
                 station.update_time_period()
                 station_element = station.to_xml(required=required)
+                if sort:
+                    station.runs.sort()
                 for run in station.runs:
                     run.update_time_period()
                     run_element = run.to_xml(required=required)
+                    if sort:
+                        run.channels.sort()
                     for channel in run.channels:
                         if channel.type in ["electric"]:
                             if (
@@ -391,7 +411,7 @@ class Experiment(Base):
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
 
-    def from_xml(self, fn=None, element=None):
+    def from_xml(self, fn=None, element=None, sort=True, skip_none=True):
         """
 
         :param fn: DESCRIPTION, defaults to None
@@ -412,19 +432,20 @@ class Experiment(Base):
         # need to set the lists for each layer, otherwise you get duplicates.
         for survey_element in list(experiment_element):
             survey_dict = helpers.element_to_dict(survey_element)
+            stations = self._pop_dictionary(survey_dict["survey"], "station")
             survey_obj = Survey()
+            survey_obj.from_dict(survey_dict, skip_none=skip_none)
             fd = survey_dict["survey"].pop("filters")
             filter_dict = self._read_filter_dict(fd)
             survey_obj.filters.update(filter_dict)
 
-            stations = self._pop_dictionary(survey_dict["survey"], "station")
             for station_dict in stations:
                 station_obj = Station()
-                run_list = []
                 runs = self._pop_dictionary(station_dict, "run")
+                station_obj.from_dict(station_dict, skip_none=skip_none)
                 for run_dict in runs:
                     run_obj = Run()
-                    channel_list = []
+
                     for ch in ["electric", "magnetic", "auxiliary"]:
                         try:
                             for ch_dict in self._pop_dictionary(run_dict, ch):
@@ -434,19 +455,17 @@ class Experiment(Base):
                                     channel = Magnetic()
                                 elif ch == "auxiliary":
                                     channel = Auxiliary()
-                                channel.from_dict(ch_dict)
-                                channel_list.append(channel)
+                                channel.from_dict(ch_dict, skip_none=skip_none)
+                                run_obj.add_channel(channel)
                         except KeyError:
                             self.logger.debug(f"Could not find channel {ch}")
-                    run_obj.from_dict(run_dict)
-                    run_obj.channels = channel_list
-                    run_list.append(run_obj)
+                    run_obj.from_dict(run_dict, skip_none=skip_none)
+                    station_obj.add_run(run_obj)
+                survey_obj.add_station(station_obj)
+            self.add_survey(survey_obj)
 
-                station_obj.from_dict(station_dict)
-                station_obj.runs = run_list
-                survey_obj.stations.append(station_obj)
-            survey_obj.from_dict(survey_dict)
-            self.surveys.append(survey_obj)
+            if sort:
+                self.sort()
 
     def _pop_dictionary(self, in_dict, element):
         """
@@ -511,7 +530,7 @@ class Experiment(Base):
         :rtype: TYPE
 
         """
-        return_dict = {}
+        return_dict = ListDict()
         if filters_dict is None:
             return return_dict
 
@@ -562,3 +581,29 @@ class Experiment(Base):
                     return_dict[mt_filter.name] = mt_filter
 
         return return_dict
+
+    def sort(self, inplace=True):
+        """
+        sort surveys, stations, runs, channels alphabetically/numerically
+
+        :param inplace: DESCRIPTION, defaults to True
+        :type inplace: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if inplace:
+            self.surveys.sort()
+            for survey in self.surveys:
+                survey.stations.sort()
+                for station in survey.stations:
+                    station.runs.sort()
+                    for run in station.runs:
+                        run.channels.sort()
+
+        else:
+            ex = Experiment()
+            ex.from_dict(self.to_dict())
+            ex.sort()
+            return ex

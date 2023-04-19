@@ -58,6 +58,7 @@ class TestStation(unittest.TestCase):
                 "provenance.submitter.author": "name",
                 "provenance.submitter.email": "test@here.org",
                 "provenance.submitter.organization": "submitter org",
+                "release_license": "CC0-1.0",
                 "run_list": [],
                 "time_period.end": "1980-01-01T00:00:00+00:00",
                 "time_period.start": "1980-01-01T00:00:00+00:00",
@@ -91,23 +92,27 @@ class TestStation(unittest.TestCase):
     def test_start(self):
         self.station_object.time_period.start = "2020/01/02T12:20:40.4560Z"
         self.assertEqual(
-            self.station_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.start,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
         self.station_object.time_period.start = "01/02/20T12:20:40.4560"
         self.assertEqual(
-            self.station_object.time_period.start, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.start,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
     def test_end_date(self):
         self.station_object.time_period.end = "2020/01/02T12:20:40.4560Z"
         self.assertEqual(
-            self.station_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.end,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
         self.station_object.time_period.end = "01/02/20T12:20:40.4560"
         self.assertEqual(
-            self.station_object.time_period.end, "2020-01-02T12:20:40.456000+00:00"
+            self.station_object.time_period.end,
+            "2020-01-02T12:20:40.456000+00:00",
         )
 
     def test_latitude(self):

@@ -38,8 +38,11 @@ class TestSurvey(unittest.TestCase):
                 "citation_dataset.doi": "http://doi.####",
                 "citation_journal.doi": None,
                 "comments": "comments",
-                "country": "Canada",
+                "country": ["Canada"],
                 "datum": "WGS84",
+                "funding_source.name": ["NSF"],
+                "funding_source.organization": ["US governement"],
+                "funding_source.grant_id": ["a345"],
                 "geographic_name": "earth",
                 "name": "entire survey of the earth",
                 "northwest_corner.latitude": 80.0,
@@ -51,6 +54,7 @@ class TestSurvey(unittest.TestCase):
                 "release_license": "CC-0",
                 "southeast_corner.latitude": -80.0,
                 "southeast_corner.longitude": -179.9,
+                "state": ["Manitoba"],
                 "summary": "Summary paragraph",
                 "time_period.end_date": "1980-01-01",
                 "time_period.start_date": "2080-01-01",
@@ -123,6 +127,36 @@ class TestSurvey(unittest.TestCase):
             self.survey_object.southeast_corner.longitude, -115.57361, places=5
         )
 
+    def test_funding_source(self):
+        with self.subTest("name"):
+            self.survey_object.funding_source.name = "NSF"
+            self.assertListEqual(
+                self.survey_object.funding_source.name, ["NSF"]
+            )
+        with self.subTest("organization"):
+            self.survey_object.funding_source.organization = (
+                "US governement, DOE"
+            )
+            self.assertListEqual(
+                self.survey_object.funding_source.organization,
+                ["US governement", "DOE"],
+            )
+        with self.subTest("grant_id"):
+            self.survey_object.funding_source.grant_id = "a345"
+            self.assertListEqual(
+                self.survey_object.funding_source.grant_id, ["a345"]
+            )
+
+    def test_geographic_location(self):
+        with self.subTest("country"):
+            self.survey_object.country = "Canada"
+            self.assertListEqual(self.survey_object.country, ["Canada"])
+        with self.subTest("state"):
+            self.survey_object.state = "Manitoba, Saskatchewan"
+            self.assertListEqual(
+                self.survey_object.state, ["Manitoba", "Saskatchewan"]
+            )
+
     def test_acuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
         self.assertEqual(self.survey_object.acquired_by.author, "MT")
@@ -173,6 +207,30 @@ class TestSurvey(unittest.TestCase):
         with self.subTest("compare list"):
             self.assertListEqual(
                 ["one", "two"], self.survey_object.station_names
+            )
+
+    def test_remove_station(self):
+        self.survey_object.stations.append(Station(id="one"))
+        self.survey_object.remove_station("one")
+        self.assertEqual([], self.survey_object.station_names)
+
+    def test_update_time_period(self):
+        s = Station(id="001")
+        s.time_period.start = "2020-01-01T00:00:00"
+        s.time_period.end = "2020-12-01T12:12:12"
+        self.survey_object.add_station(s)
+        self.survey_object.update_time_period()
+
+        with self.subTest("Test new start"):
+            self.assertEqual(
+                self.survey_object.time_period.start,
+                "2020-01-01T00:00:00+00:00",
+            )
+
+        with self.subTest("Test new end"):
+            self.assertEqual(
+                self.survey_object.time_period.end,
+                "2020-12-01T12:12:12+00:00",
             )
 
 

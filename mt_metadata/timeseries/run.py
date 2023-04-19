@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -24,6 +25,7 @@ from . import (
     Magnetic,
     Auxiliary,
 )
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
@@ -37,12 +39,12 @@ attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "acquired_by",
-    keys=["author", "comments"],
+    keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
     get_schema("person", SCHEMA_FN_PATHS),
     "metadata_by",
-    keys=["author", "comments"],
+    keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
     get_schema("provenance", SCHEMA_FN_PATHS),
@@ -63,7 +65,7 @@ class Run(Base):
         self.data_logger = DataLogger()
         self.metadata_by = Person()
         self.fdsn = Fdsn()
-        self.channels = []
+        self.channels = ListDict()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -80,14 +82,57 @@ class Run(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
+    def update(self, other, match=[]):
+        """
+        Update attribute values from another like element, skipping None
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if not isinstance(other, type(self)):
+            self.logger.warning(
+                "Cannot update %s with %s", type(self), type(other)
+            )
+        for k in match:
+            if self.get_attr_from_name(k) != other.get_attr_from_name(k):
+                msg = "%s is not equal %s != %s"
+                self.logger.error(
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
+                )
+                raise ValueError(
+                    msg,
+                    k,
+                    self.get_attr_from_name(k),
+                    other.get_attr_from_name(k),
+                )
+        for k, v in other.to_dict(single=True).items():
+            if hasattr(v, "size"):
+                if v.size > 0:
+                    self.set_attr_from_name(k, v)
+            else:
+                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+                    self.set_attr_from_name(k, v)
+
+        ## Need this because channels are set when setting channels_recorded
+        ## and it initiates an empty channel, but we need to fill it with
+        ## the appropriate metadata.
+        for ch in other.channels:
+            self.add_channel(ch)
+
     def has_channel(self, component):
         """
         Check to see if the channel already exists
 
-        :param component: DESCRIPTION
-        :type component: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param component: channel component to look for
+        :type component: string
+        :return: True if found, False if not
+        :rtype: boolean
 
         """
 
@@ -107,27 +152,22 @@ class Run(Base):
         """
         Get a channel
 
-        :param component: DESCRIPTION
-        :type component: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param component: channel component to look for
+        :type component: string
+        :return: channel object based on channel type
+        :rtype: :class:`mt_metadata.timeseries.Channel`
 
         """
 
         if self.has_channel(component):
-            return self.channels_dict[component]
-
-        else:
-            return None
+            return self.channels[component]
 
     def add_channel(self, channel_obj):
         """
         Add a channel to the list, check if one exists if it does overwrite it
 
-        :param channel_obj: DESCRIPTION
-        :type channel_obj: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param channel_obj: channel object to add
+        :type channel_obj: :class:`mt_metadata.timeseries.Channel`
 
         """
         if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
@@ -135,15 +175,33 @@ class Run(Base):
             self.logger.error(msg)
             raise ValueError(msg)
         if channel_obj.component is None:
-            msg = "component cannot be empty"
-            self.logger.error(msg)
-            raise ValueError(msg)
+            if not isinstance(channel_obj, Auxiliary):
+                msg = "component cannot be empty"
+                self.logger.error(msg)
+                raise ValueError(msg)
 
-        index = self.channel_index(channel_obj.component)
-        if index is not None:
-            self.channels[index] = channel_obj
+        if self.has_channel(channel_obj.component):
+            self.channels[channel_obj.component].update(channel_obj)
+            self.logger.debug(
+                f"Run {channel_obj.component} already exists, updating metadata"
+            )
+
         else:
             self.channels.append(channel_obj)
+
+    def remove_channel(self, channel_id):
+        """
+        remove a run from the survey
+
+        :param component: channel component to look for
+        :type component: string
+
+        """
+
+        if self.has_channel(channel_id):
+            self.channels.remove(channel_id)
+        else:
+            self.logger.warning(f"Could not find {channel_id} to remove.")
 
     @property
     def channels(self):
@@ -153,17 +211,26 @@ class Run(Base):
     @channels.setter
     def channels(self, value):
         """set the channel list"""
-        if not hasattr(value, "__iter__"):
+
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input channels must be an iterable, should be a list "
+                "input run_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        channels = []
+
         fails = []
-        for ii, channel in enumerate(value):
-            if isinstance(channel, dict):
+        self._channels = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, channel in enumerate(value_list):
+
+            if isinstance(channel, (dict, OrderedDict)):
                 try:
                     ch_type = channel["type"]
                     if ch_type is None:
@@ -177,7 +244,7 @@ class Run(Base):
                         ch = Auxiliary()
 
                     ch.from_dict(channel)
-                    channels.append(ch)
+                    self._channels.append(ch)
                 except KeyError:
                     msg = (
                         f"Item {ii} is not type(channel); type={type(channel)}"
@@ -189,15 +256,9 @@ class Run(Base):
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                channels.append(channel)
+                self._channels.append(channel)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._channels = channels
-
-    @property
-    def channels_dict(self):
-        return dict([(c.component, c) for c in self.channels])
 
     @property
     def n_channels(self):
@@ -211,12 +272,20 @@ class Run(Base):
         :rtype: TYPE
 
         """
-        return [ch.component for ch in self.channels]
+        return [
+            ch.component
+            for ch in self.channels.values()
+            if ch.component is not None
+        ]
 
     @property
     def channels_recorded_electric(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Electric)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Electric) and ch.component is not None
+            ]
         )
 
     @channels_recorded_electric.setter
@@ -229,18 +298,26 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Electric(component=entry))
+                self.add_channel(Electric(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Electric):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Electric not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Electric not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
     @property
     def channels_recorded_magnetic(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Magnetic)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Magnetic) and ch.component is not None
+            ]
         )
 
     @channels_recorded_magnetic.setter
@@ -253,18 +330,26 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Magnetic(component=entry))
+                self.add_channel(Magnetic(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Magnetic):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
-                msg = f"entry must be a string or type Magnetic not {type(entry)}"
+                msg = (
+                    f"entry must be a string or type Magnetic not {type(entry)}"
+                )
                 self.logger.error(msg)
                 raise ValueError(msg)
 
     @property
     def channels_recorded_auxiliary(self):
         return sorted(
-            [ch.component for ch in self.channels if isinstance(ch, Auxiliary)]
+            [
+                ch.component
+                for ch in self.channels.values()
+                if isinstance(ch, Auxiliary) and ch.component is not None
+            ]
         )
 
     @channels_recorded_auxiliary.setter
@@ -277,9 +362,11 @@ class Run(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.channels.append(Auxiliary(component=entry))
+                self.add_channel(Auxiliary(component=entry))
+            elif entry is None:
+                continue
             elif isinstance(entry, Auxiliary):
-                self.channels.append(entry)
+                self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type Auxiliary not {type(entry)}"
                 self.logger.error(msg)
@@ -292,8 +379,10 @@ class Run(Base):
         start = []
         end = []
         for channel in self.channels:
-            start.append(channel.time_period.start)
-            end.append(channel.time_period.end)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(channel.time_period.start)
+            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(channel.time_period.end)
 
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":

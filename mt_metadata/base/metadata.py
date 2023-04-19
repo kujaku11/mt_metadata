@@ -180,20 +180,44 @@ class Base:
     def __deepcopy__(self, memodict={}):
         """
         Need to skip copying the logger
+        need to copy properties as well.
 
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
         copied = type(self)()
-        for key in self.to_dict(single=True).keys():
+        for key in self.to_dict(single=True, required=False).keys():
             try:
+
                 copied.set_attr_from_name(
                     key, deepcopy(self.get_attr_from_name(key), memodict)
                 )
-            except AttributeError:
+            # Need the TypeError for objects that have no __reduce__ method
+            # like H5 references.
+            except (AttributeError, TypeError) as error:
+                self.logger.debug(error)
                 continue
+        # need to copy and properties
+        for key in self.__dict__.keys():
+            if key.startswith("_"):
+                test_property = getattr(self.__class__, key[1:], None)
+                if isinstance(test_property, property):
+                    value = getattr(self, key[1:])
+                    if hasattr(value, "copy"):
+                        setattr(copied, key[1:], value.copy())
+                    else:
+                        setattr(copied, key[1:], value)
+
         return copied
+
+    def copy(self):
+        """
+        Copy object
+
+        """
+
+        return self.__deepcopy__()
 
     def get_attribute_list(self):
         """
@@ -317,7 +341,6 @@ class Base:
             "end_date",
             "start",
             "end",
-            "name",
             "applied",
             "logger",
             "changed",
@@ -694,7 +717,7 @@ class Base:
             msg = "Input must be a Pandas.Series not type %s"
             self.logger.error(msg, type(pd_series))
             MTSchemaError(msg % type(pd_series))
-        for key, value in pd_series.iteritems():
+        for key, value in pd_series.items():
             self.set_attr_from_name(key, value)
 
     def to_series(self, required=True):

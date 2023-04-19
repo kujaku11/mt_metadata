@@ -1,0 +1,79 @@
+{
+    "country": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Country of the geographic location, should be spelled out in full. Can be a list of countries.",
+        "options": [],
+        "alias": [],
+        "example": "United States of America",
+    	  "default": null
+    },
+	 "state": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "State or province of the geographic location, should be spelled out in full. Can be a list of states or provinces.",
+        "options": [],
+        "alias": [],
+        "example": "[Colorado, Utah]",
+		"default": null
+    },
+	 "county": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "County of the geographic location, should be spelled out in full. Can be a list of counties.",
+        "options": [],
+        "alias": [],
+        "example": "[Douglass, Fayet]",
+		"default": null
+    },
+	 "township": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Township or city name or code.",
+        "options": [],
+        "alias": [],
+        "example": "090",
+		"default": null
+    },
+	 "section": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Section name or code.",
+        "options": [],
+        "alias": [],
+        "example": "012",
+		"default": null
+    },
+	 "quarter": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Quarter section code.",
+        "options": [],
+        "alias": [],
+        "example": "400",
+		"default": null
+    },
+	 "parcel": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Land parcel ID.",
+        "options": [],
+        "alias": [],
+        "example": "46b29a",
+		"default": null
+    }
+}

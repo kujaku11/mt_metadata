@@ -112,13 +112,20 @@ def plot_response(
 
         # plot amplitude
         (l1,) = ax_amp.plot(
-            frequencies, response_amplitude, linewidth=1.5, linestyle="-", label=name,
+            frequencies,
+            response_amplitude,
+            linewidth=1.5,
+            linestyle="-",
+            label=name,
         )
         lines.append(l1)
 
         # plot phase
         ax_phs.plot(
-            frequencies, response_phase, linewidth=1.5, linestyle="-",
+            frequencies,
+            response_phase,
+            linewidth=1.5,
+            linestyle="-",
         )
 
         # plot pass band
@@ -167,7 +174,10 @@ def plot_response(
 
     if normalization_frequency is not None:
         if x_units.lower() == "period":
-            normalization_frequency = 1.0 / normalization_frequency
+            try:
+                normalization_frequency = 1.0 / normalization_frequency
+            except ZeroDivisionError:
+                pass
         ax_amp.plot(
             [normalization_frequency, normalization_frequency],
             [10e-20, 10e10],
@@ -235,7 +245,11 @@ def plot_response(
 
     if len(label) > 1:
         fig.legend(
-            lines, label, ncol=len(label), loc="upper center", borderaxespad=-0.5,
+            lines,
+            label,
+            ncol=len(label),
+            loc="upper center",
+            borderaxespad=-0.5,
         )
     else:
         fig.suptitle(title)

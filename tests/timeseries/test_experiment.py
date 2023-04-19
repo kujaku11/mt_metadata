@@ -96,8 +96,6 @@ class TestBuildExperiment(unittest.TestCase):
 
         for survey in ["One", "Two"]:
             survey_obj = Survey(id=survey)
-            survey_obj.acquired_by.author = "None"
-            survey_obj.project_lead.author = "None"
             survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
                 station_obj = Station(id=station, **kwargs)
@@ -105,13 +103,13 @@ class TestBuildExperiment(unittest.TestCase):
                     run_obj = Run(id=run, **kwargs)
                     for ch in ["ex", "ey"]:
                         ch_obj = Electric(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     for ch in ["hx", "hy", "hz"]:
                         ch_obj = Magnetic(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     for ch in ["temperature", "voltage"]:
                         ch_obj = Auxiliary(component=ch, **kwargs)
-                        run_obj.channels.append(ch_obj)
+                        run_obj.add_channel(ch_obj)
                     run_obj.update_time_period()
                     station_obj.runs.append(run_obj)
                     station_obj.update_time_period()
@@ -120,10 +118,12 @@ class TestBuildExperiment(unittest.TestCase):
             self.experiment.surveys.append(survey_obj)
 
     def test_write_xml(self):
-        experiment_xml = self.experiment.to_xml(required=False)
+        experiment_xml = self.experiment.to_xml(required=True)
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
-        self.assertEqual(self.experiment, experiment_02)
+        self.assertDictEqual(
+            self.experiment.to_dict(), experiment_02.to_dict()
+        )
 
     def test_survey_time_period(self):
         with self.subTest("start"):
@@ -203,9 +203,9 @@ class TestBuildExperiment(unittest.TestCase):
 
         d = self.experiment.to_dict()
         ex = Experiment()
-        ex.from_dict(d)
+        ex.from_dict(d, skip_none=False)
 
-        self.assertTrue(ex == self.experiment)
+        self.assertDictEqual(ex.to_dict(), self.experiment.to_dict())
 
     def test_from_dict_fail(self):
         self.assertRaises(TypeError, self.experiment.from_dict, 10)

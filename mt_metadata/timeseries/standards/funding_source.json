@@ -1,19 +1,8 @@
 {
     "name": {
         "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Persons name, should be full first and last name.",
-        "options": [],
-        "alias": [],
-        "example": "person name",
-		"default": null
-    },
-    "author": {
-        "type": "string",
         "required": false,
-        "style": "free form",
+        "style": "name list",
         "units": null,
         "description": "Persons name, should be full first and last name.",
         "options": [],
@@ -24,7 +13,7 @@
     "organization": {
         "type": "string",
         "required": false,
-        "style": "free form",
+        "style": "name list",
         "units": null,
         "description": "Organization full name",
         "options": [],
@@ -35,7 +24,7 @@
     "email": {
         "type": "string",
         "required": false,
-        "style": "email",
+        "style": "name list",
         "units": null,
         "description": "Email of the contact person",
         "options": [],
@@ -46,7 +35,7 @@
     "url": {
         "type": "string",
         "required": false,
-        "style": "free form",
+        "style": "name list",
         "units": null,
         "description": "URL of the contact person",
         "options": [],
@@ -57,12 +46,23 @@
     "comments": {
         "type": "string",
         "required": false,
-        "style": "email",
+        "style": "free form",
         "units": null,
         "description": "Any comments about the person",
         "options": [],
         "alias": [],
         "example": "expert digger",
+		"default": null
+    },
+    "grant_id": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Grant ID number or name",
+        "options": [],
+        "alias": [],
+        "example": "MT-01-2020",
 		"default": null
     }
 }

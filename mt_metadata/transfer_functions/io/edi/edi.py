@@ -399,19 +399,36 @@ class EDI(object):
                     obj[:, ii, jj] = (
                         data_dict[f"{key}r"] + data_dict[f"{key}i"] * 1j
                     )
-                    error_key = [
-                        k for k in data_dict.keys() if key in k and "var" in k
-                    ][0]
-                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
+                    try:
+                        error_key = [
+                            k
+                            for k in data_dict.keys()
+                            if key in k and "var" in k
+                        ][0]
+                        error_obj[:, ii, jj] = (
+                            np.abs(data_dict[error_key]) ** 0.5
+                        )
+                    except IndexError:
+                        self.logger.debug(
+                            f"Could not find error information for {key}"
+                        )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"]
-                        + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
-                    error_key = [
-                        k for k in data_dict.keys() if key in k and "var" in k
-                    ][0]
-                    error_obj[:, ii, jj] = np.abs(data_dict[error_key]) ** 0.5
+                    try:
+                        error_key = [
+                            k
+                            for k in data_dict.keys()
+                            if key in k and "var" in k
+                        ][0]
+                        error_obj[:, ii, jj] = (
+                            np.abs(data_dict[error_key]) ** 0.5
+                        )
+                    except IndexError:
+                        self.logger.debug(
+                            f"Could not find error information for {key}"
+                        )
                 elif key.startswith("r") or key.startswith("p"):
                     self.logger.debug(
                         "Reading RHO and PHS to compute impedance"
@@ -731,9 +748,7 @@ class EDI(object):
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
         if self.Header.fileby != "1980-01-01":
-            extra_lines.append(
-                f"\toriginal_file.date={self.Header.filedate}\n"
-            )
+            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -881,15 +896,11 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
@@ -1215,7 +1226,7 @@ class EDI(object):
         get electric information from the various metadata
         """
         comp = comp.lower()
-        electric = metadata.Electric()
+        electric = metadata.Electric(component=comp)
         electric.positive.type = "electric"
         electric.negative.type = "electric"
         if hasattr(self.Measurement, f"meas_{comp}"):
@@ -1283,7 +1294,7 @@ class EDI(object):
 
         """
 
-        magnetic = metadata.Magnetic()
+        magnetic = metadata.Magnetic(component=comp)
         magnetic.sensor.type = "magnetic"
         if hasattr(self.Measurement, f"meas_{comp}"):
             meas = getattr(self.Measurement, f"meas_{comp}")

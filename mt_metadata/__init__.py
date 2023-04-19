@@ -39,7 +39,7 @@ you should only have to changes these dictionaries.
 
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 # =============================================================================
 # Imports
@@ -114,6 +114,9 @@ STATIONXML_FAP = DATA_DIR.joinpath(
 STATIONXML_FIR = DATA_DIR.joinpath(
     "data/stationxml/station_xml_with_fir_example.xml"
 )
+STATIONXML_MULTIPLE_NETWORKS = DATA_DIR.joinpath(
+    "data/stationxml/multiple_networks_example.xml"
+)
 
 ### MT EXPERIMENT files
 MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
@@ -143,6 +146,9 @@ TF_EDI_RHO_ONLY = DATA_DIR.joinpath("data/transfer_functions/rho_only.edi")
 TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
 TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
     "data/transfer_functions/spectra_out.edi"
+)
+TF_EDI_NO_ERROR = DATA_DIR.joinpath(
+    "data/transfer_functions/example_no_error.edi"
 )
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
 TF_AVG_TIPPER = DATA_DIR.joinpath(

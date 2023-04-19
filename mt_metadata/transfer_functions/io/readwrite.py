@@ -73,6 +73,16 @@ plugins = {
         "reader": read_zmm,
         "writer": write_zmm,
     },
+    "zrr": {
+        "file_types": ["zmm", "zrr", "zss"],
+        "reader": read_zmm,
+        "writer": write_zmm,
+    },
+    "zss": {
+        "file_types": ["zmm", "zrr", "zss"],
+        "reader": read_zmm,
+        "writer": write_zmm,
+    },
     "j": {
         "file_types": ["j"],
         "reader": read_jfile,

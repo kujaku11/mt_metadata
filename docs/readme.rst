@@ -8,7 +8,7 @@ Metadata standards for MT have been historically relaxed to user dependent.  The
 
 The metadata for time series follows the standards proposed by the `IRIS-PASSCAL MT
 Software working
-group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__.
+group <https://www.iris.edu/hq/about_iris/governance/mt_soft>`__ published at Peacock, J.R., Frassetto, A., Kelbert, A., Egbert, G., Smirnov, M., Schultz, A.C., Kappler, K.N., Ronan, T., and Trabant, C., 2021, Metadata Standards for Magnetotelluric Time Series Data: U.S. Geological Survey data release, ` <https://doi.org/10.5066/P9AXGKEV>`__.
 
 The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__. 
 

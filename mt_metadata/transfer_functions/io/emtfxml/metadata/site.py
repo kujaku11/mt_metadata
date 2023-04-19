@@ -48,7 +48,7 @@ class Site(Base):
 
     @start.setter
     def start(self, value):
-        self._start_dt.from_str(value)
+        self._start_dt.parse(value)
 
     @property
     def end(self):
@@ -56,7 +56,7 @@ class Site(Base):
 
     @end.setter
     def end(self, value):
-        self._end_dt.from_str(value)
+        self._end_dt.parse(value)
 
     @property
     def year_collected(self):

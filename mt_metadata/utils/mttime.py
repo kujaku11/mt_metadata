@@ -4,18 +4,18 @@ Created on Wed May 13 19:10:46 2020
 
 @author: jpeacock
 """
-
+# =============================================================================
+# IMPORTS
+# =============================================================================
 import datetime
+from dateutil.parser import parse as dtparser
+from copy import deepcopy
 import numpy as np
 import pandas as pd
-from copy import deepcopy
-import pytz
+from pandas._libs.tslibs import OutOfBoundsDatetime
 
-from dateutil import parser as dtparser
-from dateutil.tz.tz import tzutc, tzlocal
 
 from .mt_logger import setup_logger
-from .exceptions import MTTimeError
 from mt_metadata import LOG_LEVEL
 
 # =============================================================================
@@ -39,8 +39,8 @@ leap_second_dict = {
     14: {"min": datetime.date(2006, 1, 1), "max": datetime.date(2009, 1, 1)},
     15: {"min": datetime.date(2009, 1, 1), "max": datetime.date(2012, 6, 30)},
     16: {"min": datetime.date(2012, 7, 1), "max": datetime.date(2015, 7, 1)},
-    17: {"min": datetime.date(2015, 7, 1), "max": datetime.date(2017, 1, 1)},
-    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2022, 7, 1)},
+    17: {"min": datetime.date(2015, 7, 1), "max": datetime.date(2016, 12, 31)},
+    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2025, 7, 1)},
 }
 
 
@@ -98,11 +98,14 @@ def calculate_leap_seconds(year, month, day):
 # ==============================================================================
 class MTime:
     """
-    Date and Time container based on datetime and dateutil.parsers
+    Date and Time container based on :class:`pandas.Timestamp`
 
-    Will read in a string or a epoch seconds into a datetime.datetime object
-    assuming the time zone is UTC.  If UTC is not the timezone you need to
-    correct the time before inputing.  Use datetime.timezone to shift time.
+    Will read in a string or a epoch seconds into a :class:`pandas.Timestamp`
+    object assuming the time zone is UTC.  If UTC is not the timezone then
+    the time is corrected to UTC.
+
+    The benefit of using :class:`pandas.Timestamp` is that it can handle
+    nanoseconds.
 
     Outputs can be an ISO formatted string YYYY-MM-DDThh:mm:ss.ssssss+00:00:
 
@@ -110,7 +113,7 @@ class MTime:
         >>> t.iso_str
         '1980-01-01T00:00:00+00:00'
 
-    .. note:: if microseconds are 0 they are omitted.
+    .. note:: if microseconds are 0 they are omitted. Same with nanoseconds.
 
     or Epoch seconds (float):
 
@@ -126,6 +129,17 @@ class MTime:
         >>> t.year
         2020
 
+    .. note:: If the input data is greater than pandas.Timestamp.max then the
+     value is set to
+     :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'. Similarly,
+     If the input data is less than pandas.Timestamp.min then the value is
+     set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'
+
+
+    >>> t = MTime("3000-01-01")
+    [line 295] mt_metadata.utils.mttime.MTime.parse -
+    INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
+
     """
 
     def __init__(self, time=None, gps_time=False):
@@ -135,163 +149,90 @@ class MTime:
             fn="mt_time.log",
             level=LOG_LEVEL,
         )
-        self.dt_object = self.now()
+        self.gps_time = gps_time
 
-        if time is not None:
-            self.logger.debug(f"Input type is {type(time)} {time}")
-            if isinstance(time, str):
-                self.from_str(time)
-                self.logger.debug(f"Parsed {time} to {self.iso_str}")
+        self.parse(time)
 
-            elif isinstance(time, (int, float)):
-                self.logger.debug(
-                    f"Input time {time}, assuming epoch seconds in UTC"
-                )
-                self.epoch_seconds = time
-            elif isinstance(time, (np.datetime64)):
-                self.logger.debug(
-                    "Input time is a np.datetime64 "
-                    + "dt_object set to datetime64.tolist()."
-                )
-                self.dt_object = self.validate_tzinfo(time.tolist())
-
-            elif isinstance(time, (datetime.datetime)):
-                self.logger.debug("Input time is a datetime.datetime object")
-                self.dt_object = self.validate_tzinfo(time)
-
-            elif isinstance(time, pd._libs.tslibs.timestamps.Timestamp):
-                self.from_str(time.isoformat())
-
-            elif hasattr(time, "isoformat"):
-
-                self.from_str(time.isoformat())
-
-            else:
-                msg = "input time must be a string, float, or int, not {0}"
-                self.logger.error(msg.format(type(time)))
-
-        else:
-            self.from_str("1980-01-01 00:00:00")
-
-        if gps_time:
+        if self.gps_time:
             leap_seconds = calculate_leap_seconds(
                 self.year, self.month, self.day
             )
             self.logger.debug(
                 f"Converting GPS time to UTC with {leap_seconds} leap seconds"
             )
-            self.dt_object -= datetime.timedelta(seconds=leap_seconds)
+            self._time_stamp -= pd.Timedelta(seconds=leap_seconds)
 
     def __str__(self):
-        return self.iso_str
+        return self.isoformat()
 
     def __repr__(self):
-        return self.iso_str
+        return self.isoformat()
 
     def __eq__(self, other):
-        if isinstance(other, datetime.datetime):
-            return bool(self.dt_object == other)
 
-        elif isinstance(other, MTime):
-            return bool(self.dt_object == other.dt_object)
+        if not isinstance(other, MTime):
+            other = MTime(other)
 
-        elif isinstance(other, str):
-            return bool(self.iso_str == other)
+        epoch_seconds = bool(self._time_stamp.value == other._time_stamp.value)
 
-        elif isinstance(other, (int, float)):
-            return bool(self.epoch_seconds == float(other))
-        else:
-            msg = "Cannot compare {0} of type {1} with MTime Object".format(
-                other, type(other)
+        tz = bool(self._time_stamp.tz == other._time_stamp.tz)
+
+        if epoch_seconds and tz:
+            return True
+        elif epoch_seconds and not tz:
+            self.logger.info(
+                "Time zones are not equal {self._time_stamp.tz} != {other.time_stamp.tz"
             )
-            self.logger.error(msg)
-            raise MTTimeError(msg)
+            return False
+        elif not epoch_seconds:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __lt__(self, other):
-        if isinstance(other, datetime.datetime):
-            return bool(self.dt_object < other)
+        if not isinstance(other, MTime):
+            other = MTime(other)
 
-        elif isinstance(other, MTime):
-            return bool(self.dt_object < other.dt_object)
-
-        elif isinstance(other, str):
-            return bool(self.iso_str < other)
-
-        elif isinstance(other, (int, float)):
-            return bool(self.epoch_seconds < float(other))
-
-        else:
-            msg = "Cannot compare {0} of type {1} with MTime Object".format(
-                other, type(other)
-            )
-            self.logger.error(msg)
-            raise MTTimeError(msg)
+        return bool(self._time_stamp < other._time_stamp)
 
     def __le__(self, other):
-        if isinstance(other, datetime.datetime):
-            return bool(self.dt_object <= other)
+        if not isinstance(other, MTime):
+            other = MTime(other)
 
-        elif isinstance(other, MTime):
-            return bool(self.dt_object <= other.dt_object)
-
-        elif isinstance(other, str):
-            return bool(self.iso_str <= other)
-
-        elif isinstance(other, (int, float)):
-            return bool(self.epoch_seconds <= float(other))
-        else:
-            msg = "Cannot compare {0} of type {1} with MTime Object".format(
-                other, type(other)
-            )
-            self.logger.error(msg)
-            raise MTTimeError(msg)
+        return bool(self._time_stamp <= other._time_stamp)
 
     def __gt__(self, other):
         return not self.__lt__(other)
 
     def __ge__(self, other):
-        if isinstance(other, datetime.datetime):
-            return bool(self.dt_object >= other)
+        if not isinstance(other, MTime):
+            other = MTime(other)
 
-        elif isinstance(other, MTime):
-            return bool(self.dt_object >= other.dt_object)
-
-        elif isinstance(other, str):
-            return bool(self.iso_str >= other)
-
-        elif isinstance(other, (int, float)):
-            return bool(self.epoch_seconds >= float(other))
-        else:
-            msg = "Cannot compare {0} of type {1} with MTime Object".format(
-                other, type(other)
-            )
-            self.logger.error(msg)
-            raise MTTimeError(msg)
+        return bool(self._time_stamp >= other._time_stamp)
 
     def __add__(self, other):
         """
-        add time only using datetime.timedelta, otherwise it does not make
+        add time only using pd.Timedelta, otherwise it does not make
         sense to at 2 times together.
 
         """
         if isinstance(other, (int, float)):
-            other = datetime.timedelta(seconds=other)
+            other = pd.Timedelta(seconds=other)
             self.logger.debug("Assuming other time is in seconds")
 
-        if not isinstance(other, (datetime.timedelta)):
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        if not isinstance(other, (pd.Timedelta)):
             msg = (
-                "Adding times does not make sense, must use "
-                + "datetime.timedelta to add time. \n"
-                + "\t>>> add_time = datetime.timedelta(seconds=10) \n"
-                + "\t>>> mtime_obj + add_time"
+                "Adding times stamps does not make sense, use either "
+                "pd.Timedelta or seconds as a float or int."
             )
             self.logger.error(msg)
-            raise MTTimeError(msg)
+            raise ValueError(msg)
 
-        return MTime(self.dt_object + other)
+        return MTime(self._time_stamp + other)
 
     def __sub__(self, other):
         """
@@ -304,49 +245,89 @@ class MTime:
 
         """
 
-        if isinstance(other, type(self)):
-            other_seconds = other.epoch_seconds
-        elif isinstance(other, (str)):
-            other_dt = self.validate_tzinfo(dtparser.parse(other))
-            other_seconds = other_dt.timestamp()
-        elif isinstance(other, (float, int)):
-            other_seconds = float(other)
-        elif isinstance(other, (np.datetime64)):
-            other_seconds = other.astype(np.float)
-        elif isinstance(other, (datetime.datetime)):
-            other_seconds = other.timestamp()
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(seconds=other)
+            self.logger.debug("Assuming other time is in seconds")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
 
         else:
-            msg = "Cannot compare {0} of type {1} with MTime Object".format(
-                other, type(other)
-            )
-            self.logger.error(msg)
-            raise MTTimeError(msg)
+            try:
+                other = MTime(other)
+            except ValueError as error:
+                raise TypeError(error)
 
-        return self.epoch_seconds - other_seconds
+        if not isinstance(other, (pd.Timedelta, MTime)):
+            msg = "Subtracting times must be either timedelta or another time."
+            self.logger.error(msg)
+            raise ValueError(msg)
+
+        if isinstance(other, MTime):
+            other = MTime(other)
+
+            return (self._time_stamp - other._time_stamp).total_seconds()
+
+        elif isinstance(other, pd.Timedelta):
+            return MTime(self._time_stamp - other)
+
+    def __hash__(self):
+        return hash(self.isoformat())
 
     @property
     def iso_str(self):
-        return self.dt_object.isoformat()
+        return self._time_stamp.isoformat()
 
     @property
     def iso_no_tz(self):
-        return self.dt_object.isoformat().split("+", 1)[0]
+        return self._time_stamp.isoformat().split("+", 1)[0]
 
     @property
     def epoch_seconds(self):
-        return self.dt_object.timestamp()
+        return self._time_stamp.timestamp()
 
     @epoch_seconds.setter
     def epoch_seconds(self, seconds):
         self.logger.debug(
-            "reading time from epoch seconds, assuming UTC " + "time zone"
+            "reading time from epoch seconds, assuming UTC time zone"
         )
-        dt = datetime.datetime.utcfromtimestamp(seconds)
-        dt = dt.replace(tzinfo=datetime.timezone.utc)
-        self.dt_object = dt
+        self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
-    def from_str(self, dt_str):
+    def _fix_out_of_bounds_time_stamp(self, dt_str):
+        """
+
+        :param dt_str: DESCRIPTION
+        :type dt_str: TYPE
+        :raises ValueError: DESCRIPTION
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        t_min_max = False
+        try:
+            dt = dtparser(dt_str)
+
+            if dt.year > 2200:
+                self.logger.info(
+                    f"{dt_str} is too large setting to {pd.Timestamp.max}"
+                )
+                stamp = pd.Timestamp.max
+                t_min_max = True
+            elif dt.year < 1900:
+                self.logger.info(
+                    f"{dt_str} is too small setting to {pd.Timestamp.min}"
+                )
+                stamp = pd.Timestamp.min
+                t_min_max = True
+
+        except ValueError:
+            msg = f"Could not parse {dt_str} into a readable date-time"
+            self.logger.error(msg)
+            raise ValueError(msg)
+
+        return stamp, t_min_max
+
+    def parse(self, dt_str):
         """
         Parse a date-time string using dateutil.parser
 
@@ -358,119 +339,129 @@ class MTime:
 
 
         """
+        t_min_max = False
+        if isinstance(dt_str, pd.Timestamp):
+            stamp = dt_str
+            if (
+                stamp.value == pd.Timestamp.max.value
+                or stamp.value == pd.Timestamp.min.value
+            ):
+                t_min_max = True
 
-        if dt_str is None:
-            self.logger.warning(
+        elif hasattr(dt_str, "isoformat"):
+            try:
+                stamp = pd.Timestamp(dt_str.isoformat())
+            except OutOfBoundsDatetime:
+                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
+                    dt_str.isoformat()
+                )
+
+        elif isinstance(dt_str, (float, int)):
+            # using 3E8 which is about the start of GPS time
+            ratio = dt_str / 3e8
+            if ratio < 1 and self.gps_time:
+                raise ValueError(
+                    "Input is before GPS start time '1980/01/06', check value."
+                )
+            if dt_str / 3e8 < 1e3:
+                stamp = pd.Timestamp(dt_str, unit="s")
+                self.logger.debug("Assuming time input is in units of seconds")
+            else:
+                stamp = pd.Timestamp(dt_str, unit="ns")
+                self.logger.debug(
+                    "Assuming time input is in units of nanoseconds"
+                )
+
+        else:
+            try:
+                stamp = pd.Timestamp(dt_str)
+            except (TypeError, ValueError, OutOfBoundsDatetime):
+                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt_str)
+
+        if isinstance(stamp, (type(pd.NaT), type(None))):
+            self.logger.debug(
                 "Time string is None, setting to 1980-01-01:00:00:00"
             )
-            dt_str = "1980-01-01T00:00:00"
+            stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
 
-        try:
-            parsed_str = dtparser.isoparser(dt_str)
-        except ValueError:
-            try:
-                parsed_str = dtparser.parse(dt_str)
-            except dtparser.ParserError as error:
-                msg = (
-                    "{0}".format(error)
-                    + "Input must be a valid datetime string, see "
-                    + "https://docs.python.org/3.8/library/datetime.html"
-                )
-                self.logger.error(msg)
-                raise MTTimeError(msg)
+        # check time zone and enforce UTC
+        if stamp.tz is None:
+            stamp = stamp.tz_localize("UTC").tz_convert("UTC")
 
-            except TypeError as error:
-                msg = "%s input is type(%s), %s"
-                self.logger.error(msg, error, type(dt_str), dt_str)
-                raise MTTimeError(msg % (error, type(dt_str), dt_str))
+        # there can be a machine round off error, if it is close to 1 round to
+        # microseconds
+        if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
+            stamp = stamp.round(freq="us")
 
-        self.dt_object = self.validate_tzinfo(parsed_str)
-
-    def validate_tzinfo(self, dt_object):
-        """
-        make sure the timezone is UTC
-        """
-        if (
-            dt_object.tzinfo == datetime.timezone.utc
-            or dt_object.tzinfo == pytz.UTC
-        ):
-            return dt_object
-
-        elif isinstance(dt_object.tzinfo, tzutc):
-            return dt_object.replace(tzinfo=datetime.timezone.utc)
-
-        elif dt_object.tzinfo is None:
-            return dt_object.replace(tzinfo=datetime.timezone.utc)
-
-        # this seems to happen on linux systems
-        elif isinstance(dt_object.tzinfo, tzlocal):
-            self.logger.debug("Local timezone identified setting to UTC")
-            return dt_object.replace(tzinfo=datetime.timezone.utc)
-
-        elif not isinstance(
-            dt_object.tzinfo, (type(datetime.timezone.utc), type(pytz.UTC))
-        ):
-            raise ValueError("Time zone must be UTC")
+        self._time_stamp = stamp
 
     @property
     def date(self):
-        return self.dt_object.date().isoformat()
+        return self._time_stamp.date().isoformat()
 
     @property
     def year(self):
-        return self.dt_object.year
+        return self._time_stamp.year
 
     @year.setter
     def year(self, value):
-        self.dt_object = self.dt_object.replace(year=value)
+        self._time_stamp = self._time_stamp.replace(year=value)
 
     @property
     def month(self):
-        return self.dt_object.month
+        return self._time_stamp.month
 
     @month.setter
     def month(self, value):
-        self.dt_object = self.dt_object.replace(month=value)
+        self._time_stamp = self._time_stamp.replace(month=value)
 
     @property
     def day(self):
-        return self.dt_object.day
+        return self._time_stamp.day
 
     @day.setter
     def day(self, value):
-        self.dt_object = self.dt_object.replace(day=value)
+        self._time_stamp = self._time_stamp.replace(day=value)
 
     @property
     def hour(self):
-        return self.dt_object.hour
+        return self._time_stamp.hour
 
     @hour.setter
     def hour(self, value):
-        self.dt_object = self.dt_object.replace(hour=value)
+        self._time_stamp = self._time_stamp.replace(hour=value)
 
     @property
     def minutes(self):
-        return self.dt_object.minute
+        return self._time_stamp.minute
 
     @minutes.setter
     def minutes(self, value):
-        self.dt_object = self.dt_object.replace(minute=value)
+        self._time_stamp = self._time_stamp.replace(minute=value)
 
     @property
     def seconds(self):
-        return self.dt_object.second
+        return self._time_stamp.second
 
     @seconds.setter
     def seconds(self, value):
-        self.dt_object = self.dt_object.replace(second=value)
+        self._time_stamp = self._time_stamp.replace(second=value)
 
     @property
     def microseconds(self):
-        return self.dt_object.microsecond
+        return self._time_stamp.microsecond
 
     @microseconds.setter
     def microseconds(self, value):
-        self.dt_object = self.dt_object.replace(microsecond=value)
+        self._time_stamp = self._time_stamp.replace(microsecond=value)
+
+    @property
+    def nanoseconds(self):
+        return self._time_stamp.nanosecond
+
+    @nanoseconds.setter
+    def nanoseconds(self, value):
+        self._time_stamp = self._time_stamp.replace(nanosecond=value)
 
     def now(self):
         """
@@ -480,7 +471,7 @@ class MTime:
         :rtype: datetime with UTC timezone
 
         """
-        self.dt_object = self.validate_tzinfo(datetime.datetime.utcnow())
+        self._time_stamp = pd.Timestamp.utcnow()
 
         return self
 
@@ -495,7 +486,7 @@ class MTime:
         :rtype: string
 
         """
-        return self.dt_object.isoformat()
+        return self._time_stamp.isoformat()
 
     def isodate(self):
         """
@@ -504,7 +495,7 @@ class MTime:
         :rtype: string
 
         """
-        return self.dt_object.isodate()
+        return self._time_stamp.isodate()
 
     def isocalendar(self):
         """
@@ -513,7 +504,7 @@ class MTime:
         :rtype: string
 
         """
-        return self.dt_object.isocalendar()
+        return self._time_stamp.isocalendar()
 
 
 def get_now_utc():

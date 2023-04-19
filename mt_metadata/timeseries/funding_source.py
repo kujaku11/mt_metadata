@@ -14,32 +14,13 @@ Created on Wed Dec 23 21:30:36 2020
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import Person
-from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
-attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
-person_dict = get_schema("person", SCHEMA_FN_PATHS)
-attr_dict.add_dict(person_dict, "creator")
-attr_dict.add_dict(person_dict, "submitter")
+attr_dict = get_schema("funding_source", SCHEMA_FN_PATHS)
 # =============================================================================
-
-
-class Provenance(Base):
+class FundingSource(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
-        self._creation_dt = MTime()
-        self.submitter = Person()
-        self.creator = Person()
-
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-    @property
-    def create_time(self):
-        return self._creation_dt.iso_str
-
-    @create_time.setter
-    def create_time(self, dt_str):
-        self._creation_dt.parse(dt_str)
