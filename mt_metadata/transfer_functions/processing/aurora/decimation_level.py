@@ -174,20 +174,6 @@ class DecimationLevel(Base):
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
-    @property
-    def windowing_scheme(self):
-        from mt_metadata.transfer_functions.processing.aurora.windowing_scheme import (
-            WindowingScheme,
-        )
-
-        windowing_scheme = WindowingScheme(
-            taper_family=self.window.type,
-            num_samples_window=self.window.num_samples,
-            num_samples_overlap=self.window.overlap,
-            taper_additional_args=self.window.additional_args,
-            sample_rate=self.decimation.sample_rate,
-        )
-        return windowing_scheme
 
     @property
     def fft_frequecies(self):
