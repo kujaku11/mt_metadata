@@ -23,8 +23,6 @@ class FrequencyBand(pd.Interval):
         """
         pd.Interval.__init__(self, left, right, **kwargs)
         self.average_type = kwargs.get("average_type", "geometric")
-        self.lower_bound = self.left
-        self.upper_bound = self.right
 
     @property
     def lower_bound(self):
