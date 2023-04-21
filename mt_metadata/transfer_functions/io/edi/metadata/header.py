@@ -13,7 +13,6 @@ from mt_metadata.base import get_schema
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.utils.mttime import MTime, get_now_utc
-from mt_metadata.utils.exceptions import MTTimeError
 from mt_metadata import __version__
 from mt_metadata.base.helpers import validate_name
 
@@ -90,8 +89,8 @@ class Header(Location):
     @acqdate.setter
     def acqdate(self, value):
         try:
-            self._acqdate.from_str(value)
-        except MTTimeError as error:
+            self._acqdate.parse(value)
+        except ValueError as error:
             msg = f"Cannot set Header.acqdata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -103,8 +102,8 @@ class Header(Location):
     @enddate.setter
     def enddate(self, value):
         try:
-            self._enddate.from_str(value)
-        except MTTimeError as error:
+            self._enddate.parse(value)
+        except ValueError as error:
             msg = f"Cannot set Header.enddata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -115,8 +114,8 @@ class Header(Location):
     @filedate.setter
     def filedate(self, value):
         try:
-            self._filedate.from_str(value)
-        except MTTimeError as error:
+            self._filedate.parse(value)
+        except ValueError as error:
             msg = f"Cannot set Header.filedata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -127,8 +126,8 @@ class Header(Location):
     @progdate.setter
     def progdate(self, value):
         try:
-            self._progdate.from_str(value)
-        except MTTimeError as error:
+            self._progdate.parse(value)
+        except ValueError as error:
             msg = f"Cannot set Header.progdata with {value}. {error}"
             self.logger.debug(msg)
 
@@ -191,7 +190,7 @@ class Header(Location):
             if key in ["progvers"]:
                 if value.lower().find("mt-editor") != -1:
                     self.phoenix_edi = True
-            if key in ["coordinate_system"]:
+            elif key in ["coordinate_system"]:
                 value = value.lower()
                 if "geomagnetic" in value:
                     value = "geomagnetic"
@@ -199,6 +198,10 @@ class Header(Location):
                     value = "geographic"
                 elif "station" in value:
                     value = "station"
+            elif key in ["stdvers"]:
+                if value in ["N/A", "None", "null"]:
+                    value = "SEG 1.0"
+
             if key == "declination":
                 setattr(self.declination, "value", value)
             else:
