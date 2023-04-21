@@ -56,7 +56,12 @@ class StatisticalEstimates(Base):
 
         """
 
-        self.estimates_list = input_dict["statistical_estimates"]["estimate"]
+        try:
+            self.estimates_list = input_dict["statistical_estimates"][
+                "estimate"
+            ]
+        except KeyError:
+            self.logger.warning("Could not statistical estimates")
 
     def to_xml(self, string=False, required=True):
         """

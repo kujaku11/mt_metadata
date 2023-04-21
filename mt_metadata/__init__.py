@@ -134,14 +134,25 @@ TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/tf_zmm.zmm")
 TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_zss_tipper.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/tf_jfile.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/tf_xml.xml")
+TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
-TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_metronix.edi")
+TF_EDI_METRONIX = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_metronix.edi"
+)
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/tf_edi_cgg.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/tf_edi_quantec.edi")
-TF_EDI_RHO_ONLY = DATA_DIR.joinpath("data/transfer_functions/tf_edi_rho_only.edi")
-TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/tf_edi_spectra_in.edi")
-TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath("data/transfer_functions/tf_edi_spectra_out.edi")
-TF_EDI_NO_ERROR = DATA_DIR.joinpath("data/transfer_functions/tf_edi_no_error.edi")
+TF_EDI_RHO_ONLY = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_rho_only.edi"
+)
+TF_EDI_SPECTRA = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_spectra_in.edi"
+)
+TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_spectra_out.edi"
+)
+TF_EDI_NO_ERROR = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_no_error.edi"
+)
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/tf_avg.avg")
 TF_AVG_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_tipper.avg")
 TF_AVG_NEWER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_newer.avg")

@@ -55,8 +55,10 @@ class DataTypes(Base):
         :rtype: TYPE
 
         """
-
-        self.data_types_list = input_dict["data_types"]["data_type"]
+        try:
+            self.data_types_list = input_dict["data_types"]["data_type"]
+        except KeyError:
+            self.logger.warning("Could not read Data Types")
 
     def to_xml(self, string=False, required=True):
         """

@@ -311,6 +311,9 @@ class EMTFXML(emtf_xml.EMTF):
         if self.site._run_list is None:
             self.site._run_list = []
 
+        self._get_statistical_estimates()
+        self._get_data_types()
+
     def write(self, fn, skip_field_notes=False):
         """
         Write an xml

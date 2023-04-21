@@ -312,7 +312,7 @@ class TransferFunction(Base):
             try:
                 dtype = self.dtype_dict[block[key]["type"]]
             except KeyError:
-                dtype = float
+                dtype = "unknown"
             value_list = block[key]["value"]
             if not isinstance(value_list, list):
                 value_list = [value_list]
@@ -322,8 +322,15 @@ class TransferFunction(Base):
                 if dtype is complex:
                     value = item["value"].split()
                     value = dtype(float(value[0]), float(value[1]))
-                else:
+                elif isinstance(dtype, (float, int)):
                     value = dtype(item["value"])
+                elif dtype in ["unknown"]:
+                    value = item["value"].split()
+                    if len(value) > 1:
+                        value = complex(float(value[0]), float(value[1]))
+                    else:
+                        value = float(value[0])
+
                 self.array_dict[comp][period_index, index_0, index_1] = value
 
     def read_dict(self, root_dict):
@@ -335,7 +342,11 @@ class TransferFunction(Base):
         :rtype: TYPE
 
         """
-        n_periods = int(float((root_dict["data"]["count"].strip())))
+        try:
+            n_periods = int(float((root_dict["data"]["count"].strip())))
+        except KeyError:
+            n_periods = len(root_dict["data"]["period"])
+            print(n_periods)
         self.initialize_arrays(n_periods)
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
