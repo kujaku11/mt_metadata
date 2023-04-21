@@ -31,7 +31,7 @@ class TestEMTFXML(unittest.TestCase):
         meta_dict = OrderedDict(
             [
                 ("acquired_by.author", "National Geoelectromagnetic Facility"),
-                ("channels_recorded", ["Hx", "Hy", "Hz", "Ex", "Ey"]),
+                ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
                 (
                     "comments",
                     "description:Magnetotelluric Transfer Functions; primary_data.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png; attachment.description:The original used to produce the XML; attachment.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm; site.data_quality_notes.comments.author:Jade Crosbie, Paul Bedrosian and Anna Kelbert; site.data_quality_notes.comments.value:good TF from 10 to 10000 secs",
@@ -63,7 +63,7 @@ class TestEMTFXML(unittest.TestCase):
                     "U.S. Geological Survey, Geomagnetism Program",
                 ),
                 ("release_license", "CC0-1.0"),
-                ("run_list", []),
+                ("run_list", ["CAS04a"]),
                 ("time_period.end", "2020-07-13T21:46:12+00:00"),
                 ("time_period.start", "2020-06-02T18:41:43+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
@@ -175,261 +175,25 @@ class TestEMTFXML(unittest.TestCase):
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", ["ex", "ey"]),
                 ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
-                (
-                    "comments",
-                    "comments.author:Isaac Sageman; comments.value:X array at 0 deg rotation. All e-lines 50m. Soft sandy dirt. Water tank ~400m NE. County Rd 601 ~200m SE. Warm sunny day.",
-                ),
                 ("data_logger.firmware.author", None),
                 ("data_logger.firmware.name", None),
                 ("data_logger.firmware.version", None),
-                ("data_logger.id", "2612-01"),
-                ("data_logger.manufacturer", "Barry Narod"),
+                ("data_logger.id", None),
+                ("data_logger.manufacturer", None),
                 ("data_logger.timing_system.drift", 0.0),
                 ("data_logger.timing_system.type", "GPS"),
                 ("data_logger.timing_system.uncertainty", 0.0),
-                ("data_logger.type", "NIMS"),
+                ("data_logger.type", None),
                 ("data_type", "BBMT"),
-                ("id", "NMX20a"),
-                ("sample_rate", 1.0),
-                ("time_period.end", "2020-09-20T19:29:28+00:00"),
-                ("time_period.start", "2020-09-20T19:03:06+00:00"),
+                ("id", "CAS04a"),
+                ("sample_rate", 0.0),
+                ("time_period.end", "1980-01-01T00:00:00+00:00"),
+                ("time_period.start", "1980-01-01T00:00:00+00:00"),
             ]
         )
 
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.runs[0].to_dict(single=True)
-        )
-
-    def test_run_b(self):
-        meta_dict = OrderedDict(
-            [
-                ("channels_recorded_auxiliary", []),
-                ("channels_recorded_electric", ["ex", "ey"]),
-                ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
-                (
-                    "comments",
-                    "comments.author:Isaac Sageman; comments.value:X array at "
-                    "0 deg rotation. All e-lines 50m. Soft sandy dirt. Water "
-                    "tank ~400m NE. County Rd 601 ~200m SE. Warm sunny day.; "
-                    "errors:Found data gaps (2). Gaps of unknown length: 1 [1469160].]",
-                ),
-                ("data_logger.firmware.author", None),
-                ("data_logger.firmware.name", None),
-                ("data_logger.firmware.version", None),
-                ("data_logger.id", "2612-01"),
-                ("data_logger.manufacturer", "Barry Narod"),
-                ("data_logger.timing_system.drift", 0.0),
-                ("data_logger.timing_system.type", "GPS"),
-                ("data_logger.timing_system.uncertainty", 0.0),
-                ("data_logger.type", "NIMS"),
-                ("data_type", "BBMT"),
-                ("id", "NMX20b"),
-                ("sample_rate", 1.0),
-                ("time_period.end", "2020-10-07T20:28:00+00:00"),
-                ("time_period.start", "2020-09-20T20:12:29+00:00"),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict, self.tf.station_metadata.runs[1].to_dict(single=True)
-        )
-
-    def test_run_a_ex(self):
-        meta_dict = OrderedDict(
-            [
-                ("channel_number", 0),
-                ("component", "ex"),
-                ("data_quality.rating.value", 0),
-                ("dipole_length", 100.0),
-                ("filter.applied", [False]),
-                ("filter.name", []),
-                ("measurement_azimuth", 9.1),
-                ("measurement_tilt", 0.0),
-                ("negative.elevation", 0.0),
-                ("negative.id", "40201037"),
-                ("negative.latitude", 0.0),
-                ("negative.longitude", 0.0),
-                ("negative.manufacturer", "Oregon State University"),
-                ("negative.type", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
-                ("negative.x", -50.0),
-                ("negative.y", 0.0),
-                ("negative.z", 0.0),
-                ("positive.elevation", 0.0),
-                ("positive.id", "40201038"),
-                ("positive.latitude", 0.0),
-                ("positive.longitude", 0.0),
-                ("positive.manufacturer", "Oregon State University"),
-                ("positive.type", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
-                ("positive.x2", 50.0),
-                ("positive.y2", 0.0),
-                ("positive.z2", 0.0),
-                ("sample_rate", 0.0),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
-                ("translated_azimuth", 9.1),
-                ("type", "electric"),
-                ("units", None),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict,
-            self.tf.station_metadata.runs[0]
-            .channels["ex"]
-            .to_dict(single=True),
-        )
-
-    def test_run_a_ey(self):
-        meta_dict = OrderedDict(
-            [
-                ("channel_number", 0),
-                ("component", "ey"),
-                ("data_quality.rating.value", 0),
-                ("dipole_length", 100.0),
-                ("filter.applied", [False]),
-                ("filter.name", []),
-                ("measurement_azimuth", 99.1),
-                ("measurement_tilt", 0.0),
-                ("negative.elevation", 0.0),
-                ("negative.id", "40201031"),
-                ("negative.latitude", 0.0),
-                ("negative.longitude", 0.0),
-                ("negative.manufacturer", "Oregon State University"),
-                ("negative.type", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
-                ("negative.x", 0.0),
-                ("negative.y", -50.0),
-                ("negative.z", 0.0),
-                ("positive.elevation", 0.0),
-                ("positive.id", "40201032"),
-                ("positive.latitude", 0.0),
-                ("positive.longitude", 0.0),
-                ("positive.manufacturer", "Oregon State University"),
-                ("positive.type", "Pb-PbCl2 kaolin gel Petiau 2 chamber type"),
-                ("positive.x2", 0.0),
-                ("positive.y2", 50.0),
-                ("positive.z2", 0.0),
-                ("sample_rate", 0.0),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
-                ("translated_azimuth", 99.1),
-                ("type", "electric"),
-                ("units", None),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict,
-            self.tf.station_metadata.runs[0]
-            .channels["ey"]
-            .to_dict(single=True),
-        )
-
-    def test_run_a_hx(self):
-        meta_dict = OrderedDict(
-            [
-                ("channel_number", 0),
-                ("component", "hx"),
-                ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
-                ("filter.name", []),
-                ("location.elevation", 0.0),
-                ("location.latitude", 0.0),
-                ("location.longitude", 0.0),
-                ("location.x", 0.0),
-                ("location.y", 0.0),
-                ("location.z", 0.0),
-                ("measurement_azimuth", 9.1),
-                ("measurement_tilt", 0.0),
-                ("sample_rate", 0.0),
-                ("sensor.id", "2509-23"),
-                ("sensor.manufacturer", "Barry Narod"),
-                ("sensor.name", "NIMS"),
-                ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
-                ("translated_azimuth", 9.1),
-                ("type", "magnetic"),
-                ("units", None),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict,
-            self.tf.station_metadata.runs[0]
-            .channels["hx"]
-            .to_dict(single=True),
-        )
-
-    def test_run_a_hy(self):
-        meta_dict = OrderedDict(
-            [
-                ("channel_number", 0),
-                ("component", "hy"),
-                ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
-                ("filter.name", []),
-                ("location.elevation", 0.0),
-                ("location.latitude", 0.0),
-                ("location.longitude", 0.0),
-                ("location.x", 0.0),
-                ("location.y", 0.0),
-                ("location.z", 0.0),
-                ("measurement_azimuth", 99.1),
-                ("measurement_tilt", 0.0),
-                ("sample_rate", 0.0),
-                ("sensor.id", "2509-23"),
-                ("sensor.manufacturer", "Barry Narod"),
-                ("sensor.name", "NIMS"),
-                ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
-                ("translated_azimuth", 99.1),
-                ("type", "magnetic"),
-                ("units", None),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict,
-            self.tf.station_metadata.runs[0]
-            .channels["hy"]
-            .to_dict(single=True),
-        )
-
-    def test_run_a_hz(self):
-        meta_dict = OrderedDict(
-            [
-                ("channel_number", 0),
-                ("component", "hz"),
-                ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
-                ("filter.name", []),
-                ("location.elevation", 0.0),
-                ("location.latitude", 0.0),
-                ("location.longitude", 0.0),
-                ("location.x", 0.0),
-                ("location.y", 0.0),
-                ("location.z", 0.0),
-                ("measurement_azimuth", 9.1),
-                ("measurement_tilt", 0.0),
-                ("sample_rate", 0.0),
-                ("sensor.id", "2509-23"),
-                ("sensor.manufacturer", "Barry Narod"),
-                ("sensor.name", "NIMS"),
-                ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
-                ("translated_azimuth", 9.1),
-                ("type", "magnetic"),
-                ("units", None),
-            ]
-        )
-
-        self.assertDictEqual(
-            meta_dict,
-            self.tf.station_metadata.runs[0]
-            .channels["hz"]
-            .to_dict(single=True),
         )
 
     def test_z(self):
@@ -442,8 +206,8 @@ class TestEMTFXML(unittest.TestCase):
                     self.tf.impedance[0],
                     np.array(
                         [
-                            [-0.1160949 - 0.2708645j, 3.143284 + 1.101737j],
-                            [-2.470717 - 0.7784633j, -0.1057851 + 0.1022045j],
+                            [0.05218971 - 0.493787j, 1.004782 + 1.873659j],
+                            [-0.8261183 + 1.226159j, 1.36161 - 1.376113j],
                         ]
                     ),
                 ).all()
@@ -456,12 +220,12 @@ class TestEMTFXML(unittest.TestCase):
                     np.array(
                         [
                             [
-                                0.00483462 + 0.00983358j,
-                                0.02643963 + 0.05098311j,
+                                0.03680307 + 0.00131353j,
+                                0.06559774 + 0.00177508j,
                             ],
                             [
-                                -0.02203037 - 0.03744689j,
-                                -0.00295362 - 0.01293358j,
+                                -0.05877226 - 0.02631392j,
+                                -0.01419307 - 0.03934453j,
                             ],
                         ]
                     ),
@@ -469,104 +233,10 @@ class TestEMTFXML(unittest.TestCase):
             )
 
     def test_sip(self):
-        with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (33, 2, 2), self.tf.inverse_signal_power.shape
-            )
-
-        with self.subTest(msg="first element"):
-            self.assertTrue(
-                np.isclose(
-                    self.tf.inverse_signal_power[0],
-                    np.array(
-                        [
-                            [
-                                0.8745101 - 2.905133e-08j,
-                                -0.4293981 + 1.663000e-01j,
-                            ],
-                            [
-                                -0.4293981 - 1.663000e-01j,
-                                1.39159 - 7.486698e-10j,
-                            ],
-                        ]
-                    ),
-                ).all()
-            )
-
-        with self.subTest(msg="last element"):
-            self.assertTrue(
-                np.isclose(
-                    self.tf.inverse_signal_power[-1],
-                    np.array(
-                        [
-                            [
-                                9.120293e-08 - 2.13634e-16j,
-                                5.066908e-08 + 2.26600e-08j,
-                            ],
-                            [
-                                5.066908e-08 - 2.26600e-08j,
-                                1.086271e-07 + 1.02634e-16j,
-                            ],
-                        ]
-                    ),
-                ).all()
-            )
+        self.assertEqual(None, self.tf.inverse_signal_power)
 
     def test_residual(self):
-        with self.subTest(msg="shape"):
-            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
-
-        with self.subTest(msg="first element"):
-            self.assertTrue(
-                np.isclose(
-                    self.tf.residual_covariance[0],
-                    np.array(
-                        [
-                            [
-                                1.28646000e-03 + 8.47032900e-22j,
-                                -5.81671100e-05 + 3.34700000e-05j,
-                                0.00000000e00 + 0.00000000e00j,
-                            ],
-                            [
-                                -5.81671100e-05 - 3.34700000e-05j,
-                                1.03754000e-03 + 0.00000000e00j,
-                                0.00000000e00 + 0.00000000e00j,
-                            ],
-                            [
-                                0.00000000e00 + 0.00000000e00j,
-                                0.00000000e00 + 0.00000000e00j,
-                                9.62300000e-05 + 0.00000000e00j,
-                            ],
-                        ]
-                    ),
-                ).all()
-            )
-
-        with self.subTest(msg="last element"):
-            self.assertTrue(
-                np.isclose(
-                    self.tf.residual_covariance[-1],
-                    np.array(
-                        [
-                            [
-                                86.38148 + 0.00000000e00j,
-                                -31.70986 + 1.28100000e00j,
-                                0.00000 + 0.00000000e00j,
-                            ],
-                            [
-                                -31.70986 - 1.28100000e00j,
-                                45.52852 - 2.77555800e-17j,
-                                0.00000 + 0.00000000e00j,
-                            ],
-                            [
-                                0.00000 + 0.00000000e00j,
-                                0.00000 + 0.00000000e00j,
-                                29820.00000 + 0.00000000e00j,
-                            ],
-                        ]
-                    ),
-                ).all()
-            )
+        self.assertEqual(None, self.tf.residual_covariance)
 
     def test_t(self):
         with self.subTest(msg="shape"):
@@ -576,9 +246,7 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.09386985 + 0.00620671j, 0.04601304 + 0.03035755j]]
-                    ),
+                    np.array([[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]),
                 ).all()
             )
 
@@ -587,7 +255,7 @@ class TestEMTFXML(unittest.TestCase):
                 np.isclose(
                     self.tf.tipper[-1],
                     np.array(
-                        [[-0.03648688 + 0.08738894j, 0.1750294 + 0.1666582j]]
+                        [[-0.02102757 - 0.06664169j, 0.5568553 + 0.1630035j]]
                     ),
                 ).all()
             )

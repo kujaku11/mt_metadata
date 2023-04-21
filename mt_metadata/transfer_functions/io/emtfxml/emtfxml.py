@@ -920,7 +920,14 @@ class EMTFXML(emtf_xml.EMTF):
             s.add_run(r)
 
         if self.field_notes.run_list == []:
-            s.add_run(Run(id=f"{s.id}a"))
+            r = Run(id=f"{s.id}a")
+            r.channels_recorded_electric = ["ex", "ey"]
+            if (self.data.t == 0).all():
+                r.channels_recorded_magnetic = ["hx", "hy"]
+            else:
+                r.channels_recorded_magnetic = ["hx", "hy", "hz"]
+
+            s.add_run(r)
 
         return s
 
