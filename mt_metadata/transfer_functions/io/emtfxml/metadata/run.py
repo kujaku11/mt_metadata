@@ -46,7 +46,7 @@ class Run(Base):
 
     @start.setter
     def start(self, value):
-        self._start_dt.from_str(value)
+        self._start_dt.parse(value)
 
     @property
     def end(self):
@@ -54,7 +54,7 @@ class Run(Base):
 
     @end.setter
     def end(self, value):
-        self._end_dt.from_str(value)
+        self._end_dt.parse(value)
 
     def read_dict(self, input_dict):
         """

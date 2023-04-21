@@ -37,7 +37,7 @@ class Comment(Base):
 
     @date.setter
     def date(self, dt_str):
-        self._dt.from_str(dt_str)
+        self._dt.parse(dt_str)
 
     def to_xml(self, string=False, required=True):
         """ """

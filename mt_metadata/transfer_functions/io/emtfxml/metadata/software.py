@@ -37,7 +37,7 @@ class ProcessingSoftware(Base):
 
     @last_mod.setter
     def last_mod(self, value):
-        self._last_mod_dt.from_str(value)
+        self._last_mod_dt.parse(value)
 
     def to_xml(self, string=False, required=True):
         """
