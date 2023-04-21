@@ -919,6 +919,9 @@ class EMTFXML(emtf_xml.EMTF):
                 c.translated_azimuth = ch.orientation
             s.add_run(r)
 
+        if self.field_notes.run_list == []:
+            s.add_run(Run(id=f"{s.id}a"))
+
         return s
 
     @station_metadata.setter
