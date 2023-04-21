@@ -11,6 +11,7 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
@@ -28,6 +29,8 @@ from . import (
     Run,
     TransferFunction,
 )
+
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
@@ -86,7 +89,7 @@ class Station(Base):
         self.location = Location()
         self.time_period = TimePeriod()
         self.transfer_function = TransferFunction()
-        self._runs = []
+        self._runs = ListDict()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -173,26 +176,36 @@ class Station(Base):
     @runs.setter
     def runs(self, value):
         """set the run list"""
-        if not hasattr(value, "__iter__"):
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
             msg = (
-                "input station_list must be an iterable, should be a list "
+                "input run_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
             self.logger.error(msg)
             raise TypeError(msg)
-        runs = []
+
         fails = []
-        for ii, run in enumerate(value):
-            if not isinstance(run, Run):
+        self._runs = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, run in enumerate(value_list):
+
+            if isinstance(run, (dict, OrderedDict)):
+                r = Run()
+                r.from_dict(run)
+                self._runs.append(r)
+            elif not isinstance(run, Run):
                 msg = f"Item {ii} is not type(Run); type={type(run)}"
                 fails.append(msg)
                 self.logger.error(msg)
             else:
-                runs.append(run)
+                self._runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-
-        self._runs = runs
 
     @property
     def run_list(self):
@@ -240,3 +253,27 @@ class Station(Base):
             raise ValueError("Input channels must be a list")
 
         self._recorded_channels = value
+
+    def update_time_period(self):
+        """
+        update time period from run information
+        """
+        start = []
+        end = []
+        for run in self.runs:
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(run.time_period.start)
+            if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(run.time_period.end)
+        if start:
+            if self.time_period.start == "1980-01-01T00:00:00+00:00":
+                self.time_period.start = min(start)
+            else:
+                if self.time_period.start > min(start):
+                    self.time_period.start = min(start)
+        if end:
+            if self.time_period.end == "1980-01-01T00:00:00+00:00":
+                self.time_period.end = max(end)
+            else:
+                if self.time_period.end < max(end):
+                    self.time_period.end = max(end)
