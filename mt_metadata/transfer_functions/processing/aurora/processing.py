@@ -7,18 +7,15 @@ Created on Thu Feb 17 14:15:20 2022
 # =============================================================================
 # Imports
 # =============================================================================
-from deprecated import deprecated
-import numpy as np
-from pathlib import Path
-
-from aurora.config import BANDS_DEFAULT_FILE
-from aurora.time_series.frequency_band import FrequencyBand
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mth5.utils.helpers import initialize_mth5
+from .frequency_band import FrequencyBand
 
 from .standards import SCHEMA_FN_PATHS
-from . import DecimationLevel, Stations, Band, ChannelNomenclature
+from .decimation_level import DecimationLevel
+from .stations import Stations
+from .band import Band
+from .channel_nomenclature import ChannelNomenclature
 
 
 # =============================================================================
@@ -301,28 +298,3 @@ class Processing(Base):
             print("WARNING: Local station not specified")
             print("Local station should be set from Kernel Dataset")
             self.stations.from_dataset_dataframe(kernel_dataset.df)
-
-    def initialize_mth5s(self):
-        """
-
-        Returns
-        -------
-        mth5_objs : dict
-            Keyed by station_ids.
-            local station id : mth5.mth5.MTH5
-            remote station id: mth5.mth5.MTH5
-        """
-        local_mth5_obj = initialize_mth5(
-            self.stations.local.mth5_path, mode="r"
-        )
-        if self.stations.remote:
-            remote_path = self.stations.remote[0].mth5_path
-            remote_mth5_obj = initialize_mth5(remote_path, mode="r")
-        else:
-            remote_mth5_obj = None
-
-        mth5_objs = {self.stations.local.id: local_mth5_obj}
-        if self.stations.remote:
-            mth5_objs[self.stations.remote[0].id] = remote_mth5_obj
-
-        return mth5_objs

@@ -18,6 +18,8 @@ recursive-include mt_metadata/transfer_functions/io/edi/metadata/standards *.jso
 recursive-include mt_metadata/transfer_functions/io/zfiles/metadata/standards *.json
 recursive-include mt_metadata/transfer_functions/io/jfiles/metadata/standards *.json
 recursive-include mt_metadata/transfer_functions/io/zonge/metadata/standards *.json
+recursive-include mt_metadata/transfer_functions/processing/aurora/standards *.json
+recursive-include mt_metadata/transfer_functions/processing/fourier_coefficients/standards *.json
 recursive-include mt_metadata/data/mt_xml *.xml
 recursive-include mt_metadata/data/stationxml *.xml
 recursive-include mt_metadata/data/transfer_functions *.edi *.xml *.j *.zmm
