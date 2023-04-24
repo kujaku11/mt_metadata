@@ -15,13 +15,14 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("software", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
-class Software(Base):
+class ProcessingSoftware(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -37,3 +38,22 @@ class Software(Base):
     @last_mod.setter
     def last_mod(self, value):
         self._last_mod_dt.parse(value)
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        return helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=["name", "last_mod", "author"],
+        )

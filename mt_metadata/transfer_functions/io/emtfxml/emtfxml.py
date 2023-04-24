@@ -14,11 +14,13 @@ Created on Sat Sep  4 17:59:53 2021
 # =============================================================================
 import inspect
 from pathlib import Path
-from collections import OrderedDict
 from xml.etree import cElementTree as et
 import numpy as np
 
 from . import metadata as emtf_xml
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
+    helpers as emtf_helpers,
+)
 from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
@@ -30,9 +32,6 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
-from mt_metadata.utils import mttime
-from mt_metadata import __version__
-
 
 meta_classes = dict(
     [
@@ -48,7 +47,7 @@ meta_classes["instrument"] = Instrument
 estimates_dict = {
     "variance": emtf_xml.Estimate(
         name="VAR",
-        type="complex",
+        type="real",
         description="Variance",
         external_url="http://www.iris.edu/dms/products/emtf/variance.html",
         intention="error estimate",
@@ -65,7 +64,7 @@ estimates_dict = {
     "residual_covariance": emtf_xml.Estimate(
         name="RESIDCOV",
         type="complex",
-        description="residual_covariance (N)",
+        description="Residual Covariance (N)",
         external_url="http://www.iris.edu/dms/products/emtf/residual_covariance.html",
         intention="error estimate",
         tag="residual_covariance",
@@ -156,8 +155,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         # not sure why we need to do this, but if you don't FieldNotes end
         # as a string.
-        self.field_notes = []
-        self.field_notes.append(emtf_xml.FieldNotes())
+        self.field_notes = emtf_xml.FieldNotes()
         self.processing_info = emtf_xml.ProcessingInfo()
         self.statistical_estimates = emtf_xml.StatisticalEstimates()
         self.data_types = emtf_xml.DataTypes()
@@ -187,33 +185,6 @@ class EMTFXML(emtf_xml.EMTF):
             "data",
             "period_range",
         ]
-
-        self._reader_dict = {
-            "description": self._read_description,
-            "product_id": self._read_product_id,
-            "sub_type": self._read_sub_type,
-            "notes": self._read_notes,
-            "tags": self._read_tags,
-            "field_notes": self._read_field_notes,
-            "statistical_estimates": self._read_statistical_estimates,
-            "site_layout": self._read_site_layout,
-            "data_types": self._read_data_types,
-            "data": self._read_data,
-        }
-
-        self._writer_dict = {
-            "description": self._write_single,
-            "product_id": self._write_single,
-            "sub_type": self._write_single,
-            "notes": self._write_single,
-            "tags": self._write_single,
-            "provenance": self._write_provenance,
-            "field_notes": self._write_field_notes,
-            "statistical_estimates": self._write_statistical_estimates,
-            "data_types": self._write_data_types,
-            "site_layout": self._write_site_layout,
-            "data": self._write_data,
-        }
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -322,14 +293,15 @@ class EMTFXML(emtf_xml.EMTF):
         root = et.parse(self.fn).getroot()
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
-        root_dict = self._convert_keys_to_lower_case(root_dict)
+        root_dict = emtf_helpers._convert_keys_to_lower_case(root_dict)
         self._root_dict = root_dict
 
         for element in self.element_keys:
-            if element in self._reader_dict.keys():
-                self._reader_dict[element](root_dict)
+            attr = getattr(self, element)
+            if hasattr(attr, "read_dict"):
+                attr.read_dict(root_dict)
             else:
-                self._read_element(root_dict, element)
+                emtf_helpers._read_single(self, root_dict, element)
 
         self.period_range.min = self.data.period.min()
         self.period_range.max = self.data.period.max()
@@ -339,7 +311,10 @@ class EMTFXML(emtf_xml.EMTF):
         if self.site._run_list is None:
             self.site._run_list = []
 
-    def write(self, fn):
+        self._get_statistical_estimates()
+        self._get_data_types()
+
+    def write(self, fn, skip_field_notes=False):
         """
         Write an xml
         :param fn: DESCRIPTION
@@ -354,28 +329,28 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_statistical_estimates()
         self._get_data_types()
 
-        if (
-            self.site.location.x == 0
-            and self.site.location.x2 == 0
-            and self.site.location.y == 0
-            and self.site.location.y2 == 0
-            and self.site.location.z == 0
-        ):
-            self.site.location.x = None
-            self.site.location.y = None
-            self.site.location.z = None
-            self.site.location.x2 = None
-            self.site.location.y2 = None
-
         for key in self.element_keys:
+            if skip_field_notes:
+                if key == "field_notes":
+                    continue
             value = getattr(self, key)
-            if key in self._writer_dict.keys():
-                self._writer_dict[key](emtf_element, key, value)
+            if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
+                element = value.to_xml()
+                if isinstance(element, list):
+                    for item in element:
+                        emtf_element.append(
+                            emtf_helpers._convert_tag_to_capwords(item)
+                        )
+                else:
+                    emtf_element.append(
+                        emtf_helpers._convert_tag_to_capwords(element)
+                    )
             else:
-                self._write_element(
-                    emtf_element,
-                    value,
+                emtf_helpers._write_single(
+                    emtf_element, key, getattr(self, key)
                 )
+
+        emtf_element = emtf_helpers._remove_null_values(emtf_element)
 
         with open(fn, "w") as fid:
             fid.write(helpers.element_to_string(emtf_element))
@@ -435,319 +410,204 @@ class EMTFXML(emtf_xml.EMTF):
                 self.data_types.data_types_list.append(
                     data_types_dict["impedance"]
                 )
+
         if self.data.t is not None:
             if not np.all(self.data.t == 0.0):
                 self.data_types.data_types_list.append(
                     data_types_dict["tipper"]
                 )
 
-    def _read_single(self, root_dict, key):
-        try:
-            setattr(self, key, root_dict[key])
-        except KeyError:
-            self.logger.debug("no description in xml")
-
-    def _write_single(self, parent, key, value, attributes={}):
-        element = et.SubElement(parent, self._capwords(key), attributes)
-        if value:
-            element.text = str(value)
-        return element
-
-    def _read_description(self, root_dict):
-        self._read_single(root_dict, "description")
-
-    def _read_product_id(self, root_dict):
-        self._read_single(root_dict, "product_id")
-
-    def _read_sub_type(self, root_dict):
-        self._read_single(root_dict, "sub_type")
-
-    def _read_notes(self, root_dict):
-        self._read_single(root_dict, "notes")
-
-    def _read_tags(self, root_dict):
-        self._read_single(root_dict, "tags")
-
-    def _read_element(self, root_dict, element_name):
+    def _parse_comments_data_logger(self, key, value):
         """
-        generic read an element given a name
 
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :param element_name: DESCRIPTION
-        :type element_name: TYPE
+        :param comments_list: DESCRIPTION
+        :type comments_list: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
 
-        element_name = validate_attribute(element_name)
-        if element_name in ["field_notes"]:
-            self._read_field_notes(root_dict)
-        elif element_name in ["statistical_estimates"]:
-            self._read_statistical_estimates(root_dict)
-        elif element_name in ["site_layout"]:
-            self._read_site_layout(root_dict)
-        else:
-            try:
-                value = root_dict[element_name]
-                element_dict = {element_name: value}
-                getattr(self, element_name).from_dict(element_dict)
+        if "datalogger" in key:
+            key = key.replace("datalogger", "instrument")
+            key = key.split(".", 1)[1]
 
-            except KeyError:
-                print(f"No {element_name} in EMTF XML")
-                self.logger.debug(f"No {element_name} in EMTF XML")
+        return key, value
 
-    def _write_element(self, parent, value, attributes={}):
+    def _parse_comments_data_quality(self, key, value):
         """
 
+        :param key: DESCRIPTION
+        :type key: TYPE
         :param value: DESCRIPTION
         :type value: TYPE
-        :param parent: DESCRIPTION
-        :type parent: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        parent.append(self._convert_tag_to_capwords(value.to_xml()))
+        key = f"site.{key.split('.', 1)[1]}"
+        key = key.replace("dataquality", "data_quality_notes")
+        if "comments" in key:
+            key = key.replace("comments", "comments.value")
+        if "author" in key:
+            key = key.replace("author", "comments.author")
 
-    def _write_provenance(self, parent, value, attributes={}):
+        if "rating" in key:
+            value = float(value)
+
+        return key, value
+
+    def _parse_comments_electric(self, key, value):
         """
-        add new creation time and creating application
 
-        :param parent: DESCRIPTION
-        :type parent: TYPE
+        :param key: DESCRIPTION
+        :type key: TYPE
         :param value: DESCRIPTION
         :type value: TYPE
-        :param attributes: DESCRIPTION, defaults to {}
-        :type attributes: TYPE, optional
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
-        self.provenance.creating_application = f"mt_metadata {__version__}"
-        self.provenance.create_time = mttime.get_now_utc()
-
-        self._write_element(parent, self.provenance)
-
-    def _read_field_notes(self, root_dict):
-        """
-        Field notes are odd so have a special reader to do it piece by
-        painstaking piece.
-
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        self.field_notes = []
-        if not isinstance(root_dict["field_notes"], list):
-            field_notes = [root_dict["field_notes"]]
+        key = key.split(".", 1)[1]
+        key = key.replace("electrode_", "")
+        klist = key.split(".")
+        if len(klist) > 1:
+            comp = klist[0]
+            fkey = klist[1]
         else:
-            field_notes = root_dict["field_notes"]
+            comp = "ex"
+            fkey = klist[0]
 
-        for run in field_notes:
-            f = meta_classes["field_notes"]()
-            f.run = run["run"]
-            f.instrument.from_dict({"instrument": run["instrument"]})
-            f.sampling_rate = run["sampling_rate"]
-            f.start = run["start"]
-            f.end = run["end"]
-            try:
-                if isinstance(run["comments"], list):
-                    f.comments.from_dict({"comments": run["comments"][0]})
+        if fkey in ["chtype", "manufacturer", "azm"]:
+            e_dict = {
+                "chtype": "name",
+                "manufacturer": "manufacturer",
+                "azm": "azimuth",
+            }
+
+            dipole_names = []
+            for d in self.field_notes.run_list[0].dipole:
+                if isinstance(d.name, str):
+                    dipole_names.append(d.name.lower())
                 else:
-                    f.comments.from_dict({"comments": run["comments"]})
-            except KeyError:
-                self.logger.debug("run has no comments")
-            f.errors = run["errors"]
+                    dipole_names.append(d.name)
+            if comp.lower() in dipole_names:
+                index = dipole_names.index(comp)
+            elif None in dipole_names:
+                index = dipole_names.index(None)
+            else:
+                self.field_notes.run_list[0].magnetometer.append(
+                    emtf_xml.Dipole(name=comp)
+                )
+                index = -1
 
-            try:
-                if isinstance(run["magnetometer"], list):
-                    f.magnetometer = []
-                    for mag in run["magnetometer"]:
-                        m = meta_classes["magnetometer"]()
-                        m.from_dict({"magnetometer": mag})
-                        f.magnetometer.append(m)
-                else:
-                    f.magnetometer = []
-                    m = meta_classes["magnetometer"]()
-                    m.from_dict({"magnetometer": run["magnetometer"]})
-                    f.magnetometer.append(m)
-            except KeyError:
-                self.logger.debug("run has no magnetotmeter information")
-
-            try:
-                if isinstance(run["dipole"], list):
-                    f.dipole = []
-                    for mag in run["dipole"]:
-                        m = meta_classes["dipole"]()
-                        m.from_dict({"dipole": mag})
-                        f.dipole.append(m)
-                else:
-                    m = meta_classes["dipole"]()
-                    m.from_dict({"dipole": run["dipole"]})
-                    f.dipole.append(m)
-            except KeyError:
-                self.logger.debug("run has no dipole information")
-
-            self.field_notes.append(f)
-
-    def _write_field_notes(self, parent, key, attributes={}):
-        """ """
-
-        for fn in self.field_notes:
-            fn_element = self._convert_tag_to_capwords(
-                fn.to_xml(required=False)
+            setattr(
+                self.field_notes.run_list[0].dipole[index],
+                e_dict[fkey],
+                value,
             )
-            for dp in fn.dipole:
-                dp_element = self._convert_tag_to_capwords(dp.to_xml())
-                for electrode in dp.electrode:
-                    self._write_element(dp_element, electrode)
-                fn_element.append(dp_element)
-            for mag in fn.magnetometer:
-                self._write_element(fn_element, mag)
-            parent.append(fn_element)
+        elif fkey in ["x", "x2", "y", "y2", "z", "z2"]:
+            if len(self.site_layout.output_channels) == 0:
+                self.site_layout.output_channels.append(
+                    emtf_xml.Electric(name=comp)
+                )
+            ch_names = [c.name for c in self.site_layout.output_channels]
+            if comp in ch_names:
+                index = ch_names.index(comp)
+            else:
+                index = 0
+            self.site_layout.output_channels[index].set_attr_from_name(
+                fkey, value
+            )
+        return None, None
 
-    def _read_statistical_estimates(self, root_dict):
+    def _parse_comments_magnetic(self, key, value):
         """
-        Read in statistical estimate descriptions
 
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
+        :param key: DESCRIPTION
+        :type key: TYPE
+        :param value: DESCRIPTION
+        :type value: TYPE
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
+        key = key.split(".", 1)[1]
+        key = key.replace("magnetometer_", "")
+        klist = key.split(".")
+        if len(klist) > 1:
+            comp = klist[0]
+            fkey = klist[1]
+        else:
+            comp = "hx"
+            fkey = klist[0]
 
-        self.statistical_estimates.estimates_list = root_dict[
-            "statistical_estimates"
-        ]["estimate"]
+        if fkey in ["chtype", "manufacturer", "azm", "type", "acqchan"]:
+            m_dict = {
+                "chtype": "name",
+                "manufacturer": "manufacturer",
+                "azm": "azimuth",
+                "type": "type",
+                "acqchan": "id",
+            }
 
-    def _write_statistical_estimates(self, parent, key, attributes={}):
-        section = self._write_single(parent, key, None)
-        for estimate in self.statistical_estimates.estimates_list:
-            self._write_element(section, estimate)
+            mag_names = []
+            for d in self.field_notes.run_list[0].magnetometer:
+                if isinstance(d.name, str):
+                    mag_names.append(d.name.lower())
+                else:
+                    mag_names.append(d.name)
+            if comp.lower() in mag_names:
+                index = mag_names.index(comp)
 
-    def _read_data_types(self, root_dict):
-        """
-        Read in data types
+            elif None in mag_names:
+                index = mag_names.index(None)
+            else:
+                self.field_notes.run_list[0].magnetometer.append(
+                    emtf_xml.Magnetometer(name=comp)
+                )
+                index = -1
 
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+            setattr(
+                self.field_notes.run_list[0].magnetometer[index],
+                m_dict[fkey],
+                value,
+            )
+        elif fkey in ["x", "y", "z"]:
 
-        """
-
-        self.data_types.data_types_list = root_dict["data_types"]["data_type"]
-
-    def _write_data_types(self, parent, key, attributes={}):
-        section = self._write_single(parent, key, None)
-        for estimate in self.data_types.data_types_list:
-            self._write_element(section, estimate)
-
-    def _read_site_layout(self, root_dict):
-        """
-        read site layout into the proper input/output channels
-
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        # read input channels
-        for ch in ["input_channels", "output_channels"]:
-            ch_list = []
-            try:
-                c_list = root_dict["site_layout"][ch]["magnetic"]
-                if c_list is None:
-                    continue
-                if not isinstance(c_list, list):
-                    c_list = [c_list]
-                ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
-
-            except (KeyError, TypeError):
-                pass
-
-            try:
-                c_list = root_dict["site_layout"][ch]["electric"]
-                if c_list is None:
-                    continue
-                if not isinstance(c_list, list):
-                    c_list = [c_list]
-                ch_list += [{"electric": ch_dict} for ch_dict in c_list]
-            except (KeyError, TypeError):
-                pass
-
-            setattr(self.site_layout, ch, ch_list)
-
-    def _write_site_layout(self, parent, key, attributes={}):
-        section = self._write_single(parent, key, None)
-
-        ch_in = self._write_single(section, "input_channels", None)
-        for ch in self.site_layout.input_channels:
-            self._write_element(ch_in, ch)
-
-        ch_out = self._write_single(section, "output_channels", None)
-        for ch in self.site_layout.output_channels:
-            self._write_element(ch_out, ch)
-
-    def _read_data(self, root_dict):
-        """
-        Read data use
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        self.data = emtf_xml.TransferFunction()
-        self.data.read_data(root_dict)
-
-    def _write_data(self, parent, key, attributes={}):
-        """
-        write data blocks
-        """
-        data_element = self._write_single(
-            parent, "Data", None, {"count": str(self.data.n_periods)}
-        )
-        self.data.write_data(data_element)
-
-    def _convert_keys_to_lower_case(self, root_dict):
-        """
-        Convert the key names to lower case and separated by _ if
-        needed
-
-        :param root_dict: DESCRIPTION
-        :type root_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        res = OrderedDict()
-        if isinstance(root_dict, (dict, OrderedDict)):
-            for key in root_dict.keys():
-                new_key = validate_attribute(key)
-                res[new_key] = root_dict[key]
-                if isinstance(res[new_key], (dict, OrderedDict, list)):
-                    res[new_key] = self._convert_keys_to_lower_case(
-                        res[new_key]
+            if comp in ["hx", "hy"]:
+                if len(self.site_layout.output_channels) == 0:
+                    self.site_layout.input_channels.append(
+                        emtf_xml.Magnetic(name=comp)
                     )
-        elif isinstance(root_dict, list):
-            res = []
-            for item in root_dict:
-                item = self._convert_keys_to_lower_case(item)
-                res.append(item)
-        return res
+                ch_names = [c.name for c in self.site_layout.output_channels]
+                if comp in ch_names:
+                    index = ch_names.index(comp)
+                else:
+                    index = 0
+                self.site_layout.output_channels[index].set_attr_from_name(
+                    fkey, value
+                )
+            elif comp in ["hz"]:
+                if len(self.site_layout.output_channels) == 0:
+                    self.site_layout.output_channels.append(
+                        emtf_xml.Magnetic(name=comp)
+                    )
+                ch_names = [c.name for c in self.site_layout.output_channels]
+                if comp in ch_names:
+                    index = ch_names.index(comp)
+                else:
+                    index = 0
 
-    def _capwords(self, value):
+                self.site_layout.output_channels[index].set_attr_from_name(
+                    fkey, value
+                )
+        return None, None
+
+    def _parse_comments_processing(self, key, value):
         """
-        convert to capwords, could use string.capwords, but this seems
-        easy enough
 
+        :param key: DESCRIPTION
+        :type key: TYPE
         :param value: DESCRIPTION
         :type value: TYPE
         :return: DESCRIPTION
@@ -755,30 +615,87 @@ class EMTFXML(emtf_xml.EMTF):
 
         """
 
-        return value.replace("_", " ").title().replace(" ", "")
+        key = key.replace("processing", "processing_info").replace(
+            "software", "processing_software"
+        )
+        if "author.name" in key:
+            key = key.replace("author.name", "author")
+        for item in [
+            "author.email",
+            "author.organization",
+            "author.organization_url",
+            "processing_software.version",
+            "author.organization",
+            "author.organization_url",
+        ]:
+            if item in key:
+                return None, None
 
-    def _convert_tag_to_capwords(self, element):
+        return key, value
+
+    def _parse_comments(self, comments):
         """
-        convert back to capwords representation for the tag
 
-        :param element: DESCRIPTION
-        :type element: TYPE
+        :param comments: DESCRIPTION
+        :type comments: TYPE
+        :raises AttributeError: DESCRIPTION
         :return: DESCRIPTION
         :rtype: TYPE
 
         """
+        if comments is None:
+            return
+        other = []
+        if comments.count("\n") > 0 and comments.count("=") > 0:
+            comments = comments.replace("\n", ";").replace("=", ":")
+        for comment in comments.split(";"):
+            if comment.count(":") >= 1:
+                key, value = [c.strip() for c in comment.split(":", 1)]
+                if "fieldnotes" in key:
+                    if len(self.field_notes.run_list) == 0:
+                        self.field_notes.run_list.append(emtf_xml.Run())
 
-        for item in element.iter():
-            item.tag = self._capwords(item.tag)
+                if "datalogger" in key:
+                    key, value = self._parse_comments_data_logger(key, value)
+                    try:
+                        self.field_notes.run_list[0].set_attr_from_name(
+                            key, value
+                        )
+                        key = None
+                        value = None
+                    except:
+                        pass
 
-        return element
+                elif "fieldnotes" in key and "dataquality" in key:
+                    key, value = self._parse_comments_data_quality(key, value)
+
+                elif "fieldnotes" in key and "electrode_" in key:
+                    key, value = self._parse_comments_electric(key, value)
+                elif "fieldnotes" in key and "magnetometer_" in key:
+                    key, value = self._parse_comments_magnetic(key, value)
+                elif "processing" in key:
+                    key, value = self._parse_comments_processing(key, value)
+
+                if key is not None and value is not None:
+                    try:
+                        self.set_attr_from_name(key, value)
+                    except:
+                        self.logger.warning(f"Cannot set attribute {key}.")
+            else:
+                other.append(comment)
+        try:
+            self.site.comments.value = "; ".join(other)
+        except AttributeError:
+            pass
 
     @property
     def survey_metadata(self):
         survey_obj = Survey()
         if self._root_dict is not None:
             survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.author = self.copyright.citation.authors
+            survey_obj.citation_dataset.authors = (
+                self.copyright.citation.authors
+            )
             survey_obj.citation_dataset.title = self.copyright.citation.title
             survey_obj.citation_dataset.year = self.copyright.citation.year
             survey_obj.citation_dataset.doi = (
@@ -792,7 +709,17 @@ class EMTFXML(emtf_xml.EMTF):
             survey_obj.time_period.start = self.site.start
             survey_obj.time_period.end = self.site.end
             survey_obj.summary = self.description
-            survey_obj.comments = self.copyright.acknowledgement
+            survey_obj.comments = "; ".join(
+                [
+                    f"{k}:{v}"
+                    for k, v in {
+                        "copyright.acknowledgement": self.copyright.acknowledgement,
+                        "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                        "copyright.release_status": self.copyright.release_status,
+                    }.items()
+                    if v not in [None, ""]
+                ]
+            )
 
         return survey_obj
 
@@ -813,13 +740,15 @@ class EMTFXML(emtf_xml.EMTF):
             self.site.survey = sm.id
         else:
             self.site.survey = sm.geographic_name
-        self.site.country = sm.country
+        if sm.country is not None:
+            self.site.country = ",".join(sm.country)
         self.copyright.citation.survey_d_o_i = sm.citation_dataset.doi
 
         self.copyright.citation.authors = sm.citation_dataset.authors
         self.copyright.citation.title = sm.citation_dataset.title
         self.copyright.citation.year = sm.citation_dataset.year
-        self.copyright.acknowledgement = sm.comments
+
+        self._parse_comments(sm.comments)
 
     @property
     def station_metadata(self):
@@ -853,6 +782,23 @@ class EMTFXML(emtf_xml.EMTF):
 
         s.time_period.start = self.site.start
         s.time_period.end = self.site.end
+
+        comments = {}
+        for key in [
+            "description",
+            "primary_data.filename",
+            "attachment.description",
+            "attachment.filename",
+            "site.data_quality_notes.comments.author",
+            "site.data_quality_notes.comments.value",
+            "site.data_quality_warnings.flag",
+        ]:
+            comments[key] = self.get_attr_from_name(key)
+        s.comments = "; ".join(
+            [f"{k}:{v}" for k, v in comments.items() if v not in [None, ""]]
+        )
+
+        s.transfer_function.id = self.site.id
         s.transfer_function.sign_convention = (
             self.processing_info.sign_convention
         )
@@ -874,8 +820,17 @@ class EMTFXML(emtf_xml.EMTF):
             )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_parameters.append(
-            {"type": self.processing_info.remote_ref.type}
+            {"remote_ref.type": self.processing_info.remote_ref.type}
         )
+
+        for key in ["id", "name", "year_collected"]:
+            value = self.processing_info.remote_info.get_attr_from_name(
+                f"site.{key}"
+            )
+            if value not in [None, "1980", 1980]:
+                s.transfer_function.processing_parameters[0][
+                    f"remote_info.site.{key}"
+                ] = value
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -883,12 +838,12 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.data_quality.good_to_period = (
             self.site.data_quality_notes.good_to_period
         )
-        s.transfer_function.data_quality.rating = (
+        s.transfer_function.data_quality.rating.value = (
             self.site.data_quality_notes.rating
         )
 
-        for fn in self.field_notes:
-            if fn.sampling_rate == 0:
+        for fn in self.field_notes.run_list:
+            if fn.sampling_rate in [0, None]:
                 continue
             r = Run()
             r.id = fn.run
@@ -898,6 +853,14 @@ class EMTFXML(emtf_xml.EMTF):
             r.sample_rate = fn.sampling_rate
             r.time_period.start = fn.start
             r.time_period.end = fn.end
+            comments = []
+            if fn.comments.author not in [None, ""]:
+                comments.append(f"comments.author:{fn.comments.author}")
+            if fn.comments.value not in [None, ""]:
+                comments.append(f"comments.value:{fn.comments.value}")
+            if fn.errors not in [None, ""]:
+                comments.append(f"errors:{fn.errors}")
+            r.comments = "; ".join(comments)
 
             # need to set azimuths from site layout with the x, y, z postions.
             if len(fn.magnetometer) == 1:
@@ -907,6 +870,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = fn.magnetometer[0].id
                     c.sensor.name = fn.magnetometer[0].name
                     c.sensor.manufacturer = fn.magnetometer[0].manufacturer
+                    c.sensor.type = fn.magnetometer[0].type
                     r.add_channel(c)
 
             else:
@@ -919,6 +883,7 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.id = mag.id
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
+                    c.sensor.type = mag.type
                     r.add_channel(c)
 
             for dp in fn.dipole:
@@ -933,11 +898,14 @@ class EMTFXML(emtf_xml.EMTF):
                     if pot.location.lower() in ["n", "e"]:
                         c.positive.id = pot.number
                         c.positive.type = pot.value
-                        c.positive.manufacture = dp.manufacturer
+                        c.positive.manufacturer = dp.manufacturer
+                        c.positive.type = pot.comments
+
                     elif pot.location.lower() in ["s", "w"]:
                         c.negative.id = pot.number
                         c.negative.type = pot.value
-                        c.negative.manufacture = dp.manufacturer
+                        c.negative.manufacturer = dp.manufacturer
+                        c.negative.type = pot.comments
                 r.add_channel(c)
 
             for ch in (
@@ -946,10 +914,10 @@ class EMTFXML(emtf_xml.EMTF):
             ):
                 c = getattr(r, ch.name.lower())
                 if c.component in ["hx", "hy", "hz"]:
-
                     c.location.x = ch.x
                     c.location.y = ch.y
                     c.location.z = ch.z
+
                 elif c.component in ["ex", "ey"]:
                     c.negative.x = ch.x
                     c.negative.y = ch.y
@@ -959,6 +927,36 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
+            s.add_run(r)
+
+        if self.field_notes.run_list == []:
+            r = Run(id=f"{s.id}a")
+            r.channels_recorded_electric = ["ex", "ey"]
+            if (self.data.t == 0).all():
+                r.channels_recorded_magnetic = ["hx", "hy"]
+            else:
+                r.channels_recorded_magnetic = ["hx", "hy", "hz"]
+
+            for ch in (
+                self.site_layout.input_channels
+                + self.site_layout.output_channels
+            ):
+                c = getattr(r, ch.name.lower())
+                if c.component in ["hx", "hy", "hz"]:
+                    c.location.x = ch.x
+                    c.location.y = ch.y
+                    c.location.z = ch.z
+
+                elif c.component in ["ex", "ey"]:
+                    c.negative.x = ch.x
+                    c.negative.y = ch.y
+                    c.negative.z = ch.z
+                    c.positive.x2 = ch.x2
+                    c.positive.y2 = ch.y2
+                    c.positive.z2 = ch.z2
+                c.measurement_azimuth = ch.orientation
+                c.translated_azimuth = ch.orientation
+
             s.add_run(r)
 
         return s
@@ -1024,6 +1022,16 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_tag = "_".join(
             sm.transfer_function.remote_references
         )
+        for param in sm.transfer_function.processing_parameters:
+            if isinstance(param, dict):
+                for key, value in param.items():
+                    try:
+                        self.processing_info.set_attr_from_name(key, value)
+                    except Exception as error:
+                        self.logger.warning(
+                            f"Cannot set processing info attribute {param}"
+                        )
+                        self.logger.exception(error)
         self.site.run_list = sm.transfer_function.runs_processed
 
         self.site.data_quality_notes.good_from_period = (
@@ -1041,9 +1049,11 @@ class EMTFXML(emtf_xml.EMTF):
         # self.processing_info.processing_software., value, value_dict)s.transfer_function.processing_parameters.append(
         #     {"type": self.processing_info.remote_ref.type}
         # )
-        self.field_notes = []
+        self.field_notes._run_list = []
+        ch_in_dict = {}
+        ch_out_dict = {}
         for r in sm.runs:
-            fn = emtf_xml.FieldNotes()
+            fn = emtf_xml.Run()
             fn.dipole = []
             fn.magnetometer = []
             fn.instrument.id = r.data_logger.id
@@ -1053,34 +1063,32 @@ class EMTFXML(emtf_xml.EMTF):
             fn.start = r.time_period.start
             fn.end = r.time_period.end
             fn.run = r.id
+            if r.comments is not None:
+                for comment in r.comments.split(";"):
+                    if comment.count(":") >= 1:
+                        key, value = comment.split(":", 1)
+                        try:
+                            fn.set_attr_from_name(key.strip(), value.strip())
+                        except:
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:
                     rch = getattr(r, comp)
                     mag = emtf_xml.Magnetometer()
                     mag.id = rch.sensor.id
-                    mag.name = comp.capitalize()
+                    mag.name = comp
                     mag.manufacturer = rch.sensor.manufacturer
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
 
-                    ch_in = emtf_xml.Magnetic()
-                    for item in ["x", "y", "z"]:
-                        if getattr(rch.location, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(rch.location, item)
-                        setattr(ch_in, item, value)
-
-                    ch_in.name = comp.capitalize()
-                    ch_in.orientation = rch.translated_azimuth
-
-                    if comp in ["hx", "hy"]:
-                        self.site_layout.input_channels.append(ch_in)
-                    else:
-                        self.site_layout.output_channels.append(ch_in)
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
+
+                if rch.sensor.name in ["NIMS", "LEMI"] and rch.sensor.type in [
+                    "fluxgate"
+                ]:
+                    break
 
             for comp in ["ex", "ey"]:
                 try:
@@ -1090,159 +1098,73 @@ class EMTFXML(emtf_xml.EMTF):
                     dp.azimuth = c.translated_azimuth
                     dp.length = c.dipole_length
                     dp.manufacturer = c.positive.manufacturer
+                    dp.type = "wire"
                     # fill electrodes
                     pot_p = emtf_xml.Electrode()
                     pot_p.number = c.positive.id
                     pot_p.location = "n" if comp == "ex" else "e"
-                    pot_p.value = c.positive.type
+                    pot_p.comments = c.positive.type
+
                     dp.electrode.append(pot_p)
                     pot_n = emtf_xml.Electrode()
                     pot_n.number = c.negative.id
-                    pot_n.value = c.negative.type
+                    pot_n.comments = c.positive.type
                     pot_n.location = "s" if comp == "ex" else "w"
                     dp.electrode.append(pot_n)
                     fn.dipole.append(dp)
 
-                    ch_out = emtf_xml.Electric()
-                    for item in ["x", "y", "z"]:
-                        if getattr(c.negative, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(c.negative, item)
-                        setattr(ch_out, item, value)
-
-                    for item in ["x2", "y2", "z2"]:
-                        if getattr(c.positive, item) is None:
-                            value = 0.0
-                        else:
-                            value = getattr(c.positive, item)
-                        setattr(ch_out, item, value)
-
-                    ch_out.name = comp.capitalize()
-                    ch_out.orientation = c.translated_azimuth
-                    self.site_layout.output_channels.append(ch_out)
-
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
 
-            self.field_notes.append(fn)
+            self.field_notes._run_list.append(fn)
 
+            for comp in ["hx", "hy", "hz"]:
+                try:
+                    ch = getattr(r, comp)
+                    m_ch = emtf_xml.Magnetic()
 
-def read_emtfxml(fn, **kwargs):
-    """
-    read an EMTF XML file
+                    for item in ["x", "y", "z"]:
+                        if getattr(ch.location, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.location, item)
+                        setattr(m_ch, item, value)
 
-    :param fn: DESCRIPTION
-    :type fn: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+                    m_ch.name = comp.capitalize()
+                    m_ch.orientation = ch.translated_azimuth
 
-    """
-    from mt_metadata.transfer_functions.core import TF
+                    if comp in ["hx", "hy"]:
+                        ch_in_dict[comp] = m_ch
+                    else:
+                        ch_out_dict[comp] = m_ch
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
 
-    obj = EMTFXML(**kwargs)
-    obj.read(fn)
+            for comp in ["ex", "ey"]:
+                try:
+                    ch = getattr(r, comp)
+                    ch_out = emtf_xml.Electric()
+                    for item in ["x", "y", "z"]:
+                        if getattr(ch.negative, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.negative, item)
+                        setattr(ch_out, item, value)
 
-    emtf = TF()
-    emtf._fn = obj.fn
-    emtf.survey_metadata = obj.survey_metadata
-    emtf.station_metadata = obj.station_metadata
+                    for item in ["x2", "y2", "z2"]:
+                        if getattr(ch.positive, item) is None:
+                            value = 0.0
+                        else:
+                            value = getattr(ch.positive, item)
+                        setattr(ch_out, item, value)
 
-    emtf.period = obj.data.period
-    emtf.impedance = obj.data.z
-    emtf.impedance_error = np.sqrt(obj.data.z_var)
-    emtf._transfer_function.inverse_signal_power.loc[
-        dict(input=["hx", "hy"], output=["hx", "hy"])
-    ] = obj.data.z_invsigcov
-    emtf._transfer_function.residual_covariance.loc[
-        dict(input=["ex", "ey"], output=["ex", "ey"])
-    ] = obj.data.z_residcov
+                    ch_out.name = comp.capitalize()
+                    ch_out.orientation = ch.translated_azimuth
+                    ch_out_dict[comp] = ch_out
+                except AttributeError:
+                    self.logger.debug("Did not find %s in run", comp)
 
-    emtf.tipper = obj.data.t
-    emtf.tipper_error = np.sqrt(obj.data.t_var)
-    emtf._transfer_function.inverse_signal_power.loc[
-        dict(input=["hx", "hy"], output=["hx", "hy"])
-    ] = obj.data.t_invsigcov
-    emtf._transfer_function.residual_covariance.loc[
-        dict(input=["hz"], output=["hz"])
-    ] = obj.data.t_residcov
+        self.site_layout.input_channels = list(ch_in_dict.values())
+        self.site_layout.output_channels = list(ch_out_dict.values())
 
-    return emtf
-
-
-def write_emtfxml(tf_object, fn=None, **kwargs):
-    """
-    Write an XML file from a TF object
-
-    :param tf_obj: DESCRIPTION
-    :type tf_obj: TYPE
-    :param fn: DESCRIPTION, defaults to None
-    :type fn: TYPE, optional
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-
-    from mt_metadata.transfer_functions.core import TF
-
-    ex_ey = [
-        tf_object.channel_nomenclature["ex"],
-        tf_object.channel_nomenclature["ey"],
-    ]
-    hx_hy = [
-        tf_object.channel_nomenclature["hx"],
-        tf_object.channel_nomenclature["hy"],
-    ]
-
-    if not isinstance(tf_object, TF):
-        raise ValueError(
-            "Input must be an mt_metadata.transfer_functions.core.TF object"
-        )
-
-    emtf = EMTFXML()
-    emtf.description = "Magnetotelluric transfer functions"
-    emtf.survey_metadata = tf_object.survey_metadata
-    emtf.station_metadata = tf_object.station_metadata
-    tags = []
-
-    emtf.data.period = tf_object.period
-
-    if tf_object.has_impedance():
-        tags += ["impedance"]
-        emtf.data.z = tf_object.impedance.data
-        emtf.data.z_var = tf_object.impedance_error.data**2
-    if (
-        tf_object.has_residual_covariance()
-        and tf_object.has_inverse_signal_power()
-    ):
-        emtf.data.z_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=hx_hy, output=hx_hy)
-        ].data
-        emtf.data.z_residcov = tf_object.residual_covariance.loc[
-            dict(input=ex_ey, output=ex_ey)
-        ].data
-    if tf_object.has_tipper():
-        tags += ["tipper"]
-        emtf.data.t = tf_object.tipper.data
-        emtf.data.t_var = tf_object.tipper_error.data
-
-    if (
-        tf_object.has_residual_covariance()
-        and tf_object.has_inverse_signal_power()
-    ):
-        emtf.data.t_invsigcov = tf_object.inverse_signal_power.loc[
-            dict(input=hx_hy, output=hx_hy)
-        ].data
-        emtf.data.t_residcov = tf_object.residual_covariance.loc[
-            dict(
-                input=[tf_object.channel_nomenclature["hz"]],
-                output=[tf_object.channel_nomenclature["hz"]],
-            )
-        ].data
-
-    emtf.tags = ", ".join(tags)
-    emtf.period_range.min = emtf.data.period.min()
-    emtf.period_range.max = emtf.data.period.max()
-    emtf.write(fn=fn)
-
-    return emtf
+        self._parse_comments(sm.comments)

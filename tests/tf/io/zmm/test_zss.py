@@ -4,20 +4,24 @@ Created on Mon Sep 27 16:28:09 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 import numpy as np
 
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
 from mt_metadata import TF_ZSS_TIPPER
+
+# =============================================================================
 
 
 class TestTranslateZmm(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf_obj = TF(TF_ZSS_TIPPER)
-        self.tf_obj.read_tf_file()
+        self.tf_obj.read()
         self.zmm_obj = zmm.ZMM(TF_ZSS_TIPPER)
         self.maxDiff = None
 

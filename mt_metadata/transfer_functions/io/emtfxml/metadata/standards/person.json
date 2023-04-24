@@ -12,6 +12,17 @@
         "example": "person name", 
 		"default": null
     },
+    "email": {
+        "type": "string",
+        "required": true,
+        "style": "email",
+        "units": null,
+        "description": "email of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "mt.guru@em.org", 
+		"default": null
+    },
     "org": {
         "type": "string",
         "required": true,
@@ -34,17 +45,6 @@
         "options": [],
         "alias": [],
         "example": "https://www.mt_gurus.org", 
-		"default": null
-    },
-    "email": {
-        "type": "string",
-        "required": true,
-        "style": "email",
-        "units": null,
-        "description": "email of the contact person",
-        "options": [],
-        "alias": [],
-        "example": "mt.guru@em.org", 
 		"default": null
     }
 }

@@ -434,6 +434,7 @@ class ZongeMTAvg:
         sm.location.elevation = self.header.elevation
         sm.location.datum = self.header.datum.upper()
 
+        sm.transfer_function.id = self.header.station
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
         sm.transfer_function.software.version = (
@@ -508,65 +509,3 @@ class ZongeMTAvg:
                 header_lines.append(" ".join(line))
         with open(fn, "w") as fid:
             fid.write("\n".join(header_lines))
-
-
-# =============================================================================
-# Read
-# =============================================================================
-
-
-def read_avg(fn, z_positive="down", **kwargs):
-    """
-    Read an .avg file output by MTEdit developed by Zonge International.
-
-    :param fn: full path to .avg file to be read
-    :type fn: string or :class:`pathlib.Path`
-    :return: Transfer Function object
-    :rtype: :class:`mt_metadata.transfer_functions.core.TF`
-
-    """
-    from mt_metadata.transfer_functions.core import TF
-
-    obj = ZongeMTAvg(fn=fn, z_positive=z_positive, **kwargs)
-    obj.read()
-
-    tf_object = TF()
-    tf_object.survey_metadata = obj.survey_metadata
-    tf_object.station_metadata = obj.station_metadata
-
-    tf_object.period = 1.0 / obj.frequency
-    tf_object.impedance = obj.z
-    tf_object.impedance_error = obj.z_err
-
-    if obj.t is not None:
-        tf_object.tipper = obj.t
-        tf_object.tipper_error = obj.t_err
-    tf_object._fn = fn
-
-    return tf_object
-
-
-def write_avg(tf_object, fn=None, **kwargs):
-    """
-    write an .avg file.
-
-    :param fn: DESCRIPTION
-    :type fn: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
-
-    """
-
-    raise AttributeError("Writing an AVG file does not exist yet.")
-
-    # from mt_metadata.transfer_functions.core import TF
-
-    # if not isinstance(tf_object, TF):
-    #     raise ValueError("Input must be an mt_metadata.transfer_functions.core object")
-
-    # zavg = ZongeMTAvg()
-    # zavg.station_metadata = tf_object.station_metadata
-
-    # zavg.comp_dict = zavg._make_comp_dict(tf_object.period.size)
-    # if tf_object.has_impedance():
-    #     for key in ["zxx", "zxy", "zyx", "zyy"]:

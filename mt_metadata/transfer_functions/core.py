@@ -9,6 +9,7 @@
 # ==============================================================================
 from pathlib import Path
 from copy import deepcopy
+from collections import OrderedDict
 
 import numpy as np
 import xarray as xr
@@ -21,7 +22,16 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata.transfer_functions.io.readwrite import read_file, write_file
+from mt_metadata.transfer_functions.io import (
+    EDI,
+    EMTFXML,
+    ZMM,
+    JFile,
+    ZongeMTAvg,
+)
+from mt_metadata.transfer_functions.io.zfiles.metadata import (
+    Channel as ZChannel,
+)
 from mt_metadata.base.helpers import validate_name
 
 DEFAULT_CHANNEL_NOMENCLATURE = {
@@ -60,9 +70,7 @@ class TF:
         self.station_metadata.runs[0].hx = Magnetic(component="hx")
         self.station_metadata.runs[0].hy = Magnetic(component="hy")
         self.station_metadata.runs[0].hz = Magnetic(component="hz")
-        self.channel_nomenclature = kwargs.get(
-            "channel_nomenclature", DEFAULT_CHANNEL_NOMENCLATURE
-        )
+        self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -117,6 +125,17 @@ class TF:
             "res": self.ex_ey_hz,
             "tf": self.ex_ey_hz,
             "tf_error": self.ex_ey_hz,
+        }
+
+        self._read_write_dict = {
+            "edi": {"write": self.to_edi, "read": self.from_edi},
+            "xml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
+            "emtfxml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
+            "j": {"write": self.to_jfile, "read": self.from_jfile},
+            "zmm": {"write": self.to_zmm, "read": self.from_zmm},
+            "zrr": {"write": self.to_zrr, "read": self.from_zrr},
+            "zss": {"write": self.to_zss, "read": self.from_zss},
+            "avg": {"write": self.to_avg, "read": self.from_avg},
         }
 
         self._transfer_function = self._initialize_transfer_function()
@@ -1157,7 +1176,7 @@ class TF:
             except AttributeError:
                 continue
 
-    def write_tf_file(
+    def write(
         self,
         fn=None,
         save_dir=None,
@@ -1197,7 +1216,7 @@ class TF:
 
         :Example: ::
 
-            >>> tf_obj.write_mtf_file(file_type='xml')
+            >>> tf_obj.write(file_type='xml')
 
         """
 
@@ -1206,8 +1225,7 @@ class TF:
             self.save_dir = new_fn.parent
             fn_basename = new_fn.name
             file_type = new_fn.suffix.lower()[1:]
-            if file_type in ["xml"]:
-                file_type = "emtfxml"
+
         if save_dir is not None:
             self.save_dir = Path(save_dir)
         if fn_basename is not None:
@@ -1220,17 +1238,25 @@ class TF:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
-        if file_type == "xml":
-            file_type = "emtfxml"
-        if file_type not in ["edi", "emtfxml", "j", "zmm", "zrr", "zss"]:
+        if file_type not in self._read_write_dict.keys():
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
+
         fn = self.save_dir.joinpath(fn_basename)
 
-        return write_file(self, fn, file_type=file_type, **kwargs)
+        obj = self._read_write_dict[file_type]["write"]()
+        obj.write(fn, **kwargs)
 
-    def read_tf_file(self, fn=None, file_type=None, **kwargs):
+        return obj
+
+    def write_tf_file(self):
+        self.logger.warning("'write_tf_file' has been deprecated use 'write()'")
+
+    def read_tf_file(self):
+        self.logger.warning("'read_tf_file' has been deprecated use 'read()'")
+
+    def read(self, fn=None, file_type=None, **kwargs):
         """
 
         Read an TF response file.
@@ -1248,21 +1274,512 @@ class TF:
 
         :Example: ::
 
-            >>> import mt_metadata.transfer_functions.core import TF
+            >>> import mt_metadata.transfer_functions import TF
             >>> tf_obj = TF()
-            >>> tf_obj.read_tf_file(fn=r"/home/mt/mt01.xml")
+            >>> tf_obj.read(fn=r"/home/mt/mt01.xml")
 
         """
         if fn is not None:
             self.fn = fn
 
-        tf_obj = read_file(self.fn, file_type=file_type, **kwargs)
-        if tf_obj.station_metadata.transfer_function.id is None:
-            tf_obj.station_metadata.transfer_function.id = (
-                tf_obj.station_metadata.id
-            )
-        self.__dict__.update(tf_obj.__dict__)
         self.save_dir = self.fn.parent
+        if file_type is None:
+            file_type = self.fn.suffix.lower()[1:]
+
+        self._read_write_dict[file_type]["read"](self.fn, **kwargs)
+
+    def to_edi(self):
+        """
+
+        Convert the TF object to a
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` object.  From there
+        attributes of an EDI object can be manipulated previous to writing
+        to a file.
+
+        :return: EDI object
+        :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> edi_object = t.to_edi()
+        >>> edi_object.Header.acqby = "me"
+        >>> edi_object.write()
+
+        """
+
+        edi_obj = EDI()
+        if self.has_impedance():
+            edi_obj.z = self.impedance.data
+            edi_obj.z_err = self.impedance_error.data
+        if self.has_tipper():
+            edi_obj.t = self.tipper.data
+            edi_obj.t_err = self.tipper_error.data
+        edi_obj.frequency = 1.0 / self.period
+        edi_obj.rotation_angle = np.repeat(
+            self._rotation_angle, self.period.size
+        )
+
+        # fill from survey metadata
+        edi_obj.survey_metadata = self.survey_metadata
+
+        # fill from station metadata
+        edi_obj.station_metadata = self.station_metadata
+
+        edi_obj.Info.read_info(edi_obj.Info.write_info())
+
+        # input data section
+        edi_obj.Data.data_type = self.station_metadata.data_type
+        edi_obj.Data.nfreq = self.period.size
+        edi_obj.Data.sectid = self.station
+        edi_obj.Data.nchan = len(edi_obj.Measurement.channel_ids.keys())
+        edi_obj.Data.maxblks = 999
+
+        for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
+            if hasattr(edi_obj.Measurement, f"meas_{comp}"):
+                setattr(
+                    edi_obj.Data,
+                    comp,
+                    getattr(edi_obj.Measurement, f"meas_{comp}").id,
+                )
+
+        edi_obj.Data.read_data(edi_obj.Data.write_data())
+        edi_obj.Measurement.read_measurement(
+            edi_obj.Measurement.write_measurement()
+        )
+
+        return edi_obj
+
+    def from_edi(self, edi_obj, **kwargs):
+        """
+        Read in an EDI file or a
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
+
+        :param edi_obj: path to edi file or EDI object
+        :type edi_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.edi.EDI`
+        :param **kwargs: Key word arguments for an EDI object
+        :type **kwargs: dictionary
+        :raises TypeError: If input is incorrect
+
+        """
+
+        if isinstance(edi_obj, (str, Path)):
+            self._fn = Path(edi_obj)
+            edi_obj = EDI(**kwargs)
+            edi_obj.read(self._fn)
+
+        if not isinstance(edi_obj, EDI):
+            raise TypeError(f"Input must be a EDI object not {type(edi_obj)}")
+
+        if edi_obj.tf is not None:
+            k_dict = OrderedDict(
+                {
+                    "period": "period",
+                    "transfer_function": "tf",
+                    "transfer_function_error": "tf_err",
+                    "inverse_signal_power": "signal_inverse_power",
+                    "residual_covariance": "residual_covariance",
+                    "survey_metadata": "survey_metadata",
+                    "station_metadata": "station_metadata",
+                }
+            )
+        else:
+            k_dict = OrderedDict(
+                {
+                    "period": "period",
+                    "impedance": "z",
+                    "impedance_error": "z_err",
+                    "tipper": "t",
+                    "tipper_error": "t_err",
+                    "survey_metadata": "survey_metadata",
+                    "station_metadata": "station_metadata",
+                }
+            )
+        for tf_key, edi_key in k_dict.items():
+            setattr(self, tf_key, getattr(edi_obj, edi_key))
+
+    def to_emtfxml(self):
+        """
+        Convert TF to a :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+        object.
+
+        :return: EMTFXML object
+        :rtype: :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> xml_object = t.to_emtfxml()
+        >>> xml_object.site.country = "Here"
+        >>> xml_object.write()
+
+        """
+
+        emtf = EMTFXML()
+        emtf.survey_metadata = self.survey_metadata
+        emtf.station_metadata = self.station_metadata
+
+        if emtf.description is None:
+            emtf.description = "Magnetotelluric Transfer Functions"
+
+        if emtf.product_id is None:
+            emtf.product_id = (
+                f"{emtf.survey_metadata.project}."
+                f"{emtf.station_metadata.id}."
+                f"{emtf.station_metadata.time_period._start_dt.year}"
+            )
+        tags = []
+
+        emtf.data.period = self.period
+
+        if self.has_impedance():
+            tags += ["impedance"]
+            emtf.data.z = self.impedance.data
+            emtf.data.z_var = self.impedance_error.data**2
+        if self.has_residual_covariance() and self.has_inverse_signal_power():
+            emtf.data.z_invsigcov = self.inverse_signal_power.loc[
+                dict(input=self.hx_hy, output=self.hx_hy)
+            ].data
+            emtf.data.z_residcov = self.residual_covariance.loc[
+                dict(input=self.ex_ey, output=self.ex_ey)
+            ].data
+        if self.has_tipper():
+            tags += ["tipper"]
+            emtf.data.t = self.tipper.data
+            emtf.data.t_var = self.tipper_error.data**2
+
+        if self.has_residual_covariance() and self.has_inverse_signal_power():
+            emtf.data.t_invsigcov = self.inverse_signal_power.loc[
+                dict(input=self.hx_hy, output=self.hx_hy)
+            ].data
+            emtf.data.t_residcov = self.residual_covariance.loc[
+                dict(
+                    input=[self.channel_nomenclature["hz"]],
+                    output=[self.channel_nomenclature["hz"]],
+                )
+            ].data
+
+        emtf.tags = ", ".join(tags)
+        emtf.period_range.min = emtf.data.period.min()
+        emtf.period_range.max = emtf.data.period.max()
+
+        emtf._get_data_types()
+        emtf._get_statistical_estimates()
+
+        return emtf
+
+    def from_emtfxml(self, emtfxml_obj, **kwargs):
+        """
+
+        :param emtfxml_object: path to emtf xml file or EMTFXML object
+        :type emtfxml_object: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+        :param **kwargs: Keyword arguments for EMTFXML object
+        :type **kwargs: dictionary
+
+        """
+
+        if isinstance(emtfxml_obj, (str, Path)):
+            self._fn = Path(emtfxml_obj)
+            emtfxml_obj = EMTFXML(**kwargs)
+            emtfxml_obj.read(self._fn)
+
+        if not isinstance(emtfxml_obj, EMTFXML):
+            raise TypeError(
+                f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
+            )
+
+        self.survey_metadata = emtfxml_obj.survey_metadata
+        self.station_metadata = emtfxml_obj.station_metadata
+
+        self.period = emtfxml_obj.data.period
+        self.impedance = emtfxml_obj.data.z
+        self.impedance_error = np.sqrt(emtfxml_obj.data.z_var)
+        self._transfer_function.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ] = emtfxml_obj.data.z_invsigcov
+        self._transfer_function.residual_covariance.loc[
+            dict(input=["ex", "ey"], output=["ex", "ey"])
+        ] = emtfxml_obj.data.z_residcov
+
+        self.tipper = emtfxml_obj.data.t
+        self.tipper_error = np.sqrt(emtfxml_obj.data.t_var)
+        self._transfer_function.inverse_signal_power.loc[
+            dict(input=["hx", "hy"], output=["hx", "hy"])
+        ] = emtfxml_obj.data.t_invsigcov
+        self._transfer_function.residual_covariance.loc[
+            dict(input=["hz"], output=["hz"])
+        ] = emtfxml_obj.data.t_residcov
+
+    def to_jfile(self):
+        """
+
+        Translate TF object ot JFile object.
+
+        .. note:: Not Implemented yet
+
+        :return: JFile object
+        :rtype: :class:`mt_metadata.transfer_functions.io.jfile.JFile`
+
+        """
+
+        raise IOError("to_jfile not implemented yet.")
+
+    def from_jfile(self, j_obj, **kwargs):
+        """
+
+        :param jfile_obj: path ot .j file or JFile object
+        :type jfile_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.jfile.JFile`
+        :param **kwargs: Keyword arguments for JFile object
+        :type **kwargs: dictionary
+
+        """
+        if isinstance(j_obj, (str, Path)):
+            self._fn = Path(j_obj)
+            j_obj = JFile(**kwargs)
+            j_obj.read(self._fn)
+
+        if not isinstance(j_obj, JFile):
+            raise TypeError(f"Input must be a JFile object not {type(j_obj)}")
+
+        k_dict = OrderedDict(
+            {
+                "period": "periods",
+                "impedance": "z",
+                "impedance_error": "z_err",
+                "tipper": "t",
+                "tipper_error": "t_err",
+                "survey_metadata": "survey_metadata",
+                "station_metadata": "station_metadata",
+            }
+        )
+
+        for tf_key, j_key in k_dict.items():
+            setattr(self, tf_key, getattr(j_obj, j_key))
+
+    def to_zmm(self):
+        """
+
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
+
+        """
+
+        zmm_obj = ZMM()
+        zmm_obj._transfer_function = self.dataset
+        zmm_obj.station_metadata = self.station_metadata
+
+        # need to set the channel numbers according to the z-file format
+        # with input channels (h's) and output channels (hz, e's).
+        if self.has_tipper():
+            if self.has_impedance():
+                zmm_obj.num_channels = 5
+                number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
+            else:
+                zmm_obj.num_channels = 3
+                number_dict = {"hx": 1, "hy": 2, "hz": 3}
+        else:
+            if self.has_impedance():
+                zmm_obj.num_channels = 4
+                number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
+        if len(self.station_metadata.runs) == 0:
+            run = Run()
+            for ch, ch_num in number_dict.items():
+                c = ZChannel()
+                c.channel = ch
+                c.number = ch_num
+                setattr(zmm_obj, c.channel, c)
+                if ch in ["ex", "ey"]:
+                    rc = Electric(component=ch, channel_number=ch_num)
+                    run.add_channel(rc)
+                elif ch in ["hx", "hy", "hz"]:
+                    rc = Magnetic(component=ch, channel_number=ch_num)
+                    run.add_channel(rc)
+            self.station_metadata.add_run(run)
+
+        else:
+            for comp in self.station_metadata.runs[0].channels_recorded_all:
+                if "rr" in comp:
+                    continue
+                ch = getattr(self.station_metadata.runs[0], comp)
+                c = ZChannel()
+                c.from_dict(ch.to_dict(single=True))
+                c.number = number_dict[c.channel]
+                setattr(zmm_obj, c.channel, c)
+        zmm_obj.survey_metadata.update(self.survey_metadata)
+        zmm_obj.num_freq = self.period.size
+
+        return zmm_obj
+
+    def from_zmm(self, zmm_obj, **kwargs):
+        """
+
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
+
+        """
+
+        if isinstance(zmm_obj, (str, Path)):
+            self._fn = Path(zmm_obj)
+            zmm_obj = ZMM(**kwargs)
+            zmm_obj.read(self._fn)
+
+        if not isinstance(zmm_obj, ZMM):
+            raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
+
+        k_dict = OrderedDict(
+            {
+                "survey_metadata": "survey_metadata",
+                "station_metadata": "station_metadata",
+                "period": "periods",
+            }
+        )
+
+        for tf_key, j_key in k_dict.items():
+            setattr(self, tf_key, getattr(zmm_obj, j_key))
+        self._transfer_function["transfer_function"].loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+        ] = zmm_obj.dataset.transfer_function.sel(
+            input=zmm_obj.input_channels, output=zmm_obj.output_channels
+        )
+        self._transfer_function["inverse_signal_power"].loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
+        ] = zmm_obj.dataset.inverse_signal_power.sel(
+            input=zmm_obj.input_channels, output=zmm_obj.input_channels
+        )
+        self._transfer_function["residual_covariance"].loc[
+            dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
+        ] = zmm_obj.dataset.residual_covariance.sel(
+            input=zmm_obj.output_channels, output=zmm_obj.output_channels
+        )
+
+        self._compute_error_from_covariance()
+        self._rotation_angle = -1 * zmm_obj.declination
+
+    def to_zrr(self):
+        """
+
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
+
+        """
+        return self.to_zmm()
+
+    def from_zrr(self, zrr_obj, **kwargs):
+        """
+
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
+
+        """
+
+        self.from_zmm(zrr_obj, **kwargs)
+
+    def to_zss(self):
+        """
+
+        Translate TF object to ZMM object.
+
+        :return: ZMM object
+        :rtype: :class:`mt_metadata.transfer_function.io.zfiles.ZMM`
+
+        >>> from mt_metadata.transfer_functions import TF
+        >>> from mt_metadata import TF_XML
+        >>> t = TF(TF_XML)
+        >>> t.read()
+        >>> zmm_object = t.to_zmm()
+        >>> zmm_object.processing_type = "new and fancy"
+        >>> zmm_object.write()
+
+        """
+        return self.to_zmm()
+
+    def from_zss(self, zss_obj, **kwargs):
+        """
+
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param **kwargs: Keyword arguments for ZMM object
+        :type **kwargs: dictionary
+
+        """
+
+        self.from_zmm(zss_obj, **kwargs)
+
+    def to_avg(self):
+        """
+
+        Translate TF object to ZongeMTAvg object.
+
+        .. note:: Not Implemented yet
+
+        :return: ZongeMTAvg object
+        :rtype: :class:`mt_metadata.transfer_function.io.zonge.ZongeMTAvg`
+
+
+        """
+
+        raise AttributeError("to_avg does not exist yet.")
+
+    def from_avg(self, avg_obj, **kwargs):
+        """
+
+        :param avg_obj: path ot .avg file or ZongeMTAvg object
+        :type avg_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
+        :param **kwargs: Keyword arguments for ZongeMTAvg object
+        :type **kwargs: dictionary
+
+        """
+        if isinstance(avg_obj, (str, Path)):
+            self._fn = Path(avg_obj)
+            avg_obj = ZongeMTAvg(**kwargs)
+            avg_obj.read(self._fn)
+
+        if not isinstance(avg_obj, ZongeMTAvg):
+            raise TypeError(f"Input must be a ZMM object not {type(avg_obj)}")
+
+        self.survey_metadata = avg_obj.survey_metadata
+        self.station_metadata = avg_obj.station_metadata
+
+        self.period = 1.0 / avg_obj.frequency
+        self.impedance = avg_obj.z
+        self.impedance_error = avg_obj.z_err
+
+        if avg_obj.t is not None:
+            self.tipper = avg_obj.t
+            self.tipper_error = avg_obj.t_err
 
 
 # ==============================================================================

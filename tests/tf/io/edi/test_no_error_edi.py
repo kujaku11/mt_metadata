@@ -12,7 +12,7 @@ import unittest
 
 from collections import OrderedDict
 from mt_metadata.transfer_functions.io import edi
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.transfer_functions import TF
 from mt_metadata import TF_EDI_NO_ERROR
 
 # =============================================================================
@@ -43,7 +43,7 @@ class TestNoErrorEDI(unittest.TestCase):
                 ("longitude", 0.0),
                 ("progdate", "2013-07-03"),
                 ("progname", "mt_metadata"),
-                ("progvers", "0.2.2"),
+                ("progvers", "0.2.3"),
                 ("stdvers", "SEG 1.0"),
                 ("units", "millivolts_per_kilometer_per_nanotesla"),
             ]
@@ -219,6 +219,86 @@ class TestNoErrorEDI(unittest.TestCase):
 
         with self.subTest("shape"):
             self.assertTupleEqual(self.edi_obj.rotation_angle.shape, (47,))
+
+
+class TestToTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.edi = edi.EDI(fn=TF_EDI_NO_ERROR)
+        self.tf = TF(fn=TF_EDI_NO_ERROR)
+        self.tf.read()
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error.data[:, 0, 0] == 0).all())
+
+    def test_has_tipper(self):
+        self.assertTrue(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertFalse(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertFalse(self.tf.has_residual_covariance())
+
+
+class TestFromTF(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.tf = TF(fn=TF_EDI_NO_ERROR)
+        self.tf.read()
+
+        self.edi = self.tf.to_edi()
+        self.maxDiff = None
+
+    def test_station_metadata(self):
+        edi_st = self.edi.station_metadata.to_dict(single=True)
+        tf_st = self.tf.station_metadata.to_dict(single=True, required=False)
+        for edi_key, edi_value in edi_st.items():
+            if edi_key in ["comments", "transfer_function.remote_references"]:
+                with self.subTest(edi_key):
+                    self.assertNotEqual(edi_value, tf_st[edi_key])
+            else:
+                with self.subTest(edi_key):
+                    self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_survey_metadata(self):
+        edi_st = self.edi.survey_metadata.to_dict(single=True)
+        tf_st = self.tf.survey_metadata.to_dict(single=True)
+        for edi_key, edi_value in edi_st.items():
+            with self.subTest(edi_key):
+                self.assertEqual(edi_value, tf_st[edi_key])
+
+    def test_has_impedance(self):
+        self.assertTrue(self.tf.has_impedance())
+
+    def test_impedance_error(self):
+        self.assertTrue((self.tf.impedance_error.data[:, 0, 0] == 0).all())
+
+    def test_has_tipper(self):
+        self.assertTrue(self.tf.has_tipper())
+
+    def test_has_isp(self):
+        self.assertFalse(self.tf.has_inverse_signal_power())
+
+    def test_has_residual_covariance(self):
+        self.assertFalse(self.tf.has_residual_covariance())
 
 
 # =============================================================================

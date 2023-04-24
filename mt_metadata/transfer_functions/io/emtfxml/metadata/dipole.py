@@ -11,7 +11,9 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
+from xml.etree import cElementTree as et
+
+from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Electrode
@@ -40,3 +42,32 @@ class Dipole(Base):
             e_obj = Electrode()
             e_obj.from_dict(item)
             self._electrode.append(e_obj)
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        root = et.Element(
+            self.__class__.__name__, {"name": self.name, "type": self.type}
+        )
+        et.SubElement(root, "manufacturer").text = self.manufacturer
+        et.SubElement(
+            root, "length", {"units": "meters"}
+        ).text = f"{self.length:.3f}"
+        et.SubElement(
+            root, "azimuth", {"units": "degrees"}
+        ).text = f"{self.azimuth:.3f}"
+        for item in self.electrode:
+            root.append(item.to_xml())
+
+        if string:
+            return element_to_string(root)
+        return root

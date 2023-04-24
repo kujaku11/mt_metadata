@@ -24,6 +24,7 @@ from mt_metadata.transfer_functions.tf import (
 )
 from .metadata import Channel
 from mt_metadata.utils.mt_logger import setup_logger
+from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
 class ZMMError(Exception):
@@ -69,7 +70,9 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
+            msg = (
+                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
+            )
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -135,7 +138,7 @@ class ZMMHeader(object):
         if station.count(":") > 0:
             station = station.split(":")[1]
         self.station = station
-        self.station_metadata._runs = []
+        self.station_metadata._runs = ListDict()
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
         self.station_metadata.transfer_function.id = self.station
 
@@ -617,7 +620,9 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
+        period = float(
+            period_block[0].strip().split(":")[1].split()[0].strip()
+        )
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -626,8 +631,12 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
-        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
+        npts = int(
+            period_block[1].strip().split("point")[1].split()[0].strip()
+        )
+        sr = float(
+            period_block[1].strip().split("freq.")[1].split()[0].strip()
+        )
         self.decimation_dict[f"{period:.10g}"] = {
             "level": level,
             "bands": bands,
