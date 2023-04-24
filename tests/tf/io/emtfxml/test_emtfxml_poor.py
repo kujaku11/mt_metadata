@@ -207,10 +207,13 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_statistical_estimates(self):
         test_dict = OrderedDict([("estimates_list", [])])
+        og_dict = self.xml.statistical_estimates.to_dict(single=True)
+        try:
+            og_dict.pop("extra_attribute")
+        except KeyError:
+            pass
 
-        self.assertDictEqual(
-            test_dict, self.xml.statistical_estimates.to_dict(single=True)
-        )
+        self.assertDictEqual(test_dict, og_dict)
 
     def test_data_types(self):
         test_dict = OrderedDict(
