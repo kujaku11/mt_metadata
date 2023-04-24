@@ -16,7 +16,6 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import Site, FieldNotes
 # =============================================================================
 attr_dict = BaseDict()
 attr_dict.add_dict(get_schema("site", SCHEMA_FN_PATHS), "site")
-attr_dict.add_dict(get_schema("field_notes", SCHEMA_FN_PATHS), "field_notes")
 # =============================================================================
 
 

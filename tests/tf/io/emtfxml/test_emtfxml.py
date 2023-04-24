@@ -139,9 +139,7 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            test_dict, self.xml.copyright.to_dict(single=True)
-        )
+        self.assertDictEqual(test_dict, self.xml.copyright.to_dict(single=True))
 
     def test_site(self):
         test_dict = OrderedDict(
@@ -162,17 +160,12 @@ class TestEMTFXML(unittest.TestCase):
                 ("end", "2020-10-07T20:28:00+00:00"),
                 ("id", "NMX20"),
                 ("location.datum", "WGS84"),
-                ("location.declination.epoch", "2020.0"),
-                ("location.declination.model", "WMM"),
-                ("location.declination.value", 9.09),
                 ("location.elevation", 1940.05),
                 ("location.latitude", 34.470528),
                 ("location.longitude", -108.712288),
                 ("name", "Nations Draw, NM, USA"),
                 ("orientation.angle_to_geographic_north", 0.0),
-                ("orientation.method", None),
-                ("orientation.reference_frame", "geographic"),
-                ("orientation.value", "orthogonal"),
+                ("orientation.layout", "orthogonal"),
                 ("project", "USMTArray"),
                 ("run_list", "NMX20a NMX20b"),
                 ("start", "2020-09-20T19:03:06+00:00"),
@@ -228,7 +221,8 @@ class TestEMTFXML(unittest.TestCase):
         for ii, item in enumerate(test_list):
             with self.subTest(msg=ii):
                 self.assertDictEqual(
-                    item, self.xml.field_notes[ii].to_dict(single=True)
+                    item,
+                    self.xml.field_notes.run_list[ii].to_dict(single=True),
                 )
 
     def test_statistical_estimates(self):
@@ -249,24 +243,6 @@ class TestEMTFXML(unittest.TestCase):
                                     ("name", "VAR"),
                                     ("tag", "variance"),
                                     ("type", "real"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    (
-                                        "description",
-                                        "Full covariance between each two TF components",
-                                    ),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/covariance.html",
-                                    ),
-                                    ("intention", "error estimate"),
-                                    ("name", "COV"),
-                                    ("tag", "covariance"),
-                                    ("type", "complex"),
                                 ]
                             )
                         },
@@ -299,66 +275,6 @@ class TestEMTFXML(unittest.TestCase):
                                     ("intention", "error estimate"),
                                     ("name", "RESIDCOV"),
                                     ("tag", "residual_covariance"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Coherence"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/coherence.html",
-                                    ),
-                                    ("intention", "signal coherence"),
-                                    ("name", "COH"),
-                                    ("tag", "coherence"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Multiple Coherence"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/multiple_coherence.html",
-                                    ),
-                                    ("intention", "signal coherence"),
-                                    ("name", "PREDCOH"),
-                                    ("tag", "multiple_coherence"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Signal Amplitude"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/signal_amplitude.html",
-                                    ),
-                                    ("intention", "signal power estimate"),
-                                    ("name", "SIGAMP"),
-                                    ("tag", "signal_amplitude"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Signal Noise"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/signal_noise.html",
-                                    ),
-                                    ("intention", "error estimate"),
-                                    ("name", "SIGNOISE"),
-                                    ("tag", "signal_noise"),
                                     ("type", "complex"),
                                 ]
                             )

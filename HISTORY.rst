@@ -92,3 +92,17 @@ History
 --------------------- 
 
 * Fixed bug in Station.channels_recorded when a string is input
+
+0.2.3 (2023-04-24)
+---------------------
+
+* Add methods for t0/from transfer function file type 
+* Update when an np.datetime64 is input 
+* MTime update to handle nanosecond accuracy 
+* MTime and pandas Timestamp cannot handle large future or past dates 
+* Fix input time with `isoformat` attribute
+* updating if a timedelta is subtracted 
+* Updates from main into fix_issue_133
+* Fix issue #133 
+* Update EMTFXML ouptut format 
+* Add FC Metadata 

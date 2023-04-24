@@ -1,57 +1,55 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 21:30:36 2020
+Created on Thu Mar  9 12:25:44 2023
 
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
+@author: jpeacock
 """
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import Dipole, Magnetometer, Comment
-from mt_metadata.utils.mttime import MTime
-from mt_metadata.transfer_functions.tf import Instrument
+from mt_metadata.base import Base
+from . import Run
 
-# =============================================================================
-attr_dict = get_schema("field_notes", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Instrument()._attr_dict, "instrument")
-attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
 
 # =============================================================================
 class FieldNotes(Base):
-    __doc__ = write_lines(attr_dict)
-
     def __init__(self, **kwargs):
-        self.errors = None
-        self.run = None
-        self._start_dt = MTime()
-        self._end_dt = MTime()
-        self.instrument = Instrument()
-        self.magnetometer = [Magnetometer()]
-        self.dipole = [Dipole()]
-        self.sampling_rate = None
-        self.comments = Comment()
+        self._run_list = []
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+        super().__init__(**kwargs)
 
     @property
-    def start(self):
-        return self._start_dt.iso_str
+    def run_list(self):
+        return self._run_list
 
-    @start.setter
-    def start(self, value):
-        self._start_dt.parse(value)
+    def read_dict(self, input_dict):
+        self._run_list = []
+        try:
+            if not isinstance(input_dict["field_notes"], list):
+                run_list = [input_dict["field_notes"]]
+            else:
+                run_list = input_dict["field_notes"]
 
-    @property
-    def end(self):
-        return self._end_dt.iso_str
+            for run in run_list:
+                r = Run()
+                r.read_dict(run)
 
-    @end.setter
-    def end(self, value):
-        self._end_dt.parse(value)
+                self._run_list.append(r)
+        except KeyError:
+            self.logger.warning("Did not find any field notes in xml")
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        return [
+            r.to_xml(string=string, required=required) for r in self._run_list
+        ]

@@ -596,7 +596,8 @@ class Base:
                     elif value.all() != 0:
                         meta_dict[name] = value
                 elif (
-                    value not in [None, "1980-01-01T00:00:00+00:00"]
+                    value
+                    not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
                     or self._attr_dict[name]["required"]
                 ):
                     meta_dict[name] = value

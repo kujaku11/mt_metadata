@@ -54,6 +54,39 @@
         "example": "here",
 		"default": 0.0
     },
+	"reflat": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Latitude of reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
+	"reflon": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Longitude reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
+	"refelev": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "Elevation reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
     "units": {
         "type": "string",
         "required": true,

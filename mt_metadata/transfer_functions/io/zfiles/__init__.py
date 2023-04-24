@@ -1,5 +1,5 @@
 # package file
 
-from .zmm import read_zmm, write_zmm, ZMM
+from .zmm import ZMM
 
-__all__ = ["read_zmm", "write_zmm", "ZMM"]
+__all__ = ["ZMM"]

@@ -1,0 +1,57 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of channel",
+        "options": [],
+        "alias": [],
+        "example": "ex",
+		"default": null
+    },
+	"sample_rate_acquisition": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Original sample rate.",
+        "options": [],
+        "alias": [],
+        "example": 60.0,
+		"default": 1
+    },
+	"sample_rate_decimation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the decimation level.",
+        "options": [],
+        "alias": [],
+        "example": 60,
+		"default": 1
+    },
+	"sample_rate_window": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the windows.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 1
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Units of the channel",
+        "options": [],
+        "alias": [],
+        "example": "millivolts",
+		"default": "counts"
+    }
+}

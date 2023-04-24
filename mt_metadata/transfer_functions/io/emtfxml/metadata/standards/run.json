@@ -30,7 +30,7 @@
         "options": [],
         "alias": [],
         "example": "1",
-		"default": null
+		"default": 0
     },
 	"start": {
         "type": "string",

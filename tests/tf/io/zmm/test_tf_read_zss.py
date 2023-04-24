@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_ZSS_TIPPER
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 
 # =============================================================================
 # EMTFXML
@@ -24,7 +24,7 @@ class TestEMTFXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_ZSS_TIPPER)
-        self.tf.read_tf_file()
+        self.tf.read()
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -137,7 +137,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
+                    np.array(
+                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
+                    ),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -188,7 +190,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (44, 3, 3), self.tf.residual_covariance.shape
+            )
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):

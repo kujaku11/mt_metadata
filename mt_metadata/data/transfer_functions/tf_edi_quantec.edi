@@ -1,6 +1,6 @@
 >HEAD
 
-  DATAID="Geoscience Australia"
+  DATAID="TEST 01"
   ACQBY="Quantec Geoscience"
   FILEBY="Quantec Geoscience"
   ACQDATE=11/15/14
@@ -42,7 +42,7 @@
 >HMEAS ID=    12.001 CHTYPE=HY X=       0. Y=       0. AZM=  90
 
 >=SPECTRASECT
-  SECTID="IEA00184"
+  SECTID="TEST 01"
   NCHAN=7
   NFREQ=41
   MAXBLKS=100

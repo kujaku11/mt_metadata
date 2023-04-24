@@ -1,0 +1,112 @@
+{
+    "decimation_level": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Decimation level, must be a positive integer starting at 0.",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": null
+    },
+	"channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of channels",
+        "options": [],
+        "alias": [],
+        "example": "[ex, hy]",
+		"default": null
+    },
+	"sample_rate_decimation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the decimation level.",
+        "options": [],
+        "alias": [],
+        "example": 60,
+		"default": 1
+    },
+	"decimation_factor": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Decimation factor between initial sample rate and decimation sample rate.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 1
+    },
+	"method": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Fourier transform method",
+        "options": ["fft", "wavelet", "other"],
+        "alias": [],
+        "example": "fft",
+		"default": "fft"
+    },
+	"anti_alias_filter": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of anti alias filter for decimation.",
+        "options": [],
+        "alias": [],
+        "example": "default",
+		"default": null
+    },
+	"pre_fft_detrend_type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of detrend method before FFT.",
+        "options": [],
+        "alias": [],
+        "example": "linear",
+		"default": "linear"
+    },
+	"pre_fft_detrend_type_extra": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of extra detrend method before FFT after data have been windowed.",
+        "options": [],
+        "alias": [],
+        "example": "linear",
+		"default": "linear"
+    },
+	"recoloring": {
+        "type": "bool",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Whether the data are recolored [True] or not [False].",
+        "options": [],
+        "alias": [],
+        "example": true,
+		"default": false
+    },
+	"harmonic_indices_kept": {
+        "type": "integer",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "List of harmonics indices kept, if all use -1",
+        "options": [],
+        "alias": [],
+        "example": [0, 4, 8],
+		"default": [-1]
+    }
+}
