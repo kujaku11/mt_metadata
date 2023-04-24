@@ -791,6 +791,7 @@ class EMTFXML(emtf_xml.EMTF):
             "attachment.filename",
             "site.data_quality_notes.comments.author",
             "site.data_quality_notes.comments.value",
+            "site.data_quality_warnings.flag",
         ]:
             comments[key] = self.get_attr_from_name(key)
         s.comments = "; ".join(
@@ -821,6 +822,15 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.processing_parameters.append(
             {"remote_ref.type": self.processing_info.remote_ref.type}
         )
+
+        for key in ["id", "name", "year_collected"]:
+            value = self.processing_info.remote_info.get_attr_from_name(
+                f"site.{key}"
+            )
+            if value not in [None, "1980"]:
+                s.transfer_function.processing_parameters[0][
+                    f"remote_info.site.{key}"
+                ] = value
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -926,6 +936,26 @@ class EMTFXML(emtf_xml.EMTF):
                 r.channels_recorded_magnetic = ["hx", "hy"]
             else:
                 r.channels_recorded_magnetic = ["hx", "hy", "hz"]
+
+            for ch in (
+                self.site_layout.input_channels
+                + self.site_layout.output_channels
+            ):
+                c = getattr(r, ch.name.lower())
+                if c.component in ["hx", "hy", "hz"]:
+                    c.location.x = ch.x
+                    c.location.y = ch.y
+                    c.location.z = ch.z
+
+                elif c.component in ["ex", "ey"]:
+                    c.negative.x = ch.x
+                    c.negative.y = ch.y
+                    c.negative.z = ch.z
+                    c.positive.x2 = ch.x2
+                    c.positive.y2 = ch.y2
+                    c.positive.z2 = ch.z2
+                c.measurement_azimuth = ch.orientation
+                c.translated_azimuth = ch.orientation
 
             s.add_run(r)
 

@@ -313,6 +313,7 @@ class TransferFunction(Base):
                 dtype = self.dtype_dict[block[key]["type"]]
             except KeyError:
                 dtype = "unknown"
+
             value_list = block[key]["value"]
             if not isinstance(value_list, list):
                 value_list = [value_list]
@@ -321,8 +322,8 @@ class TransferFunction(Base):
                 index_1 = self.index_dict[item["input"].lower()]
                 if dtype is complex:
                     value = item["value"].split()
-                    value = dtype(float(value[0]), float(value[1]))
-                elif isinstance(dtype, (float, int)):
+                    value = complex(float(value[0]), float(value[1]))
+                elif dtype in (float, int):
                     value = dtype(item["value"])
                 elif dtype in ["unknown"]:
                     value = item["value"].split()
