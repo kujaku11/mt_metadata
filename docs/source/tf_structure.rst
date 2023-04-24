@@ -90,6 +90,16 @@ Supported Formats
     notebooks/tf_zfile_example.ipynb
     notebooks/tf_jfile_example.ipynb    
     notebooks/tf_avg_example.ipynb
+    
+=======================================
+Archiving Transfer Functions at IRIS
+=======================================
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Example of Archiving Transfer Functions at IRIS
+    
+    notebooks/tf_iris_archive_example.ipynb
 
 ========================
 Metadata Definitions

@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_AVG_TIPPER
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 
 # =============================================================================
 # EMTFXML
@@ -24,7 +24,7 @@ class TestEMTFXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG_TIPPER)
-        self.tf.read_tf_file()
+        self.tf.read()
         self.maxDiff = None
 
     def test_survey_metadata(self):

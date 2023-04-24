@@ -28,12 +28,16 @@ from .provenance import Provenance
 from .copyright import Copyright
 from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
+from .orientation import Orientation
+from .location import Location
 from .site import Site
 from .electrode import Electrode
 from .dipole import Dipole
 from .magnetometer import Magnetometer
+from .instrument import Instrument
+from .run import Run
 from .field_notes import FieldNotes
-from .software import Software
+from .software import ProcessingSoftware
 from .remote_ref import RemoteRef
 from .remote_info import RemoteInfo
 from .processing_info import ProcessingInfo
@@ -61,12 +65,16 @@ __all__ = [
     "Comment",
     "DataQualityNotes",
     "DataQualityWarnings",
+    "Orientation",
+    "Location",
     "Site",
     "Electrode",
     "Dipole",
     "Magnetometer",
+    "Instrument",
+    "Run",
     "FieldNotes",
-    "Software",
+    "ProcessingSoftware",
     "RemoteRef",
     "RemoteInfo",
     "ProcessingInfo",

@@ -39,7 +39,7 @@ you should only have to changes these dictionaries.
 
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 # =============================================================================
 # Imports
@@ -130,30 +130,29 @@ MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath(
 )
 
 ### Transfer function files
-TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/example_emtf.zmm")
-TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tipper_only.zss")
-TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/example_birrp.j")
-TF_XML = DATA_DIR.joinpath("data/transfer_functions/emtf_xml_example_02.xml")
-TF_EDI_PHOENIX = DATA_DIR.joinpath(
-    "data/transfer_functions/IEB0537A_Phoenix.edi"
-)
+TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/tf_zmm.zmm")
+TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_zss_tipper.zss")
+TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/tf_jfile.j")
+TF_XML = DATA_DIR.joinpath("data/transfer_functions/tf_xml.xml")
+TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
+TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
-    "data/transfer_functions/IEB0858A_metronix.edi"
+    "data/transfer_functions/tf_edi_metronix.edi"
 )
-TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/EGC022_CGG.edi")
-TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/IEA00184_Qut.edi")
-TF_EDI_RHO_ONLY = DATA_DIR.joinpath("data/transfer_functions/rho_only.edi")
-TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/spectra_in.edi")
+TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/tf_edi_cgg.edi")
+TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/tf_edi_quantec.edi")
+TF_EDI_RHO_ONLY = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_rho_only.edi"
+)
+TF_EDI_SPECTRA = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_spectra_in.edi"
+)
 TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
-    "data/transfer_functions/spectra_out.edi"
+    "data/transfer_functions/tf_edi_spectra_out.edi"
 )
 TF_EDI_NO_ERROR = DATA_DIR.joinpath(
-    "data/transfer_functions/example_no_error.edi"
+    "data/transfer_functions/tf_edi_no_error.edi"
 )
-TF_AVG = DATA_DIR.joinpath("data/transfer_functions/example_zonge.avg")
-TF_AVG_TIPPER = DATA_DIR.joinpath(
-    "data/transfer_functions/example_zonge_with_tipper.avg"
-)
-TF_AVG_NEWER = DATA_DIR.joinpath(
-    "data/transfer_functions/example_zonge_newer.avg"
-)
+TF_AVG = DATA_DIR.joinpath("data/transfer_functions/tf_avg.avg")
+TF_AVG_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_tipper.avg")
+TF_AVG_NEWER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_newer.avg")

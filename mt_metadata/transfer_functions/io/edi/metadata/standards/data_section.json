@@ -98,7 +98,7 @@
         "example": "5",
 		"default": 0
     },
-	"rx": {
+	"rrhx": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -109,7 +109,7 @@
         "example": "6",
 		"default": 0
     },
-	"ry": {
+	"rrhy": {
         "type": "string",
         "required": true,
         "style": "free form",

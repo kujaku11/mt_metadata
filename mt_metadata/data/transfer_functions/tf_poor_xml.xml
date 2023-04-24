@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EM_TF active="Y" id="18633652">
+   <ProductDescription>Electromagnetic Transfer Function</ProductDescription>
+   <Description>Magnetotelluric Transfer Functions</Description>
+   <SubType>MT_TF</SubType>
+   <ProductId>USMTArray.CAS04.2020</ProductId>
+   <DOI>10.17611/DP/18633652</DOI>
+   <Link>http://ds.iris.edu/spudservice/emtf/18633652</Link>
+   <Notes></Notes>
+   <Tags>impedance,tipper</Tags>
+   <LocationTime id="19382345">
+      <LatMin>37.63335</LatMin>
+      <LatMax>37.63335</LatMax>
+      <LonMin>-121.46838</LonMin>
+      <LonMax>-121.46838</LonMax>
+      <DepthMin>-329.387</DepthMin>
+      <DepthMax>-329.387</DepthMax>
+      <StartTime>2020-06-02T18:41:43</StartTime>
+      <EndTime>2020-07-13T21:46:12</EndTime>
+   </LocationTime>
+   <Provenance>
+      <CreateTime>2021-09-23T19:45:02</CreateTime>
+      <CreatingApplication>EMTF File Conversion Utilities 4.0</CreatingApplication>
+      <Creator>
+         <Email>pbedrosian@usgs.gov</Email>
+         <Name>Jade Crosbie, Paul Bedrosian and Anna Kelbert</Name>
+         <Org>U.S. Geological Survey</Org>
+         <OrgUrl>https://www.usgs.gov/natural-hazards/geomagnetism</OrgUrl>
+      </Creator>
+      <ModificationTime>2021-09-24T17:38:01</ModificationTime>
+      <SubmitTime>2020-12-14T20:09:48</SubmitTime>
+      <Submitter>
+         <Email>akelbert@usgs.gov</Email>
+         <Name>Anna Kelbert</Name>
+         <Org>U.S. Geological Survey, Geomagnetism Program</Org>
+         <OrgUrl>https://www.usgs.gov/natural-hazards/geomagnetism</OrgUrl>
+      </Submitter>
+   </Provenance>
+   <ExternalUrl id="19382348">
+      <Description>IRIS DMC MetaData</Description>
+      <Url>http://www.iris.edu/mda/8P/CAS04</Url>
+      <Link>http://ds.iris.edu/spudservice/emtf/18633652/externalurl/19382348</Link>
+   </ExternalUrl>
+   <PrimaryData id="19382585">
+      <Link>http://ds.iris.edu/spudservice/emtf/18633652/primarydata/19382585</Link>
+      <Filename>CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png</Filename>
+      <MimeType>image/png</MimeType>
+      <Size>295909</Size>
+      <DataLink>http://ds.iris.edu/spudservice/data/19382585</DataLink>
+   </PrimaryData>
+   <SourceData id="19382586">
+      <Link>http://ds.iris.edu/spudservice/emtf/18633652/sourcedata/19382586</Link>
+      <Filename>Source//Users/akelbert/Developer/EMTF-FCU/database/xml/USMTArray/2020_Q3/MTA20_Q3_NASA/CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.xml</Filename>
+      <Description>Source XML</Description>
+      <MimeType>application/xml</MimeType>
+      <Size>94074</Size>
+      <DataLink>http://ds.iris.edu/spudservice/data/19382586</DataLink>
+   </SourceData>
+   <Attachment id="19382347">
+      <Link>http://ds.iris.edu/spudservice/emtf/18633652/attachment/19382347</Link>
+      <Filename>CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm</Filename>
+      <Description>The original used to produce the XML</Description>
+      <MimeType>application/octet-stream</MimeType>
+      <Size>19670</Size>
+      <DataLink>http://ds.iris.edu/spudservice/data/19382347</DataLink>
+   </Attachment>
+   <Copyright>
+      <Acknowledgement>The USMTArray-CONUS South campaign was carried out through a cooperative agreement between
+the U.S. Geological Survey (USGS) and Oregon State University (OSU). A subset of 40 stations
+in the SW US were funded through NASA grant 80NSSC19K0232.
+Land permitting, data acquisition, quality control and field processing were
+carried out by Green Geophysics with project management and instrument/engineering
+support from OSU and Chaytus Engineering, respectively.
+Program oversight, definitive data processing and data archiving were provided
+by the USGS Geomagnetism Program and the Geology, Geophysics and Geochemistry Science Centers.
+We thank the U.S. Forest Service, the Bureau of Land Management, the National Park Service,
+the Department of Defense, numerous state land offices and the many private landowners
+who permitted land access to acquire the USMTArray data.</Acknowledgement>
+      <Citation>
+         <Authors>Schultz, A., Pellerin, L., Bedrosian, P., Kelbert, A., Crosbie, J.</Authors>
+         <SurveyDOI>doi:10.17611/DP/EMTF/USMTARRAY/SOUTH</SurveyDOI>
+         <Title>USMTArray South Magnetotelluric Transfer Functions</Title>
+         <Year>2020-2023</Year>
+      </Citation>
+      <ConditionsOfUse> All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided that this data set is cited as the reference, and that the author(s) contributions are acknowledged as detailed in the Acknowledgements. Any papers cited in this file are only for reference. There is no requirement to cite these papers when the data are used. Whenever possible, we ask that the author(s) are notified prior to any publication that makes use of these data.
+ While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, nor IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.</ConditionsOfUse>
+      <ReleaseStatus>Unrestricted Release</ReleaseStatus>
+   </Copyright>
+   <SiteLayout>
+      <InputChannels ref="site" units="m">
+         <Magnetic name="Hx" orientation="13.2" x="0.0" y="0.0" z="0.0"/>
+         <Magnetic name="Hy" orientation="103.2" x="0.0" y="0.0" z="0.0"/>
+      </InputChannels>
+      <OutputChannels ref="site" units="m">
+         <Electric name="Ex" orientation="13.2" x="-46.0" x2="46.0" y="0.0" y2="0.0" z="0.0" z2="0.0"/>
+         <Electric name="Ey" orientation="103.2" x="0.0" x2="0.0" y="-46.0" y2="46.0" z="0.0" z2="0.0"/>
+         <Magnetic name="Hz" orientation="13.2" x="0.0" y="0.0" z="0.0"/>
+      </OutputChannels>
+   </SiteLayout>
+   <Data>
+      <Period units="secs" value="4.65455">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-5.953611e-1 -1.984346e0</value>
+            <value input="Hy" name="Ty" output="Hz">-1.313187e0 1.159378e0</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">5.218971e-2 -4.937870e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">1.004782e0 1.873659e0</value>
+            <value input="Hx" name="Zyx" output="Ey">-8.261183e-1 1.226159e0</value>
+            <value input="Hy" name="Zyy" output="Ey">1.361610e0 -1.376113e0</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="5.81818">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.536220e-2 -7.825888e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-1.690235e0 -1.007077e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">-1.668447e0 -5.544169e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">1.834562e-1 3.802209e0</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.645144e0 -2.456791e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.310753e0 1.873517e0</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="7.31429">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.989110e-1 8.466471e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.503281e-1 -3.312216e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">-7.233371e-1 -8.315701e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">2.040872e0 1.273561e0</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.093279e-1 -1.595439e0</value>
+            <value input="Hy" name="Zyy" output="Ey">5.650372e-1 -3.234300e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="9.14286">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.510229e-1 -7.803086e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.824932e-1 -2.581689e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">2.156242e0 -3.173654e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">2.999449e0 1.074326e0</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.522551e0 -3.943774e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.331242e0 -3.554635e0</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="11.63636">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.641985e-1 1.002327e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.779764e-1 -2.094723e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">-2.879730e-2 -8.762329e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">9.746563e-1 1.122776e0</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.360644e0 -1.030224e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.207227e-1 -1.956767e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="15.05882">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.898513e-1 1.371018e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-1.131152e-1 5.663706e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">-2.427905e-2 -1.746857e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">8.028954e-1 9.571576e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.576905e0 -1.184842e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.230210e-1 -3.294341e-3</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="19.69231">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.000639e-1 9.423465e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-9.053818e-2 7.612268e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">5.231922e-2 -1.898653e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">6.478517e-1 7.990441e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.407548e0 -1.091256e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-2.266492e-1 7.196529e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="25.6">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.143297e-1 7.991276e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.204246e-1 7.654056e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.116376e-1 -1.696630e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">5.600651e-1 6.824968e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.215235e0 -1.032003e0</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.065576e-1 1.019630e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="33.03226">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.429526e-1 6.666347e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.183618e-1 7.009222e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.420357e-1 -1.234929e-1</value>
+            <value input="Hy" name="Zxy" output="Ex">4.597236e-1 5.373968e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.069076e0 -9.253032e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-2.796757e-1 1.066929e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="42.66667">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.534544e-1 3.936435e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.494112e-1 7.900683e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.524690e-1 -9.803552e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">4.235146e-1 4.297235e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-9.290854e-1 -8.147765e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.350690e-1 9.573553e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="53.89474">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.606021e-1 2.058489e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-1.768001e-1 8.557074e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.616337e-1 -7.082906e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">4.015611e-1 3.442232e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-8.164390e-1 -7.200768e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.652937e-1 8.542906e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="68.26667">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.574143e-1 -4.758351e-3</value>
+            <value input="Hy" name="Ty" output="Hz">-1.939345e-1 7.625139e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.728410e-1 -5.477883e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.881694e-1 2.756765e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-7.371306e-1 -6.251235e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.810709e-1 8.397883e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="85.33334">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.505153e-1 -2.770644e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-2.317574e-1 6.411363e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.704996e-1 -3.372325e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.942577e-1 2.331599e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-6.717423e-1 -5.504401e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.112596e-1 6.936325e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="102.4">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.426122e-1 -4.728292e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-2.400755e-1 5.582531e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.693637e-1 -2.214887e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.913844e-1 2.017588e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-6.288156e-1 -4.874412e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.270337e-1 5.407887e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="132.129">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.285791e-1 -6.898251e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-2.504511e-1 2.759885e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.695776e-1 -5.494918e-3</value>
+            <value input="Hy" name="Zxy" output="Ex">3.816420e-1 1.735004e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-5.797580e-1 -4.244996e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.404176e-1 3.358492e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="170.6667">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-3.168460e-1 -8.482492e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-2.685539e-1 -2.440800e-3</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.687113e-1 8.815900e-3</value>
+            <value input="Hy" name="Zxy" output="Ex">3.828064e-1 1.619257e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-5.240936e-1 -3.688743e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.490113e-1 -4.565899e-3</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="215.579">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.937014e-1 -8.465596e-2</value>
+            <value input="Hy" name="Ty" output="Hz">-2.731002e-1 -4.613144e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.678765e-1 1.205433e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.676108e-1 1.638493e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-5.022892e-1 -3.223507e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.523765e-1 -5.365433e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="273.0667">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.630322e-1 -1.166706e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-2.724967e-1 -8.294392e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.546437e-1 3.160707e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.539678e-1 1.617968e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.684322e-1 -3.003032e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.417537e-1 -7.741707e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="341.3333">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.538494e-1 -1.289013e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-2.459050e-1 -1.052883e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.468567e-1 3.889508e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.415150e-1 1.599875e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.498850e-1 -2.799125e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.122667e-1 -1.054061e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="409.6">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.325826e-1 -1.325914e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-2.222371e-1 -1.334086e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.425754e-1 4.475158e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.209326e-1 1.627752e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.158673e-1 -2.671248e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.026654e-1 -1.386716e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="528.5161">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.159392e-1 -1.346563e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-1.867106e-1 -1.706691e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.332591e-1 4.916503e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">2.897880e-1 1.664198e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-3.781120e-1 -2.461802e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.719191e-1 -1.521450e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="682.6667">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.873129e-1 -1.367479e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-1.431425e-1 -1.999149e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.155788e-1 5.262445e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">2.570891e-1 1.706600e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-3.443109e-1 -2.366400e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-3.253388e-1 -1.767444e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="862.3158">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.699640e-1 -1.381158e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-1.000975e-1 -2.133807e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">1.043402e-1 5.434332e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">2.314140e-1 1.666318e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-3.097860e-1 -2.171682e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-2.877402e-1 -1.884133e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="1092.267">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.421178e-1 -1.521250e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-4.924551e-2 -2.254911e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">9.260250e-2 5.567460e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">1.983990e-1 1.582775e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.916010e-1 -2.123225e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-2.505925e-1 -1.854046e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="1365.333">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.149954e-1 -1.370785e-1</value>
+            <value input="Hy" name="Ty" output="Hz">-4.077945e-3 -2.265919e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">7.930211e-2 5.017973e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">1.712012e-1 1.546321e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.503989e-1 -1.864679e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-2.110421e-1 -1.805397e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="1638.4">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.016883e-1 -1.407936e-1</value>
+            <value input="Hy" name="Ty" output="Hz">3.635749e-2 -2.396826e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">7.197637e-2 5.221133e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">1.495573e-1 1.475731e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.396327e-1 -1.798969e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.765864e-1 -1.843513e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="2259.862">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-5.814533e-2 -1.413685e-1</value>
+            <value input="Hy" name="Ty" output="Hz">8.403229e-2 -2.183526e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">6.134047e-2 5.248758e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">1.250385e-1 1.268550e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-2.017716e-1 -1.604550e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.514705e-1 -1.696876e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="3120.762">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-4.509755e-2 -1.131949e-1</value>
+            <value input="Hy" name="Ty" output="Hz">1.430884e-1 -1.983062e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">4.823770e-2 4.662761e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">9.667717e-2 1.147807e-1</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.653828e-1 -1.445293e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.053977e-1 -1.423076e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="4681.143">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">2.447389e-3 -8.376450e-2</value>
+            <value input="Hy" name="Ty" output="Hz">3.001521e-1 -1.480797e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">3.659584e-2 3.842204e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">7.421870e-2 9.477913e-2</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.383113e-1 -1.176909e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-7.661584e-2 -1.166320e-1</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="7281.778">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">4.328144e-2 -3.860385e-3</value>
+            <value input="Hy" name="Ty" output="Hz">4.176461e-1 -1.074045e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">2.484643e-2 3.360247e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">6.020733e-2 6.767435e-2</value>
+            <value input="Hx" name="Zyx" output="Ey">-1.012527e-1 -1.161257e-1</value>
+            <value input="Hy" name="Zyy" output="Ey">-5.934643e-2 -9.842247e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="11915.64">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-1.192617e-1 -7.164271e-2</value>
+            <value input="Hy" name="Ty" output="Hz">4.815940e-1 -1.388758e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">2.346843e-2 2.014521e-2</value>
+            <value input="Hy" name="Zxy" output="Ex">3.878559e-2 6.568519e-2</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.771441e-2 -7.603481e-2</value>
+            <value input="Hy" name="Zyy" output="Ey">-4.544843e-2 -7.461521e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="18724.57">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.354598e-2 -1.490098e-1</value>
+            <value input="Hy" name="Ty" output="Hz">2.715782e-1 8.642250e-2</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">2.232561e-2 -6.276167e-3</value>
+            <value input="Hy" name="Zxy" output="Ex">3.818828e-2 7.962954e-3</value>
+            <value input="Hx" name="Zyx" output="Ey">-4.231172e-2 -3.799304e-2</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.140161e-2 -1.536283e-2</value>
+         </Z>
+      </Period>
+      <Period units="secs" value="29127.11">
+         <T units="[]">
+            <value input="Hx" name="Tx" output="Hz">-2.102757e-2 -6.664169e-2</value>
+            <value input="Hy" name="Ty" output="Hz">5.568553e-1 1.630035e-1</value>
+         </T>
+         <Z units="[mV/km]/[nT]">
+            <value input="Hx" name="Zxx" output="Ex">3.680307e-2 1.313529e-3</value>
+            <value input="Hy" name="Zxy" output="Ex">6.559774e-2 1.775079e-3</value>
+            <value input="Hx" name="Zyx" output="Ey">-5.877226e-2 -2.631392e-2</value>
+            <value input="Hy" name="Zyy" output="Ey">-1.419307e-2 -3.934453e-2</value>
+         </Z>
+      </Period>
+   </Data>
+   <ProcessingInfo>
+      <ProcessingSoftware>
+         <Name>EMTF</Name>
+         <LastMod>2015-08-26T00:00:00</LastMod>
+      </ProcessingSoftware>
+      <ProcessingTag>CAS04-CAS04bcd_REV06-CAS04bcd_NVR08</ProcessingTag>
+      <RemoteRef type="Robust Remote Reference"/>
+      <RemoteInfo>
+         <Site>
+            <Location>
+               <Elevation>61.05</Elevation>
+               <Latitude>35.71262</Latitude>
+               <Longitude>-119.466415</Longitude>
+            </Location>
+            <Id>REV06</Id>
+            <Name>Poso Creek, CA, USA</Name>
+         </Site>
+      </RemoteInfo>
+      <SignConvention>exp(+ i\omega t)</SignConvention>
+   </ProcessingInfo>
+   <Site>
+      <Project>USMTArray</Project>
+      <Survey>CONUS South</Survey>
+      <YearCollected>2020</YearCollected>
+      <Id>CAS04</Id>
+      <Name>Corral Hollow, CA, USA</Name>
+      <Location>
+         <Latitude>37.63335</Latitude>
+         <Longitude>-121.46838</Longitude>
+         <Elevation units="meters">329.387</Elevation>
+         <Declination epoch="2020.0">13.175</Declination>
+      </Location>
+      <Orientation angle_to_geographic_north="0.000">orthogonal</Orientation>
+      <AcquiredBy>National Geoelectromagnetic Facility</AcquiredBy>
+      <DataQualityNotes>
+         <Rating>4</Rating>
+         <Comments author="Jade Crosbie, Paul Bedrosian and Anna Kelbert">good TF from 10 to 10000 secs</Comments>
+      </DataQualityNotes>
+      <Start>2020-06-02T18:41:43</Start>
+      <End>2020-07-13T21:46:12</End>
+      <RunList>CAS04a CAS04b CAS04c CAS04d</RunList>
+      <DataQualityWarnings>
+         <Comments author="Jade Crosbie, Paul Bedrosian and Anna Kelbert"></Comments>
+         <Flag>0</Flag>
+      </DataQualityWarnings>
+   </Site>
+</EM_TF>

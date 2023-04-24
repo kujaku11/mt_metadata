@@ -108,6 +108,7 @@ class DefineMeasurement(Base):
             "maxchan",
             "maxrun",
             "maxmeas",
+            "refloc",
             "reflat",
             "reflon",
             "refelev",
@@ -317,17 +318,23 @@ class DefineMeasurement(Base):
             if key.upper() == "REFLON":
                 if longitude_format == "LONG":
                     key += "G"
-            measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
+            if value is not None:
+                measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number
-        m_key_list = [
-            (kk.strip(), float(self.__dict__[kk].id))
-            for kk in list(self.__dict__.keys())
-            if kk.find("meas_") == 0
-        ]
+        m_key_list = []
+        for kk in list(self.__dict__.keys()):
+            if kk.find("meas_") == 0:
+                try:
+                    m_key_list.append(
+                        (kk.strip(), float(self.__dict__[kk].id))
+                    )
+                except TypeError:
+                    self.logger.debug(f"No {kk} information.")
+
         if len(m_key_list) == 0:
-            self.logger.info("No XMEAS information.")
+            self.logger.warning("No XMEAS information.")
         else:
             # need to sort the dictionary by chanel id
             chn_count = 1
@@ -395,7 +402,19 @@ class DefineMeasurement(Base):
         azm = channel.measurement_azimuth
         if azm != channel.translated_azimuth:
             azm = channel.translated_azimuth
+        if azm is None:
+            azm = 0.0
         if "e" in channel.component:
+            for attr in [
+                "negative.x",
+                "negative.y",
+                "positive.x2",
+                "positive.y2",
+                "measurement_azimuth",
+                "translated_azimuth",
+            ]:
+                if channel.get_attr_from_name(attr) is None:
+                    channel.set_attr_from_name(attr, 0)
             meas = EMeasurement(
                 **{
                     "x": channel.negative.x,
@@ -412,6 +431,9 @@ class DefineMeasurement(Base):
             setattr(self, f"meas_{channel.component.lower()}", meas)
 
         elif "h" in channel.component:
+            for attr in ["location.x", "location.y", "location.z"]:
+                if channel.get_attr_from_name(attr) is None:
+                    channel.set_attr_from_name(attr, 0)
             meas = HMeasurement(
                 **{
                     "x": channel.location.x,
