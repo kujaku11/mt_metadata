@@ -827,7 +827,7 @@ class EMTFXML(emtf_xml.EMTF):
             value = self.processing_info.remote_info.get_attr_from_name(
                 f"site.{key}"
             )
-            if value not in [None, "1980"]:
+            if value not in [None, "1980", 1980]:
                 s.transfer_function.processing_parameters[0][
                     f"remote_info.site.{key}"
                 ] = value

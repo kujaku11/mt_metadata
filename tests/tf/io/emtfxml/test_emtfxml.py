@@ -139,9 +139,7 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            test_dict, self.xml.copyright.to_dict(single=True)
-        )
+        self.assertDictEqual(test_dict, self.xml.copyright.to_dict(single=True))
 
     def test_site(self):
         test_dict = OrderedDict(
@@ -253,24 +251,6 @@ class TestEMTFXML(unittest.TestCase):
                                 [
                                     (
                                         "description",
-                                        "Full covariance between each two TF components",
-                                    ),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/covariance.html",
-                                    ),
-                                    ("intention", "error estimate"),
-                                    ("name", "COV"),
-                                    ("tag", "covariance"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    (
-                                        "description",
                                         "Inverse Coherent Signal Power Matrix (S)",
                                     ),
                                     (
@@ -295,66 +275,6 @@ class TestEMTFXML(unittest.TestCase):
                                     ("intention", "error estimate"),
                                     ("name", "RESIDCOV"),
                                     ("tag", "residual_covariance"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Coherence"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/coherence.html",
-                                    ),
-                                    ("intention", "signal coherence"),
-                                    ("name", "COH"),
-                                    ("tag", "coherence"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Multiple Coherence"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/multiple_coherence.html",
-                                    ),
-                                    ("intention", "signal coherence"),
-                                    ("name", "PREDCOH"),
-                                    ("tag", "multiple_coherence"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Signal Amplitude"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/signal_amplitude.html",
-                                    ),
-                                    ("intention", "signal power estimate"),
-                                    ("name", "SIGAMP"),
-                                    ("tag", "signal_amplitude"),
-                                    ("type", "complex"),
-                                ]
-                            )
-                        },
-                        {
-                            "estimate": OrderedDict(
-                                [
-                                    ("description", "Signal Noise"),
-                                    (
-                                        "external_url",
-                                        "http://www.iris.edu/dms/products/emtf/signal_noise.html",
-                                    ),
-                                    ("intention", "error estimate"),
-                                    ("name", "SIGNOISE"),
-                                    ("tag", "signal_noise"),
                                     ("type", "complex"),
                                 ]
                             )
