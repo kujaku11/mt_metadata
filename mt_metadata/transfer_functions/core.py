@@ -1176,6 +1176,19 @@ class TF:
             except AttributeError:
                 continue
 
+    def merge(self, other):
+        """
+        Merge transfer functions together. `other` can be another `TF` object
+        or a tuple of `TF` objects
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        pass
+
     def write(
         self,
         fn=None,
@@ -1246,6 +1259,7 @@ class TF:
         fn = self.save_dir.joinpath(fn_basename)
 
         obj = self._read_write_dict[file_type]["write"]()
+        obj.fn = fn
         obj.write(fn, **kwargs)
 
         return obj
