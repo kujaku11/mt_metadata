@@ -1195,15 +1195,30 @@ class TF:
             return item._transfer_function
 
         def is_dict(item):
+            item = validate_dict(item)
             period_slice = {"period": slice(item["period_min"], item["period_max"])}
             return item["tf"]._transfer_function.loc[period_slice]
 
+        def validate_dict(item):
+            accepted_keys = sorted(["tf", "period_min", "period_max"])
+
+            if accepted_keys != sorted(list(item.keys())):
+                msg = f"Input dictionary must have keys of {accepted_keys}"
+                self.logger.error(msg)
+                raise ValueError(msg)
+            return item
+
         for item in other:
             if isinstance(item, TF):
-                tf_list.append(is_tf(other))
+                tf_list.append(is_tf(item))
             elif isinstance(item, dict):
                 tf_list.append(is_dict(item))
+            else:
+                msg = f"Type {type(item)} not supported"
+                self.logger.error(msg)
+                raise TypeError(msg)
         new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
+
         if inplace:
             self._transfer_function = new_tf
         else:
