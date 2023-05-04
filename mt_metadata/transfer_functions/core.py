@@ -1165,7 +1165,7 @@ class TF:
         [{"tf": tf_01, "period_min": .01, "period_max": 100},
          {"tf": tf_02, "period_min": 100, "period_max": 1000}]
 
-        or to just use whats in the file
+        or to just use whats in the transfer function
         [tf_01, tf_02, ...]
 
         The bounds are inclusive, so if you want to merge at say 1 s choose
@@ -1175,10 +1175,11 @@ class TF:
         [{"tf": tf_01, "period_min": .01, "period_max": 100},
          {"tf": tf_02, "period_min": 100.1, "period_max": 1000}]
 
-        :param other: DESCRIPTION
-        :type other: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param other: other transfer functions to merge with
+        :type other: TF, list of dicts, list of TF objects, dict
+        :return: merged TF object with metadata equal to the original
+         (if inplace=False)
+        :rtype: TF
 
         """
         period_slice_self = {"period": slice(period_min, period_max)}
