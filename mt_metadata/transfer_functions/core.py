@@ -9,7 +9,7 @@
 # ==============================================================================
 from pathlib import Path
 from copy import deepcopy
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 import numpy as np
 import xarray as xr
@@ -1153,7 +1153,7 @@ class TF:
             except AttributeError:
                 continue
 
-    def merge(self, other):
+    def merge(self, other, period_min=None, period_max=None, inplace=False):
         """
         metadata will be assumed to be from self.
 
@@ -1176,8 +1176,30 @@ class TF:
         :rtype: TYPE
 
         """
+        period_slice_self = {"period": slice(period_min, period_max)}
+        tf_list = [self._transfer_function.loc[period_slice_self]]
+        if not isinstance(other, list):
+            other = [other]
 
-        pass
+        def is_tf(item):
+            return item._transfer_function
+
+        def is_dict(item):
+            period_slice = {"period": slice(item["period_min"], item["period_max"])}
+            return item["tf"]._transfer_function.loc[period_slice]
+
+        for item in other:
+            if isinstance(item, TF):
+                tf_list.append(is_tf(other))
+            elif isinstance(item, dict):
+                tf_list.append(is_dict(item))
+        new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
+        if inplace:
+            self._transfer_function = new_tf
+        else:
+            return_tf = self.copy()
+            return_tf._transfer_function = new_tf
+            return return_tf
 
     def write(
         self,
