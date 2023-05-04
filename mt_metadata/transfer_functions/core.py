@@ -9,7 +9,7 @@
 # ==============================================================================
 from pathlib import Path
 from copy import deepcopy
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict
 
 import numpy as np
 import xarray as xr
@@ -1168,7 +1168,12 @@ class TF:
         or to just use whats in the file
         [tf_01, tf_02, ...]
 
-        Will do period_min < > period_max
+        The bounds are inclusive, so if you want to merge at say 1 s choose
+        the best one and set the other to a value lower or higher depending
+        on the periods for that transfer function, for example
+
+        [{"tf": tf_01, "period_min": .01, "period_max": 100},
+         {"tf": tf_02, "period_min": 100.1, "period_max": 1000}]
 
         :param other: DESCRIPTION
         :type other: TYPE
