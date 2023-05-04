@@ -1177,6 +1177,10 @@ class TF:
 
         :param other: other transfer functions to merge with
         :type other: TF, list of dicts, list of TF objects, dict
+        :param period_min: minimum period for the original TF
+        :type period_min: float
+        :param period_max: maximum period for the original TF
+        :type period_max: float
         :return: merged TF object with metadata equal to the original
          (if inplace=False)
         :rtype: TF
