@@ -42,6 +42,8 @@ DEFAULT_CHANNEL_NOMENCLATURE = {
     "ey": "ey",
 }
 # =============================================================================
+
+
 class TF:
     """
     Generic container to hold information about an electromagnetic
@@ -1297,10 +1299,11 @@ class TF:
 
         return obj
 
-    def write_tf_file(self):
-        self.logger.warning("'write_tf_file' has been deprecated use 'write()'")
+    def write_tf_file(self, *args, **kwargs):
+        self.logger.warning(
+            "'write_tf_file' has been deprecated use 'write()'")
 
-    def read_tf_file(self):
+    def read_tf_file(self, *args, **kwargs):
         self.logger.warning("'read_tf_file' has been deprecated use 'read()'")
 
     def read(self, fn=None, file_type=None, **kwargs):
