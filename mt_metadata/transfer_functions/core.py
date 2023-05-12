@@ -1250,11 +1250,11 @@ class TF:
 
         return obj
 
-    def write_tf_file(self):
-        self.logger.warning("'write_tf_file' has been deprecated use 'write()'")
+    def write_tf_file(self, **kwargs):
+        self.logger.error("'write_tf_file' has been deprecated use 'write()'")
 
-    def read_tf_file(self):
-        self.logger.warning("'read_tf_file' has been deprecated use 'read()'")
+    def read_tf_file(self, **kwargs):
+        self.logger.error("'read_tf_file' has been deprecated use 'read()'")
 
     def read(self, fn=None, file_type=None, **kwargs):
         """
