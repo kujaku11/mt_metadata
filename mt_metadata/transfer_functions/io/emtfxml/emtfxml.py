@@ -1082,13 +1082,15 @@ class EMTFXML(emtf_xml.EMTF):
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
 
+                    # long period magnetometer
+                    if rch.sensor.name in [
+                        "NIMS",
+                        "LEMI",
+                    ] and rch.sensor.type in ["fluxgate"]:
+                        break
+
                 except AttributeError:
                     self.logger.debug("Did not find %s in run", comp)
-
-                if rch.sensor.name in ["NIMS", "LEMI"] and rch.sensor.type in [
-                    "fluxgate"
-                ]:
-                    break
 
             for comp in ["ex", "ey"]:
                 try:
