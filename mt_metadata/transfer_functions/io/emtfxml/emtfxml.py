@@ -1082,6 +1082,7 @@ class EMTFXML(emtf_xml.EMTF):
                     mag.type = rch.sensor.type
                     fn.magnetometer.append(mag)
 
+                    # long period magnetometer
                     if rch.sensor.name in [
                         "NIMS",
                         "LEMI",

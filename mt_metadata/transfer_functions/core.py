@@ -91,15 +91,10 @@ class TF:
             "runs_processed": "station_metadata.run_list",
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
-        # unpack channel nomenclature dict
-        self.ex = self.channel_nomenclature["ex"]
-        self.ey = self.channel_nomenclature["ey"]
-        self.hx = self.channel_nomenclature["hx"]
-        self.hy = self.channel_nomenclature["hy"]
-        self.hz = self.channel_nomenclature["hz"]
-        self.ex_ey = [self.ex, self.ey]
-        self.hx_hy = [self.hx, self.hy]
-        self.ex_ey_hz = [self.ex, self.ey, self.hz]
+
+        # provide key words to fill values if an edi file does not exist
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
         self._ch_input_dict = {
             "impedance": self.hx_hy,
@@ -139,10 +134,6 @@ class TF:
         }
 
         self._transfer_function = self._initialize_transfer_function()
-
-        # provide key words to fill values if an edi file does not exist
-        for key in list(kwargs.keys()):
-            setattr(self, key, kwargs[key])
 
         self.fn = fn
 
@@ -293,6 +284,33 @@ class TF:
     # ==========================================================================
     # Properties
     # ==========================================================================
+    @property
+    def channel_nomenclature(self):
+        return self._channel_nomenclature
+
+    @channel_nomenclature.setter
+    def channel_nomenclature(self, ch_dict):
+        """
+        channel dictionary
+        """
+
+        if not isinstance(ch_dict, dict):
+            raise TypeError(
+                "Channel_nomenclature must be a dictionary with keys "
+                "['ex', 'ey', 'hx', 'hy', 'hz']."
+            )
+
+        self._channel_nomenclature = ch_dict
+        # unpack channel nomenclature dict
+        self.ex = self._channel_nomenclature["ex"]
+        self.ey = self._channel_nomenclature["ey"]
+        self.hx = self._channel_nomenclature["hx"]
+        self.hy = self._channel_nomenclature["hy"]
+        self.hz = self._channel_nomenclature["hz"]
+        self.ex_ey = [self.ex, self.ey]
+        self.hx_hy = [self.hx, self.hy]
+        self.ex_ey_hz = [self.ex, self.ey, self.hz]
+
     @property
     def fn(self):
         """reference to original data file"""
