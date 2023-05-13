@@ -12,6 +12,27 @@ import numpy as np
 from mt_metadata.transfer_functions.core import TF, TFError
 
 
+class TestTFChannelNomenclature(unittest.TestCase):
+    def setUp(self):
+        self.tf = TF()
+        self.nc = {"ex": "e1", "ey": "e2", "hx": "h1", "hy": "by", "hz": "b3"}
+
+    def set_nomenclature(self):
+        self.tf.channel_nomenclature = self.nc
+
+        self.assertDictEqual(self.nc, self.tf.channel_nomenclature)
+
+    def set_nomenclature_fail(self):
+        def set_nc(value):
+            self.tf.channel_nomenclature = value
+
+        self.assertRaises(TypeError, set_nc, 10)
+
+    def set_nomenclature_from_init(self):
+        self.tf = TF(channel_nomenclature=self.nc)
+        self.assertDictEqual(self.nc, self.tf.channel_nomenclature)
+
+
 class TestTFPeriodInput(unittest.TestCase):
     def setUp(self):
         self.n_period = 20
