@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 24 12:02:12 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -358,6 +358,10 @@ def get_schema_fn(schema_element, paths):
 
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
+    :param paths: A list of pathlib.PosixPath or pathlib.WindowsPath objects that point
+     to the json files in which the schema are stored.
+    :type paths: list
+
     :return: correct file name for given element
     :rtype: :class:`pathlib.Path`
 
