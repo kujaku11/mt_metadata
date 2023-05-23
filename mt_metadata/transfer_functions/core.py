@@ -92,36 +92,6 @@ class TF:
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
 
-        # provide key words to fill values if an edi file does not exist
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-        self._ch_input_dict = {
-            "impedance": self.hx_hy,
-            "tipper": self.hx_hy,
-            "impedance_error": self.hx_hy,
-            "impedance_model_error": self.hx_hy,
-            "tipper_error": self.hx_hy,
-            "tipper_model_error": self.hx_hy,
-            "isp": self.hx_hy,
-            "res": self.ex_ey_hz,
-            "tf": self.hx_hy,
-            "tf_error": self.hx_hy,
-        }
-
-        self._ch_output_dict = {
-            "impedance": self.ex_ey,
-            "tipper": [self.hz],
-            "impedance_error": self.ex_ey,
-            "impedance_model_error": self.ex_ey,
-            "tipper_error": [self.hz],
-            "tipper_model_error": [self.hz],
-            "isp": self.hx_hy,
-            "res": self.ex_ey_hz,
-            "tf": self.ex_ey_hz,
-            "tf_error": self.ex_ey_hz,
-        }
-
         self._read_write_dict = {
             "edi": {"write": self.to_edi, "read": self.from_edi},
             "xml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
@@ -136,6 +106,9 @@ class TF:
         self._transfer_function = self._initialize_transfer_function()
 
         self.fn = fn
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
@@ -310,6 +283,37 @@ class TF:
         self.ex_ey = [self.ex, self.ey]
         self.hx_hy = [self.hx, self.hy]
         self.ex_ey_hz = [self.ex, self.ey, self.hz]
+
+    @property
+    def _ch_input_dict(self):
+
+        return {
+            "impedance": self.hx_hy,
+            "tipper": self.hx_hy,
+            "impedance_error": self.hx_hy,
+            "impedance_model_error": self.hx_hy,
+            "tipper_error": self.hx_hy,
+            "tipper_model_error": self.hx_hy,
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.hx_hy,
+            "tf_error": self.hx_hy,
+        }
+
+    @property
+    def _ch_output_dict(self):
+        return {
+            "impedance": self.ex_ey,
+            "tipper": [self.hz],
+            "impedance_error": self.ex_ey,
+            "impedance_model_error": self.ex_ey,
+            "tipper_error": [self.hz],
+            "tipper_model_error": [self.hz],
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.ex_ey_hz,
+            "tf_error": self.ex_ey_hz,
+        }
 
     @property
     def fn(self):
@@ -1135,6 +1139,11 @@ class TF:
         set station name
         """
         self.station_metadata.id = validate_name(station_name)
+        if self.station_metadata.runs[0].id is None:
+            r = self.station_metadata.runs[0].copy()
+            r.id = f"{self.station_metadata.id}a"
+            self.station_metadata.runs.remove(None)
+            self.station_metadata.runs.append(r)
 
     @property
     def survey(self):

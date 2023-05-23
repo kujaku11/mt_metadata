@@ -8,7 +8,6 @@ Created on Wed Nov 16 11:08:25 2022
 # Imports
 # =============================================================================
 from collections import OrderedDict
-from copy import deepcopy
 
 # =============================================================================
 
@@ -45,14 +44,18 @@ class ListDict:
 
     def _get_key_from_index(self, index):
         try:
-            return next(key for ii, key in enumerate(self._home) if ii == index)
+            return next(
+                key for ii, key in enumerate(self._home) if ii == index
+            )
 
         except StopIteration:
             raise KeyError(f"Could not find {index}")
 
     def _get_index_from_key(self, key):
         try:
-            return next(index for index, k in enumerate(self._home) if k == key)
+            return next(
+                index for index, k in enumerate(self._home) if k == key
+            )
 
         except StopIteration:
             raise KeyError(f"Could not find {key}")
@@ -72,7 +75,9 @@ class ListDict:
         elif hasattr(obj, "component"):
             return obj.component
         else:
-            raise TypeError("could not identify an appropriate key from object")
+            raise TypeError(
+                "could not identify an appropriate key from object"
+            )
 
     def __deepcopy__(self, memodict={}):
         """
@@ -218,8 +223,16 @@ class ListDict:
         elif isinstance(key, int):
             key = self._get_key_from_index(key)
             self._home.__delitem__(key)
+        elif key is None:
+            try:
+                self._home.__delitem__(key)
+            except KeyError:
+                raise (KeyError("Could not find None in keys."))
+
         else:
-            raise TypeError("could not identify an appropriate key from object")
+            raise TypeError(
+                "could not identify an appropriate key from object"
+            )
 
     def extend(self, other, skip_keys=[]):
         """
