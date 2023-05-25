@@ -143,7 +143,9 @@ class TF:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
+        lines.append(
+            f"\tAcquired by:       {self.station_metadata.acquired_by.author}"
+        )
         lines.append(
             f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
         )
@@ -454,10 +456,13 @@ class TF:
             and not self.has_tipper()
             and not self.has_impedance()
         ):
-            self._transfer_function = self._initialize_transfer_function(da.period)
+            self._transfer_function = self._initialize_transfer_function(
+                da.period
+            )
             return da
         elif (
-            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
+            self._transfer_function.transfer_function.data.shape[0]
+            == da.data.shape[0]
         ):
             return da
         else:
@@ -1008,19 +1013,27 @@ class TF:
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.real(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 0, 1] = np.real(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
         z_err[:, 1, 0] = np.real(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 1, 1] = np.real(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
@@ -1041,7 +1054,9 @@ class TF:
         :rtype: TYPE
 
         """
-        sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
+        sigma_e = self.residual_covariance.loc[
+            dict(input=[self.hz], output=[self.hz])
+        ]
         sigma_s = self.inverse_signal_power.loc[
             dict(input=self.hx_hy, output=self.hx_hy)
         ]
@@ -1049,11 +1064,15 @@ class TF:
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.real(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         t_err[:, 0, 1] = np.real(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
@@ -1091,7 +1110,9 @@ class TF:
             else:
                 self.dataset["period"] = value
         else:
-            self._transfer_function = self._initialize_transfer_function(periods=value)
+            self._transfer_function = self._initialize_transfer_function(
+                periods=value
+            )
         return
 
     @property
@@ -1207,6 +1228,7 @@ class TF:
         :rtype: TF
 
         """
+
         period_slice_self = {"period": slice(period_min, period_max)}
         tf_list = [self._transfer_function.loc[period_slice_self]]
         if not isinstance(other, list):
@@ -1217,7 +1239,9 @@ class TF:
 
         def is_dict(item):
             item = validate_dict(item)
-            period_slice = {"period": slice(item["period_min"], item["period_max"])}
+            period_slice = {
+                "period": slice(item["period_min"], item["period_max"])
+            }
             return item["tf"]._transfer_function.loc[period_slice]
 
         def validate_dict(item):
@@ -1238,7 +1262,7 @@ class TF:
                 msg = f"Type {type(item)} not supported"
                 self.logger.error(msg)
                 raise TypeError(msg)
-        new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
+        new_tf = xr.concat(tf_list, "period", combine_attrs="override")
 
         if inplace:
             self._transfer_function = new_tf
@@ -1301,7 +1325,9 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
+                fn_basename = fn_basename.with_name(
+                    f"{fn_basename.name}.{file_type}"
+                )
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
@@ -1383,7 +1409,9 @@ class TF:
             edi_obj.t = self.tipper.data
             edi_obj.t_err = self.tipper_error.data
         edi_obj.frequency = 1.0 / self.period
-        edi_obj.rotation_angle = np.repeat(self._rotation_angle, self.period.size)
+        edi_obj.rotation_angle = np.repeat(
+            self._rotation_angle, self.period.size
+        )
 
         # fill from survey metadata
         edi_obj.survey_metadata = self.survey_metadata
@@ -1408,7 +1436,9 @@ class TF:
                     getattr(edi_obj.Measurement, f"meas_{comp}").id,
                 )
         edi_obj.Data.read_data(edi_obj.Data.write_data())
-        edi_obj.Measurement.read_measurement(edi_obj.Measurement.write_measurement())
+        edi_obj.Measurement.read_measurement(
+            edi_obj.Measurement.write_measurement()
+        )
 
         return edi_obj
 
@@ -1496,7 +1526,7 @@ class TF:
         if self.has_impedance():
             tags += ["impedance"]
             emtf.data.z = self.impedance.data
-            emtf.data.z_var = self.impedance_error.data ** 2
+            emtf.data.z_var = self.impedance_error.data**2
         if self.has_residual_covariance() and self.has_inverse_signal_power():
             emtf.data.z_invsigcov = self.inverse_signal_power.loc[
                 dict(input=self.hx_hy, output=self.hx_hy)
@@ -1507,7 +1537,7 @@ class TF:
         if self.has_tipper():
             tags += ["tipper"]
             emtf.data.t = self.tipper.data
-            emtf.data.t_var = self.tipper_error.data ** 2
+            emtf.data.t_var = self.tipper_error.data**2
         if self.has_residual_covariance() and self.has_inverse_signal_power():
             emtf.data.t_invsigcov = self.inverse_signal_power.loc[
                 dict(input=self.hx_hy, output=self.hx_hy)
@@ -1543,7 +1573,9 @@ class TF:
             emtfxml_obj = EMTFXML(**kwargs)
             emtfxml_obj.read(self._fn)
         if not isinstance(emtfxml_obj, EMTFXML):
-            raise TypeError(f"Input must be a EMTFXML object not {type(emtfxml_obj)}")
+            raise TypeError(
+                f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
+            )
         self.survey_metadata = emtfxml_obj.survey_metadata
         self.station_metadata = emtfxml_obj.station_metadata
 
