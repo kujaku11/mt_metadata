@@ -379,6 +379,9 @@ def get_schema(schema_element, paths):
 
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
+    :param paths: A list of pathlib.PosixPath or pathlib.WindowsPath objects that point
+     to the json files in which the schema are stored.
+    :type paths: list
     :return: return a dictionary that describes the standards for the element
     :rtype: :class:`mt_metadata.schema_base.BaseDict`
 
