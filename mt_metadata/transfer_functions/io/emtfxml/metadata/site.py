@@ -104,9 +104,9 @@ class Site(Base):
         for element in input_dict["site"].keys():
             attr = getattr(self, element)
             if hasattr(attr, "read_dict"):
-                attr.read_dict(input_dict)
+                attr.read_dict(input_dict["site"])
             else:
-                helpers._read_single(self, input_dict, element)
+                helpers._read_single(self, input_dict["site"], element)
 
     def to_xml(self, string=False, required=True):
         """ """

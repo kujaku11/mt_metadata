@@ -16,6 +16,7 @@ from xml.etree import cElementTree as et
 from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("orientation", SCHEMA_FN_PATHS)
@@ -28,6 +29,17 @@ class Orientation(Base):
     def __init__(self, **kwargs):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        helpers._read_element(self, input_dict, "orientation")
 
     def to_xml(self, string=False, required=True):
         """
