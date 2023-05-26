@@ -780,10 +780,12 @@ class TF:
         ].data.tolist()
         if self.hz in outputs:
             if np.all(
-                self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tipper"],
-                    output=self._ch_output_dict["tipper"],
-                ).data
+                np.nan_to_num(
+                    self._transfer_function.transfer_function.sel(
+                        input=self._ch_input_dict["tipper"],
+                        output=self._ch_output_dict["tipper"],
+                    ).data
+                )
                 == 0
             ):
                 return False
@@ -1262,7 +1264,7 @@ class TF:
                 msg = f"Type {type(item)} not supported"
                 self.logger.error(msg)
                 raise TypeError(msg)
-        new_tf = xr.concat(tf_list, "period", combine_attrs="override")
+        new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
 
         if inplace:
             self._transfer_function = new_tf
