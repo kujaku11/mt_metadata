@@ -629,14 +629,17 @@ class Base:
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
         if len(keys) == 1:
-            class_name = keys[0]
-            if class_name.lower() != self._class_name.lower():
-                msg = (
-                    "name of input dictionary is not the same as class type "
-                    "input = %s, class type = %s"
-                )
-                self.logger.debug(msg, class_name, self._class_name)
-            meta_dict = helpers.flatten_dict(meta_dict[class_name])
+            if not isinstance(meta_dict[list(meta_dict.keys())[0]], dict):
+                pass
+            else:
+                class_name = keys[0]
+                if class_name.lower() != self._class_name.lower():
+                    msg = (
+                        "name of input dictionary is not the same as class type "
+                        "input = %s, class type = %s"
+                    )
+                    self.logger.debug(msg, class_name, self._class_name)
+                meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
             self.logger.debug(
                 "Assuming input dictionary is of type %s", self._class_name
