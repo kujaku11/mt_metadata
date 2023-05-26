@@ -42,6 +42,8 @@ DEFAULT_CHANNEL_NOMENCLATURE = {
     "ey": "ey",
 }
 # =============================================================================
+
+
 class TF:
     """
     Generic container to hold information about an electromagnetic
@@ -481,7 +483,6 @@ class TF:
         """
         if value is None:
             return
-
         key_dict = {
             "tf": "transfer_function",
             "impedance": "transfer_function",
@@ -779,10 +780,12 @@ class TF:
         ].data.tolist()
         if self.hz in outputs:
             if np.all(
-                self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tipper"],
-                    output=self._ch_output_dict["tipper"],
-                ).data
+                np.nan_to_num(
+                    self._transfer_function.transfer_function.sel(
+                        input=self._ch_input_dict["tipper"],
+                        output=self._ch_output_dict["tipper"],
+                    ).data
+                )
                 == 0
             ):
                 return False
@@ -1194,6 +1197,82 @@ class TF:
             except AttributeError:
                 continue
 
+    def merge(self, other, period_min=None, period_max=None, inplace=False):
+        """
+        metadata will be assumed to be from self.
+
+        Merge transfer functions together. `other` can be another `TF` object
+        or a tuple of `TF` objects
+
+        to set bounds should be of the format
+
+        [{"tf": tf_01, "period_min": .01, "period_max": 100},
+         {"tf": tf_02, "period_min": 100, "period_max": 1000}]
+
+        or to just use whats in the transfer function
+        [tf_01, tf_02, ...]
+
+        The bounds are inclusive, so if you want to merge at say 1 s choose
+        the best one and set the other to a value lower or higher depending
+        on the periods for that transfer function, for example
+
+        [{"tf": tf_01, "period_min": .01, "period_max": 100},
+         {"tf": tf_02, "period_min": 100.1, "period_max": 1000}]
+
+        :param other: other transfer functions to merge with
+        :type other: TF, list of dicts, list of TF objects, dict
+        :param period_min: minimum period for the original TF
+        :type period_min: float
+        :param period_max: maximum period for the original TF
+        :type period_max: float
+        :return: merged TF object with metadata equal to the original
+         (if inplace=False)
+        :rtype: TF
+
+        """
+
+        period_slice_self = {"period": slice(period_min, period_max)}
+        tf_list = [self._transfer_function.loc[period_slice_self]]
+        if not isinstance(other, list):
+            other = [other]
+
+        def is_tf(item):
+            return item._transfer_function
+
+        def is_dict(item):
+            item = validate_dict(item)
+            period_slice = {
+                "period": slice(item["period_min"], item["period_max"])
+            }
+            return item["tf"]._transfer_function.loc[period_slice]
+
+        def validate_dict(item):
+            accepted_keys = sorted(["tf", "period_min", "period_max"])
+
+            if accepted_keys != sorted(list(item.keys())):
+                msg = f"Input dictionary must have keys of {accepted_keys}"
+                self.logger.error(msg)
+                raise ValueError(msg)
+            return item
+
+        for item in other:
+            if isinstance(item, TF):
+                tf_list.append(is_tf(item))
+            elif isinstance(item, dict):
+                tf_list.append(is_dict(item))
+            else:
+                msg = f"Type {type(item)} not supported"
+                self.logger.error(msg)
+                raise TypeError(msg)
+        new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
+
+        if inplace:
+            self._transfer_function = new_tf
+        else:
+            return_tf = self.copy()
+            return_tf._transfer_function = new_tf
+            return return_tf
+
     def write(
         self,
         fn=None,
@@ -1243,7 +1322,6 @@ class TF:
             self.save_dir = new_fn.parent
             fn_basename = new_fn.name
             file_type = new_fn.suffix.lower()[1:]
-
         if save_dir is not None:
             self.save_dir = Path(save_dir)
         if fn_basename is not None:
@@ -1260,10 +1338,10 @@ class TF:
             msg = f"File type {file_type} not supported yet."
             self.logger.error(msg)
             raise TFError(msg)
-
         fn = self.save_dir.joinpath(fn_basename)
 
         obj = self._read_write_dict[file_type]["write"]()
+        obj.fn = fn
         obj.write(fn, **kwargs)
 
         return obj
@@ -1299,11 +1377,9 @@ class TF:
         """
         if fn is not None:
             self.fn = fn
-
         self.save_dir = self.fn.parent
         if file_type is None:
             file_type = self.fn.suffix.lower()[1:]
-
         self._read_write_dict[file_type]["read"](self.fn, **kwargs)
 
     def to_edi(self):
@@ -1361,7 +1437,6 @@ class TF:
                     comp,
                     getattr(edi_obj.Measurement, f"meas_{comp}").id,
                 )
-
         edi_obj.Data.read_data(edi_obj.Data.write_data())
         edi_obj.Measurement.read_measurement(
             edi_obj.Measurement.write_measurement()
@@ -1387,10 +1462,8 @@ class TF:
             self._fn = Path(edi_obj)
             edi_obj = EDI(**kwargs)
             edi_obj.read(self._fn)
-
         if not isinstance(edi_obj, EDI):
             raise TypeError(f"Input must be a EDI object not {type(edi_obj)}")
-
         if edi_obj.tf is not None:
             k_dict = OrderedDict(
                 {
@@ -1442,7 +1515,6 @@ class TF:
 
         if emtf.description is None:
             emtf.description = "Magnetotelluric Transfer Functions"
-
         if emtf.product_id is None:
             emtf.product_id = (
                 f"{emtf.survey_metadata.project}."
@@ -1468,7 +1540,6 @@ class TF:
             tags += ["tipper"]
             emtf.data.t = self.tipper.data
             emtf.data.t_var = self.tipper_error.data**2
-
         if self.has_residual_covariance() and self.has_inverse_signal_power():
             emtf.data.t_invsigcov = self.inverse_signal_power.loc[
                 dict(input=self.hx_hy, output=self.hx_hy)
@@ -1479,7 +1550,6 @@ class TF:
                     output=[self.channel_nomenclature["hz"]],
                 )
             ].data
-
         emtf.tags = ", ".join(tags)
         emtf.period_range.min = emtf.data.period.min()
         emtf.period_range.max = emtf.data.period.max()
@@ -1504,12 +1574,10 @@ class TF:
             self._fn = Path(emtfxml_obj)
             emtfxml_obj = EMTFXML(**kwargs)
             emtfxml_obj.read(self._fn)
-
         if not isinstance(emtfxml_obj, EMTFXML):
             raise TypeError(
                 f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
             )
-
         self.survey_metadata = emtfxml_obj.survey_metadata
         self.station_metadata = emtfxml_obj.station_metadata
 
@@ -1560,10 +1628,8 @@ class TF:
             self._fn = Path(j_obj)
             j_obj = JFile(**kwargs)
             j_obj.read(self._fn)
-
         if not isinstance(j_obj, JFile):
             raise TypeError(f"Input must be a JFile object not {type(j_obj)}")
-
         k_dict = OrderedDict(
             {
                 "period": "periods",
@@ -1628,7 +1694,6 @@ class TF:
                     rc = Magnetic(component=ch, channel_number=ch_num)
                     run.add_channel(rc)
             self.station_metadata.add_run(run)
-
         else:
             for comp in self.station_metadata.runs[0].channels_recorded_all:
                 if "rr" in comp:
@@ -1658,10 +1723,8 @@ class TF:
             self._fn = Path(zmm_obj)
             zmm_obj = ZMM(**kwargs)
             zmm_obj.read(self._fn)
-
         if not isinstance(zmm_obj, ZMM):
             raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
-
         k_dict = OrderedDict(
             {
                 "survey_metadata": "survey_metadata",
@@ -1784,10 +1847,8 @@ class TF:
             self._fn = Path(avg_obj)
             avg_obj = ZongeMTAvg(**kwargs)
             avg_obj.read(self._fn)
-
         if not isinstance(avg_obj, ZongeMTAvg):
             raise TypeError(f"Input must be a ZMM object not {type(avg_obj)}")
-
         self.survey_metadata = avg_obj.survey_metadata
         self.station_metadata = avg_obj.station_metadata
 
