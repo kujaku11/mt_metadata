@@ -29,17 +29,18 @@ class TestTFMerge(unittest.TestCase):
         self.tf_01.station = "test"
         self.tf_01.survey = "a"
         self.tf_01.period = np.logspace(-3, 1, self.n)
-        self.tf_01.impedance = np.random.rand(self.n, 2, 2) + 1j * np.random.rand(
+        self.tf_01.impedance = np.random.rand(
             self.n, 2, 2
-        )
+        ) + 1j * np.random.rand(self.n, 2, 2)
 
         self.tf_02 = TF()
         self.tf_02.station = "test"
         self.tf_02.survey = "a"
+        self.tf_02.tf_id = "tfa"
         self.tf_02.period = np.logspace(1, 3, self.n)
-        self.tf_02.impedance = np.random.rand(self.n, 2, 2) + 1j * np.random.rand(
+        self.tf_02.impedance = np.random.rand(
             self.n, 2, 2
-        )
+        ) + 1j * np.random.rand(self.n, 2, 2)
 
     def test_basic_merge(self):
         merged = self.tf_01.merge(self.tf_02)
@@ -48,7 +49,8 @@ class TestTFMerge(unittest.TestCase):
 
             self.assertTrue(
                 np.allclose(
-                    np.append(self.tf_01.period, self.tf_02.period), merged.period
+                    np.append(self.tf_01.period, self.tf_02.period),
+                    merged.period,
                 )
             )
         with self.subTest("survey_metadata"):
@@ -57,7 +59,7 @@ class TestTFMerge(unittest.TestCase):
                 merged.survey_metadata.to_dict(single=True),
             )
         with self.subTest("station_metadata"):
-            merged.station_metadata.run_list = [None]
+            # merged.station_metadata.run_list =
             self.assertDictEqual(
                 self.tf_01.station_metadata.to_dict(single=True),
                 merged.station_metadata.to_dict(single=True),
@@ -70,7 +72,8 @@ class TestTFMerge(unittest.TestCase):
 
             self.assertTrue(
                 np.allclose(
-                    np.append(self.tf_01.period[:-1], self.tf_02.period), merged.period
+                    np.append(self.tf_01.period[:-1], self.tf_02.period),
+                    merged.period,
                 )
             )
         with self.subTest("survey_metadata"):
@@ -79,7 +82,7 @@ class TestTFMerge(unittest.TestCase):
                 merged.survey_metadata.to_dict(single=True),
             )
         with self.subTest("station_metadata"):
-            merged.station_metadata.run_list = [None]
+            # merged.station_metadata.run_list = [None]
             self.assertDictEqual(
                 self.tf_01.station_metadata.to_dict(single=True),
                 merged.station_metadata.to_dict(single=True),
@@ -106,7 +109,7 @@ class TestTFMerge(unittest.TestCase):
                 merged.survey_metadata.to_dict(single=True),
             )
         with self.subTest("station_metadata"):
-            merged.station_metadata.run_list = [None]
+            # merged.station_metadata.run_list = [None]
             self.assertDictEqual(
                 self.tf_01.station_metadata.to_dict(single=True),
                 merged.station_metadata.to_dict(single=True),
