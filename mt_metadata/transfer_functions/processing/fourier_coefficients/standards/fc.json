@@ -10,6 +10,17 @@
         "example": "[1, 2, 3]",
 		"default": null
     },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "ID given to the FC group",
+        "options": [],
+        "alias": [],
+        "example": "aurora_01",
+		"default": null
+    },
 	"channels": {
         "type": "string",
         "required": true,
