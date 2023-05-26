@@ -261,9 +261,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (38, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -428,9 +426,7 @@ class TestTFToEMTFXML(unittest.TestCase):
         self.assertTrue(
             (
                 np.nan_to_num(self.tf.dataset.transfer_function.data)
-                == np.nan_to_num(
-                    self.zmm._transfer_function.transfer_function.data
-                )
+                == np.nan_to_num(self.zmm.dataset.transfer_function.data)
             ).all()
         )
 
