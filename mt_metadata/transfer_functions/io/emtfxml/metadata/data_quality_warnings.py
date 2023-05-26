@@ -29,3 +29,14 @@ class DataQualityWarnings(Base):
         self.flag = 0
         self.comments = Comment()
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        helpers._read_element(self, input_dict, "data_quality_warnings")
