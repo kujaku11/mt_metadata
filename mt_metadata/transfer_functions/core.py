@@ -1673,7 +1673,7 @@ class TF:
         """
 
         zmm_obj = ZMM()
-        zmm_obj._transfer_function = self.dataset
+        zmm_obj.dataset = self.dataset
         zmm_obj.station_metadata = self.station_metadata
 
         # need to set the channel numbers according to the z-file format
