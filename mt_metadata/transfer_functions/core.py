@@ -1654,6 +1654,35 @@ class TF:
         for tf_key, j_key in k_dict.items():
             setattr(self, tf_key, getattr(j_obj, j_key))
 
+    def make_zmm_run(self, zmm_obj, number_dict):
+        """
+        Helper function to provide a run for a zmm object to aid writing z-file
+
+        Parameters
+        ----------
+        :param zmm_obj: a ZMM that will be written to file, that needs a run associated
+        :type zmm_obj:  :class: `mt_metadata.transfer_functions.io.zfiles.zmm.ZMM`
+        :param number_dict: mapping between hexy keys and integers, needed for emtf
+        z-files, e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
+        :type number_dict: dictionary
+
+        :return: run
+        :rtype: :class:` mt_metadata.timeseries.run.Run`
+        """
+        run = Run()
+        for ch, ch_num in number_dict.items():
+            c = ZChannel()
+            c.channel = ch
+            c.number = ch_num
+            setattr(zmm_obj, c.channel, c)
+            if ch in ["ex", "ey"]:
+                rc = Electric(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+            elif ch in ["hx", "hy", "hz"]:
+                rc = Magnetic(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+        return run
+
     def to_zmm(self):
         """
 
@@ -1690,19 +1719,14 @@ class TF:
                 zmm_obj.num_channels = 4
                 number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
         if len(self.station_metadata.runs) == 0:
-            run = Run()
-            for ch, ch_num in number_dict.items():
-                c = ZChannel()
-                c.channel = ch
-                c.number = ch_num
-                setattr(zmm_obj, c.channel, c)
-                if ch in ["ex", "ey"]:
-                    rc = Electric(component=ch, channel_number=ch_num)
-                    run.add_channel(rc)
-                elif ch in ["hx", "hy", "hz"]:
-                    rc = Magnetic(component=ch, channel_number=ch_num)
-                    run.add_channel(rc)
+            run = self.make_zmm_run(zmm_obj, number_dict)
             self.station_metadata.add_run(run)
+        elif len(self.station_metadata.runs[0].channels_recorded_all)==0:
+            # avoid the default metadata getting interpretted as a real metadata object
+            # Overwrite this "spoof" run with a run that has recorded channels
+            if len(self.station_metadata.runs[0].channels_recorded_all)==0:
+                run = self.make_zmm_run(zmm_obj, number_dict)
+                self.station_metadata.runs[0] = run
         else:
             for comp in self.station_metadata.runs[0].channels_recorded_all:
                 if "rr" in comp:
@@ -1721,7 +1745,7 @@ class TF:
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :calss:`pathlib.Path`,
+        :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
         :param **kwargs: Keyword arguments for ZMM object
         :type **kwargs: dictionary
@@ -1817,8 +1841,8 @@ class TF:
     def from_zss(self, zss_obj, **kwargs):
         """
 
-        :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :calss:`pathlib.Path`,
+        :param zmm_obj: path to .zmm file or ZMM object
+        :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
         :param **kwargs: Keyword arguments for ZMM object
         :type **kwargs: dictionary
@@ -1845,8 +1869,8 @@ class TF:
     def from_avg(self, avg_obj, **kwargs):
         """
 
-        :param avg_obj: path ot .avg file or ZongeMTAvg object
-        :type avg_obj: str, :calss:`pathlib.Path`,
+        :param avg_obj: path to .avg file or ZongeMTAvg object
+        :type avg_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
         :param **kwargs: Keyword arguments for ZongeMTAvg object
         :type **kwargs: dictionary
