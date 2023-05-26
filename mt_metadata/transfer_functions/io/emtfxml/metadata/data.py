@@ -347,7 +347,7 @@ class TransferFunction(Base):
             n_periods = int(float((root_dict["data"]["count"].strip())))
         except KeyError:
             n_periods = len(root_dict["data"]["period"])
-            print(n_periods)
+
         self.initialize_arrays(n_periods)
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
@@ -367,7 +367,7 @@ class TransferFunction(Base):
         period_element = et.SubElement(
             parent,
             "Period",
-            {"value": f"{self.period[index]:.6e}", "units": "secs"},
+            {"value": f"{self.period[index]:.12e}", "units": "secs"},
         )
 
         for key in self.array_dict.keys():
