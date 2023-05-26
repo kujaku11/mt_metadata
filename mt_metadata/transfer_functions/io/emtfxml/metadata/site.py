@@ -101,7 +101,12 @@ class Site(Base):
         :rtype: TYPE
 
         """
-        helpers._read_element(self, input_dict, "site")
+        for element in input_dict["site"].keys():
+            attr = getattr(self, element)
+            if hasattr(attr, "read_dict"):
+                attr.read_dict(input_dict)
+            else:
+                helpers._read_single(self, input_dict, element)
 
     def to_xml(self, string=False, required=True):
         """ """

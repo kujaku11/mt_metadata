@@ -15,6 +15,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Comment
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("data_quality_warnings", SCHEMA_FN_PATHS)
