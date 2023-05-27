@@ -18,8 +18,6 @@
             <network>ZU</network>
         </fdsn>
         <geographic_name>Southern USA</geographic_name>
-        <hdf5_reference type="h5py_reference">None</hdf5_reference>
-        <mth5_type>None</mth5_type>
         <name>None</name>
         <northwest_corner>
             <latitude units="degrees" type="float">35.1469128125</latitude>
@@ -175,7 +173,6 @@
                 <id>REW09</id>
             </fdsn>
             <geographic_name>Opal Mountain, CA, USA</geographic_name>
-            <hdf5_reference type="h5py_reference">None</hdf5_reference>
             <id>REW09</id>
             <location>
                 <latitude units="degrees" type="float">35.1469128125</latitude>
@@ -187,7 +184,6 @@
                     <value units="degrees" type="float">-666.0</value>
                 </declination>
             </location>
-            <mth5_type>None</mth5_type>
             <orientation>
                 <method>compass</method>
                 <reference_frame>geographic</reference_frame>
@@ -252,13 +248,11 @@
                     </power_source>
                 </data_logger>
                 <data_type>LP</data_type>
-                <hdf5_reference type="h5py_reference">None</hdf5_reference>
                 <id>a</id>
                 <metadata_by>
                     <author>Jade Crosbie</author>
                     <comments/>
                 </metadata_by>
-                <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-06-08T23:54:49+00:00</end>
@@ -539,13 +533,11 @@
                     </power_source>
                 </data_logger>
                 <data_type>LP</data_type>
-                <hdf5_reference type="h5py_reference">None</hdf5_reference>
                 <id>b</id>
                 <metadata_by>
                     <author>Jade Crosbie; Anna Kelbert</author>
                     <comments>A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.</comments>
                 </metadata_by>
-                <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-06-25T17:57:40+00:00</end>
@@ -826,13 +818,11 @@
                     </power_source>
                 </data_logger>
                 <data_type>LP</data_type>
-                <hdf5_reference type="h5py_reference">None</hdf5_reference>
                 <id>c</id>
                 <metadata_by>
                     <author>Jade Crosbie</author>
                     <comments/>
                 </metadata_by>
-                <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-04T01:16:15+00:00</end>
@@ -1113,13 +1103,11 @@
                     </power_source>
                 </data_logger>
                 <data_type>LP</data_type>
-                <hdf5_reference type="h5py_reference">None</hdf5_reference>
                 <id>d</id>
                 <metadata_by>
                     <author>Jade Crosbie</author>
                     <comments/>
                 </metadata_by>
-                <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-04T03:07:30+00:00</end>
@@ -1400,13 +1388,11 @@
                     </power_source>
                 </data_logger>
                 <data_type>LP</data_type>
-                <hdf5_reference type="h5py_reference">None</hdf5_reference>
                 <id>e</id>
                 <metadata_by>
                     <author>Jade Crosbie</author>
                     <comments/>
                 </metadata_by>
-                <mth5_type>None</mth5_type>
                 <sample_rate units="samples per second" type="float">1.0</sample_rate>
                 <time_period>
                     <end>2020-07-17T21:15:32+00:00</end>
