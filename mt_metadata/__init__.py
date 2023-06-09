@@ -134,6 +134,9 @@ TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/tf_zmm.zmm")
 TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_zss_tipper.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/tf_jfile.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/tf_xml.xml")
+TF_XML_NO_SITE_LAYOUT = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_no_site_layout.xml"
+)
 TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
