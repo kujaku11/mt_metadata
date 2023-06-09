@@ -39,6 +39,28 @@ class Comment(Base):
     def date(self, dt_str):
         self._dt.parse(dt_str)
 
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        key = input_dict["comments"]
+        if isinstance(key, str):
+            self.value = key
+        elif isinstance(key, dict):
+            self.value = key["value"]
+            self.author = key["author"]
+            try:
+                self.date = key["date"]
+            except KeyError:
+                pass
+        else:
+            raise TypeError(f"Comment cannot parse type {type(key)}")
+
     def to_xml(self, string=False, required=True):
         """ """
         root = et.Element(

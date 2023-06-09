@@ -290,7 +290,14 @@ class EMTFXML(emtf_xml.EMTF):
         else:
             raise IOError("Input file name is None, that is bad.")
 
-        root = et.parse(self.fn).getroot()
+        with open(file=fn, mode="r", encoding="utf-8") as xml_fid:
+            xml_string = xml_fid.read()
+            xml_string = xml_string.replace("&", "and")
+            root = et.fromstring(
+                xml_string,
+                et.XMLParser(encoding="utf-8"),
+            )
+
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
         root_dict = emtf_helpers._convert_keys_to_lower_case(root_dict)

@@ -76,8 +76,7 @@ def _write_single(parent, key, value, attributes={}):
 
 def _read_element(cls, root_dict, element_name):
     try:
-        value = root_dict[element_name]
-        element_dict = {element_name: value}
+        element_dict = {element_name: root_dict[element_name]}
         cls.from_dict(element_dict)
 
     except KeyError:

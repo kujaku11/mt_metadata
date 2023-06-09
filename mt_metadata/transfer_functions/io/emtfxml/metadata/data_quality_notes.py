@@ -43,6 +43,10 @@ class DataQualityNotes(Base):
         :rtype: TYPE
 
         """
+        comments_dict = {
+            "comments": input_dict["data_quality_notes"].pop("comments")
+        }
+        self.comments.read_dict(comments_dict)
         helpers._read_element(self, input_dict, "data_quality_notes")
 
     def to_xml(self, string=False, required=True):
