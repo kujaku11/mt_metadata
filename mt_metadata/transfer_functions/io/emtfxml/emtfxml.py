@@ -949,12 +949,13 @@ class EMTFXML(emtf_xml.EMTF):
                 + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
-                if c.component in ["hx", "hy", "hz"]:
+                print(r.channels_recorded_magnetic)
+                if c.component in r.channels_recorded_magnetic:
                     c.location.x = ch.x
                     c.location.y = ch.y
                     c.location.z = ch.z
 
-                elif c.component in ["ex", "ey"]:
+                elif c.component in r.channels_recorded_electric:
                     c.negative.x = ch.x
                     c.negative.y = ch.y
                     c.negative.z = ch.z
