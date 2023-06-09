@@ -290,7 +290,7 @@ class EMTFXML(emtf_xml.EMTF):
         else:
             raise IOError("Input file name is None, that is bad.")
 
-        with open(file=fn, mode="r", encoding="utf-8") as xml_fid:
+        with open(file=self.fn, mode="r", encoding="utf-8") as xml_fid:
             xml_string = xml_fid.read()
             xml_string = xml_string.replace("&", "and")
             root = et.fromstring(
