@@ -59,6 +59,20 @@ class SiteLayout(Base):
                     raise ValueError(msg % ch_type)
                 ch.from_dict(item)
                 self._input_channels.append(ch)
+            elif isinstance(item, str):
+                if item.startswith("e"):
+                    ch = Electric(name=item)
+                elif item.startswith("b") or item.startswith("h"):
+                    ch = Magnetic(name=item)
+                else:
+                    msg = "Channel %s not supported"
+                    self.logger.error(msg, item)
+                    raise ValueError(msg % item)
+                self._input_channels.append(ch)
+
+    @property
+    def input_channel_names(self):
+        return [ch.name for ch in self.input_channels]
 
     @property
     def output_channels(self):
@@ -85,6 +99,20 @@ class SiteLayout(Base):
                     raise ValueError(msg % ch_type)
                 ch.from_dict(item)
                 self._output_channels.append(ch)
+            elif isinstance(item, str):
+                if item.startswith("e"):
+                    ch = Electric(name=item)
+                elif item.startswith("b") or item.startswith("h"):
+                    ch = Magnetic(name=item)
+                else:
+                    msg = "Channel %s not supported"
+                    self.logger.error(msg, item)
+                    raise ValueError(msg % item)
+                self._output_channels.append(ch)
+
+    @property
+    def output_channel_names(self):
+        return [ch.name for ch in self.output_channels]
 
     def read_dict(self, input_dict):
         """

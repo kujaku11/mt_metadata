@@ -320,6 +320,7 @@ class EMTFXML(emtf_xml.EMTF):
 
         self._get_statistical_estimates()
         self._get_data_types()
+        self._update_site_layout()
 
     def write(self, fn, skip_field_notes=False):
         """
@@ -423,6 +424,55 @@ class EMTFXML(emtf_xml.EMTF):
                 self.data_types.data_types_list.append(
                     data_types_dict["tipper"]
                 )
+
+    def _update_site_layout(self):
+        """
+        Need to update site layout from statistical estimates.
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        input_channels = []
+        output_channels = []
+        if (self.data.z != 0).any():
+            input_channels += ["hx", "hy"]
+            output_channels += ["ex", "ey"]
+
+        if (self.data.t != 0).any():
+            output_channels += ["hz"]
+
+            if input_channels == []:
+                input_channels = ["hx", "hy"]
+
+        if list(sorted(input_channels)) != list(
+            sorted(self.site_layout.input_channel_names)
+        ):
+            new_input_channels = []
+            for ach in input_channels:
+                find = False
+                for ch in self.site_layout.input_channels:
+                    if ch.name == ach:
+                        new_input_channels.append(ch)
+                        find = True
+                if not find:
+                    new_input_channels.append(ach)
+
+            self.site_layout.input_channels = new_input_channels
+
+        if list(sorted(output_channels)) != list(
+            sorted(self.site_layout.output_channel_names)
+        ):
+            new_output_channels = []
+            for ach in output_channels:
+                find = False
+                for ch in self.site_layout.output_channels:
+                    if ch.name == ach:
+                        new_output_channels.append(ch)
+                        find = True
+                if not find:
+                    new_output_channels.append(ach)
+            self.site_layout.output_channels = new_output_channels
 
     def _parse_comments_data_logger(self, key, value):
         """
@@ -949,7 +999,6 @@ class EMTFXML(emtf_xml.EMTF):
                 + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
-                print(r.channels_recorded_magnetic)
                 if c.component in r.channels_recorded_magnetic:
                     c.location.x = ch.x
                     c.location.y = ch.y
