@@ -72,7 +72,7 @@ class SiteLayout(Base):
 
     @property
     def input_channel_names(self):
-        return [ch.name for ch in self.input_channels]
+        return [ch.name.lower() for ch in self.input_channels]
 
     @property
     def output_channels(self):
@@ -112,7 +112,7 @@ class SiteLayout(Base):
 
     @property
     def output_channel_names(self):
-        return [ch.name for ch in self.output_channels]
+        return [ch.name.lower() for ch in self.output_channels]
 
     def read_dict(self, input_dict):
         """
