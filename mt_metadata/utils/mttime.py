@@ -293,7 +293,31 @@ class MTime:
         )
         self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
-    def _fix_out_of_bounds_time_stamp(self, dt_str):
+    def _parse_string(self, dt_str):
+        """
+        parse string, check for order of day and month
+
+        :param dt_str: DESCRIPTION
+        :type dt_str: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        try:
+            return dtparser(dt_str)
+        except ValueError:
+            try:
+                return dtparser(dt_str, dayfirst=True)
+            except ValueError:
+                msg = (
+                    "Could not parse string %s check formatting, "
+                    "should be YYYY-MM-DDThh:mm:ss.ns"
+                )
+                self.logger.error(msg, dt_str)
+                raise ValueError(msg % dt_str)
+
+    def _fix_out_of_bounds_time_stamp(self, dt):
         """
 
         :param dt_str: DESCRIPTION
@@ -304,26 +328,17 @@ class MTime:
 
         """
         t_min_max = False
-        try:
-            dt = dtparser(dt_str)
 
-            if dt.year > 2200:
-                self.logger.info(
-                    f"{dt_str} is too large setting to {pd.Timestamp.max}"
-                )
-                stamp = pd.Timestamp.max
-                t_min_max = True
-            elif dt.year < 1900:
-                self.logger.info(
-                    f"{dt_str} is too small setting to {pd.Timestamp.min}"
-                )
-                stamp = pd.Timestamp.min
-                t_min_max = True
-
-        except ValueError:
-            msg = f"Could not parse {dt_str} into a readable date-time"
-            self.logger.error(msg)
-            raise ValueError(msg)
+        if dt.year > 2200:
+            self.logger.info(f"{dt} is too large setting to {pd.Timestamp.max}")
+            stamp = pd.Timestamp.max
+            t_min_max = True
+        elif dt.year < 1900:
+            self.logger.info(f"{dt} is too small setting to {pd.Timestamp.min}")
+            stamp = pd.Timestamp.min
+            t_min_max = True
+        else:
+            stamp = pd.Timestamp(dt)
 
         return stamp, t_min_max
 
@@ -353,7 +368,7 @@ class MTime:
                 stamp = pd.Timestamp(dt_str.isoformat())
             except OutOfBoundsDatetime:
                 stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
-                    dt_str.isoformat()
+                    self._parse_string(dt_str.isoformat())
                 )
 
         elif isinstance(dt_str, (float, int)):
@@ -375,8 +390,9 @@ class MTime:
         else:
             try:
                 stamp = pd.Timestamp(dt_str)
-            except (TypeError, ValueError, OutOfBoundsDatetime):
-                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt_str)
+            except (ValueError, TypeError, OutOfBoundsDatetime):
+                dt = self._parse_string(dt_str)
+                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
             self.logger.debug(
