@@ -18,7 +18,10 @@
         "description": "the release status of the data",
         "options": [
             "Unrestricted release",
-            "Restricted release"
+            "Restricted release",
+            "Paper Citation Required",
+            "Academic Use Only",
+            "Conditions Apply"
         ],
         "alias": [],
         "example": "Unrestricted release",

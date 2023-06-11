@@ -140,6 +140,9 @@ TF_XML_NO_SITE_LAYOUT = DATA_DIR.joinpath(
 TF_XML_COMPLETE_REMOTE_INFO = DATA_DIR.joinpath(
     "data/transfer_functions/tf_xml_complete_remote_info.xml"
 )
+TF_XML_WITH_DERIVED_QUANTITIES = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_with_derived_quantities.xml"
+)
 TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
