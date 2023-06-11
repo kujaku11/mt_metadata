@@ -46,6 +46,7 @@ class DataQualityNotes(Base):
         comments_dict = {
             "comments": input_dict["data_quality_notes"].pop("comments")
         }
+        self.comments = Comment()
         self.comments.read_dict(comments_dict)
         helpers._read_element(self, input_dict, "data_quality_notes")
 
