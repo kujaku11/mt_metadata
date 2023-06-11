@@ -52,12 +52,19 @@ class Comment(Base):
         if isinstance(key, str):
             self.value = key
         elif isinstance(key, dict):
-            self.value = key["value"]
-            self.author = key["author"]
+            try:
+                self.value = key["value"]
+            except KeyError:
+                self.logger.debug("No value in comment")
+
+            try:
+                self.author = key["author"]
+            except KeyError:
+                self.logger.debug("No author of comment")
             try:
                 self.date = key["date"]
             except KeyError:
-                pass
+                self.logger.debug("No date for comment")
         else:
             raise TypeError(f"Comment cannot parse type {type(key)}")
 
