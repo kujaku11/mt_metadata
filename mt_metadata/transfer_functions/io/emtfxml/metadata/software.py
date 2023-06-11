@@ -39,6 +39,17 @@ class ProcessingSoftware(Base):
     def last_mod(self, value):
         self._last_mod_dt.parse(value)
 
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        helpers._read_element(self, input_dict, "processing_software")
+
     def to_xml(self, string=False, required=True):
         """
 

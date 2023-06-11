@@ -27,3 +27,23 @@ class RemoteInfo(Base):
         self.field_notes = FieldNotes()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        try:
+            remote_info_dict = input_dict["remote_info"]
+        except KeyError:
+            return
+        for key in ["site", "field_notes"]:
+            try:
+                pop_dict = {key: remote_info_dict.pop(key)}
+                getattr(self, key).read_dict(pop_dict)
+            except KeyError:
+                self.logger.debug(f"No {key} information in xml.")

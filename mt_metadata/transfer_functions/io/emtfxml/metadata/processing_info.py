@@ -50,6 +50,18 @@ class ProcessingInfo(Base):
         :rtype: TYPE
 
         """
+        try:
+            processing_dict = input_dict["processing_info"]
+        except KeyError:
+            return
+
+        for key in ["remote_ref", "remote_info", "processing_software"]:
+            try:
+                pop_dict = {key: processing_dict.pop(key)}
+                getattr(self, key).read_dict(pop_dict)
+            except KeyError:
+                self.logger.debug(f"No {key} information in xml.")
+
         helpers._read_element(self, input_dict, "processing_info")
 
     def to_xml(self, string=False, required=True):
