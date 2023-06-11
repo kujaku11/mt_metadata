@@ -849,6 +849,8 @@ class EMTFXML(emtf_xml.EMTF):
             "site.data_quality_notes.comments.author",
             "site.data_quality_notes.comments.value",
             "site.data_quality_warnings.flag",
+            "site.data_quality_warnings.comments.author",
+            "site.data_quality_warnings.comments.value",
         ]:
             comments[key] = self.get_attr_from_name(key)
         s.comments = "; ".join(
@@ -880,14 +882,25 @@ class EMTFXML(emtf_xml.EMTF):
             {"remote_ref.type": self.processing_info.remote_ref.type}
         )
 
-        for key in ["id", "name", "year_collected"]:
-            value = self.processing_info.remote_info.get_attr_from_name(
-                f"site.{key}"
-            )
-            if value not in [None, "1980", 1980]:
-                s.transfer_function.processing_parameters[0][
-                    f"remote_info.site.{key}"
-                ] = value
+        if self.processing_info.remote_info.site.id is not None:
+            for key in self.processing_info.remote_info.site._attr_dict.keys():
+                value = (
+                    self.processing_info.remote_info.site.get_attr_from_name(
+                        key
+                    )
+                )
+                if "location" in key:
+                    if value == 0.0:
+                        continue
+                if value not in [
+                    None,
+                    "1980",
+                    1980,
+                    "1980-01-01T00:00:00+00:00",
+                ]:
+                    s.transfer_function.processing_parameters[0][
+                        f"remote_info.site.{key}"
+                    ] = value
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period

@@ -34,7 +34,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
                 (
                     "comments",
-                    "description:Magnetotelluric Transfer Functions; primary_data.filename:GAA54b_A53coh.png; attachment.description:The original used to produce the XML; attachment.filename:GAA54b_A53coh.zrr; site.data_quality_notes.comments.author:Gary Egbert, Lana Erofeev and Anna Kelbert; site.data_quality_notes.comments.value:great TF from 10 to 10000 secs (or longer); site.data_quality_warnings.flag:0",
+                    "description:Magnetotelluric Transfer Functions; primary_data.filename:GAA54b_A53coh.png; attachment.description:The original used to produce the XML; attachment.filename:GAA54b_A53coh.zrr; site.data_quality_notes.comments.author:Gary Egbert, Lana Erofeev and Anna Kelbert; site.data_quality_notes.comments.value:great TF from 10 to 10000 secs (or longer); site.data_quality_warnings.flag:0; site.data_quality_warnings.comments.author:Gary Egbert, Lana Erofeev and Anna Kelbert",
                 ),
                 ("data_type", "mt"),
                 ("fdsn.id", "USArray.GAA54.2015"),
@@ -70,7 +70,7 @@ class TestEMTFXML(unittest.TestCase):
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_ref.type: Robust Remote Reference, remote_info.site.id: GAA53, remote_info.site.name: WHEATLEY FOREST, GA, USA, remote_info.site.year_collected: 2015}"
+                        "{remote_ref.type: Robust Remote Reference, remote_info.site.project: USArray, remote_info.site.survey: Transportable Array, remote_info.site.year_collected: 2015, remote_info.site.country: USA, remote_info.site.id: GAA53, remote_info.site.name: WHEATLEY FOREST, GA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 31.904132, remote_info.site.location.longitude: -83.946993, remote_info.site.location.elevation: 86.5, remote_info.site.location.datum: WGS84, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
                     ],
                 ),
                 ("transfer_function.remote_references", ["GAA54b", "A53coh"]),

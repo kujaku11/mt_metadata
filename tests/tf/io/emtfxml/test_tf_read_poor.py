@@ -34,14 +34,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
                 (
                     "comments",
-                    "description:Magnetotelluric Transfer Functions; "
-                    "primary_data.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png; "
-                    "attachment.description:The original used to produce the XML; "
-                    "attachment.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm; "
-                    "site.data_quality_notes.comments.author:Jade Crosbie, "
-                    "Paul Bedrosian and Anna Kelbert; "
-                    "site.data_quality_notes.comments.value:good TF from 10 to "
-                    "10000 secs; site.data_quality_warnings.flag:0",
+                    "description:Magnetotelluric Transfer Functions; primary_data.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png; attachment.description:The original used to produce the XML; attachment.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm; site.data_quality_notes.comments.author:Jade Crosbie, Paul Bedrosian and Anna Kelbert; site.data_quality_notes.comments.value:good TF from 10 to 10000 secs; site.data_quality_warnings.flag:0; site.data_quality_warnings.comments.author:Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
                 ("data_type", "mt"),
                 ("fdsn.id", "USMTArray.CAS04.2020"),
@@ -79,9 +72,7 @@ class TestEMTFXML(unittest.TestCase):
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_ref.type: Robust Remote Reference, "
-                        "remote_info.site.id: REV06, remote_info.site.name: "
-                        "Poso Creek, CA, USA}"
+                        "{remote_ref.type: Robust Remote Reference, remote_info.site.id: REV06, remote_info.site.name: Poso Creek, CA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 35.71262, remote_info.site.location.longitude: -119.466415, remote_info.site.location.elevation: 61.05, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
                     ],
                 ),
                 (
