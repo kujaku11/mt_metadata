@@ -145,8 +145,15 @@ def to_xml(cls, string=False, required=True, order=None):
         order = _get_attributes(cls)
     for attr in order:
         c_attr = getattr(cls, attr)
+        if c_attr is None:
+            continue
         if hasattr(c_attr, "to_xml") and callable(getattr(c_attr, "to_xml")):
-            root.append(c_attr.to_xml(required=required))
+            element = c_attr.to_xml(required=required)
+            if isinstance(element, list):
+                for item in element:
+                    root.append(item)
+            else:
+                root.append(element)
         elif isinstance(c_attr, list):
             for item in c_attr:
                 root.append(item.to_xml(required=required))

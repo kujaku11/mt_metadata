@@ -12,6 +12,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base, BaseDict
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Site, FieldNotes
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = BaseDict()
@@ -47,3 +48,22 @@ class RemoteInfo(Base):
                 getattr(self, key).read_dict(pop_dict)
             except KeyError:
                 self.logger.debug(f"No {key} information in xml.")
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        return helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=["site", "field_notes"],
+        )

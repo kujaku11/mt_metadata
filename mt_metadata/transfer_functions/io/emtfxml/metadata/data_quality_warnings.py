@@ -41,3 +41,22 @@ class DataQualityWarnings(Base):
 
         """
         helpers._read_element(self, input_dict, "data_quality_warnings")
+
+    def to_xml(self, string=False, required=True):
+        """
+
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        return helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=["flag", "comments"],
+        )

@@ -70,9 +70,13 @@ class Comment(Base):
 
     def to_xml(self, string=False, required=True):
         """ """
+        if self.author is None:
+            self.author = ""
         root = et.Element(
             self.__class__.__name__ + "s", {"author": self.author}
         )
+        if self.value is None:
+            self.value = ""
         root.text = self.value
 
         if string:

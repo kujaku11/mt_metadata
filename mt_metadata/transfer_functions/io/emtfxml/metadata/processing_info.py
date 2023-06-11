@@ -83,6 +83,7 @@ class ProcessingInfo(Base):
             order=[
                 "sign_convention",
                 "remote_ref",
+                "remote_info",
                 "processed_by",
                 "processing_software",
                 "processing_tag",

@@ -1,4 +1,15 @@
 {
+    "selected_publications": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any publications that use this data",
+        "options": [],
+        "alias": [],
+        "example": "my paper",
+		"default": ""
+    },
     "release_status": {
         "type": "string",
         "required": true,
@@ -33,6 +44,17 @@
         "options": [],
         "alias": [],
         "example": "This project was funded by x.",
+		"default": null
+    },
+	"additional_info": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any additional information about the data.",
+        "options": [],
+        "alias": [],
+        "example": "This purpose of this project is ...",
 		"default": null
     }
 }
