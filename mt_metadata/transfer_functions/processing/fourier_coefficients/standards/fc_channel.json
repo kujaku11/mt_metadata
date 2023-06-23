@@ -1,5 +1,5 @@
 {
-    "name": {
+    "component": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -10,18 +10,7 @@
         "example": "ex",
 		"default": null
     },
-	"sample_rate_acquisition": {
-        "type": "float",
-        "required": true,
-        "style": "number",
-        "units": "samples per second",
-        "description": "Original sample rate.",
-        "options": [],
-        "alias": [],
-        "example": 60.0,
-		"default": 1
-    },
-	"sample_rate_decimation": {
+	"sample_rate_decimation_level": {
         "type": "float",
         "required": true,
         "style": "number",
@@ -32,7 +21,7 @@
         "example": 60,
 		"default": 1
     },
-	"sample_rate_window": {
+	"sample_rate_window_step": {
         "type": "float",
         "required": true,
         "style": "number",
