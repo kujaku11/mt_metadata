@@ -21,12 +21,12 @@
         "example": "aurora_01",
 		"default": null
     },
-	"channels": {
+	"channels_esimated": {
         "type": "string",
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "list of channels",
+        "description": "list of channels estimated",
         "options": [],
         "alias": [],
         "example": "[ex, hy]",

@@ -10,7 +10,7 @@
         "example": "1",
 		"default": null
     },
-	"channels": {
+	"channels_estimated": {
         "type": "string",
         "required": true,
         "style": "name list",
