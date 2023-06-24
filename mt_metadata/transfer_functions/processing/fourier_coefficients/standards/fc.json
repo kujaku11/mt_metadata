@@ -21,7 +21,7 @@
         "example": "aurora_01",
 		"default": null
     },
-	"channels_esimated": {
+	"channels_estimated": {
         "type": "string",
         "required": true,
         "style": "name list",

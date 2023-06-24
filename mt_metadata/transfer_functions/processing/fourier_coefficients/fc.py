@@ -96,7 +96,7 @@ class FC(Base):
         """list of decimation levels"""
         dl_list = []
         for dl in self.levels:
-            dl_list += dl.channels_esimated
+            dl_list.append(dl.decimation_level)
         dl_list = sorted(set([cc for cc in dl_list if cc is not None]))
         if self._decimation_levels == []:
             return dl_list
@@ -120,6 +120,42 @@ class FC(Base):
         elif isinstance(value, (str)):
             value = value.split(",")
             self._decimation_levels = value
+
+        else:
+            raise TypeError(
+                "'channels_recorded' must be set with a list not "
+                f"{type(value)}."
+            )
+
+    @property
+    def channels_estimated(self):
+        """list of decimation levels"""
+        dl_list = []
+        for dl in self.levels:
+            dl_list += dl.channels_estimated
+        dl_list = sorted(set([cc for cc in dl_list if cc is not None]))
+        if self._channels_estimated == []:
+            return dl_list
+
+        elif dl_list == []:
+            return self._channels_estimated
+
+        elif len(self._channels_estimated) != dl_list:
+            return dl_list
+
+    @channels_estimated.setter
+    def channels_estimated(self, value):
+        if isinstance(value, np.ndarray):
+            value = value.tolist()
+
+        if value in [None, "None", "none", "NONE", "null"]:
+            return
+        elif isinstance(value, (list, tuple)):
+            self._channels_estimated = value
+
+        elif isinstance(value, (str)):
+            value = value.split(",")
+            self._channels_estimated = value
 
         else:
             raise TypeError(

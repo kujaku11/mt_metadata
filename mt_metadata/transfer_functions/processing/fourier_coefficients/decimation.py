@@ -131,7 +131,7 @@ class Decimation(Base):
 
         """
 
-        if component in self.channels_esimated:
+        if component in self.channels_estimated:
             return True
         return False
 
