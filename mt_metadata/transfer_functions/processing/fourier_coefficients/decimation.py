@@ -140,7 +140,7 @@ class Decimation(Base):
         get index of the channel in the channel list
         """
         if self.has_channel(component):
-            return self.channels_estimated.values().index(component)
+            return self.channels_estimated.index(component)
         return None
 
     def get_channel(self, component):
@@ -179,6 +179,8 @@ class Decimation(Base):
         else:
             self.channels.append(channel_obj)
 
+        self.update_time_period()
+
     def remove_channel(self, channel_id):
         """
         remove a ch from the survey
@@ -192,6 +194,8 @@ class Decimation(Base):
             self.channels.remove(channel_id)
         else:
             self.logger.warning(f"Could not find {channel_id} to remove.")
+
+        self.update_time_period()
 
     @property
     def channels(self):

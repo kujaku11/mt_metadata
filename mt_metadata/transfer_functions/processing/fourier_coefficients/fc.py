@@ -225,6 +225,8 @@ class FC(Base):
         else:
             self.levels.append(decimation_level_obj)
 
+        self.update_time_period()
+
     def remove_decimation_level(self, decimation_level_id):
         """
         remove a ch from the survey
@@ -240,6 +242,8 @@ class FC(Base):
             self.logger.warning(
                 f"Could not find {decimation_level_id} to remove."
             )
+
+        self.update_time_period()
 
     @property
     def levels(self):
