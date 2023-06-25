@@ -62,7 +62,7 @@
 <AcquiredBy>National Geoelectromagnetic Facility</AcquiredBy>
 <Start>2015-09-11T17:45:44</Start>
 <End>2015-09-28T14:05:14</End>
-<RunList>GAA54a GAA54b</RunList>
+<RunList>GAA54b</RunList>
 <DataQualityNotes>
 <Rating>5</Rating>
 <GoodFromPeriod>10.000</GoodFromPeriod>
