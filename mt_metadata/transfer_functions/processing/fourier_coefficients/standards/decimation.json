@@ -10,6 +10,17 @@
         "example": "1",
 		"default": null
     },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Decimation level ID",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": null
+    },
 	"channels_estimated": {
         "type": "string",
         "required": true,

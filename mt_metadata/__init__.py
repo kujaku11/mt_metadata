@@ -87,12 +87,8 @@ REQUIRED_KEYS = [
 LOG_LEVEL = "info"
 
 load_logging_config()
-debug_logger = setup_logger(
-    __name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL
-)
-debug_logger.debug(f"Starting MT Metadata {LOG_LEVEL} Log File")
-
-error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
+debug_logger = setup_logger(__name__, level=LOG_LEVEL)
+error_logger = setup_logger("error", level="error")
 
 
 # test data files

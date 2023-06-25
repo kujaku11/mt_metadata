@@ -41,6 +41,7 @@ class FC(Base):
     def __add__(self, other):
         if isinstance(other, FC):
             self.levels.extend(other.levels)
+            self.update_time_period()
 
             return self
         else:
@@ -213,8 +214,10 @@ class FC(Base):
             self.logger.error(msg)
             raise ValueError(msg)
 
-        if self.has_decimation_level(decimation_level_obj.level):
-            self.levels[decimation_level_obj.level].update(decimation_level_obj)
+        if self.has_decimation_level(decimation_level_obj.decimation_level):
+            self.levels[decimation_level_obj.decimation_level].update(
+                decimation_level_obj
+            )
             self.logger.debug(
                 f"ch {decimation_level_obj.level} already exists, updating metadata"
             )
@@ -266,7 +269,9 @@ class FC(Base):
         for ii, decimation_level in enumerate(value_list):
             try:
                 dl = Decimation()
-                dl.from_dict(dl)
+                if hasattr(decimation_level, "to_dict"):
+                    decimation_level = decimation_level.to_dict()
+                dl.from_dict(decimation_level)
                 self._levels.append(dl)
             except Exception as error:
                 msg = "Could not create decimation_level from dictionary: %s"
@@ -286,11 +291,11 @@ class FC(Base):
         """
         start = []
         end = []
-        for ch in self.decimation_levels:
-            if ch.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(ch.time_period.start)
-            if ch.time_period.start != "1980-01-01T00:00:00+00:00":
-                end.append(ch.time_period.end)
+        for dl in self.levels:
+            if dl.time_period.start != "1980-01-01T00:00:00+00:00":
+                start.append(dl.time_period.start)
+            if dl.time_period.start != "1980-01-01T00:00:00+00:00":
+                end.append(dl.time_period.end)
         if start:
             if self.time_period.start == "1980-01-01T00:00:00+00:00":
                 self.time_period.start = min(start)

@@ -221,6 +221,8 @@ class Decimation(Base):
         for ii, channel in enumerate(value_list):
             try:
                 ch = Channel()
+                if hasattr(channel, "to_dict"):
+                    channel = channel.to_dict()
                 ch.from_dict(channel)
                 self._channels.append(ch)
             except Exception as error:
