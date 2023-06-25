@@ -140,7 +140,7 @@ class Decimation(Base):
         get index of the channel in the channel list
         """
         if self.has_channel(component):
-            return self.channels_estimated.index(component)
+            return self.channels_estimated.values().index(component)
         return None
 
     def get_channel(self, component):

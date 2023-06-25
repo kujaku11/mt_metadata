@@ -51,13 +51,13 @@ class TestFC(unittest.TestCase):
 
         self.ex = Channel(component="ex")
         self.ex.time_period.start = self.start
-        self.ex.time_period.start = self.end
+        self.ex.time_period.end = self.end
         self.ex.sample_rate_window_step = 32
         self.ex.sample_rate_decimation_level = 16
 
         self.hy = Channel(component="hy")
         self.hy.time_period.start = self.start
-        self.hy.time_period.start = self.end
+        self.hy.time_period.end = self.end
         self.hy.sample_rate_window_step = 32
         self.hy.sample_rate_decimation_level = 16
 
@@ -83,6 +83,55 @@ class TestFC(unittest.TestCase):
         fc3 = fc1 + fc2
 
         self.assertEqual(len(fc3), 2)
+
+    def test_update(self):
+        fc1 = self.fc.copy()
+        fc2 = self.fc.copy()
+        fc2.levels.remove("1")
+        dl2 = self.dl.copy()
+        dl2.decimation_level = 6
+        dl2.id = 6
+        fc2.add_decimation_level(dl2)
+
+        fc1.update(fc2)
+
+        self.assertEqual(len(fc1), 2)
+
+    def test_decimation_levels(self):
+        self.assertListEqual([1], self.fc.decimation_levels)
+
+    def test_set_decimation_levels(self):
+        fc1 = FC()
+        fc1.decimation_levels = [1, 2, 3]
+
+        self.assertListEqual([1, 2, 3], fc1.decimation_levels)
+
+    def test_channels_estimated(self):
+        self.assertListEqual(["ex", "hy"], self.fc.channels_estimated)
+
+    def test_set_channels_estimated(self):
+        fc1 = FC()
+        fc1.channels_estimated = ["ex", "hy"]
+
+        self.assertListEqual(["ex", "hy"], fc1.channels_estimated)
+
+    def test_has_decimation_level(self):
+        self.assertTrue(self.fc.has_decimation_level(1))
+
+    def test_decimation_level_index(self):
+        self.assertEqual(0, self.fc.decimation_level_index(1))
+
+    def test_get_decimation_level(self):
+        self.assertEqual(self.dl, self.fc.get_decimation_level(1))
+
+    def test_n_decimation_levels(self):
+        self.assertEqual(1, self.fc.n_decimation_levels)
+
+    def test_time_period(self):
+        with self.subTest("start"):
+            self.assertEqual(self.start, self.fc.time_period.start)
+        with self.subTest("end"):
+            self.assertEqual(self.end, self.fc.time_period.end)
 
 
 # =============================================================================

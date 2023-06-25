@@ -184,7 +184,7 @@ class FC(Base):
         get index of the decimation_level in the decimation_level list
         """
         if self.has_decimation_level(level):
-            return self.levels.index(level)
+            return self.levels.keys().index(str(level))
         return None
 
     def get_decimation_level(self, level):
@@ -199,7 +199,7 @@ class FC(Base):
         """
 
         if self.has_decimation_level(level):
-            return self.levels[level]
+            return self.levels[str(level)]
 
     def add_decimation_level(self, decimation_level_obj):
         """
