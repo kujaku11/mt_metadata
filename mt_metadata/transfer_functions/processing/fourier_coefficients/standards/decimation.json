@@ -98,6 +98,17 @@
         "example": "linear",
 		"default": "linear"
     },
+    "prewhitening_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Prewhitening method to be applied",
+        "options": ["first difference", "other"],
+        "alias": [],
+        "example": "first difference",
+        "default": "first difference"
+    },
 	"recoloring": {
         "type": "bool",
         "required": true,
