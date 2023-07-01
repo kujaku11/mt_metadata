@@ -264,3 +264,12 @@ class Decimation(Base):
             else:
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
+
+    # Workarounds for pass-through usage of same decimation as aurora
+    @property
+    def factor(self):
+        return self.decimation_factor
+
+    @property
+    def sample_rate(self):
+        return self.sample_rate_decimation
