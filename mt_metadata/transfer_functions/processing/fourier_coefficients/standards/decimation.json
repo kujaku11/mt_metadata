@@ -87,17 +87,6 @@
         "example": "linear",
 		"default": "linear"
     },
-	"pre_fft_detrend_type_extra": {
-        "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Type of extra detrend method before FFT after data have been windowed.",
-        "options": [],
-        "alias": [],
-        "example": "linear",
-		"default": "linear"
-    },
     "prewhitening_type": {
         "type": "string",
         "required": true,
