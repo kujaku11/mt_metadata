@@ -30,3 +30,7 @@ class Window(Base):
         if not isinstance(args, dict):
             raise TypeError("additional_args must be a dictionary")
         self._additional_args = args
+
+    @property
+    def num_samples_advance(self):
+        return self.num_samples - self.overlap
