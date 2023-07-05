@@ -70,9 +70,7 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = (
-                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            )
+            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -223,20 +221,20 @@ class ZMMHeader(object):
         lines += [" orientations and tilts of each channel"]
         for ii, ch in enumerate(self._channel_order):
             try:
-                channel = getattr(self.station_metadata.runs[0], ch)
-                if channel.channel_number == None:
-                    channel.channel_number = int(ii)
-                if channel.translated_tilt is None:
-                    channel.translated_tilt = 0.0
-                if channel.translated_azimuth is None:
-                    channel.translated_azimuth = 0.0
+                channel = getattr(self, ch)
+                if channel.number == None:
+                    channel.number = int(ii)
+                if channel.tilt is None:
+                    channel.tilt = 0.0
+                if channel.azimuth is None:
+                    channel.azimuth = 0.0
                 lines += [
                     (
-                        f"{channel.channel_number:>5d} "
-                        f"{channel.translated_azimuth:>8.2f} "
-                        f"{channel.translated_tilt:>8.2f} "
+                        f"{channel.number:>5d} "
+                        f"{channel.azimuth:>8.2f} "
+                        f"{channel.tilt:>8.2f} "
                         f"{self.station:>3} "
-                        f"{channel.component.capitalize():>3}"
+                        f"{channel.channel.capitalize():>3}"
                     )
                 ]
             except (AttributeError, TypeError):
@@ -620,9 +618,7 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(
-            period_block[0].strip().split(":")[1].split()[0].strip()
-        )
+        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -631,12 +627,8 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(
-            period_block[1].strip().split("point")[1].split()[0].strip()
-        )
-        sr = float(
-            period_block[1].strip().split("freq.")[1].split()[0].strip()
-        )
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
         self.decimation_dict[f"{period:.10g}"] = {
             "level": level,
             "bands": bands,

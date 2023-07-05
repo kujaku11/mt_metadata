@@ -40,7 +40,8 @@ class Magnetic(Base):
         :rtype: TYPE
 
         """
-
+        if self.orientation is None:
+            self.orientation = 0
         root = et.Element(
             self.__class__.__name__.capitalize(),
             {

@@ -146,7 +146,6 @@ class MTime:
 
         self.logger = setup_logger(
             "{0}.{1}".format(__name__, self.__class__.__name__),
-            fn="mt_time.log",
             level=LOG_LEVEL,
         )
         self.gps_time = gps_time
