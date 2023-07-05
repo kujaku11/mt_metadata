@@ -182,6 +182,10 @@ class DecimationLevel(Base):
         )
         return freqs
 
+    @property
+    def sample_rate_decimation(self):
+        return self.decimation.sample_rate
+
     # def to_stft_config_dict(self):
     #     """
     #     taper_family
