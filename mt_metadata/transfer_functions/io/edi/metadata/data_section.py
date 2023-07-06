@@ -209,7 +209,8 @@ class DataSection(Base):
         )
 
         for ch in ch_list2:
-            data_lines.append(f"{' '*4}{ch[0]}={ch[1]}\n")
+            if ch[1] not in [0, "0"]:
+                data_lines.append(f"{' '*4}{ch[0]}={ch[1]}\n")
 
         data_lines.append("\n")
 

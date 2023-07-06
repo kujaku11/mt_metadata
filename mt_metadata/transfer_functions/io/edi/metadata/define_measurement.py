@@ -282,20 +282,16 @@ class DefineMeasurement(Base):
                 setattr(self, key, value)
 
             elif isinstance(line, dict):
-                # print(line)
-                key = "meas_{0}".format(line["chtype"].lower())
-                if line["chtype"].lower().find("h") >= 0:
+                ch_type = line["chtype"].lower()
+                key = f"meas_{ch_type}"
+                if ch_type.find("h") >= 0:
                     value = HMeasurement(**line)
-                elif line["chtype"].lower().find("e") >= 0:
+                elif ch_type.find("e") >= 0:
                     value = EMeasurement(**line)
                     if value.azm == 0:
                         value.azm = value.azimuth
                 if hasattr(self, key):
-                    key = key.replace("_", "_rr")
-                    try:
-                        value.chtype = f"RR{value.chtype}"
-                    except AttributeError:
-                        pass
+                    pass
                 setattr(self, key, value)
 
     def write_measurement(
