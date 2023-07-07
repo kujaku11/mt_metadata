@@ -150,40 +150,10 @@ class TestQuantecEDI(unittest.TestCase):
         )
 
     def test_measurement_rrhx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", 0.0),
-                ("chtype", "RRHX"),
-                ("dip", 0.0),
-                ("id", 11.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.meas_rrhx.to_dict(single=True)
-        )
+        self.assertFalse(hasattr(self.edi_obj.Measurement, "rrhx"))
 
     def test_measurement_rrhy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", 90.0),
-                ("chtype", "RRHY"),
-                ("dip", 0.0),
-                ("id", 12.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.meas_rrhy.to_dict(single=True)
-        )
+        self.assertFalse(hasattr(self.edi_obj.Measurement, "rrhy"))
 
     def test_measurement(self):
         m_list = [
@@ -224,8 +194,8 @@ class TestQuantecEDI(unittest.TestCase):
                 ("maxblocks", 999),
                 ("nchan", 7),
                 ("nfreq", 41),
-                ("rrhx", "11.001"),
-                ("rrhy", "12.001"),
+                ("rrhx", "0"),
+                ("rrhy", "0"),
                 ("sectid", "TEST_01"),
             ]
         )
