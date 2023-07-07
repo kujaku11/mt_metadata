@@ -1350,7 +1350,7 @@ class TF:
         fn = self.save_dir.joinpath(fn_basename)
 
         obj = self._read_write_dict[file_type]["write"]()
-        obj.fn = fn
+        obj._fn = fn
         obj.write(fn, **kwargs)
 
         return obj
@@ -1447,6 +1447,7 @@ class TF:
                     getattr(edi_obj.Measurement, f"meas_{comp}").id,
                 )
         edi_obj.Data.read_data(edi_obj.Data.write_data())
+
         edi_obj.Measurement.read_measurement(
             edi_obj.Measurement.write_measurement()
         )

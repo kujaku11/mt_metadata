@@ -733,7 +733,7 @@ class EDI(object):
         extra_lines = []
         if self.survey_metadata.summary != None:
             extra_lines.append(
-                f"survey.summary = {self.survey_metadata.summary}"
+                f"\tsurvey.summary = {self.survey_metadata.summary}\n"
             )
         if self.Header.progname != "mt_metadata":
             extra_lines.append(
@@ -1028,7 +1028,7 @@ class EDI(object):
     @property
     def station_metadata(self):
         sm = metadata.Station()
-        sm.runs.append(metadata.Run(id=f"{self.station}a"))
+        sm.add_run(metadata.Run(id=f"{self.station}a"))
         sm.id = self.station
         sm.data_type = "MT"
         sm.channels_recorded = self.Measurement.channels_recorded
@@ -1144,16 +1144,12 @@ class EDI(object):
                 rr.time_period.start = sm.time_period.start
             if rr.time_period.end == "1980-01-01T00:00:00+00:00":
                 rr.time_period.end = sm.time_period.end
-            rr.add_channel(self.ex_metadata)
-            rr.add_channel(self.ey_metadata)
-            rr.add_channel(self.hx_metadata)
-            rr.add_channel(self.hy_metadata)
-            if self.hz_metadata.component in ["hz"]:
-                rr.add_channel(self.hz_metadata)
-            if self.rrhx_metadata.component in ["rrhx"]:
-                rr.add_channel(self.rrhx_metadata)
-            if self.rrhy_metadata.component in ["rrhy"]:
-                rr.add_channel(self.rrhy_metadata)
+
+            for ch in self.Measurement.channels_recorded:
+                try:
+                    rr.add_channel(getattr(self, f"{ch}_metadata"))
+                except AttributeError:
+                    pass
         return sm
 
     @station_metadata.setter

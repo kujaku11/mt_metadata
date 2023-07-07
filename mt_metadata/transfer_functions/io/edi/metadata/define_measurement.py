@@ -282,20 +282,21 @@ class DefineMeasurement(Base):
                 setattr(self, key, value)
 
             elif isinstance(line, dict):
-                # print(line)
-                key = "meas_{0}".format(line["chtype"].lower())
-                if line["chtype"].lower().find("h") >= 0:
+                ch_type = line["chtype"].lower()
+                key = f"meas_{ch_type}"
+                if ch_type.find("h") >= 0:
                     value = HMeasurement(**line)
-                elif line["chtype"].lower().find("e") >= 0:
+                elif ch_type.find("e") >= 0:
                     value = EMeasurement(**line)
                     if value.azm == 0:
                         value.azm = value.azimuth
                 if hasattr(self, key):
-                    key = key.replace("_", "_rr")
-                    try:
-                        value.chtype = f"RR{value.chtype}"
-                    except AttributeError:
-                        pass
+                    existing_ch = getattr(self, key)
+                    if value != existing_ch:
+                        value.chtype = f"rr{ch_type}".upper()
+                        key = f"meas_rr{ch_type}"
+                    else:
+                        continue
                 setattr(self, key, value)
 
     def write_measurement(
@@ -327,9 +328,7 @@ class DefineMeasurement(Base):
         for kk in list(self.__dict__.keys()):
             if kk.find("meas_") == 0:
                 try:
-                    m_key_list.append(
-                        (kk.strip(), float(self.__dict__[kk].id))
-                    )
+                    m_key_list.append((kk.strip(), float(self.__dict__[kk].id)))
                 except TypeError:
                     self.logger.debug(f"No {kk} information.")
 
