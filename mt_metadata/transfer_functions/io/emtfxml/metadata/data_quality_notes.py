@@ -43,9 +43,12 @@ class DataQualityNotes(Base):
         :rtype: TYPE
 
         """
-        comments_dict = {
-            "comments": input_dict["data_quality_notes"].pop("comments")
-        }
+        try:
+            comments_dict = {
+                "comments": input_dict["data_quality_notes"].pop("comments")
+            }
+        except KeyError:
+            comments_dict = {"comments": ""}
         self.comments = Comment()
         self.comments.read_dict(comments_dict)
         helpers._read_element(self, input_dict, "data_quality_notes")
