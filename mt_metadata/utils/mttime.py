@@ -305,16 +305,24 @@ class MTime:
 
         try:
             return dtparser(dt_str)
-        except ValueError:
-            try:
-                return dtparser(dt_str, dayfirst=True)
-            except ValueError:
-                msg = (
-                    "Could not parse string %s check formatting, "
-                    "should be YYYY-MM-DDThh:mm:ss.ns"
-                )
-                self.logger.error(msg, dt_str)
-                raise ValueError(msg % dt_str)
+        except ValueError as ve:
+            error_24h = "hour must be in 0..23"
+            if error_24h in ve.args[0]:
+                # hh=24 was supplied -- this is legal if it is midnight
+                one_hour_earlier_dt_str = dt_str.replace("T24", "T23")
+                one_hour_earlier_result = dtparser(one_hour_earlier_dt_str)
+                result = one_hour_earlier_result + datetime.timedelta(hours=1)
+                return result
+            else:
+                try:
+                    return dtparser(dt_str, dayfirst=True)
+                except ValueError:
+                    msg = (
+                        "Could not parse string %s check formatting, "
+                        "should be YYYY-MM-DDThh:mm:ss.ns"
+                    )
+                    self.logger.error(msg, dt_str)
+                    raise ValueError(msg % dt_str)
 
     def _fix_out_of_bounds_time_stamp(self, dt):
         """
