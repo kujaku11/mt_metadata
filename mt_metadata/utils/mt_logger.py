@@ -143,6 +143,6 @@ def setup_logger(logger_name, fn=None, level="debug"):
                 f"Logging file can be found {logger.handlers[-1].baseFilename}"
             )
 
-    speed_up_logs()
+    # speed_up_logs()
 
     return logger
