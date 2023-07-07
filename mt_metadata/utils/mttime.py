@@ -157,7 +157,7 @@ class MTime:
                 self.year, self.month, self.day
             )
             self.logger.debug(
-                f"Converting GPS time to UTC with {leap_seconds} leap seconds"
+                "Converting GPS time to UTC with %s leap seconds", leap_seconds
             )
             self._time_stamp -= pd.Timedelta(seconds=leap_seconds)
 
@@ -180,7 +180,9 @@ class MTime:
             return True
         elif epoch_seconds and not tz:
             self.logger.info(
-                "Time zones are not equal {self._time_stamp.tz} != {other.time_stamp.tz"
+                "Time zones are not equal %s != %s",
+                self._time_stamp.tz,
+                other.time_stamp.tz,
             )
             return False
         elif not epoch_seconds:

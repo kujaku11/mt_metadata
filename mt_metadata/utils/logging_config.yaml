@@ -15,11 +15,11 @@ handlers:
 
 loggers:
     __main__:
-        level: DEBUG
+        level: INFO
         handlers: [console]
         propagate: false
 
 root:
-    level: DEBUG
+    level: INFO
     handlers: [console]
     propogate: false
