@@ -55,6 +55,9 @@ class ProcessingInfo(Base):
         except KeyError:
             return
 
+        if "field_notes" in processing_dict.keys():
+            processing_dict.pop("field_notes")
+
         for key in ["remote_ref", "remote_info", "processing_software"]:
             try:
                 pop_dict = {key: processing_dict.pop(key)}
