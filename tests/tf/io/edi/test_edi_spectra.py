@@ -156,40 +156,15 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
     def test_measurement_rrhx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", 107.0),
-                ("chtype", "RRHX"),
-                ("dip", 0.0),
-                ("id", 11.001),
-                ("x", 4858.0),
-                ("y", -3530.0),
-                ("z", 0.0),
-            ]
-        )
+        with self.subTest("spectra"):
+            self.assertFalse(hasattr(self.edi_spectra.Measurement, "rrhx"))
+        with self.subTest("z"):
+            self.assertFalse(hasattr(self.edi_z.Measurement, "rrhx"))
 
-        self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_rrhx.to_dict(single=True)
-        )
-
-    def test_measurement_rrhy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", None),
-                ("azm", -163.0),
-                ("chtype", "RRHY"),
-                ("dip", 0.0),
-                ("id", 12.001),
-                ("x", 4858.0),
-                ("y", -3530.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_rrhy.to_dict(single=True)
-        )
+        with self.subTest("spectra"):
+            self.assertFalse(hasattr(self.edi_spectra.Measurement, "rrhy"))
+        with self.subTest("z"):
+            self.assertFalse(hasattr(self.edi_z.Measurement, "rrhy"))
 
     def test_measurement(self):
         m_list = [
@@ -222,9 +197,7 @@ class TestSpectraEDI(unittest.TestCase):
             )
 
         with self.subTest("refelev"):
-            self.assertAlmostEqual(
-                0.0, self.edi_spectra.Measurement.refelev, 2
-            )
+            self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
 
     def test_data_section(self):
         d_list = [

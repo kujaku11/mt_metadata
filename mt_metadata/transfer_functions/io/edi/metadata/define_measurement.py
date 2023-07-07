@@ -291,7 +291,12 @@ class DefineMeasurement(Base):
                     if value.azm == 0:
                         value.azm = value.azimuth
                 if hasattr(self, key):
-                    pass
+                    existing_ch = getattr(self, key)
+                    if value != existing_ch:
+                        value.chtype = f"RR{ch_type}"
+                        key = f"meas_rr{ch_type}"
+                    else:
+                        continue
                 setattr(self, key, value)
 
     def write_measurement(
@@ -323,9 +328,7 @@ class DefineMeasurement(Base):
         for kk in list(self.__dict__.keys()):
             if kk.find("meas_") == 0:
                 try:
-                    m_key_list.append(
-                        (kk.strip(), float(self.__dict__[kk].id))
-                    )
+                    m_key_list.append((kk.strip(), float(self.__dict__[kk].id)))
                 except TypeError:
                     self.logger.debug(f"No {kk} information.")
 
