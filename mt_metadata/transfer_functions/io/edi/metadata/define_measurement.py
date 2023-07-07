@@ -293,7 +293,7 @@ class DefineMeasurement(Base):
                 if hasattr(self, key):
                     existing_ch = getattr(self, key)
                     if value != existing_ch:
-                        value.chtype = f"RR{ch_type}"
+                        value.chtype = f"rr{ch_type}".upper()
                         key = f"meas_rr{ch_type}"
                     else:
                         continue
