@@ -31,12 +31,6 @@ LOG_FORMAT = logging.Formatter(
 CONF_PATH = Path(__file__).parent
 CONF_FILE = Path.joinpath(CONF_PATH, "logging_config.yaml")
 
-# make a folder for the logs to go into.
-LOG_PATH = CONF_PATH.parent.parent.joinpath("logs")
-
-if not LOG_PATH.exists():
-    LOG_PATH.mkdir()
-
 if not CONF_FILE.exists():
     CONF_FILE = None
     print("No Logging configuration file found, using defaults.")
@@ -63,7 +57,9 @@ def speed_up_logs():
     rootLogger = logging.getLogger()
     log_que = EvictQueue(1000)
     queue_handler = logging.handlers.QueueHandler(log_que)
-    queue_listener = logging.handlers.QueueListener(log_que, *rootLogger.handlers)
+    queue_listener = logging.handlers.QueueListener(
+        log_que, *rootLogger.handlers
+    )
     queue_listener.start()
     rootLogger.handlers = [queue_handler]
 
@@ -74,7 +70,7 @@ def load_logging_config(config_fn=CONF_FILE):
     configure/setup the logging according to the input configfile
 
     :param configfile: .yml, .ini, .conf, .json, .yaml.
-    
+
     Its default is the logging.yml located in the same dir as this module.
     It can be modofied to use env variables to search for a log config file.
     """
@@ -102,6 +98,7 @@ def setup_logger(logger_name, fn=None, level="debug"):
     """
 
     logger = logging.getLogger(logger_name)
+    # not needed should use the config file to set logging level.
     logger.setLevel(LEVEL_DICT[level.lower()])
 
     # if there is a file name create file in logs directory
@@ -123,8 +120,7 @@ def setup_logger(logger_name, fn=None, level="debug"):
         # que_listner.start()
         logger.addHandler(stream_handler)
 
-        fn = LOG_PATH.joinpath(fn)
-
+        fn = Path(fn)
         if fn.suffix not in [".log"]:
             fn = Path(fn.parent, f"{fn.stem}.log")
 
@@ -136,13 +132,17 @@ def setup_logger(logger_name, fn=None, level="debug"):
         # fn_handler = logging.handlers.RotatingFileHandler(
         #     fn, maxBytes=2 ** 21, backupCount=2
         # )
-        fn_handler = ConcurrentRotatingFileHandler(fn, maxBytes=2 ** 16, backupCount=2)
+        fn_handler = ConcurrentRotatingFileHandler(
+            fn, maxBytes=2**16, backupCount=2
+        )
         fn_handler.setFormatter(LOG_FORMAT)
         fn_handler.setLevel(LEVEL_DICT[level.lower()])
         logger.addHandler(fn_handler)
         if not exists:
-            logger.info(f"Logging file can be found {logger.handlers[-1].baseFilename}")
+            logger.info(
+                f"Logging file can be found {logger.handlers[-1].baseFilename}"
+            )
 
-    # speed_up_logs()
+    speed_up_logs()
 
     return logger

@@ -87,8 +87,7 @@ REQUIRED_KEYS = [
 LOG_LEVEL = "info"
 
 load_logging_config()
-debug_logger = setup_logger(__name__, level=LOG_LEVEL)
-error_logger = setup_logger("error", level="error")
+base_logger = setup_logger(__name__, level=LOG_LEVEL)
 
 
 # test data files
