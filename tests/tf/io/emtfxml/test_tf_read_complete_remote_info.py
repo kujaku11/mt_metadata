@@ -74,7 +74,7 @@ class TestEMTFXML(unittest.TestCase):
                     ],
                 ),
                 ("transfer_function.remote_references", ["GAA54b", "A53coh"]),
-                ("transfer_function.runs_processed", ["GAA54a", "GAA54b"]),
+                ("transfer_function.runs_processed", ["GAA54b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
                 ("transfer_function.units", None),
             ]
