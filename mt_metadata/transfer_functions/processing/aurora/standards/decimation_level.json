@@ -10,6 +10,28 @@
         "example": "default",
 		"default": "default"
     },
+    "recoloring": {
+        "type": "bool",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Whether the data are recolored [True] or not [False].",
+        "options": [],
+        "alias": [],
+        "example": true,
+		"default": true
+    },
+    "method": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Fourier transform method",
+        "options": ["fft", "wavelet", "other"],
+        "alias": [],
+        "example": "fft",
+		"default": "fft"
+    },
 	"prewhitening_type": {
         "type": "string",
         "required": true,
@@ -22,6 +44,17 @@
 		"default": "first difference"
     },
 	"extra_pre_fft_detrend_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Extra Pre FFT detrend method to be applied",
+        "options": ["linear", "other"],
+        "alias": [],
+        "example": "linear",
+		"default": "linear"
+    },
+    	"pre_fft_detrend_type": {
         "type": "string",
         "required": true,
         "style": "controlled vocabulary",

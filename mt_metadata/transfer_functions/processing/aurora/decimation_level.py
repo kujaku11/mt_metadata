@@ -14,6 +14,8 @@ from mt_metadata.base import get_schema, Base
 from mt_metadata.transfer_functions.processing.aurora.frequency_band import (
     get_fft_harmonics,
 )
+from mt_metadata.transfer_functions.processing.fourier_coefficients import Decimation as FourierCoefficientDecimation
+
 from .standards import SCHEMA_FN_PATHS
 
 from .window import Window
@@ -186,25 +188,50 @@ class DecimationLevel(Base):
     def sample_rate_decimation(self):
         return self.decimation.sample_rate
 
-    # def to_stft_config_dict(self):
-    #     """
-    #     taper_family
-    #     num_samples_window
-    #     num_samples_overlap
-    #     taper_additional_args
-    #     sample_rate,
-    #     prewhitening_type
-    #     extra_pre_fft_detrend_type
-    #     Returns
-    #     -------
-    #     """
-    #     output = {}
-    #     print(self.window.type)
-    #     output["taper_family"] = self.window.type
-    #     output["num_samples_window"] = self.window.num_samples
-    #     output["num_samples_overlap"] = self.window.overlap
-    #     output["taper_additional_args"] = self.window.additional_args
-    #     output["sample_rate"] = self.decimation.sample_rate
-    #     output["prewhitening_type"] = self.prewhitening_type
-    #     output["extra_pre_fft_detrend_type"] = self.extra_pre_fft_detrend_type
-    #     return output
+    def harmonic_indices(self):
+        harmonic_indices = []
+        for band in self.bands:
+            fc_indices = np.arange(band.index_min, band.index_max+1)
+            harmonic_indices += fc_indices.tolist()
+        harmonic_indices.sort()
+        return harmonic_indices
+
+    def to_fc_decimation(self, local_or_remote):
+        """
+        Generates a Decimation() object for use with FC Layer in mth5.
+        Note that the property is assigned harmonic_indices_required, which is not in the formal schema of the output
+        Decimation() object.  This is there to capture the FC indices that are required to process the TF, to allow
+        checking for these in the FC Level, in order to validate that the archived FC Level contains the needed data
+        for processing.
+        Args:
+            local_or_remote: str
+            ["local", "remote", "RR"]
+
+        Returns:
+            fc_dec_obj:mt_metadata.transfer_functions.processing.fourier_coefficients.decimation.Decimation
+            A decimation object configured for STFT processing
+
+        """
+
+        fc_dec_obj = FourierCoefficientDecimation()
+        fc_dec_obj.anti_alias_filter = self.anti_alias_filter
+        if local_or_remote.lower() == "local":
+            fc_dec_obj.channels_estimated = self.input_channels + self.output_channels
+        elif local_or_remote.lower() in ["remote", 'rr',]:
+            fc_dec_obj.channels_estimated = self.reference_channels
+        fc_dec_obj.decimation_factor = self.decimation.factor
+        fc_dec_obj.decimation_level = self.decimation.level
+        fc_dec_obj.harmonic_indices_required = self.harmonic_indices()
+        fc_dec_obj.id = "undefined when sourced from decimation_level.py"
+        fc_dec_obj.method = "fft"
+        fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
+        fc_dec_obj.prewhitening_type = self.prewhitening_type
+        print("Not Implemented yet -- fix this!!!")
+        #fc_dec_obj.recoloring = dec_level_config.recoloring
+        fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
+        # Unused TimePeriod info
+        #fc_dec_obj.time_period.end": "1980-01-01T00:00:00+00:00",
+        #fc_dec_obj.time_period.start": "1980-01-01T00:00:00+00:00",
+        fc_dec_obj.window =  self.window
+        return fc_dec_obj
+

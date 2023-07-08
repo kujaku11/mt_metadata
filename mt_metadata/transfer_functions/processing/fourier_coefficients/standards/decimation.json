@@ -107,7 +107,7 @@
         "options": [],
         "alias": [],
         "example": true,
-		"default": false
+		"default": true
     },
 	"harmonic_indices_kept": {
         "type": "integer",
