@@ -279,6 +279,9 @@ class Decimation(Base):
         required_num_samples = self.window.num_samples + (
                 self.min_num_stft_windows - 1) * self.window.num_samples_advance
         if n_samples_ts < required_num_samples:
+            msg = f"{n_samples_ts} not enough samples for minimum of {self.min_num_stft_windows} stft windows "
+            msg += f" of length {self.window.num_samples} and overlap {self.window.overlap}"
+            self.logger.warning(msg)
             return False
         else:
             return True
