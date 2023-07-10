@@ -941,6 +941,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.name = fn.magnetometer[0].name
                     c.sensor.manufacturer = fn.magnetometer[0].manufacturer
                     c.sensor.type = fn.magnetometer[0].type
+                    c.time_period.start = fn.start
+                    c.time_period.end = fn.end
                     r.add_channel(c)
 
             else:
@@ -954,6 +956,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
                     c.sensor.type = mag.type
+                    c.time_period.start = fn.start
+                    c.time_period.end = fn.end
                     r.add_channel(c)
 
             for dp in fn.dipole:
@@ -976,6 +980,8 @@ class EMTFXML(emtf_xml.EMTF):
                         c.negative.type = pot.value
                         c.negative.manufacturer = dp.manufacturer
                         c.negative.type = pot.comments
+                c.time_period.start = fn.start
+                c.time_period.end = fn.end
                 r.add_channel(c)
 
             for ch in (
@@ -997,6 +1003,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
+                c.time_period.start = fn.start
+                c.time_period.end = fn.end
             s.add_run(r)
 
         if self.field_notes.run_list == []:
@@ -1026,6 +1034,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
+                c.time_period.start = fn.start
+                c.time_period.end = fn.end
 
             s.add_run(r)
 
