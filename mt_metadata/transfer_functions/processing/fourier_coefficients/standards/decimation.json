@@ -54,6 +54,17 @@
         "example": 4,
 		"default": 1
     },
+        "min_num_stft_windows": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "How many FFT windows must be available for the time series to valid for STFT.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 2
+    },
 	"method": {
         "type": "string",
         "required": true,
