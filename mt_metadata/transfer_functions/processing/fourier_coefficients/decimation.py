@@ -273,3 +273,12 @@ class Decimation(Base):
     @property
     def sample_rate(self):
         return self.sample_rate_decimation
+
+    def is_valid_for_time_series_length(self, n_samples_ts):
+        """ Given a time series of len n_samples_ts, are there sufficient samples to STFT"""
+        required_num_samples = self.window.num_samples + (
+                self.min_num_stft_windows - 1) * self.window.num_samples_advance
+        if n_samples_ts < required_num_samples:
+            return False
+        else:
+            return True
