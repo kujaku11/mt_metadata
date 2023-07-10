@@ -14,7 +14,9 @@ from mt_metadata.base import get_schema, Base
 from mt_metadata.transfer_functions.processing.aurora.frequency_band import (
     get_fft_harmonics,
 )
-from mt_metadata.transfer_functions.processing.fourier_coefficients import Decimation as FourierCoefficientDecimation
+from mt_metadata.transfer_functions.processing.aurora import (
+    Decimation as FourierCoefficientDecimation,
+)
 
 from .standards import SCHEMA_FN_PATHS
 
@@ -176,7 +178,6 @@ class DecimationLevel(Base):
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
-
     @property
     def fft_frequecies(self):
         freqs = get_fft_harmonics(
@@ -191,7 +192,7 @@ class DecimationLevel(Base):
     def harmonic_indices(self):
         harmonic_indices = []
         for band in self.bands:
-            fc_indices = np.arange(band.index_min, band.index_max+1)
+            fc_indices = np.arange(band.index_min, band.index_max + 1)
             harmonic_indices += fc_indices.tolist()
         harmonic_indices.sort()
         return harmonic_indices
@@ -216,8 +217,13 @@ class DecimationLevel(Base):
         fc_dec_obj = FourierCoefficientDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if local_or_remote.lower() == "local":
-            fc_dec_obj.channels_estimated = self.input_channels + self.output_channels
-        elif local_or_remote.lower() in ["remote", 'rr',]:
+            fc_dec_obj.channels_estimated = (
+                self.input_channels + self.output_channels
+            )
+        elif local_or_remote.lower() in [
+            "remote",
+            "rr",
+        ]:
             fc_dec_obj.channels_estimated = self.reference_channels
         fc_dec_obj.decimation_factor = self.decimation.factor
         fc_dec_obj.decimation_level = self.decimation.level
@@ -227,11 +233,10 @@ class DecimationLevel(Base):
         fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
         fc_dec_obj.prewhitening_type = self.prewhitening_type
         print("Not Implemented yet -- fix this!!!")
-        #fc_dec_obj.recoloring = dec_level_config.recoloring
+        # fc_dec_obj.recoloring = dec_level_config.recoloring
         fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
         # Unused TimePeriod info
-        #fc_dec_obj.time_period.end": "1980-01-01T00:00:00+00:00",
-        #fc_dec_obj.time_period.start": "1980-01-01T00:00:00+00:00",
-        fc_dec_obj.window =  self.window
+        # fc_dec_obj.time_period.end": "1980-01-01T00:00:00+00:00",
+        # fc_dec_obj.time_period.start": "1980-01-01T00:00:00+00:00",
+        fc_dec_obj.window = self.window
         return fc_dec_obj
-
