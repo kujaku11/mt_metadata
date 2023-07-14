@@ -142,7 +142,9 @@ class XMLStationMTStation(BaseTranslator):
                 mt_station.id = mt_station.fdsn.id
 
         # read in equipment information
-        mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
+        mt_station = self._equipments_to_runs(
+            xml_station.equipments, mt_station
+        )
         mt_station = self._add_run_comments(run_comments, mt_station)
 
         return mt_station
@@ -196,7 +198,9 @@ class XMLStationMTStation(BaseTranslator):
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
-                    person = inventory.Person(names=[mt_station.acquired_by.name])
+                    person = inventory.Person(
+                        names=[mt_station.acquired_by.name]
+                    )
                     operator.contacts = [person]
                     xml_station.operators = [operator]
 
@@ -212,7 +216,9 @@ class XMLStationMTStation(BaseTranslator):
                     xml_station.restricted_status
                 ]
             else:
-                setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
+                setattr(
+                    xml_station, xml_key, mt_station.get_attr_from_name(mt_key)
+                )
 
         # add mt comments
         xml_station.comments = self.make_mt_comments(mt_station, "mt.station")
@@ -260,6 +266,7 @@ class XMLStationMTStation(BaseTranslator):
 
         """
         for comment in run_comments:
+
             for rkey, rvalue in comment.items():
                 run_id = rkey.split(":", 1)[1]
                 run_attr = None
@@ -272,7 +279,9 @@ class XMLStationMTStation(BaseTranslator):
                             if run_attr == "comments":
                                 value = f"{ckey}: {cvalue}"
                                 try:
-                                    station_obj.runs[run_index].comments += f", {value}"
+                                    station_obj.runs[
+                                        run_index
+                                    ].comments += f", {value}"
                                 except TypeError:
                                     station_obj.runs[run_index].comments = value
                             else:
@@ -282,6 +291,8 @@ class XMLStationMTStation(BaseTranslator):
                                     c_attr, cvalue
                                 )
                         else:
-                            station_obj.runs[run_index].set_attr_from_name(ckey, cvalue)
+                            station_obj.runs[run_index].set_attr_from_name(
+                                ckey, cvalue
+                            )
 
         return station_obj
