@@ -17,6 +17,7 @@ Updated 2021 to used mt_metadata type metadata and how spectra are read.
 # ==============================================================================
 import numpy as np
 from pathlib import Path
+from loguru import logger
 
 from mt_metadata.transfer_functions.io.edi.metadata import (
     Header,
@@ -25,7 +26,6 @@ from mt_metadata.transfer_functions.io.edi.metadata import (
     DataSection,
 )
 from mt_metadata.transfer_functions import tf as metadata
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io.tools import (
     _validate_str_with_equals,
     index_locator,
@@ -63,7 +63,7 @@ class EDI(object):
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self._fn = None
         self._edi_lines = None
 
@@ -413,8 +413,7 @@ class EDI(object):
                         )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"]
-                        + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
@@ -748,9 +747,7 @@ class EDI(object):
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
         if self.Header.fileby != "1980-01-01":
-            extra_lines.append(
-                f"\toriginal_file.date={self.Header.filedate}\n"
-            )
+            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -898,15 +895,11 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))

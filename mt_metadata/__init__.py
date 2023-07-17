@@ -44,9 +44,10 @@ __version__ = "0.2.3"
 # =============================================================================
 # Imports
 # =============================================================================
+import sys
 from pathlib import Path
 
-from mt_metadata.utils.mt_logger import setup_logger, load_logging_config
+from loguru import logger
 
 # =============================================================================
 # Global Variables
@@ -84,15 +85,19 @@ REQUIRED_KEYS = [
 # =============================================================================
 # Initiate loggers
 # =============================================================================
-LOG_LEVEL = "info"
-
-load_logging_config()
-debug_logger = setup_logger(
-    __name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL
-)
-debug_logger.debug(f"Starting MT Metadata {LOG_LEVEL} Log File")
-
-error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
+config = {
+    "handlers": [
+        {
+            "sink": sys.stdout,
+            "level": "INFO",
+            "colorize": True,
+            "format": "<level>{time} | {level: <3} | {name} | {function} | {message}</level>",
+        },
+    ],
+    "extra": {"user": "someone"},
+}
+logger.configure(**config)
+# logger.disable("mt_metadata")
 
 
 # test data files
