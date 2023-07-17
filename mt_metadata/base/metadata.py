@@ -11,11 +11,11 @@ Created on Wed Dec 23 20:41:16 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import logging
 from copy import deepcopy
 from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
+from loguru import logger
 
 import json
 import pandas as pd
@@ -27,8 +27,7 @@ from mt_metadata.utils.validators import (
 )
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
-from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata import LOG_LEVEL
+
 from mt_metadata.base.helpers import write_lines
 
 attr_dict = {}
@@ -46,9 +45,7 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = setup_logger(
-            f"{__name__}.{self._class_name}", level=LOG_LEVEL
-        )
+        self.logger = logger
         self._debug = False
 
         self._set_attr_dict(attr_dict)
@@ -125,6 +122,8 @@ class Base:
                 return False
             else:
                 return True
+        else:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -411,7 +410,7 @@ class Base:
         name = self._validate_name(name)
         try:
             standards = self._attr_dict[name]
-            if isinstance(standards, logging.Logger):
+            if isinstance(standards, type(logger)):
                 return None
             return standards["type"]
         except KeyError:

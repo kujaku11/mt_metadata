@@ -21,6 +21,7 @@ from collections import OrderedDict
 from pathlib import Path
 from xml.etree import cElementTree as et
 import json
+from loguru import logger
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (
@@ -30,7 +31,6 @@ from .filters import (
     FIRFilter,
     FrequencyResponseTableFilter,
 )
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import Base, helpers
 from mt_metadata.utils.list_dict import ListDict
 
@@ -46,7 +46,7 @@ class Experiment(Base):
 
         super().__init__()
 
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.surveys = surveys
 
     def __str__(self):

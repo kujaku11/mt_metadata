@@ -16,12 +16,12 @@ import inspect
 from pathlib import Path
 from xml.etree import cElementTree as et
 import numpy as np
+from loguru import logger
 
 from . import metadata as emtf_xml
 from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     helpers as emtf_helpers,
 )
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.base import helpers
 from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.transfer_functions.tf import (
@@ -145,7 +145,7 @@ class EMTFXML(emtf_xml.EMTF):
     def __init__(self, fn=None, **kwargs):
         super().__init__()
         self._root_dict = None
-        self.logger = setup_logger(self.__class__.__name__)
+        self.logger = logger
         self.external_url = emtf_xml.ExternalUrl()
         self.primary_data = emtf_xml.PrimaryData()
         self.attachment = emtf_xml.Attachment()

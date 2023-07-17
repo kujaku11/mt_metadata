@@ -11,6 +11,7 @@ Translated from code by B. Murphy.
 # ==============================================================================
 from pathlib import Path
 from collections import OrderedDict
+from loguru import logger
 
 import numpy as np
 import xarray as xr
@@ -23,7 +24,6 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from .metadata import Channel
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
@@ -38,7 +38,7 @@ class ZMMHeader(object):
 
     def __init__(self, fn=None, **kwargs):
 
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.processing_type = None
         self.num_channels = None
         self.num_freq = None
@@ -70,9 +70,7 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = (
-                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            )
+            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -620,9 +618,7 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(
-            period_block[0].strip().split(":")[1].split()[0].strip()
-        )
+        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -631,12 +627,8 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(
-            period_block[1].strip().split("point")[1].split()[0].strip()
-        )
-        sr = float(
-            period_block[1].strip().split("freq.")[1].split()[0].strip()
-        )
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
         self.decimation_dict[f"{period:.10g}"] = {
             "level": level,
             "bands": bands,

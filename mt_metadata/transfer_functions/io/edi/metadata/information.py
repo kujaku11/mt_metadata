@@ -8,7 +8,6 @@ Created on Sat Dec  4 14:13:37 2021
 # Imports
 # =============================================================================
 from mt_metadata.base import Base
-from mt_metadata.utils.mt_logger import setup_logger
 
 # ==============================================================================
 # Info object

@@ -11,13 +11,13 @@ with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
 requirements = [
-    "concurrent-log-handler",
     "numpy",
     "pandas<=1.5.3",
     "pyyaml",
     "obspy",
     "matplotlib",
     "xarray",
+    "loguru",
 ]
 
 setup_requirements = [
