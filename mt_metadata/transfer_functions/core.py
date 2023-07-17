@@ -14,6 +14,8 @@ from collections import OrderedDict
 import numpy as np
 import xarray as xr
 
+from loguru import logger
+
 from mt_metadata.transfer_functions.tf import (
     Survey,
     Station,
@@ -21,7 +23,6 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.transfer_functions.io import (
     EDI,
     EMTFXML,
@@ -61,7 +62,7 @@ class TF:
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
 
         # set metadata for the station
         self.survey_metadata = Survey(id="unknown_survey")
@@ -177,7 +178,13 @@ class TF:
         return is_equal
 
     def copy(self):
-        return deepcopy(self)
+        try:
+            return deepcopy(self)
+        except TypeError:
+            delattr(self, "logger")
+            deep_copy = deepcopy(self)
+            self.logger = logger
+            return deep_copy
 
     def _initialize_transfer_function(self, periods=[1]):
         """

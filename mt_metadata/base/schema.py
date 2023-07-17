@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 24 12:02:12 2020
 
-:copyright:
+:copyright: 
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -22,10 +22,8 @@ from mt_metadata.utils import validators
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.base.helpers import NumpyEncoder
-from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata import LOG_LEVEL
+from loguru import logger
 
-logger = setup_logger(__name__, level=LOG_LEVEL)
 # =============================================================================
 # base dictionary
 # =============================================================================
@@ -383,10 +381,6 @@ def get_schema_fn(schema_element, paths):
 
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
-    :param paths: A list of pathlib.PosixPath or pathlib.WindowsPath objects that point
-     to the json files in which the schema are stored.
-    :type paths: list
-
     :return: correct file name for given element
     :rtype: :class:`pathlib.Path`
 
@@ -404,9 +398,6 @@ def get_schema(schema_element, paths):
 
     :param schema_element: name of the schema element to get filename for
     :type schema_element: string
-    :param paths: A list of pathlib.PosixPath or pathlib.WindowsPath objects that point
-     to the json files in which the schema are stored.
-    :type paths: list
     :return: return a dictionary that describes the standards for the element
     :rtype: :class:`mt_metadata.schema_base.BaseDict`
 

@@ -11,6 +11,7 @@ Translated from code by B. Murphy.
 # ==============================================================================
 from pathlib import Path
 from collections import OrderedDict
+from loguru import logger
 
 import numpy as np
 import xarray as xr
@@ -23,7 +24,6 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from .metadata import Channel
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
@@ -38,7 +38,7 @@ class ZMMHeader(object):
 
     def __init__(self, fn=None, **kwargs):
 
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.processing_type = None
         self.num_channels = None
         self.num_freq = None

@@ -15,8 +15,7 @@ import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
 
 
-from .mt_logger import setup_logger
-from mt_metadata import LOG_LEVEL
+from loguru import logger
 
 # =============================================================================
 #  Get leap seconds
@@ -144,10 +143,7 @@ class MTime:
 
     def __init__(self, time=None, gps_time=False):
 
-        self.logger = setup_logger(
-            "{0}.{1}".format(__name__, self.__class__.__name__),
-            level=LOG_LEVEL,
-        )
+        self.logger = logger
         self.gps_time = gps_time
 
         self.parse(time)

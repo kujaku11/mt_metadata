@@ -16,6 +16,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from loguru import logger
 
 from .metadata import Header
 from mt_metadata.transfer_functions.tf import (
@@ -36,6 +37,7 @@ class ZongeMTAvg:
 
     def __init__(self, fn=None, **kwargs):
 
+        self.logger = logger
         self.header = Header()
 
         self.info_keys = [
@@ -153,9 +155,7 @@ class ZongeMTAvg:
                 entry = dict(
                     [
                         (key.lower(), value)
-                        for key, value in zip(
-                            ["comp"] + self.info_keys, values
-                        )
+                        for key, value in zip(["comp"] + self.info_keys, values)
                     ]
                 )
                 data_list.append(entry)
@@ -312,9 +312,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zxy"][
                 "ch"
             ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zxy"][
-                "ch"
-            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
+                0
+            ]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zxy"]["ch"].number[0]
@@ -336,9 +336,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zyx"][
                 "ch"
             ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zyx"][
-                "ch"
-            ].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
+                0
+            ]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zyx"]["ch"].number[0]
@@ -359,9 +359,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zyx"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zyx"][
-                "ch"
-            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
+                1
+            ]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zyx"]["ch"].number[1]
@@ -383,9 +383,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zxy"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zxy"][
-                "ch"
-            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
+                1
+            ]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zxy"]["ch"].number[1]
@@ -407,9 +407,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["tzx"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["tzx"][
-                "ch"
-            ].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[
+                1
+            ]
             ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]

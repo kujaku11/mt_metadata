@@ -8,7 +8,7 @@ Created on Tue Feb 16 10:33:27 2021
 :license: MIT
 
 """
-from mt_metadata.utils.mt_logger import setup_logger
+from loguru import logger
 from obspy.core.inventory import Comment
 
 # =============================================================================
@@ -21,7 +21,7 @@ class BaseTranslator:
     """
 
     def __init__(self):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.xml_translator = {
             "alternate_code": None,
             "code": None,
@@ -160,7 +160,9 @@ class BaseTranslator:
             if comment.subject == subject:
                 return comment
 
-        self.logger.info(f"Could not find {subject} in the given list of comments.")
+        self.logger.info(
+            f"Could not find {subject} in the given list of comments."
+        )
         return None
 
     def make_mt_comments(self, mt_element, mt_key_base="mt"):

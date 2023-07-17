@@ -10,7 +10,7 @@
 # ==============================================================================
 from pathlib import Path
 import numpy as np
-from collections import OrderedDict
+from loguru import logger
 
 from mt_metadata.transfer_functions.tf import (
     Survey,
@@ -20,7 +20,6 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.utils.mt_logger import setup_logger
 from .metadata import Header
 
 # ==============================================================================
@@ -32,7 +31,7 @@ class JFile:
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.header = Header()
 
         self._jfn = None
@@ -210,9 +209,7 @@ class JFile:
             if "z" in d_line.lower():
                 d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif (
-                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
-            ):
+            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
                 continue
             elif "r" in d_line.lower():
                 break
@@ -282,9 +279,7 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = (
-                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
-                    )
+                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:

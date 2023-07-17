@@ -44,9 +44,10 @@ __version__ = "0.2.3"
 # =============================================================================
 # Imports
 # =============================================================================
+import sys
 from pathlib import Path
 
-from mt_metadata.utils.mt_logger import setup_logger, load_logging_config
+from loguru import logger
 
 # =============================================================================
 # Global Variables
@@ -84,10 +85,19 @@ REQUIRED_KEYS = [
 # =============================================================================
 # Initiate loggers
 # =============================================================================
-LOG_LEVEL = "info"
-
-load_logging_config()
-base_logger = setup_logger(__name__, level=LOG_LEVEL)
+config = {
+    "handlers": [
+        {
+            "sink": sys.stdout,
+            "level": "INFO",
+            "colorize": True,
+            "format": "<level>{time} | {level: <3} | {name} | {function} | {message}</level>",
+        },
+    ],
+    "extra": {"user": "someone"},
+}
+logger.configure(**config)
+# logger.disable("mt_metadata")
 
 
 # test data files
@@ -129,15 +139,6 @@ TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/tf_zmm.zmm")
 TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_zss_tipper.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/tf_jfile.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/tf_xml.xml")
-TF_XML_NO_SITE_LAYOUT = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_xml_no_site_layout.xml"
-)
-TF_XML_COMPLETE_REMOTE_INFO = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_xml_complete_remote_info.xml"
-)
-TF_XML_WITH_DERIVED_QUANTITIES = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_xml_with_derived_quantities.xml"
-)
 TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
