@@ -1034,8 +1034,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
-                c.time_period.start = fn.start
-                c.time_period.end = fn.end
+                c.time_period.start = s.time_period.start
+                c.time_period.end = s.time_period.end
 
             s.add_run(r)
 

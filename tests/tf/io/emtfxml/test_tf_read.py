@@ -275,8 +275,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("positive.y2", 0.0),
                 ("positive.z2", 0.0),
                 ("sample_rate", 0.0),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("time_period.end", "2020-09-20T19:29:28+00:00"),
+                ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("translated_azimuth", 9.1),
                 ("type", "electric"),
                 ("units", None),
@@ -320,8 +320,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("positive.y2", 50.0),
                 ("positive.z2", 0.0),
                 ("sample_rate", 0.0),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("time_period.end", "2020-09-20T19:29:28+00:00"),
+                ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("translated_azimuth", 99.1),
                 ("type", "electric"),
                 ("units", None),
@@ -356,8 +356,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("sensor.manufacturer", "Barry Narod"),
                 ("sensor.name", "NIMS"),
                 ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("time_period.end", "2020-09-20T19:29:28+00:00"),
+                ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("translated_azimuth", 9.1),
                 ("type", "magnetic"),
                 ("units", None),
@@ -392,8 +392,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("sensor.manufacturer", "Barry Narod"),
                 ("sensor.name", "NIMS"),
                 ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("time_period.end", "2020-09-20T19:29:28+00:00"),
+                ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("translated_azimuth", 99.1),
                 ("type", "magnetic"),
                 ("units", None),
@@ -428,8 +428,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("sensor.manufacturer", "Barry Narod"),
                 ("sensor.name", "NIMS"),
                 ("sensor.type", "fluxgate"),
-                ("time_period.end", "1980-01-01T00:00:00+00:00"),
-                ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ("time_period.end", "2020-09-20T19:29:28+00:00"),
+                ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("translated_azimuth", 9.1),
                 ("type", "magnetic"),
                 ("units", None),
@@ -525,9 +525,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (33, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest(msg="first element"):
             self.assertTrue(
