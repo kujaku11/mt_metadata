@@ -143,23 +143,16 @@ class Base:
         """
         if not isinstance(other, type(self)):
             self.logger.warning(
-                "Cannot update %s with %s", type(self), type(other)
+                f"Cannot update {type(self)} with {type(other)}"
             )
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
-                msg = "%s is not equal %s != %s"
-                self.logger.error(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
+                msg = (
+                    f"{k} is not equal {self.get_attr_from_name(k)} != "
+                    f"{other.get_attr_from_name(k)}"
                 )
-                raise ValueError(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
-                )
+                self.logger.error(msg)
+                raise ValueError(msg)
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
@@ -376,14 +369,14 @@ class Base:
                 test_property = getattr(self.__class__, name, None)
                 if isinstance(test_property, property):
                     self.logger.debug(
-                        "Identified %s as property, using fset", name
+                        f"Identified {name} as property, using fset"
                     )
                     test_property.fset(self, value)
                     return
             except AttributeError:
                 pass
         if hasattr(self, "_attr_dict") and not name.startswith("_"):
-            self.logger.debug("Setting {0} to {1}".format(name, value))
+            self.logger.debug(f"Setting {name} to {value}")
             try:
                 v_dict = self._attr_dict[name]
                 v_type = self._get_standard_type(name)
@@ -416,12 +409,12 @@ class Base:
         except KeyError:
             if name[0] != "_":
                 msg = (
-                    "{0} is not defined in the standards. "
-                    + " Should add attribute information with "
-                    + "add_base_attribute if the attribute is going to "
-                    + "propogate via to_dict, to_json, to_series"
+                    f"{name} is not defined in the standards. "
+                    " Should add attribute information with "
+                    "add_base_attribute if the attribute is going to "
+                    "propogate via to_dict, to_json, to_series"
                 )
-                self.logger.info(msg.format(name))
+                self.logger.info(msg)
             return None
 
     def get_attr_from_name(self, name):
@@ -623,7 +616,7 @@ class Base:
 
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
-            msg = "Input must be a dictionary not {0}".format(type(meta_dict))
+            msg = f"Input must be a dictionary not {type(meta_dict)}"
             self.logger.error(msg)
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
@@ -632,13 +625,13 @@ class Base:
             if class_name.lower() != self._class_name.lower():
                 msg = (
                     "name of input dictionary is not the same as class type "
-                    "input = %s, class type = %s"
+                    f"input = {class_name}, class type = {self._class_name}"
                 )
                 self.logger.debug(msg, class_name, self._class_name)
             meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
             self.logger.debug(
-                "Assuming input dictionary is of type %s", self._class_name
+                f"Assuming input dictionary is of type {self._class_name}",
             )
             meta_dict = helpers.flatten_dict(meta_dict)
         # set attributes by key.
@@ -695,9 +688,9 @@ class Base:
                 with open(json_str, "r") as fid:
                     json_dict = json.load(fid)
         elif not isinstance(json_str, (str, Path)):
-            msg = "Input must be valid JSON string not %"
-            self.logger.error(msg, type(json_str))
-            raise MTSchemaError(msg % type(json_str))
+            msg = f"Input must be valid JSON string not {type(json_str)}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
         self.from_dict(json_dict)
 
     def from_series(self, pd_series):
@@ -714,9 +707,9 @@ class Base:
 
         """
         if not isinstance(pd_series, pd.Series):
-            msg = "Input must be a Pandas.Series not type %s"
-            self.logger.error(msg, type(pd_series))
-            MTSchemaError(msg % type(pd_series))
+            msg = f"Input must be a Pandas.Series not type {type(pd_series)}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
         for key, value in pd_series.items():
             self.set_attr_from_name(key, value)
 
