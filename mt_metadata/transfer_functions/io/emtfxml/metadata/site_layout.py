@@ -54,9 +54,9 @@ class SiteLayout(Base):
                 elif ch_type in ["electric"]:
                     ch = Electric()
                 else:
-                    msg = "Channel type %s not supported"
-                    self.logger.error(msg, ch_type)
-                    raise ValueError(msg % ch_type)
+                    msg = f"Channel type {ch_type} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
                 ch.from_dict(item)
                 self._input_channels.append(ch)
             elif isinstance(item, str):
@@ -94,9 +94,9 @@ class SiteLayout(Base):
                 elif ch_type in ["electric"]:
                     ch = Electric()
                 else:
-                    msg = "Channel type %s not supported"
-                    self.logger.error(msg, ch_type)
-                    raise ValueError(msg % ch_type)
+                    msg = f"Channel type {ch_type} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
                 ch.from_dict(item)
                 self._output_channels.append(ch)
             elif isinstance(item, str):

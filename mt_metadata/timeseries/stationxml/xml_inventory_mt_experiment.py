@@ -219,9 +219,7 @@ class XMLInventoryMTExperiment:
                 # Compare channel metadata if matches just add run.id if its
                 # not already there.
                 self.logger.debug(
-                    "Comparing %s to %s",
-                    xml_channel.code,
-                    existing_channel.code,
+                    f"Comparing {xml_channel.code} to {existing_channel.code}"
                 )
                 if self.compare_xml_channel(xml_channel, existing_channel):
                     find = True

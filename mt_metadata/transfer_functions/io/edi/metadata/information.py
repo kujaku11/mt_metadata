@@ -274,7 +274,7 @@ class Information(Base):
                             )
                             new_dict[vkey] = item_value
                     else:
-                        self.logger.warngin("could not parse line %s", value)
+                        self.logger.warning(f"Could not parse line {value}")
                         raise KeyError
                 else:
                     if new_key == "processing_parameter":

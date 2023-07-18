@@ -1170,7 +1170,9 @@ class EMTFXML(emtf_xml.EMTF):
                         break
 
                 except AttributeError:
-                    self.logger.debug("Did not find %s in run", comp)
+                    self.logger.debug(
+                        f"Did not find {comp} in run",
+                    )
 
             for comp in ["ex", "ey"]:
                 try:
@@ -1196,7 +1198,7 @@ class EMTFXML(emtf_xml.EMTF):
                     fn.dipole.append(dp)
 
                 except AttributeError:
-                    self.logger.debug("Did not find %s in run", comp)
+                    self.logger.debug(f"Did not find {comp} in run")
 
             self.field_notes._run_list.append(fn)
 
@@ -1220,7 +1222,7 @@ class EMTFXML(emtf_xml.EMTF):
                     else:
                         ch_out_dict[comp] = m_ch
                 except AttributeError:
-                    self.logger.debug("Did not find %s in run", comp)
+                    self.logger.debug(f"Did not find {comp} in run")
 
             for comp in ["ex", "ey"]:
                 try:
@@ -1244,7 +1246,7 @@ class EMTFXML(emtf_xml.EMTF):
                     ch_out.orientation = ch.translated_azimuth
                     ch_out_dict[comp] = ch_out
                 except AttributeError:
-                    self.logger.debug("Did not find %s in run", comp)
+                    self.logger.debug(f"Did not find {comp} in run")
 
         self.site_layout.input_channels = list(ch_in_dict.values())
         self.site_layout.output_channels = list(ch_out_dict.values())

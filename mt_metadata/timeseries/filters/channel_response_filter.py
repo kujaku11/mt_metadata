@@ -132,9 +132,9 @@ class ChannelResponseFilter(Base):
             return []
 
         if not isinstance(filters_list, list):
-            msg = "Input filters list must be a list not %s"
-            self.logger.error(msg, type(filters_list))
-            raise TypeError(msg % type(filters_list))
+            msg = f"Input filters list must be a list not {type(filters_list)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
 
         fails = []
         return_list = []
@@ -372,7 +372,7 @@ class ChannelResponseFilter(Base):
             if f.type in ["coefficient"]:
                 if f.units_out not in ["count"]:
                     self.logger.debug(
-                        "converting CoefficientFilter %s to PZ", f.name
+                        f"converting CoefficientFilter {f.name} to PZ"
                     )
                     pz = PoleZeroFilter()
                     pz.gain = f.gain

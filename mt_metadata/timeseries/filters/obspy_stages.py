@@ -131,8 +131,8 @@ def create_filter_from_stage(stage):
                 and "counts" not in stage.output_units.lower()
             ):
                 logger.info(
-                    "Converting PoleZerosResponseStage %s to a CoefficientFilter",
-                    stage.name,
+                    f"Converting PoleZerosResponseStage {stage.name} to a "
+                    "CoefficientFilter."
                 )
                 return create_coefficent_filter_from_stage(stage)
 
@@ -153,9 +153,9 @@ def create_filter_from_stage(stage):
             if isinstance(stage.coefficients, list):
                 pass
             else:
-                msg = "expected list of coefficients, got %s"
-                logger.error(msg, type(stage.coefficients))
-                raise TypeError(msg % type(stage.coefficients))
+                msg = f"Expected list of coefficients, got {type(stage.coefficients)}"
+                logger.error(msg)
+                raise TypeError(msg)
         except TypeError:
             msg = "Something seems off with this FIR"
             logger.info(msg)
@@ -174,6 +174,6 @@ def create_filter_from_stage(stage):
         return obspy_filter
 
     else:
-        msg = "Filter Stage of type %s not known, or supported"
-        logger.info(msg, type(stage))
-        raise TypeError(msg % type(stage))
+        msg = "Filter Stage of type {type(stage)} not known, or supported"
+        logger.info(msg)
+        raise TypeError(msg)

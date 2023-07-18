@@ -94,23 +94,16 @@ class Run(Base):
         """
         if not isinstance(other, type(self)):
             self.logger.warning(
-                "Cannot update %s with %s", type(self), type(other)
+                f"Cannot update {type(self)} with {type(other)}"
             )
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
-                msg = "%s is not equal %s != %s"
-                self.logger.error(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
+                msg = (
+                    f"{k} is not equal {self.get_attr_from_name(k)} != "
+                    "{other.get_attr_from_name(k)}"
                 )
-                raise ValueError(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
-                )
+                self.logger.error(msg)
+                raise ValueError(msg)
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
