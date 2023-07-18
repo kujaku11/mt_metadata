@@ -67,8 +67,11 @@ class BaseDict(MutableMapping):
         try:
             return self.__dict__[key]
         except KeyError as error:
-            msg = "%s %s is not in dictionary yet. Returning default schema dictionary."
-            logger.debug(msg, error, key)
+            msg = (
+                f"{error}, {key} is not in dictionary yet. "
+                "Returning default schema dictionary."
+            )
+            logger.debug(msg)
             return {
                 "type": "string",
                 "required": False,
@@ -259,7 +262,7 @@ class BaseDict(MutableMapping):
             raise MTSchemaError(msg)
 
         with open(csv_fn, "r") as fid:
-            logger.debug("Reading schema CSV %s", csv_fn)
+            logger.debug(f"Reading schema CSV {csv_fn}")
             lines = fid.readlines()
 
         header = validators.validate_header(

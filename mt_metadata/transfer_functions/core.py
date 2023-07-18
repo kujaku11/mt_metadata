@@ -417,13 +417,19 @@ class TF:
 
         shape = shape_dict[atype]
         if ndarray.shape[1:] != shape:
-            msg = "%s must be have shape (n_periods, %s, %s), not %s"
-            self.logger.error(msg, atype, shape[0], shape[1], ndarray.shape)
-            raise TFError(msg % (atype, shape[0], shape[1], ndarray.shape))
+            msg = (
+                f"{atype} must be have shape (n_periods, {shape[0]}, "
+                f"{shape[1]}), not {ndarray.shape}"
+            )
+            self.logger.error(msg)
+            raise TFError(msg)
         if ndarray.shape[0] != self.period.size:
-            msg = "New %s shape %s not same as old %s, suggest creating a new instance."
-            self.logger.error(msg, atype, ndarray.shape, shape)
-            raise TFError(msg % (atype, ndarray.shape, shape))
+            msg = (
+                f"New {atype} shape {ndarray.shape} not same as old {shape}, "
+                "suggest creating a new instance."
+            )
+            self.logger.error(msg)
+            raise TFError(msg)
 
     def _validate_input_dataarray(self, da, atype="impedance"):
         """
@@ -443,17 +449,25 @@ class TF:
 
         # should test for shape
         if "period" not in da.coords.keys() or "input" not in da.coords.keys():
-            msg = "Coordinates must be period, output, input, not %s"
-            self.logger.error(msg, list(da.coords.keys()))
-            raise TFError(msg % da.coords.keys())
+            msg = f"Coordinates must be period, output, input, not {list(da.coords.keys())}"
+            self.logger.error(
+                msg,
+            )
+            raise TFError(msg)
         if sorted(ch_out) != sorted(da.coords["output"].data.tolist()):
-            msg = "Output dimensions must be %s not %s"
-            self.logger.error(msg, ch_out, da.coords["output"].data.tolist())
-            raise TFError(msg % (ch_out, da.coords["output"].data.tolist()))
+            msg = (
+                f"Output dimensions must be {ch_out} not "
+                f"{da.coords['output'].data.tolist()}"
+            )
+            self.logger.error(msg)
+            raise TFError(msg)
         if sorted(ch_in) != sorted(da.coords["input"].data.tolist()):
-            msg = "Input dimensions must be %s not %s"
-            self.logger.error(msg, ch_in, da.coords["input"].data.tolist())
-            raise TFError(msg % (ch_in, da.coords["input"].data.tolist()))
+            msg = (
+                f"Input dimensions must be {ch_in} not "
+                f"{da.coords['input'].data.tolist()}"
+            )
+            self.logger.error(msg)
+            raise TFError(msg)
         # need to reorder the data array to the expected coordinates
         da = da.reindex(output=ch_out, input=ch_in)
         # if this is the first instantiation then just resize the
@@ -521,9 +535,12 @@ class TF:
 
             self._transfer_function[key].loc[comps] = nda
         else:
-            msg = "Data type %s not supported use a numpy array or xarray.DataArray"
-            self.logger.error(msg, type(value))
-            raise TFError(msg % type(value))
+            msg = (
+                f"Data type {type(value)} not supported use a numpy "
+                "array or xarray.DataArray"
+            )
+            self.logger.error(msg)
+            raise TFError(msg)
 
     def has_transfer_function(self):
         """
@@ -1113,9 +1130,13 @@ class TF:
                     periods=value
                 )
             if len(value) != len(self.period):
-                msg = "New period size %s is not the same size as old ones %s, suggest creating a new instance of TF"
-                self.logger.error(msg, value.size, self.period.size)
-                raise TFError(msg % (value.size, self.period.size))
+                msg = (
+                    f"New period size {value.size} is not the same size as "
+                    f"old ones {self.period.size}, suggest creating a new "
+                    "instance of TF."
+                )
+                self.logger.error(msg)
+                raise TFError(msg)
             else:
                 self.dataset["period"] = value
         else:
