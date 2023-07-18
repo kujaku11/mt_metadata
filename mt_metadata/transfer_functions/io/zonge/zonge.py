@@ -250,7 +250,9 @@ class ZongeMTAvg:
         """
 
         if "tzx" not in self.df.comp.to_list():
-            self.header.logger.debug("No Tipper found in %s", self.fn.name)
+            self.header.logger.debug(
+                "No Tipper found in {self.fn.name}",
+            )
             return None, None
 
         t = np.zeros((self.n_freq, 1, 2), dtype=complex)
