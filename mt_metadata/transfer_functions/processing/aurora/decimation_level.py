@@ -204,6 +204,10 @@ class DecimationLevel(Base):
         Decimation() object.  This is there to capture the FC indices that are required to process the TF, to allow
         checking for these in the FC Level, in order to validate that the archived FC Level contains the needed data
         for processing.
+
+        ToDo: Consider making local_or_remote a kwarg, with default value None.  While it may be useful at times to only
+        generate FCs for selected channels, in general we will normally wish to estimate all channels for archiving
+        purposes.
         Args:
             local_or_remote: str
             ["local", "remote", "RR"]
@@ -232,11 +236,8 @@ class DecimationLevel(Base):
         fc_dec_obj.method = "fft"
         fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
         fc_dec_obj.prewhitening_type = self.prewhitening_type
-        print("Not Implemented yet -- fix this!!!")
-        # fc_dec_obj.recoloring = dec_level_config.recoloring
+        fc_dec_obj.recoloring = dec_level_config.recoloring
         fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
-        # Unused TimePeriod info
-        # fc_dec_obj.time_period.end": "1980-01-01T00:00:00+00:00",
-        # fc_dec_obj.time_period.start": "1980-01-01T00:00:00+00:00",
         fc_dec_obj.window = self.window
+
         return fc_dec_obj
