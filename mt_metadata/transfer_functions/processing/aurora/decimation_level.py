@@ -236,7 +236,7 @@ class DecimationLevel(Base):
         fc_dec_obj.method = "fft"
         fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
         fc_dec_obj.prewhitening_type = self.prewhitening_type
-        fc_dec_obj.recoloring = dec_level_config.recoloring
+        fc_dec_obj.recoloring = self.recoloring
         fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
         fc_dec_obj.window = self.window
 
