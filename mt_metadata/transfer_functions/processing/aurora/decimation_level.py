@@ -14,7 +14,8 @@ from mt_metadata.base import get_schema, Base
 from mt_metadata.transfer_functions.processing.aurora.frequency_band import (
     get_fft_harmonics,
 )
-from mt_metadata.transfer_functions.processing.aurora import (
+
+from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Decimation as FourierCoefficientDecimation,
 )
 
