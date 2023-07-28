@@ -15,10 +15,6 @@ from mt_metadata.transfer_functions.processing.aurora.frequency_band import (
     get_fft_harmonics,
 )
 
-from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Decimation as FourierCoefficientDecimation,
-)
-
 from .standards import SCHEMA_FN_PATHS
 
 from .window import Window
@@ -218,7 +214,9 @@ class DecimationLevel(Base):
             A decimation object configured for STFT processing
 
         """
-
+        from mt_metadata.transfer_functions.processing.fourier_coefficients import (
+            Decimation as FourierCoefficientDecimation,
+        )
         fc_dec_obj = FourierCoefficientDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if local_or_remote.lower() == "local":
