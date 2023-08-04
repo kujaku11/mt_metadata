@@ -108,6 +108,27 @@
         "alias": [],
         "example": "hx, hy",
 		"default": "hx, hy"
+    },
+     "save_fc": {
+        "type": "bool",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Whether the Fourier coefficients are saved [True] or not [False].",
+        "options": [],
+        "alias": [],
+        "example": true,
+		"default": false
+    },
+    	"save_fc_type": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Format to use for fc storage",
+        "options": ["h5", "csv"],
+        "alias": [],
+        "example": "h5",
+		"default": "h5"
     }
-	
 }
