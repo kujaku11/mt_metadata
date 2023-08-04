@@ -109,7 +109,7 @@
         "example": "hx, hy",
 		"default": "hx, hy"
     },
-     "save_fc": {
+     "save_fcs": {
         "type": "bool",
         "required": true,
         "style": "free form",
@@ -120,7 +120,7 @@
         "example": true,
 		"default": false
     },
-    	"save_fc_type": {
+    	"save_fcs_type": {
         "type": "string",
         "required": false,
         "style": "controlled vocabulary",
