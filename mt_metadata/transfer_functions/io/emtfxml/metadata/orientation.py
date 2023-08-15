@@ -39,7 +39,13 @@ class Orientation(Base):
         :rtype: TYPE
 
         """
-        helpers._read_element(self, input_dict, "orientation")
+        element_dict = {self._class_name: input_dict[self._class_name]}
+        if isinstance(element_dict[self._class_name], str):
+            element_dict[self._class_name] = {
+                "layout": element_dict[self._class_name]
+            }
+
+        self.from_dict(element_dict)
 
     def to_xml(self, string=False, required=True):
         """

@@ -197,9 +197,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
-        line.format(
-            f"**{key}**", c1, "**Description**", c2, "**Example**", c3
-        ),
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -309,7 +307,7 @@ def flatten_dict(meta_dict, parent_key=None, sep="."):
     items = []
     for key, value in meta_dict.items():
         if parent_key:
-            new_key = "{0}{1}{2}".format(parent_key, sep, key)
+            new_key = f"{parent_key}{sep}{key}"
         else:
             new_key = key
         if isinstance(value, MutableMapping):
