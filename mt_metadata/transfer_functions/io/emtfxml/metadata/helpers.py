@@ -80,8 +80,7 @@ def _read_element(cls, root_dict, element_name):
         cls.from_dict(element_dict)
 
     except KeyError:
-        print(f"No {element_name} in EMTF XML")
-        cls.logger.debug(f"No {element_name} in EMTF XML")
+        cls.logger.warning(f"No {element_name} in EMTF XML")
 
 
 def _convert_keys_to_lower_case(root_dict):

@@ -29,9 +29,11 @@ class Attachment(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):
-        if input_dict["attachment"] is None:
+        element_dict = {self._class_name: input_dict[self._class_name]}
+        if isinstance(element_dict[self._class_name], type(None)):
             return
-        helpers._read_element(self, input_dict, "attachment")
+
+        self.from_dict(element_dict)
 
     def to_xml(self, string=False, required=True):
         """
