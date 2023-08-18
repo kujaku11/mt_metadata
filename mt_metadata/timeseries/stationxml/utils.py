@@ -105,6 +105,9 @@ class BaseTranslator:
                     )
                 ]
 
+                if author.endswith(","):
+                    author = author[:-1]
+
                 return {"author": author, "comments": comments}
 
             else:
