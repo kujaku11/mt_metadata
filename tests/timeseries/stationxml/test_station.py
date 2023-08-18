@@ -272,7 +272,7 @@ class TestReadXMLStation02(unittest.TestCase):
                     (
                         "comments",
                         (
-                            "author: machine generated, comments: A.Kelbert--Gap and a spike"
+                            "author: machine generated, comments: A.Kelbert:Gap and a spike"
                             " 726 secs into the run. Poor quality data after this event. "
                             "However, timing before and after the gap verified against CAV09."
                         ),
@@ -284,9 +284,9 @@ class TestReadXMLStation02(unittest.TestCase):
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
-                    ("data_logger.timing_system.drift", 0),
+                    ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
-                    ("data_logger.timing_system.uncertainty", 0),
+                    ("data_logger.timing_system.uncertainty", 0.0),
                     ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "b"),
@@ -299,7 +299,7 @@ class TestReadXMLStation02(unittest.TestCase):
                             "verified against CAV09."
                         ),
                     ),
-                    ("sample_rate", 0),
+                    ("sample_rate", 0.0),
                     ("time_period.end", "2020-06-25T17:57:40+00:00"),
                     ("time_period.start", "2020-06-09T00:08:03+00:00"),
                 ]
