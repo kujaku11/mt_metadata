@@ -36,6 +36,8 @@ class Attachment(Base):
         elif isinstance(element_dict[self._class_name], list):
             for item in element_dict[self._class_name]:
                 attachment_item = Attachment()
+                if not self._class_name in item.keys():
+                    item = {self._class_name: item}
                 attachment_item.from_dict(item)
                 self._attachments.append(attachment_item)
 
