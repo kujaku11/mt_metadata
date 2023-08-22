@@ -273,6 +273,8 @@ class XMLStationMTStation(BaseTranslator):
                 if run_id.count(".") > 0:
                     run_id, run_attr = run_id.split(".", 1)
                 run_index = station_obj.run_index(run_id)
+                if run_index is None:
+                    continue
                 if isinstance(rvalue, dict):
                     for ckey, cvalue in rvalue.items():
                         if run_attr:
