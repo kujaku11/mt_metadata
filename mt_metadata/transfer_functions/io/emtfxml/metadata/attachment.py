@@ -26,14 +26,21 @@ class Attachment(Base):
 
     def __init__(self, **kwargs):
 
+        self._attachments = []
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):
         element_dict = {self._class_name: input_dict[self._class_name]}
         if isinstance(element_dict[self._class_name], type(None)):
             return
+        elif isinstance(element_dict[self._class_name], list):
+            for item in element_dict[self._class_name]:
+                attachment_item = Attachment()
+                attachment_item.from_dict(item)
+                self._attachments.append(attachment_item)
 
-        self.from_dict(element_dict)
+        else:
+            self.from_dict(element_dict)
 
     def to_xml(self, string=False, required=True):
         """
@@ -47,9 +54,21 @@ class Attachment(Base):
 
         """
 
-        return helpers.to_xml(
-            self,
-            string=string,
-            required=required,
-            order=["filename", "description"],
-        )
+        if self._attachments == []:
+            return helpers.to_xml(
+                self,
+                string=string,
+                required=required,
+                order=["filename", "description"],
+            )
+
+        else:
+            return [
+                helpers.to_xml(
+                    item,
+                    string=string,
+                    required=required,
+                    order=["filename", "description"],
+                )
+                for item in self._attachments
+            ]
