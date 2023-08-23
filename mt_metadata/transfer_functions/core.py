@@ -1268,29 +1268,136 @@ class TF:
 
         """
 
-        period_slice_self = {"period": slice(period_min, period_max)}
-        tf_list = [self._transfer_function.loc[period_slice_self]]
-        if not isinstance(other, list):
-            other = [other]
+        def get_slice_dict(period_min, period_max):
+            """
+            Get an the correct dictionary for slicing an xarray.
+
+            :param period_min: minimum period
+            :type period_min: float
+            :param period_max: maximum period
+            :type period_max: float
+            :return: variable to slice an xarray
+            :rtype: dict
+
+            """
+            return {"period": slice(period_min, period_max)}
+
+        def sort_by_period(tf):
+            """
+            period needs to be monotonically increasing for slice to work.
+            """
+            return tf.sortby("period")
 
         def is_tf(item):
-            return item._transfer_function
+            """
+            If the item is a transfer function return it sorted by period
 
-        def is_dict(item):
-            item = validate_dict(item)
-            period_slice = {
-                "period": slice(item["period_min"], item["period_max"])
-            }
-            return item["tf"]._transfer_function.loc[period_slice]
+            :param item: transfer function
+            :type item: :class:`mt_metadata.transfer_function.core.TF`
+            :return: sorted by period transfer function
+            :rtype: xarray.Dataset
+
+            """
+            return sort_by_period(item._transfer_function)
 
         def validate_dict(item):
+            """
+            Make sure input dictionary has proper keys.
+
+            - **tf** :class:`mt_metadata.transfer_function.core.TF`
+            - **period_min** minumum period (s)
+            - **period_max** maximum period (s)
+
+            :param item: dictionary to slice a transfer function
+            :type item: dict
+            :raises KeyError: If keys are not what they should be
+            :return: validated dictionary
+            :rtype: dict
+
+            """
             accepted_keys = sorted(["tf", "period_min", "period_max"])
 
             if accepted_keys != sorted(list(item.keys())):
                 msg = f"Input dictionary must have keys of {accepted_keys}"
                 self.logger.error(msg)
-                raise ValueError(msg)
+                raise KeyError(msg)
             return item
+
+        def is_dict(item):
+            """
+            If the item is a dictionary then be sure to sort the transfer
+            function and then apply the slice.
+
+            :param item: dictionary with keys 'tf', 'period_min', 'period_max'
+            :type item: dict
+            :return: sliced transfer function
+            :rtype: xarray.Dataset
+
+            """
+            item = validate_dict(item)
+            period_slice = get_slice_dict(
+                item["period_min"], item["period_max"]
+            )
+            item["tf"]._transfer_function = sort_by_period(
+                item["tf"]._transfer_function
+            )
+            return get_slice(item["tf"], period_slice)
+
+        def get_slice(tf, period_slice):
+            """
+            get slice of a transfer function most of the time we can use .loc
+            but sometimes a key error occurs if the period index is not
+            monotonic (which is should be now after using .sortby('period')),
+            but leaving in place just in case.  If .loc does not work, then
+            we can use .where(conditions) to slice the transfer function.
+            """
+            try:
+                return tf._transfer_function.loc[period_slice]
+
+            except KeyError:
+                if (
+                    period_slice["period"].start is not None
+                    and period_slice["period"].stop is not None
+                ):
+
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        )
+                        & (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
+                        drop=True,
+                    )
+                elif (
+                    period_slice["period"].start is None
+                    and period_slice["period"].stop is not None
+                ):
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
+                        drop=True,
+                    )
+                elif (
+                    period_slice["period"].start is not None
+                    and period_slice["period"].stop is None
+                ):
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        ),
+                        drop=True,
+                    )
+
+        period_slice_self = get_slice_dict(period_min, period_max)
+        tf_list = [get_slice(self, period_slice_self)]
+        if not isinstance(other, list):
+            other = [other]
 
         for item in other:
             if isinstance(item, TF):
@@ -1301,6 +1408,7 @@ class TF:
                 msg = f"Type {type(item)} not supported"
                 self.logger.error(msg)
                 raise TypeError(msg)
+
         new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
 
         if inplace:
@@ -1750,10 +1858,10 @@ class TF:
         if len(self.station_metadata.runs) == 0:
             run = self.make_zmm_run(zmm_obj, number_dict)
             self.station_metadata.add_run(run)
-        elif len(self.station_metadata.runs[0].channels_recorded_all)==0:
+        elif len(self.station_metadata.runs[0].channels_recorded_all) == 0:
             # avoid the default metadata getting interpretted as a real metadata object
             # Overwrite this "spoof" run with a run that has recorded channels
-            if len(self.station_metadata.runs[0].channels_recorded_all)==0:
+            if len(self.station_metadata.runs[0].channels_recorded_all) == 0:
                 run = self.make_zmm_run(zmm_obj, number_dict)
                 self.station_metadata.runs[0] = run
         else:
