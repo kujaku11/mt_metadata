@@ -1043,24 +1043,25 @@ class EDI(object):
         sm.transfer_function.processed_date = self.Header.filedate
         sm.transfer_function.runs_processed = sm.run_list
         sm.transfer_function.id = self.station
-
-        for key, value in self.Info.info_dict.items():
-            if key is None:
-                continue
-            if "provenance" in key:
-                sm.set_attr_from_name(key, value)
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate
         if self.Header.enddate is not None:
             sm.time_period.end = self.Header.enddate
 
+        for key, value in self.Info.info_dict.items():
+            if key is None:
+                continue
+
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
                 continue
             key = key.lower()
-            if "transfer_function" in key:
+
+            if "provenance" in key:
+                sm.set_attr_from_name(key, value)
+            elif "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
                 if "processing_parameters" in key:
                     param = key.split(".")[-1]
@@ -1072,7 +1073,7 @@ class EDI(object):
                     if "runs_processed" in key:
                         sm.run_list = sm.transfer_function.runs_processed
 
-            if key.startswith("run."):
+            elif key.startswith("run."):
                 key = key.split("run.")[1]
                 comp, key = key.split(".", 1)
                 try:
@@ -1091,9 +1092,11 @@ class EDI(object):
                             f"Do not recognize channel {comp}, skipping..."
                         )
                 ch.set_attr_from_name(key, value)
+            elif key.startswith("data_logger"):
+                sm.runs[0].set_attr_from_name(key, value)
             elif key.startswith("station."):
                 sm.set_attr_from_name(key.split("station.")[1], value)
-            if "processing." in key:
+            elif "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:
                     sm.transfer_function.software.name = value
@@ -1120,12 +1123,11 @@ class EDI(object):
                 sm.geographic_name = value
             elif key == "signconvention":
                 sm.transfer_function.sign_convention = value
-            if "mtft" in key or "emtf" in key or "mtedit" in key:
+            elif "mtft" in key or "emtf" in key or "mtedit" in key:
                 sm.transfer_function.processing_parameters.append(
                     f"{key}={value}"
                 )
-            if "provenance" in key:
-                sm.set_attr_from_name(key, value)
+
         if self.Header.filedate is not None:
             sm.transfer_function.processed_date = self.Header.filedate
         # make any extra information in info list into a comment
