@@ -8,6 +8,7 @@ Created on Sat Dec  4 14:13:37 2021
 # Imports
 # =============================================================================
 from mt_metadata.base import Base
+from mt_metadata.base.helpers import validate_name
 
 # ==============================================================================
 # Info object
@@ -79,15 +80,21 @@ class Information(Base):
         self.empower_translation_dict = {
             "processingsoftware": "processing.software",
             "sitename": "station.geographic_name",
-            "process date": "transfer_function.processed_date",
+            "year": "survey.time_period.start_date",
+            "process_date": "transfer_function.processed_date",
             "declination": "station.location.declination.value",
             "tag": "component",
             "length": "dipole_length",
             "ac": "ac.end",
             "dc": "dc.end",
-            "negative res": "contact_resistance.start",
-            "positive res": "contact_resistance.end",
-            "sensor type": "sensor.model",
+            "negative_res": "contact_resistance.start",
+            "positive_res": "contact_resistance.end",
+            "sensor_type": "sensor.model",
+            "azimuth": "measured_azimuth",
+            "sensor_serial": "sensor.id",
+            "cal_name": "comments",
+            "saturation": "comments",
+            "instrument_type": "model",
         }
 
         super().__init__(attr_dict={})
@@ -233,9 +240,10 @@ class Information(Base):
         comp = None
         new_list = []
         for line in info_list:
-            l_key, l_value = self._read_line(line)
+            og_key, l_value = self._read_line(line)
+            l_key = validate_name(og_key.lower())
             if l_value in [None]:
-                comp = l_key.lower()
+                comp = l_key
                 if comp == "electrics":
                     comp = "data_logger"
                 elif comp in ["ex", "ey", "hx", "hy", "hz"]:
@@ -244,14 +252,42 @@ class Information(Base):
             elif l_value in [""]:
                 continue
             else:
+                if l_key in [
+                    "station_name",
+                    "min_value",
+                    "max_value",
+                    "detected_sensor_type",
+                ]:
+                    continue
                 try:
                     l_key = self.empower_translation_dict[l_key]
                 except KeyError:
                     new_list.append(f"{l_key} = {l_value}")
+
+                l_value = l_value.encode("ascii", "ignore").decode().lower()
+                if l_value.count("[") >= 1 and l_value.count("]") >= 1:
+                    l_value = l_value.split("[")[0].strip()
+                if l_value.count("%") >= 0:
+                    l_value = l_value.replace("%", "")
+
                 if comp:
-                    info_dict[f"{comp}.{l_key}".lower()] = l_value.lower()
+                    if comp in ["run.hx", "run.hy", "run.hz"]:
+                        if "ac" in l_key or "dc" in l_key:
+                            continue
+
+                    if "comments" in l_key:
+                        og_key = validate_name(og_key.lower())
+                        try:
+                            info_dict[
+                                f"{comp}.{l_key}"
+                            ] += f",{og_key}={l_value}"
+                        except KeyError:
+                            info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
+
+                    else:
+                        info_dict[f"{comp}.{l_key}"] = l_value
                 else:
-                    info_dict[l_key.lower()] = l_value.lower()
+                    info_dict[l_key.lower()] = l_value
 
         return info_dict, new_list
 
