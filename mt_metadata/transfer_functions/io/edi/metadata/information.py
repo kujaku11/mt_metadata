@@ -236,6 +236,14 @@ class Information(Base):
 
         """
 
+        ch_key = {
+            "e1": "ex",
+            "e2": "ey",
+            "h1": "hx",
+            "h2": "hy",
+            "h3": "hz",
+        }
+
         info_dict = {}
         comp = None
         new_list = []
@@ -269,6 +277,8 @@ class Information(Base):
                     l_value = l_value.split("[")[0].strip()
                 if l_value.count("%") >= 0:
                     l_value = l_value.replace("%", "")
+                if l_key in ["component"]:
+                    l_value = ch_key[l_value]
 
                 if comp:
                     if comp in ["run.hx", "run.hy", "run.hz"]:
@@ -282,7 +292,9 @@ class Information(Base):
                                 f"{comp}.{l_key}"
                             ] += f",{og_key}={l_value}"
                         except KeyError:
-                            info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
+                            info_dict[
+                                f"{comp}.{l_key}"
+                            ] = f"{og_key}={l_value}"
 
                     else:
                         info_dict[f"{comp}.{l_key}"] = l_value
