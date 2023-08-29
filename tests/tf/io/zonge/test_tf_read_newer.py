@@ -81,7 +81,7 @@ class TestReadAVGNewer(unittest.TestCase):
                 ("time_period.start", "2017-06-30T21:30:19+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "2813"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
