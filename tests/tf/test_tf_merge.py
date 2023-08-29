@@ -116,7 +116,7 @@ class TestTFMerge(unittest.TestCase):
             )
 
     def test_dict_fail(self):
-        self.assertRaises(ValueError, self.tf_01.merge, {"a": 0})
+        self.assertRaises(KeyError, self.tf_01.merge, {"a": 0})
 
     def test_item_fail(self):
         self.assertRaises(TypeError, self.tf_01.merge, 10)
