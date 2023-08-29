@@ -265,6 +265,10 @@ class Information(Base):
                     "min_value",
                     "max_value",
                     "detected_sensor_type",
+                    "coordinates",
+                    "gps_(min_-_max)",
+                    "temperature_(min_-_max)",
+                    "recording_id",
                 ]:
                     continue
                 try:

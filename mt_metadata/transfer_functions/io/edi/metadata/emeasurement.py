@@ -72,6 +72,8 @@ class EMeasurement(Base):
         if hasattr(self, "azm"):
             if self.azm != 0:
                 return self.azm
+            elif self.chtype.lower() == "ex":
+                return self.azm
         try:
             return np.rad2deg(
                 np.arctan2((self.y2 - self.y), (self.x2 - self.x))
