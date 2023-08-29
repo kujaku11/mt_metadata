@@ -20,7 +20,7 @@ from mt_metadata.transfer_functions import TF
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestZMM(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_ZMM)
@@ -81,7 +81,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),
@@ -261,7 +261,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -382,7 +384,7 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),

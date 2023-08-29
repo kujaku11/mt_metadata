@@ -155,6 +155,9 @@ TF_XML_MULTIPLE_ATTACHMENTS = DATA_DIR.joinpath(
 TF_EDI_PHOENIX = DATA_DIR.joinpath(
     "data/transfer_functions/tf_edi_phoenix.edi"
 )
+TF_EDI_EMPOWER = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_edi_empower.edi"
+)
 TF_EDI_METRONIX = DATA_DIR.joinpath(
     "data/transfer_functions/tf_edi_metronix.edi"
 )

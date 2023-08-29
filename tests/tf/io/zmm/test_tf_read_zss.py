@@ -20,7 +20,7 @@ from mt_metadata.transfer_functions import TF
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestZSS(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_ZSS_TIPPER)
@@ -81,7 +81,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "ysw212abcdefghijkl"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.remote_references", []),
                 (

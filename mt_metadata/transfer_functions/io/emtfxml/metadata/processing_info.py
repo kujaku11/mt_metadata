@@ -16,6 +16,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import ProcessingSoftware, RemoteRef, RemoteInfo
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================
@@ -38,8 +39,26 @@ class ProcessingInfo(Base):
         self.remote_ref = RemoteRef()
         self.processing_software = ProcessingSoftware()
         self.remote_info = RemoteInfo()
+        self._process_date = MTime()
+        self._order = [
+            "sign_convention",
+            "remote_ref",
+            "remote_info",
+            "processed_by",
+            "process_date",
+            "processing_software",
+            "processing_tag",
+        ]
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+    @property
+    def process_date(self):
+        return self._process_date.date
+
+    @process_date.setter
+    def process_date(self, value):
+        self._process_date.parse(value)
 
     def read_dict(self, input_dict):
         """
@@ -83,12 +102,5 @@ class ProcessingInfo(Base):
             self,
             string=string,
             required=required,
-            order=[
-                "sign_convention",
-                "remote_ref",
-                "remote_info",
-                "processed_by",
-                "processing_software",
-                "processing_tag",
-            ],
+            order=self._order,
         )
