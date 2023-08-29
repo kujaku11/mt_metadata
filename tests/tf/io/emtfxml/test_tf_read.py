@@ -69,7 +69,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "NMX20"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     ["{remote_ref.type: Robust Multi-Station Reference}"],
@@ -525,7 +525,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (33, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest(msg="first element"):
             self.assertTrue(

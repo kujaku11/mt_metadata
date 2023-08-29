@@ -68,7 +68,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "2020-06-02T18:41:43+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "CAS04"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
@@ -248,7 +248,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]),
+                    np.array(
+                        [[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]
+                    ),
                 ).all()
             )
 

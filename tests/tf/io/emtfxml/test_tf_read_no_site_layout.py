@@ -61,7 +61,10 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Lana Erofeeva"),
-                ("provenance.submitter.email", "serofeev@coas.oregonstate.edu"),
+                (
+                    "provenance.submitter.email",
+                    "serofeev@coas.oregonstate.edu",
+                ),
                 (
                     "provenance.submitter.organization",
                     "Oregon State University",
@@ -72,7 +75,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "2011-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "500fdfilNB207"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     ["{remote_ref.type: }"],
@@ -99,7 +102,10 @@ class TestEMTFXML(unittest.TestCase):
                     "citation_dataset.authors",
                     "Kent Inverarity, James Wilson, Graham Heinson, Michael Hatch and Stephan Thiel",
                 ),
-                ("citation_dataset.doi", "doi:10.17611/DP/EMTF/UOFADELAIDE/GW"),
+                (
+                    "citation_dataset.doi",
+                    "doi:10.17611/DP/EMTF/UOFADELAIDE/GW",
+                ),
                 (
                     "citation_dataset.title",
                     "Groundwater Magnetotelluric Transfer Functions in the Great Artesian Basin, Australia",
