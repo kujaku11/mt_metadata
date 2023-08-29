@@ -80,7 +80,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "BP05"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
