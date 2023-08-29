@@ -66,7 +66,7 @@ class TestEMPOWEREDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
-                ("azm", 0.0),
+                ("azm", 90.0),
                 ("chtype", "EX"),
                 ("id", 1004.001),
                 ("x", 0.0),
@@ -86,7 +86,7 @@ class TestEMPOWEREDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
-                ("azm", 90.0),
+                ("azm", 0.0),
                 ("chtype", "EY"),
                 ("id", 1005.001),
                 ("x", -50.6),
@@ -314,10 +314,11 @@ class TestEMpowerTF(unittest.TestCase):
             "701_merged_wrcala.ex.contact_resistance.start = 1558.69",
             "701_merged_wrcala.ex.dc.end = 0.0537872",
             "701_merged_wrcala.ex.dipole_length = 95.3",
-            "701_merged_wrcala.ex.measurement_azimuth = 0.0",
+            "701_merged_wrcala.ex.measurement_azimuth = 90.0",
             "701_merged_wrcala.ex.measurement_tilt = 0.0",
             "701_merged_wrcala.ex.negative.type = electric",
             "701_merged_wrcala.ex.positive.type = electric",
+            "701_merged_wrcala.ex.translated_azimuth = 90.0",
             "701_merged_wrcala.ex.type = electric",
             "701_merged_wrcala.ey.ac.end = 2.5",
             "701_merged_wrcala.ey.channel_id = 1005.001",
@@ -328,11 +329,11 @@ class TestEMpowerTF(unittest.TestCase):
             "701_merged_wrcala.ey.contact_resistance.start = 2199.7",
             "701_merged_wrcala.ey.dc.end = 0.0120163",
             "701_merged_wrcala.ey.dipole_length = 99.1",
-            "701_merged_wrcala.ey.measurement_azimuth = 90.0",
+            "701_merged_wrcala.ey.measurement_azimuth = 0.0",
             "701_merged_wrcala.ey.measurement_tilt = 0.0",
             "701_merged_wrcala.ey.negative.type = electric",
             "701_merged_wrcala.ey.positive.type = electric",
-            "701_merged_wrcala.ey.translated_azimuth = 90.0",
+            "701_merged_wrcala.ey.translated_azimuth = 0.0",
             "701_merged_wrcala.ey.type = electric",
             "701_merged_wrcala.hx.channel_id = 1001.001",
             "701_merged_wrcala.hx.channel_number = 0",
@@ -391,7 +392,7 @@ class TestEMpowerTF(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "4"),
-                ("azm", 0.0),
+                ("azm", 90.0),
                 ("chtype", "ex"),
                 ("id", 1004.001),
                 ("x", 0.0),
@@ -411,7 +412,7 @@ class TestEMpowerTF(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", "5"),
-                ("azm", 90.0),
+                ("azm", 0.0),
                 ("chtype", "ey"),
                 ("id", 1005.001),
                 ("x", -50.6),
