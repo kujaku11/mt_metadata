@@ -343,6 +343,8 @@ class EMTFXML(emtf_xml.EMTF):
                     continue
             value = getattr(self, key)
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
+                if key == "processing_info" and skip_field_notes:
+                    value._order.remove("remote_info")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
@@ -354,6 +356,9 @@ class EMTFXML(emtf_xml.EMTF):
                         emtf_helpers._convert_tag_to_capwords(element)
                     )
             else:
+                if key == "external_url":
+                    if self.external_url.url is None:
+                        continue
                 emtf_helpers._write_single(
                     emtf_element, key, getattr(self, key)
                 )
@@ -748,35 +753,30 @@ class EMTFXML(emtf_xml.EMTF):
     @property
     def survey_metadata(self):
         survey_obj = Survey()
-        if self._root_dict is not None:
-            survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.authors = (
-                self.copyright.citation.authors
-            )
-            survey_obj.citation_dataset.title = self.copyright.citation.title
-            survey_obj.citation_dataset.year = self.copyright.citation.year
-            survey_obj.citation_dataset.doi = (
-                self.copyright.citation.survey_d_o_i
-            )
-            survey_obj.country = self.site.country
-            survey_obj.datum = self.site.location.datum
-            survey_obj.geographic_name = self.site.survey
-            survey_obj.id = self.site.survey
-            survey_obj.project = self.site.project
-            survey_obj.time_period.start = self.site.start
-            survey_obj.time_period.end = self.site.end
-            survey_obj.summary = self.description
-            survey_obj.comments = "; ".join(
-                [
-                    f"{k}:{v}"
-                    for k, v in {
-                        "copyright.acknowledgement": self.copyright.acknowledgement,
-                        "copyright.conditions_of_use": self.copyright.conditions_of_use,
-                        "copyright.release_status": self.copyright.release_status,
-                    }.items()
-                    if v not in [None, ""]
-                ]
-            )
+        survey_obj.acquired_by.author = self.site.acquired_by
+        survey_obj.citation_dataset.authors = self.copyright.citation.authors
+        survey_obj.citation_dataset.title = self.copyright.citation.title
+        survey_obj.citation_dataset.year = self.copyright.citation.year
+        survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
+        survey_obj.country = self.site.country
+        survey_obj.datum = self.site.location.datum
+        survey_obj.geographic_name = self.site.survey
+        survey_obj.id = self.site.survey
+        survey_obj.project = self.site.project
+        survey_obj.time_period.start = self.site.start
+        survey_obj.time_period.end = self.site.end
+        survey_obj.summary = self.description
+        survey_obj.comments = "; ".join(
+            [
+                f"{k}:{v}"
+                for k, v in {
+                    "copyright.acknowledgement": self.copyright.acknowledgement,
+                    "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                    "copyright.release_status": self.copyright.release_status,
+                }.items()
+                if v not in [None, ""]
+            ]
+        )
 
         return survey_obj
 
@@ -1090,6 +1090,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processed_by = (
             sm.transfer_function.processed_by.author
         )
+        self.processing_info.process_date = sm.transfer_function.processed_date
         self.processing_info.processing_software.author = (
             sm.transfer_function.software.author
         )
@@ -1123,6 +1124,9 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.data_quality_notes.rating = (
             sm.transfer_function.data_quality.rating.value
         )
+        self.site.data_quality_notes.comments.value = (
+            sm.transfer_function.data_quality.comments
+        )
 
         # not sure there is a place to put processing parameters yet
 
@@ -1150,7 +1154,9 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(f"Cannot set attribute {key}.")
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:

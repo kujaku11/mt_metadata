@@ -33,7 +33,7 @@ class ProcessingSoftware(Base):
 
     @property
     def last_mod(self):
-        return self._last_mod_dt.iso_str
+        return self._last_mod_dt.date
 
     @last_mod.setter
     def last_mod(self, value):
