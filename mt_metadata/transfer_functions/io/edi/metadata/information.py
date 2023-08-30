@@ -75,6 +75,17 @@ class Information(Base):
             "rrtype": "processing_parameter",
             "removelargelines": "processing_parameter",
             "rotmaxe": "processing_parameter",
+            "project": "survey.project",
+            "processedby": "transfer_function.processed_by.name",
+            "processingsoftware": "transfer_function.software.name",
+            "processingtag": "transfer_function.id",
+            "signconvention": "transfer_function.sign_convention",
+            "sitename": "station.geographic_name",
+            "survey": "survey.id",
+            "year": "survey.time_period.start_date",
+            "runlist": "transfer_function.runs_processed",
+            "remotesite": "transfer_function.remote_references",
+            "remoteref": "transfer_function.processing_parameters",
         }
 
         self.empower_translation_dict = {
