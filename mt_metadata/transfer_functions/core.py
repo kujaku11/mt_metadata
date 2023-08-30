@@ -34,6 +34,7 @@ from mt_metadata.transfer_functions.io.zfiles.metadata import (
     Channel as ZChannel,
 )
 from mt_metadata.base.helpers import validate_name
+from mt_metadata.utils.list_dict import ListDict
 
 DEFAULT_CHANNEL_NOMENCLATURE = {
     "hx": "hx",
@@ -65,14 +66,7 @@ class TF:
         self.logger = logger
 
         # set metadata for the station
-        self.survey_metadata = Survey(id="unknown_survey")
-        self.station_metadata = Station()
-        self.station_metadata.add_run(Run())
-        self.station_metadata.runs[0].ex = Electric(component="ex")
-        self.station_metadata.runs[0].ey = Electric(component="ey")
-        self.station_metadata.runs[0].hx = Magnetic(component="hx")
-        self.station_metadata.runs[0].hy = Magnetic(component="hy")
-        self.station_metadata.runs[0].hz = Magnetic(component="hz")
+        self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
 
         self._rotation_angle = 0
@@ -185,6 +179,204 @@ class TF:
             deep_copy = deepcopy(self)
             self.logger = logger
             return deep_copy
+
+    def _add_channels(
+        self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]
+    ):
+        """
+        add channels to a run
+
+        """
+        for ch in [cc for cc in default if cc.startswith("e")]:
+            run_metadata.add_channel(Electric(component=ch))
+        for ch in [cc for cc in default if cc.startswith("h")]:
+            run_metadata.add_channel(Magnetic(component=ch))
+
+        return run_metadata
+
+    def _initialize_metadata(self):
+        """
+        Create a single `Survey` object to store all metadata
+
+        :param channel_type: DESCRIPTION
+        :type channel_type: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        survey_metadata = Survey(id="0")
+        survey_metadata.stations.append(Station(id="0"))
+        survey_metadata.stations[0].runs.append(Run(id="0"))
+
+        self._add_channels(survey_metadata.stations[0].runs[0])
+
+        return survey_metadata
+
+    def _validate_run_metadata(self, run_metadata):
+        """
+        validate run metadata
+
+        """
+
+        if not isinstance(run_metadata, Run):
+            if isinstance(run_metadata, dict):
+                if "run" not in [cc.lower() for cc in run_metadata.keys()]:
+                    run_metadata = {"Run": run_metadata}
+                r_metadata = Run()
+                r_metadata.from_dict(run_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return r_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.run_metadata)} "
+                    f"or dict, not {type(run_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return run_metadata.copy()
+
+    def _validate_station_metadata(self, station_metadata):
+        """
+        validate station metadata
+        """
+
+        if not isinstance(station_metadata, Station):
+            if isinstance(station_metadata, dict):
+                if "station" not in [
+                    cc.lower() for cc in station_metadata.keys()
+                ]:
+                    station_metadata = {"Station": station_metadata}
+                st_metadata = Station()
+                st_metadata.from_dict(station_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return st_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.station_metadata)}"
+                    f" or dict, not {type(station_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return station_metadata.copy()
+
+    def _validate_survey_metadata(self, survey_metadata):
+        """
+        validate station metadata
+        """
+
+        if not isinstance(survey_metadata, Survey):
+            if isinstance(survey_metadata, dict):
+                if "survey" not in [
+                    cc.lower() for cc in survey_metadata.keys()
+                ]:
+                    survey_metadata = {"Survey": survey_metadata}
+                sv_metadata = Survey()
+                sv_metadata.from_dict(survey_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return sv_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.survey_metadata)}"
+                    f" or dict, not {type(survey_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return survey_metadata.copy()
+
+    ### Properties ------------------------------------------------------------
+    @property
+    def survey_metadata(self):
+        """
+        survey metadata
+        """
+        return self._survey_metadata
+
+    @survey_metadata.setter
+    def survey_metadata(self, survey_metadata):
+        """
+
+        :param survey_metadata: survey metadata object or dictionary
+        :type survey_metadata: :class:`mt_metadata.timeseries.Survey` or dict
+
+        """
+
+        if survey_metadata is not None:
+            survey_metadata = self._validate_survey_metadata(survey_metadata)
+            self._survey_metadata.update(survey_metadata)
+
+    @property
+    def station_metadata(self):
+        """
+        station metadata
+        """
+
+        return self.survey_metadata.stations[0]
+
+    @station_metadata.setter
+    def station_metadata(self, station_metadata):
+        """
+        set station metadata from a valid input
+        """
+
+        if station_metadata is not None:
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
+
+            runs = ListDict()
+            if self.run_metadata.id not in ["0", 0, None]:
+                runs.append(self.run_metadata.copy())
+            runs.extend(station_metadata.runs)
+            if len(runs) == 0:
+                runs[0] = Run(id="0")
+            # be sure there is a level below
+            if len(runs[0].channels) == 0:
+                self._add_channels(runs[0])
+            stations = ListDict()
+            stations.append(station_metadata)
+            stations[0].runs = runs
+
+            self.survey_metadata.stations = stations
+
+    @property
+    def run_metadata(self):
+        """
+        station metadata
+        """
+
+        return self.survey_metadata.stations[0].runs[0]
+
+    @run_metadata.setter
+    def run_metadata(self, run_metadata):
+        """
+        set run metadata from a valid input
+        """
+
+        # need to make sure the first index is the desired channel
+        if run_metadata is not None:
+            run_metadata = self._validate_run_metadata(run_metadata)
+
+            runs = ListDict()
+            runs.append(run_metadata)
+            channels = ListDict()
+            if self.component is not None:
+                key = str(self.component)
+
+                channels.append(self.station_metadata.runs[0].channels[key])
+                # add existing channels
+                channels.extend(
+                    self.run_metadata.channels, skip_keys=[key, "0"]
+                )
+            # add channels from input metadata
+            channels.extend(run_metadata.channels)
+
+            runs[0].channels = channels
+            runs.extend(
+                self.station_metadata.runs, skip_keys=[run_metadata.id, "0"]
+            )
+
+            self._survey_metadata.stations[0].runs = runs
 
     def _initialize_transfer_function(self, periods=[1]):
         """
