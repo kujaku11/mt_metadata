@@ -878,8 +878,8 @@ class EMTFXML(emtf_xml.EMTF):
                 self.processing_info.processing_tag.split("_")
             )
         s.transfer_function.runs_processed = self.site.run_list
-        s.transfer_function.processing_parameters.append(
-            {"remote_ref.type": self.processing_info.remote_ref.type}
+        s.transfer_function.processing_type = (
+            self.processing_info.remote_ref.type
         )
 
         if self.processing_info.remote_info.site.id is not None:
@@ -1103,6 +1103,9 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_tag = "_".join(
             sm.transfer_function.remote_references
         )
+        self.processing_info.remote_ref.type = (
+            sm.transfer_function.processing_type
+        )
         for param in sm.transfer_function.processing_parameters:
             if isinstance(param, dict):
                 for key, value in param.items():
@@ -1154,9 +1157,7 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(
-                                f"Cannot set attribute {key}."
-                            )
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:

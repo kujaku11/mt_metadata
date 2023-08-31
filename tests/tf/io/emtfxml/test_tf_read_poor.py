@@ -68,6 +68,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "2020-06-02T18:41:43+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "CAS04"),
+                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -84,6 +85,10 @@ class TestEMTFXML(unittest.TestCase):
                     ["CAS04a", "CAS04b", "CAS04c", "CAS04d"],
                 ),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.last_updated", "2015-08-26"),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
@@ -150,7 +155,7 @@ class TestEMTFXML(unittest.TestCase):
                     "informational purposes only.; "
                     "copyright.release_status:Unrestricted Release",
                 ),
-                ("datum", None),
+                ("datum", "WGS84"),
                 ("geographic_name", "CONUS South"),
                 ("id", "CONUS South"),
                 ("name", None),
@@ -248,9 +253,7 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]
-                    ),
+                    np.array([[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]),
                 ).all()
             )
 
