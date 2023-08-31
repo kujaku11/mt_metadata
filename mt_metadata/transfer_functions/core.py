@@ -314,6 +314,10 @@ class TF:
             for station in survey_metadata.stations:
                 self._survey_metadata.add_station(station)
 
+            if len(self._survey_metadata.stations.keys()) > 1:
+                if "0" in self._survey_metadata.stations.keys():
+                    self._survey_metadata.stations.remove("0")
+
     @property
     def station_metadata(self):
         """
