@@ -69,6 +69,8 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.start", "2003-01-02T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.id", "SMG1"),
+                ("transfer_function.processed_by.author", "Heinrich Brasse"),
+                ("transfer_function.processed_by.name", "Heinrich Brasse"),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -77,6 +79,10 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", [""]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", "Randie Mackie"),
+                ("transfer_function.software.last_updated", "2002-04-23"),
+                ("transfer_function.software.name", "WINGLINK EDI 1.0.22"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )

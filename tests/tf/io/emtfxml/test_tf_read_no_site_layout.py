@@ -61,10 +61,7 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Lana Erofeeva"),
-                (
-                    "provenance.submitter.email",
-                    "serofeev@coas.oregonstate.edu",
-                ),
+                ("provenance.submitter.email", "serofeev@coas.oregonstate.edu"),
                 (
                     "provenance.submitter.organization",
                     "Oregon State University",
@@ -74,7 +71,17 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.end", "2011-01-01T00:00:00+00:00"),
                 ("time_period.start", "2011-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.good_from_period", 0.0),
+                ("transfer_function.data_quality.good_to_period", 0.0),
                 ("transfer_function.id", "500fdfilNB207"),
+                (
+                    "transfer_function.processed_by.author",
+                    "Kent Inverarity / David Pedler-Jones / UofA",
+                ),
+                (
+                    "transfer_function.processed_by.name",
+                    "Kent Inverarity / David Pedler-Jones / UofA",
+                ),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -83,10 +90,13 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", [""]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.last_updated", "2002-04-23"),
+                ("transfer_function.software.name", "WINGLINK EDI 1.0.22"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
-
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.to_dict(single=True)
         )
