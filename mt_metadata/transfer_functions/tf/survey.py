@@ -140,16 +140,22 @@ class Survey(Base):
 
         for ii, station in enumerate(value_list):
 
-            if isinstance(station, (dict, OrderedDict)):
+            if isinstance(station, Station):
+                self._stations.append(station)
+            elif isinstance(station, (dict, OrderedDict)):
                 s = Station()
                 s.from_dict(station)
                 self._stations.append(s)
-            elif not isinstance(station, Station):
+            elif isinstance(station, TSStation):
+                s = Station()
+                s.from_dict(station.to_dict())
+                s.runs = station.runs
+                self._stations.append(s)
+            else:
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
-            else:
-                self._stations.append(station)
+
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 

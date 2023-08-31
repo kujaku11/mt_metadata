@@ -270,7 +270,9 @@ class TF:
             if isinstance(survey_metadata, TSSurvey):
                 sm = Survey()
                 sm.from_dict(survey_metadata.to_dict())
+                sm.stations = survey_metadata.stations
                 survey_metadata = sm
+
             elif isinstance(survey_metadata, dict):
                 if "survey" not in [
                     cc.lower() for cc in survey_metadata.keys()
@@ -309,6 +311,8 @@ class TF:
         if survey_metadata is not None:
             survey_metadata = self._validate_survey_metadata(survey_metadata)
             self._survey_metadata.update(survey_metadata)
+            for station in survey_metadata.stations:
+                self._survey_metadata.add_station(station)
 
     @property
     def station_metadata(self):
