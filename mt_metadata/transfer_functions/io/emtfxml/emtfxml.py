@@ -1260,7 +1260,22 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(ch_out, item, value)
 
                     ch_out.name = comp.capitalize()
-                    ch_out.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        ch_out.orientation = ch.translated_azimuth
+                    else:
+                        ch_out.orientation = ch.measured_azimuth
+
+                    if (
+                        ch_out.x == 0
+                        and ch_out.y == 0
+                        and ch_out.x2 == 0
+                        and ch_out.y2 == 0
+                    ):
+                        if comp in ["ex"]:
+                            ch_out.x2 = ch.dipole_length
+                        elif comp in ["ey"]:
+                            ch_out.y2 = ch.dipole_length
+
                     ch_out_dict[comp] = ch_out
                 except AttributeError:
                     self.logger.debug(f"Did not find {comp} in run")
