@@ -50,7 +50,24 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.comments", "IRIS DMC MetaData"),
+                ("provenance.archive.name", None),
+                ("provenance.archive.url", "http://www.iris.edu/mda/ZU/NMX20"),
                 ("provenance.creation_time", "2021-03-17T14:47:44+00:00"),
+                (
+                    "provenance.creator.author",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.email", "pbedrosian@usgs.gov"),
+                (
+                    "provenance.creator.name",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.organization", "U.S. Geological Survey"),
+                (
+                    "provenance.creator.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
+                ),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -59,9 +76,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
+                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey, Geomagnetism Program",
+                ),
+                (
+                    "provenance.submitter.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
                 ),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["NMX20a", "NMX20b"]),
@@ -70,6 +92,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.good_from_period", 5.0),
                 ("transfer_function.data_quality.good_to_period", 29127.0),
+                ("transfer_function.data_quality.rating.value", 5),
                 ("transfer_function.id", "NMX20"),
                 (
                     "transfer_function.processed_by.author",
@@ -79,11 +102,11 @@ class TestEMTFXML(unittest.TestCase):
                     "transfer_function.processed_by.name",
                     "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
-                ("transfer_function.id", "NMX20"),
                 ("transfer_function.processed_date", "1980-01-01"),
+                ("transfer_function.processing_parameters", []),
                 (
-                    "transfer_function.processing_parameters",
-                    ["{remote_ref.type: Robust Multi-Station Reference}"],
+                    "transfer_function.processing_type",
+                    "Robust Multi-Station Reference",
                 ),
                 (
                     "transfer_function.remote_references",

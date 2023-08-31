@@ -49,7 +49,24 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.comments", "IRIS DMC MetaData"),
+                ("provenance.archive.name", None),
+                ("provenance.archive.url", "http://www.iris.edu/mda/8P/CAS04"),
                 ("provenance.creation_time", "2021-09-23T19:45:02+00:00"),
+                (
+                    "provenance.creator.author",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.email", "pbedrosian@usgs.gov"),
+                (
+                    "provenance.creator.name",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.organization", "U.S. Geological Survey"),
+                (
+                    "provenance.creator.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
+                ),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -58,23 +75,33 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
+                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey, Geomagnetism Program",
+                ),
+                (
+                    "provenance.submitter.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
                 ),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["CAS04a"]),
                 ("time_period.end", "2020-07-13T21:46:12+00:00"),
                 ("time_period.start", "2020-06-02T18:41:43+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 4),
                 ("transfer_function.id", "CAS04"),
                 ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_ref.type: Robust Remote Reference, remote_info.site.id: REV06, remote_info.site.name: Poso Creek, CA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 35.71262, remote_info.site.location.longitude: -119.466415, remote_info.site.location.elevation: 61.05, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
+                        "{remote_info.site.id: REV06, remote_info.site.name: Poso Creek, CA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 35.71262, remote_info.site.location.longitude: -119.466415, remote_info.site.location.elevation: 61.05, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
                     ],
+                ),
+                (
+                    "transfer_function.processing_type",
+                    "Robust Remote Reference",
                 ),
                 (
                     "transfer_function.remote_references",

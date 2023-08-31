@@ -883,7 +883,6 @@ class EMTFXML(emtf_xml.EMTF):
         )
 
         if self.processing_info.remote_info.site.id is not None:
-            s.transfer_function.processing_parameters.append({})
             for key in self.processing_info.remote_info.site._attr_dict.keys():
                 value = (
                     self.processing_info.remote_info.site.get_attr_from_name(
@@ -898,10 +897,12 @@ class EMTFXML(emtf_xml.EMTF):
                     "1980",
                     1980,
                     "1980-01-01T00:00:00+00:00",
+                    [],
+                    "",
                 ]:
-                    s.transfer_function.processing_parameters[0][
-                        f"remote_info.site.{key}"
-                    ] = value
+                    s.transfer_function.processing_parameters.append(
+                        f"remote_info.site.{key} = {value}"
+                    )
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -1108,8 +1109,15 @@ class EMTFXML(emtf_xml.EMTF):
             sm.transfer_function.processing_type
         )
         for param in sm.transfer_function.processing_parameters:
-            if isinstance(param, dict):
-                for key, value in param.items():
+            if isinstance(param, str):
+                sep = None
+                if param.count("=") >= 1:
+                    sep = "="
+                elif param.count(":") >= 1:
+                    sep = ":"
+
+                if sep:
+                    key, value = [k.strip() for k in param.split(sep, 1)]
                     try:
                         self.processing_info.set_attr_from_name(key, value)
                     except Exception as error:
@@ -1117,6 +1125,7 @@ class EMTFXML(emtf_xml.EMTF):
                             f"Cannot set processing info attribute {param}"
                         )
                         self.logger.exception(error)
+
         self.site.run_list = sm.transfer_function.runs_processed
 
         self.site.data_quality_notes.good_from_period = (
