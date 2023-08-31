@@ -994,6 +994,9 @@ class EDI(object):
             key = key.lower()
             if key.startswith("survey."):
                 sm.set_attr_from_name(key.split("survey.")[1], value)
+
+        sm.add_station(self.station_metadata)
+        sm.update_time_period()
         return sm
 
     @survey_metadata.setter
