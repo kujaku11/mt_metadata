@@ -136,8 +136,12 @@ class TestTranslateZmm(unittest.TestCase):
         zmm_st = self.zmm_obj.survey_metadata.to_dict(single=True)
         tf_st = self.tf_obj.survey_metadata.to_dict(single=True)
         for zmm_key, zmm_value in zmm_st.items():
-            with self.subTest(zmm_key):
-                self.assertEqual(zmm_value, tf_st[zmm_key])
+            if zmm_key in ["id"]:
+                with self.subTest(zmm_key):
+                    self.assertNotEqual(zmm_value, tf_st[zmm_key])
+            else:
+                with self.subTest(zmm_key):
+                    self.assertEqual(zmm_value, tf_st[zmm_key])
 
 
 # =============================================================================

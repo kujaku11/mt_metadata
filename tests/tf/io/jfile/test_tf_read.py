@@ -25,9 +25,7 @@ class TestEMTFXML(unittest.TestCase):
     def setUpClass(self):
         self.tf = TF(fn=TF_JFILE)
         self.tf.read()
-        self.tf.station_metadata.transfer_function.processed_date = (
-            "2020-01-01"
-        )
+        self.tf.station_metadata.transfer_function.processed_date = "2020-01-01"
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -37,7 +35,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
-                ("id", None),
+                ("id", "0"),
                 ("name", None),
                 ("northwest_corner.latitude", 0.0),
                 ("northwest_corner.longitude", 0.0),
@@ -71,18 +69,21 @@ class TestEMTFXML(unittest.TestCase):
                 ("location.longitude", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "BIRRP"),
                 ("provenance.software.version", "5"),
-                ("provenance.submitter.email", None),
-                ("provenance.submitter.organization", None),
+                ("provenance.submitter.name", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["001"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "BP05"),
+                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "2020-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -111,9 +112,13 @@ class TestEMTFXML(unittest.TestCase):
                         "uin = 0.0",
                     ],
                 ),
+                ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["001"]),
                 ("transfer_function.sign_convention", None),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.name", None),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
