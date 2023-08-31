@@ -357,7 +357,7 @@ class Survey(Base):
         for station in self.stations:
             if station.time_period.start != "1980-01-01T00:00:00+00:00":
                 start.append(station.time_period.start)
-            if station.time_period.start != "1980-01-01T00:00:00+00:00":
+            if station.time_period.end != "1980-01-01T00:00:00+00:00":
                 end.append(station.time_period.end)
 
         if start:
