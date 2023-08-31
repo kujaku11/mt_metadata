@@ -380,6 +380,7 @@ class TestCGGTF(unittest.TestCase):
             "provenance.creation_time = 2014-10-07T00:00:00+00:00",
             "provenance.software.version = Antlr3.Runtime:3.5.0.2;ContourEngine:1.0.41.8272;CoordinateSystemService:1.4.0.8439;DocumentCommon:1.4.0.8465;Fluent:2.1.0.0;GeoApi:1.7.0.0;hasp_net_windows:7.0.1.36183;Launcher:1.4.0.8471;MapDocument:1.4.0.8469;MTDocument:1.4.0.8459;MTDocumentDataProvider:1.4.0.8467;MTInversionCommon:1.4.0.8371;Ookii.Dialogs.Wpf:1.0.0.0;PlotElement:1.4.0.8466;PluginHost:1.4.0.8440;ProjNet:1.2.5085.21309;ShellEngine:1.4.0.8380;System.Windows.Interactivity:4.0.0.0;Utils:1.4.0.8449;Xceed.Wpf.AvalonDock:2.0.0.0;Xceed.Wpf.AvalonDock.Themes.Aero:2.0.0.0;Xceed.Wpf.Toolkit:1.9.0.0;",
             "transfer_function.coordinate_system = geopgraphic",
+            "transfer_function.data_quality.rating.value = 0",
             "transfer_function.id = TEST01",
             "transfer_function.processed_date = 2014-10-07",
             "transfer_function.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",

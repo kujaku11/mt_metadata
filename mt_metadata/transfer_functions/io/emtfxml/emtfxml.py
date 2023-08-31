@@ -883,6 +883,7 @@ class EMTFXML(emtf_xml.EMTF):
         )
 
         if self.processing_info.remote_info.site.id is not None:
+            s.transfer_function.processing_parameters.append({})
             for key in self.processing_info.remote_info.site._attr_dict.keys():
                 value = (
                     self.processing_info.remote_info.site.get_attr_from_name(

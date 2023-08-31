@@ -378,6 +378,7 @@ class TestEMpowerTF(unittest.TestCase):
             "provenance.submitter.name = EMTF FCU",
             "totoal_rejected_crosspowers = 0.0000%",
             "transfer_function.coordinate_system = geopgraphic",
+            "transfer_function.data_quality.rating.value = 0",
             "transfer_function.id = 701_merged_wrcal",
             "transfer_function.processed_date = 2023-05-30",
             "transfer_function.remote_references = []",
