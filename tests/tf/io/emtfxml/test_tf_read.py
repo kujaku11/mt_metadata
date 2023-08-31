@@ -68,6 +68,17 @@ class TestEMTFXML(unittest.TestCase):
                 ("time_period.end", "2020-10-07T20:28:00+00:00"),
                 ("time_period.start", "2020-09-20T19:03:06+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.good_from_period", 5.0),
+                ("transfer_function.data_quality.good_to_period", 29127.0),
+                ("transfer_function.id", "NMX20"),
+                (
+                    "transfer_function.processed_by.author",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                (
+                    "transfer_function.processed_by.name",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
                 ("transfer_function.id", "NMX20"),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
@@ -88,6 +99,10 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("transfer_function.runs_processed", ["NMX20a", "NMX20b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", "Gary Egbert"),
+                ("transfer_function.software.last_updated", "2015-08-26"),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
@@ -525,9 +540,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (33, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest(msg="first element"):
             self.assertTrue(

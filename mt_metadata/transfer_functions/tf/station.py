@@ -49,9 +49,7 @@ attr_dict.add_dict(
     "acquired_by",
     keys=["author", "comments"],
 )
-attr_dict.add_dict(
-    get_schema("orientation", TS_SCHEMA_FN_PATHS), "orientation"
-)
+attr_dict.add_dict(get_schema("orientation", TS_SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
     get_schema("provenance", TS_SCHEMA_FN_PATHS),
     "provenance",
@@ -67,12 +65,8 @@ attr_dict.add_dict(
 )
 attr_dict["provenance.submitter.email"]["required"] = True
 attr_dict["provenance.submitter.organization"]["required"] = True
-attr_dict.add_dict(
-    get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period"
-)
-attr_dict.add_dict(
-    get_schema("transfer_function", SCHEMA_FN_PATHS), "transfer_function"
-)
+attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(TransferFunction()._attr_dict, "transfer_function")
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(

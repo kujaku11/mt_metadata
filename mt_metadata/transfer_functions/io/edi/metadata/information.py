@@ -89,7 +89,7 @@ class Information(Base):
         }
 
         self.empower_translation_dict = {
-            "processingsoftware": "processing.software",
+            "processingsoftware": "transfer_function.software.name",
             "sitename": "station.geographic_name",
             "year": "survey.time_period.start_date",
             "process_date": "transfer_function.processed_date",
@@ -307,9 +307,7 @@ class Information(Base):
                                 f"{comp}.{l_key}"
                             ] += f",{og_key}={l_value}"
                         except KeyError:
-                            info_dict[
-                                f"{comp}.{l_key}"
-                            ] = f"{og_key}={l_value}"
+                            info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
 
                     else:
                         info_dict[f"{comp}.{l_key}"] = l_value

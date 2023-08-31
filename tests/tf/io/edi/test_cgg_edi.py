@@ -385,6 +385,7 @@ class TestCGGTF(unittest.TestCase):
             "transfer_function.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['TEST01a']",
+            "transfer_function.software.name = L13ss",
         ]
 
         self.assertListEqual(info_list, self.edi_obj.Info.info_list)
