@@ -312,11 +312,14 @@ class TF:
             survey_metadata = self._validate_survey_metadata(survey_metadata)
             self._survey_metadata.update(survey_metadata)
             for station in survey_metadata.stations:
+                station.update_time_period()
                 self._survey_metadata.add_station(station)
 
             if len(self._survey_metadata.stations.keys()) > 1:
                 if "0" in self._survey_metadata.stations.keys():
                     self._survey_metadata.stations.remove("0")
+
+            self._survey_metadata.update_time_period()
 
     @property
     def station_metadata(self):
@@ -347,8 +350,10 @@ class TF:
             stations = ListDict()
             stations.append(station_metadata)
             stations[0].runs = runs
+            stations[0].update_time_period()
 
             self.survey_metadata.stations = stations
+            self._survey_metadata.update_time_period()
 
     @property
     def run_metadata(self):

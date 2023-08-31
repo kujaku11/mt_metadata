@@ -1232,7 +1232,10 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(m_ch, item, value)
 
                     m_ch.name = comp.capitalize()
-                    m_ch.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        m_ch.orientation = ch.translated_azimuth
+                    else:
+                        m_ch.orientation = ch.measurement_azimuth
 
                     if comp in ["hx", "hy"]:
                         ch_in_dict[comp] = m_ch
@@ -1263,7 +1266,7 @@ class EMTFXML(emtf_xml.EMTF):
                     if ch.translated_azimuth is not None:
                         ch_out.orientation = ch.translated_azimuth
                     else:
-                        ch_out.orientation = ch.measured_azimuth
+                        ch_out.orientation = ch.measurement_azimuth
 
                     if (
                         ch_out.x == 0
