@@ -16,6 +16,7 @@ import xarray as xr
 
 from loguru import logger
 
+from mt_metadata.timeseries import Survey as TSSurvey
 from mt_metadata.transfer_functions.tf import (
     Survey,
     Station,
@@ -266,7 +267,11 @@ class TF:
         """
 
         if not isinstance(survey_metadata, Survey):
-            if isinstance(survey_metadata, dict):
+            if isinstance(survey_metadata, TSSurvey):
+                sm = Survey()
+                sm.from_dict(survey_metadata.to_dict())
+                survey_metadata = sm
+            elif isinstance(survey_metadata, dict):
                 if "survey" not in [
                     cc.lower() for cc in survey_metadata.keys()
                 ]:
@@ -320,9 +325,7 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(
-                station_metadata
-            )
+            station_metadata = self._validate_station_metadata(station_metadata)
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:

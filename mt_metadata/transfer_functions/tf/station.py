@@ -54,16 +54,7 @@ attr_dict.add_dict(
     Provenance()._attr_dict,
     "provenance",
 )
-# attr_dict.add_dict(
-#     get_schema("software", TS_SCHEMA_FN_PATHS), "provenance.software"
-# )
-# attr_dict.add_dict(
-#     get_schema("person", TS_SCHEMA_FN_PATHS),
-#     "provenance.submitter",
-#     keys=["author", "email", "organization"],
-# )
-# attr_dict["provenance.submitter.email"]["required"] = True
-# attr_dict["provenance.submitter.organization"]["required"] = True
+
 attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
 attr_dict.add_dict(TransferFunction()._attr_dict, "transfer_function")
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
