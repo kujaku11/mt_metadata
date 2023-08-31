@@ -97,7 +97,18 @@ class TestEMTFXML(unittest.TestCase):
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_info.site.project: USArray, remote_info.site.survey: Transportable Array, remote_info.site.year_collected: 2015, remote_info.site.country: USA, remote_info.site.id: GAA53, remote_info.site.name: WHEATLEY FOREST, GA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 31.904132, remote_info.site.location.longitude: -83.946993, remote_info.site.location.elevation: 86.5, remote_info.site.location.datum: WGS84, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
+                        "remote_info.site.project = USArray",
+                        "remote_info.site.survey = Transportable Array",
+                        "remote_info.site.year_collected = 2015",
+                        "remote_info.site.country = USA",
+                        "remote_info.site.id = GAA53",
+                        "remote_info.site.name = WHEATLEY FOREST, GA, USA",
+                        "remote_info.site.location.latitude = 31.904132",
+                        "remote_info.site.location.longitude = -83.946993",
+                        "remote_info.site.location.elevation = 86.5",
+                        "remote_info.site.location.datum = WGS84",
+                        "remote_info.site.orientation.angle_to_geographic_north = 0.0",
+                        "remote_info.site.orientation.layout = orthogonal",
                     ],
                 ),
                 (
@@ -114,7 +125,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.units", None),
             ]
         )
-
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.to_dict(single=True)
         )

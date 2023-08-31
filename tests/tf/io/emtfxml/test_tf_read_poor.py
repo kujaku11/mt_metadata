@@ -96,7 +96,13 @@ class TestEMTFXML(unittest.TestCase):
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_info.site.id: REV06, remote_info.site.name: Poso Creek, CA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 35.71262, remote_info.site.location.longitude: -119.466415, remote_info.site.location.elevation: 61.05, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
+                        "remote_info.site.id = REV06",
+                        "remote_info.site.name = Poso Creek, CA, USA",
+                        "remote_info.site.location.latitude = 35.71262",
+                        "remote_info.site.location.longitude = -119.466415",
+                        "remote_info.site.location.elevation = 61.05",
+                        "remote_info.site.orientation.angle_to_geographic_north = 0.0",
+                        "remote_info.site.orientation.layout = orthogonal",
                     ],
                 ),
                 (
@@ -119,7 +125,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.units", None),
             ]
         )
-
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.to_dict(single=True)
         )
