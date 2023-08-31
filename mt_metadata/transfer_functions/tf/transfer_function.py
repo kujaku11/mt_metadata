@@ -24,9 +24,7 @@ from . import Person, Software, DataQuality
 attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("person", TS_SCHEMA_FN_PATHS), "processed_by")
 attr_dict.add_dict(get_schema("software", TS_SCHEMA_FN_PATHS), "software")
-attr_dict.add_dict(
-    get_schema("data_quality", TS_SCHEMA_FN_PATHS), "data_quality"
-)
+attr_dict.add_dict(DataQuality()._attr_dict, "data_quality")
 # =============================================================================
 class TransferFunction(Base):
     __doc__ = write_lines(attr_dict)

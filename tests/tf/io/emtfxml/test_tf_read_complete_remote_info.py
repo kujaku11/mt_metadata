@@ -50,7 +50,21 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.comments", "IRIS DMC MetaData"),
+                ("provenance.archive.name", None),
+                ("provenance.archive.url", "http://www.iris.edu/mda/EM/GAA54"),
                 ("provenance.creation_time", "2018-01-03T12:46:46+00:00"),
+                (
+                    "provenance.creator.author",
+                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
+                ),
+                ("provenance.creator.email", "egbert@coas.oregonstate.edu"),
+                (
+                    "provenance.creator.name",
+                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
+                ),
+                ("provenance.creator.organization", "Oregon State University"),
+                ("provenance.creator.url", "http://oregonstate.edu"),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -59,30 +73,58 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
-                (
-                    "provenance.submitter.organization",
-                    "U.S. Geological Survey",
-                ),
+                ("provenance.submitter.name", "Anna Kelbert"),
+                ("provenance.submitter.organization", "U.S. Geological Survey"),
+                ("provenance.submitter.url", "http://geomag.usgs.gov"),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["GAA54b"]),
                 ("time_period.end", "2015-09-28T14:05:14+00:00"),
                 ("time_period.start", "2015-09-11T17:45:44+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.good_from_period", 10.0),
+                ("transfer_function.data_quality.good_to_period", 10000.0),
+                ("transfer_function.data_quality.rating.value", 5),
                 ("transfer_function.id", "GAA54"),
+                (
+                    "transfer_function.processed_by.author",
+                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
+                ),
+                (
+                    "transfer_function.processed_by.name",
+                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
+                ),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_ref.type: Robust Remote Reference, remote_info.site.project: USArray, remote_info.site.survey: Transportable Array, remote_info.site.year_collected: 2015, remote_info.site.country: USA, remote_info.site.id: GAA53, remote_info.site.name: WHEATLEY FOREST, GA, USA, remote_info.site.run_list: , remote_info.site.location.latitude: 31.904132, remote_info.site.location.longitude: -83.946993, remote_info.site.location.elevation: 86.5, remote_info.site.location.datum: WGS84, remote_info.site.orientation.angle_to_geographic_north: 0.0, remote_info.site.orientation.layout: orthogonal}"
+                        "remote_info.site.project = USArray",
+                        "remote_info.site.survey = Transportable Array",
+                        "remote_info.site.year_collected = 2015",
+                        "remote_info.site.country = USA",
+                        "remote_info.site.id = GAA53",
+                        "remote_info.site.name = WHEATLEY FOREST, GA, USA",
+                        "remote_info.site.location.latitude = 31.904132",
+                        "remote_info.site.location.longitude = -83.946993",
+                        "remote_info.site.location.elevation = 86.5",
+                        "remote_info.site.location.datum = WGS84",
+                        "remote_info.site.orientation.angle_to_geographic_north = 0.0",
+                        "remote_info.site.orientation.layout = orthogonal",
                     ],
+                ),
+                (
+                    "transfer_function.processing_type",
+                    "Robust Remote Reference",
                 ),
                 ("transfer_function.remote_references", ["GAA54b", "A53coh"]),
                 ("transfer_function.runs_processed", ["GAA54b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", "Gary Egbert"),
+                ("transfer_function.software.last_updated", "2015-08-26"),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
-
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.to_dict(single=True)
         )
@@ -265,9 +307,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (30, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((30, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest(msg="first element"):
             self.assertTrue(

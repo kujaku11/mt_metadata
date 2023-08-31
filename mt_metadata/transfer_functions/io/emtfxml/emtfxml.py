@@ -878,8 +878,8 @@ class EMTFXML(emtf_xml.EMTF):
                 self.processing_info.processing_tag.split("_")
             )
         s.transfer_function.runs_processed = self.site.run_list
-        s.transfer_function.processing_parameters.append(
-            {"remote_ref.type": self.processing_info.remote_ref.type}
+        s.transfer_function.processing_type = (
+            self.processing_info.remote_ref.type
         )
 
         if self.processing_info.remote_info.site.id is not None:
@@ -897,10 +897,12 @@ class EMTFXML(emtf_xml.EMTF):
                     "1980",
                     1980,
                     "1980-01-01T00:00:00+00:00",
+                    [],
+                    "",
                 ]:
-                    s.transfer_function.processing_parameters[0][
-                        f"remote_info.site.{key}"
-                    ] = value
+                    s.transfer_function.processing_parameters.append(
+                        f"remote_info.site.{key} = {value}"
+                    )
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -1103,9 +1105,19 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_tag = "_".join(
             sm.transfer_function.remote_references
         )
+        self.processing_info.remote_ref.type = (
+            sm.transfer_function.processing_type
+        )
         for param in sm.transfer_function.processing_parameters:
-            if isinstance(param, dict):
-                for key, value in param.items():
+            if isinstance(param, str):
+                sep = None
+                if param.count("=") >= 1:
+                    sep = "="
+                elif param.count(":") >= 1:
+                    sep = ":"
+
+                if sep:
+                    key, value = [k.strip() for k in param.split(sep, 1)]
                     try:
                         self.processing_info.set_attr_from_name(key, value)
                     except Exception as error:
@@ -1113,6 +1125,7 @@ class EMTFXML(emtf_xml.EMTF):
                             f"Cannot set processing info attribute {param}"
                         )
                         self.logger.exception(error)
+
         self.site.run_list = sm.transfer_function.runs_processed
 
         self.site.data_quality_notes.good_from_period = (
@@ -1154,9 +1167,7 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(
-                                f"Cannot set attribute {key}."
-                            )
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:
@@ -1221,7 +1232,10 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(m_ch, item, value)
 
                     m_ch.name = comp.capitalize()
-                    m_ch.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        m_ch.orientation = ch.translated_azimuth
+                    else:
+                        m_ch.orientation = ch.measurement_azimuth
 
                     if comp in ["hx", "hy"]:
                         ch_in_dict[comp] = m_ch
@@ -1249,7 +1263,22 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(ch_out, item, value)
 
                     ch_out.name = comp.capitalize()
-                    ch_out.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        ch_out.orientation = ch.translated_azimuth
+                    else:
+                        ch_out.orientation = ch.measurement_azimuth
+
+                    if (
+                        ch_out.x == 0
+                        and ch_out.y == 0
+                        and ch_out.x2 == 0
+                        and ch_out.y2 == 0
+                    ):
+                        if comp in ["ex"]:
+                            ch_out.x2 = ch.dipole_length
+                        elif comp in ["ey"]:
+                            ch_out.y2 = ch.dipole_length
+
                     ch_out_dict[comp] = ch_out
                 except AttributeError:
                     self.logger.debug(f"Did not find {comp} in run")

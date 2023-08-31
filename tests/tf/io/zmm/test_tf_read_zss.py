@@ -34,7 +34,7 @@ class TestZSS(unittest.TestCase):
                 ("citation_journal.doi", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
-                ("id", None),
+                ("id", "0"),
                 ("name", None),
                 ("northwest_corner.latitude", 0.0),
                 ("northwest_corner.longitude", 0.0),
@@ -69,26 +69,30 @@ class TestZSS(unittest.TestCase):
                 ("location.longitude", -110.44),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
-                ("provenance.submitter.email", None),
-                ("provenance.submitter.organization", None),
+                ("provenance.submitter.name", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["ysw212abcdefghijkla"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "ysw212abcdefghijkl"),
+                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
+                ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
-                (
-                    "transfer_function.runs_processed",
-                    ["ysw212abcdefghijkla"],
-                ),
+                ("transfer_function.runs_processed", ["ysw212abcdefghijkla"]),
                 ("transfer_function.sign_convention", None),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", "1"),
                 ("transfer_function.units", None),
             ]
         )
@@ -137,9 +141,7 @@ class TestZSS(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
-                    ),
+                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -190,9 +192,7 @@ class TestZSS(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (44, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):

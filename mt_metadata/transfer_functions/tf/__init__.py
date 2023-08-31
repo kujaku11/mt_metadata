@@ -73,7 +73,6 @@ from mt_metadata.timeseries.filters.filtered import Filtered
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.timeseries.data_logger import DataLogger
 from .transfer_function import TransferFunction
-from mt_metadata.timeseries.survey import Survey
 from mt_metadata.timeseries.channel import Channel
 from mt_metadata.timeseries.auxiliary import Auxiliary
 from mt_metadata.timeseries.electric import Electric
@@ -81,6 +80,7 @@ from mt_metadata.timeseries.magnetic import Magnetic
 from .statistical_estimate import StatisticalEstimate
 from mt_metadata.timeseries.run import Run
 from .station import Station
+from .survey import Survey
 
 
 __all__ = [

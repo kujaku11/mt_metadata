@@ -15,62 +15,72 @@ from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
-from . import (
+from mt_metadata.timeseries.standards import (
+    SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
+)
+from mt_metadata.timeseries import (
     Person,
     Citation,
     Location,
     TimePeriod,
     Fdsn,
-    Station,
     FundingSource,
 )
-from .filters import (
+from mt_metadata.timeseries import Station as TSStation
+from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     CoefficientFilter,
     TimeDelayFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
 )
+from mt_metadata.transfer_functions.tf import Station
+
+
 from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+attr_dict.add_dict(get_schema("fdsn", TS_SCHEMA_FN_PATHS), "fdsn")
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
+    get_schema("person", TS_SCHEMA_FN_PATHS),
     "acquired_by",
     keys=["author", "comments", "organization"],
 )
 attr_dict.add_dict(
-    get_schema("funding_source", SCHEMA_FN_PATHS),
+    get_schema("funding_source", TS_SCHEMA_FN_PATHS),
     "funding_source",
 )
-attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_dataset")
-attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation_journal")
 attr_dict.add_dict(
-    get_schema("location", SCHEMA_FN_PATHS),
+    get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_dataset"
+)
+attr_dict.add_dict(
+    get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_journal"
+)
+attr_dict.add_dict(
+    get_schema("location", TS_SCHEMA_FN_PATHS),
     "northwest_corner",
     keys=["latitude", "longitude"],
 )
 attr_dict.add_dict(
-    get_schema("location", SCHEMA_FN_PATHS),
+    get_schema("location", TS_SCHEMA_FN_PATHS),
     "southeast_corner",
     keys=["latitude", "longitude"],
 )
 attr_dict.add_dict(
-    get_schema("geographic_location", SCHEMA_FN_PATHS),
+    get_schema("geographic_location", TS_SCHEMA_FN_PATHS),
     None,
     keys=["country", "state"],
 )
 attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
+    get_schema("person", TS_SCHEMA_FN_PATHS),
     "project_lead",
     keys=["author", "email", "organization"],
 )
 attr_dict["project_lead.email"]["required"] = True
 attr_dict["project_lead.organization"]["required"] = True
 
-attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
+attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 # =============================================================================
 class Survey(Base):
     __doc__ = write_lines(attr_dict)
@@ -130,16 +140,22 @@ class Survey(Base):
 
         for ii, station in enumerate(value_list):
 
-            if isinstance(station, (dict, OrderedDict)):
+            if isinstance(station, Station):
+                self._stations.append(station)
+            elif isinstance(station, (dict, OrderedDict)):
                 s = Station()
                 s.from_dict(station)
                 self._stations.append(s)
-            elif not isinstance(station, Station):
+            elif isinstance(station, TSStation):
+                s = Station()
+                s.from_dict(station.to_dict())
+                s.runs = station.runs
+                self._stations.append(s)
+            else:
                 msg = f"Item {ii} is not type(Station); type={type(station)}"
                 fails.append(msg)
                 self.logger.error(msg)
-            else:
-                self._stations.append(station)
+
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
@@ -269,6 +285,10 @@ class Survey(Base):
         """
 
         if not isinstance(station_obj, Station):
+            if isinstance(station_obj, TSStation):
+                tf_station_metadata = Station()
+                tf_station_metadata.from_dict(station_obj.to_dict())
+                station_obj = tf_station_metadata
             raise TypeError(
                 f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
             )
