@@ -46,7 +46,7 @@ class TestZongeAVGTipper(unittest.TestCase):
                 ("southeast_corner.longitude", 0.0),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
-                ("time_period.start_date", "1980-01-01"),
+                ("time_period.start_date", "2022-05-16"),
             ]
         )
 

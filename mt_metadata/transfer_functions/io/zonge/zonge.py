@@ -472,7 +472,10 @@ class ZongeMTAvg:
 
     @property
     def survey_metadata(self):
-        return Survey()
+        sm = Survey()
+        sm.add_station(self.station_metadata)
+        sm.update_time_period()
+        return sm
 
     def write(self, fn):
         """
