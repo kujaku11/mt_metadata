@@ -2079,8 +2079,11 @@ class TF:
                 ch = getattr(self.station_metadata.runs[0], comp)
                 c = ZChannel()
                 c.from_dict(ch.to_dict(single=True))
-                c.number = number_dict[c.channel]
-                setattr(zmm_obj, c.channel, c)
+                try:
+                    c.number = number_dict[c.channel]
+                    setattr(zmm_obj, c.channel, c)
+                except KeyError:
+                    self.logger.debug(f"Could not find channel {c.channel}")
         zmm_obj.survey_metadata.update(self.survey_metadata)
         zmm_obj.num_freq = self.period.size
 
