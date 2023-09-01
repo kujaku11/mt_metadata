@@ -120,7 +120,7 @@
         "example": true,
 		"default": true
     },
-	"harmonic_indices_kept": {
+	"harmonic_indices": {
         "type": "integer",
         "required": true,
         "style": "number list",
