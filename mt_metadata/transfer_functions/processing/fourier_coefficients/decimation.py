@@ -287,3 +287,129 @@ class Decimation(Base):
             return False
         else:
             return True
+
+    def has_fcs_for_aurora_processing(self, decimation_level, remote):
+        """
+
+        Parameters
+        ----------
+        decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
+        remote: bool
+
+        Iterates over parameters:
+        "channels_estimated", "anti_alias_filter", "sample_rate, "method", "prewhitening_type", "recoloring",
+        "pre_fft_detrend_type", "min_num_stft_windows", "window", "harmonic_indices",
+        Returns
+        -------
+
+        """
+        # "channels_estimated"
+        if remote:
+            required_channels = decimation_level.reference_channels
+        else:
+            required_channels = decimation_level.local_channels
+        try:
+            assert set(self.channels_estimated) == set(required_channels)
+        except AssertionError:
+            msg = f"required_channels for processing {required_channels} not available"
+            msg += f"-- fc channels estimated are {self.channels_estimated}"
+            self.logger.warning(msg)
+            return False
+
+        # anti_alias_filter
+        try:
+            assert self.anti_alias_filter == decimation_level.anti_alias_filter
+        except AssertionError:
+            cond1 = decimation_level.anti_alias_filter == "default"
+            cond2 = self.anti_alias_filter is None
+            if cond1 & cond2:
+                pass
+            else:
+                msg = "Antialias Filters Not Compatible -- need to add handling for "
+                msg += f"{msg} FCdec {self.anti_alias_filter} and "
+                msg += f"{msg} processing config:{decimation_level.anti_alias_filter}"
+                raise NotImplementedError(msg)
+
+        # sample_rate
+        try:
+            assert self.sample_rate_decimation == decimation_level.sample_rate_decimation
+        except AssertionError:
+            msg = f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
+            msg += f"{msg} vs processing config {decimation_level.sample_rate_decimation}"
+            self.logger.warning(msg)
+            return False
+
+        # method (fft, wavelet, etc.)
+        try:
+            assert self.method == decimation_level.method
+        except AssertionError:
+            msg = f"Transform methods do not agree"
+            msg += f"{msg} {self.method} != {decimation_level.method}"
+            self.logger.warning(msg)
+            return False
+
+        # prewhitening_type
+        try:
+            assert self.prewhitening_type == decimation_level.prewhitening_type
+        except AssertionError:
+            msg = f"prewhitening_type does not agree"
+            msg += f"{msg} {self.prewhitening_type} != {decimation_level.prewhitening_type}"
+            self.logger.warning(msg)
+            return False
+
+        # recoloring
+        try:
+            assert self.recoloring == decimation_level.recoloring
+        except AssertionError:
+            msg = f"recoloring does not agree"
+            msg += f"{msg} {self.recoloring} != {decimation_level.recoloring}"
+            self.logger.warning(msg)
+            return False
+
+        # pre_fft_detrend_type
+        try:
+            assert self.pre_fft_detrend_type == decimation_level.pre_fft_detrend_type
+        except AssertionError:
+            msg = f"pre_fft_detrend_type does not agree"
+            msg += f"{msg} {self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+            self.logger.warning(msg)
+            return False
+
+        # min_num_stft_windows
+        try:
+            assert self.min_num_stft_windows == decimation_level.min_num_stft_windows
+        except AssertionError:
+            msg = f"min_num_stft_windows do not agree "
+            msg += f"{msg} {self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+            self.logger.warning(msg)
+            return False
+
+        # window
+        try:
+            assert self.window == decimation_level.window
+        except AssertionError:
+            msg = "window does not agree:\n"
+            msg = f"{msg} FC Group: {self.window}\n"
+            msg = f"{msg} Processing Config  {decimation_level.window}"
+            self.logger.warning(msg)
+            return False
+
+        # harmonic_indices
+        # Comparison of integer indices OK, since sample_rate and window length agreement is already established
+        if -1 in self.harmonic_indices:
+            # if harmonic_indices is -1, it means keep all so we can skip this check.
+            pass
+        else:
+            harmonic_indices_requested = decimation_level.harmonic_indices()
+            # print(f"determined that {harmonic_indices_requested} are the requested indices")
+            fcdec_group_set = set(self.harmonic_indices)
+            processing_set = set(harmonic_indices_requested)
+            if processing_set.issubset(fcdec_group_set):
+                pass
+            else:
+                msg = f"Processing FC indices {processing_set} is not contained in FC indices {fcdec_group_set}"
+                self.logger.warning(msg)
+                return False
+
+        # No checks were failed the FCDecimation supports the processing config
+        return True
