@@ -46,8 +46,8 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        if self.decimation.level == 0:
-            self.anti_alias_filter = None
+        # if self.decimation.level == 0:
+        #     self.anti_alias_filter = None
 
     @property
     def bands(self):
