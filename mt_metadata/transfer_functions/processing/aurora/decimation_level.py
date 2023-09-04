@@ -194,6 +194,10 @@ class DecimationLevel(Base):
         return_list.sort()
         return return_list
 
+    @property
+    def local_channels(self):
+        return self.input_channels + self.output_channels
+
     def to_fc_decimation(self, local_or_remote):
         """
         Generates a Decimation() object for use with FC Layer in mth5.
@@ -220,9 +224,7 @@ class DecimationLevel(Base):
         fc_dec_obj = FourierCoefficientDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if local_or_remote.lower() == "local":
-            fc_dec_obj.channels_estimated = (
-                self.input_channels + self.output_channels
-            )
+            fc_dec_obj.channels_estimated = self.local_channels
         elif local_or_remote.lower() in [
             "remote",
             "rr",
