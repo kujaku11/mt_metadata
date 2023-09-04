@@ -32,8 +32,8 @@ class Decimation(Base):
         self.time_period = TimePeriod()
         self.channels = ListDict()
         super().__init__(attr_dict=attr_dict, **kwargs)
-        if self.decimation_level == 0:
-            self.anti_alias_filter = None
+        # if self.decimation_level == 0:
+        #     self.anti_alias_filter = None
 
     def __len__(self):
         return len(self.channels)
