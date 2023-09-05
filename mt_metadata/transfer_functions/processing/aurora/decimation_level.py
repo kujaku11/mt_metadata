@@ -201,9 +201,21 @@ class DecimationLevel(Base):
     def local_channels(self):
         return self.input_channels + self.output_channels
 
-    def to_fc_decimation(self, local_or_remote):
+    def to_fc_decimation(self, remote=False, ignore_harmonic_indices=True):
         """
-        Generates a Decimation() object for use with FC Layer in mth5.
+
+        Parameters
+        ----------
+        remote
+        ignore_harmonic_indices
+
+        Returns
+        -------
+
+        """
+        """
+        Generates a FC Decimation() object for use with FC Layer in mth5.
+
         Note that the property is assigned harmonic_indices_required, which is not in the formal schema of the output
         Decimation() object.  This is there to capture the FC indices that are required to process the TF, to allow
         checking for these in the FC Level, in order to validate that the archived FC Level contains the needed data
@@ -212,9 +224,16 @@ class DecimationLevel(Base):
         ToDo: Consider making local_or_remote a kwarg, with default value None.  While it may be useful at times to only
         generate FCs for selected channels, in general we will normally wish to estimate all channels for archiving
         purposes.
-        Args:
-            local_or_remote: str
-            ["local", "remote", "RR"]
+
+        Parameters
+        ----------
+        remote: bool
+            If True, use reference channels, if False, use local_channels.  We may wish to not pass remote=True when
+            _building_ FCs however, because then not all channels will get built.
+        ignore_harmonic_indices: bool
+            If True, leave harmonic indices at default [-1,], which means all indices.  If False, only the specific
+            harmonic indices needed for processing will be stored.  Thus, when building FCs, it maybe best to leave
+            this as True, that way all FCs will be stored, so if the band setup is changed, the FCs will still be there.
 
         Returns:
             fc_dec_obj:mt_metadata.transfer_functions.processing.fourier_coefficients.decimation.Decimation
@@ -226,18 +245,18 @@ class DecimationLevel(Base):
         )
         fc_dec_obj = FourierCoefficientDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
-        if local_or_remote.lower() == "local":
-            fc_dec_obj.channels_estimated = self.local_channels
-        elif local_or_remote.lower() in [
-            "remote",
-            "rr",
-        ]:
+        if remote:
             fc_dec_obj.channels_estimated = self.reference_channels
+        else:
+            fc_dec_obj.channels_estimated = self.local_channels
         fc_dec_obj.decimation_factor = self.decimation.factor
         fc_dec_obj.decimation_level = self.decimation.level
-        fc_dec_obj.harmonic_indices_required = self.harmonic_indices()
-        fc_dec_obj.id = "undefined when sourced from decimation_level.py"
-        fc_dec_obj.method = "fft"
+        if ignore_harmonic_indices:
+            pass
+        else:
+            fc_dec_obj.harmonic_indices = self.harmonic_indices()
+        fc_dec_obj.id = f"{self.decimation.level}"
+        fc_dec_obj.method = self.method
         fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
         fc_dec_obj.prewhitening_type = self.prewhitening_type
         fc_dec_obj.recoloring = self.recoloring
