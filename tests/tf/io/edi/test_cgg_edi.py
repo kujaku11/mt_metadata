@@ -394,7 +394,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", "4"),
+                ("acqchan", "1004.001"),
                 ("azm", 0.0),
                 ("chtype", "ex"),
                 ("id", 1004.001),
@@ -414,7 +414,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", "5"),
+                ("acqchan", "1005.001"),
                 ("azm", 0.0),
                 ("chtype", "ey"),
                 ("id", 1005.001),
@@ -434,7 +434,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", "1"),
+                ("acqchan", "1001.001"),
                 ("azm", 0.0),
                 ("chtype", "hx"),
                 ("dip", 0.0),
@@ -452,7 +452,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", "2"),
+                ("acqchan", "1002.001"),
                 ("azm", 90.0),
                 ("chtype", "hy"),
                 ("dip", 0.0),
@@ -470,7 +470,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", "3"),
+                ("acqchan", "1003.001"),
                 ("azm", 0.0),
                 ("chtype", "hz"),
                 ("dip", 0.0),
