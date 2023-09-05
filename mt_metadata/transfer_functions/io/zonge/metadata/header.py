@@ -69,6 +69,7 @@ class Header(Base):
         self.line = Line()
         self.unit = Unit()
         self.job = Job
+        self._elevation = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         self._comp_dict = {}
@@ -167,7 +168,11 @@ class Header(Base):
     def elevation(self):
         if self.center_location is not None:
             return self.center_location[-1]
-        return 0.0
+        return self._elevation
+
+    @elevation.setter
+    def elevation(self, value):
+        self._elevation = float(value)
 
     @property
     def easting(self):

@@ -20,7 +20,7 @@ from mt_metadata.transfer_functions import TF
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestAVG(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG)
@@ -64,7 +64,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("location.datum", "WGS84"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 0.0),
-                ("location.elevation", 0.0),
+                ("location.elevation", 1414.37487793),
                 ("location.latitude", 32.83331167),
                 ("location.longitude", -107.08305667),
                 ("orientation.method", None),

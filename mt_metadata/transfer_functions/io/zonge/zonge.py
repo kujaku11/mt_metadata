@@ -26,6 +26,7 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
     Electric,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # ==============================================================================
 # deal with avg files output from mtedit
@@ -155,7 +156,9 @@ class ZongeMTAvg:
                 entry = dict(
                     [
                         (key.lower(), value)
-                        for key, value in zip(["comp"] + self.info_keys, values)
+                        for key, value in zip(
+                            ["comp"] + self.info_keys, values
+                        )
                     ]
                 )
                 data_list.append(entry)
@@ -173,6 +176,12 @@ class ZongeMTAvg:
 
         self.z, self.z_err = self._fill_z()
         self.t, self.t_err = self._fill_t()
+
+        if self.header.elevation == 0:
+            if self.header.latitude != 0 and self.header.longitude != 0:
+                self.header.elevation = get_nm_elev(
+                    self.header.latitude, self.header.longitude
+                )
 
     def to_complex(self, zmag, zphase):
         """
@@ -314,9 +323,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zxy"][
                 "ch"
             ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
-                0
-            ]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[0]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zxy"]["ch"].number[0]
@@ -338,9 +347,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zyx"][
                 "ch"
             ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
-                0
-            ]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[0]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zyx"]["ch"].number[0]
@@ -361,9 +370,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zyx"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
-                1
-            ]
+            ch.translated_azimuth = self.header._comp_dict["zyx"][
+                "ch"
+            ].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zyx"]["ch"].number[1]
@@ -385,9 +394,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["zxy"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
-                1
-            ]
+            ch.translated_azimuth = self.header._comp_dict["zxy"][
+                "ch"
+            ].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zxy"]["ch"].number[1]
@@ -409,9 +418,9 @@ class ZongeMTAvg:
             ch.measurement_azimuth = self.header._comp_dict["tzx"][
                 "ch"
             ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[
-                1
-            ]
+            ch.translated_azimuth = self.header._comp_dict["tzx"][
+                "ch"
+            ].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]
