@@ -216,14 +216,9 @@ class DecimationLevel(Base):
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
-        Note that the property is assigned harmonic_indices_required, which is not in the formal schema of the output
-        Decimation() object.  This is there to capture the FC indices that are required to process the TF, to allow
-        checking for these in the FC Level, in order to validate that the archived FC Level contains the needed data
-        for processing.
-
-        ToDo: Consider making local_or_remote a kwarg, with default value None.  While it may be useful at times to only
-        generate FCs for selected channels, in general we will normally wish to estimate all channels for archiving
-        purposes.
+        Ignoring for now these properties
+        "time_period.end": "1980-01-01T00:00:00+00:00",
+        "time_period.start": "1980-01-01T00:00:00+00:00",
 
         Parameters
         ----------
