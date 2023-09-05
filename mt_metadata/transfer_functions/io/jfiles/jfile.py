@@ -21,6 +21,7 @@ from mt_metadata.transfer_functions.tf import (
 )
 from mt_metadata.utils.mttime import MTime
 from .metadata import Header
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # ==============================================================================
 # Class to read j_file
@@ -209,7 +210,9 @@ class JFile:
             if "z" in d_line.lower():
                 d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
+            elif (
+                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
+            ):
                 continue
             elif "r" in d_line.lower():
                 break
@@ -279,7 +282,9 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
+                    z_value = (
+                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
+                    )
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
@@ -307,6 +312,12 @@ class JFile:
         self.t[np.where(self.t == np.inf)] = 0 + 0j
         self.z_err[np.where(self.z_err == np.inf)] = 10**6
         self.t_err[np.where(self.t_err == np.inf)] = 10**6
+
+        if self.header.elevation == 0:
+            if self.header.latitude != 0 and self.header.longitude != 0:
+                self.header.elevation = get_nm_elev(
+                    self.header.latitude, self.header.longitude
+                )
 
     @property
     def station_metadata(self):
