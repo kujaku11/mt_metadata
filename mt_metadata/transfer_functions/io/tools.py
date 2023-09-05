@@ -7,7 +7,7 @@ Created on Sat Dec  4 17:44:51 2021
 # =============================================================================
 # imports
 # =============================================================================
-import urllib as url
+import urllib.request as url_request
 import json
 
 from loguru import logger
@@ -191,7 +191,7 @@ def get_nm_elev(latitude, longitude):
     )
     # call the url and get the response
     try:
-        response = url.request.urlopen(nm_url)
+        response = url_request.urlopen(nm_url)
     except:
         logger.error("Could not connect to internet to get elevation data.")
         return 0.0
