@@ -32,6 +32,7 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 meta_classes = dict(
     [
@@ -321,6 +322,15 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_statistical_estimates()
         self._get_data_types()
         self._update_site_layout()
+
+        if self.site.location.elevation == 0:
+            if (
+                self.site.location.latitude != 0
+                and self.site.location.longitude != 0
+            ):
+                self.site.location.elevation = get_nm_elev(
+                    self.site.location.latitude, self.site.location.longitude
+                )
 
     def write(self, fn, skip_field_notes=False):
         """
@@ -1167,7 +1177,9 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(f"Cannot set attribute {key}.")
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:
