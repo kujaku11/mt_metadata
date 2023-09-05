@@ -64,7 +64,7 @@ class TestZMM(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0.0),
+                ("location.elevation", 948.158935547),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
@@ -268,7 +268,9 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -372,7 +374,7 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0.0),
+                ("location.elevation", 948.158935547),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
