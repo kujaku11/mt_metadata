@@ -85,7 +85,7 @@
         "options": [],
         "alias": [],
         "example": "default",
-		"default": null
+		"default": "default"
     },
 	"pre_fft_detrend_type": {
         "type": "string",
@@ -120,7 +120,7 @@
         "example": true,
 		"default": true
     },
-	"harmonic_indices_kept": {
+	"harmonic_indices": {
         "type": "integer",
         "required": true,
         "style": "number list",

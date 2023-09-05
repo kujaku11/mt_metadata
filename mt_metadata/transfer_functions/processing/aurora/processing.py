@@ -240,6 +240,7 @@ class Processing(Base):
         json_fn = self.id + "_processing_config.json"
         return json_fn
 
+    @property
     def num_decimation_levels(self):
         return len(self.decimations)
 

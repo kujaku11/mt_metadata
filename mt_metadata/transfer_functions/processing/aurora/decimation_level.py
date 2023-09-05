@@ -46,6 +46,9 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+        # if self.decimation.level == 0:
+        #     self.anti_alias_filter = None
+
     @property
     def bands(self):
         """
@@ -187,12 +190,16 @@ class DecimationLevel(Base):
         return self.decimation.sample_rate
 
     def harmonic_indices(self):
-        harmonic_indices = []
+        return_list = []
         for band in self.bands:
-            fc_indices = np.arange(band.index_min, band.index_max + 1)
-            harmonic_indices += fc_indices.tolist()
-        harmonic_indices.sort()
-        return harmonic_indices
+            fc_indices = band.harmonic_indices(continuous=True)
+            return_list += fc_indices.tolist()
+        return_list.sort()
+        return return_list
+
+    @property
+    def local_channels(self):
+        return self.input_channels + self.output_channels
 
     def to_fc_decimation(self, local_or_remote):
         """
@@ -220,9 +227,7 @@ class DecimationLevel(Base):
         fc_dec_obj = FourierCoefficientDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if local_or_remote.lower() == "local":
-            fc_dec_obj.channels_estimated = (
-                self.input_channels + self.output_channels
-            )
+            fc_dec_obj.channels_estimated = self.local_channels
         elif local_or_remote.lower() in [
             "remote",
             "rr",
