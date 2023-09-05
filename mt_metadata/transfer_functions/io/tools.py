@@ -192,7 +192,7 @@ def get_nm_elev(latitude, longitude):
     # call the url and get the response
     try:
         response = url.request.urlopen(nm_url)
-    except (url.error.HTTPError, url.request.http.client.RemoteDisconnected):
+    except:
         logger.error("Could not connect to internet to get elevation data.")
         return 0.0
 
