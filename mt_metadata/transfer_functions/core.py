@@ -31,6 +31,7 @@ from mt_metadata.transfer_functions.io import (
     JFile,
     ZongeMTAvg,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from mt_metadata.transfer_functions.io.zfiles.metadata import (
     Channel as ZChannel,
 )
@@ -336,7 +337,9 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(station_metadata)
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -584,7 +587,17 @@ class TF:
         """
         set elevation, should be input as meters
         """
+
         self.station_metadata.location.elevation = elevation
+
+    def _get_elevation_from_national_map(self):
+        """
+        get elevation from US national map.  Should extend this to global
+        at some point
+        """
+
+        if self.latitude != 0 and self.longitude != 0:
+            return get_nm_elev(self.latitude, self.longitude)
 
     @property
     def dataset(self):
@@ -1734,6 +1747,9 @@ class TF:
         if file_type is None:
             file_type = self.fn.suffix.lower()[1:]
         self._read_write_dict[file_type]["read"](self.fn, **kwargs)
+
+        if self.elevation == 0:
+            self.elevation = self._get_elevation_from_national_map()
 
     def to_edi(self):
         """
