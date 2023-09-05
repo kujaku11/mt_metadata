@@ -325,49 +325,45 @@ class DefineMeasurement(Base):
 
         # need to write the >XMEAS type, but sort by channel number
         m_key_list = []
+        count = 1.0
         for kk in list(self.__dict__.keys()):
             if kk.find("meas_") == 0:
-                try:
-                    m_key_list.append((kk.strip(), float(self.__dict__[kk].id)))
-                except TypeError:
-                    self.logger.debug(f"No {kk} information.")
+                key = kk.strip()
+                value = self.__dict__[kk].id
+                if value is None:
+                    value = count
+                    count += 1
+                elif isinstance(value, str):
+                    try:
+                        value = float(value)
+
+                    except TypeError:
+                        self.logger.warning(
+                            f"{key}.id cannot be converted to float"
+                        )
+                        value = count
+                        count += 1
+                elif isinstance(value, (float, int)):
+                    value = float(value)
+
+                else:
+                    raise ValueError(f"Could not convert {key}.id to float")
+
+                m_key_list.append((key, value))
 
         if len(m_key_list) == 0:
             self.logger.warning("No XMEAS information.")
         else:
             # need to sort the dictionary by chanel id
-            chn_count = 1
-            for x_key in sorted(m_key_list, key=lambda x: x[1]):
-                x_key = x_key[0]
+            for meas in sorted(m_key_list, key=lambda x: x[1]):
+                x_key = meas[0]
                 m_obj = getattr(self, x_key)
-                if m_obj.chtype is not None:
-                    m_obj.chtype = str(m_obj.chtype)
-                    if m_obj.chtype.lower().find("h") >= 0:
-                        head = "hmeas"
-                    elif m_obj.chtype.lower().find("e") >= 0:
-                        head = "emeas"
-                    else:
-                        head = "None"
-                else:
-                    head = "None"
+                if m_obj.id is None:
+                    m_obj.id = meas[1]
+                if m_obj.acqchan == "0":
+                    m_obj.acqchan = meas[1]
 
-                m_list = [">{0}".format(head.upper())]
-
-                for mkey, mfmt in m_obj._fmt_dict.items():
-                    if mkey == "acqchan":
-                        if getattr(m_obj, mkey) == "0":
-                            setattr(m_obj, mkey, chn_count)
-                            chn_count += 1
-
-                    try:
-                        m_list.append(
-                            f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
-                        )
-                    except (ValueError, TypeError):
-                        m_list.append(f" {mkey.upper()}={0.0:{mfmt}}")
-
-                m_list.append("\n")
-                measurement_lines.append("".join(m_list))
+                measurement_lines.append(m_obj.write_meas_line())
 
         return measurement_lines
 

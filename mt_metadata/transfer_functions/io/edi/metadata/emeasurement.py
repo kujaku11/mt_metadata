@@ -88,3 +88,21 @@ class EMeasurement(Base):
                     return 0
             return self.acqchan
         return 0
+
+    def write_meas_line(self):
+        """
+        write string
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        line = [">emeas".upper()]
+
+        for mkey, mfmt in self._fmt_dict.items():
+            try:
+                line.append(f"{mkey.upper()}={getattr(self, mkey):{mfmt}}")
+            except (ValueError, TypeError):
+                line.append(f"{mkey.upper()}={0.0:{mfmt}}")
+
+        return f"{' '.join(line)}\n"
