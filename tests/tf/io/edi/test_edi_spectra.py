@@ -33,7 +33,7 @@ class TestSpectraEDI(unittest.TestCase):
             "COORDINATE_SYSTEM": "geographic",
             "DATAID": "SAGE_2005",
             "DATUM": "WGS84",
-            "ELEV": 0.0,
+            "ELEV": 1674.992797852,
             "EMPTY": 1e32,
             "FILEBY": "Quantec Consulting",
             "LAT": 35.55,
@@ -197,7 +197,9 @@ class TestSpectraEDI(unittest.TestCase):
             )
 
         with self.subTest("refelev"):
-            self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
+            self.assertAlmostEqual(
+                0.0, self.edi_spectra.Measurement.refelev, 2
+            )
 
     def test_data_section(self):
         d_list = [

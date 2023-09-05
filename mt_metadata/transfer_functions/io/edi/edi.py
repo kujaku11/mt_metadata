@@ -30,6 +30,7 @@ from mt_metadata.transfer_functions.io.tools import (
     _validate_str_with_equals,
     index_locator,
     _validate_edi_lines,
+    get_nm_elev,
 )
 
 from mt_metadata import __version__
@@ -314,6 +315,10 @@ class EDI(object):
                 "Got elevation from refelev for {0}".format(self.Header.dataid)
             )
 
+        if self.elev in [0, None]:
+            if self.lat != 0 and self.lon != 0:
+                self.elev = get_nm_elev(self.lat, self.lon)
+
     def _read_data(self):
         """
         Read either impedance or spectra data depending on what the type is
@@ -413,7 +418,8 @@ class EDI(object):
                         )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"]
+                        + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
@@ -747,7 +753,9 @@ class EDI(object):
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
         if self.Header.fileby != "1980-01-01":
-            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
+            extra_lines.append(
+                f"\toriginal_file.date={self.Header.filedate}\n"
+            )
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -895,11 +903,15 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
+                ">{0} // {1:.0f}\n".format(
+                    data_key.upper(), data_comp_arr.size
+                )
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
+                ">{0} // {1:.0f}\n".format(
+                    data_key.upper(), data_comp_arr.size
+                )
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
