@@ -62,7 +62,10 @@ class TestEMTFXML(unittest.TestCase):
                     "provenance.creator.organization",
                     "Institude of Mineral and Energy Resources, University of Adelaide",
                 ),
-                ("provenance.creator.url", "https://www.adelaide.edu.au/imer/"),
+                (
+                    "provenance.creator.url",
+                    "https://www.adelaide.edu.au/imer/",
+                ),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -70,7 +73,10 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Lana Erofeeva"),
-                ("provenance.submitter.email", "serofeev@coas.oregonstate.edu"),
+                (
+                    "provenance.submitter.email",
+                    "serofeev@coas.oregonstate.edu",
+                ),
                 ("provenance.submitter.name", "Lana Erofeeva"),
                 (
                     "provenance.submitter.organization",
@@ -134,7 +140,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 (
                     "comments",
-                    "copyright.acknowledgement:Funding was provided by the National Water Commission and Geoscientists Without Borders (Society of Exploration Geophysicists Foundation). The surveys instruments were provided by and Zonge Engineering (Australia).; copyright.conditions_of_use:All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided that this data set is cited as the reference, and that the author(s) contributions are acknowledged as detailed in the Acknowledgements. Any papers cited in this file are only for reference. There is no requirement to cite these papers when the data are used. Whenever possible, we ask that the author(s) are notified prior to any publication that makes use of these data. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, nor IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.; copyright.release_status:Unrestricted Release",
+                    "copyright.acknowledgement:Funding was provided by the National Water Commission and Geoscientists Without Borders (Society of Exploration Geophysicists Foundation). The surveys instruments were provided by and Zonge Engineering (Australia).; copyright.conditions_of_use:All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided that this data set is cited as the reference, and that the author(s) contributions are acknowledged as detailed in the Acknowledgements. Any papers cited in this file are only for reference. There is no requirement to cite these papers when the data are used. Whenever possible, we ask that the author(s) are notified prior to any publication that makes use of these data. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, nor IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.; copyright.release_status:Unrestricted Release; copyright.selected_publications:Inverarity, K., Hatch, M., and Heinson, G. (2014). Electrical geophysics of carbonate mound spring complexes of the south-western Great Artesian Basin. ASEG Extended Abstracts, 2013(1), 1-4. Hatch, M., Heinson, G., Cooke, D., Inverarity, K., Pedler-Jones, D., Wilson, J., Costopoulos, A., Lampe, R., Langsford, A. and Stoate, K., 2013. Final Report: Locating groundwater resources for the Aboriginal Communities in the Anangu Pitjantjatjara Yankunytjatjara (APY) Lands, in the far north-west of South Australia. Halihan, T., Love, A., Keppel, M., and Berens, V. (2013). Analysis of subsurface mound spring connectivity in shale of the western margin of the Great Artesian Basin, South Australia. Hydrogeology Journal, 21(7), 1605-1617.; copyright.additional_info:EDI file collection - Information #Number of EDI files in folder number_of_files : 31 #Name of the survey/project survey_name : Nepabunna (2010) #Target description target : groundwater #General location survey_area : Northern Flinders Ranges #Date of survey date : May 2010 #General geometry geometry : random #approximate spatial coverage coverage : 5 km #Name(s) name : Kent Inverarity / David Pedler-Jones / UofA #Data quality estimation quality : poor #Further comments comments : Noise from nearby power lines",
                 ),
                 ("country", ["Australia"]),
                 ("datum", "WGS84"),
