@@ -883,10 +883,17 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.software.last_updated = (
             self.processing_info.processing_software.last_mod
         )
-        if self.processing_info.processing_tag is not None:
-            s.transfer_function.remote_references = (
-                self.processing_info.processing_tag.split("_")
-            )
+        # need to use remote reference info if it has it.
+        if self.processing_info.remote_info.site.id is not None:
+            s.transfer_function.remote_references = [
+                self.processing_info.remote_info.site.id
+            ]
+
+        elif self.processing_info.processing_tag is not None:
+            if "_" in self.processing_info.processing_tag:
+                s.transfer_function.remote_references = (
+                    self.processing_info.processing_tag.split("_")[1:]
+                )
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_type = (
             self.processing_info.remote_ref.type
