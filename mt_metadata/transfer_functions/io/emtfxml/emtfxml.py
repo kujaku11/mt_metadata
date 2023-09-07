@@ -783,7 +783,7 @@ class EMTFXML(emtf_xml.EMTF):
                     "copyright.acknowledgement": self.copyright.acknowledgement,
                     "copyright.conditions_of_use": self.copyright.conditions_of_use,
                     "copyright.release_status": self.copyright.release_status,
-                    "copyright."
+                    "copyright.selected_publications": self.copyright.selected_publications,
                 }.items()
                 if v not in [None, ""]
             ]
