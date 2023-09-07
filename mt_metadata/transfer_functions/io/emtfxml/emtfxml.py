@@ -784,6 +784,7 @@ class EMTFXML(emtf_xml.EMTF):
                     "copyright.conditions_of_use": self.copyright.conditions_of_use,
                     "copyright.release_status": self.copyright.release_status,
                     "copyright.selected_publications": self.copyright.selected_publications,
+                    "copyright.additional_info": self.copyright.additional_info,
                 }.items()
                 if v not in [None, ""]
             ]
@@ -924,6 +925,22 @@ class EMTFXML(emtf_xml.EMTF):
                     s.transfer_function.processing_parameters.append(
                         f"remote_info.site.{key} = {value}"
                     )
+
+            # need to add remote site field notes information
+            for rfn in self.processing_info.remote_info.field_notes.run_list:
+                rr_dict = rfn.to_dict(single=True)
+                for rr_key, rr_value in rr_dict.items():
+                    if rr_value not in [
+                        None,
+                        "1980",
+                        1980,
+                        "1980-01-01T00:00:00+00:00",
+                        [],
+                        "",
+                    ]:
+                        s.transfer_function.processing_parameters.append(
+                            f"remote_info.field_notes.{rr_key} = {rr_value}"
+                        )
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -1142,6 +1159,28 @@ class EMTFXML(emtf_xml.EMTF):
 
                 if sep:
                     key, value = [k.strip() for k in param.split(sep, 1)]
+                    if "remote_info.field_notes" in key:
+                        if (
+                            len(
+                                self.processing_info.remote_info.field_notes.run_list
+                            )
+                            == 0
+                        ):
+                            self.processing_info.remote_info.field_notes.run_list.append(
+                                meta_classes["field_notes"]()
+                            )
+                        try:
+                            key = key.replace("remote_info.field_notes.", "")
+                            self.processing_info.remote_info.field_notes.run_list[
+                                0
+                            ].set_attr_from_name(
+                                key, value
+                            )
+                        except Exception as error:
+                            self.logger.warning(
+                                f"Cannot set processing info attribute {param}"
+                            )
+                            self.logger.exception(error)
                     try:
                         self.processing_info.set_attr_from_name(key, value)
                     except Exception as error:
