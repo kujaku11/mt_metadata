@@ -109,10 +109,7 @@ class TestEMTFXML(unittest.TestCase):
                     "transfer_function.processing_type",
                     "Robust Remote Reference",
                 ),
-                (
-                    "transfer_function.remote_references",
-                    ["CAS04-CAS04bcd", "REV06-CAS04bcd", "NVR08"],
-                ),
+                ("transfer_function.remote_references", ["REV06"]),
                 (
                     "transfer_function.runs_processed",
                     ["CAS04a", "CAS04b", "CAS04c", "CAS04d"],
@@ -285,7 +282,9 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]),
+                    np.array(
+                        [[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]
+                    ),
                 ).all()
             )
 

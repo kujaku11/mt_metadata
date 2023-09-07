@@ -162,4 +162,4 @@ def to_xml(cls, string=False, required=True, order=None):
     if not string:
         return root
     else:
-        return element_to_string(root)
+        return element_to_string(_remove_null_values(root))

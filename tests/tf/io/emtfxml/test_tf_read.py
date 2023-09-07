@@ -110,15 +110,7 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 (
                     "transfer_function.remote_references",
-                    [
-                        "NMX20b",
-                        "NMX20",
-                        "NMW20",
-                        "COR21",
-                        "NMY21-NMX20b",
-                        "NMX20",
-                        "UTS18",
-                    ],
+                    ["NMW20", "COR21", "UTS18"],
                 ),
                 ("transfer_function.runs_processed", ["NMX20a", "NMX20b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
@@ -563,7 +555,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (33, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest(msg="first element"):
             self.assertTrue(

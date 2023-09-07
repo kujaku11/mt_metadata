@@ -354,7 +354,7 @@ class EMTFXML(emtf_xml.EMTF):
             value = getattr(self, key)
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
                 if key == "processing_info" and skip_field_notes:
-                    value._order.remove("remote_info")
+                    value.remote_info._order.remove("field_notes")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
@@ -783,6 +783,7 @@ class EMTFXML(emtf_xml.EMTF):
                     "copyright.acknowledgement": self.copyright.acknowledgement,
                     "copyright.conditions_of_use": self.copyright.conditions_of_use,
                     "copyright.release_status": self.copyright.release_status,
+                    "copyright."
                 }.items()
                 if v not in [None, ""]
             ]
@@ -891,9 +892,12 @@ class EMTFXML(emtf_xml.EMTF):
 
         elif self.processing_info.processing_tag is not None:
             if "_" in self.processing_info.processing_tag:
-                s.transfer_function.remote_references = (
-                    self.processing_info.processing_tag.split("_")[1:]
-                )
+                remotes = [
+                    rr
+                    for rr in self.processing_info.processing_tag.split("_")
+                    if self.site.id not in rr
+                ]
+                s.transfer_function.remote_references = remotes
         s.transfer_function.runs_processed = self.site.run_list
         s.transfer_function.processing_type = (
             self.processing_info.remote_ref.type
@@ -1119,9 +1123,12 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_software.last_mod = (
             sm.transfer_function.software.last_updated
         )
-        self.processing_info.processing_tag = "_".join(
-            sm.transfer_function.remote_references
-        )
+        tag = []
+        if sm.transfer_function.runs_processed is not None:
+            tag += sm.transfer_function.runs_processed
+        if sm.transfer_function.remote_references is not None:
+            tag += sm.transfer_function.remote_references
+        self.processing_info.processing_tag = "_".join(tag)
         self.processing_info.remote_ref.type = (
             sm.transfer_function.processing_type
         )

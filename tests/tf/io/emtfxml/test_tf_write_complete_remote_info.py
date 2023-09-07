@@ -11,7 +11,7 @@ Created on Fri Mar 10 08:52:43 2023
 import unittest
 
 import numpy as np
-from mt_metadata import TF_POOR_XML
+from mt_metadata import TF_XML_COMPLETE_REMOTE_INFO
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
@@ -26,12 +26,12 @@ class TestWriteEMTFXML(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.tf = TF(fn=TF_POOR_XML)
+        self.tf = TF(fn=TF_XML_COMPLETE_REMOTE_INFO)
         self.tf.read()
         self.x1 = self.tf.to_emtfxml()
         self.maxDiff = None
 
-        self.x0 = EMTFXML(TF_POOR_XML)
+        self.x0 = EMTFXML(TF_XML_COMPLETE_REMOTE_INFO)
 
     def test_description(self):
         self.assertEqual(self.x0.description, self.x1.description)
@@ -115,7 +115,18 @@ class TestWriteEMTFXML(unittest.TestCase):
             )
 
     def test_field_notes(self):
-        self.assertEqual(self.x0.field_notes, self.x1.field_notes)
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.field_notes.to_dict(single=True),
+                self.x1.field_notes.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertNotEqual(
+                self.x0.field_notes.to_xml(string=True),
+                self.x1.field_notes.to_xml(string=True),
+            )
 
     def test_processing_info(self):
         d0 = self.x0.processing_info.to_dict(single=True)
@@ -187,25 +198,45 @@ class TestWriteEMTFXML(unittest.TestCase):
         self.assertTrue(np.all(np.isclose(self.x0.data.z, self.x1.data.z)))
 
     def test_data_z_var(self):
-        self.assertTrue(np.all(self.x0.data.z_var == self.x1.data.z_var))
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.z_var, self.x1.data.z_var))
+        )
 
     def test_data_z_invsigcov(self):
-        self.assertEqual(None, self.x1.data.z_invsigcov)
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.z_invsigcov, self.x1.data.z_invsigcov)
+            )
+        )
 
     def test_data_z_residcov(self):
-        self.assertEqual(None, self.x1.data.z_residcov)
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.z_residcov, self.x1.data.z_residcov)
+            )
+        )
 
     def test_data_t(self):
         self.assertTrue(np.all(np.isclose(self.x0.data.t, self.x1.data.t)))
 
     def test_data_t_var(self):
-        self.assertTrue(np.all(self.x0.data.t_var == self.x1.data.t_var))
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.t_var, self.x1.data.t_var))
+        )
 
     def test_data_t_invsigcov(self):
-        self.assertEqual(None, self.x1.data.t_invsigcov)
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.t_invsigcov, self.x1.data.t_invsigcov)
+            )
+        )
 
     def test_data_t_residcov(self):
-        self.assertEqual(None, self.x1.data.t_residcov)
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov)
+            )
+        )
 
     def test_period_range(self):
         with self.subTest("attribute"):

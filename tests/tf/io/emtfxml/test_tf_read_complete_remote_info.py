@@ -74,7 +74,10 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
                 ("provenance.submitter.name", "Anna Kelbert"),
-                ("provenance.submitter.organization", "U.S. Geological Survey"),
+                (
+                    "provenance.submitter.organization",
+                    "U.S. Geological Survey",
+                ),
                 ("provenance.submitter.url", "http://geomag.usgs.gov"),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["GAA54b"]),
@@ -115,7 +118,7 @@ class TestEMTFXML(unittest.TestCase):
                     "transfer_function.processing_type",
                     "Robust Remote Reference",
                 ),
-                ("transfer_function.remote_references", ["GAA54b", "A53coh"]),
+                ("transfer_function.remote_references", ["GAA53"]),
                 ("transfer_function.runs_processed", ["GAA54b"]),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
                 ("transfer_function.software.author", "Gary Egbert"),
@@ -307,7 +310,9 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((30, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (30, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest(msg="first element"):
             self.assertTrue(

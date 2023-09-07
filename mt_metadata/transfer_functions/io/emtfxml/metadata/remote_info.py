@@ -26,6 +26,7 @@ class RemoteInfo(Base):
     def __init__(self, **kwargs):
         self.site = Site()
         self.field_notes = FieldNotes()
+        self._order = ["site", "field_notes"]
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -65,5 +66,5 @@ class RemoteInfo(Base):
             self,
             string=string,
             required=required,
-            order=["site", "field_notes"],
+            order=self._order,
         )
