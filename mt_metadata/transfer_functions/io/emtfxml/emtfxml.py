@@ -941,6 +941,20 @@ class EMTFXML(emtf_xml.EMTF):
                         s.transfer_function.processing_parameters.append(
                             f"remote_info.field_notes.{rr_key} = {rr_value}"
                         )
+                for ii, dp in enumerate(rfn.dipole):
+                    dp_dict = dp.to_dict(single=True)
+                    for dp_key, dp_value in dp_dict.items():
+                        if dp_value not in [None, ""]:
+                            s.transfer_function.processing_parameters.append(
+                                f"remote_info.field_notes.dipole_{ii}.{dp_key} = {dp_value}"
+                            )
+                for ii, mag in enumerate(rfn.magnetometer):
+                    mag_dict = mag.to_dict(single=True)
+                    for mag_key, mag_value in mag_dict.items():
+                        if mag_value not in [None, ""]:
+                            s.transfer_function.processing_parameters.append(
+                                f"remote_info.field_notes.magnetometer_{ii}.{dp_key} = {dp_value}"
+                            )
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -1160,6 +1174,7 @@ class EMTFXML(emtf_xml.EMTF):
                 if sep:
                     key, value = [k.strip() for k in param.split(sep, 1)]
                     if "remote_info.field_notes" in key:
+                        key = key.replace("remote_info.field_notes.", "")
                         if (
                             len(
                                 self.processing_info.remote_info.field_notes.run_list
@@ -1167,27 +1182,60 @@ class EMTFXML(emtf_xml.EMTF):
                             == 0
                         ):
                             self.processing_info.remote_info.field_notes.run_list.append(
-                                meta_classes["field_notes"]()
+                                meta_classes["run"]()
                             )
+
+                        run = self.processing_info.remote_info.field_notes.run_list[
+                            0
+                        ]
+
+                        if "dipole" in key:
+                            index = int(key.split("_")[1].split(".")[0])
+                            key = key.split(".", 1)[1]
+                            if len(run.dipole) < (index + 1):
+                                run.dipole.append(meta_classes["dipole"]())
+                            try:
+                                run.dipole[index].set_attr_from_name(
+                                    key, value
+                                )
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                        elif "magnetometer" in key:
+                            index = int(key.split("_")[1].split(".")[0])
+                            key = key.split(".", 1)[1:]
+                            if len(run.magnetometer) < (index + 1):
+                                run.magnetometer.append(
+                                    meta_classes["magnetometer"]()
+                                )
+                            try:
+                                run.magnetometer[index].set_attr_from_name(
+                                    key, value
+                                )
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                        else:
+
+                            try:
+                                run.set_attr_from_name(key, value)
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                    else:
                         try:
-                            key = key.replace("remote_info.field_notes.", "")
-                            self.processing_info.remote_info.field_notes.run_list[
-                                0
-                            ].set_attr_from_name(
-                                key, value
-                            )
+                            self.processing_info.set_attr_from_name(key, value)
                         except Exception as error:
                             self.logger.warning(
                                 f"Cannot set processing info attribute {param}"
                             )
                             self.logger.exception(error)
-                    try:
-                        self.processing_info.set_attr_from_name(key, value)
-                    except Exception as error:
-                        self.logger.warning(
-                            f"Cannot set processing info attribute {param}"
-                        )
-                        self.logger.exception(error)
 
         self.site.run_list = sm.transfer_function.runs_processed
 
