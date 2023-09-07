@@ -212,7 +212,8 @@ class ZMMHeader(object):
         :rtype: string
 
         """
-        lines = [self._header_lines[0], self._header_lines[1], ""]
+        lines = [self._header_lines[0], self._header_lines[1],]
+        lines += [f"{self.station_metadata.transfer_function.processing_type}"]
         lines += [f"{self.station}"]
         lines += [
             f"coordinate {self.latitude:>9.3f} {self.longitude:>9.3f} declination {self.declination:>8.2f}"
