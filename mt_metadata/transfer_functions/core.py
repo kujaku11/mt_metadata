@@ -171,7 +171,7 @@ class TF:
         if self.has_transfer_function() and other.has_transfer_function():
             if (
                 self.transfer_function.fillna(0)
-                != other.transfer_function.fillna()
+                != other.transfer_function.fillna(0)
             ).any():
                 self.logger.info("TF is not equal")
                 is_equal = False
