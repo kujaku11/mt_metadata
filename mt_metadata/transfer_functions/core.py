@@ -168,19 +168,37 @@ class TF:
         if self.survey_metadata != other.survey_metadata:
             self.logger.info("Survey Metadata is not equal")
             is_equal = False
-        if (self.transfer_function != other.transfer_function).any():
+        if self.has_transfer_function() and other.has_transfer_function():
+            if (
+                self.transfer_function.fillna(0)
+                != other.transfer_function.fillna()
+            ).any():
+                self.logger.info("TF is not equal")
+                is_equal = False
+        elif (
+            not self.has_transfer_function()
+            and not other.has_transfer_function()
+        ):
+            pass
+        else:
             self.logger.info("TF is not equal")
             is_equal = False
+
         return is_equal
 
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k in ["logger"]:
+                continue
+
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
     def copy(self):
-        try:
-            return deepcopy(self)
-        except TypeError:
-            delattr(self, "logger")
-            deep_copy = deepcopy(self)
-            self.logger = logger
-            return deep_copy
+        return deepcopy(self)
 
     def _add_channels(
         self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]
