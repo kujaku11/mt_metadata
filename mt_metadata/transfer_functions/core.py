@@ -355,7 +355,9 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(station_metadata)
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -1734,13 +1736,15 @@ class TF:
     def read_tf_file(self, **kwargs):
         self.logger.error("'read_tf_file' has been deprecated use 'read()'")
 
-    def read(self, fn=None, file_type=None, **kwargs):
+    def read(self, fn=None, file_type=None, get_elevation=True, **kwargs):
         """
 
         Read an TF response file.
 
         .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
            files are supported
+
+
 
         :param fn: full path to input file
         :type fn: string
@@ -1749,12 +1753,17 @@ class TF:
                           if None, automatically detects file type by
                           the extension.
         :type file_type: string
+        :param get_elevation: Get elevation from US National Map DEM
+        :type get_elevation: bool
 
         :Example: ::
 
             >>> import mt_metadata.transfer_functions import TF
             >>> tf_obj = TF()
             >>> tf_obj.read(fn=r"/home/mt/mt01.xml")
+
+        .. note:: If your internet is slow try setting 'get_elevation' = False,
+         It can get hooked in a slow loop and slow down reading.
 
         """
         if fn is not None:
@@ -1764,7 +1773,7 @@ class TF:
             file_type = self.fn.suffix.lower()[1:]
         self._read_write_dict[file_type]["read"](self.fn, **kwargs)
 
-        if self.elevation == 0:
+        if self.elevation == 0 and get_elevation:
             self.elevation = self._get_elevation_from_national_map()
 
         self.station_metadata.update_time_period()
