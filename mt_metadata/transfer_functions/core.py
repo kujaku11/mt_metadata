@@ -1455,7 +1455,7 @@ class TF:
             try:
                 ts_station_metadata.set_attr_from_name(key, value)
             except AttributeError:
-                continue
+                self.logger.debug(f"Attribute {key} could not be set.")
         return ts_station_metadata
 
     def from_ts_station_metadata(self, ts_station_metadata):
@@ -1766,6 +1766,10 @@ class TF:
 
         if self.elevation == 0:
             self.elevation = self._get_elevation_from_national_map()
+
+        self.station_metadata.update_time_period()
+        self.survey_metadata.update_bounding_box()
+        self.survey_metadata.update_time_period()
 
     def to_edi(self):
         """

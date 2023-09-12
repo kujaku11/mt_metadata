@@ -47,18 +47,23 @@ attr_dict.add_dict(
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
-    get_schema("provenance", SCHEMA_FN_PATHS),
+    Provenance()._attr_dict,
     "provenance",
-    keys=["comments", "creation_time", "log"],
 )
-attr_dict.add_dict(
-    get_schema("software", SCHEMA_FN_PATHS), "provenance.software"
-)
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
-    "provenance.submitter",
-    keys=["author", "email", "organization"],
-)
+
+# attr_dict.add_dict(
+#     get_schema("provenance", SCHEMA_FN_PATHS),
+#     "provenance",
+#     keys=["comments", "creation_time", "log"],
+# )
+# attr_dict.add_dict(
+#     get_schema("software", SCHEMA_FN_PATHS), "provenance.software"
+# )
+# attr_dict.add_dict(
+#     get_schema("person", SCHEMA_FN_PATHS),
+#     "provenance.submitter",
+#     keys=["author", "email", "organization"],
+# )
 attr_dict["provenance.submitter.email"]["required"] = True
 attr_dict["provenance.submitter.organization"]["required"] = True
 
