@@ -188,14 +188,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("geographic_name", "CONUS South"),
                 ("id", "CONUS South"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 37.63335),
+                ("northwest_corner.longitude", -121.46838),
                 ("project", "USMTArray"),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 37.63335),
+                ("southeast_corner.longitude", -121.46838),
                 ("summary", "Magnetotelluric Transfer Functions"),
                 ("time_period.end_date", "2020-07-13"),
                 ("time_period.start_date", "2020-06-02"),
@@ -282,9 +282,7 @@ class TestEMTFXML(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]
-                    ),
+                    np.array([[-0.5953611 - 1.984346j, -1.313187 + 1.159378j]]),
                 ).all()
             )
 

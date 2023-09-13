@@ -790,6 +790,8 @@ class EMTFXML(emtf_xml.EMTF):
             ]
         )
 
+        survey_obj.add_station(self.station_metadata)
+
         return survey_obj
 
     @survey_metadata.setter
@@ -1195,9 +1197,7 @@ class EMTFXML(emtf_xml.EMTF):
                             if len(run.dipole) < (index + 1):
                                 run.dipole.append(meta_classes["dipole"]())
                             try:
-                                run.dipole[index].set_attr_from_name(
-                                    key, value
-                                )
+                                run.dipole[index].set_attr_from_name(key, value)
                             except Exception as error:
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
@@ -1278,9 +1278,7 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(
-                                f"Cannot set attribute {key}."
-                            )
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:

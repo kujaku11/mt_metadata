@@ -36,14 +36,14 @@ class TestZSS(unittest.TestCase):
                 ("geographic_name", None),
                 ("id", "0"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 44.631),
+                ("northwest_corner.longitude", -110.44),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 44.631),
+                ("southeast_corner.longitude", -110.44),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -75,7 +75,9 @@ class TestZSS(unittest.TestCase):
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
+                ("provenance.submitter.email", None),
                 ("provenance.submitter.name", None),
+                ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["ysw212abcdefghijkla"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
@@ -141,9 +143,7 @@ class TestZSS(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
-                    ),
+                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -194,9 +194,7 @@ class TestZSS(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (44, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):

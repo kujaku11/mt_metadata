@@ -210,9 +210,7 @@ class JFile:
             if "z" in d_line.lower():
                 d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif (
-                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
-            ):
+            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
                 continue
             elif "r" in d_line.lower():
                 break
@@ -282,9 +280,7 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = (
-                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
-                    )
+                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
@@ -369,5 +365,6 @@ class JFile:
     @property
     def survey_metadata(self):
         sm = Survey()
+        sm.add_station(self.station_metadata)
 
         return sm

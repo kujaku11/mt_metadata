@@ -170,14 +170,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("geographic_name", "Transportable Array"),
                 ("id", "Transportable Array"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 31.888699),
+                ("northwest_corner.longitude", -83.281681),
                 ("project", "USArray"),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 31.888699),
+                ("southeast_corner.longitude", -83.281681),
                 ("summary", "Magnetotelluric Transfer Functions"),
                 ("time_period.end_date", "2015-09-28"),
                 ("time_period.start_date", "2015-09-11"),
@@ -324,9 +324,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (30, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((30, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest(msg="first element"):
             self.assertTrue(

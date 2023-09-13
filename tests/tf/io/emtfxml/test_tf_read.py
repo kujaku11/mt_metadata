@@ -196,14 +196,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("geographic_name", "CONUS South"),
                 ("id", "CONUS South"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 34.470528),
+                ("northwest_corner.longitude", -108.712288),
                 ("project", "USMTArray"),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 34.470528),
+                ("southeast_corner.longitude", -108.712288),
                 ("summary", "Magnetotelluric Transfer Functions"),
                 ("time_period.end_date", "2020-10-07"),
                 ("time_period.start_date", "2020-09-20"),
@@ -555,9 +555,7 @@ class TestEMTFXML(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (33, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((33, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest(msg="first element"):
             self.assertTrue(

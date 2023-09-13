@@ -36,14 +36,14 @@ class TestZMM(unittest.TestCase):
                 ("geographic_name", None),
                 ("id", "0"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 34.727),
+                ("northwest_corner.longitude", -115.735),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 34.727),
+                ("southeast_corner.longitude", -115.735),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -75,7 +75,9 @@ class TestZMM(unittest.TestCase):
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
+                ("provenance.submitter.email", None),
                 ("provenance.submitter.name", None),
+                ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
@@ -268,9 +270,7 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (38, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -346,14 +346,14 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("geographic_name", None),
                 ("id", None),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 34.727),
+                ("northwest_corner.longitude", -115.735),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 34.727),
+                ("southeast_corner.longitude", -115.735),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -385,7 +385,9 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
+                ("provenance.submitter.email", None),
                 ("provenance.submitter.name", None),
+                ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
