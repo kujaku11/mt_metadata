@@ -51,19 +51,6 @@ attr_dict.add_dict(
     "provenance",
 )
 
-# attr_dict.add_dict(
-#     get_schema("provenance", SCHEMA_FN_PATHS),
-#     "provenance",
-#     keys=["comments", "creation_time", "log"],
-# )
-# attr_dict.add_dict(
-#     get_schema("software", SCHEMA_FN_PATHS), "provenance.software"
-# )
-# attr_dict.add_dict(
-#     get_schema("person", SCHEMA_FN_PATHS),
-#     "provenance.submitter",
-#     keys=["author", "email", "organization"],
-# )
 attr_dict["provenance.submitter.email"]["required"] = True
 attr_dict["provenance.submitter.organization"]["required"] = True
 
@@ -174,7 +161,7 @@ class Station(Base):
             return self.run_list.index(run_id)
         return None
 
-    def add_run(self, run_obj):
+    def add_run(self, run_obj, update=True):
         """
         Add a run, if one of the same name exists overwrite it.
 
@@ -199,6 +186,9 @@ class Station(Base):
             )
         else:
             self.runs.append(run_obj)
+
+        if update:
+            self.update_time_period()
 
     def get_run(self, run_id):
         """
@@ -267,6 +257,8 @@ class Station(Base):
                 self._runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
+
+        self.update_time_period()
 
     @property
     def run_list(self):

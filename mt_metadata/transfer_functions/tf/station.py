@@ -166,7 +166,7 @@ class Station(Base):
             return self.run_list.index(run_id)
         return None
 
-    def add_run(self, run_obj):
+    def add_run(self, run_obj, update=True):
         """
         Add a run, if one of the same name exists overwrite it.
 
@@ -187,6 +187,9 @@ class Station(Base):
             )
         else:
             self.runs.append(run_obj)
+
+        if update:
+            self.update_time_period()
 
     def get_run(self, run_id):
         """
@@ -255,6 +258,8 @@ class Station(Base):
                 self._runs.append(run)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
+
+        self.update_time_period()
 
     @property
     def run_list(self):
