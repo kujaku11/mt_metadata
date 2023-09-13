@@ -259,7 +259,7 @@ class Survey(Base):
             return self.station_names.index(station_id)
         return None
 
-    def add_station(self, station_obj):
+    def add_station(self, station_obj, update=True):
         """
         Add a station, if has the same name update that object.
 
@@ -280,6 +280,10 @@ class Survey(Base):
             )
         else:
             self.stations.append(station_obj)
+
+        if update:
+            self.update_bounding_box()
+            self.update_time_period()
 
     def get_station(self, station_id):
         """
