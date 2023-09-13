@@ -205,7 +205,7 @@ class Station(Base):
         self.logger.warning(f"Could not find {run_id} in runs.")
         return None
 
-    def remove_run(self, run_id):
+    def remove_run(self, run_id, update=True):
         """
         remove a run from the survey
 
@@ -216,6 +216,8 @@ class Station(Base):
 
         if self.has_run(run_id):
             self.runs.remove(run_id)
+            if update:
+                self.update_time_period()
         else:
             self.logger.warning(f"Could not find {run_id} to remove.")
 
@@ -294,22 +296,23 @@ class Station(Base):
         """
         update time period from run information
         """
-        start = []
-        end = []
-        for run in self.runs:
-            if run.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(run.time_period.start)
-            if run.time_period.end != "1980-01-01T00:00:00+00:00":
-                end.append(run.time_period.end)
-        if start:
-            if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                self.time_period.start = min(start)
-            else:
-                if self.time_period.start > min(start):
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for run in self.runs:
+                if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(run.time_period.start)
+                if run.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(run.time_period.end)
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
                     self.time_period.start = min(start)
-        if end:
-            if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                self.time_period.end = max(end)
-            else:
-                if self.time_period.end < max(end):
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
                     self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)

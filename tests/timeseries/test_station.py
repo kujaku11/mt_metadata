@@ -162,7 +162,7 @@ class TestStation(unittest.TestCase):
         with self.subTest("Fail from input list"):
             self.assertRaises(TypeError, set_runs, [Run(), Station()])
 
-    def test_add_rns(self):
+    def test_add_runs(self):
         station_02 = Station()
         station_02.runs.append(Run(id="two"))
         self.station_object.runs.append(Run(id="one"))
@@ -182,7 +182,6 @@ class TestStation(unittest.TestCase):
         r.time_period.start = "2020-01-01T00:00:00"
         r.time_period.end = "2020-12-01T12:12:12"
         self.station_object.add_run(r)
-        self.station_object.update_time_period()
 
         with self.subTest("Test new start"):
             self.assertEqual(

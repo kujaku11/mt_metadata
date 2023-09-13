@@ -155,7 +155,7 @@ class Run(Base):
         if self.has_channel(component):
             return self.channels[component]
 
-    def add_channel(self, channel_obj):
+    def add_channel(self, channel_obj, update=True):
         """
         Add a channel to the list, check if one exists if it does overwrite it
 
@@ -181,6 +181,9 @@ class Run(Base):
 
         else:
             self.channels.append(channel_obj)
+
+        if update:
+            self.update_time_period()
 
     def remove_channel(self, channel_id):
         """
@@ -369,27 +372,28 @@ class Run(Base):
         """
         update time period from the channels
         """
-        start = []
-        end = []
-        for channel in self.channels:
-            if channel.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(channel.time_period.start)
-            if channel.time_period.end != "1980-01-01T00:00:00+00:00":
-                end.append(channel.time_period.end)
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for channel in self.channels:
+                if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(channel.time_period.start)
+                if channel.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(channel.time_period.end)
 
-        if start:
-            if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                self.time_period.start = min(start)
-            else:
-                if self.time_period.start > min(start):
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
                     self.time_period.start = min(start)
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
 
-        if end:
-            if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                self.time_period.end = max(end)
-            else:
-                if self.time_period.end < max(end):
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
                     self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)
 
     @property
     def ex(self):
