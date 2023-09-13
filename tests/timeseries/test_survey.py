@@ -234,6 +234,48 @@ class TestSurvey(unittest.TestCase):
             )
 
 
+class TestAddStation(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.station = Station()
+        self.station.location.latitude = 40.0
+        self.station.location.longitude = -120
+        self.station.id = "mt01"
+        self.station.time_period.start = "2023-01-01T00:00:00"
+        self.station.time_period.end = "2023-01-03T00:00:00"
+
+        self.survey = Survey(id="test")
+        self.survey.add_station(self.station)
+
+    def test_time_period(self):
+        self.assertEqual(self.survey.time_period, self.station.time_period)
+
+    def test_bounding_box(self):
+        with self.subTest("northwest corner latitude"):
+            self.assertEqual(
+                self.station.location.latitude,
+                self.survey.northwest_corner.latitude,
+            )
+        with self.subTest("northwest corner longitude"):
+            self.assertEqual(
+                self.station.location.longitude,
+                self.survey.northwest_corner.longitude,
+            )
+        with self.subTest("southeast corner latitude"):
+            self.assertEqual(
+                self.station.location.latitude,
+                self.survey.southeast_corner.latitude,
+            )
+        with self.subTest("southeast corner latitude"):
+            self.assertEqual(
+                self.station.location.latitude,
+                self.survey.southeast_corner.latitude,
+            )
+
+    def test_station_list(self):
+        self.assertListEqual(self.survey.station_names, [self.station.id])
+
+
 # =============================================================================
 # run
 # =============================================================================
