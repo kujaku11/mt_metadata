@@ -2090,8 +2090,10 @@ class TF:
         >>> zmm_object.write()
 
         """
-
-        zmm_obj = ZMM()
+        try:
+            zmm_obj = ZMM(decimation_dict=self.decimation_dict)
+        except AttributeError:
+            zmm_obj = ZMM()
         zmm_obj.dataset = self.dataset
         zmm_obj.station_metadata = self.station_metadata
 

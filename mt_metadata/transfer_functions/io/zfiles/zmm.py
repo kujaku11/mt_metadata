@@ -27,6 +27,7 @@ from .metadata import Channel
 from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
+PERIOD_FORMAT = ".10g"
 class ZMMError(Exception):
     pass
 
@@ -507,7 +508,7 @@ class ZMM(ZMMHeader):
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
         self.station_metadata.runs[0].sample_rate = np.median(
-            np.array([d["df"] for k, d in self.decimation_dict.items()])
+            np.array([d["sample_rate"] for k, d in self.decimation_dict.items()])
         )
 
         # add information to runs
@@ -548,13 +549,13 @@ class ZMM(ZMMHeader):
         for p in self.dataset.period.data:
             a = self.dataset.sel(period=p)
             try:
-                dec_dict = self.decimation_dict[f"{p:10g}"]
+                dec_dict = self.decimation_dict[f"{p:{PERIOD_FORMAT}}"]
             except KeyError:
                 dec_dict = {
                     "level": 0,
                     "bands": (0, 0),
                     "npts": 0,
-                    "df": self.station_metadata.runs[0].sample_rate,
+                    "sample_rate": self.station_metadata.runs[0].sample_rate,
                 }
             lines += [
                 (
@@ -564,7 +565,7 @@ class ZMM(ZMMHeader):
                 )
             ]
             lines += [
-                f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['df']} Hz"
+                f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['sample_rate']} Hz"
             ]
             # write tf
             lines += [" Transfer Functions"]
@@ -640,11 +641,11 @@ class ZMM(ZMMHeader):
 
         npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
         sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
-        self.decimation_dict[f"{period:.10g}"] = {
+        self.decimation_dict[f"{period:{PERIOD_FORMAT}}"] = {
             "level": level,
             "bands": bands,
             "npts": npts,
-            "df": sr,
+            "sample_rate": sr,
         }
         data_dict = {"period": period, "tf": [], "sig": [], "res": []}
         key = "tf"
