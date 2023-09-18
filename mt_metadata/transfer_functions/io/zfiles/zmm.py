@@ -545,7 +545,7 @@ class ZMM(ZMMHeader):
         if fn is not None:
             self.fn = fn
         lines = self.write_header()
-
+        lines += ["",] # add 1 space separating header from data
         for p in self.dataset.period.data:
             a = self.dataset.sel(period=p)
             try:
