@@ -296,6 +296,7 @@ class ZMM(ZMMHeader):
         self.periods = None
         self.dataset = None
         self.decimation_dict = {}
+        self.channel_nomenclature = {}
 
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -572,8 +573,10 @@ class ZMM(ZMMHeader):
             for c_out in self.output_channels:
                 line = ""
                 for c_in in self.input_channels:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.transfer_function.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
@@ -582,8 +585,10 @@ class ZMM(ZMMHeader):
             for ii, c_out in enumerate(self.input_channels):
                 line = ""
                 for c_in in self.input_channels[: ii + 1]:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.inverse_signal_power.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
@@ -592,8 +597,10 @@ class ZMM(ZMMHeader):
             for ii, c_out in enumerate(self.output_channels):
                 line = ""
                 for c_in in self.output_channels[: ii + 1]:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.residual_covariance.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
