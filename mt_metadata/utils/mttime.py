@@ -335,11 +335,15 @@ class MTime:
         t_min_max = False
 
         if dt.year > 2200:
-            self.logger.info(f"{dt} is too large setting to {pd.Timestamp.max}")
+            self.logger.info(
+                f"{dt} is too large setting to {pd.Timestamp.max}"
+            )
             stamp = pd.Timestamp.max
             t_min_max = True
         elif dt.year < 1900:
-            self.logger.info(f"{dt} is too small setting to {pd.Timestamp.min}")
+            self.logger.info(
+                f"{dt} is too small setting to {pd.Timestamp.min}"
+            )
             stamp = pd.Timestamp.min
             t_min_max = True
         else:
@@ -360,7 +364,13 @@ class MTime:
 
         """
         t_min_max = False
-        if isinstance(dt_str, pd.Timestamp):
+        if dt_str in [None, "", "none", "None", "NONE"]:
+            self.logger.debug(
+                "Time string is None, setting to 1980-01-01:00:00:00"
+            )
+            stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+
+        elif isinstance(dt_str, pd.Timestamp):
             stamp = dt_str
             if (
                 stamp.value == pd.Timestamp.max.value
