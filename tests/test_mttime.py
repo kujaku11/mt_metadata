@@ -194,6 +194,11 @@ class TestMTime(unittest.TestCase):
         t = MTime()
         self.assertRaises(ValueError, t.parse, self.input_fail)
 
+    def test_input_none(self):
+        for t_value in [None, "", "None", "NONE", "none"]:
+            t = MTime(t_value)
+            self.assertEqual(t, "1980-01-01T00:00:00+00:00")
+
     def test_compare_dt(self):
         dt_01 = MTime()
         dt_02 = MTime()
