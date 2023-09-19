@@ -134,7 +134,6 @@ class DecimationLevel(Base):
     def bands_dataframe(self):
         """
         This is just a utility function that transforms a list of bands into a dataframe
-        ToDo: Consider make this a method of Bands()
 
         Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
@@ -152,6 +151,10 @@ class DecimationLevel(Base):
 
         bands_df = df_from_bands(self.bands)
         return bands_df
+
+    @property
+    def frequency_sample_interval(self):
+        return self.sample_rate_decimation/self.window.num_samples
 
     @property
     def band_edges(self):

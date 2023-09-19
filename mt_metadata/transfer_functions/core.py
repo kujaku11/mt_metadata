@@ -70,6 +70,7 @@ class TF:
         # set metadata for the station
         self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
+        self._inverse_channel_nomenclature = {}
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -108,6 +109,12 @@ class TF:
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    @property
+    def inverse_channel_nomenclature(self):
+        if not self._inverse_channel_nomenclature:
+            self._inverse_channel_nomenclature = {v: k for k, v in self.channel_nomenclature.items()}
+        return self._inverse_channel_nomenclature
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
@@ -2090,8 +2097,13 @@ class TF:
         >>> zmm_object.write()
 
         """
+        zmm_kwargs = {}
+        zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
+        zmm_kwargs["inverse_channel_nomenclature"] = self.inverse_channel_nomenclature
+        if hasattr(self, "decimation_dict"):
+            zmm_kwargs["decimation_dict"] = self.decimation_dict
+        zmm_obj = ZMM(**zmm_kwargs)
 
-        zmm_obj = ZMM()
         zmm_obj.dataset = self.dataset
         zmm_obj.station_metadata = self.station_metadata
 
@@ -2121,9 +2133,11 @@ class TF:
             for comp in self.station_metadata.runs[0].channels_recorded_all:
                 if "rr" in comp:
                     continue
-                ch = getattr(self.station_metadata.runs[0], comp)
+                ch = self.station_metadata.runs[0].get_channel(comp)
+                ch.component = self.inverse_channel_nomenclature[comp]
                 c = ZChannel()
                 c.from_dict(ch.to_dict(single=True))
+                ch.component = comp
                 try:
                     c.number = number_dict[c.channel]
                     setattr(zmm_obj, c.channel, c)
