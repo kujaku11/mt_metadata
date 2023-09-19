@@ -13,6 +13,7 @@ from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Decimation,
     Channel,
 )
+from mt_metadata.transfer_functions.processing.aurora import DecimationLevel
 
 # =============================================================================
 
@@ -120,6 +121,77 @@ class TestDecimation(unittest.TestCase):
             self.assertEqual(self.start, self.dl.time_period.start)
         with self.subTest("end"):
             self.assertEqual(self.end, self.dl.time_period.end)
+
+    def test_factor(self):
+        self.assertEqual(self.dl.decimation_factor, self.dl.factor)
+
+    def test_window_length_true(self):
+        self.assertEqual(True, self.dl.is_valid_for_time_series_length(4096))
+
+    def test_window_length_false(self):
+        self.assertEqual(False, self.dl.is_valid_for_time_series_length(46))
+
+
+class TestDecimationAuroraDecimationLevel(unittest.TestCase):
+    def setUp(self):
+
+        self.dl = Decimation()
+        self.dl.decimation_factor = 4
+        self.dl.decimation_level = 1
+        self.dl.id = 1
+        self.dl.sample_rate_decimation = 16
+        for ch in ["ex", "ey", "hx", "hy", "hz"]:
+            self.dl.add_channel(Channel(component=ch))
+
+        self.adl = DecimationLevel()
+        self.adl.decimation.sample_rate = 16
+
+    def test_has_required_channels_false(self):
+        dl = Decimation()
+        self.assertEqual(
+            False, dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_has_required_channels_true(self):
+        self.assertEqual(
+            True, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_sample_rate_false(self):
+        self.adl.decimation.sample_rate = 24
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_decimation_method_false(self):
+        self.adl.method = "other"
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_prewhitening_type_false(self):
+        self.adl.prewhitening_type = "other"
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_recoloring_false(self):
+        self.adl.recoloring = False
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_pre_fft_detrend_type_false(self):
+        self.adl.pre_fft_detrend_type = "other"
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
+
+    def test_window_false(self):
+        self.adl.window.type = "dpss"
+        self.assertEqual(
+            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+        )
 
 
 # =============================================================================

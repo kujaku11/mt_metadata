@@ -277,12 +277,17 @@ class Decimation(Base):
         return self.sample_rate_decimation
 
     def is_valid_for_time_series_length(self, n_samples_ts):
-        """ Given a time series of len n_samples_ts, are there sufficient samples to STFT"""
-        required_num_samples = self.window.num_samples + (
-                self.min_num_stft_windows - 1) * self.window.num_samples_advance
+        """Given a time series of len n_samples_ts, are there sufficient samples to STFT"""
+        required_num_samples = (
+            self.window.num_samples
+            + (self.min_num_stft_windows - 1) * self.window.num_samples_advance
+        )
         if n_samples_ts < required_num_samples:
-            msg = f"{n_samples_ts} not enough samples for minimum of {self.min_num_stft_windows} stft windows "
-            msg += f" of length {self.window.num_samples} and overlap {self.window.overlap}"
+            msg = (
+                f"{n_samples_ts} not enough samples for minimum of "
+                f"{self.min_num_stft_windows} stft windows of length "
+                f"{self.window.num_samples} and overlap {self.window.overlap}"
+            )
             self.logger.warning(msg)
             return False
         else:
@@ -311,8 +316,10 @@ class Decimation(Base):
         try:
             assert set(self.channels_estimated) == set(required_channels)
         except AssertionError:
-            msg = f"required_channels for processing {required_channels} not available"
-            msg += f"-- fc channels estimated are {self.channels_estimated}"
+            msg = (
+                f"required_channels for processing {required_channels} not available"
+                f"-- fc channels estimated are {self.channels_estimated}"
+            )
             self.logger.warning(msg)
             return False
 
@@ -325,17 +332,24 @@ class Decimation(Base):
             if cond1 & cond2:
                 pass
             else:
-                msg = "Antialias Filters Not Compatible -- need to add handling for "
-                msg += f"{msg} FCdec {self.anti_alias_filter} and "
-                msg += f"{msg} processing config:{decimation_level.anti_alias_filter}"
+                msg = (
+                    "Antialias Filters Not Compatible -- need to add handling for "
+                    f"{msg} FCdec {self.anti_alias_filter} and "
+                    f"{msg} processing config:{decimation_level.anti_alias_filter}"
+                )
                 raise NotImplementedError(msg)
 
         # sample_rate
         try:
-            assert self.sample_rate_decimation == decimation_level.sample_rate_decimation
+            assert (
+                self.sample_rate_decimation
+                == decimation_level.decimation.sample_rate
+            )
         except AssertionError:
-            msg = f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
-            msg += f"{msg} vs processing config {decimation_level.sample_rate_decimation}"
+            msg = (
+                f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
+                f"processing config {decimation_level.decimation.sample_rate}"
+            )
             self.logger.warning(msg)
             return False
 
@@ -343,8 +357,10 @@ class Decimation(Base):
         try:
             assert self.method == decimation_level.method
         except AssertionError:
-            msg = f"Transform methods do not agree"
-            msg += f"{msg} {self.method} != {decimation_level.method}"
+            msg = (
+                "Transform methods do not agree "
+                f"{self.method} != {decimation_level.method}"
+            )
             self.logger.warning(msg)
             return False
 
@@ -352,8 +368,10 @@ class Decimation(Base):
         try:
             assert self.prewhitening_type == decimation_level.prewhitening_type
         except AssertionError:
-            msg = f"prewhitening_type does not agree"
-            msg += f"{msg} {self.prewhitening_type} != {decimation_level.prewhitening_type}"
+            msg = (
+                "prewhitening_type does not agree "
+                f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
+            )
             self.logger.warning(msg)
             return False
 
@@ -361,26 +379,38 @@ class Decimation(Base):
         try:
             assert self.recoloring == decimation_level.recoloring
         except AssertionError:
-            msg = f"recoloring does not agree"
-            msg += f"{msg} {self.recoloring} != {decimation_level.recoloring}"
+            msg = (
+                "recoloring does not agree "
+                f"{self.recoloring} != {decimation_level.recoloring}"
+            )
             self.logger.warning(msg)
             return False
 
         # pre_fft_detrend_type
         try:
-            assert self.pre_fft_detrend_type == decimation_level.pre_fft_detrend_type
+            assert (
+                self.pre_fft_detrend_type
+                == decimation_level.pre_fft_detrend_type
+            )
         except AssertionError:
-            msg = f"pre_fft_detrend_type does not agree"
-            msg += f"{msg} {self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+            msg = (
+                "pre_fft_detrend_type does not agree "
+                f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+            )
             self.logger.warning(msg)
             return False
 
         # min_num_stft_windows
         try:
-            assert self.min_num_stft_windows == decimation_level.min_num_stft_windows
+            assert (
+                self.min_num_stft_windows
+                == decimation_level.min_num_stft_windows
+            )
         except AssertionError:
-            msg = f"min_num_stft_windows do not agree "
-            msg += f"{msg} {self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+            msg = (
+                "min_num_stft_windows do not agree "
+                f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+            )
             self.logger.warning(msg)
             return False
 
@@ -388,8 +418,8 @@ class Decimation(Base):
         try:
             assert self.window == decimation_level.window
         except AssertionError:
-            msg = "window does not agree:\n"
-            msg = f"{msg} FC Group: {self.window}\n"
+            msg = "window does not agree: "
+            msg = f"{msg} FC Group: {self.window} "
             msg = f"{msg} Processing Config  {decimation_level.window}"
             self.logger.warning(msg)
             return False
@@ -407,7 +437,10 @@ class Decimation(Base):
             if processing_set.issubset(fcdec_group_set):
                 pass
             else:
-                msg = f"Processing FC indices {processing_set} is not contained in FC indices {fcdec_group_set}"
+                msg = (
+                    f"Processing FC indices {processing_set} is not contained "
+                    f"in FC indices {fcdec_group_set}"
+                )
                 self.logger.warning(msg)
                 return False
 
