@@ -447,8 +447,8 @@ class TransferFunction(Base):
                         ].capitalize()
                     except KeyError:
                         pass
-                    a_dict["output"] = ch_out.capitalize()
-                    a_dict["input"] = ch_in.capitalize()
+                    a_dict["output"] = ch_out.upper()
+                    a_dict["input"] = ch_in.upper()
                     ch_element = et.SubElement(comp_element, "value", a_dict)
                     ch_value = f"{arr[ii, jj].real:.6e}"
                     if attr_dict["type"] in ["complex"]:
