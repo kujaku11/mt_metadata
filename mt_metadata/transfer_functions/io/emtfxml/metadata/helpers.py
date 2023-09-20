@@ -55,7 +55,8 @@ def _convert_tag_to_capwords(element):
     """
 
     for item in element.iter():
-        item.tag = _capwords(item.tag)
+        if item.tag != "value":
+            item.tag = _capwords(item.tag)
 
     return element
 

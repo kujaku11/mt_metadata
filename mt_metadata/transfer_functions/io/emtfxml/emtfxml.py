@@ -348,13 +348,24 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_data_types()
 
         for key in self.element_keys:
+            if key == "external_url":
+                if self.external_url.url in [None, "None", "", "none"]:
+                    continue
             if skip_field_notes:
                 if key == "field_notes":
                     continue
             value = getattr(self, key)
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
-                if key == "processing_info" and skip_field_notes:
-                    value.remote_info._order.remove("field_notes")
+                if key == "processing_info":
+                    if skip_field_notes:
+                        value.remote_info._order.remove("field_notes")
+                    if value.remote_info.site.id in [
+                        None,
+                        "",
+                        "None",
+                        "none",
+                    ]:
+                        value.remote_info._order.remove("site")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
@@ -366,9 +377,7 @@ class EMTFXML(emtf_xml.EMTF):
                         emtf_helpers._convert_tag_to_capwords(element)
                     )
             else:
-                if key == "external_url":
-                    if self.external_url.url is None:
-                        continue
+
                 emtf_helpers._write_single(
                     emtf_element, key, getattr(self, key)
                 )
@@ -1197,7 +1206,9 @@ class EMTFXML(emtf_xml.EMTF):
                             if len(run.dipole) < (index + 1):
                                 run.dipole.append(meta_classes["dipole"]())
                             try:
-                                run.dipole[index].set_attr_from_name(key, value)
+                                run.dipole[index].set_attr_from_name(
+                                    key, value
+                                )
                             except Exception as error:
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
@@ -1278,7 +1289,9 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(f"Cannot set attribute {key}.")
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:
