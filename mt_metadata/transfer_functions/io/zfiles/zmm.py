@@ -136,6 +136,7 @@ class ZMMHeader(object):
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]
+            station = station.strip()
         self.station = station
         self.station_metadata._runs = ListDict()
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
@@ -216,7 +217,7 @@ class ZMMHeader(object):
             self._header_lines[1],
         ]
         lines += [f"{self.station_metadata.transfer_function.processing_type}"]
-        lines += [f"{self.station}"]
+        lines += [f"station: {self.station}"]
         lines += [
             f"coordinate {self.latitude:>9.3f} {self.longitude:>9.3f} declination {self.declination:>8.2f}"
         ]
