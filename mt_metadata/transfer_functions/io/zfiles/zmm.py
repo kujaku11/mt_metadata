@@ -544,6 +544,17 @@ class ZMM(ZMMHeader):
             * n_points, value = int
             * sampling_freq, value = float
         """
+        def format_line(line, tf_element):
+            try:
+                import fortranformat as ff
+                data_format = ff.FortranRecordWriter("(16E12.4)")
+                line += f"{data_format.write([tf_element.real])}"
+                line += f"{data_format.write([tf_element.imag])}"
+            except ImportError:
+                line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+            return line
+
+
         if fn is not None:
             self.fn = fn
         lines = self.write_header()
@@ -579,7 +590,7 @@ class ZMM(ZMMHeader):
                     tf_element = a.transfer_function.loc[
                         dict(output=c_out_name, input=c_in_name)
                     ].data
-                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                    line = format_line(line, tf_element)
                 lines += [line]
             # write signal power
             lines += [" Inverse Coherent Signal Power Matrix"]
@@ -591,7 +602,7 @@ class ZMM(ZMMHeader):
                     tf_element = a.inverse_signal_power.loc[
                         dict(output=c_out_name, input=c_in_name)
                     ].data
-                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                    line = format_line(line, tf_element)
                 lines += [line]
             # write residual covariance
             lines += [" Residual Covariance"]
@@ -603,7 +614,7 @@ class ZMM(ZMMHeader):
                     tf_element = a.residual_covariance.loc[
                         dict(output=c_out_name, input=c_in_name)
                     ].data
-                    line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
+                    line = format_line(line, tf_element)
                 lines += [line]
         with open(self.fn, "w") as fid:
             fid.write("\n".join(lines))
