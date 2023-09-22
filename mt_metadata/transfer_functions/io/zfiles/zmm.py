@@ -133,6 +133,7 @@ class ZMMHeader(object):
 
                 line = fid.readline()
         self.station_metadata.comments = ""
+        self.station_metadata.transfer_function.processing_type = header_list[2].strip()
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]

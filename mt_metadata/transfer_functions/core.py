@@ -2165,6 +2165,7 @@ class TF:
             zmm_obj.read(self._fn)
         if not isinstance(zmm_obj, ZMM):
             raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
+        self.decimation_dict = zmm_obj.decimation_dict
         k_dict = OrderedDict(
             {
                 "survey_metadata": "survey_metadata",
