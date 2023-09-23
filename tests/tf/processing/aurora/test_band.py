@@ -25,6 +25,8 @@ class TestBand(unittest.TestCase):
                     self.band._attr_dict[key]["default"],
                 )
 
+    def test_cast_band_to_interval(self):
+        self.band.to_interval()
 
 if __name__ == "__main__":
     unittest.main()
