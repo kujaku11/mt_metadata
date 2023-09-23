@@ -88,7 +88,7 @@ class TestZSS(unittest.TestCase):
                 ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
-                ("transfer_function.processing_type", None),
+                ("transfer_function.processing_type", 'Robust Single station'),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["ysw212abcdefghijkla"]),
                 ("transfer_function.sign_convention", None),
