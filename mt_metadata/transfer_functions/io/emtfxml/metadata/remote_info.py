@@ -49,6 +49,10 @@ class RemoteInfo(Base):
                 getattr(self, key).read_dict(pop_dict)
             except KeyError:
                 self.logger.debug(f"No {key} information in xml.")
+            except AttributeError:
+                msg = f"Failed access {key} from remote_info_dict {remote_info_dict}."
+                self.logger.warning(msg)
+                return
 
     def to_xml(self, string=False, required=True):
         """
