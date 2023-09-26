@@ -78,23 +78,15 @@ class Band(Base):
     def to_interval(self):
         return pd.Interval(self.frequency_min, self.frequency_max, closed=self.closed)
 
-    def harmonic_indices(self, continuous=True):
+    def harmonic_indices(self):
         """
         Assumes all harmincs between min and max are present in the band
-
-        Parameters
-        ----------
-        continuous: bool
-            Placeholder for future version which may support ignoring some harmonics.  True for now
 
         Returns
         -------
         numpy array of integers corresponding to harminic indices
         """
-        if continuous:
-            return np.arange(self.index_min, self.index_max+1)
-        else:
-            raise NotImplementedError("discontinuities in frequency band are not supported")
+        return np.arange(self.index_min, self.index_max+1)
 
     def in_band_harmonics(self, frequencies):
         """
