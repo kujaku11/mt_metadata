@@ -16,6 +16,7 @@ class TestTFCore(unittest.TestCase):
         self.tf = TF(some_kwarg=42)
         print(self.tf)
         print(self.tf.__repr__())
+        print(self.tf.__str__())
 
 class TestTFChannelNomenclature(unittest.TestCase):
     def setUp(self):

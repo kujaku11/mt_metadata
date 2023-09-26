@@ -71,7 +71,7 @@ class TestDecimation(unittest.TestCase):
     def test_length(self):
         self.assertEqual(len(self.dl), 2)
 
-    def test_add(self):
+    def test_add_channel(self):
         dl1 = self.dl.copy()
         dl2 = self.dl.copy()
         dl2.channels.remove("ex")
@@ -82,6 +82,15 @@ class TestDecimation(unittest.TestCase):
         dl3 = dl1 + dl2
 
         self.assertEqual(len(dl3), 3)
+
+        with self.assertRaises(ValueError):
+            dl1.add_channel(None)
+
+    def test_remove_channel(self):
+        dl1 = self.dl.copy()
+        dl1.remove_channel("ex")
+        assert ("ex" not in dl1.channels_estimated)
+        dl1.remove_channel("hz")
 
     def test_update(self):
         dl1 = self.dl.copy()
@@ -95,14 +104,39 @@ class TestDecimation(unittest.TestCase):
 
         self.assertEqual(len(dl1), 3)
 
+        with self.assertRaises(AttributeError):
+            dl1.update(None)
+
+    def test_update_with_match(self):
+        dl1 = self.dl.copy()
+        dl2 = self.dl.copy()
+        dl2.channels.remove("ex")
+        ch_ey = self.ex.copy()
+        ch_ey.component = "ey"
+        dl2.add_channel(ch_ey)
+        dl1.update(dl2, match=["method", "recoloring"])
+        self.assertEqual(len(dl1), 3)
+
+        dl1 = self.dl.copy()
+        dl1.method = "wavelet"
+        with self.assertRaises(ValueError):
+            dl1.update(dl2, match=["method", "recoloring"])
+
+
     def test_channels_estimated(self):
         self.assertListEqual(["ex", "hy"], self.dl.channels_estimated)
+
 
     def test_set_channels_estimated(self):
         dl1 = Decimation()
         dl1.channels_estimated = ["ex", "hy"]
 
         self.assertListEqual(["ex", "hy"], dl1.channels_estimated)
+
+        # elicit some debug messages and errors
+        dl1.channels_estimated = None #["ex", "hy"]
+        with self.assertRaises(ValueError):
+            dl1.channels_estimated = 77
 
     def test_has_channel(self):
         self.assertTrue(self.dl.has_channel("ex"))
@@ -112,6 +146,18 @@ class TestDecimation(unittest.TestCase):
 
     def test_get_channel(self):
         self.assertEqual(self.ex, self.dl.get_channel("ex"))
+
+    def test_set_channels(self):
+        dl1 = self.dl.copy()
+        # set using a normal list
+        channels = [dl1.channels[0], dl1.channels[1]]
+        dl1.channels = channels
+
+        with self.assertRaises(TypeError):
+            dl1.channels = None
+
+
+
 
     def test_n_channels(self):
         self.assertEqual(2, self.dl.n_channels)
