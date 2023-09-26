@@ -428,7 +428,7 @@ class Decimation(Base):
             # if harmonic_indices is -1, it means keep all so we can skip this check.
             pass
         else:
-            harmonic_indices_requested = decimation_level.harmonic_indices()
+            harmonic_indices_requested = decimation_level.harmonic_indices
             fcdec_group_set = set(self.harmonic_indices)
             processing_set = set(harmonic_indices_requested)
             if processing_set.issubset(fcdec_group_set):
