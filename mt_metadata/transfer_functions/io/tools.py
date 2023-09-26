@@ -180,10 +180,10 @@ def get_nm_elev(latitude, longitude):
     .. note:: Needs an internet connection to work.
 
     """
-    nm_url = (
-        r"https://nationalmap.gov/epqs/pqs.php?"
-        f"x={longitude:.5f}&y={latitude:.5f}&units=Meters&output=xml"
-    )
+    # nm_url = (
+    #     r"https://nationalmap.gov/epqs/pqs.php?"
+    #     f"x={longitude:.5f}&y={latitude:.5f}&units=Meters&output=xml"
+    # )
 
     nm_url = (
         r"https://epqs.nationalmap.gov/v1/json?"
