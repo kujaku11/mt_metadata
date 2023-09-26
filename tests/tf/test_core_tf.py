@@ -11,6 +11,11 @@ import numpy as np
 
 from mt_metadata.transfer_functions.core import TF, TFError
 
+class TestTFCore(unittest.TestCase):
+    def setUp(self):
+        self.tf = TF(some_kwarg=42)
+        print(self.tf)
+        print(self.tf.__repr__())
 
 class TestTFChannelNomenclature(unittest.TestCase):
     def setUp(self):

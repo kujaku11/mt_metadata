@@ -34,10 +34,11 @@ class Band(Base):
     def upper_bound(self):
         return self.frequency_max
 
-
+    @property
     def lower_closed(self):
         return self.to_interval().closed_left
 
+    @property
     def upper_closed(self):
         return self.to_interval().closed_right
 
@@ -75,7 +76,7 @@ class Band(Base):
         self.index_max = indices[-1]
 
     def to_interval(self):
-        return pd.Interval(self.frequency_min, self.frequency_max, closed="left")
+        return pd.Interval(self.frequency_min, self.frequency_max, closed=self.closed)
 
     def harmonic_indices(self, continuous=True):
         """
@@ -106,7 +107,7 @@ class Band(Base):
         -------
 
         """
-        indices = self.fourier_coefficient_indices(frequencies)
+        indices = self._indices_from_frequencies(frequencies)
         harmonics = frequencies[indices]
         return harmonics
 
