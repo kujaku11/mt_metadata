@@ -424,14 +424,11 @@ class Decimation(Base):
             self.logger.warning(msg)
             return False
 
-        # harmonic_indices
-        # Comparison of integer indices OK, since sample_rate and window length agreement is already established
         if -1 in self.harmonic_indices:
             # if harmonic_indices is -1, it means keep all so we can skip this check.
             pass
         else:
-            harmonic_indices_requested = decimation_level.harmonic_indices()
-            # print(f"determined that {harmonic_indices_requested} are the requested indices")
+            harmonic_indices_requested = decimation_level.harmonic_indices
             fcdec_group_set = set(self.harmonic_indices)
             processing_set = set(harmonic_indices_requested)
             if processing_set.issubset(fcdec_group_set):

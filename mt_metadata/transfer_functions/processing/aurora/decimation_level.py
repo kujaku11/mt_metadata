@@ -257,10 +257,11 @@ class DecimationLevel(Base):
     def sample_rate_decimation(self):
         return self.decimation.sample_rate
 
+    @property
     def harmonic_indices(self):
         return_list = []
         for band in self.bands:
-            fc_indices = band.harmonic_indices(continuous=True)
+            fc_indices = band.harmonic_indices
             return_list += fc_indices.tolist()
         return_list.sort()
         return return_list
@@ -270,17 +271,6 @@ class DecimationLevel(Base):
         return self.input_channels + self.output_channels
 
     def to_fc_decimation(self, remote=False, ignore_harmonic_indices=True):
-        """
-
-        Parameters
-        ----------
-        remote
-        ignore_harmonic_indices
-
-        Returns
-        -------
-
-        """
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
