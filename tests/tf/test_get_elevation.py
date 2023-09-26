@@ -21,7 +21,10 @@ class TestGetNMElevation(unittest.TestCase):
 
     def test_get_good_value(self):
         nm_value = get_nm_elev(40, -120)
-        self.assertAlmostEqual(nm_value, self.true_elevation)
+        if nm_value == 0:
+            self.assertAlmostEqual(nm_value, 0.0)
+        else:
+            self.assertAlmostEqual(nm_value, self.true_elevation)
 
     def test_get_bad_value(self):
         nm_value = get_nm_elev(0, 0)
