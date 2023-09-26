@@ -260,7 +260,7 @@ class DecimationLevel(Base):
     def harmonic_indices(self):
         return_list = []
         for band in self.bands:
-            fc_indices = band.harmonic_indices()
+            fc_indices = band.harmonic_indices
             return_list += fc_indices.tolist()
         return_list.sort()
         return return_list

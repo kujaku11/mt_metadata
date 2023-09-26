@@ -78,6 +78,7 @@ class Band(Base):
     def to_interval(self):
         return pd.Interval(self.frequency_min, self.frequency_max, closed=self.closed)
 
+    @property
     def harmonic_indices(self):
         """
         Assumes all harmincs between min and max are present in the band

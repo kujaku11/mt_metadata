@@ -53,7 +53,7 @@ class TestBand(unittest.TestCase):
 
     def test_harmonic_indices_args(self):
         band = Band(index_min=12, index_max=23)
-        indices = band.harmonic_indices()
+        indices = band.harmonic_indices
         assert (indices[0]==band.index_min)
         assert (indices[-1] == band.index_max)
 
