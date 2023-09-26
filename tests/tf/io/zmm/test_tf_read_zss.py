@@ -65,7 +65,7 @@ class TestZSS(unittest.TestCase):
                 ("id", "YSW212abcdefghijkl"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 11.18),
-                ("location.elevation", get_nm_elev(44.361, -110.44)),
+                ("location.elevation", get_nm_elev(44.631, -110.44)),
                 ("location.latitude", 44.631),
                 ("location.longitude", -110.44),
                 ("orientation.method", None),
