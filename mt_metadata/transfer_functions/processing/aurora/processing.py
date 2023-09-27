@@ -9,13 +9,12 @@ Created on Thu Feb 17 14:15:20 2022
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .frequency_band import FrequencyBand
 
-from .standards import SCHEMA_FN_PATHS
-from .decimation_level import DecimationLevel
-from .stations import Stations
 from .band import Band
 from .channel_nomenclature import ChannelNomenclature
+from .decimation_level import DecimationLevel
+from .standards import SCHEMA_FN_PATHS
+from .stations import Stations
 
 
 # =============================================================================
@@ -216,20 +215,12 @@ class Processing(Base):
             frequencies = decimation_obj.fft_frequecies
 
             for low, high in band_edges:
-                fb = FrequencyBand(left=low, right=high)
-                indices = fb.fourier_coefficient_indices(frequencies)
-                try:
-                    band = Band(
-                        decimation_level=i_level,
-                        frequency_min=low,
-                        frequency_max=high,
-                        index_min=indices[0],
-                        index_max=indices[-1],
-                    )
-                except IndexError:
-                    print("WHAAAAAAA?")
-                # now refine frequency edges based on "canonical" or "exact"
-                # self.decimations_dict[i_level].add_band(band)
+                band = Band(
+                    decimation_level=i_level,
+                    frequency_min=low,
+                    frequency_max=high,
+                )
+                band.set_indices_from_frequencies(frequencies)
                 decimation_obj.add_band(band)
             self.add_decimation_level(decimation_obj)
         #            self.decimations_dict[i_level] = decimation_obj
@@ -240,6 +231,7 @@ class Processing(Base):
         json_fn = self.id + "_processing_config.json"
         return json_fn
 
+    @property
     def num_decimation_levels(self):
         return len(self.decimations)
 

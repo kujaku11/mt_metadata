@@ -4,6 +4,15 @@ Created on Sat Dec  4 17:44:51 2021
 
 @author: jpeacock
 """
+# =============================================================================
+# imports
+# =============================================================================
+import urllib.request as url_request
+import json
+
+from loguru import logger
+
+# =============================================================================
 
 
 def _validate_str_with_equals(input_string):
@@ -145,3 +154,62 @@ def _validate_edi_lines(edi_lines):
             raise ValueError("*** EDI format not correct check file ***")
     else:
         return edi_lines
+
+
+def get_nm_elev(latitude, longitude):
+    """
+    Get national map elevation for a given lat and lon.
+
+    Queries the national map website for the elevation value.
+
+    :param lat: latitude in decimal degrees
+    :type lat: float
+
+    :param lon: longitude in decimal degrees
+    :type lon: float
+
+    :return: elevation (meters)
+    :rtype: float
+
+    :Example: ::
+
+        >>> import mtpy.usgs.usgs_archive as archive
+        >>> archive.get_nm_elev(35.467, -115.3355)
+        >>> 809.12
+
+    .. note:: Needs an internet connection to work.
+
+    """
+    # nm_url = (
+    #     r"https://nationalmap.gov/epqs/pqs.php?"
+    #     f"x={longitude:.5f}&y={latitude:.5f}&units=Meters&output=xml"
+    # )
+
+    nm_url = (
+        r"https://epqs.nationalmap.gov/v1/json?"
+        f"x={longitude}&y={latitude}&units=Meters&wkid=4326&includeDate=False"
+    )
+    # call the url and get the response
+    try:
+        response = url_request.urlopen(nm_url)
+    except:
+        logger.error("Could not connect to internet to get elevation data.")
+        return 0.0
+
+    # read the xml response and convert to a float
+    try:
+        info = json.loads(response.read())
+    except json.JSONDecodeError:
+        logger.error(
+            f"Input values (latitude={latitude}, longitude={longitude}) "
+            "could not be found on US National Map."
+        )
+        return 0.0
+    try:
+        return float(info["value"])
+    except KeyError:
+        logger.warning("Could not find elevation data")
+        return 0.0
+    except ValueError:
+        logger.warning(f"Could not convert elevation {info['value']} to float")
+        return 0.0

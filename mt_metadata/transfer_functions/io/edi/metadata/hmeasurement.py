@@ -37,7 +37,9 @@ class HMeasurement(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __str__(self):
-        return "\n".join([f"{k} = {v}" for k, v in self.to_dict(single=True).items()])
+        return "\n".join(
+            [f"{k} = {v}" for k, v in self.to_dict(single=True).items()]
+        )
 
     def __repr__(self):
         return self.__str__()
@@ -47,8 +49,28 @@ class HMeasurement(Base):
         if self.acqchan != None:
             if not isinstance(self.acqchan, (int, float)):
                 try:
-                    return [int("".join(i for i in self.acqchan if i.isdigit()))][0]
+                    return [
+                        int("".join(i for i in self.acqchan if i.isdigit()))
+                    ][0]
                 except (IndexError, ValueError):
                     return 0
             return self.acqchan
         return 0
+
+    def write_meas_line(self):
+        """
+        write string
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        line = [">hmeas".upper()]
+
+        for mkey, mfmt in self._fmt_dict.items():
+            try:
+                line.append(f"{mkey.upper()}={getattr(self, mkey):{mfmt}}")
+            except (ValueError, TypeError):
+                line.append(f"{mkey.upper()}={0.0:{mfmt}}")
+
+        return f"{' '.join(line)}\n"

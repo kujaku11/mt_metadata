@@ -23,17 +23,19 @@ from obspy import UTCDateTime
 class TestMTime(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.date_str_01 = "2020-01-02"
-        self.date_str_01 = "01-02-20"
+        self.date_str_01 = "2020-01-20"
+        self.date_str_02 = "01-02-20"
+        self.date_str_03 = "2020-20-01"
         self.year = 2020
         self.month = 1
-        self.day = 2
+        self.day = 20
         self.hour = 12
         self.minutes = 15
         self.seconds = 20
         self.microseconds = 123000
-        self.dt_str_01 = "2020-01-02 12:15:20.123"
-        self.dt_true = "2020-01-02T12:15:20.123000+00:00"
+        self.dt_str_01 = "2020-01-20 12:15:20.123"
+        self.dt_true = "2020-01-20T12:15:20.123000+00:00"
+        self.add_time_true = "2020-01-20T12:15:50.123000+00:00"
         self.keys = [
             "year",
             "month",
@@ -44,11 +46,27 @@ class TestMTime(unittest.TestCase):
             "microseconds",
         ]
 
-        self.epoch_seconds = 1577967320.123
+        self.epoch_seconds = 1579522520.123
         self.input_fail = "01294055"
 
-    def test_string_input_date(self):
+    def test_string_input_date_01(self):
         t = MTime(self.date_str_01)
+
+        for key in self.keys[0:3]:
+            with self.subTest(key):
+                self.assertEqual(getattr(self, key), getattr(t, key))
+
+    def test_string_input_date_02(self):
+        t = MTime(self.date_str_02)
+        with self.subTest("year"):
+            self.assertEqual(self.year, t.year)
+        with self.subTest("month"):
+            self.assertEqual(self.month, t.month)
+        with self.subTest("day"):
+            self.assertNotEqual(self.day, t.day)
+
+    def test_string_input_date_03(self):
+        t = MTime(self.date_str_03)
 
         for key in self.keys[0:3]:
             with self.subTest(key):
@@ -176,6 +194,11 @@ class TestMTime(unittest.TestCase):
         t = MTime()
         self.assertRaises(ValueError, t.parse, self.input_fail)
 
+    def test_input_none(self):
+        for t_value in [None, "", "None", "NONE", "none"]:
+            t = MTime(t_value)
+            self.assertEqual(t, "1980-01-01T00:00:00+00:00")
+
     def test_compare_dt(self):
         dt_01 = MTime()
         dt_02 = MTime()
@@ -217,7 +240,7 @@ class TestMTime(unittest.TestCase):
         t2 = t1 + 30
 
         with self.subTest("result"):
-            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+            self.assertEqual(t2, self.add_time_true)
 
         with self.subTest("type"):
             self.assertIsInstance(t2, MTime)
@@ -227,7 +250,7 @@ class TestMTime(unittest.TestCase):
         t2 = t1 + datetime.timedelta(seconds=30)
 
         with self.subTest("result"):
-            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+            self.assertEqual(t2, self.add_time_true)
 
         with self.subTest("type"):
             self.assertIsInstance(t2, MTime)
@@ -237,7 +260,7 @@ class TestMTime(unittest.TestCase):
         t2 = t1 + np.timedelta64(30, "s")
 
         with self.subTest("result"):
-            self.assertEqual(t2, "2020-01-02T12:15:50.123000+00:00")
+            self.assertEqual(t2, self.add_time_true)
 
         with self.subTest("type"):
             self.assertIsInstance(t2, MTime)
@@ -256,7 +279,7 @@ class TestMTime(unittest.TestCase):
         t1 = MTime(self.dt_true)
         t2 = pd.Timedelta(seconds=30)
 
-        self.assertEqual(MTime("2020-01-02T12:14:50.123000+00:00"), t1 - t2)
+        self.assertEqual(MTime("2020-01-20T12:14:50.123000+00:00"), t1 - t2)
 
     def test_too_large(self):
         t1 = MTime("3000-01-01T00:00:00")

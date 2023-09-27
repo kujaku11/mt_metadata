@@ -32,6 +32,7 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 meta_classes = dict(
     [
@@ -290,7 +291,14 @@ class EMTFXML(emtf_xml.EMTF):
         else:
             raise IOError("Input file name is None, that is bad.")
 
-        root = et.parse(self.fn).getroot()
+        with open(file=self.fn, mode="r", encoding="utf-8") as xml_fid:
+            xml_string = xml_fid.read()
+            xml_string = xml_string.replace("&", "and")
+            root = et.fromstring(
+                xml_string,
+                et.XMLParser(encoding="utf-8"),
+            )
+
         root_dict = helpers.element_to_dict(root)
         root_dict = root_dict[list(root_dict.keys())[0]]
         root_dict = emtf_helpers._convert_keys_to_lower_case(root_dict)
@@ -313,6 +321,16 @@ class EMTFXML(emtf_xml.EMTF):
 
         self._get_statistical_estimates()
         self._get_data_types()
+        self._update_site_layout()
+
+        if self.site.location.elevation == 0:
+            if (
+                self.site.location.latitude != 0
+                and self.site.location.longitude != 0
+            ):
+                self.site.location.elevation = get_nm_elev(
+                    self.site.location.latitude, self.site.location.longitude
+                )
 
     def write(self, fn, skip_field_notes=False):
         """
@@ -330,11 +348,24 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_data_types()
 
         for key in self.element_keys:
+            if key == "external_url":
+                if self.external_url.url in [None, "None", "", "none"]:
+                    continue
             if skip_field_notes:
                 if key == "field_notes":
                     continue
             value = getattr(self, key)
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
+                if key == "processing_info":
+                    if skip_field_notes:
+                        value.remote_info._order.remove("field_notes")
+                    if value.remote_info.site.id in [
+                        None,
+                        "",
+                        "None",
+                        "none",
+                    ]:
+                        value.remote_info._order.remove("site")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
@@ -346,6 +377,7 @@ class EMTFXML(emtf_xml.EMTF):
                         emtf_helpers._convert_tag_to_capwords(element)
                     )
             else:
+
                 emtf_helpers._write_single(
                     emtf_element, key, getattr(self, key)
                 )
@@ -416,6 +448,55 @@ class EMTFXML(emtf_xml.EMTF):
                 self.data_types.data_types_list.append(
                     data_types_dict["tipper"]
                 )
+
+    def _update_site_layout(self):
+        """
+        Need to update site layout from statistical estimates.
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        input_channels = []
+        output_channels = []
+        if (self.data.z != 0).any():
+            input_channels += ["hx", "hy"]
+            output_channels += ["ex", "ey"]
+
+        if (self.data.t != 0).any():
+            output_channels += ["hz"]
+
+            if input_channels == []:
+                input_channels = ["hx", "hy"]
+
+        if list(sorted(input_channels)) != list(
+            sorted(self.site_layout.input_channel_names)
+        ):
+            new_input_channels = []
+            for ach in input_channels:
+                find = False
+                for ch in self.site_layout.input_channels:
+                    if ch.name == ach:
+                        new_input_channels.append(ch)
+                        find = True
+                if not find:
+                    new_input_channels.append(ach)
+
+            self.site_layout.input_channels = new_input_channels
+
+        if list(sorted(output_channels)) != list(
+            sorted(self.site_layout.output_channel_names)
+        ):
+            new_output_channels = []
+            for ach in output_channels:
+                find = False
+                for ch in self.site_layout.output_channels:
+                    if ch.name == ach:
+                        new_output_channels.append(ch)
+                        find = True
+                if not find:
+                    new_output_channels.append(ach)
+            self.site_layout.output_channels = new_output_channels
 
     def _parse_comments_data_logger(self, key, value):
         """
@@ -691,35 +772,34 @@ class EMTFXML(emtf_xml.EMTF):
     @property
     def survey_metadata(self):
         survey_obj = Survey()
-        if self._root_dict is not None:
-            survey_obj.acquired_by.author = self.site.acquired_by
-            survey_obj.citation_dataset.authors = (
-                self.copyright.citation.authors
-            )
-            survey_obj.citation_dataset.title = self.copyright.citation.title
-            survey_obj.citation_dataset.year = self.copyright.citation.year
-            survey_obj.citation_dataset.doi = (
-                self.copyright.citation.survey_d_o_i
-            )
-            survey_obj.country = self.site.country
-            survey_obj.datum = self.site.location.datum
-            survey_obj.geographic_name = self.site.survey
-            survey_obj.id = self.site.survey
-            survey_obj.project = self.site.project
-            survey_obj.time_period.start = self.site.start
-            survey_obj.time_period.end = self.site.end
-            survey_obj.summary = self.description
-            survey_obj.comments = "; ".join(
-                [
-                    f"{k}:{v}"
-                    for k, v in {
-                        "copyright.acknowledgement": self.copyright.acknowledgement,
-                        "copyright.conditions_of_use": self.copyright.conditions_of_use,
-                        "copyright.release_status": self.copyright.release_status,
-                    }.items()
-                    if v not in [None, ""]
-                ]
-            )
+        survey_obj.acquired_by.author = self.site.acquired_by
+        survey_obj.citation_dataset.authors = self.copyright.citation.authors
+        survey_obj.citation_dataset.title = self.copyright.citation.title
+        survey_obj.citation_dataset.year = self.copyright.citation.year
+        survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
+        survey_obj.country = self.site.country
+        survey_obj.datum = self.site.location.datum
+        survey_obj.geographic_name = self.site.survey
+        survey_obj.id = self.site.survey
+        survey_obj.project = self.site.project
+        survey_obj.time_period.start = self.site.start
+        survey_obj.time_period.end = self.site.end
+        survey_obj.summary = self.description
+        survey_obj.comments = "; ".join(
+            [
+                f"{k}:{v}"
+                for k, v in {
+                    "copyright.acknowledgement": self.copyright.acknowledgement,
+                    "copyright.conditions_of_use": self.copyright.conditions_of_use,
+                    "copyright.release_status": self.copyright.release_status,
+                    "copyright.selected_publications": self.copyright.selected_publications,
+                    "copyright.additional_info": self.copyright.additional_info,
+                }.items()
+                if v not in [None, ""]
+            ]
+        )
+
+        survey_obj.add_station(self.station_metadata)
 
         return survey_obj
 
@@ -792,6 +872,8 @@ class EMTFXML(emtf_xml.EMTF):
             "site.data_quality_notes.comments.author",
             "site.data_quality_notes.comments.value",
             "site.data_quality_warnings.flag",
+            "site.data_quality_warnings.comments.author",
+            "site.data_quality_warnings.comments.value",
         ]:
             comments[key] = self.get_attr_from_name(key)
         s.comments = "; ".join(
@@ -814,23 +896,76 @@ class EMTFXML(emtf_xml.EMTF):
         s.transfer_function.software.last_updated = (
             self.processing_info.processing_software.last_mod
         )
-        if self.processing_info.processing_tag is not None:
-            s.transfer_function.remote_references = (
-                self.processing_info.processing_tag.split("_")
-            )
+        # need to use remote reference info if it has it.
+        if self.processing_info.remote_info.site.id is not None:
+            s.transfer_function.remote_references = [
+                self.processing_info.remote_info.site.id
+            ]
+
+        elif self.processing_info.processing_tag is not None:
+            if "_" in self.processing_info.processing_tag:
+                remotes = [
+                    rr
+                    for rr in self.processing_info.processing_tag.split("_")
+                    if self.site.id not in rr
+                ]
+                s.transfer_function.remote_references = remotes
         s.transfer_function.runs_processed = self.site.run_list
-        s.transfer_function.processing_parameters.append(
-            {"remote_ref.type": self.processing_info.remote_ref.type}
+        s.transfer_function.processing_type = (
+            self.processing_info.remote_ref.type
         )
 
-        for key in ["id", "name", "year_collected"]:
-            value = self.processing_info.remote_info.get_attr_from_name(
-                f"site.{key}"
-            )
-            if value not in [None, "1980", 1980]:
-                s.transfer_function.processing_parameters[0][
-                    f"remote_info.site.{key}"
-                ] = value
+        if self.processing_info.remote_info.site.id is not None:
+            for key in self.processing_info.remote_info.site._attr_dict.keys():
+                value = (
+                    self.processing_info.remote_info.site.get_attr_from_name(
+                        key
+                    )
+                )
+                if "location" in key:
+                    if value == 0.0:
+                        continue
+                if value not in [
+                    None,
+                    "1980",
+                    1980,
+                    "1980-01-01T00:00:00+00:00",
+                    [],
+                    "",
+                ]:
+                    s.transfer_function.processing_parameters.append(
+                        f"remote_info.site.{key} = {value}"
+                    )
+
+            # need to add remote site field notes information
+            for rfn in self.processing_info.remote_info.field_notes.run_list:
+                rr_dict = rfn.to_dict(single=True)
+                for rr_key, rr_value in rr_dict.items():
+                    if rr_value not in [
+                        None,
+                        "1980",
+                        1980,
+                        "1980-01-01T00:00:00+00:00",
+                        [],
+                        "",
+                    ]:
+                        s.transfer_function.processing_parameters.append(
+                            f"remote_info.field_notes.{rr_key} = {rr_value}"
+                        )
+                for ii, dp in enumerate(rfn.dipole):
+                    dp_dict = dp.to_dict(single=True)
+                    for dp_key, dp_value in dp_dict.items():
+                        if dp_value not in [None, ""]:
+                            s.transfer_function.processing_parameters.append(
+                                f"remote_info.field_notes.dipole_{ii}.{dp_key} = {dp_value}"
+                            )
+                for ii, mag in enumerate(rfn.magnetometer):
+                    mag_dict = mag.to_dict(single=True)
+                    for mag_key, mag_value in mag_dict.items():
+                        if mag_value not in [None, ""]:
+                            s.transfer_function.processing_parameters.append(
+                                f"remote_info.field_notes.magnetometer_{ii}.{dp_key} = {dp_value}"
+                            )
 
         s.transfer_function.data_quality.good_from_period = (
             self.site.data_quality_notes.good_from_period
@@ -871,6 +1006,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.name = fn.magnetometer[0].name
                     c.sensor.manufacturer = fn.magnetometer[0].manufacturer
                     c.sensor.type = fn.magnetometer[0].type
+                    c.time_period.start = fn.start
+                    c.time_period.end = fn.end
                     r.add_channel(c)
 
             else:
@@ -884,6 +1021,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.sensor.name = mag.name
                     c.sensor.manufacturer = mag.manufacturer
                     c.sensor.type = mag.type
+                    c.time_period.start = fn.start
+                    c.time_period.end = fn.end
                     r.add_channel(c)
 
             for dp in fn.dipole:
@@ -906,6 +1045,8 @@ class EMTFXML(emtf_xml.EMTF):
                         c.negative.type = pot.value
                         c.negative.manufacturer = dp.manufacturer
                         c.negative.type = pot.comments
+                c.time_period.start = fn.start
+                c.time_period.end = fn.end
                 r.add_channel(c)
 
             for ch in (
@@ -927,6 +1068,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
+                c.time_period.start = fn.start
+                c.time_period.end = fn.end
             s.add_run(r)
 
         if self.field_notes.run_list == []:
@@ -942,12 +1085,12 @@ class EMTFXML(emtf_xml.EMTF):
                 + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
-                if c.component in ["hx", "hy", "hz"]:
+                if c.component in r.channels_recorded_magnetic:
                     c.location.x = ch.x
                     c.location.y = ch.y
                     c.location.z = ch.z
 
-                elif c.component in ["ex", "ey"]:
+                elif c.component in r.channels_recorded_electric:
                     c.negative.x = ch.x
                     c.negative.y = ch.y
                     c.negative.z = ch.z
@@ -956,6 +1099,8 @@ class EMTFXML(emtf_xml.EMTF):
                     c.positive.z2 = ch.z2
                 c.measurement_azimuth = ch.orientation
                 c.translated_azimuth = ch.orientation
+                c.time_period.start = s.time_period.start
+                c.time_period.end = s.time_period.end
 
             s.add_run(r)
 
@@ -1010,6 +1155,7 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processed_by = (
             sm.transfer_function.processed_by.author
         )
+        self.processing_info.process_date = sm.transfer_function.processed_date
         self.processing_info.processing_software.author = (
             sm.transfer_function.software.author
         )
@@ -1019,19 +1165,89 @@ class EMTFXML(emtf_xml.EMTF):
         self.processing_info.processing_software.last_mod = (
             sm.transfer_function.software.last_updated
         )
-        self.processing_info.processing_tag = "_".join(
-            sm.transfer_function.remote_references
+        tag = []
+        if sm.transfer_function.runs_processed is not None:
+            tag += sm.transfer_function.runs_processed
+        if sm.transfer_function.remote_references is not None:
+            tag += sm.transfer_function.remote_references
+        self.processing_info.processing_tag = "_".join(tag)
+        self.processing_info.remote_ref.type = (
+            sm.transfer_function.processing_type
         )
         for param in sm.transfer_function.processing_parameters:
-            if isinstance(param, dict):
-                for key, value in param.items():
-                    try:
-                        self.processing_info.set_attr_from_name(key, value)
-                    except Exception as error:
-                        self.logger.warning(
-                            f"Cannot set processing info attribute {param}"
-                        )
-                        self.logger.exception(error)
+            if isinstance(param, str):
+                sep = None
+                if param.count("=") >= 1:
+                    sep = "="
+                elif param.count(":") >= 1:
+                    sep = ":"
+
+                if sep:
+                    key, value = [k.strip() for k in param.split(sep, 1)]
+                    if "remote_info.field_notes" in key:
+                        key = key.replace("remote_info.field_notes.", "")
+                        if (
+                            len(
+                                self.processing_info.remote_info.field_notes.run_list
+                            )
+                            == 0
+                        ):
+                            self.processing_info.remote_info.field_notes.run_list.append(
+                                meta_classes["run"]()
+                            )
+
+                        run = self.processing_info.remote_info.field_notes.run_list[
+                            0
+                        ]
+
+                        if "dipole" in key:
+                            index = int(key.split("_")[1].split(".")[0])
+                            key = key.split(".", 1)[1]
+                            if len(run.dipole) < (index + 1):
+                                run.dipole.append(meta_classes["dipole"]())
+                            try:
+                                run.dipole[index].set_attr_from_name(
+                                    key, value
+                                )
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                        elif "magnetometer" in key:
+                            index = int(key.split("_")[1].split(".")[0])
+                            key = key.split(".", 1)[1:]
+                            if len(run.magnetometer) < (index + 1):
+                                run.magnetometer.append(
+                                    meta_classes["magnetometer"]()
+                                )
+                            try:
+                                run.magnetometer[index].set_attr_from_name(
+                                    key, value
+                                )
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                        else:
+
+                            try:
+                                run.set_attr_from_name(key, value)
+                            except Exception as error:
+                                self.logger.warning(
+                                    f"Cannot set processing info attribute {param}"
+                                )
+                                self.logger.exception(error)
+                    else:
+                        try:
+                            self.processing_info.set_attr_from_name(key, value)
+                        except Exception as error:
+                            self.logger.warning(
+                                f"Cannot set processing info attribute {param}"
+                            )
+                            self.logger.exception(error)
+
         self.site.run_list = sm.transfer_function.runs_processed
 
         self.site.data_quality_notes.good_from_period = (
@@ -1042,6 +1258,9 @@ class EMTFXML(emtf_xml.EMTF):
         )
         self.site.data_quality_notes.rating = (
             sm.transfer_function.data_quality.rating.value
+        )
+        self.site.data_quality_notes.comments.value = (
+            sm.transfer_function.data_quality.comments
         )
 
         # not sure there is a place to put processing parameters yet
@@ -1070,7 +1289,9 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(f"Cannot set attribute {key}.")
+                            raise AttributeError(
+                                f"Cannot set attribute {key}."
+                            )
 
             for comp in ["hx", "hy", "hz"]:
                 try:
@@ -1135,7 +1356,10 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(m_ch, item, value)
 
                     m_ch.name = comp.capitalize()
-                    m_ch.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        m_ch.orientation = ch.translated_azimuth
+                    else:
+                        m_ch.orientation = ch.measurement_azimuth
 
                     if comp in ["hx", "hy"]:
                         ch_in_dict[comp] = m_ch
@@ -1163,7 +1387,22 @@ class EMTFXML(emtf_xml.EMTF):
                         setattr(ch_out, item, value)
 
                     ch_out.name = comp.capitalize()
-                    ch_out.orientation = ch.translated_azimuth
+                    if ch.translated_azimuth is not None:
+                        ch_out.orientation = ch.translated_azimuth
+                    else:
+                        ch_out.orientation = ch.measurement_azimuth
+
+                    if (
+                        ch_out.x == 0
+                        and ch_out.y == 0
+                        and ch_out.x2 == 0
+                        and ch_out.y2 == 0
+                    ):
+                        if comp in ["ex"]:
+                            ch_out.x2 = ch.dipole_length
+                        elif comp in ["ey"]:
+                            ch_out.y2 = ch.dipole_length
+
                     ch_out_dict[comp] = ch_out
                 except AttributeError:
                     self.logger.debug(f"Did not find {comp} in run")

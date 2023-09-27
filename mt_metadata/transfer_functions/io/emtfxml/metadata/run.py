@@ -75,7 +75,9 @@ class Run(Base):
         self.end = input_dict["end"]
         try:
             if isinstance(input_dict["comments"], list):
-                self.comments.from_dict({"comments": input_dict["comments"][0]})
+                self.comments.from_dict(
+                    {"comments": input_dict["comments"][0]}
+                )
             else:
                 self.comments.from_dict({"comments": input_dict["comments"]})
         except KeyError:

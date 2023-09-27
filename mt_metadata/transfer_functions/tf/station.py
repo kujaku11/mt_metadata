@@ -49,30 +49,14 @@ attr_dict.add_dict(
     "acquired_by",
     keys=["author", "comments"],
 )
+attr_dict.add_dict(get_schema("orientation", TS_SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
-    get_schema("orientation", TS_SCHEMA_FN_PATHS), "orientation"
-)
-attr_dict.add_dict(
-    get_schema("provenance", TS_SCHEMA_FN_PATHS),
+    Provenance()._attr_dict,
     "provenance",
-    keys=["comments", "creation_time", "log"],
 )
-attr_dict.add_dict(
-    get_schema("software", TS_SCHEMA_FN_PATHS), "provenance.software"
-)
-attr_dict.add_dict(
-    get_schema("person", TS_SCHEMA_FN_PATHS),
-    "provenance.submitter",
-    keys=["author", "email", "organization"],
-)
-attr_dict["provenance.submitter.email"]["required"] = True
-attr_dict["provenance.submitter.organization"]["required"] = True
-attr_dict.add_dict(
-    get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period"
-)
-attr_dict.add_dict(
-    get_schema("transfer_function", SCHEMA_FN_PATHS), "transfer_function"
-)
+
+attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
+attr_dict.add_dict(TransferFunction()._attr_dict, "transfer_function")
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(
@@ -182,7 +166,7 @@ class Station(Base):
             return self.run_list.index(run_id)
         return None
 
-    def add_run(self, run_obj):
+    def add_run(self, run_obj, update=True):
         """
         Add a run, if one of the same name exists overwrite it.
 
@@ -204,6 +188,9 @@ class Station(Base):
         else:
             self.runs.append(run_obj)
 
+        if update:
+            self.update_time_period()
+
     def get_run(self, run_id):
         """
         Get a :class:`mt_metadata.timeseries.Run` object from the given
@@ -219,7 +206,7 @@ class Station(Base):
         self.logger.warning(f"Could not find {run_id} in runs.")
         return None
 
-    def remove_run(self, run_id):
+    def remove_run(self, run_id, update=True):
         """
         remove a run from the survey
 
@@ -230,6 +217,8 @@ class Station(Base):
 
         if self.has_run(run_id):
             self.runs.remove(run_id)
+            if update:
+                self.update_time_period()
         else:
             self.logger.warning(f"Could not find {run_id} to remove.")
 
@@ -272,6 +261,8 @@ class Station(Base):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
+        self.update_time_period()
+
     @property
     def run_list(self):
         """Return names of run in survey"""
@@ -306,22 +297,23 @@ class Station(Base):
         """
         update time period from run information
         """
-        start = []
-        end = []
-        for run in self.runs:
-            if run.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(run.time_period.start)
-            if run.time_period.start != "1980-01-01T00:00:00+00:00":
-                end.append(run.time_period.end)
-        if start:
-            if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                self.time_period.start = min(start)
-            else:
-                if self.time_period.start > min(start):
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for run in self.runs:
+                if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(run.time_period.start)
+                if run.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(run.time_period.end)
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
                     self.time_period.start = min(start)
-        if end:
-            if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                self.time_period.end = max(end)
-            else:
-                if self.time_period.end < max(end):
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
                     self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)

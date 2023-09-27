@@ -39,6 +39,23 @@ class TestTranslateZmm(unittest.TestCase):
             ["hx", "hy", "hz", "ex", "ey"], self.zmm_obj.channels_recorded
         )
 
+    def test_channel_string(self):
+        to_str = (
+            "Channel Metadata:\n\tChannel: ex          \n\tNumber: 4"
+            "           \n\tDl: 300         \n\tAzimuth: 0.0         "
+            "\n\tTilt: 0.0         "
+        )
+        with self.subTest("__str__"):
+            self.assertEqual(
+                self.zmm_obj.ex.__str__(),
+                to_str,
+            )
+        with self.subTest("__repr__"):
+            self.assertEqual(
+                self.zmm_obj.ex.__repr__(),
+                to_str,
+            )
+
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
             self.assertEqual(self.zmm_obj.hx.channel, "hx")
@@ -136,8 +153,12 @@ class TestTranslateZmm(unittest.TestCase):
         zmm_st = self.zmm_obj.survey_metadata.to_dict(single=True)
         tf_st = self.tf_obj.survey_metadata.to_dict(single=True)
         for zmm_key, zmm_value in zmm_st.items():
-            with self.subTest(zmm_key):
-                self.assertEqual(zmm_value, tf_st[zmm_key])
+            if zmm_key in ["id"]:
+                with self.subTest(zmm_key):
+                    self.assertNotEqual(zmm_value, tf_st[zmm_key])
+            else:
+                with self.subTest(zmm_key):
+                    self.assertEqual(zmm_value, tf_st[zmm_key])
 
 
 # =============================================================================

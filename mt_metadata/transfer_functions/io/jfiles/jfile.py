@@ -21,6 +21,7 @@ from mt_metadata.transfer_functions.tf import (
 )
 from mt_metadata.utils.mttime import MTime
 from .metadata import Header
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # ==============================================================================
 # Class to read j_file
@@ -308,6 +309,12 @@ class JFile:
         self.z_err[np.where(self.z_err == np.inf)] = 10**6
         self.t_err[np.where(self.t_err == np.inf)] = 10**6
 
+        if self.header.elevation == 0:
+            if self.header.latitude != 0 and self.header.longitude != 0:
+                self.header.elevation = get_nm_elev(
+                    self.header.latitude, self.header.longitude
+                )
+
     @property
     def station_metadata(self):
         sm = Station()
@@ -358,5 +365,6 @@ class JFile:
     @property
     def survey_metadata(self):
         sm = Survey()
+        sm.add_station(self.station_metadata)
 
         return sm

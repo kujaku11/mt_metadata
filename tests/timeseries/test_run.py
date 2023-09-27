@@ -173,7 +173,6 @@ class TestRun(unittest.TestCase):
         ch.time_period.start = "2020-01-01T00:00:00"
         ch.time_period.end = "2020-12-01T12:12:12"
         self.run_object.add_channel(ch)
-        self.run_object.update_time_period()
 
         with self.subTest("Test new start"):
             self.assertEqual(

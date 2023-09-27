@@ -53,5 +53,27 @@
         "alias": [],
         "example": "0.03515625",
 		"default": 0.0
+    },
+    "center_averaging_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "type of average to apply when computing the band center",
+        "options": ["arithmetic", "geometric"],
+        "alias": [],
+        "example": "geometric",
+		"default": "geometric"
+    },
+    "closed": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "whether interval is open or closed",
+        "options": ["left", "right", "both"],
+        "alias": [],
+        "example": "left",
+		"default": "left"
     }
 }

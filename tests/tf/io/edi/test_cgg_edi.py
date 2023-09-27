@@ -380,7 +380,9 @@ class TestCGGTF(unittest.TestCase):
             "provenance.creation_time = 2014-10-07T00:00:00+00:00",
             "provenance.software.version = Antlr3.Runtime:3.5.0.2;ContourEngine:1.0.41.8272;CoordinateSystemService:1.4.0.8439;DocumentCommon:1.4.0.8465;Fluent:2.1.0.0;GeoApi:1.7.0.0;hasp_net_windows:7.0.1.36183;Launcher:1.4.0.8471;MapDocument:1.4.0.8469;MTDocument:1.4.0.8459;MTDocumentDataProvider:1.4.0.8467;MTInversionCommon:1.4.0.8371;Ookii.Dialogs.Wpf:1.0.0.0;PlotElement:1.4.0.8466;PluginHost:1.4.0.8440;ProjNet:1.2.5085.21309;ShellEngine:1.4.0.8380;System.Windows.Interactivity:4.0.0.0;Utils:1.4.0.8449;Xceed.Wpf.AvalonDock:2.0.0.0;Xceed.Wpf.AvalonDock.Themes.Aero:2.0.0.0;Xceed.Wpf.Toolkit:1.9.0.0;",
             "transfer_function.coordinate_system = geopgraphic",
+            "transfer_function.data_quality.rating.value = 0",
             "transfer_function.id = TEST01",
+            "transfer_function.processed_date = 2014-10-07",
             "transfer_function.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['TEST01a']",
@@ -392,7 +394,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", "4"),
+                ("acqchan", "1004.001"),
                 ("azm", 0.0),
                 ("chtype", "ex"),
                 ("id", 1004.001),
@@ -412,7 +414,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", "5"),
+                ("acqchan", "1005.001"),
                 ("azm", 0.0),
                 ("chtype", "ey"),
                 ("id", 1005.001),
@@ -432,7 +434,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", "1"),
+                ("acqchan", "1001.001"),
                 ("azm", 0.0),
                 ("chtype", "hx"),
                 ("dip", 0.0),
@@ -450,7 +452,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", "2"),
+                ("acqchan", "1002.001"),
                 ("azm", 90.0),
                 ("chtype", "hy"),
                 ("dip", 0.0),
@@ -468,7 +470,7 @@ class TestCGGTF(unittest.TestCase):
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", "3"),
+                ("acqchan", "1003.001"),
                 ("azm", 0.0),
                 ("chtype", "hz"),
                 ("dip", 0.0),

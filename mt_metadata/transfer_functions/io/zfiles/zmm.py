@@ -10,7 +10,6 @@ Translated from code by B. Murphy.
 # Imports
 # ==============================================================================
 from pathlib import Path
-from collections import OrderedDict
 from loguru import logger
 
 import numpy as np
@@ -23,10 +22,12 @@ from mt_metadata.transfer_functions.tf import (
     Electric,
     Magnetic,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from .metadata import Channel
 from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
+PERIOD_FORMAT = ".10g"
 class ZMMError(Exception):
     pass
 
@@ -132,9 +133,11 @@ class ZMMHeader(object):
 
                 line = fid.readline()
         self.station_metadata.comments = ""
+        self.station_metadata.transfer_function.processing_type = header_list[2].strip()
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]
+            station = station.strip()
         self.station = station
         self.station_metadata._runs = ListDict()
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
@@ -210,8 +213,12 @@ class ZMMHeader(object):
         :rtype: string
 
         """
-        lines = [self._header_lines[0], self._header_lines[1], ""]
-        lines += [f"{self.station}"]
+        lines = [
+            self._header_lines[0],
+            self._header_lines[1],
+        ]
+        lines += [f"{self.station_metadata.transfer_function.processing_type}"]
+        lines += [f"station: {self.station}"]
         lines += [
             f"coordinate {self.latitude:>9.3f} {self.longitude:>9.3f} declination {self.declination:>8.2f}"
         ]
@@ -221,20 +228,20 @@ class ZMMHeader(object):
         lines += [" orientations and tilts of each channel"]
         for ii, ch in enumerate(self._channel_order):
             try:
-                channel = getattr(self.station_metadata.runs[0], ch)
-                if channel.channel_number == None:
-                    channel.channel_number = int(ii)
-                if channel.translated_tilt is None:
-                    channel.translated_tilt = 0.0
-                if channel.translated_azimuth is None:
-                    channel.translated_azimuth = 0.0
+                channel = getattr(self, ch)
+                if channel.number == None:
+                    channel.number = int(ii)
+                if channel.tilt is None:
+                    channel.tilt = 0.0
+                if channel.azimuth is None:
+                    channel.azimuth = 0.0
                 lines += [
                     (
-                        f"{channel.channel_number:>5d} "
-                        f"{channel.translated_azimuth:>8.2f} "
-                        f"{channel.translated_tilt:>8.2f} "
+                        f"{channel.number:>5d} "
+                        f"{channel.azimuth:>8.2f} "
+                        f"{channel.tilt:>8.2f} "
                         f"{self.station:>3} "
-                        f"{channel.component.capitalize():>3}"
+                        f"{channel.channel.capitalize():>3}"
                     )
                 ]
             except (AttributeError, TypeError):
@@ -291,6 +298,7 @@ class ZMM(ZMMHeader):
         self.periods = None
         self.dataset = None
         self.decimation_dict = {}
+        self.channel_nomenclature = {}
 
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -503,7 +511,7 @@ class ZMM(ZMMHeader):
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
         self.station_metadata.runs[0].sample_rate = np.median(
-            np.array([d["df"] for k, d in self.decimation_dict.items()])
+            np.array([d["sample_rate"] for k, d in self.decimation_dict.items()])
         )
 
         # add information to runs
@@ -515,6 +523,13 @@ class ZMM(ZMMHeader):
             rr.hy = self.hy_metadata
             if self.hz is not None:
                 rr.hz = self.hz_metadata
+
+        if self.elevation in [0, None]:
+            if self.latitude != 0 and self.longitude != 0:
+                self.elevation = get_nm_elev(
+                    self.latitude,
+                    self.longitude,
+                )
 
     def write(self, fn, decimation_levels=None):
         """
@@ -533,17 +548,17 @@ class ZMM(ZMMHeader):
         if fn is not None:
             self.fn = fn
         lines = self.write_header()
-
+        lines += ["",] # add 1 space separating header from data
         for p in self.dataset.period.data:
             a = self.dataset.sel(period=p)
             try:
-                dec_dict = self.decimation_dict[f"{p:10g}"]
+                dec_dict = self.decimation_dict[f"{p:{PERIOD_FORMAT}}"]
             except KeyError:
                 dec_dict = {
                     "level": 0,
                     "bands": (0, 0),
                     "npts": 0,
-                    "df": self.station_metadata.runs[0].sample_rate,
+                    "sample_rate": self.station_metadata.runs[0].sample_rate,
                 }
             lines += [
                 (
@@ -553,15 +568,17 @@ class ZMM(ZMMHeader):
                 )
             ]
             lines += [
-                f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['df']} Hz"
+                f"number of data point {dec_dict['npts']} sampling freq. {dec_dict['sample_rate']} Hz"
             ]
             # write tf
             lines += [" Transfer Functions"]
             for c_out in self.output_channels:
                 line = ""
                 for c_in in self.input_channels:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.transfer_function.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
@@ -570,8 +587,10 @@ class ZMM(ZMMHeader):
             for ii, c_out in enumerate(self.input_channels):
                 line = ""
                 for c_in in self.input_channels[: ii + 1]:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.inverse_signal_power.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
@@ -580,8 +599,10 @@ class ZMM(ZMMHeader):
             for ii, c_out in enumerate(self.output_channels):
                 line = ""
                 for c_in in self.output_channels[: ii + 1]:
+                    c_in_name = self.channel_nomenclature[c_in]
+                    c_out_name = self.channel_nomenclature[c_out]
                     tf_element = a.residual_covariance.loc[
-                        dict(output=c_out, input=c_in)
+                        dict(output=c_out_name, input=c_in_name)
                     ].data
                     line += f"{tf_element.real:>12.4E}{tf_element.imag:>12.4E}"
                 lines += [line]
@@ -629,11 +650,11 @@ class ZMM(ZMMHeader):
 
         npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
         sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
-        self.decimation_dict[f"{period:.10g}"] = {
+        self.decimation_dict[f"{period:{PERIOD_FORMAT}}"] = {
             "level": level,
             "bands": bands,
             "npts": npts,
-            "df": sr,
+            "sample_rate": sr,
         }
         data_dict = {"period": period, "tf": [], "sig": [], "res": []}
         key = "tf"
@@ -878,6 +899,7 @@ class ZMM(ZMMHeader):
     @property
     def survey_metadata(self):
         sm = Survey()
+        sm.add_station(self.station_metadata)
 
         return sm
 
@@ -940,123 +962,3 @@ class ZMM(ZMMHeader):
     @property
     def hz_metadata(self):
         return self._get_magnetic_metadata("hz")
-
-
-def read_zmm(zmm_fn, **kwargs):
-    """
-    Write a Z file
-
-    :param zmm_fn: full path to file to be read in
-    :type zmm_fn: str :class:`pathlib.Path`
-    :return: Returns a TF object
-    :rtype: :class:`mt_metadata.transfer_functions.tf.core.TF`
-
-    """
-
-    # need to add this here instead of the top is because of recursive
-    # importing.  This may not be the best way to do this but works for now
-    # so we don't have to break how MTpy structure is setup now.
-    from mt_metadata.transfer_functions.core import TF
-
-    tf_obj = TF(**kwargs)
-    tf_obj._fn = zmm_fn
-    tf_obj.logger.debug(f"Reading {zmm_fn} using ZMM class")
-
-    zmm_obj = ZMM(zmm_fn)
-    zmm_obj.read()
-
-    k_dict = OrderedDict(
-        {
-            "survey_metadata": "survey_metadata",
-            "station_metadata": "station_metadata",
-            "period": "periods",
-        }
-    )
-
-    for tf_key, j_key in k_dict.items():
-        setattr(tf_obj, tf_key, getattr(zmm_obj, j_key))
-    tf_obj._transfer_function["transfer_function"].loc[
-        dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
-    ] = zmm_obj.dataset.transfer_function.sel(
-        input=zmm_obj.input_channels, output=zmm_obj.output_channels
-    )
-    tf_obj._transfer_function["inverse_signal_power"].loc[
-        dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
-    ] = zmm_obj.dataset.inverse_signal_power.sel(
-        input=zmm_obj.input_channels, output=zmm_obj.input_channels
-    )
-    tf_obj._transfer_function["residual_covariance"].loc[
-        dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
-    ] = zmm_obj.dataset.residual_covariance.sel(
-        input=zmm_obj.output_channels, output=zmm_obj.output_channels
-    )
-
-    tf_obj._compute_error_from_covariance()
-    tf_obj._rotation_angle = -1 * zmm_obj.declination
-
-    return tf_obj
-
-
-def write_zmm(tf_object, fn=None):
-    """
-    write a zmm file
-
-    :param tf_object: TF object
-    :type tf_object: :class:`mt_metadata.transfer_functions.core.TF`
-    :param fn: full path to new file, defaults to None
-    :type fn: str or :class:`pathlib.Path`, optional
-    :return: ZMM object
-    :rtype: `mt_metadata.transfer_functions.io.ZMM`
-
-    """
-    from mt_metadata.transfer_functions.core import TF
-
-    if not isinstance(tf_object, TF):
-        raise ValueError("Input must be a TF object")
-    zmm_obj = ZMM()
-    zmm_obj.dataset = tf_object.dataset
-    zmm_obj.station_metadata = tf_object.station_metadata
-
-    # need to set the channel numbers according to the z-file format
-    # with input channels (h's) and output channels (hz, e's).
-    if tf_object.has_tipper():
-        if tf_object.has_impedance():
-            zmm_obj.num_channels = 5
-            number_dict = {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
-        else:
-            zmm_obj.num_channels = 3
-            number_dict = {"hx": 1, "hy": 2, "hz": 3}
-    else:
-        if tf_object.has_impedance():
-            zmm_obj.num_channels = 4
-            number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
-    if tf_object.station_metadata.runs == []:
-        run = Run()
-        for ch, ch_num in number_dict.items():
-            c = Channel()
-            c.channel = ch
-            c.number = ch_num
-            setattr(zmm_obj, c.channel, c)
-            if ch in ["ex", "ey"]:
-                rc = Electric(component=ch, channel_number=ch_num)
-                run.add_channel(rc)
-            elif ch in ["hx", "hy", "hz"]:
-                rc = Magnetic(component=ch, channel_number=ch_num)
-                run.add_channel(rc)
-        tf_object.station_metadata.add_run(run)
-
-    else:
-        for comp in tf_object.station_metadata.runs[0].channels_recorded_all:
-            if "rr" in comp:
-                continue
-            ch = getattr(tf_object.station_metadata.runs[0], comp)
-            c = Channel()
-            c.from_dict(ch.to_dict(single=True))
-            c.number = number_dict[c.channel]
-            setattr(zmm_obj, c.channel, c)
-    zmm_obj.survey_metadata.update(tf_object.survey_metadata)
-    zmm_obj.num_freq = tf_object.period.size
-
-    zmm_obj.write(fn)
-
-    return zmm_obj

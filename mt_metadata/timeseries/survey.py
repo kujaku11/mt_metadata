@@ -259,7 +259,7 @@ class Survey(Base):
             return self.station_names.index(station_id)
         return None
 
-    def add_station(self, station_obj):
+    def add_station(self, station_obj, update=True):
         """
         Add a station, if has the same name update that object.
 
@@ -281,6 +281,10 @@ class Survey(Base):
         else:
             self.stations.append(station_obj)
 
+        if update:
+            self.update_bounding_box()
+            self.update_time_period()
+
     def get_station(self, station_id):
         """
         Get a station from the station id
@@ -298,7 +302,7 @@ class Survey(Base):
             self.logger.warning(f"Could not find station {station_id}")
             return None
 
-    def remove_station(self, station_id):
+    def remove_station(self, station_id, update=True):
         """
         remove a station from the survey
 
@@ -309,6 +313,9 @@ class Survey(Base):
 
         if self.has_station(station_id):
             self.stations.remove(station_id)
+            if update:
+                self.update_bounding_box()
+                self.update_time_period()
         else:
             self.logger.warning(f"Could not find {station_id} to remove.")
 
@@ -317,39 +324,41 @@ class Survey(Base):
         Update the bounding box of the survey from the station information
 
         """
-        lat = []
-        lon = []
-        for station in self.stations:
-            lat.append(station.location.latitude)
-            lon.append(station.location.longitude)
+        if self.__len__() > 0:
+            lat = []
+            lon = []
+            for station in self.stations:
+                lat.append(station.location.latitude)
+                lon.append(station.location.longitude)
 
-        self.southeast_corner.latitude = min(lat)
-        self.southeast_corner.longitude = max(lon)
-        self.northwest_corner.latitude = max(lat)
-        self.northwest_corner.longitude = min(lon)
+            self.southeast_corner.latitude = min(lat)
+            self.southeast_corner.longitude = max(lon)
+            self.northwest_corner.latitude = max(lat)
+            self.northwest_corner.longitude = min(lon)
 
     def update_time_period(self):
         """
         Update the start and end time of the survey based on the stations
         """
-        start = []
-        end = []
-        for station in self.stations:
-            if station.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(station.time_period.start)
-            if station.time_period.start != "1980-01-01T00:00:00+00:00":
-                end.append(station.time_period.end)
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for station in self.stations:
+                if station.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(station.time_period.start)
+                if station.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(station.time_period.end)
 
-        if start:
-            if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                self.time_period.start = min(start)
-            else:
-                if self.time_period.start > min(start):
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
                     self.time_period.start = min(start)
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
 
-        if end:
-            if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                self.time_period.end = max(end)
-            else:
-                if self.time_period.end < max(end):
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
                     self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)

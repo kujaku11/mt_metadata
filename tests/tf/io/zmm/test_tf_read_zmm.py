@@ -14,13 +14,14 @@ import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_ZMM
 from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # EMTFXML
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestZMM(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_ZMM)
@@ -34,16 +35,16 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
-                ("id", None),
+                ("id", "0"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 34.727),
+                ("northwest_corner.longitude", -115.735),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 34.727),
+                ("southeast_corner.longitude", -115.735),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -64,28 +65,37 @@ class TestEMTFXML(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0.0),
+                ("location.elevation", get_nm_elev(34.727, -115.735)),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
+                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_by.name", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
+                ("transfer_function.processing_type", ""),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),
                 ("transfer_function.sign_convention", None),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", "1"),
                 ("transfer_function.units", None),
             ]
         )
@@ -339,14 +349,14 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("geographic_name", None),
                 ("id", None),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 34.727),
+                ("northwest_corner.longitude", -115.735),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 34.727),
+                ("southeast_corner.longitude", -115.735),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -367,28 +377,37 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0.0),
+                ("location.elevation", get_nm_elev(34.727, -115.735)),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
+                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_by.name", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
+                ("transfer_function.processing_type", ""),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),
                 ("transfer_function.sign_convention", None),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", "1"),
                 ("transfer_function.units", None),
             ]
         )
@@ -428,9 +447,7 @@ class TestTFToEMTFXML(unittest.TestCase):
         self.assertTrue(
             (
                 np.nan_to_num(self.tf.dataset.transfer_function.data)
-                == np.nan_to_num(
-                    self.zmm._transfer_function.transfer_function.data
-                )
+                == np.nan_to_num(self.zmm.dataset.transfer_function.data)
             ).all()
         )
 

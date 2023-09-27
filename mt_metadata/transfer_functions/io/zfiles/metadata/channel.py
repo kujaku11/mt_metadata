@@ -36,7 +36,10 @@ class Channel(Base):
     def __str__(self):
         lines = ["Channel Metadata:"]
         for key in ["channel", "number", "dl", "azimuth", "tilt"]:
-            lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
+            try:
+                lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
+            except TypeError:
+                pass
         return "\n".join(lines)
 
     def __repr__(self):

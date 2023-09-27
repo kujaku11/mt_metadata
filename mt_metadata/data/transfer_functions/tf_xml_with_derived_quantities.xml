@@ -1,0 +1,2368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EM_TF>
+<Description>Magnetotelluric Transfer Functions</Description>
+<ProductId>FU-BERLIN.SMG1.2003</ProductId>
+<SubType>MT_TF</SubType>
+<Notes/>
+<Tags>impedance,tipper,apparent_resistivity,impedance_phase,tipper_phase,tipper_magnitude,impedance_strike,impedance_skew,impedance_ellipticity,tipper_strike,tipper_skew,tipper_ellipticity,induction_arrow_magnitude,induction_arrow_angle</Tags>
+<PrimaryData>
+<Filename>SMG1.png</Filename>
+</PrimaryData>
+<Attachment>
+<Filename>SMG1.edi</Filename>
+<Description>The original used to produce the XML</Description>
+</Attachment>
+<Provenance>
+<CreateTime>2020-06-05T12:06:27</CreateTime>
+<CreatingApplication>EMTF File Conversion Utilities 4.0</CreatingApplication>
+<Creator>
+<Name>Heinrich Brasse</Name>
+<Email>heinrich.brasse@fu-berlin.de</Email>
+<Org>Freie Universitaet Berlin</Org>
+<OrgUrl>https://www.fu-berlin.de</OrgUrl>
+</Creator>
+<Submitter>
+<Name>Anna Kelbert</Name>
+<Email>akelbert@usgs.gov</Email>
+<Org>U.S. Geological Survey Geomagnetism Program</Org>
+<OrgUrl>http://geomag.usgs.gov</OrgUrl>
+</Submitter>
+</Provenance>
+<Copyright>
+<Citation>
+<Title>Magnetotelluric Transfer Functions in South Chile by Freie Universitaet, Berlin</Title>
+<Authors>Heinrich Brasse</Authors>
+<Year>2003-2005</Year>
+<SurveyDOI>doi:10.17611/DP/EMTF/FU-BERLIN/SOUTHCHILE</SurveyDOI>
+</Citation>
+<SelectedPublications>Brasse, H., Kapinos, G., Li, Y., Mutschard, L., Soyer, W. & Eydam, D. (2009): Structural electrical anisotropy in the crust at the South-Central Chilean continental margin as inferred from geomagnetic transfer functions, Phys. Earth Planet. Inter., 173, doi:10.1016/j.pepi.2008.10.017.</SelectedPublications>
+<ReleaseStatus>Paper Citation Required</ReleaseStatus>
+<ConditionsOfUse> All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided that this data set is cited as the reference, and that the author(s) contributions are acknowledged as detailed in the Acknowledgements. The author(s) of this survey additionally require that anyone using these data explicitly cites all publications referenced in the Selected Publications section of this data file. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, nor IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.</ConditionsOfUse>
+<RotationInfo>All data rotated to geographic before the EDI was produced.</RotationInfo>
+<AdditionalInfo>South American MT data from Henri Brasse ---------------------------------------- On Costa Rica, Jan 2018: Please find attached our Costa Rica data, where bad data points have already been removed. They are in EDI format, because I had only the land stations in Egbert's format; the offshore data were processed with another software. On South Chile, May 2019: Please note that ob7 is an ocean bottom site, and vin does not have electric fields, just tippers. Poor data, particularly at very long periods, are discarded. On Nicaragua, May 2019: All data have been processed with Egbert's and Bookers's (1986) and Egbert's (1997) codes. I don't have the spectra here and please understand, that it's too much work to produce them again. So I just send the edi files. Poor data are discarded (in Nicaragua quite a few because that was a solar minimum). On Chile-Bolivia, May 2019: Here are the last two profiles from the Americas which I may share for the time being: 1) Chile-Bolivia at 21 S (Ancorp) 2) Chile-Bolivia at 18 S There are a few more, but my Chilean colleagues are working on them currently, so I don't want to share them right now. I was PI of those projects and actually operated about 90% of the stations myself. All other participants are listed in the publications.</AdditionalInfo>
+</Copyright>
+<Site>
+<Project>FU-BERLIN</Project>
+<Survey>South Chile</Survey>
+<YearCollected>2003</YearCollected>
+<Country>Chile</Country>
+<Id>SMG1</Id>
+<Name>South Chile</Name>
+<Location datum="WGS84">
+<Latitude>-38.410000</Latitude>
+<Longitude>-73.904722</Longitude>
+<Elevation units="meters">10.000</Elevation>
+<Declination epoch="1995.0">0.000</Declination>
+</Location>
+<Orientation angle_to_geographic_north="0.000">orthogonal</Orientation>
+<AcquiredBy>Freie Universitaet Berlin</AcquiredBy>
+<Start>2003-01-02T00:00:00</Start>
+<End>2003-01-02T00:00:00</End>
+<RunList/>
+<DataQualityNotes>
+<Rating>0</Rating>
+<Comments>Unrated</Comments>
+</DataQualityNotes>
+<Comments author="Heinrich Brasse"> SURVEY ID:ch00 SURVEY CO: CLIENT CO: AREA:ch00 ROTATION=FIX </Comments>
+</Site>
+<ProcessingInfo>
+<SignConvention>exp(+ i\omega t)</SignConvention>
+<RemoteRef type=""/>
+<ProcessedBy>Heinrich Brasse</ProcessedBy>
+<ProcessingSoftware>
+<Name>WINGLINK EDI 1.0.22</Name>
+<LastMod>2002-04-23</LastMod>
+<Author>Randie Mackie</Author>
+</ProcessingSoftware>
+<ProcessingTag/>
+</ProcessingInfo>
+<StatisticalEstimates>
+<Estimate name="VAR" type="real">
+<Description>Variance</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/variance.html</ExternalUrl>
+<Intention>error estimate</Intention>
+<Tag>variance</Tag>
+</Estimate>
+<Estimate name="COV" type="complex">
+<Description>Full covariance between each two TF components</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/covariance.html</ExternalUrl>
+<Intention>error estimate</Intention>
+<Tag>covariance</Tag>
+</Estimate>
+<Estimate name="INVSIGCOV" type="complex">
+<Description>Inverse Coherent Signal Power Matrix (S)</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/inverse_signal_covariance.html</ExternalUrl>
+<Intention>signal power estimate</Intention>
+<Tag>inverse_signal_covariance</Tag>
+</Estimate>
+<Estimate name="RESIDCOV" type="complex">
+<Description>Residual Covariance (N)</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/residual_covariance.html</ExternalUrl>
+<Intention>error estimate</Intention>
+<Tag>residual_covariance</Tag>
+</Estimate>
+<Estimate name="COH" type="complex">
+<Description>Coherence</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/coherence.html</ExternalUrl>
+<Intention>signal coherence</Intention>
+<Tag>coherence</Tag>
+</Estimate>
+<Estimate name="PREDCOH" type="complex">
+<Description>Multiple Coherence</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/multiple_coherence.html</ExternalUrl>
+<Intention>signal coherence</Intention>
+<Tag>multiple_coherence</Tag>
+</Estimate>
+<Estimate name="SIGAMP" type="complex">
+<Description>Signal Amplitude</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/signal_amplitude.html</ExternalUrl>
+<Intention>signal power estimate</Intention>
+<Tag>signal_amplitude</Tag>
+</Estimate>
+<Estimate name="SIGNOISE" type="complex">
+<Description>Signal Noise</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/signal_noise.html</ExternalUrl>
+<Intention>error estimate</Intention>
+<Tag>signal_noise</Tag>
+</Estimate>
+</StatisticalEstimates>
+<DataTypes>
+<DataType name="Z" type="complex" output="E" input="H" units="[mV/km]/[nT]">
+<Description>MT impedance</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/impedance.html</ExternalUrl>
+<Intention>primary data type</Intention>
+<Tag>impedance</Tag>
+</DataType>
+<DataType name="T" type="complex" output="H" input="H" units="[]">
+<Description>Vertical Field Transfer Functions (Tipper)</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper.html</ExternalUrl>
+<Intention>primary data type</Intention>
+<Tag>tipper</Tag>
+</DataType>
+<DataType name="RHO" type="real" output="E" input="H" units="[Ohm m]">
+<Description>Apparent resistivity computed from MT impedance</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/apparent_resistivity.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>apparent_resistivity</Tag>
+<DerivedFrom>impedance</DerivedFrom>
+<SeeAlso>impedance_phase</SeeAlso>
+</DataType>
+<DataType name="PHS" type="real" output="E" input="H" units="degrees">
+<Description>Impedance phase in degrees</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/impedance_phase.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>impedance_phase</Tag>
+<DerivedFrom>impedance</DerivedFrom>
+<SeeAlso>apparent_resistivity</SeeAlso>
+</DataType>
+<DataType name="TIPPHS" type="real" units="degrees">
+<Description>Vertical Field Transfer Functions (Tipper) Phase</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper_phase.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>tipper_phase</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>tipper_magnitude</SeeAlso>
+</DataType>
+<DataType name="TIPMAG" type="real" units="[]">
+<Description>Vertical Field Transfer Functions (Tipper) Magnitude</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper_magnitude.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>tipper_magnitude</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>tipper_phase</SeeAlso>
+</DataType>
+<DataType name="ZSTRIKE" type="real" units="degrees">
+<Description>MT Impedance parameters: strike</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/impedance_strike.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>impedance_strike</Tag>
+<DerivedFrom>impedance</DerivedFrom>
+<SeeAlso>impedance_skew,impedance_ellipticity</SeeAlso>
+</DataType>
+<DataType name="ZSKEW" type="real" units="[]">
+<Description>MT Impedance parameters: skew</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/impedance_skew.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>impedance_skew</Tag>
+<DerivedFrom>impedance</DerivedFrom>
+<SeeAlso>impedance_strike,impedance_ellipticity</SeeAlso>
+</DataType>
+<DataType name="ZELLIP" type="real" units="[]">
+<Description>MT Impedance parameters: ellipticity</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/impedance_ellipticity.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>impedance_ellipticity</Tag>
+<DerivedFrom>impedance</DerivedFrom>
+<SeeAlso>impedance_skew,impedance_strike</SeeAlso>
+</DataType>
+<DataType name="TSTRIKE" type="real" units="degrees">
+<Description>Tipper parameters: strike</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper_strike.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>tipper_strike</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>tipper_skew,tipper_ellipticity</SeeAlso>
+</DataType>
+<DataType name="TSKEW" type="real" units="[]">
+<Description>Tipper parameters: skew</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper_skew.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>tipper_skew</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>tipper_strike,tipper_ellipticity</SeeAlso>
+</DataType>
+<DataType name="TELLIP" type="real" units="[]">
+<Description>Tipper parameters: ellipticity</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/tipper_ellipticity.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>tipper_ellipticity</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>tipper_skew,tipper_strike</SeeAlso>
+</DataType>
+<DataType name="INDMAG" type="complex" units="[]">
+<Description>Induction Arrow Magnitude</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/induction_arrow_magnitude.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>induction_arrow_magnitude</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>induction_arrow_angle</SeeAlso>
+</DataType>
+<DataType name="INDANG" type="complex" units="degrees">
+<Description>Induction Arrow Angle (Parkinson convention)</Description>
+<ExternalUrl>http://www.iris.edu/dms/products/emtf/induction_arrow_angle.html</ExternalUrl>
+<Intention>derived data type</Intention>
+<Tag>induction_arrow_angle</Tag>
+<DerivedFrom>tipper</DerivedFrom>
+<SeeAlso>induction_arrow_magnitude</SeeAlso>
+</DataType>
+</DataTypes>
+<GridOrigin name="SMG1">
+<Location datum="WGS84">
+<Latitude>-38.410000</Latitude>
+<Longitude>-73.904722</Longitude>
+<Elevation units="meters">10.000</Elevation>
+</Location>
+<SiteCoords type="CART" units="M">
+<X>0.000000</X>
+<Y>0.000000</Y>
+<Z>0.000</Z>
+</SiteCoords>
+</GridOrigin>
+<SiteLayout>
+<InputChannels ref="site" units="m">
+<Magnetic name="HX" orientation="0.0" x="0.0" y="0.0" z="0.0"/>
+<Magnetic name="HY" orientation="90.0" x="0.0" y="0.0" z="0.0"/>
+</InputChannels>
+<OutputChannels ref="site" units="m">
+<Magnetic name="HZ" orientation="0.0" x="0.0" y="0.0" z="0.0"/>
+<Electric name="EX" orientation="0.0" x="0.0" y="0.0" z="0.0" x2="0.0" y2="0.0" z2="0.0"/>
+<Electric name="EY" orientation="90.0" x="0.0" y="0.0" z="0.0" x2="0.0" y2="0.0" z2="0.0"/>
+</OutputChannels>
+</SiteLayout>
+<Data count="20">
+<Period value="1.600000e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">-8.089973e-3 -4.293998e-2</value>
+<value name="ZXY" output="EX" input="HY">9.217000e-1 3.741000e-1</value>
+<value name="ZYX" output="EY" input="HX">-6.215000e-1 -4.342000e-1</value>
+<value name="ZYY" output="EY" input="HY">-4.668272e-4 -6.457190e-4</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">5.546999e-4</value>
+<value name="ZXY" output="EX" input="HY">8.203000e-4</value>
+<value name="ZYX" output="EY" input="HX">3.365000e-3</value>
+<value name="ZYY" output="EY" input="HY">5.738001e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">6.982000e-2 1.516000e-2</value>
+<value name="TY" output="HZ" input="HY">-1.876000e-1 1.350000e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">1.596000e-3</value>
+<value name="TY" output="HZ" input="HY">2.616000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">6.109733e-3</value>
+<value name="RHOXY" output="EX" input="HY">3.166342e0</value>
+<value name="RHOYX" output="EY" input="HX">1.839334e0</value>
+<value name="RHOYY" output="EY" input="HY">2.031459e-6</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">1.200922e-2</value>
+<value name="RHOXY" output="EX" input="HY">3.127062e-4</value>
+<value name="RHOYX" output="EY" input="HX">2.208240e-3</value>
+<value name="RHOYY" output="EY" input="HY">1.162381e5</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-1.006696e2</value>
+<value name="PHSXY" output="EX" input="HY">2.209127e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.450606e2</value>
+<value name="PHSYY" output="EY" input="HY">-1.258645e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">2.274062e5</value>
+<value name="PHSXY" output="EX" input="HY">1.360755e0</value>
+<value name="PHSYX" output="EY" input="HX">9.609256e0</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">1.552496e2</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">2.011981e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.064420e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-7.900479e-2</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">2.549705e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.403719e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">2.021328e1</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.870812e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">3.798647e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">2.001714e-1 2.029965e-2</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.104140e2 4.168510e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="2.262740e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">7.633002e-2 -5.851998e-2</value>
+<value name="ZXY" output="EX" input="HY">1.010000e0 3.821000e-1</value>
+<value name="ZYX" output="EY" input="HX">-5.472000e-1 -4.301000e-1</value>
+<value name="ZYY" output="EY" input="HY">2.701976e-3 -3.632019e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.035000e-3</value>
+<value name="ZXY" output="EX" input="HY">1.233000e-3</value>
+<value name="ZYX" output="EY" input="HX">4.373999e-3</value>
+<value name="ZYY" output="EY" input="HY">9.388002e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">1.493000e-1 3.003000e-2</value>
+<value name="TY" output="HZ" input="HY">-1.003000e-1 -3.962000e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.954000e-3</value>
+<value name="TY" output="HZ" input="HY">4.335000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">4.186459e-2</value>
+<value name="RHOXY" output="EX" input="HY">5.277165e0</value>
+<value name="RHOYX" output="EY" input="HX">2.192206e0</value>
+<value name="RHOYY" output="EY" input="HY">9.273719e-5</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">1.780984e-3</value>
+<value name="RHOXY" output="EX" input="HY">3.988400e-4</value>
+<value name="RHOYX" output="EY" input="HX">3.405915e-3</value>
+<value name="RHOYY" output="EY" input="HY">2.986146e2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-3.747634e1</value>
+<value name="PHSXY" output="EX" input="HY">2.072247e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.418326e2</value>
+<value name="PHSYY" output="EY" input="HY">-5.335286e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">3.372460e4</value>
+<value name="PHSXY" output="EX" input="HY">1.735572e0</value>
+<value name="PHSYX" output="EY" input="HX">1.482099e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-4.534284e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">1.866069e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">5.245793e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-4.859304e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">5.724761e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.973760e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">5.483974e1</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.667478e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">1.412164e0</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">1.798627e-1 4.971464e-2</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.461067e2 -5.283967e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="3.200000e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">-1.509998e-2 -4.771999e-2</value>
+<value name="ZXY" output="EX" input="HY">1.070000e0 4.068000e-1</value>
+<value name="ZYX" output="EY" input="HX">-4.093000e-1 -3.325000e-1</value>
+<value name="ZYY" output="EY" input="HY">8.649998e-2 -5.374001e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">5.560999e-4</value>
+<value name="ZXY" output="EX" input="HY">6.547999e-4</value>
+<value name="ZYX" output="EY" input="HX">3.182000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.385000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">1.635000e-1 1.837000e-2</value>
+<value name="TY" output="HZ" input="HY">-9.391999e-2 -6.542000e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.276000e-3</value>
+<value name="TY" output="HZ" input="HY">2.020000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.603333e-2</value>
+<value name="RHOXY" output="EX" input="HY">8.386473e0</value>
+<value name="RHOYX" output="EY" input="HX">1.779730e0</value>
+<value name="RHOYY" output="EY" input="HY">6.636952e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">7.010705e-3</value>
+<value name="RHOXY" output="EX" input="HY">1.884868e-4</value>
+<value name="RHOYX" output="EY" input="HX">4.316163e-3</value>
+<value name="RHOYY" output="EY" input="HY">7.525628e-3</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-1.075589e2</value>
+<value name="PHSXY" output="EX" input="HY">2.081615e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.409109e2</value>
+<value name="PHSYY" output="EY" input="HY">-3.185151e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">1.327545e5</value>
+<value name="PHSXY" output="EX" input="HY">8.202090e-1</value>
+<value name="PHSYX" output="EY" input="HX">1.878197e1</value>
+<value name="PHSYY" output="EY" input="HY">1.425049e5</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-4.301472e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">2.004257e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.043120e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">4.291838e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">7.502027e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.530811e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">5.643567e1</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">4.466397e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">1.437454e0</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">1.885556e-1 6.795023e-2</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.501255e2 -7.431520e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="4.525481e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">-8.732818e-4 -1.838986e-3</value>
+<value name="ZXY" output="EX" input="HY">1.099000e0 4.134000e-1</value>
+<value name="ZYX" output="EY" input="HX">-4.172000e-1 -3.212000e-1</value>
+<value name="ZYY" output="EY" input="HY">6.112998e-2 -4.317014e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.070999e-4</value>
+<value name="ZXY" output="EX" input="HY">1.705000e-3</value>
+<value name="ZYX" output="EY" input="HX">2.697000e-3</value>
+<value name="ZYY" output="EY" input="HY">1.365000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">1.057000e-1 -1.144000e-2</value>
+<value name="TY" output="HZ" input="HY">-9.927000e-2 -1.207000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">3.345000e-3</value>
+<value name="TY" output="HZ" input="HY">3.553000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">3.751238e-5</value>
+<value name="RHOXY" output="EX" input="HY">1.247857e1</value>
+<value name="RHOYX" output="EY" input="HX">2.509156e0</value>
+<value name="RHOYY" output="EY" input="HY">3.399101e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">9.500853e1</value>
+<value name="RHOXY" output="EX" input="HY">4.664727e-4</value>
+<value name="RHOYX" output="EY" input="HX">3.669609e-3</value>
+<value name="RHOYY" output="EY" input="HY">1.879619e-2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-1.154020e2</value>
+<value name="PHSXY" output="EX" input="HY">2.061430e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.424075e2</value>
+<value name="PHSYY" output="EY" input="HY">-4.039521e0</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXY" output="EX" input="HY">2.029876e0</value>
+<value name="PHSYX" output="EY" input="HX">1.596847e1</value>
+<value name="PHSYY" output="EY" input="HY">3.559239e5</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-9.043826e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">1.890143e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">4.879840e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">2.538597e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.595138e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">9.019225e-2</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">2.712478e1</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">7.777802e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.803057e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">1.450070e-1 1.212409e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.367968e2 -9.541434e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="6.400000e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">-1.174983e-3 -6.034989e-3</value>
+<value name="ZXY" output="EX" input="HY">1.005000e0 3.779000e-1</value>
+<value name="ZYX" output="EY" input="HX">-3.838000e-1 -2.547000e-1</value>
+<value name="ZYY" output="EY" input="HY">8.005998e-2 2.404999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.098999e-4</value>
+<value name="ZXY" output="EX" input="HY">9.899999e-4</value>
+<value name="ZYX" output="EY" input="HX">1.191000e-3</value>
+<value name="ZYY" output="EY" input="HY">8.872001e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">6.015000e-2 -1.727000e-2</value>
+<value name="TY" output="HZ" input="HY">-6.257000e-2 -1.411000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.117000e-3</value>
+<value name="TY" output="HZ" input="HY">1.753000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">4.838637e-4</value>
+<value name="RHOXY" output="EX" input="HY">1.475627e1</value>
+<value name="RHOYX" output="EY" input="HX">2.715834e0</value>
+<value name="RHOYY" output="EY" input="HY">8.944648e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">1.202575e0</value>
+<value name="RHOXY" output="EX" input="HY">3.239219e-4</value>
+<value name="RHOYX" output="EY" input="HX">2.117338e-3</value>
+<value name="RHOYY" output="EY" input="HY">2.293401e-3</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-1.010175e2</value>
+<value name="PHSXY" output="EX" input="HY">2.060726e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.464307e2</value>
+<value name="PHSYY" output="EY" input="HY">1.672025e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">2.277185e7</value>
+<value name="PHSXY" output="EX" input="HY">1.409560e0</value>
+<value name="PHSYX" output="EY" input="HX">9.213696e0</value>
+<value name="PHSYY" output="EY" input="HY">4.342773e4</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-1.000943e2</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">1.665548e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">2.748581e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">3.847763e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">5.302174e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.367868e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">3.796173e0</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">6.898040e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">4.054407e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">8.679301e-2 1.421530e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.338703e2 -9.697803e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="9.051002e1" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">9.612015e-3 -1.451000e-1</value>
+<value name="ZXY" output="EX" input="HY">9.243000e-1 3.716000e-1</value>
+<value name="ZYX" output="EY" input="HX">-3.511000e-1 -2.129000e-1</value>
+<value name="ZYY" output="EY" input="HY">5.539998e-2 2.966999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.177000e-3</value>
+<value name="ZXY" output="EX" input="HY">1.238000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.377000e-3</value>
+<value name="ZYY" output="EY" input="HY">9.873001e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">5.876000e-2 -2.988000e-2</value>
+<value name="TY" output="HZ" input="HY">-2.794000e-2 -1.608000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">3.311000e-3</value>
+<value name="TY" output="HZ" input="HY">2.497000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">3.827922e-1</value>
+<value name="RHOXY" output="EX" input="HY">1.796474e1</value>
+<value name="RHOYX" output="EY" input="HX">3.051955e0</value>
+<value name="RHOYY" output="EY" input="HY">7.149330e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">4.407816e-4</value>
+<value name="RHOXY" output="EX" input="HY">4.705416e-4</value>
+<value name="RHOYX" output="EY" input="HX">3.080734e-3</value>
+<value name="RHOYY" output="EY" input="HY">8.891281e-3</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-8.621004e1</value>
+<value name="PHSXY" output="EX" input="HY">2.190180e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.487682e2</value>
+<value name="PHSYY" output="EY" input="HY">2.817170e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">8.346584e3</value>
+<value name="PHSXY" output="EX" input="HY">2.047584e0</value>
+<value name="PHSYX" output="EY" input="HX">1.340596e1</value>
+<value name="PHSYY" output="EY" input="HY">1.683648e5</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-8.963190e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">1.760194e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">4.147015e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">4.646011e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">9.442837e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">3.037651e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.720786e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">6.638163e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">4.039034e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">6.506444e-2 1.635526e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.545692e2 -1.005267e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="1.280000e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.966001e-2 -4.395999e-2</value>
+<value name="ZXY" output="EX" input="HY">8.808000e-1 3.183000e-1</value>
+<value name="ZYX" output="EY" input="HX">-3.350000e-1 -1.731000e-1</value>
+<value name="ZYY" output="EY" input="HY">4.613999e-2 5.212999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">3.195000e-4</value>
+<value name="ZXY" output="EX" input="HY">9.807999e-4</value>
+<value name="ZYX" output="EY" input="HX">1.006000e-3</value>
+<value name="ZYY" output="EY" input="HY">7.565000e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">3.156000e-2 -5.635000e-2</value>
+<value name="TY" output="HZ" input="HY">1.172001e-3 -2.156000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.477000e-3</value>
+<value name="TY" output="HZ" input="HY">2.116000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">5.936633e-2</value>
+<value name="RHOXY" output="EX" input="HY">2.245436e1</value>
+<value name="RHOYX" output="EY" input="HX">3.640028e0</value>
+<value name="RHOYY" output="EY" input="HY">1.240688e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">2.700752e-3</value>
+<value name="RHOXY" output="EX" input="HY">4.217852e-4</value>
+<value name="RHOYX" output="EY" input="HX">2.668731e-3</value>
+<value name="RHOYY" output="EY" input="HY">3.466699e-3</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-6.590462e1</value>
+<value name="PHSXY" output="EX" input="HY">1.986864e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.526739e2</value>
+<value name="PHSYY" output="EY" input="HY">4.848812e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">5.114129e4</value>
+<value name="PHSXY" output="EX" input="HY">1.835418e0</value>
+<value name="PHSYX" output="EY" input="HX">1.161311e1</value>
+<value name="PHSYY" output="EY" input="HY">6.564526e4</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-8.730539e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">2.250691e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.257758e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">2.604016e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">5.056253e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.764779e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.650292e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.660408e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">2.995597e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">3.158175e-2 2.228423e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.778733e2 -1.046474e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="1.810195e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.169000e-1 -1.453000e-1</value>
+<value name="ZXY" output="EX" input="HY">7.867000e-1 3.190000e-1</value>
+<value name="ZYX" output="EY" input="HX">-3.115000e-1 -1.533000e-1</value>
+<value name="ZYY" output="EY" input="HY">2.326999e-2 5.117999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.185000e-3</value>
+<value name="ZXY" output="EX" input="HY">1.179000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.345000e-3</value>
+<value name="ZYY" output="EY" input="HY">1.173000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">9.555000e-3 -1.070000e-1</value>
+<value name="TY" output="HZ" input="HY">4.961000e-2 -2.559000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">4.046000e-3</value>
+<value name="TY" output="HZ" input="HY">3.596000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.259088e0</value>
+<value name="RHOXY" output="EX" input="HY">2.609061e1</value>
+<value name="RHOYX" output="EY" input="HX">4.363768e0</value>
+<value name="RHOYY" output="EY" input="HY">1.144363e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">1.651880e-4</value>
+<value name="RHOXY" output="EX" input="HY">6.171011e-4</value>
+<value name="RHOYX" output="EY" input="HX">4.209082e-3</value>
+<value name="RHOYY" output="EY" input="HY">1.959395e-2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-5.118185e1</value>
+<value name="PHSXY" output="EX" input="HY">2.207212e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.537966e2</value>
+<value name="PHSYY" output="EY" input="HY">6.555014e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">3.127990e3</value>
+<value name="PHSXY" output="EX" input="HY">2.685344e0</value>
+<value name="PHSYX" output="EY" input="HX">1.831601e1</value>
+<value name="PHSYY" output="EY" input="HY">3.710299e5</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-7.988051e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">2.819331e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">5.413070e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-1.653363e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">1.412332e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">4.324769e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.576776e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">7.204127e-2</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">4.121228e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">5.052178e-2 2.773694e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.009018e2 -1.126914e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="2.560001e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">8.865001e-2 -6.521999e-2</value>
+<value name="ZXY" output="EX" input="HY">7.672000e-1 2.964000e-1</value>
+<value name="ZYX" output="EY" input="HX">-3.043000e-1 -1.500000e-1</value>
+<value name="ZYY" output="EY" input="HY">2.490867e-4 4.334999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">5.648999e-4</value>
+<value name="ZXY" output="EX" input="HY">1.052000e-3</value>
+<value name="ZYX" output="EY" input="HX">7.974000e-4</value>
+<value name="ZYY" output="EY" input="HY">8.927000e-4</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">2.220000e-2 -1.551000e-1</value>
+<value name="TY" output="HZ" input="HY">1.465000e-1 -2.971000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.163000e-3</value>
+<value name="TY" output="HZ" input="HY">2.284000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">6.201586e-1</value>
+<value name="RHOXY" output="EX" input="HY">3.463418e1</value>
+<value name="RHOYX" output="EY" input="HX">5.893043e0</value>
+<value name="RHOYY" output="EY" input="HY">9.621937e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">3.094718e-4</value>
+<value name="RHOXY" output="EX" input="HY">5.866142e-4</value>
+<value name="RHOYX" output="EY" input="HX">2.613234e-3</value>
+<value name="RHOYY" output="EY" input="HY">3.210476e-2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-3.634200e1</value>
+<value name="PHSXY" output="EX" input="HY">2.112354e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.537597e2</value>
+<value name="PHSYY" output="EY" input="HY">8.967077e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">5.860140e3</value>
+<value name="PHSXY" output="EX" input="HY">2.552677e0</value>
+<value name="PHSYX" output="EY" input="HX">1.137161e1</value>
+<value name="PHSYY" output="EY" input="HY">6.078813e5</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-6.706154e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">3.664417e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.145667e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-3.260070e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">7.886985e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">2.883790e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.554027e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.401935e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">4.729896e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">1.481725e-1 3.351484e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-9.861681e1 -1.175667e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="3.620380e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">9.883001e-2 -3.923999e-2</value>
+<value name="ZXY" output="EX" input="HY">7.210000e-1 2.925000e-1</value>
+<value name="ZYX" output="EY" input="HX">-2.888000e-1 -1.449000e-1</value>
+<value name="ZYY" output="EY" input="HY">-1.150001e-2 3.824999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">6.788998e-4</value>
+<value name="ZXY" output="EX" input="HY">1.465000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.449000e-3</value>
+<value name="ZYY" output="EY" input="HY">1.880000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">6.293000e-2 -2.034000e-1</value>
+<value name="TY" output="HZ" input="HY">2.264000e-1 -3.387000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">3.244000e-3</value>
+<value name="TY" output="HZ" input="HY">3.674000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">8.187236e-1</value>
+<value name="RHOXY" output="EX" input="HY">4.383538e1</value>
+<value name="RHOYX" output="EY" input="HX">7.559461e0</value>
+<value name="RHOYY" output="EY" input="HY">1.155128e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">5.129192e-4</value>
+<value name="RHOXY" output="EX" input="HY">9.127855e-4</value>
+<value name="RHOYX" output="EY" input="HX">5.235203e-3</value>
+<value name="RHOYY" output="EY" input="HY">1.975912e-1</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-2.165532e1</value>
+<value name="PHSXY" output="EX" input="HY">2.208173e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.533556e2</value>
+<value name="PHSYY" output="EY" input="HY">1.067336e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">9.712611e3</value>
+<value name="PHSXY" output="EX" input="HY">3.972029e0</value>
+<value name="PHSYX" output="EY" input="HX">2.278122e1</value>
+<value name="PHSYY" output="EY" input="HY">3.741575e6</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-5.979422e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">4.596808e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">4.901205e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-5.210915e0</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">7.936274e-2</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">2.952072e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.529814e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.341185e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">5.226132e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">2.349833e-1 3.950813e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.055338e2 -1.209861e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="5.119987e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">2.243000e-1 -5.044999e-2</value>
+<value name="ZXY" output="EX" input="HY">6.168000e-1 3.141000e-1</value>
+<value name="ZYX" output="EY" input="HX">-2.637000e-1 -1.331000e-1</value>
+<value name="ZYY" output="EY" input="HY">-1.809001e-2 2.174999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">8.967001e-4</value>
+<value name="ZXY" output="EX" input="HY">1.189000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.013000e-3</value>
+<value name="ZYY" output="EY" input="HY">1.427000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">1.313000e-1 -2.519000e-1</value>
+<value name="TY" output="HZ" input="HY">3.405000e-1 -3.345000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">1.886000e-3</value>
+<value name="TY" output="HZ" input="HY">2.420000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">5.412409e0</value>
+<value name="RHOXY" output="EX" input="HY">4.905983e1</value>
+<value name="RHOYX" output="EY" input="HX">8.934716e0</value>
+<value name="RHOYY" output="EY" input="HY">8.195160e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">4.095003e-5</value>
+<value name="RHOXY" output="EX" input="HY">9.361091e-4</value>
+<value name="RHOYX" output="EY" input="HX">4.379244e-3</value>
+<value name="RHOYY" output="EY" input="HY">4.523496e-1</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-1.267613e1</value>
+<value name="PHSXY" output="EX" input="HY">2.698707e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.532181e2</value>
+<value name="PHSYY" output="EY" input="HY">1.297511e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">7.754276e2</value>
+<value name="PHSXY" output="EX" input="HY">4.073519e0</value>
+<value name="PHSYX" output="EY" input="HX">1.905648e1</value>
+<value name="PHSYY" output="EY" input="HY">8.565672e6</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-4.919307e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">5.554492e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.068126e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-1.429978e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">2.108210e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">6.374049e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.498511e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.713054e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">5.951313e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">3.649383e-1 4.187408e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.110871e2 -1.269821e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="7.240763e2" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">2.286000e-1 -9.712994e-3</value>
+<value name="ZXY" output="EX" input="HY">5.256000e-1 3.024000e-1</value>
+<value name="ZYX" output="EY" input="HX">-2.377000e-1 -1.321000e-1</value>
+<value name="ZYY" output="EY" input="HY">-1.916001e-2 1.733999e-2</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.277000e-3</value>
+<value name="ZXY" output="EX" input="HY">1.968000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.472000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.590000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">2.134000e-1 -2.566000e-1</value>
+<value name="TY" output="HZ" input="HY">4.571000e-1 -3.359000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.144000e-3</value>
+<value name="TY" output="HZ" input="HY">3.809000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">7.581412e0</value>
+<value name="RHOXY" output="EX" input="HY">5.324873e1</value>
+<value name="RHOYX" output="EY" input="HX">1.070933e1</value>
+<value name="RHOYY" output="EY" input="HY">9.670491e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">8.465520e-5</value>
+<value name="RHOXY" output="EX" input="HY">2.018840e-3</value>
+<value name="RHOYX" output="EY" input="HX">7.508124e-3</value>
+<value name="RHOYY" output="EY" input="HY">2.140299e0</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">-2.432981e0</value>
+<value name="PHSXY" output="EX" input="HY">2.991364e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.509372e2</value>
+<value name="PHSYY" output="EY" input="HY">1.378546e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">1.603027e3</value>
+<value name="PHSXY" output="EX" input="HY">8.785071e0</value>
+<value name="PHSYX" output="EY" input="HX">3.267195e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-3.989524e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">6.581431e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">4.370952e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-1.738648e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">2.386177e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">7.450957e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.498960e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.105993e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">5.883523e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">5.044601e-1 4.226966e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.150258e2 -1.273768e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="1.023999e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">2.264000e-1 3.506001e-2</value>
+<value name="ZXY" output="EX" input="HY">4.638000e-1 2.963000e-1</value>
+<value name="ZYX" output="EY" input="HX">-2.090000e-1 -1.243000e-1</value>
+<value name="ZYY" output="EY" input="HY">-1.846001e-2 6.911995e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.180000e-3</value>
+<value name="ZXY" output="EX" input="HY">1.789000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.383000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.237000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">3.079000e-1 -2.419000e-1</value>
+<value name="TY" output="HZ" input="HY">5.449000e-1 -2.874000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.382000e-3</value>
+<value name="TY" output="HZ" input="HY">3.646000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.074916e1</value>
+<value name="RHOXY" output="EX" input="HY">6.203474e1</value>
+<value name="RHOYX" output="EY" input="HX">1.211012e1</value>
+<value name="RHOYY" output="EY" input="HY">7.957446e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">7.191472e-5</value>
+<value name="RHOXY" output="EX" input="HY">2.227803e-3</value>
+<value name="RHOYX" output="EY" input="HX">8.822163e-3</value>
+<value name="RHOYY" output="EY" input="HY">4.716146e0</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">8.802824e0</value>
+<value name="PHSXY" output="EX" input="HY">3.257259e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.492585e2</value>
+<value name="PHSYY" output="EY" input="HY">1.594725e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">1.361774e3</value>
+<value name="PHSXY" output="EX" input="HY">9.694387e0</value>
+<value name="PHSYX" output="EY" input="HX">3.839004e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-3.078575e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">7.299539e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">4.355140e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-1.897666e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">2.673558e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">8.017455e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.477415e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.626058e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.355976e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">6.258741e-1 3.756519e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.194690e2 -1.300868e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="1.448155e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">2.122000e-1 5.974000e-2</value>
+<value name="ZXY" output="EX" input="HY">3.989000e-1 2.721000e-1</value>
+<value name="ZYX" output="EY" input="HX">-1.850000e-1 -1.133000e-1</value>
+<value name="ZYY" output="EY" input="HY">-9.364008e-3 -1.272050e-4</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">2.106000e-3</value>
+<value name="ZXY" output="EX" input="HY">2.906000e-3</value>
+<value name="ZYX" output="EY" input="HX">2.246000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.999000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">3.754000e-1 -2.147000e-1</value>
+<value name="TY" output="HZ" input="HY">6.455000e-1 -2.532000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">4.859000e-3</value>
+<value name="TY" output="HZ" input="HY">6.533000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.407540e1</value>
+<value name="RHOXY" output="EX" input="HY">6.753024e1</value>
+<value name="RHOYX" output="EY" input="HX">1.363058e1</value>
+<value name="RHOYY" output="EY" input="HY">2.540082e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">2.671953e-4</value>
+<value name="RHOXY" output="EX" input="HY">4.701257e-3</value>
+<value name="RHOYX" output="EY" input="HX">1.800164e-2</value>
+<value name="RHOYY" output="EY" input="HY">1.663759e2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">1.572334e1</value>
+<value name="PHSXY" output="EX" input="HY">3.429891e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.485153e2</value>
+<value name="PHSYY" output="EY" input="HY">-1.792217e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">5.059595e3</value>
+<value name="PHSXY" output="EX" input="HY">2.045774e1</value>
+<value name="PHSYX" output="EY" input="HX">7.833493e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-2.375582e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">8.171914e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">8.141865e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.021661e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.021836e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">8.615125e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.481694e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.303907e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.236947e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">7.467231e-1 3.319734e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.201808e2 -1.302962e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="2.047997e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.799000e-1 7.047000e-2</value>
+<value name="ZXY" output="EX" input="HY">3.274000e-1 2.401000e-1</value>
+<value name="ZYX" output="EY" input="HX">-1.595000e-1 -1.093000e-1</value>
+<value name="ZYY" output="EY" input="HY">-1.200001e-2 2.228995e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.494000e-3</value>
+<value name="ZXY" output="EX" input="HY">2.004000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.373000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.002000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">4.669000e-1 -1.921000e-1</value>
+<value name="TY" output="HZ" input="HY">7.278000e-1 -1.961000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">3.883000e-3</value>
+<value name="TY" output="HZ" input="HY">6.163000e-3</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.529036e1</value>
+<value name="RHOXY" output="EX" input="HY">6.751785e1</value>
+<value name="RHOYX" output="EY" input="HX">1.531359e1</value>
+<value name="RHOYY" output="EY" input="HY">6.101738e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">2.278913e-4</value>
+<value name="RHOXY" output="EX" input="HY">4.585746e-3</value>
+<value name="RHOYX" output="EY" input="HX">1.385240e-2</value>
+<value name="RHOYY" output="EY" input="HY">2.569703e1</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">2.139115e1</value>
+<value name="PHSXY" output="EX" input="HY">3.625460e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.455785e2</value>
+<value name="PHSYY" output="EY" input="HY">1.694772e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">4.315340e3</value>
+<value name="PHSXY" output="EX" input="HY">1.995509e1</value>
+<value name="PHSYX" output="EY" input="HX">6.027929e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-1.733574e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">9.072189e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">7.284247e-3</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.183615e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.052986e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">9.569464e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.462673e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.172505e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.698113e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">8.646898e-1 2.745134e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.226811e2 -1.344096e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="2.896301e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.506000e-1 8.138000e-2</value>
+<value name="ZXY" output="EX" input="HY">2.846000e-1 2.153000e-1</value>
+<value name="ZYX" output="EY" input="HX">-1.367000e-1 -1.005000e-1</value>
+<value name="ZYY" output="EY" input="HY">-7.367006e-3 1.636996e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">2.293000e-3</value>
+<value name="ZXY" output="EX" input="HY">3.142000e-3</value>
+<value name="ZYX" output="EY" input="HX">1.662000e-3</value>
+<value name="ZYY" output="EY" input="HY">2.341000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">4.893000e-1 -1.264000e-1</value>
+<value name="TY" output="HZ" input="HY">7.409000e-1 -8.487001e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">9.745000e-3</value>
+<value name="TY" output="HZ" input="HY">1.493000e-2</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.697410e1</value>
+<value name="RHOXY" output="EX" input="HY">7.376950e1</value>
+<value name="RHOYX" output="EY" input="HX">1.667525e1</value>
+<value name="RHOYY" output="EY" input="HY">3.299029e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">8.712149e-4</value>
+<value name="RHOXY" output="EX" input="HY">9.306249e-3</value>
+<value name="RHOYX" output="EY" input="HX">2.177732e-2</value>
+<value name="RHOYY" output="EY" input="HY">2.403926e2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">2.838554e1</value>
+<value name="PHSXY" output="EX" input="HY">3.710752e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.436772e2</value>
+<value name="PHSYY" output="EY" input="HY">1.674720e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">1.649730e4</value>
+<value name="PHSXY" output="EX" input="HY">4.049658e1</value>
+<value name="PHSYX" output="EY" input="HX">9.476493e1</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-9.036555e0</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">9.008480e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">1.782891e-2</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.167698e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.144271e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">9.451346e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.459716e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.284562e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.776615e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">8.878893e-1 1.522494e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.234413e2 -1.461210e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="4.096009e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.300000e-1 7.366000e-2</value>
+<value name="ZXY" output="EX" input="HY">2.316000e-1 1.922000e-1</value>
+<value name="ZYX" output="EY" input="HX">-1.124000e-1 -9.025000e-2</value>
+<value name="ZYY" output="EY" input="HY">-1.340000e-2 -7.209004e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.704000e-3</value>
+<value name="ZXY" output="EX" input="HY">2.004000e-3</value>
+<value name="ZYX" output="EY" input="HX">2.038000e-3</value>
+<value name="ZYY" output="EY" input="HY">3.135000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">5.323000e-1 -8.550000e-2</value>
+<value name="TY" output="HZ" input="HY">7.866000e-1 -3.387000e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">1.289000e-2</value>
+<value name="TY" output="HZ" input="HY">1.997000e-2</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">1.828934e1</value>
+<value name="RHOXY" output="EX" input="HY">7.420284e1</value>
+<value name="RHOYX" output="EY" input="HX">1.702206e1</value>
+<value name="RHOYY" output="EY" input="HY">1.896696e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">8.288365e-4</value>
+<value name="RHOXY" output="EX" input="HY">8.345261e-3</value>
+<value name="RHOYX" output="EY" input="HX">3.699602e-2</value>
+<value name="RHOYY" output="EY" input="HY">2.608586e1</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">2.953656e1</value>
+<value name="PHSXY" output="EX" input="HY">3.968857e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.412378e2</value>
+<value name="PHSYY" output="EY" input="HY">-1.517204e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">1.569480e4</value>
+<value name="PHSXY" output="EX" input="HY">3.631479e1</value>
+<value name="PHSYX" output="EY" input="HX">1.609899e2</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">-4.591358e0</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">9.542223e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">2.376874e-2</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.320633e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.015191e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.049597e0</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.456642e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.081233e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.847494e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">9.497804e-1 9.196427e-2</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.240866e2 -1.583895e2</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="5.792635e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">1.140000e-1 8.048000e-2</value>
+<value name="ZXY" output="EX" input="HY">1.960000e-1 1.725000e-1</value>
+<value name="ZYX" output="EY" input="HX">-9.170000e-2 -8.764000e-2</value>
+<value name="ZYY" output="EY" input="HY">-8.822004e-3 -7.431004e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">2.581000e-3</value>
+<value name="ZXY" output="EX" input="HY">3.542000e-3</value>
+<value name="ZYX" output="EY" input="HX">3.391000e-3</value>
+<value name="ZYY" output="EY" input="HY">5.627000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">5.608000e-1 1.985000e-4</value>
+<value name="TY" output="HZ" input="HY">8.090000e-1 1.637000e-2</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.198000e-2</value>
+<value name="TY" output="HZ" input="HY">3.061000e-2</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">2.256003e1</value>
+<value name="RHOXY" output="EX" input="HY">7.897940e1</value>
+<value name="RHOYX" output="EY" input="HX">1.864031e1</value>
+<value name="RHOYY" output="EY" input="HY">1.541391e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">2.499495e-3</value>
+<value name="RHOXY" output="EX" input="HY">1.959804e-2</value>
+<value name="RHOYX" output="EY" input="HX">7.949733e-2</value>
+<value name="RHOYY" output="EY" input="HY">2.544979e2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">3.522075e1</value>
+<value name="PHSXY" output="EX" input="HY">4.135107e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.362969e2</value>
+<value name="PHSYY" output="EY" input="HY">-1.398917e2</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">4.733035e4</value>
+<value name="PHSXY" output="EX" input="HY">8.528179e1</value>
+<value name="PHSYX" output="EY" input="HX">3.459366e2</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">7.896575e-1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">9.845027e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.768412e-2</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.416503e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.301531e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">1.123314e0</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.452776e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.861181e-2</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">6.930597e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">9.843667e-1 1.637120e-2</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.247298e2 8.930527e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="8.192021e3" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">9.386000e-2 6.206000e-2</value>
+<value name="ZXY" output="EX" input="HY">1.500000e-1 1.588000e-1</value>
+<value name="ZYX" output="EY" input="HX">-7.275000e-2 -6.627000e-2</value>
+<value name="ZYY" output="EY" input="HY">-1.544003e-3 -8.822003e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">1.985000e-3</value>
+<value name="ZXY" output="EX" input="HY">3.010000e-3</value>
+<value name="ZYX" output="EY" input="HX">2.691000e-3</value>
+<value name="ZYY" output="EY" input="HY">3.583000e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">5.550000e-1 6.949000e-2</value>
+<value name="TY" output="HZ" input="HY">6.021000e-1 2.352000e-1</value>
+</T>
+<T.VAR type="real" size="1 2">
+<value name="TX" output="HZ" input="HX">2.130000e-2</value>
+<value name="TY" output="HZ" input="HY">3.085000e-2</value>
+</T.VAR>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">2.074407e1</value>
+<value name="RHOXY" output="EX" input="HY">7.818046e1</value>
+<value name="RHOYX" output="EY" input="HX">1.586676e1</value>
+<value name="RHOYY" output="EY" input="HY">1.314190e-1</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">3.497185e-3</value>
+<value name="RHOXY" output="EX" input="HY">2.379365e-2</value>
+<value name="RHOYX" output="EY" input="HX">1.048137e-1</value>
+<value name="RHOYY" output="EY" input="HY">2.838982e2</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">3.347258e1</value>
+<value name="PHSXY" output="EX" input="HY">4.663234e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.376687e2</value>
+<value name="PHSYY" output="EY" input="HY">-9.992719e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">6.622254e4</value>
+<value name="PHSXY" output="EX" input="HY">1.035392e2</value>
+<value name="PHSYX" output="EY" input="HX">4.561018e2</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">1.525717e1</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">8.548084e-1</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1">
+<value name="TIPMAG">3.748883e-2</value>
+</TIPMAG.VAR>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-2.229271e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.365336e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">9.860276e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.392589e2</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">2.427710e-1</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">8.652945e-1</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">8.188708e-1 2.452507e-1</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">-1.326690e2 7.354018e1</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+<Period value="1.158527e4" units="secs">
+<Z type="complex" size="2 2" units="[mV/km]/[nT]">
+<value name="ZXX" output="EX" input="HX">7.610000e-2 6.188000e-2</value>
+<value name="ZXY" output="EX" input="HY">1.069000e-1 1.594000e-1</value>
+<value name="ZYX" output="EY" input="HX">-6.638000e-2 -5.362000e-2</value>
+<value name="ZYY" output="EY" input="HY">-4.141902e-6 4.021998e-3</value>
+</Z>
+<Z.VAR type="real" size="2 2">
+<value name="ZXX" output="EX" input="HX">4.136000e-3</value>
+<value name="ZXY" output="EX" input="HY">5.443000e-3</value>
+<value name="ZYX" output="EY" input="HX">6.336000e-3</value>
+<value name="ZYY" output="EY" input="HY">8.704999e-3</value>
+</Z.VAR>
+<T type="complex" size="1 2" units="[]">
+<value name="TX" output="HZ" input="HX">1.000000e32 1.000000e32</value>
+<value name="TY" output="HZ" input="HY">1.000000e32 1.000000e32</value>
+</T>
+<T.VAR type="real" size="1 2"/>
+<RHO type="real" size="2 2" units="[Ohm m]">
+<value name="RHOXX" output="EX" input="HX">2.229086e1</value>
+<value name="RHOXY" output="EX" input="HY">8.535094e1</value>
+<value name="RHOYX" output="EY" input="HX">1.687142e1</value>
+<value name="RHOYY" output="EY" input="HY">3.748183e-2</value>
+</RHO>
+<RHO.VAR type="real" size="2 2">
+<value name="RHOXX" output="EX" input="HX">2.629804e-2</value>
+<value name="RHOXY" output="EX" input="HY">5.573627e-2</value>
+<value name="RHOYX" output="EY" input="HX">3.282248e-1</value>
+<value name="RHOYY" output="EY" input="HY">4.120137e4</value>
+</RHO.VAR>
+<PHS type="real" size="2 2" units="degrees">
+<value name="PHSXX" output="EX" input="HX">3.911596e1</value>
+<value name="PHSXY" output="EX" input="HY">5.615262e1</value>
+<value name="PHSYX" output="EY" input="HX">-1.410696e2</value>
+<value name="PHSYY" output="EY" input="HY">9.005896e1</value>
+</PHS>
+<PHS.VAR type="real" size="2 2">
+<value name="PHSXX" output="EX" input="HX">4.979782e5</value>
+<value name="PHSXY" output="EX" input="HY">2.425389e2</value>
+<value name="PHSYX" output="EY" input="HX">1.428285e3</value>
+</PHS.VAR>
+<TIPPHS type="real" size="1 1" units="degrees">
+<value name="TIPPHS">1.000000e32</value>
+</TIPPHS>
+<TIPPHS.VAR type="real" size="1 1">
+<value name="TIPPHS">0.000000e0</value>
+</TIPPHS.VAR>
+<TIPMAG type="real" size="1 1" units="[]">
+<value name="TIPMAG">1.000000e32</value>
+</TIPMAG>
+<TIPMAG.VAR type="real" size="1 1"/>
+<ZSTRIKE type="real" size="1 1" units="degrees">
+<value name="ZSTRIKE">-1.966481e1</value>
+</ZSTRIKE>
+<ZSTRIKE.VAR type="real" size="1 1">
+<value name="ZSTRIKE">0.000000e0</value>
+</ZSTRIKE.VAR>
+<ZSKEW type="real" size="1 1" units="[]">
+<value name="ZSKEW">3.665957e-1</value>
+</ZSKEW>
+<ZSKEW.VAR type="real" size="1 1">
+<value name="ZSKEW">0.000000e0</value>
+</ZSKEW.VAR>
+<ZELLIP type="real" size="1 1" units="[]">
+<value name="ZELLIP">8.439633e-1</value>
+</ZELLIP>
+<ZELLIP.VAR type="real" size="1 1">
+<value name="ZELLIP">0.000000e0</value>
+</ZELLIP.VAR>
+<TSTRIKE type="real" size="1 1" units="degrees">
+<value name="TSTRIKE">1.000000e32</value>
+</TSTRIKE>
+<TSTRIKE.VAR type="real" size="1 1">
+<value name="TSTRIKE">0.000000e0</value>
+</TSTRIKE.VAR>
+<TSKEW type="real" size="1 1" units="[]">
+<value name="TSKEW">1.000000e32</value>
+</TSKEW>
+<TSKEW.VAR type="real" size="1 1">
+<value name="TSKEW">0.000000e0</value>
+</TSKEW.VAR>
+<TELLIP type="real" size="1 1" units="[]">
+<value name="TELLIP">1.000000e32</value>
+</TELLIP>
+<TELLIP.VAR type="real" size="1 1">
+<value name="TELLIP">0.000000e0</value>
+</TELLIP.VAR>
+<INDMAG type="complex" size="1 1" units="[]">
+<value name="INDMAG">1.000000e32 1.000000e32</value>
+</INDMAG>
+<INDMAG.VAR type="real" size="1 1">
+<value name="INDMAG">0.000000e0</value>
+</INDMAG.VAR>
+<INDANG type="complex" size="1 1" units="degrees">
+<value name="INDANG">1.000000e32 1.000000e32</value>
+</INDANG>
+<INDANG.VAR type="real" size="1 1">
+<value name="INDANG">0.000000e0</value>
+</INDANG.VAR>
+</Period>
+</Data>
+<PeriodRange min="16.000002560" max="11585.270487103"/>
+</EM_TF>

@@ -56,7 +56,8 @@
             "error estimate",
             "signal coherence",
             "signal power estimate",
-            "primary data type"
+            "primary data type",
+            "derived data type"
         ],
         "alias": [],
         "example": "error estimate",

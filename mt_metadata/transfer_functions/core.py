@@ -16,6 +16,7 @@ import xarray as xr
 
 from loguru import logger
 
+from mt_metadata.timeseries import Survey as TSSurvey
 from mt_metadata.transfer_functions.tf import (
     Survey,
     Station,
@@ -30,10 +31,12 @@ from mt_metadata.transfer_functions.io import (
     JFile,
     ZongeMTAvg,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from mt_metadata.transfer_functions.io.zfiles.metadata import (
     Channel as ZChannel,
 )
 from mt_metadata.base.helpers import validate_name
+from mt_metadata.utils.list_dict import ListDict
 
 DEFAULT_CHANNEL_NOMENCLATURE = {
     "hx": "hx",
@@ -65,15 +68,9 @@ class TF:
         self.logger = logger
 
         # set metadata for the station
-        self.survey_metadata = Survey(id="unknown_survey")
-        self.station_metadata = Station()
-        self.station_metadata.add_run(Run())
-        self.station_metadata.runs[0].ex = Electric(component="ex")
-        self.station_metadata.runs[0].ey = Electric(component="ey")
-        self.station_metadata.runs[0].hx = Magnetic(component="hx")
-        self.station_metadata.runs[0].hy = Magnetic(component="hy")
-        self.station_metadata.runs[0].hz = Magnetic(component="hz")
+        self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
+        self._inverse_channel_nomenclature = {}
 
         self._rotation_angle = 0
         self.save_dir = Path.cwd()
@@ -95,36 +92,6 @@ class TF:
             "coordinate_system": "station_metadata.orientation.reference_frame",
         }
 
-        # provide key words to fill values if an edi file does not exist
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-        self._ch_input_dict = {
-            "impedance": self.hx_hy,
-            "tipper": self.hx_hy,
-            "impedance_error": self.hx_hy,
-            "impedance_model_error": self.hx_hy,
-            "tipper_error": self.hx_hy,
-            "tipper_model_error": self.hx_hy,
-            "isp": self.hx_hy,
-            "res": self.ex_ey_hz,
-            "tf": self.hx_hy,
-            "tf_error": self.hx_hy,
-        }
-
-        self._ch_output_dict = {
-            "impedance": self.ex_ey,
-            "tipper": [self.hz],
-            "impedance_error": self.ex_ey,
-            "impedance_model_error": self.ex_ey,
-            "tipper_error": [self.hz],
-            "tipper_model_error": [self.hz],
-            "isp": self.hx_hy,
-            "res": self.ex_ey_hz,
-            "tf": self.ex_ey_hz,
-            "tf_error": self.ex_ey_hz,
-        }
-
         self._read_write_dict = {
             "edi": {"write": self.to_edi, "read": self.from_edi},
             "xml": {"write": self.to_emtfxml, "read": self.from_emtfxml},
@@ -139,6 +106,15 @@ class TF:
         self._transfer_function = self._initialize_transfer_function()
 
         self.fn = fn
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @property
+    def inverse_channel_nomenclature(self):
+        if not self._inverse_channel_nomenclature:
+            self._inverse_channel_nomenclature = {v: k for k, v in self.channel_nomenclature.items()}
+        return self._inverse_channel_nomenclature
 
     def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
@@ -199,19 +175,252 @@ class TF:
         if self.survey_metadata != other.survey_metadata:
             self.logger.info("Survey Metadata is not equal")
             is_equal = False
-        if (self.transfer_function != other.transfer_function).any():
+        if self.has_transfer_function() and other.has_transfer_function():
+            if (
+                self.transfer_function.fillna(0)
+                != other.transfer_function.fillna(0)
+            ).any():
+                self.logger.info("TF is not equal")
+                is_equal = False
+        elif (
+            not self.has_transfer_function()
+            and not other.has_transfer_function()
+        ):
+            pass
+        else:
             self.logger.info("TF is not equal")
             is_equal = False
+
         return is_equal
 
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k in ["logger"]:
+                continue
+
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
     def copy(self):
-        try:
-            return deepcopy(self)
-        except TypeError:
-            delattr(self, "logger")
-            deep_copy = deepcopy(self)
-            self.logger = logger
-            return deep_copy
+        return deepcopy(self)
+
+    def _add_channels(
+        self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]
+    ):
+        """
+        add channels to a run
+
+        """
+        for ch in [cc for cc in default if cc.startswith("e")]:
+            run_metadata.add_channel(Electric(component=ch))
+        for ch in [cc for cc in default if cc.startswith("h")]:
+            run_metadata.add_channel(Magnetic(component=ch))
+
+        return run_metadata
+
+    def _initialize_metadata(self):
+        """
+        Create a single `Survey` object to store all metadata
+
+        :param channel_type: DESCRIPTION
+        :type channel_type: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        survey_metadata = Survey(id="0")
+        survey_metadata.stations.append(Station(id="0"))
+        survey_metadata.stations[0].runs.append(Run(id="0"))
+
+        self._add_channels(survey_metadata.stations[0].runs[0])
+
+        return survey_metadata
+
+    def _validate_run_metadata(self, run_metadata):
+        """
+        validate run metadata
+
+        """
+
+        if not isinstance(run_metadata, Run):
+            if isinstance(run_metadata, dict):
+                if "run" not in [cc.lower() for cc in run_metadata.keys()]:
+                    run_metadata = {"Run": run_metadata}
+                r_metadata = Run()
+                r_metadata.from_dict(run_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return r_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.run_metadata)} "
+                    f"or dict, not {type(run_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return run_metadata.copy()
+
+    def _validate_station_metadata(self, station_metadata):
+        """
+        validate station metadata
+        """
+
+        if not isinstance(station_metadata, Station):
+            if isinstance(station_metadata, dict):
+                if "station" not in [
+                    cc.lower() for cc in station_metadata.keys()
+                ]:
+                    station_metadata = {"Station": station_metadata}
+                st_metadata = Station()
+                st_metadata.from_dict(station_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return st_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.station_metadata)}"
+                    f" or dict, not {type(station_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return station_metadata.copy()
+
+    def _validate_survey_metadata(self, survey_metadata):
+        """
+        validate station metadata
+        """
+
+        if not isinstance(survey_metadata, Survey):
+            if isinstance(survey_metadata, TSSurvey):
+                sm = Survey()
+                sm.from_dict(survey_metadata.to_dict())
+                sm.stations = survey_metadata.stations
+                survey_metadata = sm
+
+            elif isinstance(survey_metadata, dict):
+                if "survey" not in [
+                    cc.lower() for cc in survey_metadata.keys()
+                ]:
+                    survey_metadata = {"Survey": survey_metadata}
+                sv_metadata = Survey()
+                sv_metadata.from_dict(survey_metadata)
+                self.logger.debug("Loading from metadata dict")
+                return sv_metadata
+            else:
+                msg = (
+                    f"input metadata must be type {type(self.survey_metadata)}"
+                    f" or dict, not {type(survey_metadata)}"
+                )
+                self.logger.error(msg)
+                raise TypeError(msg)
+        return survey_metadata.copy()
+
+    ### Properties ------------------------------------------------------------
+    @property
+    def survey_metadata(self):
+        """
+        survey metadata
+        """
+        return self._survey_metadata
+
+    @survey_metadata.setter
+    def survey_metadata(self, survey_metadata):
+        """
+
+        :param survey_metadata: survey metadata object or dictionary
+        :type survey_metadata: :class:`mt_metadata.timeseries.Survey` or dict
+
+        """
+
+        if survey_metadata is not None:
+            survey_metadata = self._validate_survey_metadata(survey_metadata)
+            self._survey_metadata.update(survey_metadata)
+            for station in survey_metadata.stations:
+                station.update_time_period()
+                self._survey_metadata.add_station(station)
+
+            if len(self._survey_metadata.stations.keys()) > 1:
+                if "0" in self._survey_metadata.stations.keys():
+                    self._survey_metadata.stations.remove("0")
+
+            self._survey_metadata.update_time_period()
+
+    @property
+    def station_metadata(self):
+        """
+        station metadata
+        """
+
+        return self.survey_metadata.stations[0]
+
+    @station_metadata.setter
+    def station_metadata(self, station_metadata):
+        """
+        set station metadata from a valid input
+        """
+
+        if station_metadata is not None:
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
+
+            runs = ListDict()
+            if self.run_metadata.id not in ["0", 0, None]:
+                runs.append(self.run_metadata.copy())
+            runs.extend(station_metadata.runs)
+            if len(runs) == 0:
+                runs[0] = Run(id="0")
+            # be sure there is a level below
+            if len(runs[0].channels) == 0:
+                self._add_channels(runs[0])
+            stations = ListDict()
+            stations.append(station_metadata)
+            stations[0].runs = runs
+            stations[0].update_time_period()
+
+            self.survey_metadata.stations = stations
+            self._survey_metadata.update_time_period()
+
+    @property
+    def run_metadata(self):
+        """
+        station metadata
+        """
+
+        return self.survey_metadata.stations[0].runs[0]
+
+    @run_metadata.setter
+    def run_metadata(self, run_metadata):
+        """
+        set run metadata from a valid input
+        """
+
+        # need to make sure the first index is the desired channel
+        if run_metadata is not None:
+            run_metadata = self._validate_run_metadata(run_metadata)
+
+            runs = ListDict()
+            runs.append(run_metadata)
+            channels = ListDict()
+            if self.component is not None:
+                key = str(self.component)
+
+                channels.append(self.station_metadata.runs[0].channels[key])
+                # add existing channels
+                channels.extend(
+                    self.run_metadata.channels, skip_keys=[key, "0"]
+                )
+            # add channels from input metadata
+            channels.extend(run_metadata.channels)
+
+            runs[0].channels = channels
+            runs.extend(
+                self.station_metadata.runs, skip_keys=[run_metadata.id, "0"]
+            )
+
+            self._survey_metadata.stations[0].runs = runs
 
     def _initialize_transfer_function(self, periods=[1]):
         """
@@ -321,6 +530,37 @@ class TF:
         self.ex_ey_hz = [self.ex, self.ey, self.hz]
 
     @property
+    def _ch_input_dict(self):
+
+        return {
+            "impedance": self.hx_hy,
+            "tipper": self.hx_hy,
+            "impedance_error": self.hx_hy,
+            "impedance_model_error": self.hx_hy,
+            "tipper_error": self.hx_hy,
+            "tipper_model_error": self.hx_hy,
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.hx_hy,
+            "tf_error": self.hx_hy,
+        }
+
+    @property
+    def _ch_output_dict(self):
+        return {
+            "impedance": self.ex_ey,
+            "tipper": [self.hz],
+            "impedance_error": self.ex_ey,
+            "impedance_model_error": self.ex_ey,
+            "tipper_error": [self.hz],
+            "tipper_model_error": [self.hz],
+            "isp": self.hx_hy,
+            "res": self.ex_ey_hz,
+            "tf": self.ex_ey_hz,
+            "tf_error": self.ex_ey_hz,
+        }
+
+    @property
     def fn(self):
         """reference to original data file"""
         return self._fn
@@ -372,7 +612,17 @@ class TF:
         """
         set elevation, should be input as meters
         """
+
         self.station_metadata.location.elevation = elevation
+
+    def _get_elevation_from_national_map(self):
+        """
+        get elevation from US national map.  Should extend this to global
+        at some point
+        """
+
+        if self.latitude != 0 and self.longitude != 0:
+            return get_nm_elev(self.latitude, self.longitude)
 
     @property
     def dataset(self):
@@ -1166,6 +1416,11 @@ class TF:
         set station name
         """
         self.station_metadata.id = validate_name(station_name)
+        if self.station_metadata.runs[0].id is None:
+            r = self.station_metadata.runs[0].copy()
+            r.id = f"{self.station_metadata.id}a"
+            self.station_metadata.runs.remove(None)
+            self.station_metadata.runs.append(r)
 
     @property
     def survey(self):
@@ -1209,7 +1464,7 @@ class TF:
             try:
                 ts_station_metadata.set_attr_from_name(key, value)
             except AttributeError:
-                continue
+                self.logger.debug(f"Attribute {key} could not be set.")
         return ts_station_metadata
 
     def from_ts_station_metadata(self, ts_station_metadata):
@@ -1259,29 +1514,136 @@ class TF:
 
         """
 
-        period_slice_self = {"period": slice(period_min, period_max)}
-        tf_list = [self._transfer_function.loc[period_slice_self]]
-        if not isinstance(other, list):
-            other = [other]
+        def get_slice_dict(period_min, period_max):
+            """
+            Get an the correct dictionary for slicing an xarray.
+
+            :param period_min: minimum period
+            :type period_min: float
+            :param period_max: maximum period
+            :type period_max: float
+            :return: variable to slice an xarray
+            :rtype: dict
+
+            """
+            return {"period": slice(period_min, period_max)}
+
+        def sort_by_period(tf):
+            """
+            period needs to be monotonically increasing for slice to work.
+            """
+            return tf.sortby("period")
 
         def is_tf(item):
-            return item._transfer_function
+            """
+            If the item is a transfer function return it sorted by period
 
-        def is_dict(item):
-            item = validate_dict(item)
-            period_slice = {
-                "period": slice(item["period_min"], item["period_max"])
-            }
-            return item["tf"]._transfer_function.loc[period_slice]
+            :param item: transfer function
+            :type item: :class:`mt_metadata.transfer_function.core.TF`
+            :return: sorted by period transfer function
+            :rtype: xarray.Dataset
+
+            """
+            return sort_by_period(item._transfer_function)
 
         def validate_dict(item):
+            """
+            Make sure input dictionary has proper keys.
+
+            - **tf** :class:`mt_metadata.transfer_function.core.TF`
+            - **period_min** minumum period (s)
+            - **period_max** maximum period (s)
+
+            :param item: dictionary to slice a transfer function
+            :type item: dict
+            :raises KeyError: If keys are not what they should be
+            :return: validated dictionary
+            :rtype: dict
+
+            """
             accepted_keys = sorted(["tf", "period_min", "period_max"])
 
             if accepted_keys != sorted(list(item.keys())):
                 msg = f"Input dictionary must have keys of {accepted_keys}"
                 self.logger.error(msg)
-                raise ValueError(msg)
+                raise KeyError(msg)
             return item
+
+        def is_dict(item):
+            """
+            If the item is a dictionary then be sure to sort the transfer
+            function and then apply the slice.
+
+            :param item: dictionary with keys 'tf', 'period_min', 'period_max'
+            :type item: dict
+            :return: sliced transfer function
+            :rtype: xarray.Dataset
+
+            """
+            item = validate_dict(item)
+            period_slice = get_slice_dict(
+                item["period_min"], item["period_max"]
+            )
+            item["tf"]._transfer_function = sort_by_period(
+                item["tf"]._transfer_function
+            )
+            return get_slice(item["tf"], period_slice)
+
+        def get_slice(tf, period_slice):
+            """
+            get slice of a transfer function most of the time we can use .loc
+            but sometimes a key error occurs if the period index is not
+            monotonic (which is should be now after using .sortby('period')),
+            but leaving in place just in case.  If .loc does not work, then
+            we can use .where(conditions) to slice the transfer function.
+            """
+            try:
+                return tf._transfer_function.loc[period_slice]
+
+            except KeyError:
+                if (
+                    period_slice["period"].start is not None
+                    and period_slice["period"].stop is not None
+                ):
+
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        )
+                        & (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
+                        drop=True,
+                    )
+                elif (
+                    period_slice["period"].start is None
+                    and period_slice["period"].stop is not None
+                ):
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
+                        drop=True,
+                    )
+                elif (
+                    period_slice["period"].start is not None
+                    and period_slice["period"].stop is None
+                ):
+                    return tf._transfer_function.where(
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        ),
+                        drop=True,
+                    )
+
+        period_slice_self = get_slice_dict(period_min, period_max)
+        tf_list = [get_slice(self, period_slice_self)]
+        if not isinstance(other, list):
+            other = [other]
 
         for item in other:
             if isinstance(item, TF):
@@ -1292,6 +1654,7 @@ class TF:
                 msg = f"Type {type(item)} not supported"
                 self.logger.error(msg)
                 raise TypeError(msg)
+
         new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
 
         if inplace:
@@ -1380,13 +1743,15 @@ class TF:
     def read_tf_file(self, **kwargs):
         self.logger.error("'read_tf_file' has been deprecated use 'read()'")
 
-    def read(self, fn=None, file_type=None, **kwargs):
+    def read(self, fn=None, file_type=None, get_elevation=True, **kwargs):
         """
 
         Read an TF response file.
 
         .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
            files are supported
+
+
 
         :param fn: full path to input file
         :type fn: string
@@ -1395,12 +1760,17 @@ class TF:
                           if None, automatically detects file type by
                           the extension.
         :type file_type: string
+        :param get_elevation: Get elevation from US National Map DEM
+        :type get_elevation: bool
 
         :Example: ::
 
             >>> import mt_metadata.transfer_functions import TF
             >>> tf_obj = TF()
             >>> tf_obj.read(fn=r"/home/mt/mt01.xml")
+
+        .. note:: If your internet is slow try setting 'get_elevation' = False,
+         It can get hooked in a slow loop and slow down reading.
 
         """
         if fn is not None:
@@ -1409,6 +1779,13 @@ class TF:
         if file_type is None:
             file_type = self.fn.suffix.lower()[1:]
         self._read_write_dict[file_type]["read"](self.fn, **kwargs)
+
+        if self.elevation == 0 and get_elevation:
+            self.elevation = self._get_elevation_from_national_map()
+
+        self.station_metadata.update_time_period()
+        self.survey_metadata.update_bounding_box()
+        self.survey_metadata.update_time_period()
 
     def to_edi(self):
         """
@@ -1674,6 +2051,35 @@ class TF:
         for tf_key, j_key in k_dict.items():
             setattr(self, tf_key, getattr(j_obj, j_key))
 
+    def make_zmm_run(self, zmm_obj, number_dict):
+        """
+        Helper function to provide a run for a zmm object to aid writing z-file
+
+        Parameters
+        ----------
+        :param zmm_obj: a ZMM that will be written to file, that needs a run associated
+        :type zmm_obj:  :class: `mt_metadata.transfer_functions.io.zfiles.zmm.ZMM`
+        :param number_dict: mapping between hexy keys and integers, needed for emtf
+        z-files, e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
+        :type number_dict: dictionary
+
+        :return: run
+        :rtype: :class:` mt_metadata.timeseries.run.Run`
+        """
+        run = Run()
+        for ch, ch_num in number_dict.items():
+            c = ZChannel()
+            c.channel = ch
+            c.number = ch_num
+            setattr(zmm_obj, c.channel, c)
+            if ch in ["ex", "ey"]:
+                rc = Electric(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+            elif ch in ["hx", "hy", "hz"]:
+                rc = Magnetic(component=ch, channel_number=ch_num)
+                run.add_channel(rc)
+        return run
+
     def to_zmm(self):
         """
 
@@ -1691,9 +2097,14 @@ class TF:
         >>> zmm_object.write()
 
         """
+        zmm_kwargs = {}
+        zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
+        zmm_kwargs["inverse_channel_nomenclature"] = self.inverse_channel_nomenclature
+        if hasattr(self, "decimation_dict"):
+            zmm_kwargs["decimation_dict"] = self.decimation_dict
+        zmm_obj = ZMM(**zmm_kwargs)
 
-        zmm_obj = ZMM()
-        zmm_obj._transfer_function = self.dataset
+        zmm_obj.dataset = self.dataset
         zmm_obj.station_metadata = self.station_metadata
 
         # need to set the channel numbers according to the z-file format
@@ -1708,30 +2119,30 @@ class TF:
         else:
             if self.has_impedance():
                 zmm_obj.num_channels = 4
-                number_dict = {"hx": 1, "hy": 2, "ex": 4, "ey": 5}
+                number_dict = {"hx": 1, "hy": 2, "ex": 3, "ey": 4}
         if len(self.station_metadata.runs) == 0:
-            run = Run()
-            for ch, ch_num in number_dict.items():
-                c = ZChannel()
-                c.channel = ch
-                c.number = ch_num
-                setattr(zmm_obj, c.channel, c)
-                if ch in ["ex", "ey"]:
-                    rc = Electric(component=ch, channel_number=ch_num)
-                    run.add_channel(rc)
-                elif ch in ["hx", "hy", "hz"]:
-                    rc = Magnetic(component=ch, channel_number=ch_num)
-                    run.add_channel(rc)
+            run = self.make_zmm_run(zmm_obj, number_dict)
             self.station_metadata.add_run(run)
+        elif len(self.station_metadata.runs[0].channels_recorded_all) == 0:
+            # avoid the default metadata getting interpretted as a real metadata object
+            # Overwrite this "spoof" run with a run that has recorded channels
+            if len(self.station_metadata.runs[0].channels_recorded_all) == 0:
+                run = self.make_zmm_run(zmm_obj, number_dict)
+                self.station_metadata.runs[0] = run
         else:
             for comp in self.station_metadata.runs[0].channels_recorded_all:
                 if "rr" in comp:
                     continue
-                ch = getattr(self.station_metadata.runs[0], comp)
+                ch = self.station_metadata.runs[0].get_channel(comp)
+                ch.component = self.inverse_channel_nomenclature[comp]
                 c = ZChannel()
                 c.from_dict(ch.to_dict(single=True))
-                c.number = number_dict[c.channel]
-                setattr(zmm_obj, c.channel, c)
+                ch.component = comp
+                try:
+                    c.number = number_dict[c.channel]
+                    setattr(zmm_obj, c.channel, c)
+                except KeyError:
+                    self.logger.debug(f"Could not find channel {c.channel}")
         zmm_obj.survey_metadata.update(self.survey_metadata)
         zmm_obj.num_freq = self.period.size
 
@@ -1741,7 +2152,7 @@ class TF:
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :calss:`pathlib.Path`,
+        :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
         :param **kwargs: Keyword arguments for ZMM object
         :type **kwargs: dictionary
@@ -1754,6 +2165,7 @@ class TF:
             zmm_obj.read(self._fn)
         if not isinstance(zmm_obj, ZMM):
             raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
+        self.decimation_dict = zmm_obj.decimation_dict
         k_dict = OrderedDict(
             {
                 "survey_metadata": "survey_metadata",
@@ -1837,8 +2249,8 @@ class TF:
     def from_zss(self, zss_obj, **kwargs):
         """
 
-        :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :calss:`pathlib.Path`,
+        :param zmm_obj: path to .zmm file or ZMM object
+        :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
         :param **kwargs: Keyword arguments for ZMM object
         :type **kwargs: dictionary
@@ -1865,8 +2277,8 @@ class TF:
     def from_avg(self, avg_obj, **kwargs):
         """
 
-        :param avg_obj: path ot .avg file or ZongeMTAvg object
-        :type avg_obj: str, :calss:`pathlib.Path`,
+        :param avg_obj: path to .avg file or ZongeMTAvg object
+        :type avg_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
         :param **kwargs: Keyword arguments for ZongeMTAvg object
         :type **kwargs: dictionary

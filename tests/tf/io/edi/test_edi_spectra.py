@@ -16,6 +16,7 @@ from mt_metadata.transfer_functions.io.edi import EDI
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import TF_EDI_SPECTRA, TF_EDI_SPECTRA_OUT
 from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # CGG
@@ -31,9 +32,9 @@ class TestSpectraEDI(unittest.TestCase):
         head = {
             "ACQBY": "Quantec Consulting",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "SAGE_2005",
+            "DATAID": "SAGE_2005_og",
             "DATUM": "WGS84",
-            "ELEV": 0.0,
+            "ELEV": get_nm_elev(35.55, -106.28333333333333),
             "EMPTY": 1e32,
             "FILEBY": "Quantec Consulting",
             "LAT": 35.55,

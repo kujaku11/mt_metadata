@@ -587,6 +587,9 @@ class Base:
                         meta_dict[name] = value
                     elif value.all() != 0:
                         meta_dict[name] = value
+                elif hasattr(value, "size"):
+                    if value.size > 0:
+                        meta_dict[name] = value
                 elif (
                     value
                     not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]

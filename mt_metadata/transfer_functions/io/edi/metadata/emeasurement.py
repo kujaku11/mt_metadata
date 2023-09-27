@@ -40,7 +40,7 @@ class EMeasurement(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        if self.azm == 0:
+        if self.x != 0 or self.y != 0 or self.x2 != 0 or self.y2 != 0:
             self.azm = self.azimuth
 
     def __str__(self):
@@ -69,9 +69,6 @@ class EMeasurement(Base):
 
     @property
     def azimuth(self):
-        if hasattr(self, "azm"):
-            if self.azm != 0:
-                return self.azm
         try:
             return np.rad2deg(
                 np.arctan2((self.y2 - self.y), (self.x2 - self.x))
@@ -91,3 +88,21 @@ class EMeasurement(Base):
                     return 0
             return self.acqchan
         return 0
+
+    def write_meas_line(self):
+        """
+        write string
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        line = [">emeas".upper()]
+
+        for mkey, mfmt in self._fmt_dict.items():
+            try:
+                line.append(f"{mkey.upper()}={getattr(self, mkey):{mfmt}}")
+            except (ValueError, TypeError):
+                line.append(f"{mkey.upper()}={0.0:{mfmt}}")
+
+        return f"{' '.join(line)}\n"

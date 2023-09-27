@@ -2,7 +2,7 @@
 """
 Created on Fri Feb 19 16:14:41 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -487,21 +487,24 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         ch_filter_dict = {}
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
+            new_and_unnamed = False
             mt_filter = create_filter_from_stage(stage)
             if not mt_filter.name:
-                filter_name, new = self._add_filter_number(
+                filter_name, new_and_unnamed = self._add_filter_number(
                     existing_filters, mt_filter
                 )
                 mt_filter.name = filter_name
 
-                if new:
-                    self.logger.info(
-                        f"Found an unnamed filter, named it: '{mt_filter.name}'"
-                    )
-
             if mt_filter.decimation_active:
                 # keep filter names unique if same one used more than once
                 mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
+
+            if new_and_unnamed:
+                self.logger.info(
+                    f"Found an unnamed filter, named it: '{mt_filter.name}'"
+                )
+                existing_filters[filter_name] = mt_filter
+
             ch_filter_dict[mt_filter.name.lower()] = mt_filter
 
         return ch_filter_dict

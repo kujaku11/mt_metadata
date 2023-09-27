@@ -14,13 +14,14 @@ import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_ZSS_TIPPER
 from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # EMTFXML
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestZSS(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_ZSS_TIPPER)
@@ -34,16 +35,16 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
-                ("id", None),
+                ("id", "0"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 44.631),
+                ("northwest_corner.longitude", -110.44),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 44.631),
+                ("southeast_corner.longitude", -110.44),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
                 ("time_period.start_date", "1980-01-01"),
@@ -64,31 +65,37 @@ class TestEMTFXML(unittest.TestCase):
                 ("id", "YSW212abcdefghijkl"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 11.18),
-                ("location.elevation", 0.0),
+                ("location.elevation", get_nm_elev(44.631, -110.44)),
                 ("location.latitude", 44.631),
                 ("location.longitude", -110.44),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
+                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["ysw212abcdefghijkla"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "ysw212abcdefghijkl"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_by.name", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
+                ("transfer_function.processing_type", "Robust Single station"),
                 ("transfer_function.remote_references", []),
-                (
-                    "transfer_function.runs_processed",
-                    ["ysw212abcdefghijkla"],
-                ),
+                ("transfer_function.runs_processed", ["ysw212abcdefghijkla"]),
                 ("transfer_function.sign_convention", None),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", "1"),
                 ("transfer_function.units", None),
             ]
         )
