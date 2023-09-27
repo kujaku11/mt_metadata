@@ -2251,6 +2251,8 @@ class TF:
 
         """
 
+        self.from_zmm(zss_obj, get_elevation=get_elevation, **kwargs)
+
     def to_avg(self):
         """
 
