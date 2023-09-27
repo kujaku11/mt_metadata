@@ -85,6 +85,8 @@ class TestDecimation(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             dl1.add_channel(None)
+        with self.assertRaises(TypeError):
+            dl3 = dl1 + None
 
     def test_remove_channel(self):
         dl1 = self.dl.copy()
