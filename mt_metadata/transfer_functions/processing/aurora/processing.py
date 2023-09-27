@@ -212,7 +212,7 @@ class Processing(Base):
             decimation_obj.decimation.factor = d
             decimation_obj.decimation.sample_rate = sr
             decimation_obj.window.num_samples = num_samples_window[i_level]
-            frequencies = decimation_obj.fft_frequecies
+            frequencies = decimation_obj.fft_frequencies
 
             for low, high in band_edges:
                 band = Band(

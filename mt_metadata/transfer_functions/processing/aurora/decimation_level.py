@@ -247,7 +247,7 @@ class DecimationLevel(Base):
         return frequency_bands
 
     @property
-    def fft_frequecies(self):
+    def fft_frequencies(self):
         freqs = get_fft_harmonics(
             self.window.num_samples, self.decimation.sample_rate
         )

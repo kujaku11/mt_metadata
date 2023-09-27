@@ -295,7 +295,7 @@ class Decimation(Base):
             return True
 
     @property
-    def fft_frequecies(self):
+    def fft_frequencies(self):
         return get_fft_harmonics(self.window.num_samples, self.sample_rate)
 
 
