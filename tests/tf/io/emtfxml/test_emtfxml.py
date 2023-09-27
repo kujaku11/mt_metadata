@@ -273,6 +273,9 @@ class TestEMTFXML(unittest.TestCase):
             TypeError, self.xml.site.comments.read_dict, {"comments": None}
         )
 
+    def test_comments_to_xml_as_string(self):
+        self.assertIsInstance(self.xml.site.to_xml(string=True), str)
+
     def test_statistical_estimates(self):
         test_dict = OrderedDict(
             [
