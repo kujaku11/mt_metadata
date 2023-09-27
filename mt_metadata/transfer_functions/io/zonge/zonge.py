@@ -122,7 +122,7 @@ class ZongeMTAvg:
         else:
             self._fn = None
 
-    def read(self, fn=None):
+    def read(self, fn=None, get_elevation=True):
         """
         Read into a pandas data frame
 
@@ -177,7 +177,7 @@ class ZongeMTAvg:
         self.z, self.z_err = self._fill_z()
         self.t, self.t_err = self._fill_t()
 
-        if self.header.elevation == 0:
+        if self.header.elevation == 0 and get_elevation:
             if self.header.latitude != 0 and self.header.longitude != 0:
                 self.header.elevation = get_nm_elev(
                     self.header.latitude, self.header.longitude
