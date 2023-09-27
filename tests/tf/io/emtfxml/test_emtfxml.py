@@ -255,6 +255,9 @@ class TestEMTFXML(unittest.TestCase):
             test_dict, self.xml.processing_info.to_dict(single=True)
         )
 
+    def test_processing_info_none(self):
+        self.assertEqual(None, self.xml.processing_info.read_dict({}))
+
     def test_remote_info_none(self):
         self.assertEqual(
             None, self.xml.processing_info.remote_info.read_dict({})
