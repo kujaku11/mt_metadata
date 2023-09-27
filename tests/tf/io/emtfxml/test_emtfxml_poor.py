@@ -169,7 +169,6 @@ class TestEMTFXML(unittest.TestCase):
         test_dict = OrderedDict(
             [
                 ("acquired_by", "National Geoelectromagnetic Facility"),
-                ("country", None),
                 (
                     "data_quality_notes.comments.author",
                     "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
@@ -351,6 +350,30 @@ class TestEMTFXML(unittest.TestCase):
 
         self.assertDictEqual(
             test_dict, self.xml.site_layout.to_dict(single=True)
+        )
+
+    def test_processing_info(self):
+        test_dict = OrderedDict(
+            [
+                ("process_date", "1980-01-01"),
+                ("processing_software.last_mod", "2015-08-26"),
+                ("processing_software.name", "EMTF"),
+                ("processing_tag", "CAS04-CAS04bcd_REV06-CAS04bcd_NVR08"),
+                ("remote_info.site.id", "REV06"),
+                ("remote_info.site.location.elevation", 61.05),
+                ("remote_info.site.location.latitude", 35.71262),
+                ("remote_info.site.location.longitude", -119.466415),
+                ("remote_info.site.name", "Poso Creek, CA, USA"),
+                ("remote_info.site.orientation.angle_to_geographic_north", 0.0),
+                ("remote_info.site.orientation.layout", "orthogonal"),
+                ("remote_info.site.year_collected", 1980),
+                ("remote_ref.type", "Robust Remote Reference"),
+                ("sign_convention", "exp(+ i\\omega t)"),
+            ]
+        )
+
+        self.assertDictEqual(
+            test_dict, self.xml.processing_info.to_dict(single=True)
         )
 
     def test_period_range(self):
