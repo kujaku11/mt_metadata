@@ -273,7 +273,7 @@ class EMTFXML(emtf_xml.EMTF):
             return self.fn.parent
         return None
 
-    def read(self, fn=None):
+    def read(self, fn=None, get_elevation=True):
         """
         Read xml file
 
@@ -323,7 +323,7 @@ class EMTFXML(emtf_xml.EMTF):
         self._get_data_types()
         self._update_site_layout()
 
-        if self.site.location.elevation == 0:
+        if self.site.location.elevation == 0 and get_elevation:
             if (
                 self.site.location.latitude != 0
                 and self.site.location.longitude != 0
