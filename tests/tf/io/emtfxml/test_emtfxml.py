@@ -260,6 +260,19 @@ class TestEMTFXML(unittest.TestCase):
             None, self.xml.processing_info.remote_info.read_dict({})
         )
 
+    def test_remote_info_no_attributes(self):
+        self.assertEqual(
+            None,
+            self.xml.processing_info.remote_info.read_dict(
+                {"remote_info": None}
+            ),
+        )
+
+    def test_parse_comments_fail(self):
+        self.assertRaises(
+            TypeError, self.xml.site.comments.read_dict, {"comments": None}
+        )
+
     def test_statistical_estimates(self):
         test_dict = OrderedDict(
             [
