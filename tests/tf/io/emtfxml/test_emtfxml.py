@@ -474,6 +474,26 @@ class TestEMTFXML(unittest.TestCase):
             test_dict, self.xml.site_layout.to_dict(single=True)
         )
 
+    def test_site_layout_bad_input_channels(self):
+        def set_input_channels(value):
+            self.xml.site_layout.input_channels = value
+
+        with self.subTest("bad string"):
+            self.assertRaises(ValueError, set_input_channels, "a")
+
+        with self.subTest("bad dict"):
+            self.assertRaises(ValueError, set_input_channels, {"a": None})
+
+    def test_site_layout_bad_output_channels(self):
+        def set_output_channels(value):
+            self.xml.site_layout.output_channels = value
+
+        with self.subTest("bad string"):
+            self.assertRaises(ValueError, set_output_channels, "a")
+
+        with self.subTest("bad dict"):
+            self.assertRaises(ValueError, set_output_channels, {"a": None})
+
     def test_period_range(self):
         test_dict = OrderedDict([("max", 29127.11), ("min", 4.65455)])
 
