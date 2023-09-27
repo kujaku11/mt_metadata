@@ -248,6 +248,43 @@ class TestListDictSlice(unittest.TestCase):
         b = self.ld[0:"b"]
         self.assertTrue(b == ListDict([("a", 0)]))
 
+    def test_get_index_slice_from_slice_fail(self):
+        self.assertRaises(
+            TypeError,
+            self.ld._get_index_slice_from_slice(False, slice(None, None, None)),
+        )
+
+    def test_get_index_slice_from_slice_fail_bad_keys(self):
+        self.assertRaises(
+            TypeError,
+            self.ld._get_index_slice_from_slice(
+                None, slice(False, False, False)
+            ),
+        )
+
+    def test_getitem_fail(self):
+        self.assertRaises(KeyError, self.ld.__getitem__, "z")
+
+    def test_getitem_fail_bad_type(self):
+        self.assertRaises(TypeError, self.ld.__getitem__, 10.0)
+
+    def test_setitem_fail(self):
+        self.assertRaises(
+            NotImplementedError, self.ld.__setitem__, slice(0, 1), None
+        )
+
+    def test_remove_fail(self):
+        self.assertRaises(KeyError, self.ld.remove, "z")
+
+    def test_remove_fail_bad_key_type(self):
+        self.assertRaises(TypeError, self.ld.remove, 10.0)
+
+    def test_extend_fail(self):
+        self.assertRaises(TypeError, self.ld.extend, ("x"))
+
+    def test_update_fail(self):
+        self.assertRaises(TypeError, self.ld.update, ("x"))
+
 
 # =============================================================================
 # Run test
