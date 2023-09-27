@@ -113,7 +113,9 @@ class TF:
     @property
     def inverse_channel_nomenclature(self):
         if not self._inverse_channel_nomenclature:
-            self._inverse_channel_nomenclature = {v: k for k, v in self.channel_nomenclature.items()}
+            self._inverse_channel_nomenclature = {
+                v: k for k, v in self.channel_nomenclature.items()
+            }
         return self._inverse_channel_nomenclature
 
     def __str__(self):
@@ -614,15 +616,6 @@ class TF:
         """
 
         self.station_metadata.location.elevation = elevation
-
-    def _get_elevation_from_national_map(self):
-        """
-        get elevation from US national map.  Should extend this to global
-        at some point
-        """
-
-        if self.latitude != 0 and self.longitude != 0:
-            return get_nm_elev(self.latitude, self.longitude)
 
     @property
     def dataset(self):
@@ -1778,10 +1771,9 @@ class TF:
         self.save_dir = self.fn.parent
         if file_type is None:
             file_type = self.fn.suffix.lower()[1:]
-        self._read_write_dict[file_type]["read"](self.fn, **kwargs)
-
-        if self.elevation == 0 and get_elevation:
-            self.elevation = self._get_elevation_from_national_map()
+        self._read_write_dict[file_type]["read"](
+            self.fn, get_elevation=get_elevation, **kwargs
+        )
 
         self.station_metadata.update_time_period()
         self.survey_metadata.update_bounding_box()
@@ -1850,7 +1842,7 @@ class TF:
 
         return edi_obj
 
-    def from_edi(self, edi_obj, **kwargs):
+    def from_edi(self, edi_obj, get_elevation=True, **kwargs):
         """
         Read in an EDI file or a
         :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
@@ -1867,7 +1859,7 @@ class TF:
         if isinstance(edi_obj, (str, Path)):
             self._fn = Path(edi_obj)
             edi_obj = EDI(**kwargs)
-            edi_obj.read(self._fn)
+            edi_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(edi_obj, EDI):
             raise TypeError(f"Input must be a EDI object not {type(edi_obj)}")
         if edi_obj.tf is not None:
@@ -1965,7 +1957,7 @@ class TF:
 
         return emtf
 
-    def from_emtfxml(self, emtfxml_obj, **kwargs):
+    def from_emtfxml(self, emtfxml_obj, get_elevation=True, **kwargs):
         """
 
         :param emtfxml_object: path to emtf xml file or EMTFXML object
@@ -1979,7 +1971,7 @@ class TF:
         if isinstance(emtfxml_obj, (str, Path)):
             self._fn = Path(emtfxml_obj)
             emtfxml_obj = EMTFXML(**kwargs)
-            emtfxml_obj.read(self._fn)
+            emtfxml_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(emtfxml_obj, EMTFXML):
             raise TypeError(
                 f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
@@ -2020,7 +2012,7 @@ class TF:
 
         raise IOError("to_jfile not implemented yet.")
 
-    def from_jfile(self, j_obj, **kwargs):
+    def from_jfile(self, j_obj, get_elevation=True, **kwargs):
         """
 
         :param jfile_obj: path ot .j file or JFile object
@@ -2033,7 +2025,7 @@ class TF:
         if isinstance(j_obj, (str, Path)):
             self._fn = Path(j_obj)
             j_obj = JFile(**kwargs)
-            j_obj.read(self._fn)
+            j_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(j_obj, JFile):
             raise TypeError(f"Input must be a JFile object not {type(j_obj)}")
         k_dict = OrderedDict(
@@ -2099,7 +2091,9 @@ class TF:
         """
         zmm_kwargs = {}
         zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
-        zmm_kwargs["inverse_channel_nomenclature"] = self.inverse_channel_nomenclature
+        zmm_kwargs[
+            "inverse_channel_nomenclature"
+        ] = self.inverse_channel_nomenclature
         if hasattr(self, "decimation_dict"):
             zmm_kwargs["decimation_dict"] = self.decimation_dict
         zmm_obj = ZMM(**zmm_kwargs)
@@ -2148,7 +2142,7 @@ class TF:
 
         return zmm_obj
 
-    def from_zmm(self, zmm_obj, **kwargs):
+    def from_zmm(self, zmm_obj, get_elevation=True, **kwargs):
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
@@ -2162,7 +2156,7 @@ class TF:
         if isinstance(zmm_obj, (str, Path)):
             self._fn = Path(zmm_obj)
             zmm_obj = ZMM(**kwargs)
-            zmm_obj.read(self._fn)
+            zmm_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(zmm_obj, ZMM):
             raise TypeError(f"Input must be a ZMM object not {type(zmm_obj)}")
         self.decimation_dict = zmm_obj.decimation_dict
@@ -2214,7 +2208,7 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zrr(self, zrr_obj, **kwargs):
+    def from_zrr(self, zrr_obj, get_elevation=True, **kwargs):
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
@@ -2225,7 +2219,7 @@ class TF:
 
         """
 
-        self.from_zmm(zrr_obj, **kwargs)
+        self.from_zmm(zrr_obj, get_elevation=get_elevation, **kwargs)
 
     def to_zss(self):
         """
@@ -2246,7 +2240,7 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zss(self, zss_obj, **kwargs):
+    def from_zss(self, zss_obj, get_elevation=True, **kwargs):
         """
 
         :param zmm_obj: path to .zmm file or ZMM object
@@ -2256,8 +2250,6 @@ class TF:
         :type **kwargs: dictionary
 
         """
-
-        self.from_zmm(zss_obj, **kwargs)
 
     def to_avg(self):
         """
@@ -2274,7 +2266,7 @@ class TF:
 
         raise AttributeError("to_avg does not exist yet.")
 
-    def from_avg(self, avg_obj, **kwargs):
+    def from_avg(self, avg_obj, get_elevation=True, **kwargs):
         """
 
         :param avg_obj: path to .avg file or ZongeMTAvg object
@@ -2287,7 +2279,7 @@ class TF:
         if isinstance(avg_obj, (str, Path)):
             self._fn = Path(avg_obj)
             avg_obj = ZongeMTAvg(**kwargs)
-            avg_obj.read(self._fn)
+            avg_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(avg_obj, ZongeMTAvg):
             raise TypeError(f"Input must be a ZMM object not {type(avg_obj)}")
         self.survey_metadata = avg_obj.survey_metadata
@@ -2308,4 +2300,5 @@ class TF:
 
 
 class TFError(Exception):
+    pass
     pass

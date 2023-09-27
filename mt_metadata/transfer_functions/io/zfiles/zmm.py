@@ -28,6 +28,8 @@ from mt_metadata.utils.list_dict import ListDict
 
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
+
+
 class ZMMError(Exception):
     pass
 
@@ -71,7 +73,9 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
+            msg = (
+                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
+            )
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -133,7 +137,9 @@ class ZMMHeader(object):
 
                 line = fid.readline()
         self.station_metadata.comments = ""
-        self.station_metadata.transfer_function.processing_type = header_list[2].strip()
+        self.station_metadata.transfer_function.processing_type = header_list[
+            2
+        ].strip()
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]
@@ -458,7 +464,7 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read(self, fn=None):
+    def read(self, fn=None, get_elevation=True):
         """
         Read in Egbert zrr/zmm file
 
@@ -511,7 +517,9 @@ class ZMM(ZMMHeader):
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
         self.station_metadata.runs[0].sample_rate = np.median(
-            np.array([d["sample_rate"] for k, d in self.decimation_dict.items()])
+            np.array(
+                [d["sample_rate"] for k, d in self.decimation_dict.items()]
+            )
         )
 
         # add information to runs
@@ -524,7 +532,7 @@ class ZMM(ZMMHeader):
             if self.hz is not None:
                 rr.hz = self.hz_metadata
 
-        if self.elevation in [0, None]:
+        if self.elevation in [0, None] and get_elevation:
             if self.latitude != 0 and self.longitude != 0:
                 self.elevation = get_nm_elev(
                     self.latitude,
@@ -548,7 +556,9 @@ class ZMM(ZMMHeader):
         if fn is not None:
             self.fn = fn
         lines = self.write_header()
-        lines += ["",] # add 1 space separating header from data
+        lines += [
+            "",
+        ]  # add 1 space separating header from data
         for p in self.dataset.period.data:
             a = self.dataset.sel(period=p)
             try:
@@ -639,7 +649,9 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
+        period = float(
+            period_block[0].strip().split(":")[1].split()[0].strip()
+        )
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -648,8 +660,12 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
-        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
+        npts = int(
+            period_block[1].strip().split("point")[1].split()[0].strip()
+        )
+        sr = float(
+            period_block[1].strip().split("freq.")[1].split()[0].strip()
+        )
         self.decimation_dict[f"{period:{PERIOD_FORMAT}}"] = {
             "level": level,
             "bands": bands,
