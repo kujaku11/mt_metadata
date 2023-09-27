@@ -25,7 +25,6 @@ class Band(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-
     @property
     def lower_bound(self):
         return self.frequency_min
@@ -76,7 +75,9 @@ class Band(Base):
         self.index_max = indices[-1]
 
     def to_interval(self):
-        return pd.Interval(self.frequency_min, self.frequency_max, closed=self.closed)
+        return pd.Interval(
+            self.frequency_min, self.frequency_max, closed=self.closed
+        )
 
     @property
     def harmonic_indices(self):
@@ -87,7 +88,7 @@ class Band(Base):
         -------
         numpy array of integers corresponding to harminic indices
         """
-        return np.arange(self.index_min, self.index_max+1)
+        return np.arange(self.index_min, self.index_max + 1)
 
     def in_band_harmonics(self, frequencies):
         """
@@ -116,14 +117,10 @@ class Band(Base):
             return np.sqrt(self.lower_bound * self.upper_bound)
         elif self.center_averaging_type == "arithmetic":
             return (self.lower_bound + self.upper_bound) / 2
-        else:
-            raise NotImplementedError
 
     @property
     def center_period(self):
         return 1.0 / self.center_frequency
-
-
 
 
 class FrequencyBands(object):

@@ -4,12 +4,20 @@ Created on Thu Feb 24 14:11:24 2022
 
 @author: jpeacock
 """
-import numpy as np
+# =============================================================================
+# Imports
+# =============================================================================
+
 import unittest
+import numpy as np
+import pandas as pd
+
 from mt_metadata.transfer_functions.processing.aurora import Band
 
+# =============================================================================
 
-class TestBand(unittest.TestCase):
+
+class TestBandInitialization(unittest.TestCase):
     """
     Test Station metadata
     """
@@ -25,41 +33,202 @@ class TestBand(unittest.TestCase):
                     self.band._attr_dict[key]["default"],
                 )
 
+
+class TestBandDefault(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.freqs = 0.1 * np.arange(100)  # 0-10Hz
+        self.min_freq = 2.0
+        self.max_freq = 3.0
+        self.band = Band(
+            frequency_min=self.min_freq, frequency_max=self.max_freq
+        )
+
+    def test_lower_bound(self):
+        self.assertEqual(self.band.lower_bound, self.min_freq)
+
+    def test_upper_bound(self):
+        self.assertEqual(self.band.upper_bound, self.max_freq)
+
+    def test_lower_closed(self):
+        self.assertEqual(self.band.lower_closed, True)
+
+    def test_upper_closed(self):
+        self.assertEqual(self.band.upper_closed, False)
+
     def test_cast_band_to_interval(self):
-        self.band.to_interval()
+        interval = self.band.to_interval()
+        self.assertIsInstance(interval, pd.Interval)
 
     def test_indices_from_frequencies(self):
-        freqs = 0.1 * np.arange(100) # 0-10Hz
-        min_freq = 2.0
-        max_freq = 3.0
-        band = Band(frequency_min=min_freq, frequency_max=max_freq)
-        indices = band.set_indices_from_frequencies(freqs)
-        assert (band.index_min==20)
-        assert (band.index_max==29)
-        harmonics = band.in_band_harmonics(freqs)
+        self.band.set_indices_from_frequencies(self.freqs)
+        with self.subTest("min"):
+            self.assertEqual(self.band.index_min, 20)
+        with self.subTest("max"):
+            self.assertEqual(self.band.index_max, 29)
 
-        band = Band(frequency_min=2.0, frequency_max=3.0, closed="right")
-        indices = band.set_indices_from_frequencies(freqs)
-        assert (band.index_min == 21)
-        assert (band.index_max == 30)
+    def test_harmonics(self):
+        harmonics = self.band.in_band_harmonics(self.freqs)
+        with self.subTest("min"):
+            self.assertEqual(harmonics[0], self.min_freq)
+        with self.subTest("max"):
+            self.assertAlmostEqual(harmonics[-1], self.max_freq - 0.1)
 
-        band = Band(frequency_min=2.0, frequency_max=3.0, closed="both")
-        indices = band.set_indices_from_frequencies(freqs)
-        assert (band.index_min == 20)
-        assert (band.index_max == 30)
-        harmonics = band.in_band_harmonics(freqs)
-        assert (harmonics[0] == min_freq)
-        assert (harmonics[-1] == max_freq)
+    def test_harmonic_indices(self):
+        self.band.set_indices_from_frequencies(self.freqs)
+        self.assertTrue((self.band.harmonic_indices == np.arange(20, 30)).all())
 
-    def test_harmonic_indices_args(self):
-        band = Band(index_min=12, index_max=23)
-        indices = band.harmonic_indices
-        assert (indices[0]==band.index_min)
-        assert (indices[-1] == band.index_max)
+    def test_center_frequency_geometric(self):
+        self.band.center_averaging_type = "geometric"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(
+                self.band.center_frequency, 2.449489742783178
+            )
+        with self.subTest("period"):
+            self.assertAlmostEqual(
+                self.band.center_period, 1.0 / 2.449489742783178
+            )
+
+    def test_center_frequency_arithmetic(self):
+        self.band.center_averaging_type = "arithmetic"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(self.band.center_frequency, 2.5)
+        with self.subTest("period"):
+            self.assertAlmostEqual(self.band.center_period, 1.0 / 2.5)
 
 
+class TestBandClosedRight(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.freqs = 0.1 * np.arange(100)  # 0-10Hz
+        self.min_freq = 2.0
+        self.max_freq = 3.0
+        self.band = Band(
+            frequency_min=self.min_freq,
+            frequency_max=self.max_freq,
+            closed="right",
+        )
+
+    def test_lower_bound(self):
+        self.assertEqual(self.band.lower_bound, self.min_freq)
+
+    def test_upper_bound(self):
+        self.assertEqual(self.band.upper_bound, self.max_freq)
+
+    def test_lower_closed(self):
+        self.assertEqual(self.band.lower_closed, False)
+
+    def test_upper_closed(self):
+        self.assertEqual(self.band.upper_closed, True)
+
+    def test_cast_band_to_interval(self):
+        interval = self.band.to_interval()
+        self.assertIsInstance(interval, pd.Interval)
+
+    def test_indices_from_frequencies(self):
+        self.band.set_indices_from_frequencies(self.freqs)
+        with self.subTest("min"):
+            self.assertEqual(self.band.index_min, 21)
+        with self.subTest("max"):
+            self.assertEqual(self.band.index_max, 30)
+
+    def test_harmonics(self):
+        harmonics = self.band.in_band_harmonics(self.freqs)
+        with self.subTest("min"):
+            self.assertAlmostEqual(harmonics[0], self.min_freq + 0.1)
+        with self.subTest("max"):
+            self.assertEqual(harmonics[-1], self.max_freq)
+
+    def test_harmonic_indices(self):
+        self.band.set_indices_from_frequencies(self.freqs)
+        self.assertTrue((self.band.harmonic_indices == np.arange(21, 31)).all())
+
+    def test_center_frequency_geometric(self):
+        self.band.center_averaging_type = "geometric"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(
+                self.band.center_frequency, 2.449489742783178
+            )
+        with self.subTest("period"):
+            self.assertAlmostEqual(
+                self.band.center_period, 1.0 / 2.449489742783178
+            )
+
+    def test_center_frequency_arithmetic(self):
+        self.band.center_averaging_type = "arithmetic"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(self.band.center_frequency, 2.5)
+        with self.subTest("period"):
+            self.assertAlmostEqual(self.band.center_period, 1.0 / 2.5)
 
 
+class TestBandClosedBoth(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.freqs = 0.1 * np.arange(100)  # 0-10Hz
+        self.min_freq = 2.0
+        self.max_freq = 3.0
+        self.band = Band(
+            frequency_min=self.min_freq,
+            frequency_max=self.max_freq,
+            closed="both",
+        )
 
+    def test_lower_bound(self):
+        self.assertEqual(self.band.lower_bound, self.min_freq)
+
+    def test_upper_bound(self):
+        self.assertEqual(self.band.upper_bound, self.max_freq)
+
+    def test_lower_closed(self):
+        self.assertEqual(self.band.lower_closed, True)
+
+    def test_upper_closed(self):
+        self.assertEqual(self.band.upper_closed, True)
+
+    def test_cast_band_to_interval(self):
+        interval = self.band.to_interval()
+        self.assertIsInstance(interval, pd.Interval)
+
+    def test_indices_from_frequencies(self):
+        self.band.set_indices_from_frequencies(self.freqs)
+        with self.subTest("min"):
+            self.assertEqual(self.band.index_min, 20)
+        with self.subTest("max"):
+            self.assertEqual(self.band.index_max, 30)
+
+    def test_harmonics(self):
+        harmonics = self.band.in_band_harmonics(self.freqs)
+        with self.subTest("min"):
+            self.assertEqual(harmonics[0], self.min_freq)
+        with self.subTest("max"):
+            self.assertEqual(harmonics[-1], self.max_freq)
+
+    def test_harmonic_indices(self):
+        self.band.set_indices_from_frequencies(self.freqs)
+        self.assertTrue((self.band.harmonic_indices == np.arange(20, 31)).all())
+
+    def test_center_frequency_geometric(self):
+        self.band.center_averaging_type = "geometric"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(
+                self.band.center_frequency, 2.449489742783178
+            )
+        with self.subTest("period"):
+            self.assertAlmostEqual(
+                self.band.center_period, 1.0 / 2.449489742783178
+            )
+
+    def test_center_frequency_arithmetic(self):
+        self.band.center_averaging_type = "arithmetic"
+        with self.subTest("frequency"):
+            self.assertAlmostEqual(self.band.center_frequency, 2.5)
+        with self.subTest("period"):
+            self.assertAlmostEqual(self.band.center_period, 1.0 / 2.5)
+
+
+# =============================================================================
+# Run
+# =============================================================================
 if __name__ == "__main__":
     unittest.main()
