@@ -65,9 +65,9 @@ class SiteLayout(Base):
                 elif item.startswith("b") or item.startswith("h"):
                     ch = Magnetic(name=item)
                 else:
-                    msg = "Channel %s not supported"
-                    self.logger.error(msg, item)
-                    raise ValueError(msg % item)
+                    msg = f"Channel {item} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
                 self._input_channels.append(ch)
 
     @property
