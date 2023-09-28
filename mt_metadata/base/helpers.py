@@ -49,6 +49,28 @@ def wrap_description(description, column_width):
     return d_lines
 
 
+def validate_c1(attr_dict, c1):
+    """
+
+    :param attr_dict: DESCRIPTION
+    :type attr_dict: TYPE
+    :param c1: DESCRIPTION
+    :type c1: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    try:
+        max_c1 = max([len(key) for key in attr_dict.keys()])
+
+        if max_c1 > c1:
+            c1 = max_c1
+    except ValueError:
+        pass
+
+    return c1
+
+
 def write_lines(attr_dict, c1=45, c2=45, c3=15):
     """
     Takes the attribute dictionary from the json and parses it into a table
@@ -66,14 +88,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     :rtype: string
 
     """
-
-    try:
-        max_c1 = max([len(key) for key in attr_dict.keys()])
-
-        if max_c1 > c1:
-            c1 = max_c1
-    except ValueError:
-        pass
+    c1 = validate_c1(attr_dict, c1)
 
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
@@ -184,6 +199,8 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     :rtype: list
 
     """
+
+    c1 = validate_c1(attr_dict, c1)
 
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
