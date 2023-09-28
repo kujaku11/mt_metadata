@@ -1850,8 +1850,11 @@ class TF:
         :param edi_obj: path to edi file or EDI object
         :type edi_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.edi.EDI`
-        :param **kwargs: Key word arguments for an EDI object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Key word arguments for an EDI object
+        :type kwargs: dictionary
         :raises TypeError: If input is incorrect
 
         """
@@ -1963,8 +1966,11 @@ class TF:
         :param emtfxml_object: path to emtf xml file or EMTFXML object
         :type emtfxml_object: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
-        :param **kwargs: Keyword arguments for EMTFXML object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for EMTFXML object
+        :type kwargs: dictionary
 
         """
 
@@ -2016,10 +2022,13 @@ class TF:
         """
 
         :param jfile_obj: path ot .j file or JFile object
-        :type jfile_obj: str, :calss:`pathlib.Path`,
+        :type jfile_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.jfile.JFile`
-        :param **kwargs: Keyword arguments for JFile object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for JFile object
+        :type kwargs: dictionary
 
         """
         if isinstance(j_obj, (str, Path)):
@@ -2148,8 +2157,11 @@ class TF:
         :param zmm_obj: path ot .zmm file or ZMM object
         :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param **kwargs: Keyword arguments for ZMM object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
@@ -2214,8 +2226,11 @@ class TF:
         :param zmm_obj: path ot .zmm file or ZMM object
         :type zmm_obj: str, :calss:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param **kwargs: Keyword arguments for ZMM object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
@@ -2246,8 +2261,11 @@ class TF:
         :param zmm_obj: path to .zmm file or ZMM object
         :type zmm_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param **kwargs: Keyword arguments for ZMM object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
@@ -2274,8 +2292,11 @@ class TF:
         :param avg_obj: path to .avg file or ZongeMTAvg object
         :type avg_obj: str, :class:`pathlib.Path`,
          :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
-        :param **kwargs: Keyword arguments for ZongeMTAvg object
-        :type **kwargs: dictionary
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZongeMTAvg object
+        :type kwargs: dictionary
 
         """
         if isinstance(avg_obj, (str, Path)):

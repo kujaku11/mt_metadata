@@ -12,14 +12,14 @@ This is a base class for filters.  We will extend this class for each specific
 type of filter we need to implement.  Typical filters we will want to be able
 to support are:
     
-- PoleZero (or 'zpk') responses like those provided by IRIS
-- Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
- calibrations via frequency sweep on a spectrum analyser.
-- Time Delay Filters: can come about in decimation, or from general 
- timing errors that have been characterized
-- Coefficient multipliers, i.e. frequency independent gains
-- FIR filters
-- IIR filters
+ - PoleZero (or 'zpk') responses like those provided by IRIS
+ - Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
+   calibrations via frequency sweep on a spectrum analyser.
+ - Time Delay Filters: can come about in decimation, or from general 
+   timing errors that have been characterized
+ - Coefficient multipliers, i.e. frequency independent gains
+ - FIR filters
+ - IIR filters
 
 Note that many filters can be represented in more than one of these forms. 
 For example a Coefficient Multiplier can be seen as an FIR with a single 
@@ -29,10 +29,9 @@ However, solving for the 'zpk' representation can be tedious and approximate
 and if we have for example, the known FIR coefficients, or FAP lookup table,
 then there is little to be gained by changing the representation.
 
-The "stages" that are described in the IRIS StationXML documentation appear
+The 'stages' that are described in the IRIS StationXML documentation appear
 to cover all possible linear time invariant filter types we are likely to
 encounter.
-
 """
 # =============================================================================
 # Imports

@@ -67,6 +67,11 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     """
 
+    max_c1 = [len(key["description"]) for key in attr_dict]
+
+    if max_c1 > c1:
+        c1 = max_c1
+
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
         "-" * (c1 + 1), "-" * (c2 + 2), "-" * (c3 + 1)
@@ -197,7 +202,9 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
-        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
+        line.format(
+            f"**{key}**", c1, "**Description**", c2, "**Example**", c3
+        ),
         mline,
     ]
 
