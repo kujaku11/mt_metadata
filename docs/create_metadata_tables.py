@@ -120,6 +120,14 @@ if __name__ == "__main__":
             "tf_zonge",
             "Zonge AVG",
         ),
+        "mt_metadata.transfer_functions.processing.aurora": (
+            "tf_processing_aurora",
+            "Aurora",
+        ),
+        "mt_metadata.transfer_functions.processing.fourier_coefficients": (
+            "tf_processing_fcs",
+            "Fourier Coefficients",
+        ),
     }
 
     for module, stem in module_dict.items():

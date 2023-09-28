@@ -31,6 +31,31 @@ Auxiliary
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
+:navy:`channel_id`
+~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **channel_id**                               | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | channel id given by the user or data logger   | 1001.11        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
 :navy:`comments`
 ~~~~~~~~~~~~~~~~
 
@@ -268,8 +293,108 @@ Auxiliary
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_quality.warnings**                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any warnings about the data that should be    | periodic       |
-       |                                              | noted.                                        | pipeline noise |
+       | **Required**: :blue:`False`                  | any warnings about the data that should be    | periodic       |
+       |                                              | noted                                         | pipeline noise |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.good_from_period`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.good_from_period**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Data are good for periods larger than this    | 0.01           |
+       |                                              | number                                        |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.good_to_period`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.good_to_period**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Data are good for periods smaller than this   | 1000           |
+       |                                              | number                                        |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: float                              |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.flag`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.flag**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Flag for data quality                         | 0              |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: integer                            |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`data_quality.comments`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **data_quality.comments**                    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | any comments about the data quality           | 0              |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -768,8 +893,8 @@ Auxiliary
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.latitude**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Latitude of location in datum specified at    | 23.134         |
-       |                                              | survey level.                                 |                |
+       | **Required**: :red:`True`                    | latitude of location in datum specified at    | 23.134         |
+       |                                              | survey level                                  |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        | **Type**: float                              |                                               |                |
@@ -793,8 +918,8 @@ Auxiliary
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.longitude**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Longitude of location in datum specified at   | 14.23          |
-       |                                              | survey level.                                 |                |
+       | **Required**: :red:`True`                    | longitude of location in datum specified at   | 14.23          |
+       |                                              | survey level                                  |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        | **Type**: float                              |                                               |                |
@@ -818,8 +943,8 @@ Auxiliary
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **location.elevation**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Elevation of location in datum specified at   | 123.4          |
-       |                                              | survey level.                                 |                |
+       | **Required**: :red:`True`                    | elevation of location in datum specified at   | 123.4          |
+       |                                              | survey level                                  |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
        | **Type**: float                              |                                               |                |

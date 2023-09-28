@@ -12,14 +12,6 @@ mt\_metadata.utils.exceptions module
     :undoc-members:
     :show-inheritance:
 
-mt\_metadata.utils.mt\_logger module
-------------------------------------
-
-.. automodule:: mt_metadata.utils.mt_logger
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 mt\_metadata.utils.mttime module
 --------------------------------
 

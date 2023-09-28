@@ -68,7 +68,7 @@ Declination
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **epoch**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Epoch for which declination was approximated  | 2020           |
+       | **Required**: :blue:`False`                  | Epoch for which declination was approximated  | 2020           |
        |                                              | in.                                           |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
