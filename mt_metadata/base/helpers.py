@@ -63,8 +63,8 @@ def validate_c1(attr_dict, c1):
     try:
         max_c1 = max([len(key) for key in attr_dict.keys()])
 
-        if max_c1 > c1:
-            c1 = max_c1
+        if max_c1 > (c1 - 4):
+            c1 = max_c1 + 4
     except ValueError:
         pass
 
