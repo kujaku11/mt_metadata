@@ -501,7 +501,16 @@ Header
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: millivolts_per_kilometer_per_nanotesla|                                               |                |
+       | **Default**:                                 |                                               |                |
+       | millivolts_per_kilometer_per_nanotesla       |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

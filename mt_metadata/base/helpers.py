@@ -287,10 +287,9 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 8 blank
     lines.append(line.format("", c1, d_lines[7], c2, e_lines[7], c3))
 
-    if len(attr_dict["default"]) > c1 - 15:
+    default = [attr_dict["default"]] + [""] * 5
+    if len(str(attr_dict["default"])) > c1 - 15:
         default = [""] + wrap_description(attr_dict["default"], c1)
-    else:
-        default = [attr_dict["default"]] + [""] * 5
 
     # line 9 type
     lines.append(
