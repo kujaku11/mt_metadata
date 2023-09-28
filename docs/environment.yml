@@ -8,7 +8,7 @@ dependencies:
   - ipython
   - jupyter_client
   - nbsphinx
-  - numpy>=1.17
+  - numpy
   - pandas<=1.5.3
   - obspy
   - xarray
