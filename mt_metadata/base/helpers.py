@@ -67,10 +67,13 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     """
 
-    max_c1 = max([len(key) for key in attr_dict.keys()])
+    try:
+        max_c1 = max([len(key) for key in attr_dict.keys()])
 
-    if max_c1 > c1:
-        c1 = max_c1
+        if max_c1 > c1:
+            c1 = max_c1
+    except ValueError:
+        pass
 
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
