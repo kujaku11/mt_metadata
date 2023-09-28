@@ -67,7 +67,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     """
 
-    max_c1 = [len(key["description"]) for key in attr_dict]
+    max_c1 = max([len(key["description"]) for key in attr_dict.values()])
 
     if max_c1 > c1:
         c1 = max_c1
