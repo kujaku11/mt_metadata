@@ -64,7 +64,7 @@ def validate_c1(attr_dict, c1):
         max_c1 = max([len(key) for key in attr_dict.keys()])
 
         if max_c1 > (c1 - 4):
-            c1 = max_c1 + 4
+            c1 = max_c1 + 6
     except ValueError:
         pass
 
@@ -199,8 +199,8 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     :rtype: list
 
     """
-
-    c1 = validate_c1(attr_dict, c1)
+    if len(key) > c1 - 4:
+        c1 = len(key) + 6
 
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
