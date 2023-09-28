@@ -3,14 +3,15 @@ channels:
   # Don't change to pkgs/main, as it causes random timeouts in readthedocs
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.8
   - ipykernel
   - ipython
   - jupyter_client
   - nbsphinx
   - numpy>=1.17
-  - pandas
+  - pandas<=1.5.3
   - obspy
+  - xarray
   - matplotlib
   - setuptools
   - sphinx>=2.3
@@ -18,4 +19,4 @@ dependencies:
   - PyYAML
   - pip
   - pip:
-    - concurrent_log_handler
+    - loguru
