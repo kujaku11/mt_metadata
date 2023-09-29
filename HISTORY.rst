@@ -106,3 +106,23 @@ History
 * Fix issue #133 
 * Update EMTFXML ouptut format 
 * Add FC Metadata 
+
+0.3.0 (2023-09-29)
+---------------------
+
+* Fixing Bugs in https://github.com/kujaku11/mt_metadata/pull/138
+* adding a merge for TFs in https://github.com/kujaku11/mt_metadata/pull/136
+* Fix write EDI bugs in https://github.com/kujaku11/mt_metadata/pull/149
+* Use loguru instead of builtin logging in https://github.com/kujaku11/mt_metadata/pull/153
+* Loguru in https://github.com/kujaku11/mt_metadata/pull/154
+* Try to fix bug with filter assignment in https://github.com/kujaku11/mt_metadata/pull/155
+* Empower edi in https://github.com/kujaku11/mt_metadata/pull/158
+* TF survey metadata in https://github.com/kujaku11/mt_metadata/pull/159
+* added logic for if channel location values are None in https://github.com/kujaku11/mt_metadata/pull/160
+* Changes to support writing z-files with channel_nomenclature in https://github.com/kujaku11/mt_metadata/pull/161
+* Minor changes to support zfiles tests in https://github.com/kujaku11/mt_metadata/pull/163
+* Test aurora issue 295 in https://github.com/kujaku11/mt_metadata/pull/165
+* Fcs in https://github.com/kujaku11/mt_metadata/pull/142
+* Fcs in https://github.com/kujaku11/mt_metadata/pull/166
+* Update environment.yml in https://github.com/kujaku11/mt_metadata/pull/167
+* updating documentation in https://github.com/kujaku11/mt_metadata/pull/168
