@@ -16,10 +16,6 @@ Welcome to MT Metadata documentation!
     :target: https://github.com/kujaku11/mt_metadata/blob/main/LICENSE
     :alt: MIT license
 
-.. image:: https://readthedocs.org/projects/mt_metadata/badge/?version=latest
-        :target: https://mt_metadata.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
 .. image:: https://codecov.io/gh/kujaku11/mt_metadata/branch/main/graph/badge.svg?token=XU5QSRM1ZO
         :target: https://codecov.io/gh/kujaku11/mt_metadata
         
