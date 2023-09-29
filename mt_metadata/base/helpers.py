@@ -161,23 +161,53 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         # line 10 blank
         lines.append(line.format("", c1, d_lines[9], c2, e_lines[9], c3))
 
-        # line 11 type
+        default = [entry["default"]] + [""] * 5
+        if len(str(entry["default"])) > c1 - 15:
+            default = [""] + wrap_description(entry["default"], c1)
+
+        # line 9 type
         lines.append(
             line.format(
-                f"Default: {entry['default']}",
+                f"**Default**: {default[0]}",
                 c1,
-                d_lines[10],
+                d_lines[8],
                 c2,
-                e_lines[10],
+                e_lines[8],
                 c3,
             )
         )
 
         # line 10 blank
+        lines.append(
+            line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3)
+        )
+
+        # line 9 type
+        lines.append(
+            line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3)
+        )
+
+        # line 10 blank
         if len(d_lines) > 11:
-            lines.append(line.format("", c1, d_lines[9], c2, "", c3))
-            for d_line in d_lines[10:]:
-                lines.append(line.format("", c1, d_line, c2, "", c3))
+            lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
+            for index, d_line in enumerate(d_lines[12:], 4):
+                try:
+                    lines.append(
+                        line.format(default[index], c1, d_line, c2, "", c3)
+                    )
+                except IndexError:
+                    lines.append(line.format("", c1, d_line, c2, "", c3))
+
+        # long default value
+        if len(default) > 7:
+            lines.append(line.format(default[3], c1, "", c2, "", c3))
+            for index, d_line in enumerate(default[4:], 12):
+                try:
+                    lines.append(
+                        line.format(d_line, c1, d_lines[index], c2, "", c3)
+                    )
+                except IndexError:
+                    lines.append(line.format(d_line, c1, "", c2, "", c3))
         lines.append(hline)
     return "\n".join(lines)
 
