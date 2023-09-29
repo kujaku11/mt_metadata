@@ -19,14 +19,14 @@ Copyright
        | **release_license**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :red:`True`                    | How the data can be used. The options are     | CC BY          |
-       |                                              | based on Creative Commons licenses. For       |                |
-       | **Units**: None                              | details visit                                 |                |
-       |                                              | https://creativecommons.org/licenses/         |                |
+       |                                              | based on https://github.com/spdx/license-     |                |
+       | **Units**: None                              | list-data                                     |                |
+       |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: CC-0                            |                                               |                |
+       | **Default**: CC0-1.0                         |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

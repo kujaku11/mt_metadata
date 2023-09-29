@@ -72,6 +72,8 @@ Click on the `Binder` badge above to interact with Jupyter Notebook examples.  T
     :caption: Transfer Functions
     
     source/tf_structure
+    source/tf_processing_aurora_index
+    source/tf_processing_fcs_index
         
 
 .. toctree::

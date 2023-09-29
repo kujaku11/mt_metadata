@@ -6,6 +6,31 @@ Person
 ======
 
 
+:navy:`name`
+~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **name**                                     | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
 :navy:`author`
 ~~~~~~~~~~~~~~
 
@@ -18,8 +43,8 @@ Person
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **author**                                   | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | author name                                   | person name    |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -43,7 +68,7 @@ Person
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **organization**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | organization name                             | mt gurus       |
+       | **Required**: :blue:`False`                  | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -68,7 +93,7 @@ Person
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **email**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | email of the contact person                   | mt.guru@em.org |
+       | **Required**: :blue:`False`                  | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -93,13 +118,13 @@ Person
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **url**                                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | url of the contact person or organization     | em.org         |
+       | **Required**: :blue:`False`                  | URL of the contact person                     | em.org         |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
+       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -118,7 +143,7 @@ Person
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | email of the contact person                   | expert digger  |
+       | **Required**: :blue:`False`                  | Any comments about the person                 | expert digger  |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |

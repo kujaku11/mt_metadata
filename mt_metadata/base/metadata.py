@@ -55,12 +55,12 @@ class Base:
 
     def _set_attr_dict(self, attr_dict):
         """
-        Set attribute dictionary and variables
+        Set attribute dictionary and variables.
 
-        :param attr_dict: DESCRIPTION
-        :type attr_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        should have the proper keys.
+
+        :param attr_dict: attribute dictionary
+        :type attr_dict: dict
 
         """
 
@@ -70,6 +70,12 @@ class Base:
             self.set_attr_from_name(key, value_dict["default"])
 
     def __str__(self):
+        """
+
+        :return: table describing attributes
+        :rtype: string
+
+        """
         meta_dict = self.to_dict()[self._class_name.lower()]
         lines = [f"{self._class_name}:"]
         for name, value in meta_dict.items():
@@ -135,10 +141,8 @@ class Base:
         """
         Update attribute values from another like element, skipping None
 
-        :param other: DESCRIPTION
-        :type other: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param other: other Base object
+        :type other: :class:`mt_metadata.base.metadata.Base`
 
         """
         if not isinstance(other, type(self)):
@@ -174,8 +178,8 @@ class Base:
         Need to skip copying the logger
         need to copy properties as well.
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :return: Deep copy
+        :rtype: :class:`mt_metadata.base.metadata.Base`
 
         """
         copied = type(self)()
@@ -222,10 +226,10 @@ class Base:
         """
         return a descriptive string of the attribute if none returns for all
 
-        :param key: DESCRIPTION, defaults to None
-        :type key: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param name: attribute name for a specifice attribute, defaults to None
+        :type name: string, optional
+        :return: description of the attributes or specific attribute if asked
+        :rtype: string
 
         """
 
@@ -424,8 +428,8 @@ class Base:
         The name can contain the name of an object which must be separated
         by a '.' for  e.g. {object_name}.{name} --> location.latitude
 
-        ..note:: this is a helper function for names with '.' in the name for
-                 easier getting when reading from dictionary.
+        .. note:: this is a helper function for names with '.' in the name for
+         easier getting when reading from dictionary.
 
         :param name: name of attribute to get.
         :type name: string
@@ -465,8 +469,8 @@ class Base:
         The name can contain the name of an object which must be separated
         by a '.' for  e.g. {object_name}.{name} --> location.latitude
 
-        ..note:: this is a helper function for names with '.' in the name for
-                 easier getting when reading from dictionary.
+        .. note:: this is a helper function for names with '.' in the name for
+         easier getting when reading from dictionary.
 
         :param name: name of attribute to get.
         :type name: string
@@ -507,8 +511,8 @@ class Base:
         :type value: described in value_dict
 
         :param value_dict: dictionary describing the attribute, must have keys
-            ['type', 'required', 'style', 'units', 'alias', 'description',
-             'options', 'example']
+         ['type', 'required', 'style', 'units', 'alias', 'description',
+          'options', 'example']
         :type name: string
 
         * type --> the data type [ str | int | float | bool ]
@@ -517,8 +521,8 @@ class Base:
         * units --> units of the attribute, must be a string
         * alias --> other possible names for the attribute
         * options --> if only a few options are accepted, separated by | or
-          comma.b [ option_01 | option_02 | other ]. 'other' means other options
-          available but not yet defined.
+           comma.b [ option_01 | option_02 | other ]. 'other' means other options
+           available but not yet defined.
         * example --> an example of the attribute
 
         :Example:
@@ -706,7 +710,7 @@ class Base:
         :param pd_series: Series containing metadata information
         :type pd_series: pandas.Series
 
-        ..todo:: Force types in series
+        .. todo:: Force types in series
 
         """
         if not isinstance(pd_series, pd.Series):

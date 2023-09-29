@@ -16,7 +16,7 @@ Supported Formats
       - Read
       - Write
     * - **EDI**
-      - Common `SEG format <https://library.seg.org/doi/abs/10.1190/1.1892244>`_ 
+      - Common `SEG format <https://library.seg.org/doi/abs/10.1190/1.1892244>`_ (including spectra) 
       - Yes
       - Yes
     * - **EMTFXML**

@@ -63,14 +63,14 @@ class DefineMeasurement(Base):
     maxmeas           Maximum number of measurements       9999     yes
     maxrun            Maximum number of measurement runs   999      yes
     meas_####         HMeasurement or EMEasurment object   None     yes
-                      defining the measurement made [1]_
+                      defining the measurement made [1]__
     refelev           Reference elevation (m)              None     yes
     reflat            Reference latitude [2]_              None     yes
     refloc            Reference location                   None     yes
-    reflon            Reference longituted [2]_            None     yes
+    reflon            Reference longituted [2]__           None     yes
     reftype           Reference coordinate system          'cart'   yes
     units             Units of length                      m        yes
-    _define_meas_keys Keys to include in define_measurment [3]_     no
+    _define_meas_keys Keys to include in define_measurment [3]__     no
                       section.
     ================= ==================================== ======== ===========
 
@@ -242,7 +242,7 @@ class DefineMeasurement(Base):
                 - x
                 - y
                 - axm
-                -acqchn
+                - acqchn
 
         """
         self.get_measurement_lists(edi_lines)

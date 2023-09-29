@@ -18,7 +18,7 @@ Diagnostic
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **end**                                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | end value of a diagnostic measurement         | 10             |
+       | **Required**: :blue:`False`                  | Ending value of a diagnostic measurement.     | 10             |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -43,7 +43,7 @@ Diagnostic
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **start**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | start value of a diagnostic measurement       | 12.3           |
+       | **Required**: :blue:`False`                  | Starting value of a diagnostic measurement.   | 12.3           |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |

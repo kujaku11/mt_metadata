@@ -1,7 +1,6 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-
 Time Series Filters
 ==============================
 

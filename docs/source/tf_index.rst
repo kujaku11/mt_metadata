@@ -21,7 +21,7 @@ Transfer Function
     tf_electric
     tf_electrode
     tf_fdsn
-    tf_filter
+    tf_filter_base
     tf_filtered
     tf_instrument
     tf_location
@@ -33,6 +33,7 @@ Transfer Function
     tf_run
     tf_software
     tf_station
+    tf_statistical_estimate
     tf_survey
     tf_time_period
     tf_timing_system

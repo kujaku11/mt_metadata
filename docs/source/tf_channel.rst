@@ -18,7 +18,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channel_number**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | channel number on the data logger             | 1              |
+       | **Required**: :red:`True`                    | Channel number on the data logger.            | 1              |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -68,10 +68,10 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comments about the channel                | ambient air    |
-       |                                              |                                               | temperature    |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Any comments about the channel.               | ambient air    |
+       |                                              |                                               | temperature was|
+       | **Units**: None                              |                                               | chilly, ice on |
+       |                                              |                                               | cables         |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
@@ -93,13 +93,13 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **component**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | name of the component measured                | T              |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
+       | **Required**: :red:`True`                    | Name of the component measured, can be        | T              |
+       |                                              | uppercase and/or lowercase.  For now electric |                |
+       | **Units**: None                              | channels should start with an 'e' and         |                |
+       |                                              | magnetic channels start with an 'h', followed |                |
+       | **Type**: string                             | by the component. If there are multiples of   |                |
+       |                                              | the same channel the name could include an    |                |
+       | **Style**: controlled vocabulary             | integer.  {type}{component}{number} --> Ex01. |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -118,12 +118,12 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **measurement_azimuth**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | azimuth of channel in measurement coordinate  | 0              |
-       |                                              | system                                        |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :red:`True`                    | Horizontal azimuth of the channel in          | 0              |
+       |                                              | measurement coordinate system spcified in     |                |
+       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       |                                              | reference frame is a geographic right-handed  |                |
+       | **Type**: float                              | coordinate system with north=0, east=90,      |                |
+       |                                              | vertical=+ downward.                          |                |
        | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
@@ -143,12 +143,12 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **measurement_tilt**                         | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | tilt of channel in measurement coordinate     | 0              |
-       |                                              | system                                        |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :red:`True`                    | Vertical tilt of the channel in measurement   | 0              |
+       |                                              | coordinate system specified in                |                |
+       | **Units**: degrees                           | station.orientation.reference_frame.  Default |                |
+       |                                              | reference frame is a geographic right-handed  |                |
+       | **Type**: float                              | coordinate system with north=0, east=90,      |                |
+       |                                              | vertical=+ downward.                          |                |
        | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
@@ -168,7 +168,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sample_rate**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | sample rate                                   | 8              |
+       | **Required**: :red:`True`                    | Digital sample rate                           | 8              |
        |                                              |                                               |                |
        | **Units**: samples per second                |                                               |                |
        |                                              |                                               |                |
@@ -193,15 +193,15 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_azimuth**                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | azimuth of channel in translated coordinate   | 0              |
-       |                                              | system                                        |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       | **Required**: :blue:`False`                  | Horizontal azimuth of the channel in          | 0              |
+       |                                              | translated coordinate system, this should     |                |
+       | **Units**: degrees                           | only be used for derived product.  For        |                |
+       |                                              | instance if you collected your data in        |                |
+       | **Type**: float                              | geomagnetic coordinates and then translated   |                |
+       |                                              | them to geographic coordinates you would set  |                |
+       | **Style**: number                            | measurement_azimuth=0,                        |                |
+       |                                              | translated_azimuth=-12.5 for a declination    |                |
+       | **Default**: None                            | angle of N12.5E.                              |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -218,12 +218,12 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **translated_tilt**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | tilt of channel in translated coordinate      | 0              |
-       |                                              | system                                        |                |
-       | **Units**: degrees                           |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Tilt of channel in translated coordinate      | 0              |
+       |                                              | system, this should only be used for derived  |                |
+       | **Units**: degrees                           | product.  For instance if you collected your  |                |
+       |                                              | data using a tripod you would set             |                |
+       | **Type**: float                              | measurement_tilt=45, translated_tilt=0 for a  |                |
+       |                                              | vertical component.                           |                |
        | **Style**: number                            |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
@@ -243,15 +243,15 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **type**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | data type for the channel                     | temperature    |
-       |                                              |                                               |                |
+       | **Required**: :red:`True`                    | Data type for the channel, should be a        | temperature    |
+       |                                              | descriptive word that a user can understand.  |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: auxiliary                       |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -268,10 +268,10 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **units**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | units of the data                             | celsius        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
+       | **Required**: :red:`True`                    | Units of the data, should be in SI units and  | celsius        |
+       |                                              | represented as the full name of the unit all  |                |
+       | **Units**: None                              | lowercase.  If a complex unit use 'per' and   |                |
+       |                                              | '-'.                                          |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: controlled vocabulary             |                                               |                |
@@ -418,7 +418,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_quality.rating.author**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | author of who rated the data                  | gradstudent ace|
+       | **Required**: :blue:`False`                  | Author of who rated the data.                 | gradstudent ace|
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -443,7 +443,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_quality.rating.method**               | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | the method used to rate the data              | standard       |
+       | **Required**: :blue:`False`                  | The method used to rate the data.             | standard       |
        |                                              |                                               | deviation      |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -468,8 +468,8 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **data_quality.rating.value**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | a rating from 1-5 where 1 is bad and 5 is     | 4              |
-       |                                              | good and 0 if unrated                         |                |
+       | **Required**: :red:`True`                    | A rating from 1-5 where 1 is bad and 5 is     | 4              |
+       |                                              | good and 0 if unrated.                        |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: integer                            |                                               |                |
@@ -493,9 +493,9 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **filter.name**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | name of filter applied or to be applies. If   | "[counts2mv, lo|
+       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
        |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list                                | "              |
+       | **Units**: None                              | separated list.                               | "              |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
@@ -518,7 +518,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **filter.applied**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | boolean if filter has been applied or not. If | "[True, False]"|
+       | **Required**: :red:`True`                    | Boolean if filter has been applied or not. If | "[True, False]"|
        |                                              | more than one filter input as a comma         |                |
        | **Units**: None                              | separated list.  Needs to be the same length  |                |
        |                                              | as name or if only one entry is given it is   |                |
@@ -543,7 +543,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **filter.comments**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comments on filters                       | low pass is not|
+       | **Required**: :blue:`False`                  | Any comments on filters.                      | low pass is not|
        |                                              |                                               | calibrated     |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -568,7 +568,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.end**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | end date and time of collection in UTC        | 2020-02-04T16:2|
+       | **Required**: :red:`True`                    | End date and time of collection in UTC.       | 2020-02-04T16:2|
        |                                              |                                               | 3:45.453670+00:|
        | **Units**: None                              |                                               | 00             |
        |                                              |                                               |                |
@@ -593,7 +593,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **time_period.start**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | start date and time of collection in UTC      | 2020-02-01T09:2|
+       | **Required**: :red:`True`                    | Start date and time of collection in UTC.     | 2020-02-01T09:2|
        |                                              |                                               | 3:45.453670+00:|
        | **Units**: None                              |                                               | 00             |
        |                                              |                                               |                |
@@ -618,8 +618,8 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sensor.id**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument ID number can be serial number or  | mt01           |
-       |                                              | a designated ID                               |                |
+       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       |                                              | a designated ID.                              |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -643,7 +643,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sensor.manufacturer**                      | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | who manufactured the instrument               | mt gurus       |
+       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -668,7 +668,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sensor.type**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument type                               | broadband      |
+       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
        |                                              |                                               | 32-bit         |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -693,7 +693,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sensor.model**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | model version of the instrument               | falcon5        |
+       | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -718,33 +718,8 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **sensor.name**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the model of the instrument           | falcon5        |
+       | **Required**: :blue:`False`                  | Standard marketing name of the instrument.    | falcon5        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`sensor.settings`
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **sensor.settings**                          | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any settings for the instrument               | notch filter   |
-       |                                              |                                               | applied        |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -768,7 +743,7 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.id**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given FDSN archive ID name                    | MT001          |
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -793,8 +768,8 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.network**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given two character FDSN archive network code | EM             |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code.                                         |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -818,9 +793,9 @@ Channel
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **fdsn.channel_code**                        | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Three character FDSN channel code             | LQN            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
@@ -844,12 +819,62 @@ Channel
        | **fdsn.new_epoch**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
-       |                                              | created or not                                |                |
+       |                                              | created or not.                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: boolean                            |                                               |                |
        |                                              |                                               |                |
        | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_code**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`fdsn.alternate_network_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **fdsn.alternate_network_code**              | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |

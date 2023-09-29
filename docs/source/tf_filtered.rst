@@ -18,9 +18,9 @@ Filtered
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **name**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | name of filter applied or to be applies. If   | "[counts2mv, lo|
+       | **Required**: :red:`True`                    | Name of filter applied or to be applied. If   | "[counts2mv, lo|
        |                                              | more than one filter input as a comma         | wpass_magnetic]|
-       | **Units**: None                              | separated list                                | "              |
+       | **Units**: None                              | separated list.                               | "              |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
@@ -43,7 +43,7 @@ Filtered
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **applied**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | boolean if filter has been applied or not. If | "[True, False]"|
+       | **Required**: :red:`True`                    | Boolean if filter has been applied or not. If | "[True, False]"|
        |                                              | more than one filter input as a comma         |                |
        | **Units**: None                              | separated list.  Needs to be the same length  |                |
        |                                              | as name or if only one entry is given it is   |                |
@@ -68,7 +68,7 @@ Filtered
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comments on filters                       | low pass is not|
+       | **Required**: :blue:`False`                  | Any comments on filters.                      | low pass is not|
        |                                              |                                               | calibrated     |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |

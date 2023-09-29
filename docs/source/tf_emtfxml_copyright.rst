@@ -6,8 +6,8 @@ Copyright
 =========
 
 
-:navy:`conditions_of_use`
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`selected_publications`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -16,10 +16,10 @@ Copyright
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **conditions_of_use**                        | **Description**                               | **Example**    |
+       | **selected_publications**                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Any notes on conditions of use                | Cite data upon |
-       |                                              |                                               | usage.         |
+       | **Required**: :blue:`False`                  | Any publications that use this data           | my paper       |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -43,7 +43,7 @@ Copyright
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **release_status**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | the release status of the data                | unrestricted   |
+       | **Required**: :red:`True`                    | the release status of the data                | Unrestricted   |
        |                                              |                                               | release        |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -51,9 +51,48 @@ Copyright
        |                                              |                                               |                |
        | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: unrestricted release            |                                               |                |
+       | **Default**: Unrestricted Release            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`conditions_of_use`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **conditions_of_use**                        | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Any notes on conditions of use                | Cite data upon |
+       |                                              |                                               | usage.         |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**:                                 |                                               |                |
+       | All data and metadata for this survey are    |                                               |                |
+       | available free of charge and may be copied   |                                               |                |
+       | freely, duplicated and further distributed   |                                               |                |
+       | provided this data set is cited as the       |                                               |                |
+       | reference. While the author(s) strive to     |                                               |                |
+       | provide data and metadata of best possible   |                                               |                |
+       | quality, neither the author(s) of this data  |                                               |                |
+       | set, not IRIS make any claims, promises, or  |                                               |                |
+       | guarantees about the accuracy, completeness, |                                               |                |
+       | or adequacy of this information, and         |                                               |                |
+       | expressly disclaim liability for errors and  |                                               |                |
+       | omissions in the contents of this file.      |                                               |                |
+       | Guidelines about the quality or limitations  |                                               |                |
+       | of the data and metadata, as obtained from   |                                               |                |
+       | the author(s), are included for informational|                                               |                |
+       | purposes only.                               |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
 :navy:`acknowledgement`
@@ -81,8 +120,8 @@ Copyright
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`citation.doi`
-~~~~~~~~~~~~~~~~~~~~
+:navy:`additional_info`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -91,61 +130,11 @@ Copyright
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **citation.doi**                             | **Description**                               | **Example**    |
+       | **additional_info**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | doi number of the citation                    | ###/###        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`citation.survey_d_o_i`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **citation.survey_d_o_i**                    | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | doi number of the survey                      | ###/###        |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`citation.authors`
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **citation.authors**                         | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | author names                                  | M.Tee A. Roura |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | any additional information about the data.    | This purpose of|
+       |                                              |                                               | this project is|
+       | **Units**: None                              |                                               | ...            |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
@@ -169,6 +158,31 @@ Copyright
        | **citation.title**                           | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Full title of the citation                    | Paper Title    |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`citation.authors`
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **citation.authors**                         | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | author names                                  | M.Tee A. Roura |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -275,6 +289,56 @@ Copyright
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
        | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`citation.doi`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **citation.doi**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | doi number of the citation                    | ###/###        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: url                               |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`citation.survey_d_o_i`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **citation.survey_d_o_i**                    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | doi number of the survey                      | ###/###        |
+       |                                              |                                               |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: url                               |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |

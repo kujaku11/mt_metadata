@@ -1,7 +1,6 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-
 EMTF XML
 ==============================
 
@@ -25,16 +24,21 @@ EMTF XML
     tf_emtfxml_estimate
     tf_emtfxml_external_url
     tf_emtfxml_field_notes
+    tf_emtfxml_instrument
+    tf_emtfxml_location
     tf_emtfxml_magnetic
     tf_emtfxml_magnetometer
+    tf_emtfxml_orientation
     tf_emtfxml_period_range
     tf_emtfxml_person
     tf_emtfxml_primary_data
     tf_emtfxml_processing_info
+    tf_emtfxml_processing_software
     tf_emtfxml_provenance
+    tf_emtfxml_remote_info
     tf_emtfxml_remote_ref
+    tf_emtfxml_run
     tf_emtfxml_site
     tf_emtfxml_site_layout
-    tf_emtfxml_software
     tf_emtfxml_statistical_estimates
     tf_emtfxml_transfer_function

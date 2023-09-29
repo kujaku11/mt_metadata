@@ -18,8 +18,8 @@ Instrument
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **id**                                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument ID number can be serial number or  | mt01           |
-       |                                              | a designated ID                               |                |
+       | **Required**: :red:`True`                    | Instrument ID number can be serial number or  | mt01           |
+       |                                              | a designated ID.                              |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -43,7 +43,7 @@ Instrument
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **manufacturer**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | who manufactured the instrument               | mt gurus       |
+       | **Required**: :red:`True`                    | Who manufactured the instrument.              | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -68,7 +68,7 @@ Instrument
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **type**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | instrument type                               | broadband      |
+       | **Required**: :red:`True`                    | Description of the instrument type.           | broadband      |
        |                                              |                                               | 32-bit         |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -93,7 +93,7 @@ Instrument
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **model**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | model version of the instrument               | falcon5        |
+       | **Required**: :blue:`False`                  | Model version of the instrument.              | falcon5        |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -118,33 +118,8 @@ Instrument
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **name**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Name of the model of the instrument           | falcon5        |
+       | **Required**: :blue:`False`                  | Standard marketing name of the instrument.    | falcon5        |
        |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
-       |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
-       |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
-       |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
-       |                                              |                                               |                |
-       |                                              |                                               |                |
-       +----------------------------------------------+-----------------------------------------------+----------------+
-
-:navy:`settings`
-~~~~~~~~~~~~~~~~
-
-.. container::
-
-   .. table::
-       :class: tight-table
-       :widths: 45 45 15
-
-       +----------------------------------------------+-----------------------------------------------+----------------+
-       | **settings**                                 | **Description**                               | **Example**    |
-       +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any settings for the instrument               | notch filter   |
-       |                                              |                                               | applied        |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |

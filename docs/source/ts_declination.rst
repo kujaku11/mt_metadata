@@ -18,7 +18,7 @@ Declination
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comments on declination                   | estimated from |
+       | **Required**: :blue:`False`                  | any comments on declination                   | estimated from |
        |                                              |                                               | WMM 2016       |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -43,8 +43,8 @@ Declination
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **model**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Geomagnetic reference model used to calculate | WMM-16         |
-       |                                              | declination plus the year estimated.          |                |
+       | **Required**: :red:`True`                    | geomagnetic reference model used to calculate | WMM            |
+       |                                              | declination                                   |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -52,6 +52,31 @@ Declination
        | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
        | **Default**: WMM                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`epoch`
+~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **epoch**                                    | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Epoch for which declination was approximated  | 2020           |
+       |                                              | in.                                           |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -68,8 +93,8 @@ Declination
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **value**                                    | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Geomagnetic declination angle relative to     | 12.3           |
-       |                                              | geographic north positive clockwise.          |                |
+       | **Required**: :red:`True`                    | declination angle relative to geographic      | 12.3           |
+       |                                              | north positive clockwise                      |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
        | **Type**: float                              |                                               |                |
