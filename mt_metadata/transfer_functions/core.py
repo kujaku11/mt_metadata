@@ -159,6 +159,7 @@ class TF:
 
     def __repr__(self):
         lines = []
+        lines.append(f"survey='{self.survey}'")
         lines.append(f"station='{self.station}'")
         lines.append(f"latitude={self.latitude:.2f}")
         lines.append(f"longitude={self.longitude:.2f}")
