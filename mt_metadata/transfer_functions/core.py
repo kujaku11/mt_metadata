@@ -31,7 +31,6 @@ from mt_metadata.transfer_functions.io import (
     JFile,
     ZongeMTAvg,
 )
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from mt_metadata.transfer_functions.io.zfiles.metadata import (
     Channel as ZChannel,
 )
@@ -103,12 +102,12 @@ class TF:
             "avg": {"write": self.to_avg, "read": self.from_avg},
         }
 
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
         self._transfer_function = self._initialize_transfer_function()
 
         self.fn = fn
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
 
     @property
     def inverse_channel_nomenclature(self):
@@ -365,9 +364,7 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(
-                station_metadata
-            )
+            station_metadata = self._validate_station_metadata(station_metadata)
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
