@@ -27,7 +27,7 @@ STANDARD_OUTPUT_NAMES = [
 def load_channel_maps():
     import json
     import pathlib
-    fn = pathlib.Path(__file__).parent.joinpath("channel_nomenclatures.json")
+    fn = pathlib.Path(__file__).parent.joinpath("standards", "channel_nomenclatures.json")
     with open(fn) as f:
         channel_maps = json.loads(f.read())
     return channel_maps
