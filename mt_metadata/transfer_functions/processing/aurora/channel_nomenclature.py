@@ -24,42 +24,15 @@ STANDARD_OUTPUT_NAMES = [
     "hz",
 ]
 
-CHANNEL_MAPS = {}
-CHANNEL_MAPS["default"] = {
-    "hx": "hx",
-    "hy": "hy",
-    "hz": "hz",
-    "ex": "ex",
-    "ey": "ey",
-}
-CHANNEL_MAPS["lemi12"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e1",
-    "ey": "e2",
-}
-CHANNEL_MAPS["lemi34"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e3",
-    "ey": "e4",
-}
-CHANNEL_MAPS["phoenix123"] = {
-    "hx": "h1",
-    "hy": "h2",
-    "hz": "h3",
-    "ex": "e1",
-    "ey": "e2",
-}
-CHANNEL_MAPS["musgraves"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "ex",
-    "ey": "ey",
-}
+def load_channel_maps():
+    import json
+    import pathlib
+    fn = pathlib.Path(__file__).parent.joinpath("channel_nomenclatures.json")
+    with open(fn) as f:
+        channel_maps = json.loads(f.read())
+    return channel_maps
+
+CHANNEL_MAPS = load_channel_maps()
 
 def get_allowed_channel_names(standard_names):
     allowed_names = []
