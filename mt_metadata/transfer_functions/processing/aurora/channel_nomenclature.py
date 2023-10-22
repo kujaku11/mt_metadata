@@ -13,36 +13,37 @@ from .standards import SCHEMA_FN_PATHS
 # =============================================================================
 attr_dict = get_schema("channel_nomenclature", SCHEMA_FN_PATHS)
 
-CHANNEL_MAPS = {}
-CHANNEL_MAPS["default"] = {
-    "hx": "hx",
-    "hy": "hy",
-    "hz": "hz",
-    "ex": "ex",
-    "ey": "ey",
-}
-CHANNEL_MAPS["lemi12"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e1",
-    "ey": "e2",
-}
-CHANNEL_MAPS["lemi34"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e3",
-    "ey": "e4",
-}
-CHANNEL_MAPS["phoenix123"] = {
-    "hx": "h1",
-    "hy": "h2",
-    "hz": "h3",
-    "ex": "e1",
-    "ey": "e2",
-}
+# Define allowed sets of channel labellings
+STANDARD_INPUT_NAMES = [
+    "hx",
+    "hy",
+]
+STANDARD_OUTPUT_NAMES = [
+    "ex",
+    "ey",
+    "hz",
+]
 
+def load_channel_maps():
+    import json
+    import pathlib
+    fn = pathlib.Path(__file__).parent.joinpath("standards", "channel_nomenclatures.json")
+    with open(fn) as f:
+        channel_maps = json.loads(f.read())
+    return channel_maps
+
+CHANNEL_MAPS = load_channel_maps()
+
+def get_allowed_channel_names(standard_names):
+    allowed_names = []
+    for ch in standard_names:
+        for _, channel_map in CHANNEL_MAPS.items():
+            allowed_names.append(channel_map[ch])
+    allowed_names = list(set(allowed_names))
+    return allowed_names
+
+ALLOWED_INPUT_CHANNELS = get_allowed_channel_names(STANDARD_INPUT_NAMES)
+ALLOWED_OUTPUT_CHANNELS = get_allowed_channel_names(STANDARD_OUTPUT_NAMES)
 
 # =============================================================================
 class ChannelNomenclature(Base):
@@ -65,7 +66,8 @@ class ChannelNomenclature(Base):
         -------
 
         """
-        raise NotImplementedError
+        self._update_by_keyword(keyword)
+
 
     @property
     def ex_ey(self):
@@ -111,6 +113,8 @@ class ChannelNomenclature(Base):
             channel_map = CHANNEL_MAPS["default"]
         elif keyword.upper() == "PHOENIX123":
             channel_map = CHANNEL_MAPS["phoenix123"]
+        elif keyword.upper() == "MUSGRAVES":
+            channel_map = CHANNEL_MAPS["musgraves"]
         else:
             print(f"whoops mt_system {keyword} unknown")
             raise NotImplementedError
