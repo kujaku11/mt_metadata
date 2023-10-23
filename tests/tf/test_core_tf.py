@@ -11,6 +11,7 @@ import numpy as np
 
 from mt_metadata.transfer_functions.core import TF, TFError
 
+
 class TestTFCore(unittest.TestCase):
     def setUp(self):
         self.tf = TF(some_kwarg=42)
@@ -18,25 +19,37 @@ class TestTFCore(unittest.TestCase):
         print(self.tf.__repr__())
         print(self.tf.__str__())
 
+
 class TestTFChannelNomenclature(unittest.TestCase):
-    def setUp(self):
-        self.tf = TF()
+    @classmethod
+    def setUpClass(self):
         self.nc = {"ex": "e1", "ey": "e2", "hx": "h1", "hy": "by", "hz": "b3"}
+        self.tf = TF(channel_nomenclature=self.nc)
 
-    def set_nomenclature(self):
-        self.tf.channel_nomenclature = self.nc
-
+    def test_nomenclature(self):
         self.assertDictEqual(self.nc, self.tf.channel_nomenclature)
 
-    def set_nomenclature_fail(self):
+    def test_set_nomenclature(self):
+        self.tf.channel_nomenclature = self.nc
+        self.assertDictEqual(self.nc, self.tf.channel_nomenclature)
+
+    def test_set_nomenclature_fail(self):
         def set_nc(value):
             self.tf.channel_nomenclature = value
 
         self.assertRaises(TypeError, set_nc, 10)
 
-    def set_nomenclature_from_init(self):
-        self.tf = TF(channel_nomenclature=self.nc)
-        self.assertDictEqual(self.nc, self.tf.channel_nomenclature)
+    def test_tf_initialized_output(self):
+        self.assertListEqual(
+            sorted(["e1", "e2", "h1", "by", "b3"]),
+            sorted(self.tf._transfer_function.output.data.tolist()),
+        )
+
+    def test_tf_initialized_input(self):
+        self.assertListEqual(
+            sorted(["e1", "e2", "h1", "by", "b3"]),
+            sorted(self.tf._transfer_function.input.data.tolist()),
+        )
 
 
 class TestTFPeriodInput(unittest.TestCase):
