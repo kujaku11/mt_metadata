@@ -327,6 +327,28 @@ class TestMTime(unittest.TestCase):
         with self.subTest("too small"):
             self.assertEqual(True, too_small)
 
+    def test_fix_out_of_bounds_too_large(self):
+        dt = dtparser.parse("3000-01-01T00:00:00")
+        t_obj = MTime()
+        stamp, too_large = t_obj._fix_out_of_bounds_time_stamp(dt)
+        with self.subTest("time"):
+            self.assertEqual(stamp, t_obj._tmax)
+        with self.subTest("too large"):
+            self.assertEqual(True, too_large)
+
+    def test_fix_out_of_bounds_too_small(self):
+        dt = dtparser.parse("1400-01-01T00:00:00")
+        t_obj = MTime()
+        stamp, too_small = t_obj._fix_out_of_bounds_time_stamp(dt)
+        with self.subTest("time"):
+            self.assertEqual(stamp, t_obj._tmin)
+        with self.subTest("too small"):
+            self.assertEqual(True, too_small)
+
+    def test_bad_24hour(self):
+        t = MTime("2020-01-01T24:00:00")
+        self.assertEqual(t, MTime("2020-01-02T00:00:00"))
+
 
 # =============================================================================
 # Run
