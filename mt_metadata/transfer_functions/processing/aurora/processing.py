@@ -223,10 +223,8 @@ class Processing(Base):
                 band.set_indices_from_frequencies(frequencies)
                 decimation_obj.add_band(band)
             self.add_decimation_level(decimation_obj)
-        #            self.decimations_dict[i_level] = decimation_obj
-        print("OK")
 
-    #
+
     def json_fn(self):
         json_fn = self.id + "_processing_config.json"
         return json_fn
