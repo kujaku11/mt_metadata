@@ -17,6 +17,7 @@ import numpy as np
 from mt_metadata.utils.mttime import MTime
 from obspy import UTCDateTime
 
+
 # =============================================================================
 # tests
 # =============================================================================
@@ -301,6 +302,52 @@ class TestMTime(unittest.TestCase):
         t1 = MTime(self.dt_true, gps_time=True)
         gps_time = MTime(self.dt_true) - 13
         self.assertTrue(gps_time, t1)
+
+    def test_localize_utc(self):
+        t1 = MTime(self.dt_true)
+        stamp = t1._localize_utc(t1._time_stamp)
+        self.assertTrue(stamp.tz is not None)
+
+    def test_check_timestamp_too_large(self):
+        t1 = pd.Timestamp("3000-01-01T00:00:00")
+        t_obj = MTime()
+        too_large, t2 = t_obj._check_timestamp(t1)
+
+        with self.subTest("time"):
+            self.assertEqual(t2, t_obj._tmax)
+        with self.subTest("too small"):
+            self.assertEqual(True, too_large)
+
+    def test_check_timestamp_too_small(self):
+        t1 = pd.Timestamp("1400-01-01T00:00:00")
+        t_obj = MTime()
+        too_small, t2 = t_obj._check_timestamp(t1)
+        with self.subTest("time"):
+            self.assertEqual(t2, t_obj._tmin)
+        with self.subTest("too small"):
+            self.assertEqual(True, too_small)
+
+    def test_fix_out_of_bounds_too_large(self):
+        dt = dtparser.parse("3000-01-01T00:00:00")
+        t_obj = MTime()
+        stamp, too_large = t_obj._fix_out_of_bounds_time_stamp(dt)
+        with self.subTest("time"):
+            self.assertEqual(stamp, t_obj._tmax)
+        with self.subTest("too large"):
+            self.assertEqual(True, too_large)
+
+    def test_fix_out_of_bounds_too_small(self):
+        dt = dtparser.parse("1400-01-01T00:00:00")
+        t_obj = MTime()
+        stamp, too_small = t_obj._fix_out_of_bounds_time_stamp(dt)
+        with self.subTest("time"):
+            self.assertEqual(stamp, t_obj._tmin)
+        with self.subTest("too small"):
+            self.assertEqual(True, too_small)
+
+    def test_bad_24hour(self):
+        t = MTime("2020-01-01T24:00:00")
+        self.assertEqual(t, MTime("2020-01-02T00:00:00"))
 
 
 # =============================================================================
