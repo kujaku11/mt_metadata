@@ -12,7 +12,7 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "numpy",
-    "pandas<=1.5.3",
+    "pandas",
     "obspy",
     "matplotlib",
     "xarray",
