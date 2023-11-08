@@ -126,3 +126,14 @@ History
 * Fcs in https://github.com/kujaku11/mt_metadata/pull/166
 * Update environment.yml in https://github.com/kujaku11/mt_metadata/pull/167
 * updating documentation in https://github.com/kujaku11/mt_metadata/pull/168
+
+0.3.1 (2023-10-15)
+-----------------------
+
+* Minor bug fixes
+
+0.3.2 (2023-11-08)
+-----------------------
+
+* remove restriction on Pandas < 2
+* minor bug fixes
