@@ -137,3 +137,8 @@ History
 
 * remove restriction on Pandas < 2
 * minor bug fixes
+
+0.3.3 (2023-11-08)
+-----------------------
+
+* update pandas.append to concat
