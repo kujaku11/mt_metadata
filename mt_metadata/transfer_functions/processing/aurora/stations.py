@@ -4,6 +4,7 @@ Created on Thu Feb 24 13:58:07 2022
 
 @author: jpeacock
 """
+import pandas as pd
 # =============================================================================
 # Imports
 # =============================================================================
@@ -126,14 +127,14 @@ class Stations(Base):
 
         """
 
-        local_df = self.local.to_dataset_dataframe()
-
+        df = self.local.to_dataset_dataframe()
         for rr in self.remote:
-            local_df = local_df.append(rr.to_dataset_dataframe())
+            remote_df = rr.to_dataset_dataframe()
+            df = pd.concat([df, remote_df]) #, axis=1, ignore_index=True)
 
-        local_df = local_df.reset_index()
+        df.reset_index(inplace=True, drop=True)
 
-        return local_df
+        return df
 
     def get_station(self, station_id):
         """
