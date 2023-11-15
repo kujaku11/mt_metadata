@@ -117,10 +117,16 @@ class Base:
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
                             fail = True
-                    elif value != other_value:
-                        msg = f"{key}: {value} != {other_value}"
-                        self.logger.info(msg)
-                        fail = True
+                    elif isinstance(value, (float, int, complex)):
+                        if not np.isclose(value, other_value):
+                            msg = f"{key}: {value} != {other_value}"
+                            self.logger.info(msg)
+                            fail = True
+                    else:
+                        if value != other_value:
+                            msg = f"{key}: {value} != {other_value}"
+                            self.logger.info(msg)
+                            fail = True
                 except KeyError:
                     msg = "Cannot find {0} in other".format(key)
                     self.logger.info(msg)

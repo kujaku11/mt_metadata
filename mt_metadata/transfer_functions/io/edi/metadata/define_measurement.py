@@ -292,7 +292,9 @@ class DefineMeasurement(Base):
                         value.azm = value.azimuth
                 if hasattr(self, key):
                     existing_ch = getattr(self, key)
-                    if value != existing_ch:
+                    existing_line = existing_ch.write_meas_line()
+                    value_line = value.write_meas_line()
+                    if existing_line != value_line:
                         value.chtype = f"rr{ch_type}".upper()
                         key = f"meas_rr{ch_type}"
                     else:
