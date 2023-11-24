@@ -97,6 +97,20 @@ class FilterBase(Base):
         return mapping
 
     @property
+    def fdsn_input_units(self):
+        if self.correction_operation == "mulitply":
+            return self.units_in
+        elif self.correction_operation == "divide":
+            return self.units_out
+
+    @property
+    def fdsn_output_units(self):
+        if self.correction_operation == "mulitply":
+            return self.units_out
+        elif self.correction_operation == "divide":
+            return self.units_in
+
+    @property
     def obspy_mapping(self):
         """
 
@@ -253,7 +267,7 @@ class FilterBase(Base):
             raise TypeError(msg)
 
         if mapping is None:
-            mapping = self.obspy_mapping
+            mapping = cls().obspy_mapping
         kwargs = {}
         for obspy_label, mth5_label in mapping.items():
             try:
