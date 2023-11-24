@@ -88,5 +88,17 @@
         "alias": [],
         "example": "1.0",
 		"default": 1.0
+    }, 
+
+    "is_channel_response": {
+        "type": "boolean",
+        "required": true,
+        "style": "name",
+        "units": null,
+        "description": "Set to True to indicate this filter is assocaiated with data calibration",
+        "options": [],
+        "alias": [],
+        "example": "True",
+		"default": "True"
     }
 }
