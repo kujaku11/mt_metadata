@@ -3,11 +3,11 @@
 Channel Response Filter
 ==========================
 
-Combines all filters for a given channel into a total response that can be used in 
+Combines all filters for a given channel into a total response that can be used in
 the frequency domain.
 
-.. note:: Time Delay filters should be applied in the time domain 
-    otherwise bad things can happen.   
+.. note:: Time Delay filters should be applied in the time domain
+    otherwise bad things can happen.
 """
 # =============================================================================
 # Imports
@@ -106,7 +106,9 @@ class ChannelResponseFilter(Base):
 
     def _validate_filters_list(self, filters_list):
         """
-        make sure the filters list is valid
+        make sure the filters list is valid. This means:
+            - the filters are of an acceptable type
+            - The filters are channel_response filters
 
         :param filters_list: DESCRIPTION
         :type filters_list: TYPE
@@ -124,7 +126,10 @@ class ChannelResponseFilter(Base):
 
         def is_acceptable_filter(item):
             if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
-                return True
+                if item.is_channel_response:
+                    return True
+                else:
+                    return False
             else:
                 return False
 
