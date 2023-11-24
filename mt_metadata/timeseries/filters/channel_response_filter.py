@@ -106,9 +106,7 @@ class ChannelResponseFilter(Base):
 
     def _validate_filters_list(self, filters_list):
         """
-        make sure the filters list is valid. This means:
-            - the filters are of an acceptable type
-            - The filters are channel_response filters
+        make sure the filters list is valid.
 
         :param filters_list: DESCRIPTION
         :type filters_list: TYPE
@@ -126,10 +124,7 @@ class ChannelResponseFilter(Base):
 
         def is_acceptable_filter(item):
             if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
-                if item.is_channel_response:
-                    return True
-                else:
-                    return False
+                return True
             else:
                 return False
 

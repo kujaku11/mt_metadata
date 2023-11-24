@@ -90,15 +90,15 @@
 		"default": 1.0
     }, 
 
-    "is_channel_response": {
-        "type": "boolean",
+    "correction_operation": {
+        "type": "string",
         "required": true,
-        "style": "name",
+        "style": "controlled vocabulary",
         "units": null,
-        "description": "Set to True to indicate this filter is assocaiated with data calibration",
-        "options": [],
+        "description": "Tells how to apply the filter to get the intended response correction",
+        "options": ["divide", "mulitply"],
         "alias": [],
-        "example": "True",
-		"default": "True"
+        "example": "mulitply",
+		"default": "divide"
     }
 }
