@@ -2,29 +2,29 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
     Karl Kappler
 
 :license: MIT
 
-This is a base class for filters.  We will extend this class for each specific 
+This is a base class for filters.  We will extend this class for each specific
 type of filter we need to implement.  Typical filters we will want to be able
 to support are:
-    
+
  - PoleZero (or 'zpk') responses like those provided by IRIS
  - Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
    calibrations via frequency sweep on a spectrum analyser.
- - Time Delay Filters: can come about in decimation, or from general 
+ - Time Delay Filters: can come about in decimation, or from general
    timing errors that have been characterized
  - Coefficient multipliers, i.e. frequency independent gains
  - FIR filters
  - IIR filters
 
-Note that many filters can be represented in more than one of these forms. 
-For example a Coefficient Multiplier can be seen as an FIR with a single 
-coefficient.  Similarly, an FIR can be represented as a 'zpk' filter with 
-no poles.  An IIR filter can also be associated with a zpk representation. 
+Note that many filters can be represented in more than one of these forms.
+For example a Coefficient Multiplier can be seen as an FIR with a single
+coefficient.  Similarly, an FIR can be represented as a 'zpk' filter with
+no poles.  An IIR filter can also be associated with a zpk representation.
 However, solving for the 'zpk' representation can be tedious and approximate
 and if we have for example, the known FIR coefficients, or FAP lookup table,
 then there is little to be gained by changing the representation.
@@ -53,13 +53,25 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
 
-# Form is OBSPY_MAPPING['obspy_label'] = 'mth5_label'
-OBSPY_MAPPING = {}
-OBSPY_MAPPING["input_units"] = "units_in"
-OBSPY_MAPPING["name"] = "name"
-OBSPY_MAPPING["output_units"] = "units_out"
-OBSPY_MAPPING["stage_gain"] = "gain"
-OBSPY_MAPPING["description"] = "comments"
+def get_base_obspy_mapping(correction_operation):
+    """
+    Returns a dict of form
+    mapping['obspy_label'] = 'mth5_label'
+
+    :return: mapping to an obspy filter
+    :rtype: dict
+    """
+    mapping = {}
+    mapping["description"] = "comments"
+    mapping["name"] = "name"
+    mapping["stage_gain"] = "gain"
+    if correction_operation == "mulitply":
+        mapping["input_units"] = "units_in"
+        mapping["output_units"] = "units_out"
+    elif correction_operation == "divide":
+        mapping["input_units"] = "units_out"
+        mapping["output_units"] = "units_in"
+    return mapping
 
 
 class FilterBase(Base):
@@ -72,13 +84,17 @@ class FilterBase(Base):
 
         self._calibration_dt = MTime()
         self.comments = None
-        self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
+        self._obspy_mapping = None
         self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         if self.gain == 0.0:
             self.gain = 1.0
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping(self.correction_operation)
+        return mapping
 
     @property
     def obspy_mapping(self):
@@ -88,6 +104,8 @@ class FilterBase(Base):
         :rtype: dict
 
         """
+        if self._obspy_mapping is None:
+            self._obspy_mapping = self.make_obspy_mapping()
         return self._obspy_mapping
 
     @property
@@ -235,7 +253,7 @@ class FilterBase(Base):
             raise TypeError(msg)
 
         if mapping is None:
-            mapping = cls().obspy_mapping
+            mapping = self.obspy_mapping
         kwargs = {}
         for obspy_label, mth5_label in mapping.items():
             try:

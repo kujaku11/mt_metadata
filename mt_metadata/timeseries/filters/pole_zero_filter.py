@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 """
 .. py:module:: pole_zero_filter
-    :synopsis: Deal with Pole Zero Filters 
+    :synopsis: Deal with Pole Zero Filters
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
 
 """
-import copy
 import numpy as np
 import obspy
 import scipy.signal as signal
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
@@ -21,10 +20,6 @@ attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping["_zeros"] = "zeros"
-obspy_mapping["_poles"] = "poles"
-obspy_mapping["normalization_factor"] = "normalization_factor"
 
 
 class PoleZeroFilter(FilterBase):
@@ -35,7 +30,13 @@ class PoleZeroFilter(FilterBase):
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "zpk"
 
-        self.obspy_mapping = obspy_mapping
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping["_zeros"] = "zeros"
+        mapping["_poles"] = "poles"
+        mapping["normalization_factor"] = "normalization_factor"
+        return mapping
 
     @property
     def poles(self):

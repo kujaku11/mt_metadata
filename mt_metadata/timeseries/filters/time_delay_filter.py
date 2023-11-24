@@ -8,17 +8,14 @@
 
 """
 
-import copy
 import numpy as np
 from obspy.core import inventory
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
-obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-obspy_mapping["decimation_delay"] = "delay"
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("time_delay_filter", SCHEMA_FN_PATHS))
@@ -34,10 +31,15 @@ class TimeDelayFilter(FilterBase):
         self.type = "time delay"
         self.obspy_mapping = obspy_mapping
 
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping["decimation_delay"] = "delay"
+        return mapping
+
     def to_obspy(self, stage_number=1, sample_rate=1, normalization_frequency=0):
         """
         Convert to an obspy stage
-        
+
         :param stage_number: sequential stage number, defaults to 1
         :type stage_number: integer, optional
         :param normalization_frequency: Normalization frequency, defaults to 1
@@ -45,8 +47,8 @@ class TimeDelayFilter(FilterBase):
         :param sample_rate: sample rate, defaults to 1
         :type sample_rate: float, optional
         :return: Obspy stage filter
-        :rtype: :class:`obspy.core.inventory.CoefficientsTypeResponseStage` 
-        
+        :rtype: :class:`obspy.core.inventory.CoefficientsTypeResponseStage`
+
         """
 
         stage = inventory.CoefficientsTypeResponseStage(
