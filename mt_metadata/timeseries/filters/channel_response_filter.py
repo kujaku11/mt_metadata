@@ -44,6 +44,7 @@ class ChannelResponseFilter(Base):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
+        self._correction_operation = None
 
         super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
@@ -59,6 +60,11 @@ class ChannelResponseFilter(Base):
 
     def __repr__(self):
         return self.__str__()
+
+    @property
+    def correction_operation(self):
+        """correction_operation is set during the validation"""
+        return self._correction_operation
 
     @property
     def filters_list(self):
@@ -148,6 +154,15 @@ class ChannelResponseFilter(Base):
 
         if fails:
             raise TypeError(", ".join(fails))
+
+        # Check that correction operations are all the same
+        if len(return_list):
+            correction_operations = [x.correction_operation for x in return_list]
+            if len(set(correction_operations)) != 1:
+                msg = "Inconsistent Filter correction_operations"
+                self.logger.critical(msg)
+                raise AttributeError(msg)
+            self._correction_operation = correction_operations[0]
 
         return return_list
 
