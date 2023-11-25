@@ -389,7 +389,7 @@ class ChannelResponseFilter(Base):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
-        # if self.correction_operation == "mulitply":
+        # if self.correction_operation == "multiply":
         units_in_obj = get_unit_object(self.units_in)
         units_out_obj = get_unit_object(self.units_out)
         #elif self.correction_operation == "divide":
