@@ -100,5 +100,17 @@
         "alias": [],
         "example": "mulitply",
 		"default": "divide"
+    }, 
+
+    "is_channel_response": {
+        "type": "boolean",
+        "required": true,
+        "style": "name",
+        "units": null,
+        "description": "True if this filter is associated with transforming data into physical units",
+        "options": [],
+        "alias": [],
+        "example": "False",
+		"default": "True"
     }
 }
