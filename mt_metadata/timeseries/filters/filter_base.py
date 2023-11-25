@@ -8,9 +8,9 @@ Created on Wed Dec 23 21:30:36 2020
 
 :license: MIT
 
-This is a base class for filters.  We will extend this class for each specific
-type of filter we need to implement.  Typical filters we will want to be able
-to support are:
+This is a base class for filters associated with calibration and instrument
+and acquistion system responses. We will extend this class for each specific
+type of filter we need to implement. Typical filters we will want to support:
 
  - PoleZero (or 'zpk') responses like those provided by IRIS
  - Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
@@ -21,17 +21,27 @@ to support are:
  - FIR filters
  - IIR filters
 
-Note that many filters can be represented in more than one of these forms.
-For example a Coefficient Multiplier can be seen as an FIR with a single
-coefficient.  Similarly, an FIR can be represented as a 'zpk' filter with
-no poles.  An IIR filter can also be associated with a zpk representation.
-However, solving for the 'zpk' representation can be tedious and approximate
-and if we have for example, the known FIR coefficients, or FAP lookup table,
-then there is little to be gained by changing the representation.
+Many filters can be represented in more than one of these forms. For example
+a Coefficient Multiplier can be seen as an FIR with a single coefficient.
+Similarly, an FIR can be represented as a 'zpk' filter with no poles.  An
+IIR filter can also be associated with a zpk representation.  However, solving
+for the 'zpk' representation can be tedious and approximate and if we have for
+example, the known FIR coefficients, or FAP lookup table, then there is little
+to be gained by changing the representation.
 
 The 'stages' that are described in the IRIS StationXML documentation appear
 to cover all possible linear time invariant filter types we are likely to
 encounter.
+
+A ChannelResponseStage object has a direction.  It has units_in and units_out attrs.
+These are the units before and after multiplication by the complex_response
+of the filter in frequency domain.
+
+***********************************************************************************
+Consider renaming this module and class: channel_response_stage.ChannelResponseStage
+***********************************************************************************
+
+
 """
 # =============================================================================
 # Imports
@@ -74,6 +84,7 @@ def get_base_obspy_mapping(correction_operation):
     return mapping
 
 
+# class ChannelResponseStage(Base):
 class FilterBase(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -92,23 +103,41 @@ class FilterBase(Base):
         if self.gain == 0.0:
             self.gain = 1.0
 
+    def clone(self):
+        return copy.deepcopy(self)
+
+    def inverse(self):
+        """
+        Provides a version of self where we reverse the operation and units
+        Two ways to do this:
+        1. Clone, then switch the value of self.correction_operation, and the units_in, units_out
+        2. Export to obspy, and then create a new instance
+        obspy_stage = self.to_obspy()
+        swap input and output in the stage
+        use cls.from_obpy()
+
+        """
+        new_stage = self.clone()
+        if self.correction_operation == "multiply":
+            new_stage.correction_operation = "divide"
+        elif self.correction_operation == "divide":
+            new_stage.correction_operation = "multiply"
+            self.logger.warning("It is uncommon to invert an already inverted filter")
+            self.logger.warning("Suggest accessing the original instead.")
+
+        # I would prefer that this guy had not obspy mapping, just input, output
+        #new_stage.make_obspy_mapping()
+        new_stage.obspy_mapping = {}
+        old_units_in = self.units_in
+        old_units_out = self.units_out
+        new_stage.units_in = old_units_out
+        new_stage.units_out = old_units_in
+        new_stage.name = f"inverse of {new_stage.name}"
+        return new_stage
+
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping(self.correction_operation)
         return mapping
-
-    @property
-    def fdsn_input_units(self):
-        if self.correction_operation == "mulitply":
-            return self.units_in
-        elif self.correction_operation == "divide":
-            return self.units_out
-
-    @property
-    def fdsn_output_units(self):
-        if self.correction_operation == "mulitply":
-            return self.units_out
-        elif self.correction_operation == "divide":
-            return self.units_in
 
     @property
     def obspy_mapping(self):
@@ -121,6 +150,19 @@ class FilterBase(Base):
         if self._obspy_mapping is None:
             self._obspy_mapping = self.make_obspy_mapping()
         return self._obspy_mapping
+
+    @obspy_mapping.setter
+    def obspy_mapping(self, obspy_dict):
+        """
+        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
+        mt_metadata filter objects.
+        """
+        if not isinstance(obspy_dict, dict):
+            msg = f"Input must be a dictionary not {type(obspy_dict)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+
+        self._obspy_mapping = obspy_dict
 
     @property
     def name(self):
@@ -146,18 +188,6 @@ class FilterBase(Base):
         else:
             self._name = None
 
-    @obspy_mapping.setter
-    def obspy_mapping(self, obspy_dict):
-        """
-        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
-        mt_metadata filter objects.
-        """
-        if not isinstance(obspy_dict, dict):
-            msg = f"Input must be a dictionary not {type(obspy_dict)}"
-            self.logger.error(msg)
-            raise TypeError(msg)
-
-        self._obspy_mapping = obspy_dict
 
     @property
     def calibration_date(self):
@@ -246,6 +276,7 @@ class FilterBase(Base):
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):
         """
+        Expected to return a multiply operation function
 
         :param cls: a filter object
         :type cls: filter object
@@ -275,7 +306,20 @@ class FilterBase(Base):
             except KeyError:
                 print(f"Key {obspy_label} not found in stage object")
                 raise Exception
-
+        # if cls().correction_operation == "divide":
+        #     msg = "Obspy Stages"
+        #     print("Kaboom, ", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom", cls().correction_operation)
+        #     print("Kaboom")
+        #     print("Kaboom")
+        #     print("Kaboom")
+        #     raise NotImplementedError
         return cls(**kwargs)
 
     def complex_response(self, frqs):
@@ -403,3 +447,18 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
+
+
+    # @property
+    # def fdsn_input_units(self):
+    #     if self.correction_operation == "mulitply":
+    #         return self.units_in
+    #     elif self.correction_operation == "divide":
+    #         return self.units_out
+    #
+    # @property
+    # def fdsn_output_units(self):
+    #     if self.correction_operation == "mulitply":
+    #         return self.units_out
+    #     elif self.correction_operation == "divide":
+    #         return self.units_in
