@@ -277,7 +277,7 @@ class ChannelResponseFilter(Base):
             )
 
         if len(filters_list) == 0:
-            # warn that there are no filters associated with channel?
+            self.logger.warning("No filters associated with ChannelResponseFilter instance, returning 1")
             return np.ones(len(self.frequencies), dtype=complex)
 
         result = filters_list[0].complex_response(self.frequencies)
@@ -326,7 +326,10 @@ class ChannelResponseFilter(Base):
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
 
-        return self.filters_list[0].units_in
+        if self.correction_operation == "multiply":
+            return self.filters_list[0].units_in
+        elif self.correction_operation == "divide":
+            return self.filters_list[0].units_out
 
     @property
     def units_out(self):
@@ -335,25 +338,41 @@ class ChannelResponseFilter(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
+        if self.correction_operation == "multiply":
+            return self.filters_list[0].units_out
+        elif self.correction_operation == "divide":
+            return self.filters_list[0].units_in
 
-        return self.filters_list[-1].units_out
 
     def _check_consistency_of_units(self):
         """
         confirms that the input and output units of each filter state are consistent
         """
         if len(self._filters_list) > 1:
-            previous_units = self._filters_list[0].units_out
-            for mt_filter in self._filters_list[1:]:
-                if mt_filter.units_in != previous_units:
-                    msg = (
-                        "Unit consistency is incorrect. "
-                        f"The input units for {mt_filter.name} should be "
-                        f"{previous_units} not {mt_filter.units_in}"
-                    )
-                    self.logger.error(msg)
-                    raise ValueError(msg)
-                previous_units = mt_filter.units_out
+            if self.correction_operation == "multiply":
+                previous_units = self._filters_list[0].units_out
+                for mt_filter in self._filters_list[1:]:
+                    if mt_filter.units_in != previous_units:
+                        msg = (
+                            "Unit consistency is incorrect. "
+                            f"The input units for {mt_filter.name} should be "
+                            f"{previous_units} not {mt_filter.units_in}"
+                        )
+                        self.logger.error(msg)
+                        raise ValueError(msg)
+                    previous_units = mt_filter.units_out
+            elif self.correction_operation == "divide":
+                previous_units = self._filters_list[0].units_in
+                for mt_filter in self._filters_list[1:]:
+                    if mt_filter.units_out != previous_units:
+                        msg = (
+                            "Unit consistency is incorrect. "
+                            f"The input units for {mt_filter.name} should be "
+                            f"{previous_units} not {mt_filter.units_out}"
+                        )
+                        self.logger.error(msg)
+                        raise ValueError(msg)
+                    previous_units = mt_filter.units_in
 
         return True
 
@@ -370,8 +389,12 @@ class ChannelResponseFilter(Base):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
+        # if self.correction_operation == "mulitply":
         units_in_obj = get_unit_object(self.units_in)
         units_out_obj = get_unit_object(self.units_out)
+        #elif self.correction_operation == "divide":
+        #    units_in_obj = get_unit_object(self.units_out)
+        #    units_out_obj = get_unit_object(self.units_in)
 
         total_response = inventory.Response()
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
