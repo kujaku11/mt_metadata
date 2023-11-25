@@ -364,6 +364,8 @@ class ChannelResponseFilter(Base):
                         raise ValueError(msg)
                     previous_units = mt_filter.units_out
             elif self.correction_operation == "divide":
+                # Needs checking and testing
+                # may need to start at index -1 and run filters list backward
                 previous_units = self._filters_list[0].units_in
                 for mt_filter in self._filters_list[1:]:
                     if mt_filter.units_out != previous_units:
@@ -514,3 +516,8 @@ class ChannelResponseFilter(Base):
         }
 
         plot_response(self.frequencies, cr_list, **kwargs)
+
+
+class InverseChannelResponseFilter(ChannelResponseFilter):
+    def __init__(self):
+        self.x = "x"
