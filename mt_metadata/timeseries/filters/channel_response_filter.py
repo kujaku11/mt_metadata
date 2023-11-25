@@ -329,7 +329,8 @@ class ChannelResponseFilter(Base):
         if self.correction_operation == "multiply":
             return self.filters_list[0].units_in
         elif self.correction_operation == "divide":
-            return self.filters_list[0].units_out
+            print('Careful here -- the filter is inverted -- add a test to check ')
+            return self.filters_list[-1].units_out
 
     @property
     def units_out(self):
@@ -339,8 +340,9 @@ class ChannelResponseFilter(Base):
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
         if self.correction_operation == "multiply":
-            return self.filters_list[0].units_out
+            return self.filters_list[-1].units_out
         elif self.correction_operation == "divide":
+            print('Careful here -- the filter is inverted -- add a test to check ')
             return self.filters_list[0].units_in
 
 
