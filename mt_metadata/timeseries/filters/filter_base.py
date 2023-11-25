@@ -75,7 +75,7 @@ def get_base_obspy_mapping(correction_operation):
     mapping["description"] = "comments"
     mapping["name"] = "name"
     mapping["stage_gain"] = "gain"
-    if correction_operation == "mulitply":
+    if correction_operation == "multiply":
         mapping["input_units"] = "units_in"
         mapping["output_units"] = "units_out"
     elif correction_operation == "divide":
