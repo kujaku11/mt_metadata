@@ -96,10 +96,10 @@
         "style": "controlled vocabulary",
         "units": null,
         "description": "Tells how to apply the filter to get the intended response correction",
-        "options": ["divide", "mulitply"],
+        "options": ["divide", "multiply"],
         "alias": [],
-        "example": "mulitply",
-		"default": "divide"
+        "example": "divide",
+		"default": "multiply"
     }, 
 
     "is_channel_response": {
