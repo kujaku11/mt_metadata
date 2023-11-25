@@ -56,7 +56,7 @@ attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 def get_base_obspy_mapping(correction_operation):
     """
     Returns a dict of form
-    mapping['obspy_label'] = 'mth5_label'
+    mapping['obspy_label'] = 'mt_metadata_label'
 
     :return: mapping to an obspy filter
     :rtype: dict
