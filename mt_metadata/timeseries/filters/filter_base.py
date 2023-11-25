@@ -298,7 +298,7 @@ class FilterBase(Base):
             raise TypeError(msg)
 
         if mapping is None:
-            mapping = cls().obspy_mapping
+            mapping = cls().make_obspy_mapping()
         kwargs = {}
         for obspy_label, mth5_label in mapping.items():
             try:
