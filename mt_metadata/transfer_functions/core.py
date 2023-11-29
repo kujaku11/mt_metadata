@@ -531,7 +531,6 @@ class TF:
 
     @property
     def _ch_input_dict(self):
-
         return {
             "impedance": self.hx_hy,
             "tipper": self.hx_hy,
@@ -1278,25 +1277,25 @@ class TF:
         ]
 
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
-        z_err[:, 0, 0] = np.real(
+        z_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hx], output=[self.hx])
             ].data.flatten()
         )
-        z_err[:, 0, 1] = np.real(
+        z_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hy], output=[self.hy])
             ].data.flatten()
         )
-        z_err[:, 1, 0] = np.real(
+        z_err[:, 1, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hx], output=[self.hx])
             ].data.flatten()
         )
-        z_err[:, 1, 1] = np.real(
+        z_err[:, 1, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hy], output=[self.hy])
@@ -1329,13 +1328,13 @@ class TF:
         ]
 
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
-        t_err[:, 0, 0] = np.real(
+        t_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hx], output=[self.hx])
             ].data.flatten()
         )
-        t_err[:, 0, 1] = np.real(
+        t_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
             * sigma_s.loc[
                 dict(input=[self.hy], output=[self.hy])
@@ -1596,7 +1595,6 @@ class TF:
                     period_slice["period"].start is not None
                     and period_slice["period"].stop is not None
                 ):
-
                     return tf._transfer_function.where(
                         (
                             tf._transfer_function.period
@@ -1863,14 +1861,14 @@ class TF:
             edi_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(edi_obj, EDI):
             raise TypeError(f"Input must be a EDI object not {type(edi_obj)}")
-        if edi_obj.tf is not None:
+        if edi_obj.tf is not None and edi_obj.tf.shape[1:] == (3, 2):
             k_dict = OrderedDict(
                 {
                     "period": "period",
                     "transfer_function": "tf",
-                    "transfer_function_error": "tf_err",
                     "inverse_signal_power": "signal_inverse_power",
                     "residual_covariance": "residual_covariance",
+                    "transfer_function_error": "tf_err",
                     "survey_metadata": "survey_metadata",
                     "station_metadata": "station_metadata",
                 }

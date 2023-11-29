@@ -192,7 +192,7 @@ class DefineMeasurement(Base):
                 meas_find = True
             elif ">=" in line:
                 if meas_find is True:
-                    break
+                    return
             elif meas_find is True and ">" not in line:
                 line = line.strip()
                 if len(line) > 2:
@@ -210,7 +210,7 @@ class DefineMeasurement(Base):
             elif ">" in line and meas_find:
                 if line.find("!") > 0:
                     pass
-                else:
+                elif "meas" in line.lower():
                     count += 1
                     line_list = _validate_str_with_equals(line)
                     m_dict = {}
@@ -220,6 +220,8 @@ class DefineMeasurement(Base):
                         value = ll_list[1]
                         m_dict[key] = value
                     self.measurement_list.append(m_dict)
+                else:
+                    return
 
     def read_measurement(self, edi_lines):
         """
