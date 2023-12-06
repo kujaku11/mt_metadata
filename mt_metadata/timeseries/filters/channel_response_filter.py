@@ -393,10 +393,12 @@ class ChannelResponseFilter(Base):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
-        # if self.correction_operation == "multiply":
-        units_in_obj = get_unit_object(self.units_in)
-        units_out_obj = get_unit_object(self.units_out)
-        #elif self.correction_operation == "divide":
+        if self.correction_operation == "multiply":
+            units_in_obj = get_unit_object(self.units_in)
+            units_out_obj = get_unit_object(self.units_out)
+        elif self.correction_operation == "divide":
+            msg = f"Obspy filters should have "
+            self.logger.warning()
         #    units_in_obj = get_unit_object(self.units_out)
         #    units_out_obj = get_unit_object(self.units_in)
 

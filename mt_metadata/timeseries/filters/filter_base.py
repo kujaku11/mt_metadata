@@ -63,7 +63,7 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
 
-def get_base_obspy_mapping(correction_operation):
+def get_base_obspy_mapping(correction_operation="divide"):
     """
     Returns a dict of form
     mapping['obspy_label'] = 'mt_metadata_label'
@@ -86,6 +86,13 @@ def get_base_obspy_mapping(correction_operation):
 
 # class ChannelResponseStage(Base):
 class FilterBase(Base):
+    """
+    This base class is used to represent various forms of linear, time invariant (LTI) filters.
+    By convention, forward application of the filter is equivalent to multiplication in frequency domain by the
+    filter's complex response.  Removing the filter (applying the inverse) can be achieved by divding by the
+    filter's complex response.
+
+    """
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -97,6 +104,7 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
+        # self.direction = "forward"
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -306,20 +314,6 @@ class FilterBase(Base):
             except KeyError:
                 print(f"Key {obspy_label} not found in stage object")
                 raise Exception
-        # if cls().correction_operation == "divide":
-        #     msg = "Obspy Stages"
-        #     print("Kaboom, ", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom", cls().correction_operation)
-        #     print("Kaboom")
-        #     print("Kaboom")
-        #     print("Kaboom")
-        #     raise NotImplementedError
         return cls(**kwargs)
 
     def complex_response(self, frqs):
