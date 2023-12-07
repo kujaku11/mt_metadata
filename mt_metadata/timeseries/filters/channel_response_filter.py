@@ -42,12 +42,11 @@ class ChannelResponseFilter(Base):
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
     """
-    # these mixins dont currently activate until after validation (self._direction is set)
     application_operation = FilterBase.__dict__["application_operation"]
     correction_operation = FilterBase.__dict__["correction_operation"]
     operation_dict = FilterBase.__dict__["operation_dict"]
     inverse_operation_dict = FilterBase.__dict__["inverse_operation_dict"]
-    inverse_direction_dict = FilterBase.__dict__["inverse_direction_dict"]
+
     def __init__(self, **kwargs):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
