@@ -22,7 +22,7 @@
         "example": "ambient air temperature",
 		"default": null
     },
-	
+
     "type": {
         "type": "string",
         "required": true,
@@ -76,7 +76,7 @@
         "alias": [],
         "example": "2020-01-01",
 		"default": "1980-01-01"
-    }, 
+    },
 
     "gain": {
         "type": "float",
@@ -88,8 +88,7 @@
         "alias": [],
         "example": "1.0",
 		"default": 1.0
-    }, 
-
+    },
     "direction": {
         "type": "string",
         "required": true,
@@ -100,27 +99,5 @@
         "alias": [],
         "example": "inverse",
 		"default": "forward"
-    }, 
-    "correction_operation": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Tells how to apply the filter to get the intended response correction",
-        "options": ["divide", "multiply"],
-        "alias": [],
-        "example": "divide",
-		"default": "multiply"
-    }, 
-    "is_channel_response": {
-        "type": "boolean",
-        "required": true,
-        "style": "name",
-        "units": null,
-        "description": "True if this filter is associated with transforming data into physical units",
-        "options": [],
-        "alias": [],
-        "example": "False",
-		"default": "True"
     }
 }

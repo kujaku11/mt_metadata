@@ -63,37 +63,50 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
 
-def get_base_obspy_mapping(correction_operation="divide"):
+def get_base_obspy_mapping():
     """
-    Returns a dict of form
-    mapping['obspy_label'] = 'mt_metadata_label'
+    Different filters have different mappings, but the attributes mapped here are common to all of them.
+    Hence the name "base obspy mapping"
+    Note: If we wanted to support inverse forms of these filters, and argument specifying filter direction could be added.
 
-    :return: mapping to an obspy filter
+    :return: mapping to an obspy filter, mapping['obspy_label'] = 'mt_metadata_label'
     :rtype: dict
     """
     mapping = {}
     mapping["description"] = "comments"
     mapping["name"] = "name"
     mapping["stage_gain"] = "gain"
-    if correction_operation == "multiply":
-        mapping["input_units"] = "units_in"
-        mapping["output_units"] = "units_out"
-    elif correction_operation == "divide":
-        mapping["input_units"] = "units_out"
-        mapping["output_units"] = "units_in"
+    mapping["input_units"] = "units_in"
+    mapping["output_units"] = "units_out"
     return mapping
 
 
 # class ChannelResponseStage(Base):
 class FilterBase(Base):
     """
-    This base class is used to represent various forms of linear, time invariant (LTI) filters.
+    This abstract base class is used to represent various forms of linear, time invariant (LTI) filters.
     By convention, forward application of the filter is equivalent to multiplication in frequency domain by the
     filter's complex response.  Removing the filter (applying the inverse) can be achieved by divding by the
     filter's complex response.
 
+    This class is intended to support the calibration of data from archived units to physical units, although
+    it may find more application in future.
+
+    ToDo: The attrubutes direction (one of ["forward", "inverse"]) and the attribute application_operation
+     maybe superfluous.  We could probably do away with one of them (direction).
     """
     __doc__ = write_lines(attr_dict)
+    operation_dict = {}
+    operation_dict["forward"] = "multiply"
+    operation_dict["inverse"] = "divide"
+
+    inverse_operation_dict = {}
+    inverse_operation_dict["divide"] = "multiply"
+    inverse_operation_dict["multiply"] = "divide"
+
+    inverse_direction_dict = {}
+    inverse_direction_dict["forward"] = "inverse"
+    inverse_direction_dict["inverse"] = "forward"
 
     def __init__(self, **kwargs):
 
@@ -104,47 +117,47 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
-        # self.direction = "forward"
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         if self.gain == 0.0:
             self.gain = 1.0
 
-    def clone(self):
-        return copy.deepcopy(self)
+
+    @property
+    def application_operation(self):
+        return self.operation_dict[self.direction]
+
+    @property
+    def correction_operation(self):
+        """ returns the inverse of application_operation"""
+        return self.inverse_operation_dict[self.application_operation]
+
 
     def inverse(self):
         """
-        Provides a version of self where we reverse the operation and units
-        Two ways to do this:
-        1. Clone, then switch the value of self.correction_operation, and the units_in, units_out
-        2. Export to obspy, and then create a new instance
-        obspy_stage = self.to_obspy()
-        swap input and output in the stage
-        use cls.from_obpy()
+        Returns a form of inverse filter.  Complex response is the same, but the operation si swapped between
+        multiply and divide.
 
         """
-        new_stage = self.clone()
-        if self.correction_operation == "multiply":
-            new_stage.correction_operation = "divide"
-        elif self.correction_operation == "divide":
-            new_stage.correction_operation = "multiply"
+        if self.direction == "inverse":
             self.logger.warning("It is uncommon to invert an already inverted filter")
             self.logger.warning("Suggest accessing the original instead.")
 
-        # I would prefer that this guy had not obspy mapping, just input, output
+        new_stage = self.copy()
+        new_stage.direction = self.inverse_direction_dict[self.direction]
+
+        # skip making obspy mapping
         #new_stage.make_obspy_mapping()
         new_stage.obspy_mapping = {}
-        old_units_in = self.units_in
-        old_units_out = self.units_out
-        new_stage.units_in = old_units_out
-        new_stage.units_out = old_units_in
+        # set units and name
+        new_stage.units_in = self.units_out
+        new_stage.units_out = self.units_in
         new_stage.name = f"inverse of {new_stage.name}"
         return new_stage
 
     def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping = get_base_obspy_mapping()
         return mapping
 
     @property
@@ -443,16 +456,12 @@ class FilterBase(Base):
         return False
 
 
-    # @property
-    # def fdsn_input_units(self):
-    #     if self.correction_operation == "mulitply":
-    #         return self.units_in
-    #     elif self.correction_operation == "divide":
-    #         return self.units_out
-    #
-    # @property
-    # def fdsn_output_units(self):
-    #     if self.correction_operation == "mulitply":
-    #         return self.units_out
-    #     elif self.correction_operation == "divide":
-    #         return self.units_in
+
+def main():
+    tmp = FilterBase()
+    tmp
+
+
+if __name__ == "__main__":
+    main()
+

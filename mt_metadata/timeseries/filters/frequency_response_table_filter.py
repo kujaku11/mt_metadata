@@ -44,7 +44,7 @@ class FrequencyResponseTableFilter(FilterBase):
         self.type = "frequency response table"
 
     def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping = get_base_obspy_mapping()
         mapping["amplitudes"] = "_empirical_amplitudes"
         mapping["frequencies"] = "_empirical_frequencies"
         mapping["phases"] = "_empirical_phases"

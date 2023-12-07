@@ -32,7 +32,7 @@ class FIRFilter(FilterBase):
 
 
     def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping = get_base_obspy_mapping()
         mapping["_symmetry"] = "symmetry"
         mapping["_coefficients"] = "coefficients"
         mapping["decimation_factor"] = "decimation_factor"

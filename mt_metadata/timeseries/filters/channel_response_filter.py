@@ -24,6 +24,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     FIRFilter,
 )
+from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from obspy.core import inventory
@@ -36,15 +37,22 @@ attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
 class ChannelResponseFilter(Base):
     """
     This class holds a list of all the filters associated with a channel.
+    The list should be ordered to match the order in which the filters are applied to the signal.
+
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
     """
-
+    # these mixins dont currently activate until after validation (self._direction is set)
+    application_operation = FilterBase.__dict__["application_operation"]
+    correction_operation = FilterBase.__dict__["correction_operation"]
+    operation_dict = FilterBase.__dict__["operation_dict"]
+    inverse_operation_dict = FilterBase.__dict__["inverse_operation_dict"]
+    inverse_direction_dict = FilterBase.__dict__["inverse_direction_dict"]
     def __init__(self, **kwargs):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
-        self._correction_operation = None
+        self._direction = None
 
         super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
@@ -62,9 +70,23 @@ class ChannelResponseFilter(Base):
         return self.__str__()
 
     @property
-    def correction_operation(self):
-        """correction_operation is set during the validation"""
-        return self._correction_operation
+    def obspy_mapping(self):
+        """
+
+        :return: mapping to an obspy filter
+        :rtype: dict
+
+        """
+        if self._obspy_mapping is None:
+            self.logger.warning("Obspy mapping not defined for ChannelResponseFilter, only for FilterBase")
+        return self._obspy_mapping
+
+    @property
+    def direction(self):
+        """filter direction is set during the validation"""
+        if self._direction is None:
+            self.logger.error("filter direction is not defined until valdation")
+        return self._direction
 
     @property
     def filters_list(self):
@@ -157,12 +179,13 @@ class ChannelResponseFilter(Base):
 
         # Check that correction operations are all the same
         if len(return_list):
-            correction_operations = [x.correction_operation for x in return_list]
-            if len(set(correction_operations)) != 1:
-                msg = "Inconsistent Filter correction_operations"
+            filter_directions = [x.direction for x in return_list]
+            if len(set(filter_directions)) != 1:
+                msg = "Inconsistent Filter directions"
                 self.logger.critical(msg)
                 raise AttributeError(msg)
-            self._correction_operation = correction_operations[0]
+            self._direction = filter_directions[0]
+
 
         return return_list
 
@@ -280,8 +303,8 @@ class ChannelResponseFilter(Base):
             self.logger.warning("No filters associated with ChannelResponseFilter instance, returning 1")
             return np.ones(len(self.frequencies), dtype=complex)
 
+        # define the product of all filters as the total response function
         result = filters_list[0].complex_response(self.frequencies)
-
         for ff in filters_list[1:]:
             result *= ff.complex_response(self.frequencies)
 
@@ -325,11 +348,11 @@ class ChannelResponseFilter(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
-
-        if self.correction_operation == "multiply":
+        if self.direction == "forward":
             return self.filters_list[0].units_in
-        elif self.correction_operation == "divide":
-            print('Careful here -- the filter is inverted -- add a test to check ')
+        elif self.direction == "inverse":
+            msg = "Inverse Channel Reponse units need testing"
+            print(msg)
             return self.filters_list[-1].units_out
 
     @property
@@ -339,10 +362,14 @@ class ChannelResponseFilter(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
-        if self.correction_operation == "multiply":
+        if self.direction == "forward":
             return self.filters_list[-1].units_out
-        elif self.correction_operation == "divide":
-            print('Careful here -- the filter is inverted -- add a test to check ')
+        if self.direction == "inverse":
+            return self.filters_list[0].units_in
+        # if self.correction_operation == "multiply":
+        #     return self.filters_list[-1].units_out
+        # elif self.correction_operation == "divide":
+        #     print('Careful here -- the filter is inverted -- add a test to check ')
             return self.filters_list[0].units_in
 
 
@@ -351,32 +378,17 @@ class ChannelResponseFilter(Base):
         confirms that the input and output units of each filter state are consistent
         """
         if len(self._filters_list) > 1:
-            if self.correction_operation == "multiply":
-                previous_units = self._filters_list[0].units_out
-                for mt_filter in self._filters_list[1:]:
-                    if mt_filter.units_in != previous_units:
-                        msg = (
-                            "Unit consistency is incorrect. "
-                            f"The input units for {mt_filter.name} should be "
-                            f"{previous_units} not {mt_filter.units_in}"
-                        )
-                        self.logger.error(msg)
-                        raise ValueError(msg)
-                    previous_units = mt_filter.units_out
-            elif self.correction_operation == "divide":
-                # Needs checking and testing
-                # may need to start at index -1 and run filters list backward
-                previous_units = self._filters_list[0].units_in
-                for mt_filter in self._filters_list[1:]:
-                    if mt_filter.units_out != previous_units:
-                        msg = (
-                            "Unit consistency is incorrect. "
-                            f"The input units for {mt_filter.name} should be "
-                            f"{previous_units} not {mt_filter.units_out}"
-                        )
-                        self.logger.error(msg)
-                        raise ValueError(msg)
-                    previous_units = mt_filter.units_in
+            previous_units = self._filters_list[0].units_out
+            for mt_filter in self._filters_list[1:]:
+                if mt_filter.units_in != previous_units:
+                    msg = (
+                        "Unit consistency is incorrect. "
+                        f"The input units for {mt_filter.name} should be "
+                        f"{previous_units} not {mt_filter.units_in}"
+                    )
+                    self.logger.error(msg)
+                    raise ValueError(msg)
+                previous_units = mt_filter.units_out
 
         return True
 
@@ -397,10 +409,9 @@ class ChannelResponseFilter(Base):
             units_in_obj = get_unit_object(self.units_in)
             units_out_obj = get_unit_object(self.units_out)
         elif self.correction_operation == "divide":
-            msg = f"Obspy filters should have "
-            self.logger.warning()
-        #    units_in_obj = get_unit_object(self.units_out)
-        #    units_out_obj = get_unit_object(self.units_in)
+            msg = f"Obspy filters are not implemented for inverse filters "
+            self.logger.error(msg)
+            raise NotImplementedError
 
         total_response = inventory.Response()
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
@@ -523,3 +534,4 @@ class ChannelResponseFilter(Base):
 class InverseChannelResponseFilter(ChannelResponseFilter):
     def __init__(self):
         self.x = "x"
+

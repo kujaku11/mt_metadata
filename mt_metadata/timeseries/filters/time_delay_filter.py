@@ -31,7 +31,7 @@ class TimeDelayFilter(FilterBase):
         self.type = "time delay"
 
     def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping = get_base_obspy_mapping()
         mapping["decimation_delay"] = "delay"
         return mapping
 

@@ -32,7 +32,7 @@ class PoleZeroFilter(FilterBase):
 
 
     def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping(self.correction_operation)
+        mapping = get_base_obspy_mapping()
         mapping["_zeros"] = "zeros"
         mapping["_poles"] = "poles"
         mapping["normalization_factor"] = "normalization_factor"
