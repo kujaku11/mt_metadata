@@ -51,7 +51,7 @@ class ChannelResponseFilter(Base):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
-        self.direction = None
+        self.direction = None # set during validation
 
         super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
@@ -80,12 +80,6 @@ class ChannelResponseFilter(Base):
             self.logger.warning("Obspy mapping not defined for ChannelResponseFilter, only for FilterBase")
         return self._obspy_mapping
 
-    # @property
-    # def direction(self):
-    #     """filter direction is set during the validation"""
-    #     if self._direction is None:
-    #         self.logger.warning("filter direction is not defined until valdation")
-    #     return self._direction
 
     @property
     def filters_list(self):
@@ -141,7 +135,7 @@ class ChannelResponseFilter(Base):
         :rtype: TYPE
 
         """
-        ACCEPTABLE_FILTERS = [
+        supported_filters = [
             PoleZeroFilter,
             CoefficientFilter,
             TimeDelayFilter,
@@ -149,8 +143,8 @@ class ChannelResponseFilter(Base):
             FIRFilter,
         ]
 
-        def is_acceptable_filter(item):
-            if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
+        def is_supported_filter(item):
+            if isinstance(item, tuple(supported_filters)):
                 return True
             else:
                 return False
@@ -166,17 +160,17 @@ class ChannelResponseFilter(Base):
         fails = []
         return_list = []
         for item in filters_list:
-            if is_acceptable_filter(item):
+            if is_supported_filter(item):
                 return_list.append(item)
             else:
                 fails.append(
-                    f"Item is not an acceptable filter type, {type(item)}"
+                    f"Item is not a supported filter type, {type(item)}"
                 )
 
         if fails:
             raise TypeError(", ".join(fails))
 
-        # Check that correction operations are all the same
+        # Check that filter operations are all the same
         if len(return_list):
             filter_directions = [x.direction for x in return_list]
             if len(set(filter_directions)) != 1:
@@ -268,6 +262,7 @@ class ChannelResponseFilter(Base):
         **kwargs,
     ):
         """
+        TODO: This method needs to be modified to track which filters are to be applied/corrected
 
         :param frequencies: frequencies to compute complex response,
          defaults to None
@@ -284,7 +279,10 @@ class ChannelResponseFilter(Base):
         :rtype: np.ndarray
 
         """
+        def bool_flip(x):
+            return bool(int(x)-1)
 
+        filters_will_be_corrected = [True for x in self.filters_list]
         if frequencies is not None:
             self.frequencies = frequencies
 
@@ -292,6 +290,8 @@ class ChannelResponseFilter(Base):
             filters_list = deepcopy(self.filters_list)
         else:
             filters_list = deepcopy(self.non_delay_filters)
+            filters_will_be_corrected = [True for x in filters_list]
+            filters_will_be_corrected = [True for x in filters_list]
 
         if not include_decimation:
             filters_list = deepcopy(
@@ -310,6 +310,15 @@ class ChannelResponseFilter(Base):
         if normalize:
             result /= np.max(np.abs(result))
         return result
+
+    def filters_that_will_be_corrected(self, include_delay=False, include_decimation=True,):
+        """
+
+        :param include_delay:
+        :param include_decimation:
+        :return:
+        """
+        pass
 
     def compute_instrument_sensitivity(
         self, normalization_frequency=None, sig_figs=6

@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -80,3 +80,8 @@ class Channel(Base):
                 continue
         # compute instrument sensitivity and units in/out
         return ChannelResponseFilter(filters_list=mt_filter_list)
+
+    @property
+    def unit_object(self):
+        from mt_metadata.utils.units import get_unit_object
+        return get_unit_object(self.units)
