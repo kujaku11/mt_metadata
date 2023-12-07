@@ -52,7 +52,7 @@ class ChannelResponseFilter(Base):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
-        self._direction = None
+        self.direction = None
 
         super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
@@ -81,12 +81,12 @@ class ChannelResponseFilter(Base):
             self.logger.warning("Obspy mapping not defined for ChannelResponseFilter, only for FilterBase")
         return self._obspy_mapping
 
-    @property
-    def direction(self):
-        """filter direction is set during the validation"""
-        if self._direction is None:
-            self.logger.error("filter direction is not defined until valdation")
-        return self._direction
+    # @property
+    # def direction(self):
+    #     """filter direction is set during the validation"""
+    #     if self._direction is None:
+    #         self.logger.warning("filter direction is not defined until valdation")
+    #     return self._direction
 
     @property
     def filters_list(self):
@@ -184,7 +184,7 @@ class ChannelResponseFilter(Base):
                 msg = "Inconsistent Filter directions"
                 self.logger.critical(msg)
                 raise AttributeError(msg)
-            self._direction = filter_directions[0]
+            self.direction = filter_directions[0]
 
 
         return return_list
