@@ -134,6 +134,19 @@ class FilterBase(Base):
         """ returns the inverse of application_operation"""
         return self.inverse_operation_dict[self.application_operation]
 
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self,value):
+        acceptable_filter_directions = ["forward", "inverse"]
+        if value not in acceptable_filter_directions:
+            msg = f"Filter direction must be one of {acceptable_filter_directions}"
+            self.logger.error(msg)
+            raise ValueError(msg)
+        self._direction = value
+
 
     def inverse(self):
         """
