@@ -405,10 +405,10 @@ class ChannelResponseFilter(Base):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
-        if self.correction_operation == "multiply":
+        if self.application_operation == "multiply":
             units_in_obj = get_unit_object(self.units_in)
             units_out_obj = get_unit_object(self.units_out)
-        elif self.correction_operation == "divide":
+        elif self.application_operation == "divide":
             msg = f"Obspy filters are not implemented for inverse filters "
             self.logger.error(msg)
             raise NotImplementedError

@@ -162,6 +162,8 @@ class Filtered(Base):
                             )
                         )
                         return False
+                    else:
+                        return True
         elif self._name == [] and self._applied == [True]:
             return True
         else:
