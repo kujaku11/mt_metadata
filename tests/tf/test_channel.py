@@ -35,7 +35,7 @@ class TestChannel(unittest.TestCase):
                 "data_quality.rating.method": "ml",
                 "data_quality.rating.value": 4,
                 "data_quality.warnings": "No warnings",
-                "filter.applied": [True, False],
+                "filter.applied": [False, True],
                 "filter.comments": "test",
                 "filter.name": ["lowpass", "counts2mv"],
                 "location.elevation": 1234.0,

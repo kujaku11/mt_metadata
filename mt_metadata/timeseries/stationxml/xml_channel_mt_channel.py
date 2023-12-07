@@ -108,7 +108,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # fill channel filters
         mt_channel.filter.name = list(mt_filters.keys())
-        mt_channel.filter.applied = [False] * len(list(mt_filters.keys()))
+        mt_channel.filter.applied = [True] * len(list(mt_filters.keys()))
 
         return mt_channel, mt_filters
 

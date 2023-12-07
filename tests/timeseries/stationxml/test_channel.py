@@ -109,7 +109,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("comments", "run_ids: []"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False] * 3),
+                        ("filter.applied", [True] * 3),
                         (
                             "filter.name",
                             [
@@ -150,7 +150,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 92.0),
-                        ("filter.applied", [False] * 6),
+                        ("filter.applied", [True] * 6),
                         (
                             "filter.name",
                             [
@@ -233,7 +233,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hx"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False] * 3),
+                        ("filter.applied", [True] * 3),
                         (
                             "filter.name",
                             [
@@ -274,7 +274,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hy"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False] * 3),
+                        ("filter.applied", [True] * 3),
                         (
                             "filter.name",
                             [
@@ -315,7 +315,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("comments", "run_ids: [a,b]"),
                         ("component", "hz"),
                         ("data_quality.rating.value", 0),
-                        ("filter.applied", [False] * 3),
+                        ("filter.applied", [True] * 3),
                         (
                             "filter.name",
                             [
@@ -356,7 +356,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("component", "ex"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
-                        ("filter.applied", [False] * 6),
+                        ("filter.applied", [True] * 6),
                         (
                             "filter.name",
                             [
@@ -412,7 +412,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("component", "ey"),
                         ("data_quality.rating.value", 0),
                         ("dipole_length", 94.0),
-                        ("filter.applied", [False] * 6),
+                        ("filter.applied", [True] * 6),
                         (
                             "filter.name",
                             [
