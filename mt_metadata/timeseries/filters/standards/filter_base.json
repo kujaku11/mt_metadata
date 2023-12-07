@@ -88,16 +88,5 @@
         "alias": [],
         "example": "1.0",
 		"default": 1.0
-    },
-    "direction": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Tells how to apply the filter to get the intended response correction",
-        "options": ["forward", "inverse"],
-        "alias": [],
-        "example": "inverse",
-		"default": "forward"
     }
 }

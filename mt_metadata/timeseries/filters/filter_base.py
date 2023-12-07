@@ -117,6 +117,7 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
+        self.direction = kwargs.get("direction", "forward") # ["forward", "inverse"]
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
