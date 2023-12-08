@@ -329,14 +329,6 @@ class ChannelResponseFilter(Base):
             result /= np.max(np.abs(result))
         return result
 
-    def filters_that_will_be_corrected(self, include_delay=False, include_decimation=True,):
-        """
-
-        :param include_delay:
-        :param include_decimation:
-        :return:
-        """
-        pass
 
     def compute_instrument_sensitivity(
         self, normalization_frequency=None, sig_figs=6
@@ -378,7 +370,7 @@ class ChannelResponseFilter(Base):
             return self.filters_list[0].units_in
         elif self.direction == "inverse":
             msg = "Inverse Channel Reponse units need testing"
-            print(msg)
+            self.logger.warning(msg)
             return self.filters_list[-1].units_out
 
     @property
@@ -555,9 +547,4 @@ class ChannelResponseFilter(Base):
         }
 
         plot_response(self.frequencies, cr_list, **kwargs)
-
-
-class InverseChannelResponseFilter(ChannelResponseFilter):
-    def __init__(self):
-        self.x = "x"
 
