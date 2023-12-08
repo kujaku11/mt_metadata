@@ -322,3 +322,9 @@ class TestFAPFilter(unittest.TestCase):
 
     #     with self.subTest("test name"):
     #         self.assertEqual(stage.name, cr.frequenciesap.name)
+
+# =============================================================================
+# Run
+# =============================================================================
+if __name__ == "__main__":
+    unittest.main()

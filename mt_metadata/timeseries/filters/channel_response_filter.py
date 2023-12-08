@@ -253,16 +253,44 @@ class ChannelResponseFilter(Base):
             total_delay += delay_filter.delay
         return total_delay
 
+    def get_list_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+        """
+
+        :param include_decimation:
+        :param include_delay:
+        :return:
+
+        # Experimental snippet if we want to allow filters with the opposite convention
+        # into channel response -- I don't think we do.
+        # if self.correction_operation == "multiply":
+        #     inverse_filters = [x.inverse() for x in self.filters_list]
+        #     self.filters_list = inverse_filters
+        """
+        if include_delay:
+            filters_list = deepcopy(self.filters_list)
+        else:
+            filters_list = deepcopy(self.non_delay_filters)
+
+        if not include_decimation:
+            filters_list = deepcopy(
+                [x for x in filters_list if not x.decimation_active]
+            )
+        indices = [i for (i,x) in enumerate(self.filters_list) if x in filters_list]
+        # consider zipping these on return
+        return filters_list, indices
+
     def complex_response(
         self,
         frequencies=None,
+        filters_list=[],
+        include_decimation=True,
         include_delay=False,
         normalize=False,
-        include_decimation=True,
         **kwargs,
     ):
         """
-        TODO: This method needs to be modified to track which filters are to be applied/corrected
+        Computes the complex response of self.
+        Allows the user to optionally supply a subset of filters
 
         :param frequencies: frequencies to compute complex response,
          defaults to None
@@ -270,33 +298,23 @@ class ChannelResponseFilter(Base):
         :param include_delay: include delay in complex response,
          defaults to False
         :type include_delay: bool, optional
-        :param normalize: normalize the response to 1, defaults to False
-        :type normalize: bool, optional
         :param include_decimation: Include decimation in response,
          defaults to True
         :type include_decimation: bool, optional
+        :param normalize: normalize the response to 1, defaults to False
+        :type normalize: bool, optional
         :return: complex response along give frequency array
         :rtype: np.ndarray
 
         """
-        def bool_flip(x):
-            return bool(int(x)-1)
-
-        filters_will_be_corrected = [True for x in self.filters_list]
         if frequencies is not None:
             self.frequencies = frequencies
 
-        if include_delay:
-            filters_list = deepcopy(self.filters_list)
-        else:
-            filters_list = deepcopy(self.non_delay_filters)
-            filters_will_be_corrected = [True for x in filters_list]
-            filters_will_be_corrected = [True for x in filters_list]
-
-        if not include_decimation:
-            filters_list = deepcopy(
-                [x for x in filters_list if not x.decimation_active]
-            )
+        # make filters list if not supplied
+        if not filters_list:
+            filters_list, _ = self.get_list_of_filters_to_remove(
+                include_decimation=include_decimation,
+            include_delay=include_delay)
 
         if len(filters_list) == 0:
             self.logger.warning("No filters associated with ChannelResponseFilter instance, returning 1")
