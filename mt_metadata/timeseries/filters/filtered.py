@@ -164,7 +164,8 @@ class Filtered(Base):
                         return False
                     else:
                         return True
-        elif self._name == [] and self._applied == [True]:
+        elif self._name == [] and len(self._applied) > 0:
+            #self.logger.debug("Name probably not yet initialized -- skipping consitency check")
             return True
         else:
             return False
