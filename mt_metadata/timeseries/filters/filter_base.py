@@ -148,27 +148,28 @@ class FilterBase(Base):
         self._direction = value
 
 
-    def inverse(self):
-        """
-        Returns a form of inverse filter.  Complex response is the same, but the operation si swapped between
-        multiply and divide.
-
-        """
-        if self.direction == "inverse":
-            self.logger.warning("It is uncommon to invert an already inverted filter")
-            self.logger.warning("Suggest accessing the original instead.")
-
-        new_stage = self.copy()
-        new_stage.direction = self.inverse_direction_dict[self.direction]
-
-        # skip making obspy mapping
-        #new_stage.make_obspy_mapping()
-        new_stage.obspy_mapping = {}
-        # set units and name
-        new_stage.units_in = self.units_out
-        new_stage.units_out = self.units_in
-        new_stage.name = f"inverse of {new_stage.name}"
-        return new_stage
+    # def inverse(self):
+    #     """
+    #     Returns a form of inverse filter.  Complex response is the same, but the operation si swapped between
+    #     multiply and divide.
+    #
+    #     """
+    #     raise Exception
+    #     if self.direction == "inverse":
+    #         self.logger.warning("It is uncommon to invert an already inverted filter")
+    #         self.logger.warning("Suggest accessing the original instead.")
+    #
+    #     new_stage = self.copy()
+    #     new_stage.direction = self.inverse_direction_dict[self.direction]
+    #
+    #     # skip making obspy mapping
+    #     #new_stage.make_obspy_mapping()
+    #     new_stage.obspy_mapping = {}
+    #     # set units and name
+    #     new_stage.units_in = self.units_out
+    #     new_stage.units_out = self.units_in
+    #     new_stage.name = f"inverse of {new_stage.name}"
+    #     return new_stage
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
