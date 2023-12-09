@@ -45,6 +45,7 @@ class ChannelResponse(Base):
     application_operation = FilterBase.__dict__["application_operation"]
     correction_operation = FilterBase.__dict__["correction_operation"]
     operation_dict = FilterBase.__dict__["operation_dict"]
+    inverse_operation_dict = FilterBase.__dict__["inverse_operation_dict"]
 
     def __init__(self, **kwargs):
         self.filters_list = []
