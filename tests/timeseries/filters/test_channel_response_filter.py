@@ -197,7 +197,7 @@ class TestFAPFilter(unittest.TestCase):
             units_in="v", units_out="v", name="example_coefficient", gain=10,
         )
 
-        self.cr = ChannelResponseFilter(
+        self.cr = ChannelResponse(
             filters_list=[self.pz, self.fap, self.cf, self.td]
         )
         self.cr.frequencies = np.logspace(-5, 5, 500)
