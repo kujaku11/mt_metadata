@@ -33,14 +33,9 @@ The 'stages' that are described in the IRIS StationXML documentation appear
 to cover all possible linear time invariant filter types we are likely to
 encounter.
 
-A ChannelResponseStage object has a direction.  It has units_in and units_out attrs.
+A FilterBase object has a direction.  It has units_in and units_out attrs.
 These are the units before and after multiplication by the complex_response
-of the filter in frequency domain.
-
-***********************************************************************************
-Consider renaming this module and class: channel_response_stage.ChannelResponseStage
-***********************************************************************************
-
+of the filter in frequency domain.  It is very similar to an "obspy filter stage"
 
 """
 # =============================================================================
@@ -81,7 +76,6 @@ def get_base_obspy_mapping():
     return mapping
 
 
-# class ChannelResponseStage(Base):
 class FilterBase(Base):
     """
     This abstract base class is used to represent various forms of linear, time invariant (LTI) filters.

@@ -16,7 +16,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import DataQuality, Filtered, Location, TimePeriod, Instrument, Fdsn
-from mt_metadata.timeseries.filters import ChannelResponseFilter
+from mt_metadata.timeseries.filters import ChannelResponse
 
 # =============================================================================
 attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
@@ -79,7 +79,7 @@ class Channel(Base):
                 self.logger.error(msg)
                 continue
         # compute instrument sensitivity and units in/out
-        return ChannelResponseFilter(filters_list=mt_filter_list)
+        return ChannelResponse(filters_list=mt_filter_list)
 
     @property
     def unit_object(self):

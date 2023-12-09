@@ -26,7 +26,7 @@ import unittest
 from obspy.core import inventory
 
 from mt_metadata.timeseries.filters import (
-    ChannelResponseFilter,
+    ChannelResponse,
     PoleZeroFilter,
     CoefficientFilter,
     TimeDelayFilter,
@@ -57,7 +57,7 @@ class TestFilterElectric(unittest.TestCase):
 
     def test_instrument_sensitivity(self):
         filters_list = [create_filter_from_stage(s) for s in self.stages]
-        cr = ChannelResponseFilter(filters_list=filters_list)
+        cr = ChannelResponse(filters_list=filters_list)
 
         self.assertAlmostEqual(
             cr.compute_instrument_sensitivity(

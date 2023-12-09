@@ -34,7 +34,7 @@ attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
-class ChannelResponseFilter(Base):
+class ChannelResponse(Base):
     """
     This class holds a list of all the filters associated with a channel.
     The list should be ordered to match the order in which the filters are applied to the signal.
@@ -67,18 +67,6 @@ class ChannelResponseFilter(Base):
 
     def __repr__(self):
         return self.__str__()
-
-    @property
-    def obspy_mapping(self):
-        """
-
-        :return: mapping to an obspy filter
-        :rtype: dict
-
-        """
-        if self._obspy_mapping is None:
-            self.logger.warning("Obspy mapping not defined for ChannelResponseFilter, only for FilterBase")
-        return self._obspy_mapping
 
 
     @property
@@ -317,7 +305,7 @@ class ChannelResponseFilter(Base):
             include_delay=include_delay)
 
         if len(filters_list) == 0:
-            self.logger.warning("No filters associated with ChannelResponseFilter instance, returning 1")
+            self.logger.warning(f"No filters associated with {self.__class__}, returning 1")
             return np.ones(len(self.frequencies), dtype=complex)
 
         # define the product of all filters as the total response function
@@ -548,3 +536,8 @@ class ChannelResponseFilter(Base):
 
         plot_response(self.frequencies, cr_list, **kwargs)
 
+
+
+if __name__ == "__main__":
+    qq = ChannelResponse()
+    print(qq)

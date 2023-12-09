@@ -13,7 +13,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     PoleZeroFilter,
     CoefficientFilter,
-    ChannelResponseFilter,
+    ChannelResponse,
     TimeDelayFilter,
 )
 from mt_metadata.utils.exceptions import MTSchemaError
