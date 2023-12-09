@@ -45,7 +45,6 @@ class ChannelResponse(Base):
     application_operation = FilterBase.__dict__["application_operation"]
     correction_operation = FilterBase.__dict__["correction_operation"]
     operation_dict = FilterBase.__dict__["operation_dict"]
-    inverse_operation_dict = FilterBase.__dict__["inverse_operation_dict"]
 
     def __init__(self, **kwargs):
         self.filters_list = []
@@ -241,6 +240,17 @@ class ChannelResponse(Base):
             total_delay += delay_filter.delay
         return total_delay
 
+    def get_indices_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+        indices = list(np.arange(len(self.filters_list)))
+
+        if not include_delay:
+            indices = [i for i in indices if self.filters_list[i].type != "time delay"]
+
+        if not include_decimation:
+            indices = [i for i in indices if not self.filters_list[i].decimation_active]
+
+        return indices
+
     def get_list_of_filters_to_remove(self, include_decimation=True, include_delay=False):
         """
 
@@ -254,18 +264,8 @@ class ChannelResponse(Base):
         #     inverse_filters = [x.inverse() for x in self.filters_list]
         #     self.filters_list = inverse_filters
         """
-        if include_delay:
-            filters_list = deepcopy(self.filters_list)
-        else:
-            filters_list = deepcopy(self.non_delay_filters)
-
-        if not include_decimation:
-            filters_list = deepcopy(
-                [x for x in filters_list if not x.decimation_active]
-            )
-        indices = [i for (i,x) in enumerate(self.filters_list) if x in filters_list]
-        # consider zipping these on return
-        return filters_list, indices
+        indices = self.get_indices_of_filters_to_remove(include_decimation=True, include_delay=False)
+        return [self.filters_list[i] for i in indices]
 
     def complex_response(
         self,
@@ -300,7 +300,7 @@ class ChannelResponse(Base):
 
         # make filters list if not supplied
         if not filters_list:
-            filters_list, _ = self.get_list_of_filters_to_remove(
+            filters_list = self.get_list_of_filters_to_remove(
                 include_decimation=include_decimation,
             include_delay=include_delay)
 

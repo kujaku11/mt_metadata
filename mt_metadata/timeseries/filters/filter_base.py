@@ -78,7 +78,7 @@ def get_base_obspy_mapping():
 
 class FilterBase(Base):
     """
-    This abstract base class is used to represent various forms of linear, time invariant (LTI) filters.
+    bstract base class is used to represent various forms of linear, time invariant (LTI) filters.
     By convention, forward application of the filter is equivalent to multiplication in frequency domain by the
     filter's complex response.  Removing the filter (applying the inverse) can be achieved by divding by the
     filter's complex response.
@@ -98,9 +98,9 @@ class FilterBase(Base):
     inverse_operation_dict["divide"] = "multiply"
     inverse_operation_dict["multiply"] = "divide"
 
-    inverse_direction_dict = {}
-    inverse_direction_dict["forward"] = "inverse"
-    inverse_direction_dict["inverse"] = "forward"
+    # inverse_direction_dict = {}
+    # inverse_direction_dict["forward"] = "inverse"
+    # inverse_direction_dict["inverse"] = "forward"
 
     def __init__(self, **kwargs):
 
@@ -339,7 +339,8 @@ class FilterBase(Base):
         return cls(**kwargs)
 
     def complex_response(self, frqs):
-        print("Filter Base class does not have a complex response defined")
+        msg = f"complex_response not defined for {self._class_name} class"
+        self.logger.info(msg)
         return None
 
     def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
@@ -463,14 +464,4 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
-
-
-
-def main():
-    tmp = FilterBase()
-    tmp
-
-
-if __name__ == "__main__":
-    main()
 
