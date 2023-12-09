@@ -114,6 +114,8 @@ class Base:
                     other_value = other_dict[key]
                     if isinstance(value, np.ndarray):
                         if value.size != other_value.size:
+                            msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
+                            self.logger.info(msg)
                             fail=True
                             continue
                         if not (value == other_value).all():
