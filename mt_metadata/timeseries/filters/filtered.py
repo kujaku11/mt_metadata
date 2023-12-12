@@ -80,6 +80,8 @@ class Filtered(Base):
             elif applied in [0, "0"]:
                 self._applied = [False]
                 return
+
+        #sets an empty list to one default value
         if isinstance(applied, list) and len(applied) == 0:
             self.applied = [True]
             return
@@ -95,6 +97,14 @@ class Filtered(Base):
                 applied_list = [ss.lower() for ss in applied.split()]
         elif isinstance(applied, list):
             applied_list = applied
+            # set integer strings to integers ["0","1"]--> [0, 1]
+            for i, elt in enumerate(applied_list):
+                if elt in ["0", "1",]:
+                    applied_list[i] = int(applied_list[i])
+            # set integers to bools [0,1]--> [False, True]
+            for i, elt in enumerate(applied_list):
+                if elt in [0, 1,]:
+                    applied_list[i] = bool(applied_list[i])
         elif isinstance(applied, bool):
             applied_list = [applied]
         # the returned type from a hdf5 dataset is a numpy array.
@@ -111,7 +121,7 @@ class Filtered(Base):
         for app_bool in applied_list:
             if app_bool is None:
                 bool_list.append(True)
-            if isinstance(app_bool, str):
+            elif isinstance(app_bool, str):
                 if app_bool.lower() in ["false", "0"]:
                     bool_list.append(False)
                 elif app_bool.lower() in ["true", "1"]:
@@ -165,7 +175,7 @@ class Filtered(Base):
                     else:
                         return True
         elif self._name == [] and len(self._applied) > 0:
-            #self.logger.debug("Name probably not yet initialized -- skipping consitency check")
+            self.logger.debug("Name probably not yet initialized -- skipping consitency check")
             return True
         else:
             return False
