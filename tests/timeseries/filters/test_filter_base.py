@@ -56,3 +56,31 @@ class TestFilterBase(unittest.TestCase):
 
         with self.subTest(msg="test initial value"):
             self.assertEqual(1, self.fb.gain)
+
+        with self.subTest(msg="test non-zero gain"):
+            fb = FilterBase(gain=0.0)
+            self.assertEqual(1, fb.gain)
+
+    def test_obspy_map(self):
+        default_obspy_map = self.fb.obspy_mapping
+        self.assertIsNotNone(default_obspy_map)
+
+        # test setter
+        self.fb.obspy_mapping = default_obspy_map
+
+        # test type-checking on obspy map assignment
+        with self.assertRaises(TypeError):
+            self.fb.obspy_mapping = 42
+
+        # test type-checking on make_obspy stage
+        with self.assertRaises(TypeError):
+            self.fb.from_obspy_stage(42)
+
+
+
+# =============================================================================
+# Run
+# =============================================================================
+if __name__ == "__main__":
+    unittest.main()
+

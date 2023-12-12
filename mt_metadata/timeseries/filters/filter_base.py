@@ -263,7 +263,7 @@ class FilterBase(Base):
 
         if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
             msg = f"Expected a Stage and got a {type(stage)}"
-            cls.logger.error(msg)
+            cls().logger.error(msg)
             raise TypeError(msg)
 
         if mapping is None:

@@ -85,12 +85,6 @@ class TestFiltered(unittest.TestCase):
         filtered_obj_2.applied = [True, True, True]
         self.assertEquals(filtered_obj_2, filtered_obj_1)
 
-# DOES NOT ACCEPT [0,0,0]
-    # @classmethod
-    # def tearDownClass(self):
-    #     close_open_files()
-    #     self.wd.joinpath("test.h5").unlink()
-
 
 # =============================================================================
 # Run
