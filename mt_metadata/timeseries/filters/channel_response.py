@@ -42,16 +42,11 @@ class ChannelResponse(Base):
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
     """
-    application_operation = FilterBase.__dict__["application_operation"]
-    correction_operation = FilterBase.__dict__["correction_operation"]
-    operation_dict = FilterBase.__dict__["operation_dict"]
-    inverse_operation_dict = FilterBase.__dict__["inverse_operation_dict"]
 
     def __init__(self, **kwargs):
         self.filters_list = []
         self.frequencies = np.logspace(-4, 4, 100)
         self.normalization_frequency = None
-        self.direction = None # set during validation
 
         super().__init__(attr_dict=attr_dict)
         for k, v in kwargs.items():
@@ -157,16 +152,6 @@ class ChannelResponse(Base):
 
         if fails:
             raise TypeError(", ".join(fails))
-
-        # Check that filter operations are all the same
-        if len(return_list):
-            filter_directions = [x.direction for x in return_list]
-            if len(set(filter_directions)) != 1:
-                msg = "Inconsistent Filter directions"
-                self.logger.critical(msg)
-                raise AttributeError(msg)
-            self.direction = filter_directions[0]
-
 
         return return_list
 
@@ -355,12 +340,8 @@ class ChannelResponse(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
-        if self.direction == "forward":
+        else:
             return self.filters_list[0].units_in
-        elif self.direction == "inverse":
-            msg = "Inverse Channel Reponse units need testing"
-            self.logger.warning(msg)
-            return self.filters_list[-1].units_out
 
     @property
     def units_out(self):
@@ -369,15 +350,8 @@ class ChannelResponse(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
-        if self.direction == "forward":
+        else:
             return self.filters_list[-1].units_out
-        if self.direction == "inverse":
-            return self.filters_list[0].units_in
-        # if self.correction_operation == "multiply":
-        #     return self.filters_list[-1].units_out
-        # elif self.correction_operation == "divide":
-        #     print('Careful here -- the filter is inverted -- add a test to check ')
-            return self.filters_list[0].units_in
 
 
     def _check_consistency_of_units(self):
@@ -412,13 +386,8 @@ class ChannelResponse(Base):
         """
         total_sensitivity = self.compute_instrument_sensitivity()
 
-        if self.application_operation == "multiply":
-            units_in_obj = get_unit_object(self.units_in)
-            units_out_obj = get_unit_object(self.units_out)
-        elif self.application_operation == "divide":
-            msg = f"Obspy filters are not implemented for inverse filters "
-            self.logger.error(msg)
-            raise NotImplementedError
+        units_in_obj = get_unit_object(self.units_in)
+        units_out_obj = get_unit_object(self.units_out)
 
         total_response = inventory.Response()
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
@@ -536,9 +505,3 @@ class ChannelResponse(Base):
         }
 
         plot_response(self.frequencies, cr_list, **kwargs)
-
-
-
-if __name__ == "__main__":
-    qq = ChannelResponse()
-    print(qq)

@@ -33,7 +33,7 @@ The 'stages' that are described in the IRIS StationXML documentation appear
 to cover all possible linear time invariant filter types we are likely to
 encounter.
 
-A FilterBase object has a direction.  It has units_in and units_out attrs.
+A FilterBase object has a direction, defined by has units_in and units_out attrs.
 These are the units before and after multiplication by the complex_response
 of the filter in frequency domain.  It is very similar to an "obspy filter stage"
 
@@ -86,21 +86,8 @@ class FilterBase(Base):
     This class is intended to support the calibration of data from archived units to physical units, although
     it may find more application in future.
 
-    ToDo: The attrubutes direction (one of ["forward", "inverse"]) and the attribute application_operation
-     maybe superfluous.  We could probably do away with one of them (direction).
     """
     __doc__ = write_lines(attr_dict)
-    operation_dict = {}
-    operation_dict["forward"] = "multiply"
-    operation_dict["inverse"] = "divide"
-
-    inverse_operation_dict = {}
-    inverse_operation_dict["divide"] = "multiply"
-    inverse_operation_dict["multiply"] = "divide"
-
-    # inverse_direction_dict = {}
-    # inverse_direction_dict["forward"] = "inverse"
-    # inverse_direction_dict["inverse"] = "forward"
 
     def __init__(self, **kwargs):
 
@@ -111,59 +98,11 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
-        self.direction = kwargs.get("direction", "forward") # ["forward", "inverse"]
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         if self.gain == 0.0:
             self.gain = 1.0
-
-
-    @property
-    def application_operation(self):
-        return self.operation_dict[self.direction]
-
-    @property
-    def correction_operation(self):
-        """ returns the inverse of application_operation"""
-        return self.inverse_operation_dict[self.application_operation]
-
-    @property
-    def direction(self):
-        return self._direction
-
-    @direction.setter
-    def direction(self,value):
-        acceptable_filter_directions = ["forward", "inverse"]
-        if value not in acceptable_filter_directions:
-            msg = f"Filter direction must be one of {acceptable_filter_directions}"
-            self.logger.error(msg)
-            raise ValueError(msg)
-        self._direction = value
-
-
-    # def inverse(self):
-    #     """
-    #     Returns a form of inverse filter.  Complex response is the same, but the operation si swapped between
-    #     multiply and divide.
-    #
-    #     """
-    #     raise Exception
-    #     if self.direction == "inverse":
-    #         self.logger.warning("It is uncommon to invert an already inverted filter")
-    #         self.logger.warning("Suggest accessing the original instead.")
-    #
-    #     new_stage = self.copy()
-    #     new_stage.direction = self.inverse_direction_dict[self.direction]
-    #
-    #     # skip making obspy mapping
-    #     #new_stage.make_obspy_mapping()
-    #     new_stage.obspy_mapping = {}
-    #     # set units and name
-    #     new_stage.units_in = self.units_out
-    #     new_stage.units_out = self.units_in
-    #     new_stage.name = f"inverse of {new_stage.name}"
-    #     return new_stage
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
