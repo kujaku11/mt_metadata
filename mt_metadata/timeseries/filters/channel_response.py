@@ -3,11 +3,11 @@
 Channel Response Filter
 ==========================
 
-Combines all filters for a given channel into a total response that can be used in 
+Combines all filters for a given channel into a total response that can be used in
 the frequency domain.
 
-.. note:: Time Delay filters should be applied in the time domain 
-    otherwise bad things can happen.   
+.. note:: Time Delay filters should be applied in the time domain
+    otherwise bad things can happen.
 """
 # =============================================================================
 # Imports
@@ -24,6 +24,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     FIRFilter,
 )
+from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from obspy.core import inventory
@@ -33,9 +34,11 @@ attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
 # =============================================================================
 
 
-class ChannelResponseFilter(Base):
+class ChannelResponse(Base):
     """
     This class holds a list of all the filters associated with a channel.
+    The list should be ordered to match the order in which the filters are applied to the signal.
+
     It has methods for combining the responses of all the filters into a total
     response that we will apply to a data segment.
     """
@@ -59,6 +62,7 @@ class ChannelResponseFilter(Base):
 
     def __repr__(self):
         return self.__str__()
+
 
     @property
     def filters_list(self):
@@ -106,7 +110,7 @@ class ChannelResponseFilter(Base):
 
     def _validate_filters_list(self, filters_list):
         """
-        make sure the filters list is valid
+        make sure the filters list is valid.
 
         :param filters_list: DESCRIPTION
         :type filters_list: TYPE
@@ -114,7 +118,7 @@ class ChannelResponseFilter(Base):
         :rtype: TYPE
 
         """
-        ACCEPTABLE_FILTERS = [
+        supported_filters = [
             PoleZeroFilter,
             CoefficientFilter,
             TimeDelayFilter,
@@ -122,8 +126,8 @@ class ChannelResponseFilter(Base):
             FIRFilter,
         ]
 
-        def is_acceptable_filter(item):
-            if isinstance(item, tuple(ACCEPTABLE_FILTERS)):
+        def is_supported_filter(item):
+            if isinstance(item, tuple(supported_filters)):
                 return True
             else:
                 return False
@@ -139,11 +143,11 @@ class ChannelResponseFilter(Base):
         fails = []
         return_list = []
         for item in filters_list:
-            if is_acceptable_filter(item):
+            if is_supported_filter(item):
                 return_list.append(item)
             else:
                 fails.append(
-                    f"Item is not an acceptable filter type, {type(item)}"
+                    f"Item is not a supported filter type, {type(item)}"
                 )
 
         if fails:
@@ -222,15 +226,45 @@ class ChannelResponseFilter(Base):
             total_delay += delay_filter.delay
         return total_delay
 
+    def get_indices_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+        indices = list(np.arange(len(self.filters_list)))
+
+        if not include_delay:
+            indices = [i for i in indices if self.filters_list[i].type != "time delay"]
+
+        if not include_decimation:
+            indices = [i for i in indices if not self.filters_list[i].decimation_active]
+
+        return indices
+
+    def get_list_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+        """
+
+        :param include_decimation:
+        :param include_delay:
+        :return:
+
+        # Experimental snippet if we want to allow filters with the opposite convention
+        # into channel response -- I don't think we do.
+        # if self.correction_operation == "multiply":
+        #     inverse_filters = [x.inverse() for x in self.filters_list]
+        #     self.filters_list = inverse_filters
+        """
+        indices = self.get_indices_of_filters_to_remove(include_decimation=True, include_delay=False)
+        return [self.filters_list[i] for i in indices]
+
     def complex_response(
         self,
         frequencies=None,
+        filters_list=[],
+        include_decimation=True,
         include_delay=False,
         normalize=False,
-        include_decimation=True,
         **kwargs,
     ):
         """
+        Computes the complex response of self.
+        Allows the user to optionally supply a subset of filters
 
         :param frequencies: frequencies to compute complex response,
          defaults to None
@@ -238,41 +272,37 @@ class ChannelResponseFilter(Base):
         :param include_delay: include delay in complex response,
          defaults to False
         :type include_delay: bool, optional
-        :param normalize: normalize the response to 1, defaults to False
-        :type normalize: bool, optional
         :param include_decimation: Include decimation in response,
          defaults to True
         :type include_decimation: bool, optional
+        :param normalize: normalize the response to 1, defaults to False
+        :type normalize: bool, optional
         :return: complex response along give frequency array
         :rtype: np.ndarray
 
         """
-
         if frequencies is not None:
             self.frequencies = frequencies
 
-        if include_delay:
-            filters_list = deepcopy(self.filters_list)
-        else:
-            filters_list = deepcopy(self.non_delay_filters)
-
-        if not include_decimation:
-            filters_list = deepcopy(
-                [x for x in filters_list if not x.decimation_active]
-            )
+        # make filters list if not supplied
+        if not filters_list:
+            filters_list = self.get_list_of_filters_to_remove(
+                include_decimation=include_decimation,
+            include_delay=include_delay)
 
         if len(filters_list) == 0:
-            # warn that there are no filters associated with channel?
+            self.logger.warning(f"No filters associated with {self.__class__}, returning 1")
             return np.ones(len(self.frequencies), dtype=complex)
 
+        # define the product of all filters as the total response function
         result = filters_list[0].complex_response(self.frequencies)
-
         for ff in filters_list[1:]:
             result *= ff.complex_response(self.frequencies)
 
         if normalize:
             result /= np.max(np.abs(result))
         return result
+
 
     def compute_instrument_sensitivity(
         self, normalization_frequency=None, sig_figs=6
@@ -310,8 +340,8 @@ class ChannelResponseFilter(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
-
-        return self.filters_list[0].units_in
+        else:
+            return self.filters_list[0].units_in
 
     @property
     def units_out(self):
@@ -320,8 +350,9 @@ class ChannelResponseFilter(Base):
         """
         if self.filters_list is [] or len(self.filters_list) == 0:
             return None
+        else:
+            return self.filters_list[-1].units_out
 
-        return self.filters_list[-1].units_out
 
     def _check_consistency_of_units(self):
         """

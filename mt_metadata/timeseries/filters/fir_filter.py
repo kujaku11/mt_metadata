@@ -1,4 +1,3 @@
-import copy
 import matplotlib.pyplot as plt
 import numpy as np
 from obspy.core.inventory.response import FIRResponseStage
@@ -6,7 +5,7 @@ import scipy.signal as signal
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
@@ -14,14 +13,6 @@ attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fir_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
-
-obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
-# obspy_mapping["_zeros"] = "_zeros"
-obspy_mapping["_symmetry"] = "symmetry"
-obspy_mapping["_coefficients"] = "coefficients"
-obspy_mapping["decimation_factor"] = "decimation_factor"
-obspy_mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
-obspy_mapping["stage_gain_frequency"] = "gain_frequency"
 
 
 class FIRFilter(FilterBase):
@@ -39,7 +30,15 @@ class FIRFilter(FilterBase):
         if not self.decimation_factor:
             self.decimation_factor = 1.0
 
-        self.obspy_mapping = obspy_mapping
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        mapping["_symmetry"] = "symmetry"
+        mapping["_coefficients"] = "coefficients"
+        mapping["decimation_factor"] = "decimation_factor"
+        mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
+        mapping["stage_gain_frequency"] = "gain_frequency"
+        return mapping
 
     @property
     def output_sampling_rate(self):

@@ -42,7 +42,7 @@ class TestElectric(unittest.TestCase):
                 "dc.end": 1.0,
                 "dc.start": 2.0,
                 "dipole_length": 100.0,
-                "filter.applied": [False, True],
+                "filter.applied": [True, False],
                 "filter.comments": "filter comments",
                 "filter.name": ["counts2mv", "lowpass"],
                 "measurement_azimuth": 90.0,
