@@ -256,7 +256,7 @@ class ChannelResponse(Base):
     def complex_response(
         self,
         frequencies=None,
-        filters_list=[],
+        filters_list=None,
         include_decimation=True,
         include_delay=False,
         normalize=False,
@@ -285,7 +285,8 @@ class ChannelResponse(Base):
             self.frequencies = frequencies
 
         # make filters list if not supplied
-        if not filters_list:
+        if filters_list is None:
+            logger.warning("Filters list not provided, building list assuming all are applied")
             filters_list = self.get_list_of_filters_to_remove(
                 include_decimation=include_decimation,
             include_delay=include_delay)
