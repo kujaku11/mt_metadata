@@ -286,7 +286,7 @@ class ChannelResponse(Base):
 
         # make filters list if not supplied
         if filters_list is None:
-            logger.warning("Filters list not provided, building list assuming all are applied")
+            self.logger.warning("Filters list not provided, building list assuming all are applied")
             filters_list = self.get_list_of_filters_to_remove(
                 include_decimation=include_decimation,
             include_delay=include_delay)
