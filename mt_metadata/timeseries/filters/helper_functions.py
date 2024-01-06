@@ -138,9 +138,9 @@ def decimation_info_is_pure_delay(stage):
         return False
 
 
-def stage_gain_is_degenerate():
-    # if gain is 1.0 ignore it
-    pass
+# def stage_gain_is_degenerate():
+#     # if gain is 1.0 ignore it
+#     pass
 
 
 MT2SI_ELECTRIC_FIELD_FILTER = make_volt_per_meter_to_millivolt_per_km_converter()
