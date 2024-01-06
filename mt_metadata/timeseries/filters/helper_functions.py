@@ -6,10 +6,6 @@ from mt_metadata.timeseries.filters.frequency_response_table_filter import (
     FrequencyResponseTableFilter,
 )
 
-MT2SI_ELECTRIC_FIELD_FILTER = make_volt_per_meter_to_millivolt_per_km_converter()
-MT2SI_MAGNETIC_FIELD_FILTER = make_tesla_to_nanotesla_converter()
-
-
 def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwargs):
     """
 
@@ -145,3 +141,7 @@ def decimation_info_is_pure_delay(stage):
 def stage_gain_is_degenerate():
     # if gain is 1.0 ignore it
     pass
+
+
+MT2SI_ELECTRIC_FIELD_FILTER = make_volt_per_meter_to_millivolt_per_km_converter()
+MT2SI_MAGNETIC_FIELD_FILTER = make_tesla_to_nanotesla_converter()
