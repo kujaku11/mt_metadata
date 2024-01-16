@@ -124,6 +124,10 @@ class TestBase(unittest.TestCase):
     def test_equal_other(self):
         assert (self.base_object == self.base_object.to_dict()["base"])
 
+    def test_equal_str(self):
+        self.assertFalse(self.base_object == "None")
+
+
 
 
 # =============================================================================
