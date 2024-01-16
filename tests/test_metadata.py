@@ -122,7 +122,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual(other, new)
 
     def test_equal_other(self):
-        self.base_object == self.base_object.to_dict()["base"]
+        assert (self.base_object == self.base_object.to_dict()["base"])
 
 
 
