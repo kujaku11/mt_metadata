@@ -62,7 +62,7 @@ class TestTFChannelNomenclature(unittest.TestCase):
         }.items():
             with self.subTest(key):
                 self.assertDictEqual(
-                    getattr(self.tf, f"_index_{key}"),
+                    getattr(self.tf, f"index_{key}"),
                     {"input": self.nc[index[0]], "output": self.nc[index[1]]},
                 )
 
