@@ -51,6 +51,21 @@ class TestTFChannelNomenclature(unittest.TestCase):
             sorted(self.tf._transfer_function.input.data.tolist()),
         )
 
+    def test_index_zxx(self):
+        for key, index in {
+            "zxx": ["hx", "ex"],
+            "zxy": ["hy", "ex"],
+            "zyx": ["hx", "ey"],
+            "zyy": ["hy", "ey"],
+            "tzx": ["hx", "hz"],
+            "tzy": ["hy", "hz"],
+        }.items():
+            with self.subTest(key):
+                self.assertDictEqual(
+                    getattr(self.tf, f"_index_{key}"),
+                    {"input": self.nc[index[0]], "output": self.nc[index[1]]},
+                )
+
 
 class TestTFPeriodInput(unittest.TestCase):
     def setUp(self):
@@ -61,7 +76,6 @@ class TestTFPeriodInput(unittest.TestCase):
         self.tf.period = self.period
 
     def test_period_shape(self):
-
         self.assertEqual(self.tf.period.size, self.n_period)
 
     def test_tf_shape(self):
@@ -113,7 +127,6 @@ class TestTFImpedanceInput(unittest.TestCase):
         self.tf.impedance = self.test_z
 
     def test_has_impedance(self):
-
         self.assertTrue(self.tf.has_impedance())
 
     def test_shape(self):
@@ -165,7 +178,6 @@ class TestTFTipperInput(unittest.TestCase):
         self.tf.tipper = self.test_t
 
     def test_has_tipper(self):
-
         self.assertTrue(self.tf.has_tipper())
 
     def test_shape(self):
@@ -217,7 +229,6 @@ class TestTFISPInput(unittest.TestCase):
         self.tf.inverse_signal_power = self.test_t
 
     def test_has_isp(self):
-
         self.assertTrue(self.tf.has_inverse_signal_power())
 
     def test_shape(self):
@@ -275,7 +286,6 @@ class TestTFResidualInput(unittest.TestCase):
         self.tf.residual_covariance = self.test_t
 
     def test_has_residual(self):
-
         self.assertTrue(self.tf.has_residual_covariance())
 
     def test_shape(self):

@@ -560,6 +560,30 @@ class TF:
         }
 
     @property
+    def _index_zxx(self):
+        return {"input": self.hx, "output": self.ex}
+
+    @property
+    def _index_zxy(self):
+        return {"input": self.hy, "output": self.ex}
+
+    @property
+    def _index_zyx(self):
+        return {"input": self.hx, "output": self.ey}
+
+    @property
+    def _index_zyy(self):
+        return {"input": self.hy, "output": self.ey}
+
+    @property
+    def _index_tzx(self):
+        return {"input": self.hx, "output": self.hz}
+
+    @property
+    def _index_tzy(self):
+        return {"input": self.hy, "output": self.hz}
+
+    @property
     def fn(self):
         """reference to original data file"""
         return self._fn
