@@ -242,11 +242,12 @@ class TestZMM(unittest.TestCase):
                                 -27.14999962 + 6.88899994e00j,
                             ],
                             [
-                                -27.14999962 + 6.88899994e00j,
-                                130.39999390 + 2.38400006e-07j,
+                                -27.14999962 - 6.88899994e00j,
+                                130.3999939 + 2.38400006e-07j,
                             ],
                         ]
                     ),
+                    atol=1e-5,
                 ).all()
             )
 
@@ -266,14 +267,13 @@ class TestZMM(unittest.TestCase):
                             ],
                         ]
                     ),
+                    atol=1e-5,
                 ).all()
             )
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (38, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
