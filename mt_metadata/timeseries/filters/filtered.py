@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -62,13 +62,10 @@ class Filtered(Base):
 
         check = self._check_consistency()
         if not check:
-            self.logger.debug(
-                "Filter names and applied lists are not the "
-                + "same size. Be sure to check the inputs."
-                + " names = {0}, applied = {1}".format(
-                    self._name, self._applied
-                )
-            )
+            msg = (f"Filter names and applied lists are not the same size. "
+                   f"Be sure to check the inputs. "
+                   f"names = {self._name}, applied = {self._applied}")
+            self.logger.warning(msg)
 
     @property
     def applied(self):
@@ -77,17 +74,21 @@ class Filtered(Base):
     @applied.setter
     def applied(self, applied):
         if not hasattr(applied, "__iter__"):
-            if applied in [None, "none", "None", "NONE", "null", 0, "0"]:
+            if applied in [None, "none", "None", "NONE", "null"]:
+                self._applied = [True]
+                return
+            elif applied in [0, "0"]:
                 self._applied = [False]
                 return
+
+        #sets an empty list to one default value
         if isinstance(applied, list) and len(applied) == 0:
-            self.applied = [False]
+            self.applied = [True]
             return
 
         if isinstance(applied, str):
             if applied.find("[") >= 0:
                 applied = applied.replace("[", "").replace("]", "")
-
             if applied.count(",") > 0:
                 applied_list = [
                     ss.strip().lower() for ss in applied.split(",")
@@ -96,13 +97,21 @@ class Filtered(Base):
                 applied_list = [ss.lower() for ss in applied.split()]
         elif isinstance(applied, list):
             applied_list = applied
+            # set integer strings to integers ["0","1"]--> [0, 1]
+            for i, elt in enumerate(applied_list):
+                if elt in ["0", "1",]:
+                    applied_list[i] = int(applied_list[i])
+            # set integers to bools [0,1]--> [False, True]
+            for i, elt in enumerate(applied_list):
+                if elt in [0, 1,]:
+                    applied_list[i] = bool(applied_list[i])
         elif isinstance(applied, bool):
             applied_list = [applied]
         # the returned type from a hdf5 dataset is a numpy array.
         elif isinstance(applied, np.ndarray):
             applied_list = list(applied)
             if applied_list == []:
-                applied_list = [False]
+                applied_list = [True]
         else:
             msg = "applied must be a string or list of strings not {0}"
             self.logger.error(msg.format(applied))
@@ -111,8 +120,8 @@ class Filtered(Base):
         bool_list = []
         for app_bool in applied_list:
             if app_bool is None:
-                bool_list.append(False)
-            if isinstance(app_bool, str):
+                bool_list.append(True)
+            elif isinstance(app_bool, str):
                 if app_bool.lower() in ["false", "0"]:
                     bool_list.append(False)
                 elif app_bool.lower() in ["true", "1"]:
@@ -131,13 +140,11 @@ class Filtered(Base):
         # check for consistency
         check = self._check_consistency()
         if not check:
-            self.logger.debug(
-                "Filter names and applied lists are not the "
-                + "same size. Be sure to check the inputs."
-                + ". name = {0}, applied = {1}".format(
-                    self._name, self._applied
-                )
-            )
+            msg = (f"Filter names and applied lists are not the same size. "
+                   f"Be sure to check the inputs. "
+                   f"names = {self._name}, applied = {self._applied}")
+            self.logger.warning(msg)
+
 
     def _check_consistency(self):
         # check for consistency
@@ -165,7 +172,10 @@ class Filtered(Base):
                             )
                         )
                         return False
-        elif self._name == [] and self._applied == [False]:
+                    else:
+                        return True
+        elif self._name == [] and len(self._applied) > 0:
+            self.logger.debug("Name probably not yet initialized -- skipping consitency check")
             return True
         else:
             return False

@@ -672,11 +672,13 @@ class EDI(object):
                 + np.matmul(tf, np.matmul(hh, tfh))
             ) / avgt_dict[key]
 
-            variance = abs(np.dot(res[0 : cc.n_inputs, :].T, sig))
-            # variance = np.zeros((cc.n_outputs, cc.n_inputs), dtype=complex)
-            # for nn in range(cc.n_outputs):
-            #     for mm in range(cc.n_inputs):
-            #         variance[nn, mm] = res[nn, nn] * sig[mm, mm]
+            #variance = abs(np.dot(res[0 : cc.n_inputs, :].T, sig))
+            variance = np.zeros((cc.n_outputs, cc.n_inputs), dtype=complex)
+            for nn in range(cc.n_outputs):
+                for mm in range(cc.n_inputs):
+                    variance[nn, mm] = res[nn, nn] * sig[mm, mm]
+
+            tf_err = np.sqrt(np.abs(variance))
             self.tf[kk, :, :] = tf
             self.tf_err[kk, :, :] = np.sqrt(np.abs(variance))
             self.signal_inverse_power[kk, :, :] = sig
@@ -684,18 +686,18 @@ class EDI(object):
 
             if cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[0:2, :]
-                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[0:2, :]))
+                self.z_err[kk, :, :] = tf_err[0:2, :]
                 self.t[kk, :, :] = tf[2, :]
-                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[2, :].real))
+                self.t_err[kk, :, :] = tf_err[2, :]
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
             elif not cc.has_tipper and cc.has_electric:
                 self.z[kk, :, :] = tf[:, :]
-                self.z_err[kk, :, :] = np.sqrt(np.abs(variance[:, :]))
+                self.z_err[kk, :, :] = tf_err[:, :]
                 self.z_err[np.where(np.nan_to_num(self.z_err) == 0.0)] = 1.0
             elif cc.has_tipper and not cc.has_electric:
                 self.t[kk, :, :] = tf[:, :]
-                self.t_err[kk, :, :] = np.sqrt(np.abs(variance[:, :].real))
+                self.t_err[kk, :, :] = tf_err[:, :]
                 self.t_err[np.nan_to_num(self.t_err) == 0.0] = 1.0
 
     def write(

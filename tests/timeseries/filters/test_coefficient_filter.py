@@ -10,6 +10,8 @@ import unittest
 import numpy as np
 
 from mt_metadata.timeseries.filters import CoefficientFilter
+from mt_metadata.timeseries.filters.helper_functions import MT2SI_ELECTRIC_FIELD_FILTER
+from mt_metadata.timeseries.filters.helper_functions import MT2SI_MAGNETIC_FIELD_FILTER
 from mt_metadata.utils.exceptions import MTSchemaError
 
 from obspy.core.inventory.response import CoefficientsTypeResponseStage
@@ -91,3 +93,11 @@ class TestCoefficientFilter(unittest.TestCase):
 
         with self.subTest("test name"):
             self.assertEqual(stage.name, self.cf.name)
+
+    def test_helper_functions(self):
+        assert MT2SI_MAGNETIC_FIELD_FILTER.units_in == "nT"
+
+
+
+# if __name__ == "__main__":
+#     unittest.main()

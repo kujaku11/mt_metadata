@@ -37,7 +37,7 @@ class TestMagnetic(unittest.TestCase):
                 "data_quality.rating.value": 4,
                 "data_quality.warnings": "No warnings",
                 "location.elevation": 1230.9,
-                "filter.applied": [True],
+                "filter.applied": [False],
                 "filter.name": ["counts2mv"],
                 "filter.comments": "filter comments",
                 "h_field_max.end": 12.3,

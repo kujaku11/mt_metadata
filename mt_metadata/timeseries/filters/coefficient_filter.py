@@ -4,11 +4,10 @@ from obspy.core import inventory
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import OBSPY_MAPPING
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 
-obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
 
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
@@ -24,7 +23,6 @@ class CoefficientFilter(FilterBase):
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
         self.type = "coefficient"
-        self.obspy_mapping = obspy_mapping
 
         if self.gain == 0.0:
             self.gain = 1.0
