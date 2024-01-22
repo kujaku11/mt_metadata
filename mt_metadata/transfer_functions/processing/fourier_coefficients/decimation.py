@@ -320,7 +320,7 @@ class Decimation(Base):
         else:
             required_channels = decimation_level.local_channels
         try:
-            assert set(self.channels_estimated) == set(required_channels)
+            assert set(required_channels).issubset(self.channels_estimated)
         except AssertionError:
             msg = (
                 f"required_channels for processing {required_channels} not available"

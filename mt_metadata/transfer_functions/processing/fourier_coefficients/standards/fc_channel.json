@@ -10,12 +10,34 @@
         "example": "ex",
 		"default": null
     },
+    "frequency_max": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Highest frequency present in the sprectrogam data.",
+        "options": [],
+        "alias": [],
+        "example": 77.0,
+		"default": 0.0
+    },
+    "frequency_min": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Lowest frequency present in the sprectrogam data.",
+        "options": [],
+        "alias": [],
+        "example": 99.0,
+		"default": 0.0
+    },
 	"sample_rate_decimation_level": {
         "type": "float",
         "required": true,
         "style": "number",
         "units": "samples per second",
-        "description": "Sample rate of the decimation level.",
+        "description": "Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
         "options": [],
         "alias": [],
         "example": 60,

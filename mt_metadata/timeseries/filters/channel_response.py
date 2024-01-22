@@ -226,7 +226,7 @@ class ChannelResponse(Base):
             total_delay += delay_filter.delay
         return total_delay
 
-    def get_indices_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+    def get_indices_of_filters_to_remove(self, include_decimation=False, include_delay=False):
         indices = list(np.arange(len(self.filters_list)))
 
         if not include_delay:
@@ -237,11 +237,11 @@ class ChannelResponse(Base):
 
         return indices
 
-    def get_list_of_filters_to_remove(self, include_decimation=True, include_delay=False):
+    def get_list_of_filters_to_remove(self, include_decimation=False, include_delay=False):
         """
 
-        :param include_decimation:
-        :param include_delay:
+        :param include_decimation: bool
+        :param include_delay: bool
         :return:
 
         # Experimental snippet if we want to allow filters with the opposite convention
@@ -250,14 +250,15 @@ class ChannelResponse(Base):
         #     inverse_filters = [x.inverse() for x in self.filters_list]
         #     self.filters_list = inverse_filters
         """
-        indices = self.get_indices_of_filters_to_remove(include_decimation=True, include_delay=False)
+        indices = self.get_indices_of_filters_to_remove(include_decimation=include_decimation,
+                                                        include_delay=include_delay)
         return [self.filters_list[i] for i in indices]
 
     def complex_response(
         self,
         frequencies=None,
         filters_list=None,
-        include_decimation=True,
+        include_decimation=False,
         include_delay=False,
         normalize=False,
         **kwargs,
@@ -441,7 +442,7 @@ class ChannelResponse(Base):
         pb_tol=1e-1,
         interpolation_method="slinear",
         include_delay=False,
-        include_decimation=True,
+        include_decimation=False,
     ):
         """
         Plot the response
