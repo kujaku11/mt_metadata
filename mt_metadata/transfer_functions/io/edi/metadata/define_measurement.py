@@ -192,7 +192,7 @@ class DefineMeasurement(Base):
                 meas_find = True
             elif ">=" in line:
                 if meas_find is True:
-                    break
+                    return
             elif meas_find is True and ">" not in line:
                 line = line.strip()
                 if len(line) > 2:
@@ -210,7 +210,7 @@ class DefineMeasurement(Base):
             elif ">" in line and meas_find:
                 if line.find("!") > 0:
                     pass
-                else:
+                elif "meas" in line.lower():
                     count += 1
                     line_list = _validate_str_with_equals(line)
                     m_dict = {}
@@ -220,6 +220,8 @@ class DefineMeasurement(Base):
                         value = ll_list[1]
                         m_dict[key] = value
                     self.measurement_list.append(m_dict)
+                else:
+                    return
 
     def read_measurement(self, edi_lines):
         """
@@ -292,7 +294,9 @@ class DefineMeasurement(Base):
                         value.azm = value.azimuth
                 if hasattr(self, key):
                     existing_ch = getattr(self, key)
-                    if value != existing_ch:
+                    existing_line = existing_ch.write_meas_line()
+                    value_line = value.write_meas_line()
+                    if existing_line != value_line:
                         value.chtype = f"rr{ch_type}".upper()
                         key = f"meas_rr{ch_type}"
                     else:

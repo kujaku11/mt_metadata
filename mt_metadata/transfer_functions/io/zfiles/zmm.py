@@ -721,7 +721,7 @@ class ZMM(ZMMHeader):
         """
         sig_block = self._flatten_list(sig_block)
         self.sigma_s[index, 0, 0] = sig_block[0]
-        self.sigma_s[index, 1, 0] = sig_block[1]
+        self.sigma_s[index, 1, 0] = sig_block[1].conjugate()
         self.sigma_s[index, 0, 1] = sig_block[1]
         self.sigma_s[index, 1, 1] = sig_block[2]
 

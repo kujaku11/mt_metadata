@@ -132,7 +132,6 @@ class TestZSS(unittest.TestCase):
         )
 
     def test_z(self):
-
         self.assertFalse(self.tf.has_impedance())
 
     def test_t(self):
@@ -144,9 +143,7 @@ class TestZSS(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array(
-                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
-                    ),
+                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -171,9 +168,10 @@ class TestZSS(unittest.TestCase):
                     np.array(
                         [
                             [136.19999695 + 0.0j, -9.60000038 - 5.32700014j],
-                            [-9.60000038 - 5.32700014j, 336.10000610 + 0.0j],
+                            [-9.60000038 + 5.32700014j, 336.1000061 + 0.0j],
                         ]
                     ),
+                    atol=1e-5,
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -192,14 +190,13 @@ class TestZSS(unittest.TestCase):
                             ],
                         ]
                     ),
+                    atol=1e-5,
                 ).all()
             )
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (44, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):
