@@ -102,10 +102,29 @@ class TF:
             "avg": {"write": self.to_avg, "read": self.from_avg},
         }
 
+        tf_set = False
+        try:
+            period = kwargs.pop("period")
+            self._transfer_function = self._initialize_transfer_function(
+                periods=period
+            )
+            tf_set = True
+        except KeyError:
+            try:
+                period = 1.0 / kwargs.pop("frequency")
+                self._transfer_function = self._initialize_transfer_function(
+                    periods=period
+                )
+                tf_set = True
+            except KeyError:
+                pass
+            pass
+
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        self._transfer_function = self._initialize_transfer_function()
+        if not tf_set:
+            self._transfer_function = self._initialize_transfer_function()
 
         self.fn = fn
 
@@ -364,7 +383,9 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(station_metadata)
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -1389,11 +1410,11 @@ class TF:
     @period.setter
     def period(self, value):
         if self.period is not None:
-            if len(self.period) == 1 and self.period == np.array([1]):
+            if len(self.period) == 1 and (self.period == np.array([1])).all():
                 self._transfer_function = self._initialize_transfer_function(
                     periods=value
                 )
-            if len(value) != len(self.period):
+            elif len(value) != len(self.period):
                 msg = (
                     f"New period size {value.size} is not the same size as "
                     f"old ones {self.period.size}, suggest creating a new "
@@ -1401,7 +1422,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TFError(msg)
-            else:
+            elif not (self.period == value).all():
                 self.dataset["period"] = value
         else:
             self._transfer_function = self._initialize_transfer_function(
