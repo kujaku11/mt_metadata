@@ -72,8 +72,7 @@ class TestTFPeriodInput(unittest.TestCase):
         self.n_period = 20
         self.period = np.logspace(-3, 3, self.n_period)
 
-        self.tf = TF()
-        self.tf.period = self.period
+        self.tf = TF(period=self.period)
 
     def test_period_shape(self):
         self.assertEqual(self.tf.period.size, self.n_period)
@@ -92,6 +91,38 @@ class TestTFPeriodInput(unittest.TestCase):
         self.assertEqual(
             self.tf.dataset.residual_covariance.shape[0], self.n_period
         )
+
+    def test_period(self):
+        self.assertTrue(np.isclose(self.period, self.tf.period).all())
+
+
+class TestTFFrequencyInput(unittest.TestCase):
+    def setUp(self):
+        self.n_period = 20
+        self.period = np.logspace(-3, 3, self.n_period)
+
+        self.tf = TF(frequency=1.0 / self.period)
+
+    def test_period_shape(self):
+        self.assertEqual(self.tf.period.size, self.n_period)
+
+    def test_tf_shape(self):
+        self.assertEqual(
+            self.tf.dataset.transfer_function.shape[0], self.n_period
+        )
+
+    def test_isp_shape(self):
+        self.assertEqual(
+            self.tf.dataset.inverse_signal_power.shape[0], self.n_period
+        )
+
+    def test_res_shape(self):
+        self.assertEqual(
+            self.tf.dataset.residual_covariance.shape[0], self.n_period
+        )
+
+    def test_period(self):
+        self.assertTrue(np.isclose(self.period, self.tf.period).all())
 
 
 class TestTFImpedanceInput(unittest.TestCase):
