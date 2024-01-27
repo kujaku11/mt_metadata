@@ -9,6 +9,7 @@ Created on Mon Sep 27 16:28:09 2021
 # =============================================================================
 import unittest
 import numpy as np
+import pathlib
 
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
@@ -160,6 +161,39 @@ class TestTranslateZmm(unittest.TestCase):
                 with self.subTest(zmm_key):
                     self.assertEqual(zmm_value, tf_st[zmm_key])
 
+    def test_write_read_write_zmm(self):
+        """
+        Have a zmm
+        Read it in, write it out.
+        Compare the output with the original
+        """
+        import filecmp
+        out_file = pathlib.Path("test_output.zmm")
+        self.zmm_obj.write(out_file)
+        assert filecmp.cmp(TF_ZMM, out_file)
+        out_file.unlink()
+
+
+
+
+
+
+class TestReadAndWrite(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tf_obj = TF(TF_ZMM)
+        cls.tf_obj.read()
+        cls._zfile = TF_ZMM
+        print("OK")
+
+# import filecmp
+#
+# tf_z = self._tf_z_obj
+# out_file_name = str(self.zrr_file_base).replace(".zrr", "_rewrite.zrr")
+# out_file_path = pathlib.Path(out_file_name)
+# tf_z.write(out_file_path)
+# assert filecmp.cmp(self.zrr_file_base, out_file_path)
 
 # =============================================================================
 # run
