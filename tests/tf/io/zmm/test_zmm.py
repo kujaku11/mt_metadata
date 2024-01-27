@@ -175,26 +175,6 @@ class TestTranslateZmm(unittest.TestCase):
 
 
 
-
-
-
-class TestReadAndWrite(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.tf_obj = TF(TF_ZMM)
-        cls.tf_obj.read()
-        cls._zfile = TF_ZMM
-        print("OK")
-
-# import filecmp
-#
-# tf_z = self._tf_z_obj
-# out_file_name = str(self.zrr_file_base).replace(".zrr", "_rewrite.zrr")
-# out_file_path = pathlib.Path(out_file_name)
-# tf_z.write(out_file_path)
-# assert filecmp.cmp(self.zrr_file_base, out_file_path)
-
 # =============================================================================
 # run
 # =============================================================================
