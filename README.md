@@ -39,7 +39,7 @@ Most people will be using the transfer functions, but a lot of that metadata com
 
 ## From Source
 
-`git clone git://github.com/kujaku11/mt_metadata`
+`git clone https://github.com/kujaku11/mt_metadata.git`
 
 `python setup.py install`
 
