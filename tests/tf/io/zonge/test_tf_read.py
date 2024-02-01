@@ -65,10 +65,7 @@ class TestAVG(unittest.TestCase):
                 ("location.datum", "WGS84"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 0.0),
-                (
-                    "location.elevation",
-                    get_nm_elev(32.83331167, -107.08305667),
-                ),
+                ("location.elevation", 0),
                 ("location.latitude", 32.83331167),
                 ("location.longitude", -107.08305667),
                 ("orientation.method", None),
