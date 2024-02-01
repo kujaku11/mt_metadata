@@ -14,7 +14,6 @@ import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_AVG_NEWER
 from mt_metadata.transfer_functions import TF
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # EMTFXML
@@ -65,7 +64,7 @@ class TestReadAVGNewer(unittest.TestCase):
                 ("location.datum", "WGS84"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 0.0),
-                ("location.elevation", get_nm_elev(44.1479163, -111.0497517)),
+                ("location.elevation", 0),
                 ("location.latitude", 44.1479163),
                 ("location.longitude", -111.0497517),
                 ("orientation.method", None),

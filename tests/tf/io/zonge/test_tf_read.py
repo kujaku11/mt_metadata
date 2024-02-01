@@ -14,7 +14,6 @@ import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_AVG
 from mt_metadata.transfer_functions import TF
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # EMTFXML
