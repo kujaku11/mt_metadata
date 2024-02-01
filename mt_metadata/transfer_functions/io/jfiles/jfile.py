@@ -23,6 +23,7 @@ from mt_metadata.utils.mttime import MTime
 from .metadata import Header
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
+
 # ==============================================================================
 # Class to read j_file
 # ==============================================================================
@@ -161,7 +162,7 @@ class JFile:
 
         return j_lines
 
-    def read(self, fn=None, get_elevation=True):
+    def read(self, fn=None, get_elevation=False):
         """
         Read data from a j file
 

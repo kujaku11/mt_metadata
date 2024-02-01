@@ -28,6 +28,7 @@ from mt_metadata.transfer_functions.tf import (
 )
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
+
 # ==============================================================================
 # deal with avg files output from mtedit
 # ==============================================================================
@@ -37,7 +38,6 @@ class ZongeMTAvg:
     """
 
     def __init__(self, fn=None, **kwargs):
-
         self.logger = logger
         self.header = Header()
 
@@ -122,7 +122,7 @@ class ZongeMTAvg:
         else:
             self._fn = None
 
-    def read(self, fn=None, get_elevation=True):
+    def read(self, fn=None, get_elevation=False):
         """
         Read into a pandas data frame
 

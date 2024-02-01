@@ -273,7 +273,7 @@ class EMTFXML(emtf_xml.EMTF):
             return self.fn.parent
         return None
 
-    def read(self, fn=None, get_elevation=True):
+    def read(self, fn=None, get_elevation=False):
         """
         Read xml file
 
@@ -377,7 +377,6 @@ class EMTFXML(emtf_xml.EMTF):
                         emtf_helpers._convert_tag_to_capwords(element)
                     )
             else:
-
                 emtf_helpers._write_single(
                     emtf_element, key, getattr(self, key)
                 )
@@ -654,7 +653,6 @@ class EMTFXML(emtf_xml.EMTF):
                 value,
             )
         elif fkey in ["x", "y", "z"]:
-
             if comp in ["hx", "hy"]:
                 if len(self.site_layout.output_channels) == 0:
                     self.site_layout.input_channels.append(
@@ -1231,7 +1229,6 @@ class EMTFXML(emtf_xml.EMTF):
                                 )
                                 self.logger.exception(error)
                         else:
-
                             try:
                                 run.set_attr_from_name(key, value)
                             except Exception as error:
