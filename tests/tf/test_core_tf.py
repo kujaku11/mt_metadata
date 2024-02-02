@@ -59,6 +59,37 @@ class TestTFCore(unittest.TestCase):
         self.assertEqual(self.tf, other_tf)
 
 
+class TestTFEqual(unittest.TestCase):
+    def setUp(self):
+        period = [0.1, 1, 10]
+        z = np.random.randn(3, 2, 2) + 1j * np.random.randn(3, 2, 2)
+        z_err = np.ones((3, 2, 2)) * 0.05
+        t = np.random.randn(3, 1, 2) + 1j * np.random.randn(3, 1, 2)
+        t_err = np.ones((3, 1, 2)) * 0.05
+
+        self.tf_01 = TF(period=period)
+        self.tf_02 = TF(period=period)
+
+        self.tf_01.impedance = z
+        self.tf_01.impedance_error = z_err
+        self.tf_01.tipper = t
+        self.tf_01.tipper_error = t_err
+
+        self.tf_02.impedance = z
+        self.tf_02.impedance_error = z_err
+        self.tf_02.tipper = t
+        self.tf_02.tipper_error = t_err
+
+    def test_ull_tf_equals(self):
+        self.assertTrue(self.tf_01.__eq__(self.tf_02))
+
+    def test_full_tf_not_equals(self):
+        self.tf_02.impedance = np.random.randn(3, 2, 2) + 1j * np.random.randn(
+            3, 2, 2
+        )
+        self.assertFalse(self.tf_01.__eq__(self.tf_02))
+
+
 class TestTFChannelNomenclature(unittest.TestCase):
     @classmethod
     def setUpClass(self):
