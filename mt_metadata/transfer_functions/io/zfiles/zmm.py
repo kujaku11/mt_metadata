@@ -25,6 +25,7 @@ from mt_metadata.transfer_functions.tf import (
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from .metadata import Channel
 from mt_metadata.utils.list_dict import ListDict
+from mt_metadata.transfer_functions import DEFAULT_CHANNEL_NOMENCLATURE
 
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
@@ -300,13 +301,7 @@ class ZMM(ZMMHeader):
         self.periods = None
         self.dataset = None
         self.decimation_dict = {}
-        self.channel_nomenclature = {
-            "hx": "hx",
-            "hy": "hy",
-            "hz": "hz",
-            "ex": "ex",
-            "ey": "ey",
-        }
+        self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
 
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -393,6 +388,33 @@ class ZMM(ZMMHeader):
             self.logger.info("Datasets are not equal")
             print(self.dataset.fillna(0) != other.dataset.fillna(0).all())
         return is_equal
+
+    @property
+    def channel_nomenclature(self):
+        return self._channel_nomenclature
+
+    @channel_nomenclature.setter
+    def channel_nomenclature(self, ch_dict):
+        """
+        channel dictionary
+        """
+
+        if not isinstance(ch_dict, dict):
+            raise TypeError(
+                "Channel_nomenclature must be a dictionary with keys "
+                "['ex', 'ey', 'hx', 'hy', 'hz']."
+            )
+
+        self._channel_nomenclature = ch_dict
+        # unpack channel nomenclature dict
+        self.ex = self._channel_nomenclature["ex"]
+        self.ey = self._channel_nomenclature["ey"]
+        self.hx = self._channel_nomenclature["hx"]
+        self.hy = self._channel_nomenclature["hy"]
+        self.hz = self._channel_nomenclature["hz"]
+        self.ex_ey = [self.ex, self.ey]
+        self.hx_hy = [self.hx, self.hy]
+        self.ex_ey_hz = [self.ex, self.ey, self.hz]
 
     def _initialize_transfer_function(self, periods=[1]):
         """
