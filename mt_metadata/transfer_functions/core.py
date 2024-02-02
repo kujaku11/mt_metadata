@@ -512,7 +512,12 @@ class TF:
                 tf_model_err.name: tf_model_err,
                 inv_signal_power.name: inv_signal_power,
                 residual_covariance.name: residual_covariance,
-            }
+            },
+            coords={
+                "period": periods,
+                "output": [self.ex, self.ey, self.hz, self.hx, self.hy],
+                "input": [self.ex, self.ey, self.hz, self.hx, self.hy],
+            },
         )
 
     # ==========================================================================
