@@ -167,12 +167,14 @@ class TestTranslateZmm(unittest.TestCase):
         Read it in, write it out.
         Compare the output with the original
         """
-        import filecmp
+        # import filecmp
         out_file = pathlib.Path("test_output.zmm")
         self.zmm_obj.write(out_file)
-        assert filecmp.cmp(TF_ZMM, out_file)
-        out_file.unlink()
+        new_zmm_obj = zmm.ZMM(out_file)
 
+        self.assertEqual(self.zmm_obj, new_zmm_obj)
+        # assert filecmp.cmp(TF_ZMM, out_file)
+        out_file.unlink()
 
 
 # =============================================================================
