@@ -1777,7 +1777,7 @@ class TF:
     def read_tf_file(self, **kwargs):
         self.logger.error("'read_tf_file' has been deprecated use 'read()'")
 
-    def read(self, fn=None, file_type=None, get_elevation=True, **kwargs):
+    def read(self, fn=None, file_type=None, get_elevation=False, **kwargs):
         """
 
         Read an TF response file.
@@ -1883,7 +1883,7 @@ class TF:
 
         return edi_obj
 
-    def from_edi(self, edi_obj, get_elevation=True, **kwargs):
+    def from_edi(self, edi_obj, get_elevation=False, **kwargs):
         """
         Read in an EDI file or a
         :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
@@ -2001,7 +2001,7 @@ class TF:
 
         return emtf
 
-    def from_emtfxml(self, emtfxml_obj, get_elevation=True, **kwargs):
+    def from_emtfxml(self, emtfxml_obj, get_elevation=False, **kwargs):
         """
 
         :param emtfxml_object: path to emtf xml file or EMTFXML object
@@ -2059,7 +2059,7 @@ class TF:
 
         raise IOError("to_jfile not implemented yet.")
 
-    def from_jfile(self, j_obj, get_elevation=True, **kwargs):
+    def from_jfile(self, j_obj, get_elevation=False, **kwargs):
         """
 
         :param jfile_obj: path ot .j file or JFile object
@@ -2192,7 +2192,7 @@ class TF:
 
         return zmm_obj
 
-    def from_zmm(self, zmm_obj, get_elevation=True, **kwargs):
+    def from_zmm(self, zmm_obj, get_elevation=False, **kwargs):
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
@@ -2261,7 +2261,7 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zrr(self, zrr_obj, get_elevation=True, **kwargs):
+    def from_zrr(self, zrr_obj, get_elevation=False, **kwargs):
         """
 
         :param zmm_obj: path ot .zmm file or ZMM object
@@ -2296,7 +2296,7 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zss(self, zss_obj, get_elevation=True, **kwargs):
+    def from_zss(self, zss_obj, get_elevation=False, **kwargs):
         """
 
         :param zmm_obj: path to .zmm file or ZMM object
@@ -2327,7 +2327,7 @@ class TF:
 
         raise AttributeError("to_avg does not exist yet.")
 
-    def from_avg(self, avg_obj, get_elevation=True, **kwargs):
+    def from_avg(self, avg_obj, get_elevation=False, **kwargs):
         """
 
         :param avg_obj: path to .avg file or ZongeMTAvg object

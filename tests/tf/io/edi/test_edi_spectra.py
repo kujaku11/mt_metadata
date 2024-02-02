@@ -16,7 +16,7 @@ from mt_metadata.transfer_functions.io.edi import EDI
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import TF_EDI_SPECTRA, TF_EDI_SPECTRA_OUT
 from mt_metadata.transfer_functions import TF
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
+
 
 # =============================================================================
 # CGG
@@ -34,7 +34,7 @@ class TestSpectraEDI(unittest.TestCase):
             "COORDINATE_SYSTEM": "geographic",
             "DATAID": "SAGE_2005_og",
             "DATUM": "WGS84",
-            "ELEV": get_nm_elev(35.55, -106.28333333333333),
+            "ELEV": 0,
             "EMPTY": 1e32,
             "FILEBY": "Quantec Consulting",
             "LAT": 35.55,
@@ -198,7 +198,9 @@ class TestSpectraEDI(unittest.TestCase):
             )
 
         with self.subTest("refelev"):
-            self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
+            self.assertAlmostEqual(
+                0.0, self.edi_spectra.Measurement.refelev, 2
+            )
 
     def test_data_section(self):
         d_list = [

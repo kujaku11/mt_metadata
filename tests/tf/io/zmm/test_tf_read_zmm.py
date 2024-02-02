@@ -14,7 +14,6 @@ import numpy as np
 from collections import OrderedDict
 from mt_metadata import TF_ZMM
 from mt_metadata.transfer_functions import TF
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 # =============================================================================
 # EMTFXML
@@ -65,7 +64,7 @@ class TestZMM(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", get_nm_elev(34.727, -115.735)),
+                ("location.elevation", 0),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
@@ -273,7 +272,9 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -377,7 +378,7 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", get_nm_elev(34.727, -115.735)),
+                ("location.elevation", 0),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),

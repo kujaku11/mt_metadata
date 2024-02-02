@@ -40,7 +40,6 @@ class ZMMHeader(object):
     """
 
     def __init__(self, fn=None, **kwargs):
-
         self.logger = logger
         self.processing_type = None
         self.num_channels = None
@@ -293,7 +292,6 @@ class ZMM(ZMMHeader):
     """
 
     def __init__(self, fn=None, **kwargs):
-
         super().__init__()
 
         self.fn = fn
@@ -464,7 +462,7 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read(self, fn=None, get_elevation=True):
+    def read(self, fn=None, get_elevation=False):
         """
         Read in Egbert zrr/zmm file
 
