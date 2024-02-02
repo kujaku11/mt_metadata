@@ -388,7 +388,7 @@ class ZMM(ZMMHeader):
         is_equal = True
         if self.station_metadata != other.station_metadata:
             is_equal = False
-        if (self.dataset.fillna(0) != other.dataset.fillna(0)).any():
+        if not self.dataset.equals(other.dataset):
             is_equal = False
             self.logger.info("Datasets are not equal")
             print(self.dataset.fillna(0) != other.dataset.fillna(0).all())
