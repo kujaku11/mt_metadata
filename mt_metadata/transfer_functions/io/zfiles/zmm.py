@@ -72,9 +72,7 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = (
-                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            )
+            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -302,7 +300,13 @@ class ZMM(ZMMHeader):
         self.periods = None
         self.dataset = None
         self.decimation_dict = {}
-        self.channel_nomenclature = {}
+        self.channel_nomenclature = {
+            "hx": "hx",
+            "hy": "hy",
+            "hz": "hz",
+            "ex": "ex",
+            "ey": "ey",
+        }
 
         self._ch_input_dict = {
             "impedance": ["hx", "hy"],
@@ -366,6 +370,29 @@ class ZMM(ZMMHeader):
         lines.append(f"elevation={self.elevation:.2f}")
 
         return f"MT( {(', ').join(lines)} )"
+
+    def __eq__(self, other):
+        """
+        compare equals
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(other, ZMM):
+            raise TypeError(f"Cannot compare type {type(other)} with ZMM.")
+
+        is_equal = True
+        if self.station_metadata != other.station_metadata:
+            is_equal = False
+        if not self.dataset.equals(other.dataset):
+            is_equal = False
+            self.logger.info("Datasets are not equal")
+            print(self.dataset.fillna(0) != other.dataset.fillna(0).all())
+        return is_equal
 
     def _initialize_transfer_function(self, periods=[1]):
         """
@@ -647,9 +674,7 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(
-            period_block[0].strip().split(":")[1].split()[0].strip()
-        )
+        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -658,12 +683,8 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(
-            period_block[1].strip().split("point")[1].split()[0].strip()
-        )
-        sr = float(
-            period_block[1].strip().split("freq.")[1].split()[0].strip()
-        )
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
         self.decimation_dict[f"{period:{PERIOD_FORMAT}}"] = {
             "level": level,
             "bands": bands,
@@ -719,8 +740,8 @@ class ZMM(ZMMHeader):
         """
         sig_block = self._flatten_list(sig_block)
         self.sigma_s[index, 0, 0] = sig_block[0]
-        self.sigma_s[index, 1, 0] = sig_block[1].conjugate()
-        self.sigma_s[index, 0, 1] = sig_block[1]
+        self.sigma_s[index, 1, 0] = sig_block[1]
+        self.sigma_s[index, 0, 1] = sig_block[1].conjugate()
         self.sigma_s[index, 1, 1] = sig_block[2]
 
     def _fill_res_array_from_block(self, res_block, index):

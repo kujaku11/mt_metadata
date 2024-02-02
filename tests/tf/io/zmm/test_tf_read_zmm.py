@@ -58,13 +58,13 @@ class TestZMM(unittest.TestCase):
         meta_dict = OrderedDict(
             [
                 ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
-                ("comments", "WITH FULL ERROR COVARINCE"),
+                ("comments", "WITH FULL ERROR COVARIANCE"),
                 ("data_type", "MT"),
                 ("geographic_name", None),
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0),
+                ("location.elevation", 0.0),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
@@ -238,10 +238,10 @@ class TestZMM(unittest.TestCase):
                         [
                             [
                                 18.05999947 - 4.46999991e-07j,
-                                -27.14999962 + 6.88899994e00j,
+                                -27.14999962 - 6.88899994e00j,
                             ],
                             [
-                                -27.14999962 - 6.88899994e00j,
+                                -27.14999962 + 6.88899994e00j,
                                 130.3999939 + 2.38400006e-07j,
                             ],
                         ]
@@ -258,7 +258,7 @@ class TestZMM(unittest.TestCase):
                         [
                             [
                                 1.92300007e-07 - 4.44100010e-16j,
-                                3.36799992e-08 - 1.40400003e-08j,
+                                3.36799992e-08 + 1.40400003e-08j,
                             ],
                             [
                                 3.36799992e-08 - 1.40400003e-08j,
@@ -272,9 +272,7 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (38, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -372,13 +370,13 @@ class TestTFToEMTFXML(unittest.TestCase):
         meta_dict = OrderedDict(
             [
                 ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
-                ("comments", "WITH FULL ERROR COVARINCE"),
+                ("comments", "WITH FULL ERROR COVARIANCE"),
                 ("data_type", "MT"),
                 ("geographic_name", None),
                 ("id", "300"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 13.1),
-                ("location.elevation", 0),
+                ("location.elevation", 0.0),
                 ("location.latitude", 34.727),
                 ("location.longitude", -115.735),
                 ("orientation.method", None),

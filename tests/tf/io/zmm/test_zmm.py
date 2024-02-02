@@ -9,6 +9,7 @@ Created on Mon Sep 27 16:28:09 2021
 # =============================================================================
 import unittest
 import numpy as np
+import pathlib
 
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
@@ -55,6 +56,12 @@ class TestTranslateZmm(unittest.TestCase):
                 self.zmm_obj.ex.__repr__(),
                 to_str,
             )
+
+    def test_eq(self):
+        self.assertTrue(self.zmm_obj.__eq__(self.zmm_obj))
+
+    def test_not_equal(self):
+        self.assertRaises(TypeError, self.zmm_obj.__eq__, "a")
 
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
@@ -159,6 +166,21 @@ class TestTranslateZmm(unittest.TestCase):
             else:
                 with self.subTest(zmm_key):
                     self.assertEqual(zmm_value, tf_st[zmm_key])
+
+    def test_write_read_write_zmm(self):
+        """
+        Have a zmm
+        Read it in, write it out.
+        Compare the output with the original
+        """
+        # import filecmp
+        out_file = pathlib.Path("test_output.zmm")
+        self.zmm_obj.write(out_file)
+        new_zmm_obj = zmm.ZMM(out_file)
+
+        self.assertEqual(self.zmm_obj, new_zmm_obj)
+        # assert filecmp.cmp(TF_ZMM, out_file)
+        out_file.unlink()
 
 
 # =============================================================================
