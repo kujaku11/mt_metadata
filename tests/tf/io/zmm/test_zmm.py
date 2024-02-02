@@ -57,6 +57,12 @@ class TestTranslateZmm(unittest.TestCase):
                 to_str,
             )
 
+    def test_eq(self):
+        self.assertTrue(self.zmm_obj.__eq__(self.zmm_obj))
+
+    def test_not_equal(self):
+        self.assertRaises(TypeError, self.zmm_obj.__eq__, "a")
+
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
             self.assertEqual(self.zmm_obj.hx.channel, "hx")

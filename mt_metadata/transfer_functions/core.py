@@ -197,10 +197,7 @@ class TF:
             self.logger.info("Survey Metadata is not equal")
             is_equal = False
         if self.has_transfer_function() and other.has_transfer_function():
-            if (
-                self.transfer_function.fillna(0)
-                != other.transfer_function.fillna(0)
-            ).any():
+            if not self.transfer_function.equals(other.transfer_function):
                 self.logger.info("TF is not equal")
                 is_equal = False
         elif (
@@ -383,9 +380,7 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(
-                station_metadata
-            )
+            station_metadata = self._validate_station_metadata(station_metadata)
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
