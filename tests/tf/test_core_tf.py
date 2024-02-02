@@ -4,20 +4,59 @@ Created on Wed Sep 22 10:51:37 2021
 
 @author: jpeacock
 """
-
+# =============================================================================
+#
+# =============================================================================
 import unittest
 import xarray as xr
 import numpy as np
 
 from mt_metadata.transfer_functions.core import TF, TFError
 
+# =============================================================================
+
 
 class TestTFCore(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.tf = TF(some_kwarg=42)
-        print(self.tf)
-        print(self.tf.__repr__())
-        print(self.tf.__str__())
+
+    def test_str(self):
+        default_string = "\n".join(
+            [
+                "Station: 0",
+                "--------------------------------------------------",
+                "\tSurvey:            0",
+                "\tProject:           None",
+                "\tAcquired by:       None",
+                "\tAcquired date:     1980-01-01",
+                "\tLatitude:          0.000",
+                "\tLongitude:         0.000",
+                "\tElevation:         0.000",
+                "\tDeclination:   ",
+                "\t\tValue:     0.0",
+                "\t\tModel:     WMM",
+                "\tCoordinate System: geographic",
+                "\tImpedance:         False",
+                "\tTipper:            False",
+                "\tN Periods:     1",
+                "\tPeriod Range:",
+                "\t\tMin:   1.00000E+00 s",
+                "\t\tMax:   1.00000E+00 s",
+                "\tFrequency Range:",
+                "\t\tMin:   1.00000E+00 Hz",
+                "\t\tMax:   1.00000E+00 Hz",
+            ]
+        )
+        self.assertEqual(default_string, self.tf.__str__())
+
+    def test_repr(self):
+        default_string = "TF( survey='0', station='0', latitude=0.00, longitude=0.00, elevation=0.00 )"
+        self.assertEqual(default_string, self.tf.__repr__())
+
+    def test_empty_equals(self):
+        other_tf = TF()
+        self.assertEqual(self.tf, other_tf)
 
 
 class TestTFChannelNomenclature(unittest.TestCase):
