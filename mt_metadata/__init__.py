@@ -82,6 +82,14 @@ REQUIRED_KEYS = [
     "default",
 ]
 
+DEFAULT_CHANNEL_NOMENCLATURE = {
+    "hx": "hx",
+    "hy": "hy",
+    "hz": "hz",
+    "ex": "ex",
+    "ey": "ey",
+}
+
 # =============================================================================
 # Initiate loggers
 # =============================================================================
@@ -152,19 +160,13 @@ TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
 TF_XML_MULTIPLE_ATTACHMENTS = DATA_DIR.joinpath(
     "data/transfer_functions/tf_xml_multiple_attachments.xml"
 )
-TF_EDI_PHOENIX = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_phoenix.edi"
-)
-TF_EDI_EMPOWER = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_empower.edi"
-)
+TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
+TF_EDI_EMPOWER = DATA_DIR.joinpath("data/transfer_functions/tf_edi_empower.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
     "data/transfer_functions/tf_edi_metronix.edi"
 )
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/tf_edi_cgg.edi")
-TF_EDI_QUANTEC = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_quantec.edi"
-)
+TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/tf_edi_quantec.edi")
 TF_EDI_RHO_ONLY = DATA_DIR.joinpath(
     "data/transfer_functions/tf_edi_rho_only.edi"
 )

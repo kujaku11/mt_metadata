@@ -36,14 +36,8 @@ from mt_metadata.transfer_functions.io.zfiles.metadata import (
 )
 from mt_metadata.base.helpers import validate_name
 from mt_metadata.utils.list_dict import ListDict
+from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 
-DEFAULT_CHANNEL_NOMENCLATURE = {
-    "hx": "hx",
-    "hy": "hy",
-    "hz": "hz",
-    "ex": "ex",
-    "ey": "ey",
-}
 # =============================================================================
 
 
@@ -450,56 +444,56 @@ class TF:
         """
         # create an empty array for the transfer function
         tf = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="transfer_function",
         )
 
         tf_err = xr.DataArray(
-            data=0,
+            data=0.0,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="transfer_function_error",
         )
 
         tf_model_err = xr.DataArray(
-            data=0,
+            data=0.0,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="transfer_function_model_error",
         )
 
         inv_signal_power = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["isp"],
-                "input": self._ch_input_dict["isp"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="inverse_signal_power",
         )
 
         residual_covariance = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["res"],
-                "input": self._ch_input_dict["res"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="residual_covariance",
         )
@@ -515,8 +509,8 @@ class TF:
             },
             coords={
                 "period": periods,
-                "output": [self.ex, self.ey, self.hz, self.hx, self.hy],
-                "input": [self.ex, self.ey, self.hz, self.hx, self.hy],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
         )
 
@@ -563,6 +557,7 @@ class TF:
             "res": self.ex_ey_hz,
             "tf": self.hx_hy,
             "tf_error": self.hx_hy,
+            "all": [self.ex, self.ey, self.hz, self.hx, self.hy],
         }
 
     @property
@@ -578,6 +573,7 @@ class TF:
             "res": self.ex_ey_hz,
             "tf": self.ex_ey_hz,
             "tf_error": self.ex_ey_hz,
+            "all": [self.ex, self.ey, self.hz, self.hx, self.hy],
         }
 
     @property
