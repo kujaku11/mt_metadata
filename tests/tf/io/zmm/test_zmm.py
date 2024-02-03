@@ -13,7 +13,7 @@ import pathlib
 
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
-from mt_metadata import TF_ZMM
+from mt_metadata import TF_ZMM, DEFAULT_CHANNEL_NOMENCLATURE
 
 # =============================================================================
 
@@ -38,6 +38,42 @@ class TestTranslateZmm(unittest.TestCase):
     def test_channels_recorded(self):
         self.assertListEqual(
             ["hx", "hy", "hz", "ex", "ey"], self.zmm_obj.channels_recorded
+        )
+
+    def test_channels_dict(self):
+        self.assertDictEqual(
+            {"hx": "hx", "hy": "hy", "hz": "hz", "ex": "ex", "ey": "ey"},
+            self.zmm_obj.channel_dict,
+        )
+
+    def test_channel_nomenclature(self):
+        self.assertDictEqual(
+            DEFAULT_CHANNEL_NOMENCLATURE,
+            self.zmm_obj.channel_nomenclature,
+        )
+
+    def test_ch_input_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["hx", "hy"],
+                "tf_error": ["hx", "hy"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_input_dict,
+        )
+
+    def test_ch_output_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["ex", "ey", "hz"],
+                "tf_error": ["ex", "ey", "hz"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_output_dict,
         )
 
     def test_channel_string(self):
