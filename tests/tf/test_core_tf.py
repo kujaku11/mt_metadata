@@ -80,7 +80,7 @@ class TestTFEqual(unittest.TestCase):
         self.tf_02.tipper = t
         self.tf_02.tipper_error = t_err
 
-    def test_ull_tf_equals(self):
+    def test_full_tf_equals(self):
         self.assertTrue(self.tf_01.__eq__(self.tf_02))
 
     def test_full_tf_not_equals(self):
