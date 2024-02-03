@@ -36,7 +36,7 @@ from mt_metadata.transfer_functions.io.zfiles.metadata import (
 )
 from mt_metadata.base.helpers import validate_name
 from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.transfer_functions import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 
 # =============================================================================
 

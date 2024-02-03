@@ -25,7 +25,7 @@ from mt_metadata.transfer_functions.tf import (
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from .metadata import Channel
 from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.transfer_functions import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
@@ -254,6 +254,15 @@ class ZMMHeader(object):
         return lines
 
     @property
+    def channel_dict(self):
+        channels = {}
+        for cc in ["ex", "ey", "hx", "hy", "hz"]:
+            ch = getattr(self, cc)
+            if ch is not None:
+                channels[cc] = ch.channel
+        return channels
+
+    @property
     def channels_recorded(self):
         channels = {}
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
@@ -302,22 +311,6 @@ class ZMM(ZMMHeader):
         self.dataset = None
         self.decimation_dict = {}
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
-
-        self._ch_input_dict = {
-            "impedance": ["hx", "hy"],
-            "tipper": ["hx", "hy"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["hx", "hy"],
-        }
-
-        self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["ex", "ey", "hz"],
-        }
 
         self._transfer_function = self._initialize_transfer_function()
 
@@ -407,14 +400,35 @@ class ZMM(ZMMHeader):
 
         self._channel_nomenclature = ch_dict
         # unpack channel nomenclature dict
-        self.ex = self._channel_nomenclature["ex"]
-        self.ey = self._channel_nomenclature["ey"]
-        self.hx = self._channel_nomenclature["hx"]
-        self.hy = self._channel_nomenclature["hy"]
-        self.hz = self._channel_nomenclature["hz"]
-        self.ex_ey = [self.ex, self.ey]
-        self.hx_hy = [self.hx, self.hy]
-        self.ex_ey_hz = [self.ex, self.ey, self.hz]
+        for comp in DEFAULT_CHANNEL_NOMENCLATURE.keys():
+            try:
+                setattr(self, f"_{comp}", self._channel_nomenclature[comp])
+            except KeyError:
+                setattr(self, f"_{comp}", comp)
+
+        self._ex_ey = [self._ex, self._ey]
+        self._hx_hy = [self._hx, self._hy]
+        self._ex_ey_hz = [self._ex, self._ey, self._hz]
+
+    @property
+    def _ch_input_dict(self):
+        return {
+            "isp": self._hx_hy,
+            "res": self._ex_ey_hz,
+            "tf": self._hx_hy,
+            "tf_error": self._hx_hy,
+            "all": [self._ex, self._ey, self._hz, self._hx, self._hy],
+        }
+
+    @property
+    def _ch_output_dict(self):
+        return {
+            "isp": self._hx_hy,
+            "res": self._ex_ey_hz,
+            "tf": self._ex_ey_hz,
+            "tf_error": self._ex_ey_hz,
+            "all": [self._ex, self._ey, self._hz, self._hx, self._hy],
+        }
 
     def _initialize_transfer_function(self, periods=[1]):
         """
@@ -428,45 +442,45 @@ class ZMM(ZMMHeader):
         """
         # create an empty array for the transfer function
         tf = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="transfer_function",
         )
 
         tf_err = xr.DataArray(
-            data=0,
+            data=0.0,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="error",
         )
 
         inv_signal_power = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["isp"],
-                "input": self._ch_input_dict["isp"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="inverse_signal_power",
         )
 
         residual_covariance = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["res"],
-                "input": self._ch_input_dict["res"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="residual_covariance",
         )
@@ -478,7 +492,12 @@ class ZMM(ZMMHeader):
                 tf_err.name: tf_err,
                 inv_signal_power.name: inv_signal_power,
                 residual_covariance.name: residual_covariance,
-            }
+            },
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
+            },
         )
 
     @property
@@ -521,23 +540,8 @@ class ZMM(ZMMHeader):
         if fn is not None:
             self.fn = fn
         self.read_header()
+        self.channel_nomenclature = self.channel_dict
         self.initialize_arrays()
-
-        self._ch_input_dict = {
-            "impedance": self.input_channels,
-            "tipper": self.input_channels,
-            "isp": self.input_channels,
-            "res": self.output_channels,
-            "tf": self.input_channels,
-        }
-
-        self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "isp": self.input_channels,
-            "res": self.output_channels,
-            "tf": self.output_channels,
-        }
 
         self._transfer_function = self._initialize_transfer_function()
         self.dataset = self._initialize_transfer_function()
