@@ -402,9 +402,10 @@ class ZMM(ZMMHeader):
         # unpack channel nomenclature dict
         for comp in DEFAULT_CHANNEL_NOMENCLATURE.keys():
             try:
-                setattr(self, f"_{comp}", self._channel_nomenclature[comp])
+                setattr(self, f"_{comp}", ch_dict[comp])
             except KeyError:
                 setattr(self, f"_{comp}", comp)
+                ch_dict[comp] = comp
 
         self._ex_ey = [self._ex, self._ey]
         self._hx_hy = [self._hx, self._hy]

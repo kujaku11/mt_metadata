@@ -45,7 +45,31 @@ class TestTranslateZmm(unittest.TestCase):
     def test_channel_nomenclature(self):
         self.assertDictEqual(
             DEFAULT_CHANNEL_NOMENCLATURE,
-            self.zmm_obj.channel_nomenclatureclature,
+            self.zmm_obj.channel_nomenclature,
+        )
+
+    def test_ch_input_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["hx", "hy"],
+                "tf_error": ["hx", "hy"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_input_dict,
+        )
+
+    def test_ch_output_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["ex", "ey", "hz"],
+                "tf_error": ["ex", "ey", "hz"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_output_dict,
         )
 
     def test_hx(self):
