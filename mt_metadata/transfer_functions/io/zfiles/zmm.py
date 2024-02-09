@@ -25,6 +25,7 @@ from mt_metadata.transfer_functions.tf import (
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from .metadata import Channel
 from mt_metadata.utils.list_dict import ListDict
+from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
@@ -72,9 +73,7 @@ class ZMMHeader(object):
         if value.suffix.lower() in [".zmm", ".zrr", ".zss"]:
             self._zfn = value
         else:
-            msg = (
-                f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            )
+            msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -255,6 +254,15 @@ class ZMMHeader(object):
         return lines
 
     @property
+    def channel_dict(self):
+        channels = {}
+        for cc in ["ex", "ey", "hx", "hy", "hz"]:
+            ch = getattr(self, cc)
+            if ch is not None:
+                channels[cc] = ch.channel
+        return channels
+
+    @property
     def channels_recorded(self):
         channels = {}
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
@@ -302,23 +310,7 @@ class ZMM(ZMMHeader):
         self.periods = None
         self.dataset = None
         self.decimation_dict = {}
-        self.channel_nomenclature = {}
-
-        self._ch_input_dict = {
-            "impedance": ["hx", "hy"],
-            "tipper": ["hx", "hy"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["hx", "hy"],
-        }
-
-        self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "isp": ["hx", "hy"],
-            "res": ["ex", "ey", "hz"],
-            "tf": ["ex", "ey", "hz"],
-        }
+        self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
 
         self._transfer_function = self._initialize_transfer_function()
 
@@ -367,6 +359,78 @@ class ZMM(ZMMHeader):
 
         return f"MT( {(', ').join(lines)} )"
 
+    def __eq__(self, other):
+        """
+        compare equals
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if not isinstance(other, ZMM):
+            raise TypeError(f"Cannot compare type {type(other)} with ZMM.")
+
+        is_equal = True
+        if self.station_metadata != other.station_metadata:
+            is_equal = False
+        if not self.dataset.equals(other.dataset):
+            is_equal = False
+            self.logger.info("Datasets are not equal")
+            print(self.dataset.fillna(0) != other.dataset.fillna(0).all())
+        return is_equal
+
+    @property
+    def channel_nomenclature(self):
+        return self._channel_nomenclature
+
+    @channel_nomenclature.setter
+    def channel_nomenclature(self, ch_dict):
+        """
+        channel dictionary
+        """
+
+        if not isinstance(ch_dict, dict):
+            raise TypeError(
+                "Channel_nomenclature must be a dictionary with keys "
+                "['ex', 'ey', 'hx', 'hy', 'hz']."
+            )
+
+        self._channel_nomenclature = ch_dict
+        # unpack channel nomenclature dict
+        for comp in DEFAULT_CHANNEL_NOMENCLATURE.keys():
+            try:
+                setattr(self, f"_{comp}", ch_dict[comp])
+            except KeyError:
+                setattr(self, f"_{comp}", comp)
+                ch_dict[comp] = comp
+
+        self._ex_ey = [self._ex, self._ey]
+        self._hx_hy = [self._hx, self._hy]
+        self._ex_ey_hz = [self._ex, self._ey, self._hz]
+
+    @property
+    def _ch_input_dict(self):
+        return {
+            "isp": self._hx_hy,
+            "res": self._ex_ey_hz,
+            "tf": self._hx_hy,
+            "tf_error": self._hx_hy,
+            "all": [self._ex, self._ey, self._hz, self._hx, self._hy],
+        }
+
+    @property
+    def _ch_output_dict(self):
+        return {
+            "isp": self._hx_hy,
+            "res": self._ex_ey_hz,
+            "tf": self._ex_ey_hz,
+            "tf_error": self._ex_ey_hz,
+            "all": [self._ex, self._ey, self._hz, self._hx, self._hy],
+        }
+
     def _initialize_transfer_function(self, periods=[1]):
         """
         create an empty x array for the data.  For now this accommodates
@@ -379,45 +443,45 @@ class ZMM(ZMMHeader):
         """
         # create an empty array for the transfer function
         tf = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="transfer_function",
         )
 
         tf_err = xr.DataArray(
-            data=0,
+            data=0.0,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["tf"],
-                "input": self._ch_input_dict["tf"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="error",
         )
 
         inv_signal_power = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["isp"],
-                "input": self._ch_input_dict["isp"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="inverse_signal_power",
         )
 
         residual_covariance = xr.DataArray(
-            data=0 + 0j,
+            data=0.0 + 0j,
             dims=["period", "output", "input"],
             coords={
                 "period": periods,
-                "output": self._ch_output_dict["res"],
-                "input": self._ch_input_dict["res"],
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
             },
             name="residual_covariance",
         )
@@ -429,7 +493,12 @@ class ZMM(ZMMHeader):
                 tf_err.name: tf_err,
                 inv_signal_power.name: inv_signal_power,
                 residual_covariance.name: residual_covariance,
-            }
+            },
+            coords={
+                "period": periods,
+                "output": self._ch_output_dict["all"],
+                "input": self._ch_input_dict["all"],
+            },
         )
 
     @property
@@ -472,23 +541,8 @@ class ZMM(ZMMHeader):
         if fn is not None:
             self.fn = fn
         self.read_header()
+        self.channel_nomenclature = self.channel_dict
         self.initialize_arrays()
-
-        self._ch_input_dict = {
-            "impedance": self.input_channels,
-            "tipper": self.input_channels,
-            "isp": self.input_channels,
-            "res": self.output_channels,
-            "tf": self.input_channels,
-        }
-
-        self._ch_output_dict = {
-            "impedance": ["ex", "ey"],
-            "tipper": ["hz"],
-            "isp": self.input_channels,
-            "res": self.output_channels,
-            "tf": self.output_channels,
-        }
 
         self._transfer_function = self._initialize_transfer_function()
         self.dataset = self._initialize_transfer_function()
@@ -647,9 +701,7 @@ class ZMM(ZMMHeader):
              -0.2231E-05 -0.2863E-06  0.8866E-05  0.0000E+00
         """
 
-        period = float(
-            period_block[0].strip().split(":")[1].split()[0].strip()
-        )
+        period = float(period_block[0].strip().split(":")[1].split()[0].strip())
         level = int(
             period_block[0].strip().split("level")[1].split()[0].strip()
         )
@@ -658,12 +710,8 @@ class ZMM(ZMMHeader):
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
         )
 
-        npts = int(
-            period_block[1].strip().split("point")[1].split()[0].strip()
-        )
-        sr = float(
-            period_block[1].strip().split("freq.")[1].split()[0].strip()
-        )
+        npts = int(period_block[1].strip().split("point")[1].split()[0].strip())
+        sr = float(period_block[1].strip().split("freq.")[1].split()[0].strip())
         self.decimation_dict[f"{period:{PERIOD_FORMAT}}"] = {
             "level": level,
             "bands": bands,
@@ -719,8 +767,8 @@ class ZMM(ZMMHeader):
         """
         sig_block = self._flatten_list(sig_block)
         self.sigma_s[index, 0, 0] = sig_block[0]
-        self.sigma_s[index, 1, 0] = sig_block[1].conjugate()
-        self.sigma_s[index, 0, 1] = sig_block[1]
+        self.sigma_s[index, 1, 0] = sig_block[1]
+        self.sigma_s[index, 0, 1] = sig_block[1].conjugate()
         self.sigma_s[index, 1, 1] = sig_block[2]
 
     def _fill_res_array_from_block(self, res_block, index):
