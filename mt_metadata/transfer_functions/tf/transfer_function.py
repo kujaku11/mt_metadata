@@ -63,10 +63,11 @@ class TransferFunction(Base):
                         default_key = "aurora"
                         key, value = item.split("=")
                         key = key.replace(f"{default_key}.", "")
-                        print(key, value)
                         processing_dict[key] = value
                 self._processing_config = Processing()
-                self._processing_config.from_dict(processing_dict)
+                self._processing_config.from_dict(
+                    {"processing": processing_dict}
+                )
 
         return self._processing_config
 
