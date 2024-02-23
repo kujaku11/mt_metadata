@@ -37,6 +37,8 @@ class TestStation(unittest.TestCase):
 
         with self.subTest("in keys"):
             self.assertIn("rr01", self.stations.remote_dict.keys())
+        with self.subTest("is remote"):
+            self.assertTrue(self.stations.remote[0].remote)
 
     def test_add_remote_list(self):
         rr_dict = [Station(id="rr01")]
@@ -47,6 +49,8 @@ class TestStation(unittest.TestCase):
             self.assertEqual(1, len(self.stations.remote))
         with self.subTest("in keys"):
             self.assertIn("rr01", self.stations.remote_dict.keys())
+        with self.subTest("is remote"):
+            self.assertTrue(self.stations.remote[0].remote)
 
     def test_add_remote_dict(self):
         rr_dict = Station(id="rr01").to_dict()
@@ -57,6 +61,8 @@ class TestStation(unittest.TestCase):
             self.assertEqual(1, len(self.stations.remote))
         with self.subTest("in keys"):
             self.assertIn("rr01", self.stations.remote_dict.keys())
+        with self.subTest("is remote"):
+            self.assertTrue(self.stations.remote[0].remote)
 
     def test_get_station_fail(self):
         self.assertRaises(KeyError, self.stations.get_station, "mt01")
