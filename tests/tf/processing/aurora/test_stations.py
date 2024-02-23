@@ -24,27 +24,46 @@ class TestStation(unittest.TestCase):
     def test_initialization(self):
         with self.subTest("test local"):
             self.assertIsInstance(self.stations.local, Station)
-        # with self.subTest("test remote type"):
-        #     self.assertIsInstance(self.stations.remote, dict)
-        # with self.subTest("test remote dict"):
-        #     self.assertEqual(self.stations.remote, {})
+        with self.subTest("test remote type"):
+            self.assertIsInstance(self.stations.remote, list)
+        with self.subTest("test remote list"):
+            self.assertEqual(self.stations.remote, [])
 
-    # def test_add_remote_station(self):
-    #     rr = Station(id="rr01")
-    #     self.stations.remote = rr
-    #     with self.subTest("is dict"):
-    #         self.assertIsInstance(self.stations.remote, dict)
-    #     with self.subTest("has keys"):
-    #         self.assertListEqual(["rr01"], list(self.stations.remote.keys()))
+    def test_add_remote_station(self):
+        rr = Station(id="rr01")
+        self.stations.remote = rr
+        with self.subTest("is list"):
+            self.assertIsInstance(self.stations.remote, list)
 
-    # def test_add_dict(self):
-    #     rr_dict = {"rr01": Station(id="rr01")}
-    #     self.stations.remote = rr_dict
-    #     with self.subTest("is dict"):
-    #         self.assertIsInstance(self.stations.remote, dict)
-    #     with self.subTest("has keys"):
-    #         self.assertListEqual(["rr01"], list(self.stations.remote.keys()))
+        with self.subTest("in keys"):
+            self.assertIn("rr01", self.stations.remote_dict.keys())
+
+    def test_add_remote_list(self):
+        rr_dict = [Station(id="rr01")]
+        self.stations.remote = rr_dict
+        with self.subTest("is list"):
+            self.assertIsInstance(self.stations.remote, list)
+        with self.subTest("list len"):
+            self.assertEqual(1, len(self.stations.remote))
+        with self.subTest("in keys"):
+            self.assertIn("rr01", self.stations.remote_dict.keys())
+
+    def test_add_remote_dict(self):
+        rr_dict = Station(id="rr01").to_dict()
+        self.stations.remote = rr_dict
+        with self.subTest("is list"):
+            self.assertIsInstance(self.stations.remote, list)
+        with self.subTest("list len"):
+            self.assertEqual(1, len(self.stations.remote))
+        with self.subTest("in keys"):
+            self.assertIn("rr01", self.stations.remote_dict.keys())
+
+    def test_get_station_fail(self):
+        self.assertRaises(KeyError, self.stations.get_station, "mt01")
 
 
+# =============================================================================
+# run
+# =============================================================================
 if __name__ == "__main__":
     unittest.main()
