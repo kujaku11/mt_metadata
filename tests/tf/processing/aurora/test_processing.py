@@ -11,7 +11,11 @@ Created on Fri Mar 25 11:46:46 2022
 import pandas as pd
 import unittest
 
-from mt_metadata.transfer_functions.processing.aurora import Processing
+from mt_metadata.transfer_functions.processing.aurora import (
+    Processing,
+    DecimationLevel,
+)
+
 
 # =============================================================================
 
@@ -98,8 +102,25 @@ class TestProcessingSetDecimations(unittest.TestCase):
     def test_add_decimation_level_fail(self):
         self.assertRaises(TypeError, self.p.add_decimation_level, "a")
 
-    def get_decimation_level_fail(self):
+    def test_get_decimation_level_fail(self):
         self.assertRaises(KeyError, self.p.get_decimation_level, "1")
+
+    def test_set_decimation_dict(self):
+        d = DecimationLevel()
+        self.p.decimations = {0: d}
+        with self.subTest("lenght"):
+            self.assertEqual(1, len(self.p.decimations))
+
+        with self.subTest("has keys"):
+            self.assertIn(0, self.p.decimations_dict.keys())
+
+    def test_set_decimation_list(self):
+        d = DecimationLevel().to_dict()
+        self.p.decimations = [d]
+        with self.subTest("lenght"):
+            self.assertEqual(1, len(self.p.decimations))
+        with self.subTest("has keys"):
+            self.assertIn(0, self.p.decimations_dict.keys())
 
 
 # =============================================================================
