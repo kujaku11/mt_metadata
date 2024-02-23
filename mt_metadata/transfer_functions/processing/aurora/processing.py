@@ -28,7 +28,6 @@ class Processing(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.stations = Stations()
         self._decimations = []
         self.channel_nomenclature = ChannelNomenclature()
@@ -85,6 +84,12 @@ class Processing(Base):
                     raise TypeError(
                         f"List entry must be a DecimationLevel or dict object not {type(obj)}"
                     )
+
+        elif isinstance(value, str):
+            if len(value) > 4:
+                raise TypeError(f"Not sure what to do with {type(value)}")
+            else:
+                self._decimations = []
 
         else:
             raise TypeError(f"Not sure what to do with {type(value)}")
@@ -224,7 +229,6 @@ class Processing(Base):
                 decimation_obj.add_band(band)
             self.add_decimation_level(decimation_obj)
 
-
     def json_fn(self):
         json_fn = self.id + "_processing_config.json"
         return json_fn
@@ -280,11 +284,14 @@ class Processing(Base):
         if not self.stations.remote:
             for decimation in self.decimations:
                 if decimation.estimator.engine == "RME_RR":
-                    print("No RR station specified, switching RME_RR to RME")
+                    self.logger.info(
+                        "No RR station specified, switching RME_RR to RME"
+                    )
                     decimation.estimator.engine = "RME"
 
         # Make sure that a local station is defined
         if not self.stations.local.id:
-            print("WARNING: Local station not specified")
-            print("Local station should be set from Kernel Dataset")
+            self.logger.warning(
+                "Local station not specified, should be set from Kernel Dataset"
+            )
             self.stations.from_dataset_dataframe(kernel_dataset.df)

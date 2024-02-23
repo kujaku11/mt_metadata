@@ -5,6 +5,7 @@ Created on Thu Feb 24 13:58:07 2022
 @author: jpeacock
 """
 import pandas as pd
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -15,6 +16,7 @@ from .station import Station
 # =============================================================================
 attr_dict = get_schema("stations", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("station", SCHEMA_FN_PATHS), "local")
+
 
 # =============================================================================
 class Stations(Base):
@@ -66,6 +68,11 @@ class Stations(Base):
         elif isinstance(rr_station, Station):
             rr_station.remote = True
             self._remote.append(rr_station)
+
+        elif isinstance(rr_station, str):
+            if len(rr_station) > 4:
+                raise ValueError(f"not sure to do with {type(rr_station)}")
+
         else:
             raise ValueError(f"not sure to do with {type(rr_station)}")
 
@@ -75,7 +82,9 @@ class Stations(Base):
         """
 
         if not isinstance(rr, (Station, dict)):
-            raise TypeError(f"List entry must be a Station object not {type(rr)}")
+            raise TypeError(
+                f"List entry must be a Station object not {type(rr)}"
+            )
         if isinstance(rr, dict):
             obj = Station()
             obj.from_dict(rr)
@@ -130,7 +139,7 @@ class Stations(Base):
         df = self.local.to_dataset_dataframe()
         for rr in self.remote:
             remote_df = rr.to_dataset_dataframe()
-            df = pd.concat([df, remote_df]) #, axis=1, ignore_index=True)
+            df = pd.concat([df, remote_df])  # , axis=1, ignore_index=True)
 
         df.reset_index(inplace=True, drop=True)
 
