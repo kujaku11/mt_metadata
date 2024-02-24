@@ -180,8 +180,7 @@ class TestStationTF(unittest.TestCase):
     test station metadata
     """
 
-    @classmethod
-    def setUpClass(self):
+    def setUp(self):
         self.maxDiff = None
         self.meta_dict = OrderedDict(
             [
@@ -274,6 +273,50 @@ class TestStationTF(unittest.TestCase):
         self.assertEqual(
             "2024-01-01", self.station_object.transfer_function.processed_date
         )
+
+    def test_set_processing_config(self):
+        p = Processing(id="mt01")
+
+        self.station_object.transfer_function.processing_config = p
+
+        with self.subTest("dict equal"):
+            self.assertDictEqual(
+                p.to_dict(single=True),
+                self.station_object.transfer_function.processing_config.to_dict(
+                    single=True
+                ),
+            )
+        with self.subTest("processing paramters"):
+            self.assertEqual(
+                13,
+                len(
+                    self.station_object.transfer_function.processing_parameters
+                ),
+            )
+
+    def test_set_processing_config_02(self):
+        p = Processing(id="mt01")
+
+        self.station_object.transfer_function.processing_config = p
+        self.station_object.transfer_function._processing_config = None
+        self.station_object.transfer_function.processing_config.stations.local.runs = (
+            []
+        )
+
+        with self.subTest("dict equal"):
+            self.assertDictEqual(
+                p.to_dict(single=True),
+                self.station_object.transfer_function.processing_config.to_dict(
+                    single=True
+                ),
+            )
+        with self.subTest("processing paramters"):
+            self.assertEqual(
+                13,
+                len(
+                    self.station_object.transfer_function.processing_parameters
+                ),
+            )
 
 
 # =============================================================================
