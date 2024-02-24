@@ -66,6 +66,8 @@ class ChannelNomenclature(Base):
 
         super().__init__(attr_dict=attr_dict)
         self._keyword = keyword
+        if self._keyword is not None:
+            self.update()
 
     @property
     def ex_ey(self):

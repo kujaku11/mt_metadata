@@ -38,6 +38,15 @@ class TestChannelNomenclature(unittest.TestCase):
         assert len(ch_nom.hx_hy) == 2
         assert len(ch_nom.channels) == 5
 
+    def test_repr(self):
+        """ Takes the __repr__ string, and casts to a dict (via json), and compares to channel_map attr"""
+        import json
+        for keyword in self.channel_maps:
+            ch_nom = ChannelNomenclature(keyword=keyword)
+            channel_map = ch_nom.get_channel_map() # dict
+            repr = json.loads(ch_nom.__repr__())["channel_nomenclature"]
+            assert channel_map == repr
+
 
 if __name__ == "__main__":
     unittest.main()
