@@ -19,7 +19,7 @@ from mt_metadata.timeseries.standards import (
 )
 from mt_metadata.utils.mttime import MTime
 from . import Person, Software, DataQuality
-from mt_metadata.transfer_functions.processing.aurora import Processing
+from mt_metadata.transfer_functions.processing import aurora
 
 # =============================================================================
 attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
@@ -55,6 +55,11 @@ class TransferFunction(Base):
 
     @property
     def processing_config(self):
+        """
+
+        :return: processing configuration
+
+        """
         if self._processing_config is None:
             if len(self.processing_parameters) > 0:
                 processing_dict = {}
@@ -64,7 +69,7 @@ class TransferFunction(Base):
                         key, value = item.split("=")
                         key = key.replace(f"{default_key}.", "")
                         processing_dict[key] = value
-                self._processing_config = Processing()
+                self._processing_config = aurora.Processing()
                 self._processing_config.from_dict(
                     {"processing": processing_dict}
                 )
@@ -77,6 +82,9 @@ class TransferFunction(Base):
         set processing config, if a Base object, processing parameters are
         filled.
 
+        To add more processing schemes need to create a Processing object for
+        that specific program and then add in
+
         :param processing_config: DESCRIPTION
         :type processing_config: TYPE
         :return: DESCRIPTION
@@ -84,7 +92,7 @@ class TransferFunction(Base):
 
         """
         if processing_config is not None:
-            if isinstance(processing_config, Processing):
+            if isinstance(processing_config, aurora.Processing):
                 default_key = "aurora"
                 processing_dict = processing_config.to_dict(single=True)
                 for key, value in processing_dict.items():
