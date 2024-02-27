@@ -76,6 +76,48 @@ class TransferFunction(Base):
 
         return self._processing_config
 
+    def _dict_to_params(self, object_dict, base_key):
+        """
+        dictionary to parameters
+
+        key_base.key = value
+
+        :param object_dict: DESCRIPTION
+        :type object_dict: TYPE
+        :param key_base: DESCRIPTION
+        :type key_base: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        for key, value in object_dict.items():
+            if isinstance(value, list):
+                if len(value) > 0:
+                    if isinstance(value[0], dict):
+                        for item in value:
+                            if len(item.keys()) == 1:
+                                item_key = list(item.keys())[0]
+                                self._dict_to_params(
+                                    item[item_key],
+                                    f"{base_key}.{key}.{item_key}",
+                                )
+                            else:
+                                self._dict_to_params(item, f"{base_key}.{key}")
+                    else:
+                        self.processing_parameters.append(
+                            f"{base_key}.{key}={value}"
+                        )
+                else:
+                    self.processing_parameters.append(
+                        f"{base_key}.{key}={value}"
+                    )
+
+            elif isinstance(value, dict):
+                self._dict_to_params(value, f"{base_key}.{key}")
+            else:
+                self.processing_parameters.append(f"{base_key}.{key}={value}")
+
     @processing_config.setter
     def processing_config(self, processing_config):
         """
@@ -95,10 +137,7 @@ class TransferFunction(Base):
             if isinstance(processing_config, aurora.Processing):
                 default_key = "aurora"
                 processing_dict = processing_config.to_dict(single=True)
-                for key, value in processing_dict.items():
-                    self.processing_parameters.append(
-                        f"{default_key}.{key}={value}"
-                    )
+                self._dict_to_params(processing_dict, default_key)
                 self._processing_config = processing_config
         else:
             self._processing_config = None
