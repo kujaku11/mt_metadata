@@ -214,6 +214,7 @@ class TF:
                 continue
 
             setattr(result, k, deepcopy(v, memo))
+        result.logger = logger
         return result
 
     def copy(self):
