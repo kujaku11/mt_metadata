@@ -25,6 +25,13 @@ STANDARD_OUTPUT_NAMES = [
 ]
 
 def load_channel_maps():
+    """
+    :return: Keys are the channel_nomenclature schema keywords.
+     Values are dictionaries which map the STANDARD_INPUT_NAMES, \
+     STANDARD_OUTPUT_NAMES to the channel names associated with a given
+     channel nomenclature
+    :rtype: dict
+    """
     import json
     import pathlib
     fn = pathlib.Path(__file__).parent.joinpath("standards", "channel_nomenclatures.json")
@@ -35,6 +42,12 @@ def load_channel_maps():
 CHANNEL_MAPS = load_channel_maps()
 
 def get_allowed_channel_names(standard_names):
+    """
+    :param standard_names: one of STANDARD_INPUT_NAMES, or STANDARD_OUTPUT_NAMES
+    :type standard_names: list
+    :return: allowed_names: list of channel names that are supported
+    :rtype: list
+    """
     allowed_names = []
     for ch in standard_names:
         for _, channel_map in CHANNEL_MAPS.items():
@@ -49,25 +62,12 @@ ALLOWED_OUTPUT_CHANNELS = get_allowed_channel_names(STANDARD_OUTPUT_NAMES)
 class ChannelNomenclature(Base):
     __doc__ = write_lines(attr_dict)
 
-    def __init__(self, **kwargs):
+    def __init__(self, keyword=None):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        self._keyword = None
-
-    def update_by_keyword(self, keyword):
-        """
-        Assign the HEXY values "ex", "ey" etc based on a pre-defined dict that
-        corresponds to a common use case
-        Parameters
-        ----------
-        keyword
-
-        Returns
-        -------
-
-        """
-        self._update_by_keyword(keyword)
-
+        super().__init__(attr_dict=attr_dict)
+        self._keyword = keyword
+        if self._keyword is not None:
+            self.update()
 
     @property
     def ex_ey(self):
@@ -100,28 +100,31 @@ class ChannelNomenclature(Base):
     @keyword.setter
     def keyword(self, keyword):
         self._keyword = keyword
-        self._update_by_keyword(keyword)
+        self.update()
 
-    def get_channel_map(self, keyword):
-        if keyword == "default":
+    def get_channel_map(self):
+        if self.keyword == "default":
             channel_map = CHANNEL_MAPS["default"]
-        elif keyword.upper() == "LEMI12":
+        elif self.keyword.upper() == "LEMI12":
             channel_map = CHANNEL_MAPS["lemi12"]
-        elif keyword.upper() == "LEMI34":
+        elif self.keyword.upper() == "LEMI34":
             channel_map = CHANNEL_MAPS["lemi34"]
-        elif keyword.upper() == "NIMS":
+        elif self.keyword.upper() == "NIMS":
             channel_map = CHANNEL_MAPS["default"]
-        elif keyword.upper() == "PHOENIX123":
+        elif self.keyword.upper() == "PHOENIX123":
             channel_map = CHANNEL_MAPS["phoenix123"]
-        elif keyword.upper() == "MUSGRAVES":
+        elif self.keyword.upper() == "MUSGRAVES":
             channel_map = CHANNEL_MAPS["musgraves"]
         else:
-            print(f"whoops mt_system {keyword} unknown")
-            raise NotImplementedError
+            msg = f"channel mt_system {self.keyword} unknown"
+            raise NotImplementedError(msg)
         return channel_map
 
-    def _update_by_keyword(self, keyword):
-        channel_map = self.get_channel_map(keyword)
+    def update(self):
+        """
+        Assign values to standard channel names "ex", "ey" etc based on channel_map dict
+        """
+        channel_map = self.get_channel_map()
         self.ex = channel_map["ex"]
         self.ey = channel_map["ey"]
         self.hx = channel_map["hx"]
@@ -133,5 +136,5 @@ class ChannelNomenclature(Base):
 
     @property
     def channels(self):
-        channels = list(self.get_channel_map(self.keyword).values())
+        channels = list(self.get_channel_map().values())
         return channels

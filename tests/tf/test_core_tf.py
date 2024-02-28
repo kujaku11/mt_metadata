@@ -58,6 +58,13 @@ class TestTFCore(unittest.TestCase):
         other_tf = TF()
         self.assertEqual(self.tf, other_tf)
 
+    def test_copy(self):
+        other_tf = self.tf.copy()
+        with self.subTest("test equal"):
+            self.assertEqual(self.tf, other_tf)
+        with self.subTest("has logger"):
+            self.assertTrue(hasattr(other_tf, "logger"))
+
 
 class TestTFEqual(unittest.TestCase):
     def setUp(self):
