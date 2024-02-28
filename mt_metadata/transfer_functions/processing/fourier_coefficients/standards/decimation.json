@@ -4,7 +4,7 @@
         "required": true,
         "style": "number",
         "units": null,
-        "description": "Decimation level, must be a positive integer starting at 0.",
+        "description": "Decimation level, must be a non-negative integer starting at 0",
         "options": [],
         "alias": [],
         "example": "1",
