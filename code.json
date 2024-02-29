@@ -1,0 +1,36 @@
+{
+  "name": "mt-metadata",
+  "organization": "U.S. Geological Survey",
+  "description": "A Python module to handle/validate/read/write metadata in general but mainly for magnetotelluric data including time series, transfer functions, and Fourier coefficients.",
+  "version": "0.3.4",
+  "status": "Release Candidate",
+  "permission": {
+    "usageType": "openSource",
+    "licenses": [
+      {
+        "name": "MIT",
+        "URL": "https://code.chs.usgs.gov/jpeacock/mt_metadata/LICENSE.md"
+      }
+    ]
+  },
+  "homepageURL": "https://code.chs.usgs.gov/jpeacock/mt_metadata",
+  "downloadURL": "https://code.chs.usgs.gov/jpeacock/mt_metadata-main.zip",
+  "disclaimerURL": "https://code.chs.usgs.gov/jpeacock/mt_metadata/DISCLAIMER.md",
+  "repositoryURL": "https://code.chs.usgs.gov/jpeacock/mt_metadata.git",
+  "tags": [
+    "magnetotellurics",
+    "time series",
+	"transfer functions",
+	"Fourier coefficients"
+  ],
+  "languages": [
+    "Python"
+  ],
+  "contact": {
+    "name": "Jared Peacock",
+    "email": "jpeacock@usgs.gov"
+  },
+  "date": {
+    "metadataLastUpdated": "2024-02-29T12:00:00"
+    }
+}
