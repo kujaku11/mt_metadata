@@ -12,7 +12,14 @@ from pathlib import Path
 import pandas as pd
 from xml.etree import cElementTree as et
 
-from mt_metadata.timeseries import Experiment, Survey, Station, Run, Electric, Magnetic
+from mt_metadata.timeseries import (
+    Experiment,
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
 
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
@@ -21,6 +28,7 @@ from mt_metadata.timeseries.filters import (
     FIRFilter,
 )
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+
 
 # =============================================================================
 # Useful Class
@@ -182,7 +190,7 @@ class MT2StationXML(XMLInventoryMTExperiment):
         channels_list = []
         for ch in order:
             for fn in rdf:
-                if ch in fn.name.lower():
+                if ch in fn.name[len(station) :].lower():
                     channels_list.append(fn)
                     break
 
@@ -196,7 +204,11 @@ class MT2StationXML(XMLInventoryMTExperiment):
         :rtype: TYPE
 
         """
-        fn_dict = {"survey": self.survey, "filters": self.filters, "stations": []}
+        fn_dict = {
+            "survey": self.survey,
+            "filters": self.filters,
+            "stations": [],
+        }
         if stations in [None, []]:
             station_iterator = self.stations
         else:
