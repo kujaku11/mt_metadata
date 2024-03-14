@@ -14,9 +14,13 @@ from pathlib import Path
 
 
 def get_standard_dirs(dir_path):
-    existing_dirs = list(set([fn.parent.as_posix() for fn in dir_path.rglob("*.json")]))
+    existing_dirs = list(
+        set([fn.parent.as_posix() for fn in dir_path.rglob("*.json")])
+    )
     existing_dirs = [
-        fn[fn.rfind("mt_metadata") :] for fn in existing_dirs if ".git" not in fn
+        fn[fn.rfind("mt_metadata") :]
+        for fn in existing_dirs
+        if ".git" not in fn
     ]
 
     return sorted(set(existing_dirs))
@@ -41,7 +45,7 @@ class TestStandards(unittest.TestCase):
             self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
 
     def test_standards_exist(self):
-        existing_dirs = get_standard_dirs(self.home)
+        existing_dirs = get_standard_dirs(self.home.joinpath(self.home.name))
         manifest_dirs = read_manifest(self.manifest_fn)
         self.assertListEqual(existing_dirs, manifest_dirs)
 
