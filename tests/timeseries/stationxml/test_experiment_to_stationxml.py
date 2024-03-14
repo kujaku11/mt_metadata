@@ -182,6 +182,17 @@ class TestExperiment2StationXML02(unittest.TestCase):
             c_end = [c.end_date for c in self.inventory.networks[0].stations]
             self.assertTrue(self.inventory.networks[0].end_date >= max(c_end))
 
+    def test_country_is_string(self):
+        with self.subTest("is string"):
+            self.assertIsInstance(
+                self.inventory.networks[0].stations[0].site.country, str
+            )
+
+        with self.subTest("is equal"):
+            self.assertEqual(
+                self.inventory.networks[0].stations[0].site.country, "USA"
+            )
+
 
 # =============================================================================
 # Run

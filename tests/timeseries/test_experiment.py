@@ -122,15 +122,7 @@ class TestBuildExperiment(unittest.TestCase):
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
 
-        with self.subTest("to_dict"):
-            self.assertDictEqual(
-                self.experiment.to_dict(), experiment_02.to_dict()
-            )
-
-        with self.subTest("site.country"):
-            self.assertEqual(
-                experiment_xml.networks[0].stations[0].site.country, "USA"
-            )
+        self.assertDictEqual(self.experiment.to_dict(), experiment_02.to_dict())
 
     def test_survey_time_period(self):
         with self.subTest("start"):
