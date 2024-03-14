@@ -95,7 +95,7 @@ class TestBuildExperiment(unittest.TestCase):
         kwargs = {"time_period.start": self.start, "time_period.end": self.end}
 
         for survey in ["One", "Two"]:
-            survey_obj = Survey(id=survey)
+            survey_obj = Survey(id=survey, country="USA")
             survey_obj.filters = {}
             for station in ["mt01", "mt02"]:
                 station_obj = Station(id=station, **kwargs)
@@ -121,9 +121,16 @@ class TestBuildExperiment(unittest.TestCase):
         experiment_xml = self.experiment.to_xml(required=True)
         experiment_02 = Experiment()
         experiment_02.from_xml(element=experiment_xml)
-        self.assertDictEqual(
-            self.experiment.to_dict(), experiment_02.to_dict()
-        )
+
+        with self.subTest("to_dict"):
+            self.assertDictEqual(
+                self.experiment.to_dict(), experiment_02.to_dict()
+            )
+
+        with self.subTest("site.country"):
+            self.assertEqual(
+                experiment_xml.networks[0].stations[0].site.country, "USA"
+            )
 
     def test_survey_time_period(self):
         with self.subTest("start"):
@@ -200,7 +207,6 @@ class TestBuildExperiment(unittest.TestCase):
             )
 
     def test_from_dict(self):
-
         d = self.experiment.to_dict()
         ex = Experiment()
         ex.from_dict(d, skip_none=False)
