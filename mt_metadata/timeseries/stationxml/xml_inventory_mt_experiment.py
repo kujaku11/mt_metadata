@@ -170,7 +170,10 @@ class XMLInventoryMTExperiment:
             xml_network = self.network_translator.mt_to_xml(mt_survey)
             for mt_station in mt_survey.stations:
                 xml_station = self.station_translator.mt_to_xml(mt_station)
-                xml_station.site.country = mt_survey.country
+                if mt_survey.country is not None:
+                    xml_station.site.country = ",".join(
+                        [str(country) for country in mt_survey.country]
+                    )
                 for mt_run in mt_station.runs:
                     xml_station = self.add_run(
                         xml_station, mt_run, mt_survey.filters
