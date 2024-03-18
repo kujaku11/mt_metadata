@@ -96,6 +96,10 @@ class TestBandDefault(unittest.TestCase):
         with self.subTest("period"):
             self.assertAlmostEqual(self.band.center_period, 1.0 / 2.5)
 
+    def test_name(self):
+        self.assertTrue(isinstance(self.band.name, str))
+
+
 
 class TestBandClosedRight(unittest.TestCase):
     @classmethod
