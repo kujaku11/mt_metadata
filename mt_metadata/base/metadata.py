@@ -300,7 +300,7 @@ class Base:
             self.logger.exception(error)
             raise MTSchemaError(error)
 
-    def _validate_option(self, name, option_list):
+    def _validate_option(self, name, value, option_list):
         """
         validate the given attribute name agains possible options and check
         for aliases
@@ -315,21 +315,21 @@ class Base:
         :rtype: TYPE
 
         """
-        if name is None:
+        if value is None:
             return True, False, None
         options = [ss.lower() for ss in option_list]
         other_possible = False
         if "other" in options:
             other_possible = True
-        if name.lower() in options:
+        if value.lower() in options:
             return True, other_possible, None
-        elif name.lower() not in options and other_possible:
+        elif value.lower() not in options and other_possible:
             msg = (
-                "{0} not found in options list {1}, but other options"
-                + " are allowed.  Allowing {2} to be set to {0}."
+                f"Value '{value}' not found for metadata field '{name}' in options list {option_list}, but other options"
+                + f" are allowed.  Allowing {option_list} to be set to {value}."
             )
             return True, other_possible, msg
-        return False, other_possible, "{0} not found in options list {1}"
+        return False, other_possible, f"Value '{value}' for metadata field '{name}' not found in options list {option_list}"
 
     def __setattr__(self, name, value):
         """
@@ -399,7 +399,7 @@ class Base:
                 # check options
                 if v_dict["style"] == "controlled vocabulary":
                     options = v_dict["options"]
-                    accept, other, msg = self._validate_option(value, options)
+                    accept, other, msg = self._validate_option(name, value, options)
                     if not accept:
                         self.logger.error(msg.format(value, options))
                         raise MTSchemaError(msg.format(value, options))
