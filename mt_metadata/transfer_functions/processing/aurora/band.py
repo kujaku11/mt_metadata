@@ -45,17 +45,17 @@ class Band(Base):
     @property
     def name(self):
         """
-        consider adding name to standards json
-        if self._name is None:
-            self._name = f"{self.center_frequency:.6f}"
-        return self._name
-        Returns
-        -------
-
+        :return: The name of the frequency band (currently defaults to fstring with 6 decimal places.
+        :rtype: str
         """
         if self._name is None:
             self._name = f"{self.center_frequency:.6f}"
         return self._name
+
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     def _indices_from_frequencies(self, frequencies):
         """

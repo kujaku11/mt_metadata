@@ -44,6 +44,10 @@ class TestBandDefault(unittest.TestCase):
             frequency_min=self.min_freq, frequency_max=self.max_freq
         )
 
+    def test_copy(self):
+        cloned = self.band.copy()
+        self.assertEqual(self.band, cloned)
+        
     def test_lower_bound(self):
         self.assertEqual(self.band.lower_bound, self.min_freq)
 
