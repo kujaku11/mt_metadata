@@ -44,6 +44,10 @@ class TestBandDefault(unittest.TestCase):
             frequency_min=self.min_freq, frequency_max=self.max_freq
         )
 
+    def test_copy(self):
+        cloned = self.band.copy()
+        self.assertEqual(self.band, cloned)
+        
     def test_lower_bound(self):
         self.assertEqual(self.band.lower_bound, self.min_freq)
 
@@ -95,6 +99,10 @@ class TestBandDefault(unittest.TestCase):
             self.assertAlmostEqual(self.band.center_frequency, 2.5)
         with self.subTest("period"):
             self.assertAlmostEqual(self.band.center_period, 1.0 / 2.5)
+
+    def test_name(self):
+        self.assertTrue(isinstance(self.band.name, str))
+
 
 
 class TestBandClosedRight(unittest.TestCase):
