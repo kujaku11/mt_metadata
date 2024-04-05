@@ -24,6 +24,7 @@ class Band(Base):
     def __init__(self, **kwargs):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        self._name = None
 
     @property
     def lower_bound(self):
@@ -40,6 +41,21 @@ class Band(Base):
     @property
     def upper_closed(self):
         return self.to_interval().closed_right
+
+    @property
+    def name(self):
+        """
+        :return: The name of the frequency band (currently defaults to fstring with 6 decimal places.
+        :rtype: str
+        """
+        if self._name is None:
+            self._name = f"{self.center_frequency:.6f}"
+        return self._name
+
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     def _indices_from_frequencies(self, frequencies):
         """
