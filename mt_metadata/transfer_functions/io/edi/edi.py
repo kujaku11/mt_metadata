@@ -300,20 +300,20 @@ class EDI(object):
 
         self._read_data()
 
-        if self.Header.lat is None:
+        if self.Header.lat in [None, 0.0]:
             self.Header.lat = self.Measurement.reflat
             self.logger.debug(
-                "Got latitude from reflat for {0}".format(self.Header.dataid)
+                f"Got latitude from reflat for {self.Header.dataid}"
             )
-        if self.Header.lon is None:
+        if self.Header.lon in [None, 0.0]:
             self.Header.lon = self.Measurement.reflon
             self.logger.debug(
-                "Got longitude from reflon for {0}".format(self.Header.dataid)
+                f"Got longitude from reflon for {self.Header.dataid}"
             )
-        if self.Header.elev is None:
+        if self.Header.elev in [None, 0.0]:
             self.Header.elev = self.Measurement.refelev
             self.logger.debug(
-                "Got elevation from refelev for {0}".format(self.Header.dataid)
+                f"Got elevation from refelev for {self.Header.dataid}"
             )
 
         if self.elev in [0, None] and get_elevation:
@@ -419,8 +419,7 @@ class EDI(object):
                         )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"]
-                        + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
@@ -757,9 +756,7 @@ class EDI(object):
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
         if self.Header.fileby != "1980-01-01":
-            extra_lines.append(
-                f"\toriginal_file.date={self.Header.filedate}\n"
-            )
+            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -907,15 +904,11 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
