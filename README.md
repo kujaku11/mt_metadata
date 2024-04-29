@@ -33,6 +33,7 @@ Most people will be using the transfer functions, but a lot of that metadata com
 * **Documentation**: https://mt-metadata.readthedocs.io.
 * **Examples**: Click the `Binder` badge above and Jupyter Notebook examples are in **mt_metadata/examples/notebooks** and **docs/source/notebooks**
 * **Suggested Citation**: Peacock, J. R., Kappler, K., Ronan, T., Heagy, L.,  Kelbert, A., Frassetto, A. (2022) MTH5: An archive and exchangeable data format for magnetotelluric time series data, *Computers & Geoscience*, **162**, doi:10.1016/j.cageo.2022.105102
+* **IPDS**: IP-138156
 
 
 # Installation
