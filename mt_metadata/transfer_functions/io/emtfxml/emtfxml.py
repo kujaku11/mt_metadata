@@ -1211,7 +1211,7 @@ class EMTFXML(emtf_xml.EMTF):
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                self.logger.exception(error)
+                                # self.logger.exception(error)
                         elif "magnetometer" in key:
                             index = int(key.split("_")[1].split(".")[0])
                             key = key.split(".", 1)[1:]
@@ -1227,7 +1227,7 @@ class EMTFXML(emtf_xml.EMTF):
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                self.logger.exception(error)
+                                # self.logger.exception(error)
                         else:
                             try:
                                 run.set_attr_from_name(key, value)
@@ -1235,7 +1235,7 @@ class EMTFXML(emtf_xml.EMTF):
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                self.logger.exception(error)
+                                # self.logger.exception(error)
                     else:
                         try:
                             self.processing_info.set_attr_from_name(key, value)
@@ -1243,7 +1243,7 @@ class EMTFXML(emtf_xml.EMTF):
                             self.logger.warning(
                                 f"Cannot set processing info attribute {param}"
                             )
-                            self.logger.exception(error)
+                            # self.logger.exception(error)
 
         self.site.run_list = sm.transfer_function.runs_processed
 
