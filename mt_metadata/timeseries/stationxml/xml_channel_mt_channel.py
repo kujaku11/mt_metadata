@@ -8,6 +8,8 @@ Created on Fri Feb 19 16:14:41 2021
 :license: MIT
 
 """
+import copy
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -589,15 +591,17 @@ class XMLChannelMTChannel(BaseTranslator):
 
         :return:
         """
-        sensor_type = sensor.type
+        original_sensor_type = sensor.type
         # set sensor_type to be a string if it is None
-        if sensor_type is None:
+        if original_sensor_type is None:
             sensor_type = ""  # make a string
             msg = f"Sensor {sensor} does not have field type attr"
             self.logger.debug(msg)
+        else:
+            sensor_type = copy.deepcopy(original_sensor_type)
 
         if sensor_type.lower() in self.understood_sensor_types:
-            return sensor
+            return sensor_type
         else:
             self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
 
@@ -610,4 +614,4 @@ class XMLChannelMTChannel(BaseTranslator):
             sensor_type = None
             self.logger.error("sensor type could not be resolved -- setting to None")
 
-        return sensor_type
+        return original_sensor_type
