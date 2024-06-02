@@ -33,6 +33,15 @@ class XMLChannelMTChannel(BaseTranslator):
     translate back and forth between StationXML Channel and MT Channel
     """
 
+    understood_sensor_types = [
+        "logger",
+        "magnetometer",
+        "induction coil",
+        "coil",
+        "dipole",
+        "electrode"
+    ]
+
     def __init__(self):
         super().__init__()
 
@@ -217,6 +226,8 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
+        sensor.type = self._deduce_sensor_type(sensor)
+
         if not sensor.type:
             return mt_channel
 
@@ -566,3 +577,35 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.calibration_units_description = unit_obj.name
 
         return xml_channel
+
+
+    def _deduce_sensor_type(self, sensor):
+        """
+
+        :param sensor: Information about a sensor, usually extractes from FDSN XML
+        :type sensor: obspy.core.inventory.util.Equipment
+
+        :return:
+        """
+        sensor_type = sensor.type
+        # set sensor_type to be a string if it is None
+        if sensor_type is None:
+            sensor_type = ""  # make a string
+            msg = f"Sensor {sensor} does not have field type attr"
+            self.logger.debug(msg)
+
+        if sensor_type.lower() in self.understood_sensor_types:
+            return sensor
+        else:
+            self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
+
+        #  Try handling Bartington FGM at Earthscope
+        if sensor.description == "Bartington 3-Axis Fluxgate Sensor":
+            sensor_type = "magnetometer"
+
+        # reset sensor_type to None it it was not handled
+        if not sensor_type:
+            sensor_type = None
+            self.logger.error("sensor type could not be resolved -- setting to None")
+
+        return sensor_type
