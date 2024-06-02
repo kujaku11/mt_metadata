@@ -24,6 +24,7 @@ from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
 
 from obspy.core import inventory
+from obspy import UTCDateTime
 
 # =============================================================================
 
@@ -118,7 +119,8 @@ class XMLChannelMTChannel(BaseTranslator):
         # fill channel filters
         mt_channel.filter.name = list(mt_filters.keys())
         mt_channel.filter.applied = [True] * len(list(mt_filters.keys()))
-
+        if UTCDateTime(mt_channel.time_period.end) < UTCDateTime(mt_channel.time_period.start):
+            mt_channel.time_period.end = '2200-01-01T00:00:00+00:00'
         return mt_channel, mt_filters
 
     def mt_to_xml(self, mt_channel, filters_dict, hard_code=True):
