@@ -605,13 +605,16 @@ class XMLChannelMTChannel(BaseTranslator):
         else:
             self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
 
-        #  Try handling Bartington FGM at Earthscope
+        #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
         if sensor.description == "Bartington 3-Axis Fluxgate Sensor":
             sensor_type = "magnetometer"
+        elif sensor_type == "BARTINGTON":
+            sensor_type = "magnetometer"
+
 
         # reset sensor_type to None it it was not handled
         if not sensor_type:
-            sensor_type = None
-            self.logger.error("sensor type could not be resolved -- setting to None")
+            sensor_type = original_sensor_type
+            self.logger.error("sensor type could not be resolved")
 
-        return original_sensor_type
+        return sensor_type
