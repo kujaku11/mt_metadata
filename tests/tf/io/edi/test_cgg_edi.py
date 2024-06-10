@@ -16,6 +16,7 @@ from mt_metadata.transfer_functions import TF
 from mt_metadata.utils.mttime import MTime
 from mt_metadata import TF_EDI_CGG
 
+
 # =============================================================================
 # CGG
 # =============================================================================
@@ -383,7 +384,7 @@ class TestCGGTF(unittest.TestCase):
             "transfer_function.data_quality.rating.value = 0",
             "transfer_function.id = TEST01",
             "transfer_function.processed_date = 2014-10-07",
-            "transfer_function.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
+            "transfer_function.processing_parameters.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['TEST01a']",
             "transfer_function.software.name = L13ss",

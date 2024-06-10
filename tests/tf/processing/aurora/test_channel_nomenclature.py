@@ -35,6 +35,7 @@ class TestChannelNomenclature(unittest.TestCase):
         ch_nom = ChannelNomenclature(keyword=keyword)
         assert len(ch_nom.ex_ey) == 2
         assert len(ch_nom.ex_ey_hz) == 3
+        assert len(ch_nom.hx_hy_hz) == 3
         assert len(ch_nom.hx_hy) == 2
         assert len(ch_nom.channels) == 5
 
