@@ -78,6 +78,10 @@ class ChannelNomenclature(Base):
         return [self.hx, self.hy]
 
     @property
+    def hx_hy_hz(self):
+        return [self.hx, self.hy, self.hz]
+
+    @property
     def ex_ey_hz(self):
         return [self.ex, self.ey, self.hz]
 
