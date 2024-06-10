@@ -608,7 +608,7 @@ class XMLChannelMTChannel(BaseTranslator):
         #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
         if sensor.description == "Bartington 3-Axis Fluxgate Sensor":
             sensor_type = "magnetometer"
-        elif sensor_type == "BARTINGTON":
+        elif sensor_type.lower() == "bartington":
             sensor_type = "magnetometer"
 
 
