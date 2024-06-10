@@ -838,10 +838,12 @@ class TF:
         ].data.tolist()
         if self.ex in outputs or self.ey in outputs or self.hz in outputs:
             if np.all(
-                self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["tf"],
-                    output=self._ch_output_dict["tf"],
-                ).data
+                self._transfer_function.transfer_function.loc[
+                    dict(
+                        input=self._ch_input_dict["tf"],
+                        output=self._ch_output_dict["tf"],
+                    )
+                ].data
                 == 0
             ):
                 return False
@@ -857,9 +859,9 @@ class TF:
 
         """
         if self.has_transfer_function():
-            ds = self.dataset.transfer_function.sel(
-                input=self.hx_hy, output=self.ex_ey_hz
-            )
+            ds = self.dataset.transfer_function.loc[
+                dict(input=self.hx_hy, output=self.ex_ey_hz)
+            ]
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -889,9 +891,9 @@ class TF:
 
         """
         if self.has_transfer_function():
-            ds = self.dataset.transfer_function_error.sel(
-                input=self.hx_hy, output=self.ex_ey_hz
-            )
+            ds = self.dataset.transfer_function_error.loc[
+                dict(input=self.hx_hy, output=self.ex_ey_hz)
+            ]
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -921,9 +923,9 @@ class TF:
 
         """
         if self.has_transfer_function():
-            ds = self.dataset.transfer_function_model_error.sel(
-                input=self.hx_hy, output=self.ex_ey_hz
-            )
+            ds = self.dataset.transfer_function_model_error.loc[
+                dict(input=self.hx_hy, output=self.ex_ey_hz)
+            ]
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -958,10 +960,12 @@ class TF:
         ].data.tolist()
         if self.ex in outputs or self.ey in outputs:
             if np.all(
-                self._transfer_function.transfer_function.sel(
-                    input=self._ch_input_dict["impedance"],
-                    output=self._ch_output_dict["impedance"],
-                ).data
+                self._transfer_function.transfer_function.loc[
+                    dict(
+                        input=self._ch_input_dict["impedance"],
+                        output=self._ch_output_dict["impedance"],
+                    )
+                ].data
                 == 0
             ):
                 return False
@@ -977,10 +981,12 @@ class TF:
 
         """
         if self.has_impedance():
-            z = self.dataset.transfer_function.sel(
-                input=self._ch_input_dict["impedance"],
-                output=self._ch_output_dict["impedance"],
-            )
+            z = self.dataset.transfer_function.loc[
+                dict(
+                    input=self._ch_input_dict["impedance"],
+                    output=self._ch_output_dict["impedance"],
+                )
+            ]
             z.name = "impedance"
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -1011,10 +1017,12 @@ class TF:
 
         """
         if self.has_impedance():
-            z_err = self.dataset.transfer_function_error.sel(
-                input=self._ch_input_dict["impedance"],
-                output=self._ch_output_dict["impedance"],
-            )
+            z_err = self.dataset.transfer_function_error.loc[
+                dict(
+                    input=self._ch_input_dict["impedance"],
+                    output=self._ch_output_dict["impedance"],
+                )
+            ]
             z_err.name = "impedance_error"
 
             for key, mkey in self._dataset_attr_dict.items():
@@ -1046,10 +1054,12 @@ class TF:
 
         """
         if self.has_impedance():
-            z_err = self.dataset.transfer_function_model_error.sel(
-                input=self._ch_input_dict["impedance"],
-                output=self._ch_output_dict["impedance"],
-            )
+            z_err = self.dataset.transfer_function_model_error.loc[
+                dict(
+                    input=self._ch_input_dict["impedance"],
+                    output=self._ch_output_dict["impedance"],
+                )
+            ]
             z_err.name = "impedance_model_error"
 
             for key, mkey in self._dataset_attr_dict.items():
@@ -1087,10 +1097,12 @@ class TF:
         if self.hz in outputs:
             if np.all(
                 np.nan_to_num(
-                    self._transfer_function.transfer_function.sel(
-                        input=self._ch_input_dict["tipper"],
-                        output=self._ch_output_dict["tipper"],
-                    ).data
+                    self._transfer_function.transfer_function.loc[
+                        dict(
+                            input=self._ch_input_dict["tipper"],
+                            output=self._ch_output_dict["tipper"],
+                        )
+                    ].data
                 )
                 == 0
             ):
@@ -1107,10 +1119,12 @@ class TF:
 
         """
         if self.has_tipper():
-            t = self.dataset.transfer_function.sel(
-                input=self._ch_input_dict["tipper"],
-                output=self._ch_output_dict["tipper"],
-            )
+            t = self.dataset.transfer_function.loc[
+                dict(
+                    input=self._ch_input_dict["tipper"],
+                    output=self._ch_output_dict["tipper"],
+                )
+            ]
             t.name = "tipper"
 
             for key, mkey in self._dataset_attr_dict.items():
@@ -1141,10 +1155,12 @@ class TF:
 
         """
         if self.has_tipper():
-            t = self.dataset.transfer_function_error.sel(
-                input=self._ch_input_dict["tipper"],
-                output=self._ch_output_dict["tipper"],
-            )
+            t = self.dataset.transfer_function_error.loc[
+                dict(
+                    input=self._ch_input_dict["tipper"],
+                    output=self._ch_output_dict["tipper"],
+                )
+            ]
             t.name = "tipper_error"
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -1174,10 +1190,12 @@ class TF:
 
         """
         if self.has_tipper():
-            t = self.dataset.transfer_function_model_error.sel(
-                input=self._ch_input_dict["tipper"],
-                output=self._ch_output_dict["tipper"],
-            )
+            t = self.dataset.transfer_function_model_error.loc[
+                dict(
+                    input=self._ch_input_dict["tipper"],
+                    output=self._ch_output_dict["tipper"],
+                )
+            ]
             t.name = "tipper_model_error"
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
@@ -1209,10 +1227,12 @@ class TF:
         """
 
         if np.all(
-            self._transfer_function.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"],
-                output=self._ch_output_dict["isp"],
-            ).data
+            self._transfer_function.inverse_signal_power.loc[
+                dict(
+                    input=self._ch_input_dict["isp"],
+                    output=self._ch_output_dict["isp"],
+                )
+            ].data
             == 0
         ):
             return False
@@ -1221,10 +1241,12 @@ class TF:
     @property
     def inverse_signal_power(self):
         if self.has_inverse_signal_power():
-            ds = self.dataset.inverse_signal_power.sel(
-                input=self._ch_input_dict["isp"],
-                output=self._ch_output_dict["isp"],
-            )
+            ds = self.dataset.inverse_signal_power.loc[
+                dict(
+                    input=self._ch_input_dict["isp"],
+                    output=self._ch_output_dict["isp"],
+                )
+            ]
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -1260,10 +1282,12 @@ class TF:
         """
 
         if np.all(
-            self._transfer_function.residual_covariance.sel(
-                input=self._ch_input_dict["res"],
-                output=self._ch_output_dict["res"],
-            ).data
+            self._transfer_function.residual_covariance.loc[
+                dict(
+                    input=self._ch_input_dict["res"],
+                    output=self._ch_output_dict["res"],
+                )
+            ].data
             == 0
         ):
             return False
@@ -1272,10 +1296,12 @@ class TF:
     @property
     def residual_covariance(self):
         if self.has_residual_covariance():
-            ds = self.dataset.residual_covariance.sel(
-                input=self._ch_input_dict["res"],
-                output=self._ch_output_dict["res"],
-            )
+            ds = self.dataset.residual_covariance.loc[
+                dict(
+                    input=self._ch_input_dict["res"],
+                    output=self._ch_output_dict["res"],
+                )
+            ]
             for key, mkey in self._dataset_attr_dict.items():
                 obj, attr = mkey.split(".", 1)
                 value = getattr(self, obj).get_attr_from_name(attr)
@@ -2222,19 +2248,19 @@ class TF:
             setattr(self, tf_key, getattr(zmm_obj, j_key))
         self._transfer_function["transfer_function"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
-        ] = zmm_obj.dataset.transfer_function.sel(
-            input=zmm_obj.input_channels, output=zmm_obj.output_channels
-        )
+        ] = zmm_obj.dataset.transfer_function.loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.output_channels)
+        ]
         self._transfer_function["inverse_signal_power"].loc[
             dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
-        ] = zmm_obj.dataset.inverse_signal_power.sel(
-            input=zmm_obj.input_channels, output=zmm_obj.input_channels
-        )
+        ] = zmm_obj.dataset.inverse_signal_power.loc[
+            dict(input=zmm_obj.input_channels, output=zmm_obj.input_channels)
+        ]
         self._transfer_function["residual_covariance"].loc[
             dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
-        ] = zmm_obj.dataset.residual_covariance.sel(
-            input=zmm_obj.output_channels, output=zmm_obj.output_channels
-        )
+        ] = zmm_obj.dataset.residual_covariance.loc[
+            dict(input=zmm_obj.output_channels, output=zmm_obj.output_channels)
+        ]
 
         self._compute_error_from_covariance()
         self._rotation_angle = -1 * zmm_obj.declination
@@ -2361,5 +2387,4 @@ class TF:
 
 
 class TFError(Exception):
-    pass
     pass

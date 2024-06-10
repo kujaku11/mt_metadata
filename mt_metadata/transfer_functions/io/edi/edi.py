@@ -300,20 +300,20 @@ class EDI(object):
 
         self._read_data()
 
-        if self.Header.lat is None:
+        if self.Header.lat in [None, 0.0]:
             self.Header.lat = self.Measurement.reflat
             self.logger.debug(
-                "Got latitude from reflat for {0}".format(self.Header.dataid)
+                f"Got latitude from reflat for {self.Header.dataid}"
             )
-        if self.Header.lon is None:
+        if self.Header.lon in [None, 0.0]:
             self.Header.lon = self.Measurement.reflon
             self.logger.debug(
-                "Got longitude from reflon for {0}".format(self.Header.dataid)
+                f"Got longitude from reflon for {self.Header.dataid}"
             )
-        if self.Header.elev is None:
+        if self.Header.elev in [None, 0.0]:
             self.Header.elev = self.Measurement.refelev
             self.logger.debug(
-                "Got elevation from refelev for {0}".format(self.Header.dataid)
+                f"Got elevation from refelev for {self.Header.dataid}"
             )
 
         if self.elev in [0, None] and get_elevation:
@@ -1203,7 +1203,7 @@ class EDI(object):
                 if k in ["processing_parameters"]:
                     for item in v:
                         self.Info.info_list.append(
-                            f"transfer_function.{item.replace('=', ' = ')}"
+                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
                         )
                 else:
                     self.Info.info_list.append(f"transfer_function.{k} = {v}")

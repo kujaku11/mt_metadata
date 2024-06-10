@@ -30,7 +30,6 @@ attr_dict.add_dict(
 # =============================================================================
 
 
-
 class FrequencyResponseTableFilter(FilterBase):
     """
     Phases should be in radians.
@@ -130,7 +129,6 @@ class FrequencyResponseTableFilter(FilterBase):
             self._empirical_phases = np.array(value, dtype=float)
 
             if self._empirical_phases.size > 0:
-
                 if self._empirical_phases.mean() > 1000 * np.pi / 2:
                     self.logger.warning(
                         "Phases appear to be in milli radians attempting to convert to radians"
@@ -216,12 +214,17 @@ class FrequencyResponseTableFilter(FilterBase):
         :rtype: np.ndarray
 
         """
-        if (
-            np.min(frequencies) < self.min_frequency
-            or np.max(frequencies) > self.max_frequency
-        ):
+        if np.min(frequencies) < self.min_frequency:
+            # if there is a dc component skip it.
+            if np.min(frequencies) != 0:
+                self.logger.warning(
+                    f"Extrapolating frequencies smaller ({np.min(frequencies)} Hz) "
+                    f"than table frequencies ({self.min_frequency} Hz)."
+                )
+        if np.max(frequencies) > self.max_frequency:
             self.logger.warning(
-                "Extrapolating, use values outside calibration frequencies with caution"
+                f"Extrapolating frequencies larger ({np.max(frequencies)} Hz) "
+                f"than table frequencies ({self.max_frequency} Hz)."
             )
 
         phase_response = interp1d(
