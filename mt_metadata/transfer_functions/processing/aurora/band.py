@@ -141,7 +141,7 @@ class Band(Base):
 
 class FrequencyBands(object):
     """
-    This is just collection of FrequencyBand objects.
+    This is just collection of objects of class Band.
     It is intended to be used at a single decimation level
 
     The core underlying variable is "band_edges", a 2D array, with one row per
@@ -169,11 +169,9 @@ class FrequencyBands(object):
 
     def validate(self):
         """
-        placeholder for sanity checks.
-        Main reason this is here is in anticipation of supporting an append() method
-        to this class that accepts FrequencyBand objects.  In that case we may wish
-        to re-order the band edges.
-
+        Placeholder for sanity checks.
+        Main reason for this is in anticipation of an append() method that accepts Band objects.
+        In that case we may wish to re-order the band edges.
 
         """
         band_centers = self.band_centers()
@@ -215,12 +213,10 @@ class FrequencyBands(object):
 
         Returns
         -------
-        frequency_band: FrequencyBand() object
+        frequency_band: Band()
+            Class that represents a frequency band
         """
-        # frequency_band = FrequencyBand(
-        #     self.band_edges[i_band, 0],
-        #     self.band_edges[i_band, 1],
-        # )
+
         frequency_band = Band(
             frequency_min=self.band_edges[i_band, 0],
             frequency_max=self.band_edges[i_band, 1],

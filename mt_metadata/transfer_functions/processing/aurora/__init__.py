@@ -20,7 +20,6 @@ __all__ = [
     "Decimation",
     "DecimationLevel",
     "Estimator",
-    "FrequencyBand",
     "Processing",
     "Regression",
     "Run",
