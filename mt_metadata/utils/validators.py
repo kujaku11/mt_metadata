@@ -378,6 +378,15 @@ def validate_default(value_dict):
 
 def validate_value_type(value, v_type, style=None):
     """
+
+    :param value:
+    :type value:
+    :param v_type:
+    :type v_type:
+    :param style:
+    :type style:
+    :return:
+
     validate type from standards
 
     """
@@ -469,7 +478,7 @@ def validate_value_type(value, v_type, style=None):
 
         # if a number convert to appropriate type
         elif isinstance(
-            value, (float, np.float_, np.float16, np.float32, np.float64)
+            value, (float, np.float16, np.float32, np.float64)
         ):
             if v_type is int:
                 return int(value)
@@ -481,7 +490,7 @@ def validate_value_type(value, v_type, style=None):
         elif isinstance(value, Iterable):
             if v_type is str:
                 if isinstance(value, np.ndarray):
-                    value = value.astype(np.unicode_)
+                    value = value.astype(np.str_)
                 value = [
                     f"{v}".replace("'", "").replace('"', "") for v in value
                 ]

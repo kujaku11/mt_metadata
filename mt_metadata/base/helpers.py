@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 20:37:52 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -637,11 +637,18 @@ def element_to_string(element):
 # Helper function to be sure everything is encoded properly
 # =============================================================================
 class NumpyEncoder(json.JSONEncoder):
+
     """
     Need to encode numpy ints and floats for json to work
     """
 
     def default(self, obj):
+        """
+
+        :param obj:
+        :type obj:
+        :return:
+        """
         if isinstance(
             obj,
             (
@@ -659,7 +666,7 @@ class NumpyEncoder(json.JSONEncoder):
             ),
         ):
             return int(obj)
-        elif isinstance(obj, (np.float_, np.float16, np.float32, np.float64)):
+        elif isinstance(obj, (np.float16, np.float32, np.float64)):
             return float(obj)
         elif isinstance(obj, (np.ndarray)):
             if obj.dtype == complex:
