@@ -490,7 +490,7 @@ def validate_value_type(value, v_type, style=None):
         elif isinstance(value, Iterable):
             if v_type is str:
                 if isinstance(value, np.ndarray):
-                    value = value.astype(np.unicode_)
+                    value = value.astype(np.str_)
                 value = [
                     f"{v}".replace("'", "").replace('"', "") for v in value
                 ]
