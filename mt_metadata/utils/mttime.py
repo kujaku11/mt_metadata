@@ -400,7 +400,7 @@ class MTime:
 
         """
         t_min_max = False
-        if dt_str in [None, "", "none", "None", "NONE"]:
+        if dt_str in [None, "", "none", "None", "NONE", "Na"]:
             self.logger.debug(
                 "Time string is None, setting to 1980-01-01:00:00:00"
             )
