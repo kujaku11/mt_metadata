@@ -53,7 +53,7 @@ class Filtered(Base):
         elif isinstance(names, list):
             self._name = [ss.strip().lower() for ss in names]
         elif isinstance(names, np.ndarray):
-            names = names.astype(np.unicode_)
+            names = names.astype(np.str_)
             self._name = [ss.strip().lower() for ss in names]
         else:
             msg = "names must be a string or list of strings not {0}, type {1}"
