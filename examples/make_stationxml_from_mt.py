@@ -51,6 +51,7 @@ for station in ["KSP33"]:
     s = mtex.surveys[0].stations[0]
     r = s.sort_runs_by_time(inplace=False)
     # name the file as network_year_station_today.xml
+    # try to use the year from the station.
     xml_fn = "_".join(
         [
             f"{mtex.surveys[0].fdsn.network}",

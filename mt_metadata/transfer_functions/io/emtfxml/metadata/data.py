@@ -432,7 +432,7 @@ class TransferFunction(Base):
                 pass
 
             comp_element = et.SubElement(
-                period_element, key.replace("_", ".").capitalize(), attr_dict
+                period_element, key.replace("_", ".").upper(), attr_dict
             )
             idx_dict = self.write_dict[key]
             shape = arr.shape
