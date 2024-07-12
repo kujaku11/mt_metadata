@@ -47,7 +47,7 @@ class PeriodRange(Base):
 
         root = et.Element(
             self.__class__.__name__,
-            {"min": f"{self.min:16.5E}", "max": f"{self.max:16.5E}"},
+            {"min": f"{self.min:<16.5E}", "max": f"{self.max:<16.5E}"},
         )
         if string:
             return element_to_string(root)
