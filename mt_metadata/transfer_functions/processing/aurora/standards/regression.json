@@ -53,5 +53,16 @@
         "alias": [],
         "example": "2.8",
 		"default": 2.8
+    },
+	"tolerance": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for convergence of RME algorithm.  Lower means more iterations",
+        "options": [],
+        "alias": [],
+        "example": "0.005",
+		"default": 0.005
     }
 }
