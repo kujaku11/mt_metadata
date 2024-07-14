@@ -40,8 +40,8 @@
         "description": "The number of standard deviations where the influence function changes from linear to quadratic",
         "options": [],
         "alias": [],
-        "example": "1.5",
-		"default": 1.4
+        "example": "1.4",
+		"default": 1.5
     },
 	"u0": {
         "type": "float",
