@@ -31,5 +31,38 @@
         "alias": [],
         "example": "2",
 		"default": 2
+    },
+	"r0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "The number of standard deviations where the influence function changes from linear to quadratic",
+        "options": [],
+        "alias": [],
+        "example": "1.5",
+		"default": 1.4
+    },
+	"u0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for redescending Huber regression weights.",
+        "options": [],
+        "alias": [],
+        "example": "2.8",
+		"default": 2.8
+    },
+	"tolerance": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for convergence of RME algorithm.  Lower means more iterations",
+        "options": [],
+        "alias": [],
+        "example": "0.005",
+		"default": 0.005
     }
 }
