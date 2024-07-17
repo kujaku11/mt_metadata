@@ -64,5 +64,16 @@
         "alias": [],
         "example": "0.005",
 		"default": 0.005
+    },
+	"verbosity": {
+        "type": "int",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for logging messages during regression -- Higher means more messages",
+        "options": [0, 1, 2],
+        "alias": [],
+        "example": "1",
+		"default": 0
     }
 }
