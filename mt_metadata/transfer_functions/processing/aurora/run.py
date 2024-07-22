@@ -97,7 +97,17 @@ class Run(Base):
 
         for item in values:
             if not isinstance(item, TimePeriod):
-                raise TypeError(f"not sure what to do with type {type(item)}")
+                if isinstance(item, dict):
+                    try:
+                        tp = TimePeriod()
+                        tp.from_dict(item)
+                        self._time_periods.append(item)
+                    except Exception as e:
+                        msg = f"failed to unpack time period from {item}"
+                        self.logger.error(msg)
+                        raise ValueError(msg)
+                else:
+                    raise TypeError(f"not sure what to do with type {type(item)}")
 
             self._time_periods.append(item)
 
