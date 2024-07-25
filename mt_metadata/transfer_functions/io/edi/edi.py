@@ -419,7 +419,8 @@ class EDI(object):
                         )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"]
+                        + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
@@ -755,8 +756,10 @@ class EDI(object):
             extra_lines.append(
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
-        if self.Header.fileby != "1980-01-01":
-            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
+        if self.Header.filedate != "1980-01-01":
+            extra_lines.append(
+                f"\toriginal_file.date={self.Header.filedate}\n"
+            )
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -904,11 +907,15 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
+                ">{0} // {1:.0f}\n".format(
+                    data_key.upper(), data_comp_arr.size
+                )
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
+                ">{0} // {1:.0f}\n".format(
+                    data_key.upper(), data_comp_arr.size
+                )
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
@@ -1365,6 +1372,13 @@ class EDI(object):
     def hz_metadata(self):
         return self._get_magnetic_metadata("hz")
 
+    @property
+    def rrhx_metadata(self):
+        return self._get_magnetic_metadata("rrhx")
+
+    @property
+    def rrhy_metadata(self):
+        return self._get_magnetic_metadata("rrhy")
     @property
     def rrhx_metadata(self):
         return self._get_magnetic_metadata("rrhx")
