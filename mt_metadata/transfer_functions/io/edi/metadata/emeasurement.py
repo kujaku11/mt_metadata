@@ -41,8 +41,9 @@ class EMeasurement(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        if self.x != 0 and self.y != 0 and self.x2 != 0 and self.y2 != 0:
-            self.azm = self.azimuth
+        if self.azm == 0:
+            if self.x != 0 or self.x2 != 0 or self.y != 0 or self.y2 != 0:
+                self.azm = self.azimuth
 
     def __str__(self):
         return "\n".join(
