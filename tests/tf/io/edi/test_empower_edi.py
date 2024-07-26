@@ -15,6 +15,7 @@ from mt_metadata.transfer_functions.io import edi
 from mt_metadata.transfer_functions import TF
 from mt_metadata import TF_EDI_EMPOWER
 
+
 # =============================================================================
 # CGG
 # =============================================================================
@@ -86,7 +87,7 @@ class TestEMPOWEREDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
-                ("azm", 0.0),
+                ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 1005.001),
                 ("x", -50.6),
