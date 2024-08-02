@@ -30,8 +30,8 @@ class TestProcessing(unittest.TestCase):
         for ii in range(3):
             for start, end in zip(starts, ends):
                 entry = {
-                    "station_id": "mt01",
-                    "run_id": f"{ii:03}",
+                    "station": "mt01",
+                    "run": f"{ii:03}",
                     "start": start,
                     "end": end,
                     "mth5_path": r"/home/mth5_path.h5",
@@ -44,8 +44,8 @@ class TestProcessing(unittest.TestCase):
                 data_list.append(entry)
 
                 rr_entry_01 = {
-                    "station_id": "rr01",
-                    "run_id": f"{ii:03}",
+                    "station": "rr01",
+                    "run": f"{ii:03}",
                     "start": start,
                     "end": end,
                     "mth5_path": r"/home/mth5_path.h5",
@@ -57,8 +57,8 @@ class TestProcessing(unittest.TestCase):
                 data_list.append(rr_entry_01)
 
                 rr_entry_02 = {
-                    "station_id": "rr02",
-                    "run_id": f"{ii:03}",
+                    "station": "rr02",
+                    "run": f"{ii:03}",
                     "start": start,
                     "end": end,
                     "mth5_path": r"/home/mth5_path.h5",
