@@ -147,35 +147,53 @@ class Filtered(Base):
 
 
     def _check_consistency(self):
-        # check for consistency
-        if self._name != []:
-            if self._applied is None:
-                self.logger.warning("Need to input filter.applied")
-                return False
-            if len(self._name) == 1:
-                if len(self._applied) == 1:
-                    return True
-            elif len(self._name) > 1:
-                if len(self._applied) == 1:
-                    self.logger.debug(
-                        "Assuming all filters have been "
-                        + "applied as {0}".format(self._applied[0])
-                    )
-                    return True
-                elif len(self._applied) > 1:
-                    if len(self._applied) != len(self._name):
-                        self.logger.warning(
-                            "Applied and filter names "
-                            + "should be the same length. "
-                            + "Appied={0}, names={1}".format(
-                                len(self._applied), len(self._name)
-                            )
-                        )
-                        return False
-                    else:
-                        return True
-        elif self._name == [] and len(self._applied) > 0:
+        """
+        Logic to look for inconstencies in the configuration of the filter names and applied values.
+
+        Cases:
+        The filter has no name -- this could happen on intialization.
+
+        :return: bool
+	    True if OK, False if not.
+
+        """
+        # This inconsistency is ok -- the filter may not have been assigned a name yet
+        if self._name == [] and len(self._applied) > 0:
             self.logger.debug("Name probably not yet initialized -- skipping consitency check")
             return True
+
+        # Otherwise self._name != []
+
+        # Applied not assigned - this is not OK
+        if self._applied is None:
+            self.logger.warning("Need to input filter.applied")
+            return False
+
+        # Name and applied have same len ==1 : this is OK
+        if len(self._name) == 1:
+            if len(self._applied) == 1:
+                return True
+        # This is ambiguous -- consider making translating this assumption to
+        # something more explicit
+        elif len(self._name) > 1:
+            if len(self._applied) == 1:
+                msg = f"Assuming all filters have been applied as {self._applied[0]}"
+                self.logger.info(msg)
+                self._applied = len(self.name) * [self._applied[0],]
+                msg = f"Explicitly setting applied to {self._applied[0]}"
+                return True
+            elif len(self._applied) > 1:
+                if len(self._applied) != len(self._name):
+                    self.logger.warning(
+                        "Applied and filter names "
+                        + "should be the same length. "
+                        + "Appied={0}, names={1}".format(
+                            len(self._applied), len(self._name)
+                        )
+                    )
+                    return False
+                else:
+                    return True
         else:
+            # Some unknown configuration we have not yet encountered
             return False
