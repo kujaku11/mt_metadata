@@ -37,32 +37,44 @@
         "required": true,
         "style": "number",
         "units": null,
-        "description": "Initial value",
+        "description": "The number of standard deviations where the influence function changes from linear to quadratic",
         "options": [],
         "alias": [],
-        "example": "1",
-		"default": 1.4
+        "example": "1.4",
+		"default": 1.5
     },
-    "u0": {
+	"u0": {
         "type": "float",
         "required": true,
         "style": "number",
         "units": null,
-        "description": "Initial value",
+        "description": "Control for redescending Huber regression weights.",
         "options": [],
         "alias": [],
-        "example": "1",
+        "example": "2.8",
 		"default": 2.8
     },
-    "tolerance": {
+	"tolerance": {
         "type": "float",
         "required": true,
         "style": "number",
         "units": null,
-        "description": "Tolerance value",
+        "description": "Control for convergence of RME algorithm.  Lower means more iterations",
         "options": [],
         "alias": [],
+        "example": "0.005",
+		"default": 0.005
+    },
+	"verbosity": {
+        "type": "int",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for logging messages during regression -- Higher means more messages",
+        "options": [0, 1, 2],
+        "alias": [],
         "example": "1",
-		"default": 0.0005
+		"default": 0
+
     }
 }
