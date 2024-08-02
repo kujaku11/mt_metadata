@@ -43,8 +43,8 @@ class TestStationDataset(unittest.TestCase):
             self.assertListEqual(
                 df.columns.to_list(),
                 [
-                    "station_id",
-                    "run_id",
+                    "station",
+                    "run",
                     "start",
                     "end",
                     "mth5_path",
