@@ -32,7 +32,7 @@
         "example": "2",
 		"default": 2
     },
-	"r0": {
+    "r0": {
         "type": "float",
         "required": true,
         "style": "number",
@@ -75,5 +75,6 @@
         "alias": [],
         "example": "1",
 		"default": 0
+
     }
 }

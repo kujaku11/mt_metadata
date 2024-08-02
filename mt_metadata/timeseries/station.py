@@ -59,6 +59,8 @@ attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), None, keys=["doi"])
 attr_dict["doi"]["required"] = False
+
+
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -316,3 +318,32 @@ class Station(Base):
                 else:
                     if self.time_period.end < max(end):
                         self.time_period.end = max(end)
+
+    def sort_runs_by_time(self, inplace=True, ascending=True):
+        """
+        return a list of runs sorted by start time in the order of ascending or
+        descending.
+
+        :param ascending: DESCRIPTION, defaults to True
+        :type ascending: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        run_ids = []
+        run_starts = []
+        for run_key, run_obj in self.runs.items():
+            run_ids.append(run_key)
+            run_starts.append(run_obj.time_period.start.split("+")[0])
+
+        index = np.argsort(np.array(run_starts, dtype=np.datetime64))
+
+        new_runs = ListDict()
+        for ii in index:
+            new_runs[run_ids[ii]] = self.runs[run_ids[ii]]
+
+        if inplace:
+            self.runs = new_runs
+        else:
+            return new_runs

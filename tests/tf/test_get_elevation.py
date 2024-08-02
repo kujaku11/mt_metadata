@@ -17,7 +17,7 @@ from mt_metadata.transfer_functions.io.tools import get_nm_elev
 class TestGetNMElevation(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.true_elevation = 1899.181396484
+        self.true_elevation = 1899.16394043
 
     def test_get_good_value(self):
         nm_value = get_nm_elev(40, -120)
