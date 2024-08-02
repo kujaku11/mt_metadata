@@ -17,6 +17,8 @@ from .run import Run
 
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
+
+
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -88,8 +90,8 @@ class Station(Base):
         processing
 
         [
-            "station_id",
-            "run_id",
+            "station",
+            "run",
             "start",
             "end",
             "mth5_path",
@@ -106,8 +108,8 @@ class Station(Base):
         for run in self.runs:
             for tp in run.time_periods:
                 entry = {
-                    "station_id": self.id,
-                    "run_id": run.id,
+                    "station": self.id,
+                    "run": run.id,
                     "start": tp.start,
                     "end": tp.end,
                     "mth5_path": self.mth5_path,
@@ -130,8 +132,8 @@ class Station(Base):
         set a data frame
 
         [
-            "station_id",
-            "run_id",
+            "station",
+            "run",
             "start",
             "end",
             "mth5_path",
@@ -150,15 +152,17 @@ class Station(Base):
 
         self.runs = []
 
-        self.id = df.station_id.unique()[0]
+        self.id = df.station.unique()[0]
         self.mth5_path = df.mth5_path.unique()[0]
         self.remote = df.remote.unique()[0]
 
         for entry in df.itertuples():
             try:
-                r = self.run_dict[entry.run_id]
+                r = self.run_dict[entry.run]
                 r.time_periods.append(
-                    TimePeriod(start=entry.start.isoformat(), end=entry.end.isoformat())
+                    TimePeriod(
+                        start=entry.start.isoformat(), end=entry.end.isoformat()
+                    )
                 )
 
             except KeyError:
@@ -167,7 +171,7 @@ class Station(Base):
                 else:
                     channel_scale_factors = {}
                 r = Run(
-                    id=entry.run_id,
+                    id=entry.run,
                     sample_rate=entry.sample_rate,
                     input_channels=entry.input_channels,
                     output_channels=entry.output_channels,
@@ -175,6 +179,8 @@ class Station(Base):
                 )
 
                 r.time_periods.append(
-                    TimePeriod(start=entry.start.isoformat(), end=entry.end.isoformat())
+                    TimePeriod(
+                        start=entry.start.isoformat(), end=entry.end.isoformat()
+                    )
                 )
                 self.runs.append(r)
