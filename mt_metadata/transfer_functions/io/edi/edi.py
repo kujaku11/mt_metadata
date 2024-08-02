@@ -419,8 +419,7 @@ class EDI(object):
                         )
                 elif key.startswith("t"):
                     obj[:, ii, jj] = (
-                        data_dict[f"{key}r.exp"]
-                        + data_dict[f"{key}i.exp"] * 1j
+                        data_dict[f"{key}r.exp"] + data_dict[f"{key}i.exp"] * 1j
                     )
                     try:
                         error_key = [
@@ -757,9 +756,7 @@ class EDI(object):
                 f"\toriginal_program.date={self.Header.progdate}\n"
             )
         if self.Header.filedate != "1980-01-01":
-            extra_lines.append(
-                f"\toriginal_file.date={self.Header.filedate}\n"
-            )
+            extra_lines.append(f"\toriginal_file.date={self.Header.filedate}\n")
         header_lines = self.Header.write_header(
             longitude_format=longitude_format, latlon_format=latlon_format
         )
@@ -907,15 +904,11 @@ class EDI(object):
             ]
         elif data_key.lower() == "freq":
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         elif data_key.lower() in ["zrot", "trot"]:
             block_lines = [
-                ">{0} // {1:.0f}\n".format(
-                    data_key.upper(), data_comp_arr.size
-                )
+                ">{0} // {1:.0f}\n".format(data_key.upper(), data_comp_arr.size)
             ]
         else:
             raise ValueError("Cannot write block for {0}".format(data_key))
@@ -1040,11 +1033,7 @@ class EDI(object):
             self.Info.info_list.append(f"survey.summary = {survey.summary}")
 
         for key in survey.to_dict(single=True).keys():
-            if (
-                "northwest" in key
-                or "southeast" in key
-                or "time_period" in key
-            ):
+            if "northwest" in key or "southeast" in key or "time_period" in key:
                 continue
             value = survey.get_attr_from_name(key)
             if value != None:
@@ -1203,7 +1192,8 @@ class EDI(object):
         self.Header.datum = sm.location.datum
         self.Header.units = sm.transfer_function.units
         self.Header.enddate = sm.time_period.end
-        self.Header.loc = sm.geographic_name
+        if sm.geographic_name is not None:
+            self.Header.loc = sm.geographic_name
 
         ### write notes
         # write comments, which would be anything in the info section from an edi
