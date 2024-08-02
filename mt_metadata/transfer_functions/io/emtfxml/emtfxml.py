@@ -358,14 +358,20 @@ class EMTFXML(emtf_xml.EMTF):
             if hasattr(value, "to_xml") and callable(getattr(value, "to_xml")):
                 if key == "processing_info":
                     if skip_field_notes:
-                        value.remote_info._order.remove("field_notes")
+                        try:
+                            value.remote_info._order.remove("field_notes")
+                        except ValueError:
+                            self.logger.debug("No field notes to skip.")
                     if value.remote_info.site.id in [
                         None,
                         "",
                         "None",
                         "none",
                     ]:
-                        value.remote_info._order.remove("site")
+                        try:
+                            value.remote_info._order.remove("site")
+                        except ValueError:
+                            self.logger.debug("No remote field notes to skip.")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:

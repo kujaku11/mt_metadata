@@ -20,6 +20,8 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("period_range", SCHEMA_FN_PATHS)
+
+
 # =============================================================================
 class PeriodRange(Base):
     __doc__ = write_lines(attr_dict)
@@ -45,7 +47,10 @@ class PeriodRange(Base):
 
         root = et.Element(
             self.__class__.__name__,
-            {"min": f"{self.min:.9f}", "max": f"{self.max:.9f}"},
+            {
+                "min": f"{self.min:<16.5E}".strip(),
+                "max": f"{self.max:<16.5E}".strip(),
+            },
         )
         if string:
             return element_to_string(root)

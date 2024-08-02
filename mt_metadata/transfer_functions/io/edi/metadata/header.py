@@ -213,7 +213,7 @@ class Header(Location):
         self,
         longitude_format="LON",
         latlon_format="dms",
-        required=True,
+        required=False,
     ):
         """
         Write header information to a list of lines.
@@ -242,6 +242,8 @@ class Header(Location):
         header_lines = [">HEAD\n"]
         for key, value in self.to_dict(single=True, required=required).items():
             if key in ["x", "x2", "y", "y2", "z", "z2"]:
+                continue
+            if value in [None, "None"]:
                 continue
             if key in ["latitude"]:
                 key = "lat"

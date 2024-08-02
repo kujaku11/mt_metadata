@@ -56,7 +56,7 @@ class Estimate(Base):
 
         root = et.Element(
             self.__class__.__name__.capitalize(),
-            {"name": self.name, "type": self.type},
+            {"name": self.name.upper(), "type": self.type},
         )
 
         et.SubElement(root, "Description").text = self.description

@@ -174,6 +174,7 @@ class XMLInventoryMTExperiment:
                     xml_station.site.country = ",".join(
                         [str(country) for country in mt_survey.country]
                     )
+                # need to sort the runs by time
                 for mt_run in mt_station.runs:
                     xml_station = self.add_run(
                         xml_station, mt_run, mt_survey.filters

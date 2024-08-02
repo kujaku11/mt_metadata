@@ -11,7 +11,11 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines, dict_to_xml, element_to_string
+from mt_metadata.base.helpers import (
+    write_lines,
+    dict_to_xml,
+    element_to_string,
+)
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from . import Person
@@ -40,7 +44,7 @@ class Provenance(Base):
 
     @property
     def create_time(self):
-        return self._creation_dt.iso_str
+        return self._creation_dt.iso_str.split(".")[0]
 
     @create_time.setter
     def create_time(self, dt_str):

@@ -441,6 +441,7 @@ class DefineMeasurement(Base):
                     "chtype": channel.component,
                     "id": channel.channel_id,
                     "acqchan": channel.channel_number,
+                    "dip": channel.measurement_tilt,
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)
