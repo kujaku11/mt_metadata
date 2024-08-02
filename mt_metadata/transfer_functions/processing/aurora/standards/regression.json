@@ -31,5 +31,38 @@
         "alias": [],
         "example": "2",
 		"default": 2
+    },
+    "r0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Initial value",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 1.4
+    },
+    "u0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Initial value",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 2.8
+    },
+    "tolerance": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Tolerance value",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 0.0005
     }
 }
