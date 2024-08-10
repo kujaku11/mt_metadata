@@ -32,6 +32,14 @@ class Filtered(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+        Constructor
+
+        :param kwargs:
+
+        TODO: Consider not setting self.applied = None, as this has the effect of self._applied = [True,]
+        """
+        self._applied_values_map = _applied_values_map()
         self._name = []
         self._applied = []
         self.name = None
@@ -69,22 +77,19 @@ class Filtered(Base):
             self.logger.warning(msg)
 
     @property
-    def applied(self):
+    def applied(self) -> list:
         return self._applied
 
     @applied.setter
     def applied(
         self,
         applied: Union[list, str, None, int, tuple, np.ndarray, bool],
-        # treat_null_values_as: Optional[bool] = True
     ) -> None:
         """
         Sets the value of the booleans for whether each filter has been applied or not
 
         :type applied: Union[list, str, None, int, tuple]
         :param applied: The value to set self._applied.
-        # :type treat_null_values_as: bool
-        # :param treat_null_values_as: Sets the treatment of null values, default is True
 
         Notes:
         self._applied is a list, but we allow this to be assigned by single values as well,
@@ -92,21 +97,14 @@ class Filtered(Base):
         If a null value is received, the filters are assumed to be applied.
         If a simple value, such as True, None, 0, etc. is not received, the input argument
         applied (which is iterable) is first converted to `applied_list`.
-        first.
+        The values in `applied_list` are then mapped to booleans.
+
 
         """
-
         # Handle cases where we did not pass an iterable
         if not hasattr(applied, "__iter__"):
-            null_values = [None, ]  # filter applied is True
-            true_values = [True, 1] + null_values
-            false_values = [0, False]  # filter applied is False
-            if applied in true_values:
-                self._applied = [True]
-                return
-            elif applied in false_values:
-                self._applied = [False]
-                return
+            self._applied = [self._applied_values_map[applied], ]
+            return
 
         # the returned type from a hdf5 dataset is a numpy array.
         if isinstance(applied, np.ndarray):
@@ -114,20 +112,14 @@ class Filtered(Base):
 
         #sets an empty list to one default value
         if isinstance(applied, list) and len(applied) == 0:
-            self.applied = [True]
+            self._applied = [True]
             return
 
         # Handle string case
         if isinstance(applied, str):
             # Handle simple strings
-            null_values = ["none", "None", "NONE", "null"]
-            true_values = ["1", "True", "true"] + null_values
-            false_values = ["0", "False", "false"]
-            if applied in true_values:
-                self._applied = [True]
-                return
-            elif applied in false_values:
-                self._applied = [False]
+            if applied in self._applied_values_map.keys():
+                self._applied = [self._applied_values_map[applied], ]
                 return
 
             # Handle string-lists (e.g. from json)
@@ -139,40 +131,22 @@ class Filtered(Base):
                 ]
             else:
                 applied_list = [ss.lower() for ss in applied.split()]
-
         elif isinstance(applied, list):
             applied_list = applied
-            # set integer strings to integers ["0","1"]--> [0, 1]
-            for i, elt in enumerate(applied_list):
-                if elt in ["0", "1",]:
-                    applied_list[i] = int(applied_list[i])
-            # set integers to bools [0,1]--> [False, True]
-            for i, elt in enumerate(applied_list):
-                if elt in [0, 1,]:
-                    applied_list[i] = bool(applied_list[i])
+        elif isinstance(applied, tuple):
+            applied_list = list(applied)
         else:
-            msg = f"applied must be a string or list of strings not {applied}"
+            msg = f"Input applied cannot be of type {type(applied)}"
             self.logger.error(msg)
             raise MTSchemaError(msg)
 
-        bool_list = []
-        for app_bool in applied_list:
-            if app_bool is None:
-                bool_list.append(True)
-            elif isinstance(app_bool, str):
-                if app_bool.lower() in ["false", "0"]:
-                    bool_list.append(False)
-                elif app_bool.lower() in ["true", "1"]:
-                    bool_list.append(True)
-                else:
-                    msg = f"Filter.applied must be [ True | False ], not {app_bool}"
-                    self.logger.error(msg)
-                    raise MTSchemaError(msg.format(app_bool))
-            elif isinstance(app_bool, (bool, np.bool_)):
-                bool_list.append(bool(app_bool))
-            else:
-                msg = f"Filter.applied must be [True | False], not {app_bool}"
-                self.logger.error(msg)
+        # Now we have a simple list -- map to bools
+        try:
+            bool_list = [self._applied_values_map[x] for x in applied_list]
+        except KeyError:
+            msg = f"A key in {applied_list} is not mapped to a boolean"
+            msg += "\n fix this by adding to _applied_values_map"
+            self.logger.error(msg)
         self._applied = bool_list
 
         # check for consistency
@@ -239,3 +213,27 @@ class Filtered(Base):
             msg = "Filter consistency check failed for an unknown reason"
             self.logger.warning(msg)
             return False
+
+
+def _applied_values_map(
+    treat_null_values_as: Optional[bool] = True
+) -> dict:
+    """
+    helper function to simplify logic in applied setter.
+
+    Notes:
+    The logic in the setter was getting quite complicated handling many types.
+    A reasonable solution seemed to be to map each of the allowed values to a bool
+    via dict and then use this dict when setting applied values.
+
+    :return: dict
+    Mapping of all tolerated single-values for setting applied booleans
+    """
+    null_values = [None, "none", "None", "NONE", "null"]
+    null_values_map = {x: treat_null_values_as for x in null_values}
+    true_values = [True, 1, "1", "True", "true"]
+    true_values_map =  {x:True for x in true_values}
+    false_values = [False, 0, "0", "False", "false"]
+    false_values_map =  {x:False for x in false_values}
+    values_map = {**null_values_map, **true_values_map, **false_values_map}
+    return values_map
