@@ -101,15 +101,15 @@ class Run(Base):
                     try:
                         tp = TimePeriod()
                         tp.from_dict(item)
-                        self._time_periods.append(item)
+                        self._time_periods.append(tp)
                     except Exception as e:
                         msg = f"failed to unpack time period from {item}"
                         self.logger.error(msg)
                         raise ValueError(msg)
                 else:
                     raise TypeError(f"not sure what to do with type {type(item)}")
-
-            self._time_periods.append(item)
+            else:
+                self._time_periods.append(item)
 
     @property
     def channel_scale_factors(self):
