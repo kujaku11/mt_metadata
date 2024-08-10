@@ -88,7 +88,7 @@ class Filtered(Base):
         """
         # Handle cases where we did not pass an iterable
         if not hasattr(applied, "__iter__"):
-            null_values = [None, "none", "None", "NONE", "null"]  # filter applied is True
+            null_values = [None, ]  # filter applied is True
             false_values = [0, "0", False]  # filter applied is False
             if applied in null_values:
                 self._applied = [True]
