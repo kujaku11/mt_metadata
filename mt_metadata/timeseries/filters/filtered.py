@@ -17,7 +17,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.exceptions import MTSchemaError
-from typing import Union
+from typing import Optional, Union
 
 # =============================================================================
 attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
@@ -73,19 +73,29 @@ class Filtered(Base):
         return self._applied
 
     @applied.setter
-    def applied(self, applied: Union[list, str, None, int, tuple]) -> None:
+    def applied(
+        self,
+        applied: Union[list, str, None, int, tuple, np.ndarray, bool],
+        # treat_null_values_as: Optional[bool] = True
+    ) -> None:
         """
         Sets the value of the booleans for whether each filter has been applied or not
 
         :type applied: Union[list, str, None, int, tuple]
         :param applied: The value to set self._applied.
+        # :type treat_null_values_as: bool
+        # :param treat_null_values_as: Sets the treatment of null values, default is True
 
         Notes:
-        self._applied is a list, but we allow this to be assigned by null values as well.
-        If a null value is received, the filters are assumed to have been applied
-        If a non-iterable False
+        self._applied is a list, but we allow this to be assigned by single values as well,
+        such as None, True, 0. Supporting these other values makes the logic a little bit involved.
+        If a null value is received, the filters are assumed to be applied.
+        If a simple value, such as True, None, 0, etc. is not received, the input argument
+        applied (which is iterable) is first converted to `applied_list`.
+        first.
 
         """
+
         # Handle cases where we did not pass an iterable
         if not hasattr(applied, "__iter__"):
             null_values = [None, ]  # filter applied is True
@@ -98,13 +108,29 @@ class Filtered(Base):
                 self._applied = [False]
                 return
 
+        # the returned type from a hdf5 dataset is a numpy array.
+        if isinstance(applied, np.ndarray):
+            applied = applied.tolist()
+
         #sets an empty list to one default value
         if isinstance(applied, list) and len(applied) == 0:
             self.applied = [True]
             return
 
-        # Handle string case -- Note that these should be removed from hasattr __iter__ logic above
+        # Handle string case
         if isinstance(applied, str):
+            # Handle simple strings
+            null_values = ["none", "None", "NONE", "null"]
+            true_values = ["1", "True", "true"] + null_values
+            false_values = ["0", "False", "false"]
+            if applied in true_values:
+                self._applied = [True]
+                return
+            elif applied in false_values:
+                self._applied = [False]
+                return
+
+            # Handle string-lists (e.g. from json)
             if applied.find("[") >= 0:
                 applied = applied.replace("[", "").replace("]", "")
             if applied.count(",") > 0:
@@ -113,6 +139,7 @@ class Filtered(Base):
                 ]
             else:
                 applied_list = [ss.lower() for ss in applied.split()]
+
         elif isinstance(applied, list):
             applied_list = applied
             # set integer strings to integers ["0","1"]--> [0, 1]
@@ -123,15 +150,10 @@ class Filtered(Base):
             for i, elt in enumerate(applied_list):
                 if elt in [0, 1,]:
                     applied_list[i] = bool(applied_list[i])
-        # the returned type from a hdf5 dataset is a numpy array.
-        elif isinstance(applied, np.ndarray):
-            applied_list = list(applied)
-            if applied_list == []:
-                applied_list = [True]
         else:
-            msg = "applied must be a string or list of strings not {0}"
-            self.logger.error(msg.format(applied))
-            raise MTSchemaError(msg.format(applied))
+            msg = f"applied must be a string or list of strings not {applied}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
 
         bool_list = []
         for app_bool in applied_list:
@@ -143,14 +165,14 @@ class Filtered(Base):
                 elif app_bool.lower() in ["true", "1"]:
                     bool_list.append(True)
                 else:
-                    msg = "Filter.applied must be [ True | False ], not {0}"
-                    self.logger.error(msg.format(app_bool))
+                    msg = f"Filter.applied must be [ True | False ], not {app_bool}"
+                    self.logger.error(msg)
                     raise MTSchemaError(msg.format(app_bool))
             elif isinstance(app_bool, (bool, np.bool_)):
                 bool_list.append(bool(app_bool))
             else:
-                msg = "Filter.applied must be [True | False], not {0}"
-                self.logger.error(msg.format(app_bool))
+                msg = f"Filter.applied must be [True | False], not {app_bool}"
+                self.logger.error(msg)
         self._applied = bool_list
 
         # check for consistency
