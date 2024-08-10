@@ -17,6 +17,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.exceptions import MTSchemaError
+from typing import Union
 
 # =============================================================================
 attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
@@ -72,12 +73,27 @@ class Filtered(Base):
         return self._applied
 
     @applied.setter
-    def applied(self, applied):
+    def applied(self, applied: Union[list, str, None, int, tuple]) -> None:
+        """
+        Sets the value of the booleans for whether each filter has been applied or not
+
+        :type applied: Union[list, str, None, int, tuple]
+        :param applied: The value to set self._applied.
+
+        Notes:
+        self._applied is a list, but we allow this to be assigned by null values as well.
+        If a null value is received, the filters are assumed to have been applied
+        If a non-iterable False
+
+        """
+        # Handle cases where we did not pass an iterable
         if not hasattr(applied, "__iter__"):
-            if applied in [None, "none", "None", "NONE", "null"]:
+            null_values = [None, "none", "None", "NONE", "null"]  # filter applied is True
+            false_values = [0, "0", False]  # filter applied is False
+            if applied in null_values:
                 self._applied = [True]
                 return
-            elif applied in [0, "0"]:
+            elif applied in false_values:
                 self._applied = [False]
                 return
 
@@ -86,6 +102,7 @@ class Filtered(Base):
             self.applied = [True]
             return
 
+        # Handle string case -- Note that these should be removed from hasattr __iter__ logic above
         if isinstance(applied, str):
             if applied.find("[") >= 0:
                 applied = applied.replace("[", "").replace("]", "")
@@ -105,6 +122,7 @@ class Filtered(Base):
             for i, elt in enumerate(applied_list):
                 if elt in [0, 1,]:
                     applied_list[i] = bool(applied_list[i])
+        # We should never get here becasue bools are not iterable
         elif isinstance(applied, bool):
             applied_list = [applied]
         # the returned type from a hdf5 dataset is a numpy array.
@@ -146,9 +164,11 @@ class Filtered(Base):
             self.logger.warning(msg)
 
 
-    def _check_consistency(self):
+    def _check_consistency(self) -> bool:
         """
         Logic to look for inconstencies in the configuration of the filter names and applied values.
+
+        In general, list of filter names should be same length as list of applied booleans.
 
         Cases:
         The filter has no name -- this could happen on intialization.
@@ -169,31 +189,33 @@ class Filtered(Base):
             self.logger.warning("Need to input filter.applied")
             return False
 
-        # Name and applied have same len ==1 : this is OK
+        # Name and applied have same length, 1. This is OK
         if len(self._name) == 1:
             if len(self._applied) == 1:
                 return True
-        # This is ambiguous -- consider making translating this assumption to
-        # something more explicit
-        elif len(self._name) > 1:
+
+        # Multiple filter names (name not of length 0 or 1)
+        if len(self._name) > 1:
+            # If only one applied boolean, we allow it.
+            # TODO: consider being less tolerant here
             if len(self._applied) == 1:
                 msg = f"Assuming all filters have been applied as {self._applied[0]}"
-                self.logger.info(msg)
+                self.logger.debug(msg)
                 self._applied = len(self.name) * [self._applied[0],]
-                msg = f"Explicitly setting applied to {self._applied[0]}"
+                msg = f"Explicitly set filter applied state to {self._applied[0]}"
+                self.logger.debug(msg)
                 return True
             elif len(self._applied) > 1:
+                # need to check the lists are really the same length
                 if len(self._applied) != len(self._name):
-                    self.logger.warning(
-                        "Applied and filter names "
-                        + "should be the same length. "
-                        + "Appied={0}, names={1}".format(
-                            len(self._applied), len(self._name)
-                        )
-                    )
+                    msg = "Applied and filter names should be the same length. "
+                    msg += f"Appied={len(self._applied)}, names={len(self._name)}"
+                    self.logger.warning(msg)
                     return False
                 else:
                     return True
         else:
             # Some unknown configuration we have not yet encountered
+            msg = "Filter consistency check failed for an unknown reason"
+            self.logger.warning(msg)
             return False
