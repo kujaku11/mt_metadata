@@ -4,25 +4,31 @@ Created on Thu Feb 24 14:11:24 2022
 
 @author: kkappler
 """
-
+# =============================================================================
+# Imports
+# =============================================================================
 import unittest
 from mt_metadata.transfer_functions.processing.aurora import ChannelNomenclature
-from mt_metadata.transfer_functions.processing.aurora.channel_nomenclature import load_channel_maps
+
+from mt_metadata.transfer_functions import CHANNEL_MAPS
+
+# =============================================================================
+
 
 class TestChannelNomenclature(unittest.TestCase):
     """
     Test ChannelNomenclature
     """
+
     @classmethod
     def setUpClass(cls) -> None:
-        cls.channel_maps = load_channel_maps()
+        cls.channel_maps = CHANNEL_MAPS
 
     def setUp(self):
         pass
 
     def testLoadChannelMaps(self):
         self.assertIsInstance(self.channel_maps, dict)
-
 
     def test_initialization(self):
         for keyword in self.channel_maps:
@@ -40,11 +46,12 @@ class TestChannelNomenclature(unittest.TestCase):
         assert len(ch_nom.channels) == 5
 
     def test_repr(self):
-        """ Takes the __repr__ string, and casts to a dict (via json), and compares to channel_map attr"""
+        """Takes the __repr__ string, and casts to a dict (via json), and compares to channel_map attr"""
         import json
+
         for keyword in self.channel_maps:
             ch_nom = ChannelNomenclature(keyword=keyword)
-            channel_map = ch_nom.get_channel_map() # dict
+            channel_map = ch_nom.get_channel_map()  # dict
             repr = json.loads(ch_nom.__repr__())["channel_nomenclature"]
             assert channel_map == repr
 

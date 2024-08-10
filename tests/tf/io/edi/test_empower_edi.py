@@ -15,6 +15,7 @@ from mt_metadata.transfer_functions.io import edi
 from mt_metadata.transfer_functions import TF
 from mt_metadata import TF_EDI_EMPOWER
 
+
 # =============================================================================
 # CGG
 # =============================================================================
@@ -86,7 +87,7 @@ class TestEMPOWEREDI(unittest.TestCase):
         ch = OrderedDict(
             [
                 ("acqchan", None),
-                ("azm", 0.0),
+                ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 1005.001),
                 ("x", -50.6),
@@ -376,6 +377,9 @@ class TestEMpowerTF(unittest.TestCase):
             "provenance.software.version = 4.0",
             "provenance.submitter.author = EMTF FCU",
             "provenance.submitter.name = EMTF FCU",
+            "survey.datum = WGS84",
+            "survey.id = 0",
+            "survey.release_license = CC0-1.0",
             "totoal_rejected_crosspowers = 0.0000%",
             "transfer_function.coordinate_system = geopgraphic",
             "transfer_function.data_quality.rating.value = 0",
