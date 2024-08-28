@@ -31,7 +31,7 @@ attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 # =============================================================================
 
 
-def df_from_bands(band_list):
+def df_from_bands(band_list: list) -> pd.DataFrame:
     """
     Utility function that transforms a list of bands into a dataframe
 
@@ -70,13 +70,13 @@ def df_from_bands(band_list):
     out_df.reset_index(inplace=True, drop=True)
     return out_df
 
-def get_fft_harmonics(samples_per_window, sample_rate):
+def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
     """
     Works for odd and even number of points.
 
-    Could be midified with kwargs to support one_sided, two_sided, ignore_dc
-    ignore_nyquist, and etc.  Could actally take FrequencyBands as an argument
-    if we wanted as well.
+    Development notes:
+    Could be modified with kwargs to support one_sided, two_sided, ignore_dc
+    ignore_nyquist, and etc.  Consider taking FrequencyBands as an argument.
 
     Parameters
     ----------
