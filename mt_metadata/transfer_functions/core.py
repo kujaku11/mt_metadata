@@ -274,7 +274,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return run_metadata.copy()
+        return run_metadata
 
     def _validate_station_metadata(self, station_metadata):
         """
@@ -298,7 +298,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return station_metadata.copy()
+        return station_metadata
 
     def _validate_survey_metadata(self, survey_metadata):
         """
@@ -328,7 +328,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return survey_metadata.copy()
+        return survey_metadata
 
     ### Properties ------------------------------------------------------------
     @property
@@ -1475,9 +1475,8 @@ class TF:
         """
         self.station_metadata.id = validate_name(station_name)
         if self.station_metadata.runs[0].id is None:
-            r = self.station_metadata.runs[0].copy()
+            r = self.station_metadata.runs.pop(None)
             r.id = f"{self.station_metadata.id}a"
-            self.station_metadata.runs.remove(None)
             self.station_metadata.runs.append(r)
 
     @property
@@ -2164,9 +2163,9 @@ class TF:
         """
         zmm_kwargs = {}
         zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
-        zmm_kwargs[
-            "inverse_channel_nomenclature"
-        ] = self.inverse_channel_nomenclature
+        zmm_kwargs["inverse_channel_nomenclature"] = (
+            self.inverse_channel_nomenclature
+        )
         if hasattr(self, "decimation_dict"):
             zmm_kwargs["decimation_dict"] = self.decimation_dict
         zmm_obj = ZMM(**zmm_kwargs)
