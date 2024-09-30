@@ -9,13 +9,15 @@ Created on Fri Dec  3 11:42:55 2021
 # =============================================================================
 import unittest
 
-from collections import OrderedDict
+import numpy as np
+
 from mt_metadata.transfer_functions.io.edi.metadata import (
     Header,
     EMeasurement,
     HMeasurement,
     DefineMeasurement,
 )
+from mt_metadata.transfer_functions.io.edi import EDI
 
 
 # =============================================================================
@@ -233,6 +235,34 @@ class TestDefineMeasurement(unittest.TestCase):
         self.dm.read_measurement(self.test_lines)
 
         self.assertListEqual(self.meas_list, self.dm.measurement_list)
+
+
+class TestAssertDescendingFrequency(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.edi = EDI()
+        self.nf = 7
+        self.edi.frequency = np.logspace(-3, 3, self.nf)
+        self.z = np.arange(self.nf * 4).reshape((self.nf, 2, 2))
+        self.t = np.arange(self.nf * 2).reshape((self.nf, 1, 2))
+        self.edi.z = self.z.copy()
+        self.edi.z_err = self.z.copy()
+        self.edi.t = self.t.copy()
+        self.edi.t_err = self.t.copy()
+
+        self.edi._assert_descending_frequency()
+
+    def test_z(self):
+        self.assertTrue(np.allclose(self.z[::-1], self.edi.z))
+
+    def test_z_err(self):
+        self.assertTrue(np.allclose(self.z[::-1], self.edi.z_err))
+
+    def test_t(self):
+        self.assertTrue(np.allclose(self.t[::-1], self.edi.t))
+
+    def test_t_err(self):
+        self.assertTrue(np.allclose(self.t[::-1], self.edi.t_err))
 
 
 # =============================================================================
