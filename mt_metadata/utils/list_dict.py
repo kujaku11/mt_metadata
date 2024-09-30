@@ -44,18 +44,14 @@ class ListDict:
 
     def _get_key_from_index(self, index):
         try:
-            return next(
-                key for ii, key in enumerate(self._home) if ii == index
-            )
+            return next(key for ii, key in enumerate(self._home) if ii == index)
 
         except StopIteration:
             raise KeyError(f"Could not find {index}")
 
     def _get_index_from_key(self, key):
         try:
-            return next(
-                index for index, k in enumerate(self._home) if k == key
-            )
+            return next(index for index, k in enumerate(self._home) if k == key)
 
         except StopIteration:
             raise KeyError(f"Could not find {key}")
@@ -75,9 +71,7 @@ class ListDict:
         elif hasattr(obj, "component"):
             return obj.component
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
 
     def __deepcopy__(self, memodict={}):
         """
@@ -230,9 +224,7 @@ class ListDict:
                 raise (KeyError("Could not find None in keys."))
 
         else:
-            raise TypeError(
-                "could not identify an appropriate key from object"
-            )
+            raise TypeError("could not identify an appropriate key from object")
 
     def extend(self, other, skip_keys=[]):
         """
@@ -282,3 +274,18 @@ class ListDict:
             )
 
         self._home.update(other)
+
+    def pop(self, key):
+        """
+        pop item off of dictionary.  The key must be verbatim
+
+        :param key: key of item to be popped off of dictionary
+        :type key: string
+        :return: item popped
+
+        """
+
+        if key in self.keys():
+            return dict([self._home.popitem(key)])
+        else:
+            raise KeyError(f"{key} is not in ListDict keys.")
