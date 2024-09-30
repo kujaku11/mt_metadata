@@ -252,6 +252,22 @@ class EDI(object):
             return 1.0 / self.frequency
         return None
 
+    def _assert_descending_frequency(self):
+        """
+        Assert that the transfer function is ordered from high frequency to low
+        frequency.
+
+        """
+        if self.frequency[0] < self.frequency[1]:
+            self.logger.debug(
+                "Ordered arrays to be arranged from high to low frequency"
+            )
+            self.frequency = self.frequency[::-1]
+            self.z = self.z[::-1]
+            self.z_err = self.z_err[::-1]
+            self.t = self.t[::-1]
+            self.t_err = self.t_err[::-1]
+
     def read(self, fn=None, get_elevation=False):
         """
         Read in an edi file and fill attributes of each section's classes.
@@ -456,13 +472,8 @@ class EDI(object):
             except KeyError as error:
                 self.logger.debug(error)
         # check for order of frequency, we want high togit  low
-        if self.frequency[0] < self.frequency[1]:
-            self.logger.debug(
-                "Ordered arrays to be arranged from high to low frequency"
-            )
-            self.frequency = self.frequency[::-1]
-            self.z = self.z[::-1]
-            self.z_err = self.z_err[::-1]
+        self._assert_descending_frequency()
+
         try:
             self.rotation_angle = np.array(data_dict["zrot"])
         except KeyError:
