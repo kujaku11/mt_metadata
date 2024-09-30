@@ -43,7 +43,7 @@ class TestNoErrorEDI(unittest.TestCase):
                 ("longitude", 0.0),
                 ("progdate", "2013-07-03"),
                 ("progname", "mt_metadata"),
-                ("progvers", "0.3.7"),
+                ("progvers", "0.3.8"),
                 ("stdvers", "SEG 1.0"),
                 ("units", "millivolts_per_kilometer_per_nanotesla"),
             ]
