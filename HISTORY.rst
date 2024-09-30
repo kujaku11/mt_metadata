@@ -191,3 +191,11 @@ History
 * Patches by @kkappler in https://github.com/kujaku11/mt_metadata/pull/221
 * Patches by @kkappler in https://github.com/kujaku11/mt_metadata/pull/223
 * Bump version: 0.3.6 → 0.3.7 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/225 
+
+0.3.8 (2024-09-30)
+----------------------
+
+* Add pop to ListDict by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/226
+* Fix EDI Tipper flip by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/228
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/227
+* Bump version: 0.3.7 → 0.3.8 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/229 
