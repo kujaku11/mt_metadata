@@ -375,7 +375,9 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(station_metadata)
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -1871,9 +1873,13 @@ class TF:
             edi_obj.t = self.tipper.data
             edi_obj.t_err = self.tipper_error.data
         edi_obj.frequency = 1.0 / self.period
-        edi_obj.rotation_angle = np.repeat(
-            self._rotation_angle, self.period.size
-        )
+
+        if isinstance(self._rotation_angle, (int, float)):
+            edi_obj.rotation_angle = np.repeat(
+                self._rotation_angle, self.period.size
+            )
+        else:
+            edi_obj.rotation_angle = self._rotation_angle
 
         # fill from survey metadata
         edi_obj.survey_metadata = self.survey_metadata
@@ -1938,6 +1944,7 @@ class TF:
                     "transfer_function_error": "tf_err",
                     "survey_metadata": "survey_metadata",
                     "station_metadata": "station_metadata",
+                    "_rotation_angle": "rotation_angle",
                 }
             )
         else:
@@ -1950,6 +1957,7 @@ class TF:
                     "tipper_error": "t_err",
                     "survey_metadata": "survey_metadata",
                     "station_metadata": "station_metadata",
+                    "_rotation_angle": "rotation_angle",
                 }
             )
         for tf_key, edi_key in k_dict.items():
