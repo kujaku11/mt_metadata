@@ -91,7 +91,7 @@ class TestZMM(unittest.TestCase):
                 ("transfer_function.processing_type", ""),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", None),
                 ("transfer_function.software.name", "EMTF"),
                 ("transfer_function.software.version", "1"),
@@ -272,7 +272,9 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (38, 3, 3), self.tf.residual_covariance.shape
+            )
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -403,7 +405,7 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("transfer_function.processing_type", ""),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["300a"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", None),
                 ("transfer_function.software.name", "EMTF"),
                 ("transfer_function.software.version", "1"),

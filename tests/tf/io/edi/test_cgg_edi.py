@@ -393,6 +393,7 @@ class TestCGGTF(unittest.TestCase):
             "transfer_function.processing_parameters.processing_parameters = [NDec = 1, NFFT = 128, Ntype = 1, RRType = None, RemoveLargeLines = true, RotMaxE = false]",
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['TEST01a']",
+            "transfer_function.sign_convention = +",
             "transfer_function.software.name = L13ss",
         ]
 
@@ -563,6 +564,15 @@ class TestCGGTF(unittest.TestCase):
 
         with self.subTest("shape"):
             self.assertTupleEqual(self.edi_obj.rotation_angle.shape, (73,))
+
+    def test_set_rotation_angle_to_tf(self):
+        a = self.tf_obj.to_edi()
+        a.rotation_angle[:] = 13
+
+        tf = TF()
+        tf.from_edi(a)
+
+        self.assertTrue((tf._rotation_angle == a.rotation_angle).all())
 
 
 # =============================================================================

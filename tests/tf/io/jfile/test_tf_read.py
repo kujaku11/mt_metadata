@@ -25,7 +25,9 @@ class TestEMTFXML(unittest.TestCase):
     def setUpClass(self):
         self.tf = TF(fn=TF_JFILE)
         self.tf.read()
-        self.tf.station_metadata.transfer_function.processed_date = "2020-01-01"
+        self.tf.station_metadata.transfer_function.processed_date = (
+            "2020-01-01"
+        )
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -117,7 +119,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["001"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", None),
                 ("transfer_function.software.name", None),
                 ("transfer_function.software.version", None),
