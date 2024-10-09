@@ -91,7 +91,7 @@ class TestZSS(unittest.TestCase):
                 ("transfer_function.processing_type", "Robust Single station"),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["ysw212abcdefghijkla"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", None),
                 ("transfer_function.software.name", "EMTF"),
                 ("transfer_function.software.version", "1"),
@@ -142,7 +142,9 @@ class TestZSS(unittest.TestCase):
             self.assertTrue(
                 np.isclose(
                     self.tf.tipper[0],
-                    np.array([[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]),
+                    np.array(
+                        [[-0.20389999 + 0.09208j, 0.05996000 + 0.03177j]]
+                    ),
                 ).all()
             )
         with self.subTest(msg="last element"):
@@ -195,7 +197,9 @@ class TestZSS(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual((44, 3, 3), self.tf.residual_covariance.shape)
+            self.assertTupleEqual(
+                (44, 3, 3), self.tf.residual_covariance.shape
+            )
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
         with self.subTest(msg="first element"):

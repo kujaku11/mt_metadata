@@ -387,6 +387,7 @@ class TestEMpowerTF(unittest.TestCase):
             "transfer_function.processed_date = 2023-05-30",
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['701_merged_wrcala']",
+            "transfer_function.sign_convention = +",
             "transfer_function.software.name = empower v2.9.0.7",
             "unique_id = {88290cfe-9200-4cc2-a0dd-5ed7cd7f95ea}",
         ]

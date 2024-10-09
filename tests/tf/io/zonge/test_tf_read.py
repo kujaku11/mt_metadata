@@ -99,7 +99,7 @@ class TestAVG(unittest.TestCase):
                 ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["001"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", "Zonge International"),
                 ("transfer_function.software.last_updated", "2021/01/27"),
                 ("transfer_function.software.name", "MTEdit"),

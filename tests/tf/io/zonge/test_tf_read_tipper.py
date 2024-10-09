@@ -99,7 +99,7 @@ class TestZongeAVGTipper(unittest.TestCase):
                 ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["001"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
                 ("transfer_function.software.author", "Zonge International"),
                 ("transfer_function.software.last_updated", "2022/08/02"),
                 ("transfer_function.software.name", "MTEdit"),
