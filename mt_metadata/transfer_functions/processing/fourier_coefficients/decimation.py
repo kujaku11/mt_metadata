@@ -319,6 +319,7 @@ class Decimation(Base):
             required_channels = decimation_level.reference_channels
         else:
             required_channels = decimation_level.local_channels
+
         try:
             assert set(required_channels).issubset(self.channels_estimated)
         except AssertionError:
@@ -326,7 +327,7 @@ class Decimation(Base):
                 f"required_channels for processing {required_channels} not available"
                 f"-- fc channels estimated are {self.channels_estimated}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # anti_alias_filter
@@ -356,7 +357,7 @@ class Decimation(Base):
                 f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
                 f"processing config {decimation_level.decimation.sample_rate}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # method (fft, wavelet, etc.)
@@ -367,7 +368,7 @@ class Decimation(Base):
                 "Transform methods do not agree "
                 f"{self.method} != {decimation_level.method}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # prewhitening_type
@@ -378,7 +379,7 @@ class Decimation(Base):
                 "prewhitening_type does not agree "
                 f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # recoloring
@@ -389,7 +390,7 @@ class Decimation(Base):
                 "recoloring does not agree "
                 f"{self.recoloring} != {decimation_level.recoloring}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # pre_fft_detrend_type
@@ -403,7 +404,7 @@ class Decimation(Base):
                 "pre_fft_detrend_type does not agree "
                 f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # min_num_stft_windows
@@ -417,7 +418,7 @@ class Decimation(Base):
                 "min_num_stft_windows do not agree "
                 f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
             )
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         # window
@@ -427,7 +428,7 @@ class Decimation(Base):
             msg = "window does not agree: "
             msg = f"{msg} FC Group: {self.window} "
             msg = f"{msg} Processing Config  {decimation_level.window}"
-            self.logger.warning(msg)
+            self.logger.info(msg)
             return False
 
         if -1 in self.harmonic_indices:
@@ -444,7 +445,7 @@ class Decimation(Base):
                     f"Processing FC indices {processing_set} is not contained "
                     f"in FC indices {fcdec_group_set}"
                 )
-                self.logger.warning(msg)
+                self.logger.info(msg)
                 return False
 
         # No checks were failed the FCDecimation supports the processing config
