@@ -610,6 +610,10 @@ class XMLChannelMTChannel(BaseTranslator):
             sensor_type = "magnetometer"
         elif sensor_type.lower() == "bartington":
             sensor_type = "magnetometer"
+        elif ("bf-4" in sensor.description.lower()) & ("schlumberger" in sensor.description.lower()):  # BSL-NCEDC
+            sensor_type = "magnetometer"
+        elif ("electric" in sensor.description.lower()) & ("dipole" in sensor.description.lower()):  # BSL-NCEDC
+            sensor_type = "dipole"
 
 
         # reset sensor_type to None it it was not handled
