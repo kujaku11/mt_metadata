@@ -618,10 +618,11 @@ class XMLChannelMTChannel(BaseTranslator):
         if not sensor_type:
             if sensor_description == "Bartington 3-Axis Fluxgate Sensor":
                 sensor_type = "magnetometer"
-            elif ("bf-4" in sensor_description.lower()) & ("schlumberger" in sensor_description.lower()):  # BSL-NCEDC
-                sensor_type = "magnetometer"
-            elif ("electric" in sensor_description.lower()) & ("dipole" in sensor_description.lower()):  # BSL-NCEDC
-                sensor_type = "dipole"
+            if sensor_description:
+                if ("bf-4" in sensor_description.lower()) & ("schlumberger" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "magnetometer"
+                elif ("electric" in sensor_description.lower()) & ("dipole" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "dipole"
 
 
         # reset sensor_type to None it it was not handled
