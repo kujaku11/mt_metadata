@@ -441,7 +441,7 @@ class MTime:
 
         else:
             try:
-                stamp = t_min_max, stamp = self._check_timestamp(
+                t_min_max, stamp = self._check_timestamp(
                     pd.Timestamp(dt_str)
                 )
             except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
