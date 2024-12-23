@@ -63,7 +63,7 @@ class Band(Base):
     def name(self, value):
         self._name = value
 
-    def _indices_from_frequencies(self, frequencies):
+    def _indices_from_frequencies(self, frequencies: np.ndarray) -> np.ndarray:
         """
 
         Parameters
@@ -90,7 +90,7 @@ class Band(Base):
         indices = np.where(cond1 & cond2)[0]
         return indices
 
-    def set_indices_from_frequencies(self, frequencies):
+    def set_indices_from_frequencies(self, frequencies: np.ndarray) -> None:
         """assumes min/max freqs are defined"""
         indices = self._indices_from_frequencies(frequencies)
         self.index_min = indices[0]
@@ -104,7 +104,7 @@ class Band(Base):
     @property
     def harmonic_indices(self):
         """
-        Assumes all harmincs between min and max are present in the band
+        Assumes all harmoincs between min and max are present in the band
 
         Returns
         -------
@@ -112,7 +112,7 @@ class Band(Base):
         """
         return np.arange(self.index_min, self.index_max + 1)
 
-    def in_band_harmonics(self, frequencies):
+    def in_band_harmonics(self, frequencies: np.ndarray):
         """
         Parameters
         ----------
@@ -128,7 +128,7 @@ class Band(Base):
         return harmonics
 
     @property
-    def center_frequency(self):
+    def center_frequency(self) -> float:
         """
         Returns
         -------
@@ -141,5 +141,6 @@ class Band(Base):
             return (self.lower_bound + self.upper_bound) / 2
 
     @property
-    def center_period(self):
+    def center_period(self) -> float:
+        """ Returns the inverse of center frequency."""
         return 1.0 / self.center_frequency

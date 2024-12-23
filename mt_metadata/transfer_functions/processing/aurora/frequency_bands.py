@@ -13,6 +13,9 @@ class FrequencyBands(object):
     This is just collection of objects of class Band.
     It is intended to be used at a single decimation level, i.e. at a single sample rate.
 
+    TODO: Housekeeping, band_edges could be labelled data with lower_bounds and upper bounds
+     explicit instead of implicit.  Consider making it a df or xr.
+
     """
 
     def __init__(

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+    This module contains the DecimationLevel class.
+    TODO: Factor or rename.  The decimation level class here has information about the enture processing.
+
 Created on Thu Feb 17 14:15:20 2022
 
 @author: jpeacock
@@ -12,10 +15,12 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from typing import Union
 
 from .band import Band
 from .decimation import Decimation
 from .estimator import Estimator
+
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
 from .window import Window
@@ -37,6 +42,7 @@ def df_from_bands(band_list: list) -> pd.DataFrame:
 
     Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
+    TODO: Consider making this a method of FrequencyBands() class.
 
     Parameters
     ----------
@@ -70,33 +76,33 @@ def df_from_bands(band_list: list) -> pd.DataFrame:
     out_df.reset_index(inplace=True, drop=True)
     return out_df
 
+
 def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
     """
     Works for odd and even number of points.
 
     Development notes:
-    Could be modified with kwargs to support one_sided, two_sided, ignore_dc
+    Could be modified with arguments to support one_sided, two_sided, ignore_dc
     ignore_nyquist, and etc.  Consider taking FrequencyBands as an argument.
 
     Parameters
     ----------
-    samples_per_window: integer
+    samples_per_window: int
         Number of samples in a window that will be Fourier transformed.
     sample_rate: float
-            Inverse of time step between samples,
-            Samples per second
+            Inverse of time step between samples; Samples per second in Hz.
 
     Returns
     -------
     harmonic_frequencies: numpy array
         The frequencies that the fft will be computed.
         These are one-sided (positive frequencies only)
-        Does not return Nyquist
+        Does _not_ return Nyquist
         Does return DC component
     """
-    n_fft_harmonics = int(samples_per_window / 2)  # no bin at Nyquist,
     delta_t = 1.0 / sample_rate
     harmonic_frequencies = np.fft.fftfreq(samples_per_window, d=delta_t)
+    n_fft_harmonics = int(samples_per_window / 2)  # no bin at Nyquist,
     harmonic_frequencies = harmonic_frequencies[0:n_fft_harmonics]
     return harmonic_frequencies
 
@@ -119,7 +125,7 @@ class DecimationLevel(Base):
         #     self.anti_alias_filter = None
 
     @property
-    def bands(self):
+    def bands(self) -> list:
         """
         get bands, something weird is going on with appending.
 
@@ -165,7 +171,7 @@ class DecimationLevel(Base):
         else:
             raise TypeError(f"Not sure what to do with {type(value)}")
 
-    def add_band(self, band):
+    def add_band(self, band: Union[Band, dict]) -> None:
         """
         add a band
         """
@@ -184,7 +190,7 @@ class DecimationLevel(Base):
         self._bands.append(obj)
 
     @property
-    def lower_bounds(self):
+    def lower_bounds(self) -> np.ndarray:
         """
         get lower bounds index values into an array.
         """
@@ -192,7 +198,7 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_min for band in self.bands]))
 
     @property
-    def upper_bounds(self):
+    def upper_bounds(self) -> np.ndarray:
         """
         get upper bounds index values into an array.
         """
@@ -200,14 +206,14 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_max for band in self.bands]))
 
     @property
-    def bands_dataframe(self):
+    def bands_dataframe(self) -> pd.DataFrame:
         """
-        This is just a utility function that transforms a list of bands into a dataframe
+        Utility function that transforms a list of bands into a dataframe
 
         Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
 
-        ToDo: Consider adding columns lower_edge, upper_edge to df
+        TODO: Consider adding columns lower_closed, upper_closed to df
 
         Returns
         -------
@@ -218,43 +224,60 @@ class DecimationLevel(Base):
         return bands_df
 
     @property
-    def frequency_sample_interval(self):
-        return self.sample_rate_decimation/self.window.num_samples
+    def frequency_sample_interval(self) -> float:
+        """
+            Returns the delta_f in frequency domain df = 1 / (N * dt)
+            Here dt is the sample interval after decimation
+        """
+        return self.sample_rate_decimation / self.window.num_samples
 
     @property
-    def band_edges(self):
+    def band_edges(self) -> np.ndarray:
+        """
+            Returns the band edges as a numpy array
+            :return band_edges: 2D numpy array, one row per frequency band and two columns
+            :rtype band_edges: np.ndarray
+        """
         bands_df = self.bands_dataframe
         band_edges = np.vstack(
             (bands_df.frequency_min.values, bands_df.frequency_max.values)
         ).T
         return band_edges
 
-    def frequency_bands_obj(self):
+    def frequency_bands_obj(self):  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
-        This used to be needed because I only had
 
-        ToDO: consider adding .to_frequnecy_bands() method directly to self.bands
+        Used by Aurora.
+
+        TODO: consider adding .to_frequency_bands() method directly to self.bands
+
         Returns
         -------
+        frequency_bands:  FrequencyBands
+            A FrequencyBands object that can be used as an iterator for processing.
 
         """
-        from mt_metadata.transfer_functions.processing.aurora.band import (
-            FrequencyBands,
-        )
-
+        from .frequency_bands import FrequencyBands
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
     @property
-    def fft_frequencies(self):
+    def fft_frequencies(self) -> np.ndarray:
+        """
+            Gets the harmonics of the STFT.
+
+            :return freqs: The frequencies at which the stft will be available.
+            :rtype freqs: np.ndarray
+        """
         freqs = get_fft_harmonics(
             self.window.num_samples, self.decimation.sample_rate
         )
         return freqs
 
     @property
-    def sample_rate_decimation(self):
+    def sample_rate_decimation(self) -> float:
+        """ Returns the sample rate of the data after decimation. """
         return self.decimation.sample_rate
 
     @property
