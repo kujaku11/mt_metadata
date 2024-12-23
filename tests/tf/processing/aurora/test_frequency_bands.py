@@ -13,10 +13,9 @@ from types import GeneratorType
 import numpy as np
 import pandas as pd
 
-from mt_metadata.transfer_functions.processing.aurora.band import (
-    Band,
-    FrequencyBands,
-)
+from mt_metadata.transfer_functions.processing.aurora import Band
+from mt_metadata.transfer_functions.processing.aurora import FrequencyBands
+
 
 # =============================================================================
 class TestFrequencyBand(unittest.TestCase):
