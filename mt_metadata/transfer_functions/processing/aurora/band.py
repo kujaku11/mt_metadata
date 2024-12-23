@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from . import DecimationLevel
+from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel
 from .standards import SCHEMA_FN_PATHS
 from typing import Optional
 
@@ -24,28 +24,33 @@ class Band(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+            Constructor.
+
+            :param kwargs: TODO description here
+        """
 
         super().__init__(attr_dict=attr_dict, **kwargs)
         self._name = None
 
     @property
-    def lower_bound(self):
+    def lower_bound(self) -> float:
         return self.frequency_min
 
     @property
-    def upper_bound(self):
+    def upper_bound(self) -> float:
         return self.frequency_max
 
     @property
-    def lower_closed(self):
+    def lower_closed(self) -> bool:
         return self.to_interval().closed_left
 
     @property
-    def upper_closed(self):
+    def upper_closed(self) -> bool:
         return self.to_interval().closed_right
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         :return: The name of the frequency band (currently defaults to fstring with 6 decimal places.
         :rtype: str
