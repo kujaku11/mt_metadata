@@ -11,7 +11,9 @@ import numpy as np
 import pandas as pd
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from . import DecimationLevel
 from .standards import SCHEMA_FN_PATHS
+from typing import Optional
 
 # =============================================================================
 attr_dict = get_schema("band", SCHEMA_FN_PATHS)
@@ -142,26 +144,23 @@ class Band(Base):
 class FrequencyBands(object):
     """
     This is just collection of objects of class Band.
-    It is intended to be used at a single decimation level
+    It is intended to be used at a single decimation level, i.e. at a single sample rate.
 
-    The core underlying variable is "band_edges", a 2D array, with one row per
-    frequency band and two columns, one for the left-hand (lower bound) of the
-    frequency band and one for the right-hand (upper bound).
-
-    Note there are some "clever" ways to define the bands using a 1-D array but this
-    assumes the bands to be adjacent, and there is no good reason to bake this
-    constriant in -- band edges is thus 2-D.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        band_edges: Optional[np.ndarray] = None,
+    ):
         """
+        :param band_edges: 2d numpy array with one row per frequency band and two columns, one for the left-hand
+        (lower bound) of the frequency band and one for the right-hand (upper bound).
+        Development Note: There are some clever ways to define the bands using a 1-D array but this
+        assumes the bands to be adjacent, and we do not want to bake this constriant in, thus band edges is thus 2-D.
+        :type band_edges: np.ndarray
 
-        Parameters
-        ----------
-        kwargs
-        band_edges: 2d numpy array
         """
-        self.band_edges = kwargs.get("band_edges", None)
+        self.band_edges = band_edges
 
     @property
     def number_of_bands(self):
@@ -244,22 +243,23 @@ class FrequencyBands(object):
             band_centers = 1.0 / band_centers
         return band_centers
 
-    def from_decimation_object(self, decimation_object):
+    def from_decimation_object(self, decimation_level: DecimationLevel):
         """
-        Define band_edges array from config object,
+        Define band_edges array from decimation_level object,
 
         Parameters
         ----------
-        decimation_object: mt_metadata.transfer_functions.processing.aurora.Decimation
+        decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
+
         """
-        # replace below with decimation_object.delta_frequency ?
+        # TODO: Consider replacing below with decimation_object.delta_frequency
         df = (
-            decimation_object.decimation.sample_rate
-            / decimation_object.window.num_samples
+            decimation_level.decimation.sample_rate
+            / decimation_level.window.num_samples
         )
         half_df = df / 2.0
-        # half_df /=100
-        lower_edges = (decimation_object.lower_bounds * df) - half_df
-        upper_edges = (decimation_object.upper_bounds * df) + half_df
+
+        lower_edges = (decimation_level.lower_bounds * df) - half_df
+        upper_edges = (decimation_level.upper_bounds * df) + half_df
         band_edges = np.vstack((lower_edges, upper_edges)).T
         self.band_edges = band_edges
