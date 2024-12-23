@@ -18,7 +18,7 @@ from mt_metadata.transfer_functions.processing.aurora import FrequencyBands
 
 
 # =============================================================================
-class TestFrequencyBand(unittest.TestCase):
+class TestFrequencyBands(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.band_edges = np.vstack(([1, 10], [11, 20]))
