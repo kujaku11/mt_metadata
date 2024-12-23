@@ -130,10 +130,7 @@ class FrequencyBands(object):
 
         """
         # TODO: Consider replacing below with decimation_object.delta_frequency
-        df = (
-            decimation_level.decimation.sample_rate
-            / decimation_level.window.num_samples
-        )
+        df = decimation_level.frequency_sample_interval
         half_df = df / 2.0
 
         lower_edges = (decimation_level.lower_bounds * df) - half_df
