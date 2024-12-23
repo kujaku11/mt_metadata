@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb 25 15:20:59 2022
+    This module contains the Decimation class.  This class interacts with a decimation JSON.
+    It contains the metadata to specify a transformation from time series to a Spectrogram, including
+    cascadng decimation info.
 
-@author: jpeacock
+    TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects.
+    Also see notes in mt_metadata issue 
+
+    Created on Fri Feb 25 15:20:59 2022
+
+    @author: jpeacock
 """
 # =============================================================================
 # Imports
@@ -14,7 +21,7 @@ from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.aurora import Window
 from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Channel,
+    Channel as FCChannel
 )
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.list_dict import ListDict
@@ -29,6 +36,11 @@ class Decimation(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+         Constructor.
+
+        :param kwargs:
+        """
         self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
@@ -36,10 +48,15 @@ class Decimation(Base):
         # if self.decimation_level == 0:
         #     self.anti_alias_filter = None
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.channels)
 
     def __add__(self, other):
+        """
+
+        :param other:
+        :return:
+        """
         if isinstance(other, Decimation):
             self.channels.extend(other.channels)
 
@@ -93,8 +110,8 @@ class Decimation(Base):
             self.add_channel(ch)
 
     @property
-    def channels_estimated(self):
-        """channels for fcs were estimated"""
+    def channels_estimated(self) -> list:
+        """channels for which fcs were estimated"""
         return [
             ch.component
             for ch in self.channels.values()
@@ -102,7 +119,7 @@ class Decimation(Base):
         ]
 
     @channels_estimated.setter
-    def channels_estimated(self, value):
+    def channels_estimated(self, value) -> None:
         """set channels esimated"""
 
         if value is None:
@@ -113,17 +130,17 @@ class Decimation(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.add_channel(Channel(component=entry))
+                self.add_channel(FCChannel(component=entry))
             elif entry is None:
                 continue
-            elif isinstance(entry, Channel):
+            elif isinstance(entry, FCChannel):
                 self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type FCChannel not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
 
-    def has_channel(self, component):
+    def has_channel(self, component: str) -> bool:
         """
         Check to see if the channel already exists
 
@@ -144,15 +161,14 @@ class Decimation(Base):
         """
         if self.has_channel(component):
             return self.channels_estimated.index(component)
-        return None
 
-    def get_channel(self, component):
+    def get_channel(self, component: str) -> FCChannel:
         """
         Get a channel
 
         :param component: channel component to look for
         :type component: string
-        :return: channel object based on channel type
+        :return: FCChannel object based on channel type
         :rtype: :class:`mt_metadata.timeseries.Channel`
 
         """
@@ -160,7 +176,7 @@ class Decimation(Base):
         if self.has_channel(component):
             return self.channels[component]
 
-    def add_channel(self, channel_obj):
+    def add_channel(self, channel_obj: FCChannel) -> None:
         """
         Add a channel to the list, check if one exists if it does overwrite it
 
@@ -168,8 +184,8 @@ class Decimation(Base):
         :type channel_obj: :class:`mt_metadata.transfer_functions.processing.fourier_coefficients.Channel`
 
         """
-        if not isinstance(channel_obj, (Channel)):
-            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
+        if not isinstance(channel_obj, (FCChannel)):
+            msg = f"Input must be metadata FCChannel not {type(channel_obj)}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -227,7 +243,7 @@ class Decimation(Base):
 
         for ii, channel in enumerate(value_list):
             try:
-                ch = Channel()
+                ch = FCChannel()
                 if hasattr(channel, "to_dict"):
                     channel = channel.to_dict()
                 ch.from_dict(channel)
@@ -277,8 +293,11 @@ class Decimation(Base):
     def sample_rate(self):
         return self.sample_rate_decimation
 
-    def is_valid_for_time_series_length(self, n_samples_ts):
-        """Given a time series of len n_samples_ts, are there sufficient samples to STFT"""
+    def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
+        """
+            Given a time series of len n_samples_ts, checks if there are sufficient samples to STFT.
+
+        """
         required_num_samples = (
             self.window.num_samples
             + (self.min_num_stft_windows - 1) * self.window.num_samples_advance
@@ -299,7 +318,7 @@ class Decimation(Base):
         return get_fft_harmonics(self.window.num_samples, self.sample_rate)
 
 
-    def has_fcs_for_aurora_processing(self, decimation_level, remote):
+    def has_fcs_for_aurora_processing(self, decimation_level, remote) -> bool:
         """
 
         Parameters
