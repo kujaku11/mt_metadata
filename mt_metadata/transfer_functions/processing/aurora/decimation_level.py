@@ -324,7 +324,7 @@ class DecimationLevel(Base):
         self,
         remote: bool = False,
         ignore_harmonic_indices: bool = True,
-    ) -> FCDecimation:
+    ):  #  TODO: FIXME circular import when correctly dtyped-> FCDecimation:
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
