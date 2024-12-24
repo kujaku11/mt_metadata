@@ -15,7 +15,9 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-
+from mt_metadata.transfer_functions.processing.fourier_coefficients import (
+            Decimation as FCDecimation,
+        )
 from typing import List, Union
 
 from .band import Band
@@ -324,7 +326,7 @@ class DecimationLevel(Base):
         self,
         remote: bool = False,
         ignore_harmonic_indices: bool = True,
-    ):  #  TODO: FIXME circular import when correctly dtyped-> FCDecimation:
+    ) -> FCDecimation:
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
@@ -347,9 +349,6 @@ class DecimationLevel(Base):
             A decimation object configured for STFT processing
 
         """
-        from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-            Decimation as FCDecimation,
-        )
 
         fc_dec_obj = FCDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter

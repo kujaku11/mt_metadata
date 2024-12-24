@@ -18,8 +18,8 @@ from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
-from mt_metadata.transfer_functions.processing.aurora import Window
-from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
+from mt_metadata.transfer_functions.processing.aurora.window import Window
+# from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
