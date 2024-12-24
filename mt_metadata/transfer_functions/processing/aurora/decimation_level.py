@@ -15,9 +15,6 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Decimation as FCDecimation,
-)
 
 from typing import List, Union
 
@@ -350,6 +347,10 @@ class DecimationLevel(Base):
             A decimation object configured for STFT processing
 
         """
+        from mt_metadata.transfer_functions.processing.fourier_coefficients import (
+            Decimation as FCDecimation,
+        )
+
         fc_dec_obj = FCDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if remote:
