@@ -5,7 +5,7 @@
     cascadng decimation info.
 
     TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects.
-    Also see notes in mt_metadata issue 
+    Also see notes in mt_metadata issue 235
 
     Created on Fri Feb 25 15:20:59 2022
 
@@ -315,6 +315,7 @@ class Decimation(Base):
 
     @property
     def fft_frequencies(self):
+        from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
         return get_fft_harmonics(self.window.num_samples, self.sample_rate)
 
 
