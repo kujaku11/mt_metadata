@@ -15,12 +15,12 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from typing import Union
+from typing import List, Union
 
 from .band import Band
 from .decimation import Decimation
 from .estimator import Estimator
-
+from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
 from .window import Window
@@ -36,7 +36,7 @@ attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 # =============================================================================
 
 
-def df_from_bands(band_list: list) -> pd.DataFrame:
+def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     """
     Utility function that transforms a list of bands into a dataframe
 
@@ -244,7 +244,7 @@ class DecimationLevel(Base):
         ).T
         return band_edges
 
-    def frequency_bands_obj(self):  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
+    def frequency_bands_obj(self) -> FrequencyBands:  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
 
@@ -258,9 +258,35 @@ class DecimationLevel(Base):
             A FrequencyBands object that can be used as an iterator for processing.
 
         """
-        from .frequency_bands import FrequencyBands
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
+
+    # # TODO: FIXME WIP
+    # def to_frequency_bands_obj(self):
+    #     """
+    #         Define band_edges array from decimation_level object,
+    #
+    #     Development Notes.
+    #       This function was originally in FrequencyBands class, it was called:
+    #        from_decimation_object.  Circular imports were encountered when it was correctly dtyped.
+    #        There is no reason to have FrequencyBands.from_decimation_object(decimation_level)
+    #        _and_ decimation_level.to_frequency_bands_obj()
+    #        The function above already does the task of generating a frequency bands.
+    #        Keeping this commented until documentation improves.
+    #        Below looks like an alternative, and more readable way to get band_edges,
+    #        without passing through the dataframe.  At a minimum a test should be created
+    #        that makes band edges both ways and asserts equal.
+    #        (a few command line tests showed that they are, Dec 2024).
+    #
+    #     """
+    #     df = self.frequency_sample_interval
+    #     half_df = df / 2.0
+    #
+    #     lower_edges = (self.lower_bounds * df) - half_df
+    #     upper_edges = (self.upper_bounds * df) + half_df
+    #     band_edges = np.vstack((lower_edges, upper_edges)).T
+    #     return FrequencyBands(band_edges=band_edges)
+
 
     @property
     def fft_frequencies(self) -> np.ndarray:

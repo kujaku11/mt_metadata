@@ -2,7 +2,6 @@
     This module contains a class FrequencyBands whic represents a collection of Frequency Band objects.
 """
 from . import Band
-from . import DecimationLevel
 from typing import Optional
 
 import numpy as np
@@ -117,23 +116,3 @@ class FrequencyBands(object):
         if frequency_or_period == "period":
             band_centers = 1.0 / band_centers
         return band_centers
-
-    def from_decimation_object(self, decimation_level: DecimationLevel):
-        """
-        TODO: FIXME This is causing circular imports when it is correctly dtyped.
-
-        Define band_edges array from decimation_level object,
-
-        Parameters
-        ----------
-        decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
-
-        """
-        # TODO: Consider replacing below with decimation_object.delta_frequency
-        df = decimation_level.frequency_sample_interval
-        half_df = df / 2.0
-
-        lower_edges = (decimation_level.lower_bounds * df) - half_df
-        upper_edges = (decimation_level.upper_bounds * df) + half_df
-        band_edges = np.vstack((lower_edges, upper_edges)).T
-        self.band_edges = band_edges
