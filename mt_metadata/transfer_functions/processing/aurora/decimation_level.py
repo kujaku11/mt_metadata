@@ -80,36 +80,6 @@ def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     return out_df
 
 
-def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
-    """
-    Works for odd and even number of points.
-
-    Development notes:
-    Could be modified with arguments to support one_sided, two_sided, ignore_dc
-    ignore_nyquist, and etc.  Consider taking FrequencyBands as an argument.
-
-    Parameters
-    ----------
-    samples_per_window: int
-        Number of samples in a window that will be Fourier transformed.
-    sample_rate: float
-            Inverse of time step between samples; Samples per second in Hz.
-
-    Returns
-    -------
-    harmonic_frequencies: numpy array
-        The frequencies that the fft will be computed.
-        These are one-sided (positive frequencies only)
-        Does _not_ return Nyquist
-        Does return DC component
-    """
-    delta_t = 1.0 / sample_rate
-    harmonic_frequencies = np.fft.fftfreq(samples_per_window, d=delta_t)
-    n_fft_harmonics = int(samples_per_window / 2)  # no bin at Nyquist,
-    harmonic_frequencies = harmonic_frequencies[0:n_fft_harmonics]
-    return harmonic_frequencies
-
-
 class DecimationLevel(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -299,9 +269,7 @@ class DecimationLevel(Base):
             :return freqs: The frequencies at which the stft will be available.
             :rtype freqs: np.ndarray
         """
-        freqs = get_fft_harmonics(
-            self.window.num_samples, self.decimation.sample_rate
-        )
+        freqs = self.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
 
     @property

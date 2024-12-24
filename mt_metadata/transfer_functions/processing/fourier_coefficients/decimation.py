@@ -15,11 +15,12 @@
 # Imports
 # =============================================================================
 from collections import OrderedDict
+
+import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.aurora.window import Window
-# from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
@@ -314,10 +315,9 @@ class Decimation(Base):
             return True
 
     @property
-    def fft_frequencies(self):
-        from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
-        return get_fft_harmonics(self.window.num_samples, self.sample_rate)
-
+    def fft_frequencies(self) -> np.ndarray:
+        """ Returns the one-sided fft frequencies (without Nyquist)"""
+        return self.window.fft_harmonics(self.sample_rate)
 
     def has_fcs_for_aurora_processing(self, decimation_level, remote) -> bool:
         """
