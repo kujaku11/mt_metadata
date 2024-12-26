@@ -289,13 +289,15 @@ class Decimation(Base):
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
 
-    # Workarounds for pass-through usage of same decimation as aurora
+    # Workarounds for pass-through usage of TimeSeriesDecimation decimation as aurora
     @property
     def factor(self):
+        # TODO: FIXME: decimation factor should be deprecated, use TimeSeriesDecimation for this info.
         return self.decimation_factor
 
     @property
     def sample_rate(self):
+        # TODO: FIXME: decimation factor should be deprecated, use TimeSeriesDecimation for this info.
         return self.sample_rate_decimation
 
     def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
@@ -372,13 +374,19 @@ class Decimation(Base):
 
         # anti_alias_filter
         try:
+            # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
+            # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
             assert self.anti_alias_filter == decimation_level.anti_alias_filter
         except AssertionError:
+            # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
+            # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
             cond1 = decimation_level.anti_alias_filter == "default"
             cond2 = self.anti_alias_filter is None
             if cond1 & cond2:
                 pass
             else:
+                # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
+                # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
                     f"{msg} FCdec {self.anti_alias_filter} and "
@@ -388,11 +396,13 @@ class Decimation(Base):
 
         # sample_rate
         try:
+            # TODO: FIXME: sample_rate_decimation should be deprecated, use TimeSeriesDecimation.sample_rate for this info.
             assert (
                 self.sample_rate_decimation
                 == decimation_level.decimation.sample_rate
             )
         except AssertionError:
+            # TODO: FIXME: sample_rate_decimation should be deprecated, use TimeSeriesDecimation.sample_rate for this info.
             msg = (
                 f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
                 f"processing config {decimation_level.decimation.sample_rate}"
@@ -402,8 +412,10 @@ class Decimation(Base):
 
         # method (fft, wavelet, etc.)
         try:
+            # TODO: FIXME: self.method should be deprecated, use TimeSeriesDecimation.method for this info.
             assert self.method == decimation_level.method
         except AssertionError:
+            # TODO: FIXME: self.method should be deprecated, use TimeSeriesDecimation.method for this info.
             msg = (
                 "Transform methods do not agree "
                 f"{self.method} != {decimation_level.method}"
@@ -412,9 +424,11 @@ class Decimation(Base):
             return False
 
         # prewhitening_type
+        # TODO: FIXME: self.prewhitening_type should be deprecated, use TimeSeriesDecimation.prewhitening_type for this info.
         try:
             assert self.prewhitening_type == decimation_level.prewhitening_type
         except AssertionError:
+            # TODO: FIXME: self.prewhitening_type should be deprecated, use TimeSeriesDecimation.prewhitening_type for this info.
             msg = (
                 "prewhitening_type does not agree "
                 f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
@@ -423,9 +437,11 @@ class Decimation(Base):
             return False
 
         # recoloring
+        # TODO: FIXME: self.recoloring should be deprecated, use TimeSeriesDecimation.recoloring for this info.
         try:
             assert self.recoloring == decimation_level.recoloring
         except AssertionError:
+            # TODO: FIXME: self.recoloring should be deprecated, use TimeSeriesDecimation.recoloring for this info.
             msg = (
                 "recoloring does not agree "
                 f"{self.recoloring} != {decimation_level.recoloring}"
@@ -434,12 +450,14 @@ class Decimation(Base):
             return False
 
         # pre_fft_detrend_type
+        # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
         try:
             assert (
                 self.pre_fft_detrend_type
                 == decimation_level.pre_fft_detrend_type
             )
         except AssertionError:
+            # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
                 f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"

@@ -9,6 +9,8 @@ Development Notes:
     The previous version of this class was in processing/aurora/decimation.py and had attrs
     ["level", "factor", "method", "sample_rate", "anti_alias_filter"],
 
+    TODO: Consider adding a parent_sample_rate attribute to this class
+    
 Created on Thu Dec 26 12:00:00 2024
 
 @author: kkappler
