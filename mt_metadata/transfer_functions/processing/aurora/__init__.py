@@ -1,7 +1,6 @@
 from .band import Band
 from .channel import Channel
 from .channel_nomenclature import ChannelNomenclature
-from .decimation import Decimation
 from .decimation_level import DecimationLevel
 from .estimator import Estimator
 from .frequency_bands import FrequencyBands
