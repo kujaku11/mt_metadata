@@ -20,6 +20,7 @@ import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
+# from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation as TSDecimation
 from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
@@ -31,6 +32,7 @@ from mt_metadata.utils.list_dict import ListDict
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 attr_dict.add_dict(Window()._attr_dict, "window")
+# attr_dict.add_dict(TSDecimation()._attr_dict, "time_series_decimation")
 
 # =============================================================================
 class Decimation(Base):
@@ -319,22 +321,38 @@ class Decimation(Base):
         """ Returns the one-sided fft frequencies (without Nyquist)"""
         return self.window.fft_harmonics(self.sample_rate)
 
-    def has_fcs_for_aurora_processing(self, decimation_level, remote) -> bool:
+    def has_fcs_for_aurora_processing(
+        self,
+        decimation_level,  # TODO: FIXME - Circular import when dtyped. AuroraDecimationLevel,
+        remote: bool
+    ) -> bool:
         """
 
+        Development notes:
+         See TODO FIXME, when trying from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
+         we get a circular import.
         Parameters
         ----------
         decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
         remote: bool
+            If True, we are looking for reference channels, not local channels in the FCGroup.
 
-        Iterates over parameters:
-        "channels_estimated", "anti_alias_filter", "sample_rate, "method", "prewhitening_type", "recoloring",
-        "pre_fft_detrend_type", "min_num_stft_windows", "window", "harmonic_indices",
+        Iterates over FCDecimation attributes:
+            "channels_estimated": to ensure all expected channels are in the group
+            "anti_alias_filter": check that the expected AAF was applied
+            "sample_rate,
+            "method",
+            "prewhitening_type",
+            "recoloring",
+            "pre_fft_detrend_type",
+            "min_num_stft_windows",
+            "window",
+            "harmonic_indices",
         Returns
         -------
 
         """
-        # "channels_estimated"
+        # channels_estimated
         if remote:
             required_channels = decimation_level.reference_channels
         else:
