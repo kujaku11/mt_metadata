@@ -1,15 +1,4 @@
 {
-    "decimation_level": {
-        "type": "integer",
-        "required": true,
-        "style": "number",
-        "units": null,
-        "description": "Decimation level, must be a non-negative integer starting at 0",
-        "options": [],
-        "alias": [],
-        "example": "1",
-		"default": null
-    },
     "id": {
         "type": "string",
         "required": true,
@@ -21,29 +10,18 @@
         "example": "1",
 		"default": null
     },
-	"channels_estimated": {
-        "type": "string",
-        "required": true,
-        "style": "name list",
-        "units": null,
-        "description": "list of channels",
-        "options": [],
-        "alias": [],
-        "example": "[ex, hy]",
-		"default": null
-    },
-	"sample_rate_decimation": {
-        "type": "float",
+    "decimation_level": {
+        "type": "integer",
         "required": true,
         "style": "number",
-        "units": "samples per second",
-        "description": "Sample rate of the decimation level.",
+        "units": null,
+        "description": "Decimation level, must be a non-negative integer starting at 0",
         "options": [],
         "alias": [],
-        "example": 60,
-		"default": 1
+        "example": "1",
+		"default": null
     },
-	"decimation_factor": {
+    "decimation_factor": {
         "type": "integer",
         "required": true,
         "style": "number",
@@ -54,7 +32,40 @@
         "example": 4,
 		"default": 1
     },
-        "min_num_stft_windows": {
+    "sample_rate_decimation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the decimation level.",
+        "options": [],
+        "alias": [],
+        "example": 60,
+		"default": 1
+    },
+    "anti_alias_filter": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of anti alias filter for decimation.",
+        "options": [],
+        "alias": [],
+        "example": "default",
+		"default": "default"
+    },
+    "channels_estimated": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of channels",
+        "options": [],
+        "alias": [],
+        "example": "[ex, hy]",
+		"default": null
+    },
+    "min_num_stft_windows": {
         "type": "integer",
         "required": true,
         "style": "number",
@@ -75,17 +86,6 @@
         "alias": [],
         "example": "fft",
 		"default": "fft"
-    },
-	"anti_alias_filter": {
-        "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Type of anti alias filter for decimation.",
-        "options": [],
-        "alias": [],
-        "example": "default",
-		"default": "default"
     },
 	"pre_fft_detrend_type": {
         "type": "string",
