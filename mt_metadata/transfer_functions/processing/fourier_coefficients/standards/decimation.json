@@ -32,6 +32,17 @@
         "example": 4,
 		"default": 1
     },
+    "decimation_method": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": "",
+        "description": "Type of decimation",
+        "options": ["default", "other"],
+        "alias": [],
+        "example": "default",
+		"default": "default"
+    },
     "sample_rate_decimation": {
         "type": "float",
         "required": true,
