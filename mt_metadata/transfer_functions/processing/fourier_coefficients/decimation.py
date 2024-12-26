@@ -20,7 +20,7 @@ import numpy as np
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
-# from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation as TSDecimation
+from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
 from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
@@ -32,7 +32,7 @@ from mt_metadata.utils.list_dict import ListDict
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 attr_dict.add_dict(Window()._attr_dict, "window")
-# attr_dict.add_dict(TSDecimation()._attr_dict, "time_series_decimation")
+attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
 # =============================================================================
 class Decimation(Base):
@@ -47,6 +47,8 @@ class Decimation(Base):
         self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
+        self.time_series_decimation = TimeSeriesDecimation()
+
         super().__init__(attr_dict=attr_dict, **kwargs)
         # if self.decimation_level == 0:
         #     self.anti_alias_filter = None
