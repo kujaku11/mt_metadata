@@ -31,7 +31,7 @@
         "alias": [],
         "example": "default",
 		"default": "default"
-    },    
+    },
 	"sample_rate": {
         "type": "float",
         "required": true,
@@ -42,5 +42,16 @@
         "alias": [],
         "example": "256",
 		"default": 1
+    },
+    "anti_alias_filter": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of anti alias filter for decimation.",
+        "options": [],
+        "alias": [],
+        "example": "default",
+		"default": "default"
     }
 }
