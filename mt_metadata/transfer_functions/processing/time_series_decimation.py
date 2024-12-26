@@ -19,7 +19,7 @@ Created on Thu Dec 26 12:00:00 2024
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.transfer_functions.processing.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
 attr_dict = get_schema("time_series_decimation", SCHEMA_FN_PATHS)
@@ -45,19 +45,27 @@ class TimeSeriesDecimation(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     # Temporary workarounds while replacing legacy Decimation class
-    @property
-    def level(self):
-        return self.decimation_level
+    # @property
+    # def level(self):
+    #     return self.decimation_level
+    #
+    # @property
+    # def factor(self):
+    #     return self.decimation_factor
+    #
+    # @property
+    # def method(self):
+    #     return self.decimation_method
+    #
+    # @property
+    # def sample_rate(self):
+    #     return self.sample_rate_decimation
 
-    @property
-    def factor(self):
-        return self.decimation_factor
 
-    @property
-    def method(self):
-        return self.decimation_method
-
-    @property
-    def sample_rate(self):
-        return self.sample_rate_decimation
-
+#
+# def main():
+#     pass
+#
+#
+# if __name__ == "__main__":
+#     main()
