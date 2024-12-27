@@ -100,6 +100,14 @@ class DecimationLevel(Base):
         #     self.anti_alias_filter = None
 
     @property
+    def anti_alias_filter(self) -> str:
+        """
+        get anti_alais_filter from TimeSeriesDecimation.
+
+        """
+        return self.decimation.anti_alias_filter
+
+    @property
     def bands(self) -> list:
         """
         get bands, something weird is going on with appending.

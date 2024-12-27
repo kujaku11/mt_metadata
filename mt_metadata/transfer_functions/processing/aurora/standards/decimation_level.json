@@ -1,15 +1,4 @@
 {
-    "anti_alias_filter": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Name of anti alias filter to be applied",
-        "options": ["deafult", "other"],
-        "alias": [],
-        "example": "default",
-		"default": "default"
-    },
     "recoloring": {
         "type": "bool",
         "required": true,
