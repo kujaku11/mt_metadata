@@ -10,28 +10,6 @@
         "example": "1",
 		"default": null
     },
-    "decimation_level": {
-        "type": "integer",
-        "required": true,
-        "style": "number",
-        "units": null,
-        "description": "Decimation level, must be a non-negative integer starting at 0",
-        "options": [],
-        "alias": [],
-        "example": "1",
-		"default": null
-    },
-    "decimation_factor": {
-        "type": "integer",
-        "required": true,
-        "style": "number",
-        "units": null,
-        "description": "Decimation factor between initial sample rate and decimation sample rate.",
-        "options": [],
-        "alias": [],
-        "example": 4,
-		"default": 1
-    },
     "decimation_method": {
         "type": "string",
         "required": true,

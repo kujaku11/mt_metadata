@@ -50,8 +50,8 @@ class Decimation(Base):
         self.time_series_decimation = TimeSeriesDecimation()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
-        # if self.decimation_level == 0:
-        #     self.anti_alias_filter = None
+        # if self.time_series_decimation.level == 0:
+        #     self.time_series_decimation.anti_alias_filter = None
 
     def __len__(self) -> int:
         return len(self.channels)
@@ -70,6 +70,40 @@ class Decimation(Base):
             msg = f"Can only merge ch objects, not {type(other)}"
             self.logger.error(msg)
             raise TypeError(msg)
+
+    # Temporary infrastructure to merge Decimation Classes
+    @property
+    def decimation_level(self) -> int:
+        """
+            Access the decimation level from the TSDecimation
+            :return: Integer decimation level
+            :rtype: int
+        """
+        return self.time_series_decimation.level
+
+    @decimation_level.setter
+    def decimation_level(self, value: int) -> None:
+        """
+            Set the decimation level in the TSDecimation
+        """
+        self.time_series_decimation.level = value
+
+    @property
+    def decimation_factor(self) -> float:
+        """
+            Access the decimation factor from the TSDecimation
+            :return: decimation factor
+            :rtype: float
+        """
+        return self.time_series_decimation.factor
+
+    @decimation_factor.setter
+    def decimation_factor(self, value: float) -> None:
+        """
+            Set the decimation factor in the TSDecimation
+        """
+        self.time_series_decimation.factor = value
+
 
     def update(self, other, match=[]):
         """
