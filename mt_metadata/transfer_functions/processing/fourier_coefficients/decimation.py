@@ -15,8 +15,9 @@
 # Imports
 # =============================================================================
 from collections import OrderedDict
+from loguru import logger
 
-import numpy as np
+from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
@@ -25,9 +26,9 @@ from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
-from .standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.list_dict import ListDict
 
+import numpy as np
 # =============================================================================
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
@@ -326,7 +327,12 @@ class Decimation(Base):
     # Workarounds for pass-through usage of TimeSeriesDecimation decimation as aurora
     @property
     def factor(self):
-        # TODO: FIXME: decimation factor should be deprecated, use TimeSeriesDecimation for this info.
+        """
+        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
+        """
+        msg = ("This method will be deprecated in a future release.  Use "
+               "self.time_series_decimation.factor or self.decimation_factor instead")
+        logger.warning(msg)
         return self.decimation_factor
 
     @property
