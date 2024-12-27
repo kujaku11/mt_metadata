@@ -47,7 +47,7 @@ class TestDecimation(unittest.TestCase):
         self.dl.decimation_factor = 4
         self.dl.decimation_level = 1
         self.dl.id = 1
-        self.dl.sample_rate_decimation = 16
+        self.dl.time_series_decimation.sample_rate = 16.0
 
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2020-01-01T00:20:00+00:00"
