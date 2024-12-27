@@ -137,6 +137,39 @@ class Decimation(Base):
         """
         self.time_series_decimation.anti_alias_filter = value
 
+    @property
+    def decimation_sample_rate(self) -> float:
+        """
+            Access the decimation sample rate from the TSDecimation
+            :return: Time series sample rate after decimation (from the TSDecimation)
+            :rtype: float
+        """
+        return self.time_series_decimation.sample_rate
+
+    @property
+    def sample_rate_decimation(self) -> float:
+        """
+            TODO: Delete this function in 2025.
+
+            Access the decimation sample rate from the TSDecimation
+            :return:Time series sample rate after decimation (from the TSDecimation)
+            :rtype: str
+        """
+        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
+        logger.warning(msg)
+        return self.time_series_decimation.sample_rate
+
+    @sample_rate_decimation.setter
+    def sample_rate_decimation(self, value: float) -> None:
+        """
+            TODO: Delete this function in 2025.
+
+            Set the decimation sample_rate_decimation in the TSDecimation
+        """
+        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
+        logger.warning(msg)
+        self.time_series_decimation.sample_rate = value
+
 
     def update(self, other, match=[]):
         """
@@ -368,9 +401,8 @@ class Decimation(Base):
         return self.decimation_factor
 
     @property
-    def sample_rate(self):
-        # TODO: FIXME: decimation factor should be deprecated, use TimeSeriesDecimation for this info.
-        return self.sample_rate_decimation
+    def sample_rate(self) -> float:
+        return self.time_series_decimation.sample_rate
 
     def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
         """
@@ -462,15 +494,13 @@ class Decimation(Base):
 
         # sample_rate
         try:
-            # TODO: FIXME: sample_rate_decimation should be deprecated, use TimeSeriesDecimation.sample_rate for this info.
             assert (
-                self.sample_rate_decimation
+                self.time_series_decimation.sample_rate
                 == decimation_level.decimation.sample_rate
             )
         except AssertionError:
-            # TODO: FIXME: sample_rate_decimation should be deprecated, use TimeSeriesDecimation.sample_rate for this info.
             msg = (
-                f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
+                f"Sample rates do not agree: fc {self.time_series_decimation.sample_rate} differs from "
                 f"processing config {decimation_level.decimation.sample_rate}"
             )
             self.logger.info(msg)
@@ -478,23 +508,19 @@ class Decimation(Base):
 
         # method (fft, wavelet, etc.)
         try:
-            # TODO: FIXME: self.method should be deprecated, use TimeSeriesDecimation.method for this info.
-            assert self.method == decimation_level.method
+            assert self.decimation_method == decimation_level.method
         except AssertionError:
-            # TODO: FIXME: self.method should be deprecated, use TimeSeriesDecimation.method for this info.
             msg = (
                 "Transform methods do not agree "
-                f"{self.method} != {decimation_level.method}"
+                f"{self.decimation_method} != {decimation_level.method}"
             )
             self.logger.info(msg)
             return False
 
         # prewhitening_type
-        # TODO: FIXME: self.prewhitening_type should be deprecated, use TimeSeriesDecimation.prewhitening_type for this info.
         try:
             assert self.prewhitening_type == decimation_level.prewhitening_type
         except AssertionError:
-            # TODO: FIXME: self.prewhitening_type should be deprecated, use TimeSeriesDecimation.prewhitening_type for this info.
             msg = (
                 "prewhitening_type does not agree "
                 f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
@@ -503,11 +529,9 @@ class Decimation(Base):
             return False
 
         # recoloring
-        # TODO: FIXME: self.recoloring should be deprecated, use TimeSeriesDecimation.recoloring for this info.
         try:
             assert self.recoloring == decimation_level.recoloring
         except AssertionError:
-            # TODO: FIXME: self.recoloring should be deprecated, use TimeSeriesDecimation.recoloring for this info.
             msg = (
                 "recoloring does not agree "
                 f"{self.recoloring} != {decimation_level.recoloring}"
@@ -516,7 +540,6 @@ class Decimation(Base):
             return False
 
         # pre_fft_detrend_type
-        # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
         try:
             assert (
                 self.pre_fft_detrend_type
