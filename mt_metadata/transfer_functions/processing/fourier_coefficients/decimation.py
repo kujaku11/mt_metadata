@@ -507,12 +507,13 @@ class Decimation(Base):
             return False
 
         # method (fft, wavelet, etc.)
+        # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
         try:
-            assert self.decimation_method == decimation_level.method
+            assert self.method == decimation_level.method  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree "
-                f"{self.decimation_method} != {decimation_level.method}"
+                f"{self.method} != {decimation_level.method}"
             )
             self.logger.info(msg)
             return False
