@@ -105,6 +105,22 @@ class Decimation(Base):
         """
         self.time_series_decimation.factor = value
 
+    @property
+    def decimation_method(self) -> str:
+        """
+            Access the decimation method from the TSDecimation
+            :return: Description of how decimation is performed
+            :rtype: str
+        """
+        return self.time_series_decimation.method
+
+    @decimation_method.setter
+    def decimation_method(self, value: str) -> None:
+        """
+            Set the decimation level in the TSDecimation
+        """
+        self.time_series_decimation.method = value
+
 
     def update(self, other, match=[]):
         """
