@@ -21,17 +21,6 @@
         "example": 60,
 		"default": 1
     },
-    "anti_alias_filter": {
-        "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Type of anti alias filter for decimation.",
-        "options": [],
-        "alias": [],
-        "example": "default",
-		"default": "default"
-    },
     "channels_estimated": {
         "type": "string",
         "required": true,

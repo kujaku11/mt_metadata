@@ -121,6 +121,22 @@ class Decimation(Base):
         """
         self.time_series_decimation.method = value
 
+    @property
+    def decimation_anti_alias_filter(self) -> str:
+        """
+            Access the decimation anti_alias_filter description from the TSDecimation
+            :return: Description of how anti_alias_filtering is performed
+            :rtype: str
+        """
+        return self.time_series_decimation.anti_alias_filter
+
+    @decimation_method.setter
+    def decimation_anti_alias_filter(self, value: str) -> None:
+        """
+            Set the decimation_anti_alias_filter in the TSDecimation
+        """
+        self.time_series_decimation.anti_alias_filter = value
+
 
     def update(self, other, match=[]):
         """
@@ -430,22 +446,16 @@ class Decimation(Base):
 
         # anti_alias_filter
         try:
-            # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
-            # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
-            assert self.anti_alias_filter == decimation_level.anti_alias_filter
+            assert self.decimation_anti_alias_filter == decimation_level.anti_alias_filter
         except AssertionError:
-            # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
-            # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
             cond1 = decimation_level.anti_alias_filter == "default"
-            cond2 = self.anti_alias_filter is None
+            cond2 = self.decimation_anti_alias_filter is None
             if cond1 & cond2:
                 pass
             else:
-                # TODO: FIXME: self.anti_alias_filter should be deprecated, use TimeSeriesDecimation for this info.
-                # TODO: FIXME: decimation_level.anti_alias_filter should be deprecated, use self.time_series_decimation.anti_alias_filter
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {self.anti_alias_filter} and "
+                    f"{msg} FCdec {self.decimation_anti_alias_filter} and "
                     f"{msg} processing config:{decimation_level.anti_alias_filter}"
                 )
                 raise NotImplementedError(msg)
