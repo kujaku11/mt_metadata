@@ -304,6 +304,8 @@ class DecimationLevel(Base):
         "time_period.end": "1980-01-01T00:00:00+00:00",
         "time_period.start": "1980-01-01T00:00:00+00:00",
 
+        TODO: FIXME: Assignment of TSDecimation can be done in one shot once #235 is addressed.
+
         Parameters
         ----------
         remote: bool
