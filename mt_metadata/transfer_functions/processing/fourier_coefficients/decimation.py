@@ -4,8 +4,9 @@
     It contains the metadata to specify a transformation from time series to a Spectrogram, including
     cascadng decimation info.
 
-    TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects.
-    Also see notes in mt_metadata issue 235
+    TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
+    or FCDecimationLevel to make it
+    Also see notes in mt_metadata issue 235.
 
     Created on Fri Feb 25 15:20:59 2022
 

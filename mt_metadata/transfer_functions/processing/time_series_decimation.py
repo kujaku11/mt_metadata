@@ -35,7 +35,6 @@ class TimeSeriesDecimation(Base):
          Key pieces of information:
         1. The decimation level, an integer that tells the sequential order in a decimation scheme.
         2. The decimation factor.  This is normally an integer, but the decimation.json does allow for floating point values.
-        3. The ID.  This is still in development normally an integer, but the decimation.json does allow for floating point values.
 
         Development Notes:
         -
