@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     This module contains the DecimationLevel class.
-    TODO: Factor or rename.  The decimation level class here has information about the enture processing.
+    TODO: Factor or rename.  The decimation level class here has information about the entire processing.
 
 Created on Thu Feb 17 14:15:20 2022
 
@@ -31,8 +31,6 @@ from .window import Window
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Decimation()._attr_dict, "decimation")
-# TODO: Delete line below once issue #235 tests all passing.
-# attr_dict.add_dict(get_schema("decimation", SCHEMA_FN_PATHS), "decimation")
 attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
@@ -48,6 +46,7 @@ def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
     TODO: Consider making this a method of FrequencyBands() class.
+    TODO: Check typehint -- should None be allowed value in the band_list?
 
     Parameters
     ----------
@@ -284,11 +283,21 @@ class DecimationLevel(Base):
 
     @property
     def sample_rate_decimation(self) -> float:
-        """ Returns the sample rate of the data after decimation. """
+        """
+            Returns the sample rate of the data after decimation.
+            TODO: Delete this method and replace calls to self.sample_rate_decimation with self.decimation.sample_rate
+
+        """
         return self.decimation.sample_rate
 
     @property
-    def harmonic_indices(self):
+    def harmonic_indices(self) -> List[int]:
+        """
+            Loops over all bands and returns a list of the harminic indices.
+            TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
+            :return: list of fc indices (integers)
+            :rtype: List[int]
+        """
         return_list = []
         for band in self.bands:
             fc_indices = band.harmonic_indices
