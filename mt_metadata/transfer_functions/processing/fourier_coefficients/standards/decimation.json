@@ -20,16 +20,5 @@
         "alias": [],
         "example": "[ex, hy]",
 		"default": null
-    },
-	"recoloring": {
-        "type": "bool",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Whether the data are recolored [True] or not [False].",
-        "options": [],
-        "alias": [],
-        "example": true,
-		"default": true
     }
 }

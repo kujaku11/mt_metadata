@@ -126,13 +126,19 @@ class TestDecimation(unittest.TestCase):
         ch_ey = self.ex.copy()
         ch_ey.component = "ey"
         dl2.add_channel(ch_ey)
-        dl1.update(dl2, match=["short_time_fourier_transform.method", "recoloring"])
+        dl1.update(dl2, match=[
+            "short_time_fourier_transform.method",
+            "short_time_fourier_transform.recoloring"
+        ])
         self.assertEqual(len(dl1), 3)
 
         dl1 = self.dl.copy()
         dl1.short_time_fourier_transform.method = "wavelet"
         with self.assertRaises(ValueError):
-            dl1.update(dl2, match=["short_time_fourier_transform.method", "recoloring"])
+            dl1.update(dl2, match=[
+                "short_time_fourier_transform.method",
+                "short_time_fourier_transform.recoloring"
+            ])
 
 
     def test_channels_estimated(self):

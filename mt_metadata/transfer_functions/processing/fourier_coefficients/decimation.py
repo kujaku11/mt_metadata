@@ -560,11 +560,11 @@ class Decimation(Base):
 
         # recoloring
         try:
-            assert self.recoloring == decimation_level.recoloring
+            assert self.stft.recoloring == decimation_level.recoloring
         except AssertionError:
             msg = (
                 "recoloring does not agree "
-                f"{self.recoloring} != {decimation_level.recoloring}"
+                f"{self.stft.recoloring} != {decimation_level.recoloring}"
             )
             self.logger.info(msg)
             return False
