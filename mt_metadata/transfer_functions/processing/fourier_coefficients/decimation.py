@@ -207,7 +207,7 @@ class Decimation(Base):
     @property
     def harmonic_indices(self):
         return self.short_time_fourier_transform.harmonic_indices
-    
+
     #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
     def update(self, other, match=[]):
@@ -534,11 +534,11 @@ class Decimation(Base):
         # method (fft, wavelet, etc.)
         # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
         try:
-            assert self.method == decimation_level.method  # FFT, Wavelet, etc.
+            assert self.short_time_fourier_transform.method == decimation_level.method  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree "
-                f"{self.method} != {decimation_level.method}"
+                f"{self.short_time_fourier_transform.method} != {decimation_level.method}"
             )
             self.logger.info(msg)
             return False
