@@ -549,11 +549,11 @@ class Decimation(Base):
 
         # prewhitening_type
         try:
-            assert self.prewhitening_type == decimation_level.prewhitening_type
+            assert self.stft.prewhitening_type == decimation_level.prewhitening_type
         except AssertionError:
             msg = (
                 "prewhitening_type does not agree "
-                f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
+                f"{self.stft.prewhitening_type} != {decimation_level.prewhitening_type}"
             )
             self.logger.info(msg)
             return False
