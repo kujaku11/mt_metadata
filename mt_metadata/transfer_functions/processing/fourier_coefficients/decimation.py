@@ -22,7 +22,9 @@ from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
+from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
 from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
+# from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
 from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
@@ -34,24 +36,37 @@ import numpy as np
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 attr_dict.add_dict(Window()._attr_dict, "window")
+attr_dict.add_dict(ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform")
 attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
 # =============================================================================
 class Decimation(Base):
+    """
+        TODO: the name of this class could be changed to something more appropriate.
+        TODO: consider adding an attr decimation to access TimeSeriesDecimation more briefly.
+    """
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         """
          Constructor.
 
-        :param kwargs:
+        :param kwargs: TODO: add doc here
         """
         self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
         self.time_series_decimation = TimeSeriesDecimation()
+        self.short_time_fourier_transform = ShortTimeFourierTransform()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        if self.short_time_fourier_transform.extra_pre_fft_detrend_type:
+            msg = f"extra pre-fft detrend was set to {self.short_time_fourier_transform.extra_pre_fft_detrend_type}"
+            msg += "however, this is not supported -- setting to empty string"
+            logger.debug(msg)
+            self.short_time_fourier_transform.extra_pre_fft_detrend_type = None
+
         # if self.time_series_decimation.level == 0:
         #     self.time_series_decimation.anti_alias_filter = None
 
@@ -73,7 +88,21 @@ class Decimation(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
-    # Temporary infrastructure to merge Decimation Classes
+    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+    @property
+    def factor(self):
+        """
+        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
+        """
+        msg = ("This method will be deprecated in a future release.  Use "
+               "self.time_series_decimation.factor or self.decimation_factor instead")
+        logger.warning(msg)
+        return self.decimation_factor
+
+    @property
+    def sample_rate(self) -> float:
+        return self.time_series_decimation.sample_rate
+
     @property
     def decimation_level(self) -> int:
         """
@@ -171,6 +200,12 @@ class Decimation(Base):
         logger.warning(msg)
         self.time_series_decimation.sample_rate = value
 
+    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+
+    #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
+
+
+    #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
     def update(self, other, match=[]):
         """
@@ -390,20 +425,6 @@ class Decimation(Base):
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
 
-    # Workarounds for pass-through usage of TimeSeriesDecimation decimation as aurora
-    @property
-    def factor(self):
-        """
-        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
-        """
-        msg = ("This method will be deprecated in a future release.  Use "
-               "self.time_series_decimation.factor or self.decimation_factor instead")
-        logger.warning(msg)
-        return self.decimation_factor
-
-    @property
-    def sample_rate(self) -> float:
-        return self.time_series_decimation.sample_rate
 
     def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
         """

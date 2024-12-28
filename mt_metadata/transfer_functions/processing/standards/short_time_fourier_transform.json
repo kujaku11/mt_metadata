@@ -7,11 +7,12 @@
         "description": "Extra Pre FFT detrend method to be applied",
         "options": [
             "linear",
-            "other"
+            "constant",
+            ""
         ],
         "alias": [],
         "example": "linear",
-        "default": "linear"
+        "default": ""
     },
     "harmonic_indices": {
         "type": "integer",

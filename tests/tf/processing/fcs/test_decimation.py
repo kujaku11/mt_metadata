@@ -27,6 +27,10 @@ class TestDecimationInitialization(unittest.TestCase):
         self.decimation = Decimation()
 
     def test_initialization(self):
+        """
+            Tests that class attributes from standards .json initialize to the default values
+
+        """
         for key in self.decimation.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
