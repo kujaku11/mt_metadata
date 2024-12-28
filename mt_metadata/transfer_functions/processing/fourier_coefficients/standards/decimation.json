@@ -75,16 +75,5 @@
         "alias": [],
         "example": true,
 		"default": true
-    },
-	"harmonic_indices": {
-        "type": "integer",
-        "required": true,
-        "style": "number list",
-        "units": null,
-        "description": "List of harmonics indices kept, if all use -1",
-        "options": [],
-        "alias": [],
-        "example": [0, 4, 8],
-		"default": [-1]
     }
 }

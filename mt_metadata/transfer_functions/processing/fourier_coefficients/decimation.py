@@ -204,7 +204,10 @@ class Decimation(Base):
 
     #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
-
+    @property
+    def harmonic_indices(self):
+        return self.short_time_fourier_transform.harmonic_indices
+    
     #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
     def update(self, other, match=[]):
