@@ -59,7 +59,8 @@
         "description": "Pre FFT detrend method to be applied",
         "options": [
             "linear",
-            "other"
+            "other",
+            ""
         ],
         "alias": [],
         "example": "linear",

@@ -205,6 +205,10 @@ class Decimation(Base):
     #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
     @property
+    def stft(self):
+        return self.short_time_fourier_transform
+
+    @property
     def harmonic_indices(self):
         return self.short_time_fourier_transform.harmonic_indices
 
@@ -436,12 +440,12 @@ class Decimation(Base):
         """
         required_num_samples = (
             self.window.num_samples
-            + (self.min_num_stft_windows - 1) * self.window.num_samples_advance
+            + (self.stft.min_num_stft_windows - 1) * self.window.num_samples_advance
         )
         if n_samples_ts < required_num_samples:
             msg = (
                 f"{n_samples_ts} not enough samples for minimum of "
-                f"{self.min_num_stft_windows} stft windows of length "
+                f"{self.stft.min_num_stft_windows} stft windows of length "
                 f"{self.window.num_samples} and overlap {self.window.overlap}"
             )
             self.logger.warning(msg)
@@ -568,14 +572,14 @@ class Decimation(Base):
         # pre_fft_detrend_type
         try:
             assert (
-                self.pre_fft_detrend_type
+                self.stft.pre_fft_detrend_type
                 == decimation_level.pre_fft_detrend_type
             )
         except AssertionError:
             # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
-                f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+                f"{self.stft.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
             )
             self.logger.info(msg)
             return False
@@ -583,13 +587,13 @@ class Decimation(Base):
         # min_num_stft_windows
         try:
             assert (
-                self.min_num_stft_windows
+                self.stft.min_num_stft_windows
                 == decimation_level.min_num_stft_windows
             )
         except AssertionError:
             msg = (
                 "min_num_stft_windows do not agree "
-                f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+                f"{self.stft.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
             )
             self.logger.info(msg)
             return False
