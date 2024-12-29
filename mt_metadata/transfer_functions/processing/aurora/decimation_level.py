@@ -320,6 +320,7 @@ class DecimationLevel(Base):
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
+        TODO: this is being tested only in aurora -- move a test to mt_metadata or move the method.
         Ignoring for now these properties
         "time_period.end": "1980-01-01T00:00:00+00:00",
         "time_period.start": "1980-01-01T00:00:00+00:00",
