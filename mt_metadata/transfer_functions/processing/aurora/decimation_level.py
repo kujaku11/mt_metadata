@@ -98,10 +98,6 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        # handle per_window_detrend_type default for aurora
-        # if not self.stft.per_window_detrend_type:
-        #     self.stft.per_window_detrend_type = "linear"
-
         # if self.decimation.level == 0:
         #     self.anti_alias_filter = None
 
