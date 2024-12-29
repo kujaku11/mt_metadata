@@ -234,7 +234,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_prewhitening_type_false(self):
-        self.adl.prewhitening_type = "other"
+        self.adl.stft.prewhitening_type = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
