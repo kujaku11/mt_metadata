@@ -588,12 +588,12 @@ class Decimation(Base):
         try:
             assert (
                 self.stft.min_num_stft_windows
-                == decimation_level.min_num_stft_windows
+                == decimation_level.stft.min_num_stft_windows
             )
         except AssertionError:
             msg = (
                 "min_num_stft_windows do not agree "
-                f"{self.stft.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+                f"{self.stft.min_num_stft_windows} != {decimation_level.stft.min_num_stft_windows}"
             )
             self.logger.info(msg)
             return False
