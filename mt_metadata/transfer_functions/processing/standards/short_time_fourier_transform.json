@@ -1,5 +1,5 @@
 {
-    "extra_pre_fft_detrend_type": {
+    "per_window_detrend_type": {
         "type": "string",
         "required": true,
         "style": "controlled vocabulary",

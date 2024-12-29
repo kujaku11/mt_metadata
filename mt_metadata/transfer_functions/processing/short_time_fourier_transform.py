@@ -9,10 +9,10 @@ Development Notes:
 
     This class pulls out the metadata that are associated with the application of the STFT.
 
-    "extra_pre_fft_detrend_type"
     "harmonic_indices"
     "method"
     "min_num_stft_windows"
+    "per_window_detrend_type"
     "pre_fft_detrend_type"
     "prewhitening_type"
     "recoloring"

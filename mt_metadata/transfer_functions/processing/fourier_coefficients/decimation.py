@@ -61,11 +61,11 @@ class Decimation(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        if self.short_time_fourier_transform.extra_pre_fft_detrend_type:
-            msg = f"extra pre-fft detrend was set to {self.short_time_fourier_transform.extra_pre_fft_detrend_type}"
+        if self.short_time_fourier_transform.per_window_detrend_type:
+            msg = f"per_window_detrend_type was set to {self.short_time_fourier_transform.per_window_detrend_type}"
             msg += "however, this is not supported -- setting to empty string"
             logger.debug(msg)
-            self.short_time_fourier_transform.extra_pre_fft_detrend_type = None
+            self.short_time_fourier_transform.per_window_detrend_type = ""
 
         # if self.time_series_decimation.level == 0:
         #     self.time_series_decimation.anti_alias_filter = None
