@@ -1,19 +1,4 @@
 {
-    "per_window_detrend_type": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
-        "options": [
-            "linear",
-            "constant",
-            ""
-        ],
-        "alias": [],
-        "example": "linear",
-        "default": ""
-    },
     "harmonic_indices": {
         "type": "integer",
         "required": true,
@@ -50,6 +35,21 @@
         "alias": [],
         "example": 4,
         "default": 2
+    },
+    "per_window_detrend_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
+        "options": [
+            "linear",
+            "constant",
+            ""
+        ],
+        "alias": [],
+        "example": "linear",
+        "default": ""
     },
     "pre_fft_detrend_type": {
         "type": "string",
