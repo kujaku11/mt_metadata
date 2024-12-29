@@ -355,7 +355,7 @@ class DecimationLevel(Base):
         else:
             fc_dec_obj.stft.harmonic_indices = self.harmonic_indices()
         fc_dec_obj.id = f"{self.decimation.level}"
-        fc_dec_obj.stft.method = self.method
+        fc_dec_obj.stft.method = self.stft.method
         fc_dec_obj.stft.pre_fft_detrend_type = self.pre_fft_detrend_type
         fc_dec_obj.stft.prewhitening_type = self.prewhitening_type
         fc_dec_obj.stft.recoloring = self.stft.recoloring
