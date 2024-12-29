@@ -240,7 +240,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_recoloring_false(self):
-        self.adl.recoloring = False
+        self.adl.stft.recoloring = False
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )

@@ -1,15 +1,4 @@
 {
-    "recoloring": {
-        "type": "bool",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "Whether the data are recolored [True] or not [False].",
-        "options": [],
-        "alias": [],
-        "example": true,
-		"default": true
-    },
     "min_num_stft_windows": {
         "type": "integer",
         "required": true,
