@@ -1,15 +1,4 @@
 {
-    "method": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Fourier transform method",
-        "options": ["fft", "wavelet", "other"],
-        "alias": [],
-        "example": "fft",
-		"default": "fft"
-    },
 	"prewhitening_type": {
         "type": "string",
         "required": true,

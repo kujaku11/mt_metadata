@@ -538,11 +538,11 @@ class Decimation(Base):
         # method (fft, wavelet, etc.)
         # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
         try:
-            assert self.short_time_fourier_transform.method == decimation_level.method  # FFT, Wavelet, etc.
+            assert self.short_time_fourier_transform.method == decimation_level.stft.method  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree "
-                f"{self.short_time_fourier_transform.method} != {decimation_level.method}"
+                f"{self.short_time_fourier_transform.method} != {decimation_level.stft.method}"
             )
             self.logger.info(msg)
             return False

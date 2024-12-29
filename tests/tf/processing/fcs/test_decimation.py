@@ -228,7 +228,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_decimation_method_false(self):
-        self.adl.method = "other"
+        self.adl.stft.method = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
