@@ -213,16 +213,10 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def test_has_required_channels_false(self):
         dl = Decimation()
         self.assertEqual(
-            False, dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
-        self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(dl, None)
         )
 
     def test_has_required_channels_true(self):
-        self.assertEqual(
-            True, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
         self.assertEqual(
             True, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
@@ -231,17 +225,11 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def test_sample_rate_false(self):
         self.adl.decimation.sample_rate = 24
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
-        self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_decimation_method_false(self):
         self.adl.stft.method = "other"
-        self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
         self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
@@ -249,17 +237,11 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def test_prewhitening_type_false(self):
         self.adl.stft.prewhitening_type = "other"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
-        self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_recoloring_false(self):
         self.adl.stft.recoloring = False
-        self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
         self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
@@ -267,17 +249,11 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def test_pre_fft_detrend_type_false(self):
         self.adl.stft.pre_fft_detrend_type = "other"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
-        self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_window_false(self):
         self.adl.window.type = "dpss"
-        self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
-        )
         self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
