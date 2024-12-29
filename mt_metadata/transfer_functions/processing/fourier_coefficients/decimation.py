@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    This module contains the Decimation class.  This class interacts with a decimation JSON.
+    This module contains the Decimation Metadata class.  This class interacts with a decimation JSON.
     It contains the metadata to specify a transformation from time series to a Spectrogram, including
     cascadng decimation info.
+
+    There are two main use cases for this class.  On the one hand, this can be used to specify a
+    set of processing parameters to create an FCDecimation, which can then be stored in an MTH5 archive.
+    On the other hand, this metadata gets stored along with Spectrograms in an MTH5 archive and can
+    be used to access the parameters associated with the spectrograms creation.
 
     TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
     or FCDecimationLevel to make it
@@ -464,7 +469,11 @@ class Decimation(Base):
         remote: bool
     ) -> bool:
         """
+            Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
+            within the archive (self) with an aurora decimation level, and tells whether the parameters are in agreement.
+            This allows aurora to then skip the calculation of FCs and read them from the archive.
 
+            TODO: This method should actually be a property of AuroraDecimationLevel.
         Development notes:
          See TODO FIXME, when trying from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
          we get a circular import.
@@ -535,8 +544,7 @@ class Decimation(Base):
             self.logger.info(msg)
             return False
 
-        # method (fft, wavelet, etc.)
-        # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
+        # transform method (fft, wavelet, etc.)
         try:
             assert self.short_time_fourier_transform.method == decimation_level.stft.method  # FFT, Wavelet, etc.
         except AssertionError:
@@ -576,7 +584,6 @@ class Decimation(Base):
                 == decimation_level.stft.pre_fft_detrend_type
             )
         except AssertionError:
-            # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
                 f"{self.stft.pre_fft_detrend_type} != {decimation_level.stft.pre_fft_detrend_type}"
