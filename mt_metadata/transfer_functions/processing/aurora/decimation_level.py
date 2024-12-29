@@ -98,6 +98,10 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+        # handle per_window_detrend_type default for aurora
+        # if not self.stft.per_window_detrend_type:
+        #     self.stft.per_window_detrend_type = "linear"
+
         # if self.decimation.level == 0:
         #     self.anti_alias_filter = None
 
@@ -344,7 +348,7 @@ class DecimationLevel(Base):
         """
 
         fc_dec_obj = FCDecimation()
-        fc_dec_obj.time_series_decimation.anti_alias_filter = self.anti_alias_filter
+        fc_dec_obj.time_series_decimation.anti_alias_filter = self.decimation.anti_alias_filter
         if remote:
             fc_dec_obj.channels_estimated = self.reference_channels
         else:
