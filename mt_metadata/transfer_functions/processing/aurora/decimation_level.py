@@ -312,6 +312,178 @@ class DecimationLevel(Base):
     def local_channels(self):
         return self.input_channels + self.output_channels
 
+    def is_consistent_with_archived_fc_parameters(
+        self,
+        fc_decimation: FCDecimation,
+        remote: bool
+    ):
+        """
+            Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
+            within the archive (fc_decimation) with an aurora decimation level (self), and tells whether the
+            parameters are in agreement. If True, this allows aurora to skip the calculation of FCs and instead
+            read them from the archive.
+
+            TODO: Merge all checks of TimeSeriesDecimation parameters into a single check.
+
+            Parameters
+            ----------
+            decimation_level: FCDecimation
+                metadata describing the parameters used to compute an archived spectrogram
+            remote: bool
+                If True, we are looking for reference channels, not local channels in the FCGroup.
+
+            Iterates over FCDecimation attributes:
+                "channels_estimated": to ensure all expected channels are in the group
+                "anti_alias_filter": check that the expected AAF was applied
+                "sample_rate,
+                "method",
+                "prewhitening_type",
+                "recoloring",
+                "pre_fft_detrend_type",
+                "min_num_stft_windows",
+                "window",
+                "harmonic_indices",
+        Returns
+        -------
+
+        :return:
+        """
+        # channels_estimated: Checks that the archived spectrogram has the required channels
+        if remote:
+            required_channels = self.reference_channels
+        else:
+            required_channels = self.local_channels
+        try:
+            assert set(required_channels).issubset(fc_decimation.channels_estimated)
+        except AssertionError:
+            msg = (
+                f"required_channels for processing {required_channels} not available"
+                f"-- fc channels estimated are {fc_decimation.channels_estimated}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # anti_alias_filter: Check that the data were
+        try:
+            assert fc_decimation.decimation_anti_alias_filter == self.decimation.anti_alias_filter
+        except AssertionError:
+            cond1 = self.anti_alias_filter == "default"
+            cond2 = fc_decimation.decimation_anti_alias_filter is None
+            if cond1 & cond2:
+                pass
+            else:
+                msg = (
+                    "Antialias Filters Not Compatible -- need to add handling for "
+                    f"{msg} FCdec {fc_decimation.decimation_anti_alias_filter} and "
+                    f"{msg} processing config:{self.decimation.anti_alias_filter}"
+                )
+                raise NotImplementedError(msg)
+
+        # sample_rate
+        try:
+            assert (
+                fc_decimation.time_series_decimation.sample_rate
+                == self.decimation.sample_rate
+            )
+        except AssertionError:
+            msg = (
+                f"Sample rates do not agree: fc {fc_decimation.time_series_decimation.sample_rate} differs from "
+                f"processing config {self.decimation.sample_rate}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # transform method (fft, wavelet, etc.)
+        try:
+            assert fc_decimation.short_time_fourier_transform.method == self.stft.method  # FFT, Wavelet, etc.
+        except AssertionError:
+            msg = (
+                "Transform methods do not agree: "
+                f"fc {fc_decimation.short_time_fourier_transform.method} != processing config {self.stft.method}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # prewhitening_type
+        try:
+            assert fc_decimation.stft.prewhitening_type == self.stft.prewhitening_type
+        except AssertionError:
+            msg = (
+                "prewhitening_type does not agree "
+                f"fc {fc_decimation.stft.prewhitening_type} != processing config {self.stft.prewhitening_type}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # recoloring
+        try:
+            assert fc_decimation.stft.recoloring == self.stft.recoloring
+        except AssertionError:
+            msg = (
+                "recoloring does not agree "
+                f"fc {fc_decimation.stft.recoloring} != processing config {self.stft.recoloring}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # pre_fft_detrend_type
+        try:
+            assert (
+                fc_decimation.stft.pre_fft_detrend_type
+                == self.stft.pre_fft_detrend_type
+            )
+        except AssertionError:
+            msg = (
+                "pre_fft_detrend_type does not agree "
+                f"fc {fc_decimation.stft.pre_fft_detrend_type} != processing config {self.stft.pre_fft_detrend_type}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # min_num_stft_windows
+        try:
+            assert (
+                fc_decimation.stft.min_num_stft_windows
+                == self.stft.min_num_stft_windows
+            )
+        except AssertionError:
+            msg = (
+                "min_num_stft_windows do not agree "
+                f"fc {fc_decimation.stft.min_num_stft_windows} != processing config {self.stft.min_num_stft_windows}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # window
+        try:
+            assert fc_decimation.window == self.window
+        except AssertionError:
+            msg = "window does not agree: "
+            msg = f"{msg} FC Group: {fc_decimation.window} "
+            msg = f"{msg} Processing Config  {self.window}"
+            self.logger.info(msg)
+            return False
+
+        if -1 in fc_decimation.stft.harmonic_indices:
+            # if harmonic_indices is -1, it means the archive kept all so we can skip this check.
+            pass
+        else:
+            harmonic_indices_requested = self.harmonic_indices
+            fcdec_group_set = set(fc_decimation.harmonic_indices)
+            processing_set = set(harmonic_indices_requested)
+            if processing_set.issubset(fcdec_group_set):
+                pass
+            else:
+                msg = (
+                    f"Processing FC indices {processing_set} is not contained "
+                    f"in FC indices {fcdec_group_set}"
+                )
+                self.logger.info(msg)
+                return False
+
+        # Getting here means no checks were failed. The FCDecimation supports the processing config
+        return True
+
     def to_fc_decimation(
         self,
         remote: bool = False,
