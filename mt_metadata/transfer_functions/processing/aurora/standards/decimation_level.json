@@ -1,15 +1,4 @@
 {
-	"extra_pre_fft_detrend_type": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Extra Pre FFT detrend method to be applied",
-        "options": ["linear", "other"],
-        "alias": [],
-        "example": "linear",
-		"default": "linear"
-    },
 	"bands": {
         "type": "integer",
         "required": true,
