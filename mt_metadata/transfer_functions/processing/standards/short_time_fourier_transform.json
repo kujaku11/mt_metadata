@@ -4,7 +4,7 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "Extra Pre FFT detrend method to be applied",
+        "description": "Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
         "options": [
             "linear",
             "constant",
