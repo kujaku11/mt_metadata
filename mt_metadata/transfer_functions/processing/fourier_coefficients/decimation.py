@@ -573,13 +573,13 @@ class Decimation(Base):
         try:
             assert (
                 self.stft.pre_fft_detrend_type
-                == decimation_level.pre_fft_detrend_type
+                == decimation_level.stft.pre_fft_detrend_type
             )
         except AssertionError:
             # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
-                f"{self.stft.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+                f"{self.stft.pre_fft_detrend_type} != {decimation_level.stft.pre_fft_detrend_type}"
             )
             self.logger.info(msg)
             return False

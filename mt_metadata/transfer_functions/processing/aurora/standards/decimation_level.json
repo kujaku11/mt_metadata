@@ -10,17 +10,6 @@
         "example": "linear",
 		"default": "linear"
     },
-    	"pre_fft_detrend_type": {
-        "type": "string",
-        "required": true,
-        "style": "controlled vocabulary",
-        "units": null,
-        "description": "Pre FFT detrend method to be applied",
-        "options": ["linear", "other"],
-        "alias": [],
-        "example": "linear",
-		"default": "linear"
-    },
 	"bands": {
         "type": "integer",
         "required": true,

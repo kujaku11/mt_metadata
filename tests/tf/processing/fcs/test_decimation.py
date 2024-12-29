@@ -246,7 +246,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_pre_fft_detrend_type_false(self):
-        self.adl.pre_fft_detrend_type = "other"
+        self.adl.stft.pre_fft_detrend_type = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
