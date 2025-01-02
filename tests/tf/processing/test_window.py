@@ -3,6 +3,8 @@
 Created on Thu Feb 24 14:11:24 2022
 
 @author: jpeacock
+
+Merge tests from aurora's test_apodization_window to this module.
 """
 
 import unittest
