@@ -27,13 +27,13 @@ from .estimator import Estimator
 from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
-from .window import Window
+from ..window import Window
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Decimation()._attr_dict, "decimation")
+attr_dict.add_dict(Window()._attr_dict, "decimation")
 attr_dict.add_dict(STFT()._attr_dict, "stft")
-attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 

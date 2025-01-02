@@ -29,7 +29,7 @@ Created on Sat Dec 28 18:39:00 2024
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.aurora.window import Window  # TODO move Window up one level from Aurora to processing
+from mt_metadata.transfer_functions.processing.window import Window
 from mt_metadata.transfer_functions.processing.standards import SCHEMA_FN_PATHS
 
 # =============================================================================

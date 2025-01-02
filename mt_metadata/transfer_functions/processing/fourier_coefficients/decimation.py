@@ -30,7 +30,7 @@ from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
 from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
 # from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-from mt_metadata.transfer_functions.processing.aurora.window import Window
+from mt_metadata.transfer_functions.processing.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
