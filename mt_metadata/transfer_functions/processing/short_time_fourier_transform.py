@@ -29,11 +29,12 @@ Created on Sat Dec 28 18:39:00 2024
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions.processing.aurora.window import Window  # TODO move Window up one level from Aurora to processing
 from mt_metadata.transfer_functions.processing.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
 attr_dict = get_schema("short_time_fourier_transform", SCHEMA_FN_PATHS)
-
+attr_dict.add_dict(Window()._attr_dict, "window")
 
 # =============================================================================
 
@@ -51,6 +52,7 @@ class ShortTimeFourierTransform(Base):
             Constructor.
             :param kwargs: TODO: add description
         """
+        self.window = Window()
         super().__init__(attr_dict=attr_dict, **kwargs)
 
 

@@ -58,7 +58,7 @@ class Decimation(Base):
 
         :param kwargs: TODO: add doc here
         """
-        self.window = Window()
+        self.window = Window()  # TODO: replace this with self.stft.window.
         self.time_period = TimePeriod()
         self.channels = ListDict()
         self.time_series_decimation = TimeSeriesDecimation()
