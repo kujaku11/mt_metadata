@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    This module contains the Decimation class.  This class interacts with a decimation JSON.
+    This module contains the Decimation Metadata class.  This class interacts with a decimation JSON.
     It contains the metadata to specify a transformation from time series to a Spectrogram, including
     cascadng decimation info.
+
+    There are two main use cases for this class.  On the one hand, this can be used to specify a
+    set of processing parameters to create an FCDecimation, which can then be stored in an MTH5 archive.
+    On the other hand, this metadata gets stored along with Spectrograms in an MTH5 archive and can
+    be used to access the parameters associated with the spectrograms creation.
 
     TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
     or FCDecimationLevel to make it
@@ -22,7 +27,9 @@ from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
+from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
 from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
+# from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
 from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
@@ -34,24 +41,37 @@ import numpy as np
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 attr_dict.add_dict(Window()._attr_dict, "window")
+attr_dict.add_dict(ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform")
 attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
 # =============================================================================
 class Decimation(Base):
+    """
+        TODO: the name of this class could be changed to something more appropriate.
+        TODO: consider adding an attr decimation to access TimeSeriesDecimation more briefly.
+    """
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         """
          Constructor.
 
-        :param kwargs:
+        :param kwargs: TODO: add doc here
         """
         self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
         self.time_series_decimation = TimeSeriesDecimation()
+        self.short_time_fourier_transform = ShortTimeFourierTransform()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        if self.short_time_fourier_transform.per_window_detrend_type:
+            msg = f"per_window_detrend_type was set to {self.short_time_fourier_transform.per_window_detrend_type}"
+            msg += "however, this is not supported -- setting to empty string"
+            logger.debug(msg)
+            self.short_time_fourier_transform.per_window_detrend_type = ""
+
         # if self.time_series_decimation.level == 0:
         #     self.time_series_decimation.anti_alias_filter = None
 
@@ -73,7 +93,21 @@ class Decimation(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
-    # Temporary infrastructure to merge Decimation Classes
+    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+    @property
+    def factor(self):
+        """
+        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
+        """
+        msg = ("This method will be deprecated in a future release.  Use "
+               "self.time_series_decimation.factor or self.decimation_factor instead")
+        logger.warning(msg)
+        return self.decimation_factor
+
+    @property
+    def sample_rate(self) -> float:
+        return self.time_series_decimation.sample_rate
+
     @property
     def decimation_level(self) -> int:
         """
@@ -171,6 +205,19 @@ class Decimation(Base):
         logger.warning(msg)
         self.time_series_decimation.sample_rate = value
 
+    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+
+    #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
+
+    @property
+    def stft(self):
+        return self.short_time_fourier_transform
+
+    @property
+    def harmonic_indices(self):
+        return self.short_time_fourier_transform.harmonic_indices
+
+    #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
 
     def update(self, other, match=[]):
         """
@@ -390,20 +437,6 @@ class Decimation(Base):
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
 
-    # Workarounds for pass-through usage of TimeSeriesDecimation decimation as aurora
-    @property
-    def factor(self):
-        """
-        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
-        """
-        msg = ("This method will be deprecated in a future release.  Use "
-               "self.time_series_decimation.factor or self.decimation_factor instead")
-        logger.warning(msg)
-        return self.decimation_factor
-
-    @property
-    def sample_rate(self) -> float:
-        return self.time_series_decimation.sample_rate
 
     def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
         """
@@ -412,12 +445,12 @@ class Decimation(Base):
         """
         required_num_samples = (
             self.window.num_samples
-            + (self.min_num_stft_windows - 1) * self.window.num_samples_advance
+            + (self.stft.min_num_stft_windows - 1) * self.window.num_samples_advance
         )
         if n_samples_ts < required_num_samples:
             msg = (
                 f"{n_samples_ts} not enough samples for minimum of "
-                f"{self.min_num_stft_windows} stft windows of length "
+                f"{self.stft.min_num_stft_windows} stft windows of length "
                 f"{self.window.num_samples} and overlap {self.window.overlap}"
             )
             self.logger.warning(msg)
@@ -436,7 +469,11 @@ class Decimation(Base):
         remote: bool
     ) -> bool:
         """
+            Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
+            within the archive (self) with an aurora decimation level, and tells whether the parameters are in agreement.
+            This allows aurora to then skip the calculation of FCs and read them from the archive.
 
+            TODO: This method should actually be a property of AuroraDecimationLevel.
         Development notes:
          See TODO FIXME, when trying from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
          we get a circular import.
@@ -507,36 +544,35 @@ class Decimation(Base):
             self.logger.info(msg)
             return False
 
-        # method (fft, wavelet, etc.)
-        # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
+        # transform method (fft, wavelet, etc.)
         try:
-            assert self.method == decimation_level.method  # FFT, Wavelet, etc.
+            assert self.short_time_fourier_transform.method == decimation_level.stft.method  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree "
-                f"{self.method} != {decimation_level.method}"
+                f"{self.short_time_fourier_transform.method} != {decimation_level.stft.method}"
             )
             self.logger.info(msg)
             return False
 
         # prewhitening_type
         try:
-            assert self.prewhitening_type == decimation_level.prewhitening_type
+            assert self.stft.prewhitening_type == decimation_level.stft.prewhitening_type
         except AssertionError:
             msg = (
                 "prewhitening_type does not agree "
-                f"{self.prewhitening_type} != {decimation_level.prewhitening_type}"
+                f"{self.stft.prewhitening_type} != {decimation_level.stft.prewhitening_type}"
             )
             self.logger.info(msg)
             return False
 
         # recoloring
         try:
-            assert self.recoloring == decimation_level.recoloring
+            assert self.stft.recoloring == decimation_level.stft.recoloring
         except AssertionError:
             msg = (
                 "recoloring does not agree "
-                f"{self.recoloring} != {decimation_level.recoloring}"
+                f"{self.stft.recoloring} != {decimation_level.stft.recoloring}"
             )
             self.logger.info(msg)
             return False
@@ -544,14 +580,13 @@ class Decimation(Base):
         # pre_fft_detrend_type
         try:
             assert (
-                self.pre_fft_detrend_type
-                == decimation_level.pre_fft_detrend_type
+                self.stft.pre_fft_detrend_type
+                == decimation_level.stft.pre_fft_detrend_type
             )
         except AssertionError:
-            # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
-                f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+                f"{self.stft.pre_fft_detrend_type} != {decimation_level.stft.pre_fft_detrend_type}"
             )
             self.logger.info(msg)
             return False
@@ -559,13 +594,13 @@ class Decimation(Base):
         # min_num_stft_windows
         try:
             assert (
-                self.min_num_stft_windows
-                == decimation_level.min_num_stft_windows
+                self.stft.min_num_stft_windows
+                == decimation_level.stft.min_num_stft_windows
             )
         except AssertionError:
             msg = (
                 "min_num_stft_windows do not agree "
-                f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+                f"{self.stft.min_num_stft_windows} != {decimation_level.stft.min_num_stft_windows}"
             )
             self.logger.info(msg)
             return False

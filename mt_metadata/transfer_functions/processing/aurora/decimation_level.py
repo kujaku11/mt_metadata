@@ -22,6 +22,7 @@ from typing import List, Union
 
 from .band import Band
 from ..time_series_decimation import TimeSeriesDecimation as Decimation
+from ..short_time_fourier_transform import ShortTimeFourierTransform as STFT
 from .estimator import Estimator
 from .frequency_bands import FrequencyBands
 from .regression import Regression
@@ -31,6 +32,7 @@ from .window import Window
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Decimation()._attr_dict, "decimation")
+attr_dict.add_dict(STFT()._attr_dict, "stft")
 attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
@@ -90,6 +92,7 @@ class DecimationLevel(Base):
         self.decimation = Decimation()
         self.regression = Regression()
         self.estimator = Estimator()
+        self.stft = STFT()
 
         self._bands = []
 
@@ -317,6 +320,7 @@ class DecimationLevel(Base):
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
+        TODO: this is being tested only in aurora -- move a test to mt_metadata or move the method.
         Ignoring for now these properties
         "time_period.end": "1980-01-01T00:00:00+00:00",
         "time_period.start": "1980-01-01T00:00:00+00:00",
@@ -340,23 +344,23 @@ class DecimationLevel(Base):
         """
 
         fc_dec_obj = FCDecimation()
-        fc_dec_obj.anti_alias_filter = self.anti_alias_filter
+        fc_dec_obj.time_series_decimation.anti_alias_filter = self.decimation.anti_alias_filter
         if remote:
             fc_dec_obj.channels_estimated = self.reference_channels
         else:
             fc_dec_obj.channels_estimated = self.local_channels
-        fc_dec_obj.decimation_factor = self.decimation.factor
-        fc_dec_obj.decimation_level = self.decimation.level
+        fc_dec_obj.time_series_decimation.factor = self.decimation.factor
+        fc_dec_obj.time_series_decimation.level = self.decimation.level
         if ignore_harmonic_indices:
             pass
         else:
-            fc_dec_obj.harmonic_indices = self.harmonic_indices()
+            fc_dec_obj.stft.harmonic_indices = self.harmonic_indices()
         fc_dec_obj.id = f"{self.decimation.level}"
-        fc_dec_obj.method = self.method
-        fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
-        fc_dec_obj.prewhitening_type = self.prewhitening_type
-        fc_dec_obj.recoloring = self.recoloring
-        fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
+        fc_dec_obj.stft.method = self.stft.method
+        fc_dec_obj.stft.pre_fft_detrend_type = self.stft.pre_fft_detrend_type
+        fc_dec_obj.stft.prewhitening_type = self.stft.prewhitening_type
+        fc_dec_obj.stft.recoloring = self.stft.recoloring
+        fc_dec_obj.time_series_decimation.sample_rate = self.sample_rate_decimation
         fc_dec_obj.window = self.window
 
         return fc_dec_obj

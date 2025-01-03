@@ -27,6 +27,10 @@ class TestDecimationInitialization(unittest.TestCase):
         self.decimation = Decimation()
 
     def test_initialization(self):
+        """
+            Tests that class attributes from standards .json initialize to the default values
+
+        """
         for key in self.decimation.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
@@ -122,13 +126,19 @@ class TestDecimation(unittest.TestCase):
         ch_ey = self.ex.copy()
         ch_ey.component = "ey"
         dl2.add_channel(ch_ey)
-        dl1.update(dl2, match=["method", "recoloring"])
+        dl1.update(dl2, match=[
+            "short_time_fourier_transform.method",
+            "short_time_fourier_transform.recoloring"
+        ])
         self.assertEqual(len(dl1), 3)
 
         dl1 = self.dl.copy()
-        dl1.method = "wavelet"
+        dl1.short_time_fourier_transform.method = "wavelet"
         with self.assertRaises(ValueError):
-            dl1.update(dl2, match=["method", "recoloring"])
+            dl1.update(dl2, match=[
+                "short_time_fourier_transform.method",
+                "short_time_fourier_transform.recoloring"
+            ])
 
 
     def test_channels_estimated(self):
@@ -218,25 +228,25 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_decimation_method_false(self):
-        self.adl.method = "other"
+        self.adl.stft.method = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
 
     def test_prewhitening_type_false(self):
-        self.adl.prewhitening_type = "other"
+        self.adl.stft.prewhitening_type = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
 
     def test_recoloring_false(self):
-        self.adl.recoloring = False
+        self.adl.stft.recoloring = False
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
 
     def test_pre_fft_detrend_type_false(self):
-        self.adl.pre_fft_detrend_type = "other"
+        self.adl.stft.pre_fft_detrend_type = "other"
         self.assertEqual(
             False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
         )
