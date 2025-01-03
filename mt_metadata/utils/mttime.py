@@ -7,13 +7,14 @@ Created on Wed May 13 19:10:46 2020
 # =============================================================================
 # IMPORTS
 # =============================================================================
+from copy import deepcopy
 import datetime
 from dateutil.parser import parse as dtparser
-from copy import deepcopy
 import numpy as np
 import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
-
+from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+from typing import Optional, Union  # Self is importable in python 3.11+
 
 from loguru import logger
 
@@ -387,7 +388,19 @@ class MTime:
 
         return t_min_max, pd_timestamp
 
-    def parse(self, dt_str):
+    def parse(
+        self,
+        dt_str: Optional[
+            Union[
+                float,
+                int,
+                np.datetime64,
+                pd.Timestamp,
+                str,
+                UTCDateTime
+            ]
+        ] = None
+    ) -> None:  # TODO: add Self as s typehint 3.11
         """
         Parse a date-time string using dateutil.parser
 
@@ -441,7 +454,7 @@ class MTime:
 
         else:
             try:
-                stamp = t_min_max, stamp = self._check_timestamp(
+                t_min_max, stamp = self._check_timestamp(
                     pd.Timestamp(dt_str)
                 )
             except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
