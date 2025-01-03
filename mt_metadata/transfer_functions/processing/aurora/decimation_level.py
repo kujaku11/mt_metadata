@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+    This module contains the DecimationLevel class.
+    TODO: Factor or rename.  The decimation level class here has information about the entire processing.
+
 Created on Thu Feb 17 14:15:20 2022
 
 @author: jpeacock
@@ -12,17 +15,22 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions.processing.fourier_coefficients import (
+            Decimation as FCDecimation,
+        )
+from typing import List, Union
 
 from .band import Band
-from .decimation import Decimation
+from ..time_series_decimation import TimeSeriesDecimation as Decimation
 from .estimator import Estimator
+from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
 from .window import Window
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("decimation", SCHEMA_FN_PATHS), "decimation")
+attr_dict.add_dict(Decimation()._attr_dict, "decimation")
 attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
@@ -31,12 +39,14 @@ attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 # =============================================================================
 
 
-def df_from_bands(band_list: list) -> pd.DataFrame:
+def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     """
     Utility function that transforms a list of bands into a dataframe
 
     Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
+    TODO: Consider making this a method of FrequencyBands() class.
+    TODO: Check typehint -- should None be allowed value in the band_list?
 
     Parameters
     ----------
@@ -70,36 +80,6 @@ def df_from_bands(band_list: list) -> pd.DataFrame:
     out_df.reset_index(inplace=True, drop=True)
     return out_df
 
-def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
-    """
-    Works for odd and even number of points.
-
-    Development notes:
-    Could be modified with kwargs to support one_sided, two_sided, ignore_dc
-    ignore_nyquist, and etc.  Consider taking FrequencyBands as an argument.
-
-    Parameters
-    ----------
-    samples_per_window: integer
-        Number of samples in a window that will be Fourier transformed.
-    sample_rate: float
-            Inverse of time step between samples,
-            Samples per second
-
-    Returns
-    -------
-    harmonic_frequencies: numpy array
-        The frequencies that the fft will be computed.
-        These are one-sided (positive frequencies only)
-        Does not return Nyquist
-        Does return DC component
-    """
-    n_fft_harmonics = int(samples_per_window / 2)  # no bin at Nyquist,
-    delta_t = 1.0 / sample_rate
-    harmonic_frequencies = np.fft.fftfreq(samples_per_window, d=delta_t)
-    harmonic_frequencies = harmonic_frequencies[0:n_fft_harmonics]
-    return harmonic_frequencies
-
 
 class DecimationLevel(Base):
     __doc__ = write_lines(attr_dict)
@@ -119,7 +99,15 @@ class DecimationLevel(Base):
         #     self.anti_alias_filter = None
 
     @property
-    def bands(self):
+    def anti_alias_filter(self) -> str:
+        """
+        get anti_alais_filter from TimeSeriesDecimation.
+
+        """
+        return self.decimation.anti_alias_filter
+
+    @property
+    def bands(self) -> list:
         """
         get bands, something weird is going on with appending.
 
@@ -165,7 +153,7 @@ class DecimationLevel(Base):
         else:
             raise TypeError(f"Not sure what to do with {type(value)}")
 
-    def add_band(self, band):
+    def add_band(self, band: Union[Band, dict]) -> None:
         """
         add a band
         """
@@ -184,7 +172,7 @@ class DecimationLevel(Base):
         self._bands.append(obj)
 
     @property
-    def lower_bounds(self):
+    def lower_bounds(self) -> np.ndarray:
         """
         get lower bounds index values into an array.
         """
@@ -192,7 +180,7 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_min for band in self.bands]))
 
     @property
-    def upper_bounds(self):
+    def upper_bounds(self) -> np.ndarray:
         """
         get upper bounds index values into an array.
         """
@@ -200,14 +188,14 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_max for band in self.bands]))
 
     @property
-    def bands_dataframe(self):
+    def bands_dataframe(self) -> pd.DataFrame:
         """
-        This is just a utility function that transforms a list of bands into a dataframe
+        Utility function that transforms a list of bands into a dataframe
 
         Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
 
-        ToDo: Consider adding columns lower_edge, upper_edge to df
+        TODO: Consider adding columns lower_closed, upper_closed to df
 
         Returns
         -------
@@ -218,47 +206,98 @@ class DecimationLevel(Base):
         return bands_df
 
     @property
-    def frequency_sample_interval(self):
-        return self.sample_rate_decimation/self.window.num_samples
+    def frequency_sample_interval(self) -> float:
+        """
+            Returns the delta_f in frequency domain df = 1 / (N * dt)
+            Here dt is the sample interval after decimation
+        """
+        return self.sample_rate_decimation / self.window.num_samples
 
     @property
-    def band_edges(self):
+    def band_edges(self) -> np.ndarray:
+        """
+            Returns the band edges as a numpy array
+            :return band_edges: 2D numpy array, one row per frequency band and two columns
+            :rtype band_edges: np.ndarray
+        """
         bands_df = self.bands_dataframe
         band_edges = np.vstack(
             (bands_df.frequency_min.values, bands_df.frequency_max.values)
         ).T
         return band_edges
 
-    def frequency_bands_obj(self):
+    def frequency_bands_obj(self) -> FrequencyBands:  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
-        This used to be needed because I only had
 
-        ToDO: consider adding .to_frequnecy_bands() method directly to self.bands
+        Used by Aurora.
+
+        TODO: consider adding .to_frequency_bands() method directly to self.bands
+
         Returns
         -------
+        frequency_bands:  FrequencyBands
+            A FrequencyBands object that can be used as an iterator for processing.
 
         """
-        from mt_metadata.transfer_functions.processing.aurora.band import (
-            FrequencyBands,
-        )
-
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
+    # # TODO: FIXME WIP
+    # def to_frequency_bands_obj(self):
+    #     """
+    #         Define band_edges array from decimation_level object,
+    #
+    #     Development Notes.
+    #       This function was originally in FrequencyBands class, it was called:
+    #        from_decimation_object.  Circular imports were encountered when it was correctly dtyped.
+    #        There is no reason to have FrequencyBands.from_decimation_object(decimation_level)
+    #        _and_ decimation_level.to_frequency_bands_obj()
+    #        The function above already does the task of generating a frequency bands.
+    #        Keeping this commented until documentation improves.
+    #        Below looks like an alternative, and more readable way to get band_edges,
+    #        without passing through the dataframe.  At a minimum a test should be created
+    #        that makes band edges both ways and asserts equal.
+    #        (a few command line tests showed that they are, Dec 2024).
+    #
+    #     """
+    #     df = self.frequency_sample_interval
+    #     half_df = df / 2.0
+    #
+    #     lower_edges = (self.lower_bounds * df) - half_df
+    #     upper_edges = (self.upper_bounds * df) + half_df
+    #     band_edges = np.vstack((lower_edges, upper_edges)).T
+    #     return FrequencyBands(band_edges=band_edges)
+
+
     @property
-    def fft_frequencies(self):
-        freqs = get_fft_harmonics(
-            self.window.num_samples, self.decimation.sample_rate
-        )
+    def fft_frequencies(self) -> np.ndarray:
+        """
+            Gets the harmonics of the STFT.
+
+            :return freqs: The frequencies at which the stft will be available.
+            :rtype freqs: np.ndarray
+        """
+        freqs = self.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
 
     @property
-    def sample_rate_decimation(self):
+    def sample_rate_decimation(self) -> float:
+        """
+            Returns the sample rate of the data after decimation.
+            TODO: Delete this method and replace calls to self.sample_rate_decimation with self.decimation.sample_rate
+
+        """
         return self.decimation.sample_rate
 
     @property
-    def harmonic_indices(self):
+    def harmonic_indices(self) -> List[int]:
+        """
+            Loops over all bands and returns a list of the harminic indices.
+            TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
+            :return: list of fc indices (integers)
+            :rtype: List[int]
+        """
         return_list = []
         for band in self.bands:
             fc_indices = band.harmonic_indices
@@ -270,13 +309,19 @@ class DecimationLevel(Base):
     def local_channels(self):
         return self.input_channels + self.output_channels
 
-    def to_fc_decimation(self, remote=False, ignore_harmonic_indices=True):
+    def to_fc_decimation(
+        self,
+        remote: bool = False,
+        ignore_harmonic_indices: bool = True,
+    ) -> FCDecimation:
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
         Ignoring for now these properties
         "time_period.end": "1980-01-01T00:00:00+00:00",
         "time_period.start": "1980-01-01T00:00:00+00:00",
+
+        TODO: FIXME: Assignment of TSDecimation can be done in one shot once #235 is addressed.
 
         Parameters
         ----------
@@ -293,10 +338,8 @@ class DecimationLevel(Base):
             A decimation object configured for STFT processing
 
         """
-        from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-            Decimation as FourierCoefficientDecimation,
-        )
-        fc_dec_obj = FourierCoefficientDecimation()
+
+        fc_dec_obj = FCDecimation()
         fc_dec_obj.anti_alias_filter = self.anti_alias_filter
         if remote:
             fc_dec_obj.channels_estimated = self.reference_channels

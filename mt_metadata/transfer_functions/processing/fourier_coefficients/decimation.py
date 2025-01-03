@@ -1,45 +1,69 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb 25 15:20:59 2022
+    This module contains the Decimation class.  This class interacts with a decimation JSON.
+    It contains the metadata to specify a transformation from time series to a Spectrogram, including
+    cascadng decimation info.
 
-@author: jpeacock
+    TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
+    or FCDecimationLevel to make it
+    Also see notes in mt_metadata issue 235.
+
+    Created on Fri Feb 25 15:20:59 2022
+
+    @author: jpeacock
 """
 # =============================================================================
 # Imports
 # =============================================================================
 from collections import OrderedDict
+from loguru import logger
+
+from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries import TimePeriod
-from mt_metadata.transfer_functions.processing.aurora import Window
-from mt_metadata.transfer_functions.processing.aurora.decimation_level import get_fft_harmonics
+from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
+from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Channel,
+    Channel as FCChannel
 )
-from .standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.list_dict import ListDict
 
+import numpy as np
 # =============================================================================
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 attr_dict.add_dict(Window()._attr_dict, "window")
+attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
 # =============================================================================
 class Decimation(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+         Constructor.
+
+        :param kwargs:
+        """
         self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        # if self.decimation_level == 0:
-        #     self.anti_alias_filter = None
+        self.time_series_decimation = TimeSeriesDecimation()
 
-    def __len__(self):
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        # if self.time_series_decimation.level == 0:
+        #     self.time_series_decimation.anti_alias_filter = None
+
+    def __len__(self) -> int:
         return len(self.channels)
 
     def __add__(self, other):
+        """
+
+        :param other:
+        :return:
+        """
         if isinstance(other, Decimation):
             self.channels.extend(other.channels)
 
@@ -48,6 +72,105 @@ class Decimation(Base):
             msg = f"Can only merge ch objects, not {type(other)}"
             self.logger.error(msg)
             raise TypeError(msg)
+
+    # Temporary infrastructure to merge Decimation Classes
+    @property
+    def decimation_level(self) -> int:
+        """
+            Access the decimation level from the TSDecimation
+            :return: Integer decimation level
+            :rtype: int
+        """
+        return self.time_series_decimation.level
+
+    @decimation_level.setter
+    def decimation_level(self, value: int) -> None:
+        """
+            Set the decimation level in the TSDecimation
+        """
+        self.time_series_decimation.level = value
+
+    @property
+    def decimation_factor(self) -> float:
+        """
+            Access the decimation factor from the TSDecimation
+            :return: decimation factor
+            :rtype: float
+        """
+        return self.time_series_decimation.factor
+
+    @decimation_factor.setter
+    def decimation_factor(self, value: float) -> None:
+        """
+            Set the decimation factor in the TSDecimation
+        """
+        self.time_series_decimation.factor = value
+
+    @property
+    def decimation_method(self) -> str:
+        """
+            Access the decimation method from the TSDecimation
+            :return: Description of how decimation is performed
+            :rtype: str
+        """
+        return self.time_series_decimation.method
+
+    @decimation_method.setter
+    def decimation_method(self, value: str) -> None:
+        """
+            Set the decimation level in the TSDecimation
+        """
+        self.time_series_decimation.method = value
+
+    @property
+    def decimation_anti_alias_filter(self) -> str:
+        """
+            Access the decimation anti_alias_filter description from the TSDecimation
+            :return: Description of how anti_alias_filtering is performed
+            :rtype: str
+        """
+        return self.time_series_decimation.anti_alias_filter
+
+    @decimation_method.setter
+    def decimation_anti_alias_filter(self, value: str) -> None:
+        """
+            Set the decimation_anti_alias_filter in the TSDecimation
+        """
+        self.time_series_decimation.anti_alias_filter = value
+
+    @property
+    def decimation_sample_rate(self) -> float:
+        """
+            Access the decimation sample rate from the TSDecimation
+            :return: Time series sample rate after decimation (from the TSDecimation)
+            :rtype: float
+        """
+        return self.time_series_decimation.sample_rate
+
+    @property
+    def sample_rate_decimation(self) -> float:
+        """
+            TODO: Delete this function in 2025.
+
+            Access the decimation sample rate from the TSDecimation
+            :return:Time series sample rate after decimation (from the TSDecimation)
+            :rtype: str
+        """
+        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
+        logger.warning(msg)
+        return self.time_series_decimation.sample_rate
+
+    @sample_rate_decimation.setter
+    def sample_rate_decimation(self, value: float) -> None:
+        """
+            TODO: Delete this function in 2025.
+
+            Set the decimation sample_rate_decimation in the TSDecimation
+        """
+        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
+        logger.warning(msg)
+        self.time_series_decimation.sample_rate = value
+
 
     def update(self, other, match=[]):
         """
@@ -93,8 +216,8 @@ class Decimation(Base):
             self.add_channel(ch)
 
     @property
-    def channels_estimated(self):
-        """channels for fcs were estimated"""
+    def channels_estimated(self) -> list:
+        """channels for which fcs were estimated"""
         return [
             ch.component
             for ch in self.channels.values()
@@ -102,7 +225,7 @@ class Decimation(Base):
         ]
 
     @channels_estimated.setter
-    def channels_estimated(self, value):
+    def channels_estimated(self, value) -> None:
         """set channels esimated"""
 
         if value is None:
@@ -113,17 +236,17 @@ class Decimation(Base):
 
         for entry in value:
             if isinstance(entry, str):
-                self.add_channel(Channel(component=entry))
+                self.add_channel(FCChannel(component=entry))
             elif entry is None:
                 continue
-            elif isinstance(entry, Channel):
+            elif isinstance(entry, FCChannel):
                 self.add_channel(entry)
             else:
                 msg = f"entry must be a string or type FCChannel not {type(entry)}"
                 self.logger.error(msg)
                 raise ValueError(msg)
 
-    def has_channel(self, component):
+    def has_channel(self, component: str) -> bool:
         """
         Check to see if the channel already exists
 
@@ -144,15 +267,14 @@ class Decimation(Base):
         """
         if self.has_channel(component):
             return self.channels_estimated.index(component)
-        return None
 
-    def get_channel(self, component):
+    def get_channel(self, component: str) -> FCChannel:
         """
         Get a channel
 
         :param component: channel component to look for
         :type component: string
-        :return: channel object based on channel type
+        :return: FCChannel object based on channel type
         :rtype: :class:`mt_metadata.timeseries.Channel`
 
         """
@@ -160,7 +282,7 @@ class Decimation(Base):
         if self.has_channel(component):
             return self.channels[component]
 
-    def add_channel(self, channel_obj):
+    def add_channel(self, channel_obj: FCChannel) -> None:
         """
         Add a channel to the list, check if one exists if it does overwrite it
 
@@ -168,8 +290,8 @@ class Decimation(Base):
         :type channel_obj: :class:`mt_metadata.transfer_functions.processing.fourier_coefficients.Channel`
 
         """
-        if not isinstance(channel_obj, (Channel)):
-            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
+        if not isinstance(channel_obj, (FCChannel)):
+            msg = f"Input must be metadata FCChannel not {type(channel_obj)}"
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -227,7 +349,7 @@ class Decimation(Base):
 
         for ii, channel in enumerate(value_list):
             try:
-                ch = Channel()
+                ch = FCChannel()
                 if hasattr(channel, "to_dict"):
                     channel = channel.to_dict()
                 ch.from_dict(channel)
@@ -268,17 +390,26 @@ class Decimation(Base):
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
 
-    # Workarounds for pass-through usage of same decimation as aurora
+    # Workarounds for pass-through usage of TimeSeriesDecimation decimation as aurora
     @property
     def factor(self):
+        """
+        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
+        """
+        msg = ("This method will be deprecated in a future release.  Use "
+               "self.time_series_decimation.factor or self.decimation_factor instead")
+        logger.warning(msg)
         return self.decimation_factor
 
     @property
-    def sample_rate(self):
-        return self.sample_rate_decimation
+    def sample_rate(self) -> float:
+        return self.time_series_decimation.sample_rate
 
-    def is_valid_for_time_series_length(self, n_samples_ts):
-        """Given a time series of len n_samples_ts, are there sufficient samples to STFT"""
+    def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
+        """
+            Given a time series of len n_samples_ts, checks if there are sufficient samples to STFT.
+
+        """
         required_num_samples = (
             self.window.num_samples
             + (self.min_num_stft_windows - 1) * self.window.num_samples_advance
@@ -295,26 +426,42 @@ class Decimation(Base):
             return True
 
     @property
-    def fft_frequencies(self):
-        return get_fft_harmonics(self.window.num_samples, self.sample_rate)
+    def fft_frequencies(self) -> np.ndarray:
+        """ Returns the one-sided fft frequencies (without Nyquist)"""
+        return self.window.fft_harmonics(self.sample_rate)
 
-
-    def has_fcs_for_aurora_processing(self, decimation_level, remote):
+    def has_fcs_for_aurora_processing(
+        self,
+        decimation_level,  # TODO: FIXME - Circular import when dtyped. AuroraDecimationLevel,
+        remote: bool
+    ) -> bool:
         """
 
+        Development notes:
+         See TODO FIXME, when trying from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
+         we get a circular import.
         Parameters
         ----------
         decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
         remote: bool
+            If True, we are looking for reference channels, not local channels in the FCGroup.
 
-        Iterates over parameters:
-        "channels_estimated", "anti_alias_filter", "sample_rate, "method", "prewhitening_type", "recoloring",
-        "pre_fft_detrend_type", "min_num_stft_windows", "window", "harmonic_indices",
+        Iterates over FCDecimation attributes:
+            "channels_estimated": to ensure all expected channels are in the group
+            "anti_alias_filter": check that the expected AAF was applied
+            "sample_rate,
+            "method",
+            "prewhitening_type",
+            "recoloring",
+            "pre_fft_detrend_type",
+            "min_num_stft_windows",
+            "window",
+            "harmonic_indices",
         Returns
         -------
 
         """
-        # "channels_estimated"
+        # channels_estimated
         if remote:
             required_channels = decimation_level.reference_channels
         else:
@@ -332,16 +479,16 @@ class Decimation(Base):
 
         # anti_alias_filter
         try:
-            assert self.anti_alias_filter == decimation_level.anti_alias_filter
+            assert self.decimation_anti_alias_filter == decimation_level.anti_alias_filter
         except AssertionError:
             cond1 = decimation_level.anti_alias_filter == "default"
-            cond2 = self.anti_alias_filter is None
+            cond2 = self.decimation_anti_alias_filter is None
             if cond1 & cond2:
                 pass
             else:
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {self.anti_alias_filter} and "
+                    f"{msg} FCdec {self.decimation_anti_alias_filter} and "
                     f"{msg} processing config:{decimation_level.anti_alias_filter}"
                 )
                 raise NotImplementedError(msg)
@@ -349,20 +496,21 @@ class Decimation(Base):
         # sample_rate
         try:
             assert (
-                self.sample_rate_decimation
+                self.time_series_decimation.sample_rate
                 == decimation_level.decimation.sample_rate
             )
         except AssertionError:
             msg = (
-                f"Sample rates do not agree: fc {self.sample_rate_decimation} differs from "
+                f"Sample rates do not agree: fc {self.time_series_decimation.sample_rate} differs from "
                 f"processing config {decimation_level.decimation.sample_rate}"
             )
             self.logger.info(msg)
             return False
 
         # method (fft, wavelet, etc.)
+        # TODO: Add clarification that this is a TRANSFORM method, not a decimation method.
         try:
-            assert self.method == decimation_level.method
+            assert self.method == decimation_level.method  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree "
@@ -400,6 +548,7 @@ class Decimation(Base):
                 == decimation_level.pre_fft_detrend_type
             )
         except AssertionError:
+            # TODO: FIXME: self.pre_fft_detrend_type should be deprecated, use TimeSeriesDecimation.pre_fft_detrend_type for this info.
             msg = (
                 "pre_fft_detrend_type does not agree "
                 f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
