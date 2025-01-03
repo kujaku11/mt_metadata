@@ -70,14 +70,14 @@ class Window(Base):
             window_args = [v for k, v in self.additional_args.items()]
             window_args.insert(0, self.type)
             window_args = tuple(window_args)
-            
-            taper = ssig.get_window(window_args, self.num_samples_window)
-            
+
+            taper = ssig.get_window(window_args, self.num_samples)
+
             if self.normalized:
                 taper /= np.sum(taper)
-            
+
             self._taper = taper
-            
+
         return self._taper
 
 
