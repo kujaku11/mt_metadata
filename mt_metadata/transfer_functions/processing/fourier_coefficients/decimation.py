@@ -22,6 +22,7 @@
 # =============================================================================
 from collections import OrderedDict
 from loguru import logger
+from typing import List, Optional
 
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
@@ -30,7 +31,6 @@ from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
 from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
 # from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
@@ -40,7 +40,6 @@ import numpy as np
 # =============================================================================
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
-attr_dict.add_dict(Window()._attr_dict, "window")
 attr_dict.add_dict(ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform")
 attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
@@ -58,7 +57,6 @@ class Decimation(Base):
 
         :param kwargs: TODO: add doc here
         """
-        self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
         self.time_series_decimation = TimeSeriesDecimation()
@@ -74,6 +72,10 @@ class Decimation(Base):
 
         # if self.time_series_decimation.level == 0:
         #     self.time_series_decimation.anti_alias_filter = None
+
+    @property
+    def window(self):
+        return self.stft.window
 
     def __len__(self) -> int:
         return len(self.channels)
@@ -463,174 +465,74 @@ class Decimation(Base):
         """ Returns the one-sided fft frequencies (without Nyquist)"""
         return self.window.fft_harmonics(self.sample_rate)
 
-    def has_fcs_for_aurora_processing(
-        self,
-        decimation_level,  # TODO: FIXME - Circular import when dtyped. AuroraDecimationLevel,
-        remote: bool
-    ) -> bool:
-        """
-            Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
-            within the archive (self) with an aurora decimation level, and tells whether the parameters are in agreement.
-            This allows aurora to then skip the calculation of FCs and read them from the archive.
 
-            TODO: This method should actually be a property of AuroraDecimationLevel.
-        Development notes:
-         See TODO FIXME, when trying from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-         we get a circular import.
-        Parameters
-        ----------
-        decimation_level: mt_metadata.transfer_functions.processing.aurora.decimation_level.DecimationLevel
-        remote: bool
-            If True, we are looking for reference channels, not local channels in the FCGroup.
+def fc_decimations_creator(
+    initial_sample_rate: float,
+    decimation_factors: Optional[list] = None,
+    max_levels: Optional[int] = 6,
+    time_period: Optional[TimePeriod] = None,
+) -> List[Decimation]:
+    """
 
-        Iterates over FCDecimation attributes:
-            "channels_estimated": to ensure all expected channels are in the group
-            "anti_alias_filter": check that the expected AAF was applied
-            "sample_rate,
-            "method",
-            "prewhitening_type",
-            "recoloring",
-            "pre_fft_detrend_type",
-            "min_num_stft_windows",
-            "window",
-            "harmonic_indices",
-        Returns
-        -------
+    Creates mt_metadata FCDecimation objects that parameterize Fourier coefficient decimation levels.
 
-        """
-        # channels_estimated
-        if remote:
-            required_channels = decimation_level.reference_channels
+    Note 1:  This does not yet work through the assignment of which bands to keep.  Refer to
+    mt_metadata.transfer_functions.processing.Processing.assign_bands() to see how this was done in the past
+
+    Parameters
+    ----------
+    initial_sample_rate: float
+        Sample rate of the "level0" data -- usually the sample rate during field acquisition.
+    decimation_factors: Optional[list]
+        The decimation factors that will be applied at each FC decimation level
+    max_levels: Optional[int]
+        The maximum number of decimation levels to allow
+    time_period: Optional[TimePeriod]
+        Provides the start and end times
+
+    Returns
+    -------
+    fc_decimations: list
+        Each element of the list is an object of type
+        mt_metadata.transfer_functions.processing.fourier_coefficients.Decimation,
+        (a.k.a. FCDecimation).
+
+        The order of the list corresponds the order of the cascading decimation
+          - No decimation levels are omitted.
+          - This could be changed in future by using a dict instead of a list,
+          - e.g. decimation_factors = dict(zip(np.arange(max_levels), decimation_factors))
+
+    """
+    if not decimation_factors:
+        # msg = "No decimation factors given, set default values to EMTF default values [1, 4, 4, 4, ..., 4]")
+        # logger.info(msg)
+        default_decimation_factor = 4
+        decimation_factors = max_levels * [default_decimation_factor]
+        decimation_factors[0] = 1
+
+    # See Note 1
+    fc_decimations = []
+    for i_dec_level, decimation_factor in enumerate(decimation_factors):
+        fc_dec = Decimation()
+        fc_dec.time_series_decimation.level = i_dec_level
+        fc_dec.id = f"{i_dec_level}"
+        fc_dec.time_series_decimation.factor = decimation_factor
+        if i_dec_level == 0:
+            current_sample_rate = 1.0 * initial_sample_rate
         else:
-            required_channels = decimation_level.local_channels
+            current_sample_rate /= decimation_factor
+        fc_dec.time_series_decimation.sample_rate = current_sample_rate
 
-        try:
-            assert set(required_channels).issubset(self.channels_estimated)
-        except AssertionError:
-            msg = (
-                f"required_channels for processing {required_channels} not available"
-                f"-- fc channels estimated are {self.channels_estimated}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # anti_alias_filter
-        try:
-            assert self.decimation_anti_alias_filter == decimation_level.anti_alias_filter
-        except AssertionError:
-            cond1 = decimation_level.anti_alias_filter == "default"
-            cond2 = self.decimation_anti_alias_filter is None
-            if cond1 & cond2:
-                pass
+        if time_period:
+            if isinstance(time_period, TimePeriod):
+                fc_dec.time_period = time_period
             else:
                 msg = (
-                    "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {self.decimation_anti_alias_filter} and "
-                    f"{msg} processing config:{decimation_level.anti_alias_filter}"
+                    f"Not sure how to assign time_period with type {type(time_period)}"
                 )
+                logger.info(msg)
                 raise NotImplementedError(msg)
 
-        # sample_rate
-        try:
-            assert (
-                self.time_series_decimation.sample_rate
-                == decimation_level.decimation.sample_rate
-            )
-        except AssertionError:
-            msg = (
-                f"Sample rates do not agree: fc {self.time_series_decimation.sample_rate} differs from "
-                f"processing config {decimation_level.decimation.sample_rate}"
-            )
-            self.logger.info(msg)
-            return False
+        fc_decimations.append(fc_dec)
 
-        # transform method (fft, wavelet, etc.)
-        try:
-            assert self.short_time_fourier_transform.method == decimation_level.stft.method  # FFT, Wavelet, etc.
-        except AssertionError:
-            msg = (
-                "Transform methods do not agree "
-                f"{self.short_time_fourier_transform.method} != {decimation_level.stft.method}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # prewhitening_type
-        try:
-            assert self.stft.prewhitening_type == decimation_level.stft.prewhitening_type
-        except AssertionError:
-            msg = (
-                "prewhitening_type does not agree "
-                f"{self.stft.prewhitening_type} != {decimation_level.stft.prewhitening_type}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # recoloring
-        try:
-            assert self.stft.recoloring == decimation_level.stft.recoloring
-        except AssertionError:
-            msg = (
-                "recoloring does not agree "
-                f"{self.stft.recoloring} != {decimation_level.stft.recoloring}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # pre_fft_detrend_type
-        try:
-            assert (
-                self.stft.pre_fft_detrend_type
-                == decimation_level.stft.pre_fft_detrend_type
-            )
-        except AssertionError:
-            msg = (
-                "pre_fft_detrend_type does not agree "
-                f"{self.stft.pre_fft_detrend_type} != {decimation_level.stft.pre_fft_detrend_type}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # min_num_stft_windows
-        try:
-            assert (
-                self.stft.min_num_stft_windows
-                == decimation_level.stft.min_num_stft_windows
-            )
-        except AssertionError:
-            msg = (
-                "min_num_stft_windows do not agree "
-                f"{self.stft.min_num_stft_windows} != {decimation_level.stft.min_num_stft_windows}"
-            )
-            self.logger.info(msg)
-            return False
-
-        # window
-        try:
-            assert self.window == decimation_level.window
-        except AssertionError:
-            msg = "window does not agree: "
-            msg = f"{msg} FC Group: {self.window} "
-            msg = f"{msg} Processing Config  {decimation_level.window}"
-            self.logger.info(msg)
-            return False
-
-        if -1 in self.harmonic_indices:
-            # if harmonic_indices is -1, it means keep all so we can skip this check.
-            pass
-        else:
-            harmonic_indices_requested = decimation_level.harmonic_indices
-            fcdec_group_set = set(self.harmonic_indices)
-            processing_set = set(harmonic_indices_requested)
-            if processing_set.issubset(fcdec_group_set):
-                pass
-            else:
-                msg = (
-                    f"Processing FC indices {processing_set} is not contained "
-                    f"in FC indices {fcdec_group_set}"
-                )
-                self.logger.info(msg)
-                return False
-
-        # No checks were failed the FCDecimation supports the processing config
-        return True
+    return fc_decimations
