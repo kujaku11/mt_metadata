@@ -33,7 +33,7 @@
 			"blackman",
 			"hamming",
 			"hann",
-			"bartlett", 
+			"bartlett",
 			"flattop",
 			"parzen",
 			"bohman",
@@ -74,5 +74,16 @@
       "alias": [],
       "example": "2020-02-01T09:23:45.453670+00:00",
       "default": "1980-01-01T00:00:00+00:00"
+    },
+    "normalized": {
+        "type": "bool",
+        "required": true,
+        "units": null,
+        "style": "free form",
+        "description": "True if the window shall be normalized so the sum of the coefficients is 1",
+        "options": [],
+        "alias": ["normalised"],
+        "example": false,
+        "default": true
     }
 }

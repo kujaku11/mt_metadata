@@ -27,6 +27,10 @@ class TestDecimationInitialization(unittest.TestCase):
         self.decimation = Decimation()
 
     def test_initialization(self):
+        """
+            Tests that class attributes from standards .json initialize to the default values
+
+        """
         for key in self.decimation.get_attribute_list():
             with self.subTest(key):
                 self.assertEqual(
@@ -47,7 +51,7 @@ class TestDecimation(unittest.TestCase):
         self.dl.decimation_factor = 4
         self.dl.decimation_level = 1
         self.dl.id = 1
-        self.dl.sample_rate_decimation = 16
+        self.dl.time_series_decimation.sample_rate = 16.0
 
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2020-01-01T00:20:00+00:00"
@@ -122,13 +126,19 @@ class TestDecimation(unittest.TestCase):
         ch_ey = self.ex.copy()
         ch_ey.component = "ey"
         dl2.add_channel(ch_ey)
-        dl1.update(dl2, match=["method", "recoloring"])
+        dl1.update(dl2, match=[
+            "short_time_fourier_transform.method",
+            "short_time_fourier_transform.recoloring"
+        ])
         self.assertEqual(len(dl1), 3)
 
         dl1 = self.dl.copy()
-        dl1.method = "wavelet"
+        dl1.short_time_fourier_transform.method = "wavelet"
         with self.assertRaises(ValueError):
-            dl1.update(dl2, match=["method", "recoloring"])
+            dl1.update(dl2, match=[
+                "short_time_fourier_transform.method",
+                "short_time_fourier_transform.recoloring"
+            ])
 
 
     def test_channels_estimated(self):
@@ -203,50 +213,50 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def test_has_required_channels_false(self):
         dl = Decimation()
         self.assertEqual(
-            False, dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(dl, None)
         )
 
     def test_has_required_channels_true(self):
         self.assertEqual(
-            True, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            True, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
+
 
     def test_sample_rate_false(self):
         self.adl.decimation.sample_rate = 24
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_decimation_method_false(self):
-        self.adl.method = "other"
+        self.adl.stft.method = "other"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_prewhitening_type_false(self):
-        self.adl.prewhitening_type = "other"
+        self.adl.stft.prewhitening_type = "other"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_recoloring_false(self):
-        self.adl.recoloring = False
+        self.adl.stft.recoloring = False
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_pre_fft_detrend_type_false(self):
-        self.adl.pre_fft_detrend_type = "other"
+        self.adl.stft.pre_fft_detrend_type = "other"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
 
     def test_window_false(self):
         self.adl.window.type = "dpss"
         self.assertEqual(
-            False, self.dl.has_fcs_for_aurora_processing(self.adl, None)
+            False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
-
 
 # =============================================================================
 if __name__ == "__main__":

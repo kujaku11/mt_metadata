@@ -3,10 +3,14 @@
 Created on Thu Feb 24 14:11:24 2022
 
 @author: jpeacock
+
+TODO: Merge tests from aurora's test_apodization_window to this module.
+TODO: Add tests for "normalized" attr, showing that true/false windows are scaled versions of each other
+
 """
 
 import unittest
-from mt_metadata.transfer_functions.processing.aurora import Window
+from mt_metadata.transfer_functions.processing import Window
 
 
 class TestWindow(unittest.TestCase):
