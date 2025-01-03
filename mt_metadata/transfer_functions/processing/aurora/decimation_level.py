@@ -27,13 +27,12 @@ from .estimator import Estimator
 from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
-from .window import Window
+from ..window import Window
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Decimation()._attr_dict, "decimation")
 attr_dict.add_dict(STFT()._attr_dict, "stft")
-attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 
@@ -88,7 +87,6 @@ class DecimationLevel(Base):
 
     def __init__(self, **kwargs):
 
-        self.window = Window()
         self.decimation = Decimation()
         self.regression = Regression()
         self.estimator = Estimator()
@@ -100,6 +98,18 @@ class DecimationLevel(Base):
 
         # if self.decimation.level == 0:
         #     self.anti_alias_filter = None
+
+    @property
+    def window(self) -> Window:
+        """
+            Convenience access to STFT window metadata.
+
+            This was placed here to allow access to legacy Decimation's window attribute.
+
+            Note: This maybe deprecated in future to use only direct access via self.stft.window.
+
+        """
+        return self.stft.window
 
     @property
     def anti_alias_filter(self) -> str:
@@ -456,11 +466,11 @@ class DecimationLevel(Base):
 
         # window
         try:
-            assert fc_decimation.window == self.window
+            assert fc_decimation.stft.window == self.stft.window
         except AssertionError:
             msg = "window does not agree: "
-            msg = f"{msg} FC Group: {fc_decimation.window} "
-            msg = f"{msg} Processing Config  {self.window}"
+            msg = f"{msg} FC Group: {fc_decimation.stft.window} "
+            msg = f"{msg} Processing Config  {self.stft.window}"
             self.logger.info(msg)
             return False
 
@@ -533,6 +543,6 @@ class DecimationLevel(Base):
         fc_dec_obj.stft.prewhitening_type = self.stft.prewhitening_type
         fc_dec_obj.stft.recoloring = self.stft.recoloring
         fc_dec_obj.time_series_decimation.sample_rate = self.sample_rate_decimation
-        fc_dec_obj.window = self.window
+        fc_dec_obj.stft.window = self.stft.window
 
         return fc_dec_obj

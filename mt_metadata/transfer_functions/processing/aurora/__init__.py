@@ -9,13 +9,11 @@ from .regression import Regression
 from .run import Run
 from .station import Station
 from .stations import Stations
-from .window import Window
 
 __all__ = [
     "Band",
     "Channel",
     "ChannelNomenclature",
-    "Window",
     "Decimation",
     "DecimationLevel",
     "Estimator",

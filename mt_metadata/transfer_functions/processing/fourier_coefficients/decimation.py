@@ -30,7 +30,6 @@ from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
 from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
 # from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-from mt_metadata.transfer_functions.processing.aurora.window import Window
 from mt_metadata.transfer_functions.processing.fourier_coefficients import (
     Channel as FCChannel
 )
@@ -40,7 +39,6 @@ import numpy as np
 # =============================================================================
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
-attr_dict.add_dict(Window()._attr_dict, "window")
 attr_dict.add_dict(ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform")
 attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
@@ -58,7 +56,6 @@ class Decimation(Base):
 
         :param kwargs: TODO: add doc here
         """
-        self.window = Window()
         self.time_period = TimePeriod()
         self.channels = ListDict()
         self.time_series_decimation = TimeSeriesDecimation()
@@ -75,6 +72,10 @@ class Decimation(Base):
         # if self.time_series_decimation.level == 0:
         #     self.time_series_decimation.anti_alias_filter = None
 
+    @property
+    def window(self):
+        return self.stft.window
+    
     def __len__(self) -> int:
         return len(self.channels)
 
