@@ -89,6 +89,14 @@ class Decimation(Base):
             raise TypeError(msg)
 
     #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+
+    @property
+    def decimation(self) -> TimeSeriesDecimation:
+        """
+            Passthrough method to access self.time_series_decimation
+        """
+        return self.time_series_decimation
+
     @property
     def factor(self):
         """
