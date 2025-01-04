@@ -201,7 +201,7 @@ class DecimationLevel(Base):
             Returns the delta_f in frequency domain df = 1 / (N * dt)
             Here dt is the sample interval after decimation
         """
-        return self.sample_rate_decimation / self.stft.window.num_samples
+        return self.decimation.sample_rate / self.stft.window.num_samples
 
     @property
     def band_edges(self) -> np.ndarray:
@@ -243,15 +243,6 @@ class DecimationLevel(Base):
         """
         freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
-
-    @property
-    def sample_rate_decimation(self) -> float:
-        """
-            Returns the sample rate of the data after decimation.
-            TODO: Delete this method and replace calls to self.sample_rate_decimation with self.decimation.sample_rate
-
-        """
-        return self.decimation.sample_rate
 
     @property
     def harmonic_indices(self) -> List[int]:
@@ -494,7 +485,7 @@ class DecimationLevel(Base):
         fc_dec_obj.stft.pre_fft_detrend_type = self.stft.pre_fft_detrend_type
         fc_dec_obj.stft.prewhitening_type = self.stft.prewhitening_type
         fc_dec_obj.stft.recoloring = self.stft.recoloring
-        fc_dec_obj.time_series_decimation.sample_rate = self.sample_rate_decimation
+        fc_dec_obj.time_series_decimation.sample_rate = self.decimation.sample_rate
         fc_dec_obj.stft.window = self.stft.window
 
         return fc_dec_obj

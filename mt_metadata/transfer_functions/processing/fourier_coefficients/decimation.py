@@ -160,29 +160,6 @@ class Decimation(Base):
         """
         return self.time_series_decimation.sample_rate
 
-    @property
-    def sample_rate_decimation(self) -> float:
-        """
-            TODO: Delete this function in 2025.
-
-            Access the decimation sample rate from the TSDecimation
-            :return:Time series sample rate after decimation (from the TSDecimation)
-            :rtype: str
-        """
-        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
-        logger.warning(msg)
-        return self.time_series_decimation.sample_rate
-
-    @sample_rate_decimation.setter
-    def sample_rate_decimation(self, value: float) -> None:
-        """
-            TODO: Delete this function in 2025.
-
-            Set the decimation sample_rate_decimation in the TSDecimation
-        """
-        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
-        logger.warning(msg)
-        self.time_series_decimation.sample_rate = value
 
     #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
 
