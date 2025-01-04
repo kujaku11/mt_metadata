@@ -98,16 +98,6 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def factor(self):
-        """
-        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
-        """
-        msg = ("This method will be deprecated in a future release.  Use "
-               "self.time_series_decimation.factor or self.decimation_factor instead")
-        logger.warning(msg)
-        return self.decimation_factor
-
-    @property
     def sample_rate(self) -> float:
         return self.time_series_decimation.sample_rate
 
