@@ -233,33 +233,6 @@ class DecimationLevel(Base):
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
-    # # TODO: FIXME WIP
-    # def to_frequency_bands_obj(self):
-    #     """
-    #         Define band_edges array from decimation_level object,
-    #
-    #     Development Notes.
-    #       This function was originally in FrequencyBands class, it was called:
-    #        from_decimation_object.  Circular imports were encountered when it was correctly dtyped.
-    #        There is no reason to have FrequencyBands.from_decimation_object(decimation_level)
-    #        _and_ decimation_level.to_frequency_bands_obj()
-    #        The function above already does the task of generating a frequency bands.
-    #        Keeping this commented until documentation improves.
-    #        Below looks like an alternative, and more readable way to get band_edges,
-    #        without passing through the dataframe.  At a minimum a test should be created
-    #        that makes band edges both ways and asserts equal.
-    #        (a few command line tests showed that they are, Dec 2024).
-    #
-    #     """
-    #     df = self.frequency_sample_interval
-    #     half_df = df / 2.0
-    #
-    #     lower_edges = (self.lower_bounds * df) - half_df
-    #     upper_edges = (self.upper_bounds * df) + half_df
-    #     band_edges = np.vstack((lower_edges, upper_edges)).T
-    #     return FrequencyBands(band_edges=band_edges)
-
-
     @property
     def fft_frequencies(self) -> np.ndarray:
         """
