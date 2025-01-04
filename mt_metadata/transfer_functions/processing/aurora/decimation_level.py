@@ -96,29 +96,6 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        # if self.decimation.level == 0:
-        #     self.anti_alias_filter = None
-
-    @property
-    def window(self) -> Window:
-        """
-            Convenience access to STFT window metadata.
-
-            This was placed here to allow access to legacy Decimation's window attribute.
-
-            Note: This maybe deprecated in future to use only direct access via self.stft.window.
-
-        """
-        return self.stft.window
-
-    @property
-    def anti_alias_filter(self) -> str:
-        """
-        get anti_alais_filter from TimeSeriesDecimation.
-
-        """
-        return self.decimation.anti_alias_filter
-
     @property
     def bands(self) -> list:
         """
@@ -224,7 +201,7 @@ class DecimationLevel(Base):
             Returns the delta_f in frequency domain df = 1 / (N * dt)
             Here dt is the sample interval after decimation
         """
-        return self.sample_rate_decimation / self.window.num_samples
+        return self.decimation.sample_rate / self.stft.window.num_samples
 
     @property
     def band_edges(self) -> np.ndarray:
@@ -239,7 +216,7 @@ class DecimationLevel(Base):
         ).T
         return band_edges
 
-    def frequency_bands_obj(self) -> FrequencyBands:  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
+    def frequency_bands_obj(self) -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
 
@@ -256,33 +233,6 @@ class DecimationLevel(Base):
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
-    # # TODO: FIXME WIP
-    # def to_frequency_bands_obj(self):
-    #     """
-    #         Define band_edges array from decimation_level object,
-    #
-    #     Development Notes.
-    #       This function was originally in FrequencyBands class, it was called:
-    #        from_decimation_object.  Circular imports were encountered when it was correctly dtyped.
-    #        There is no reason to have FrequencyBands.from_decimation_object(decimation_level)
-    #        _and_ decimation_level.to_frequency_bands_obj()
-    #        The function above already does the task of generating a frequency bands.
-    #        Keeping this commented until documentation improves.
-    #        Below looks like an alternative, and more readable way to get band_edges,
-    #        without passing through the dataframe.  At a minimum a test should be created
-    #        that makes band edges both ways and asserts equal.
-    #        (a few command line tests showed that they are, Dec 2024).
-    #
-    #     """
-    #     df = self.frequency_sample_interval
-    #     half_df = df / 2.0
-    #
-    #     lower_edges = (self.lower_bounds * df) - half_df
-    #     upper_edges = (self.upper_bounds * df) + half_df
-    #     band_edges = np.vstack((lower_edges, upper_edges)).T
-    #     return FrequencyBands(band_edges=band_edges)
-
-
     @property
     def fft_frequencies(self) -> np.ndarray:
         """
@@ -291,17 +241,8 @@ class DecimationLevel(Base):
             :return freqs: The frequencies at which the stft will be available.
             :rtype freqs: np.ndarray
         """
-        freqs = self.window.fft_harmonics(self.decimation.sample_rate)
+        freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
-
-    @property
-    def sample_rate_decimation(self) -> float:
-        """
-            Returns the sample rate of the data after decimation.
-            TODO: Delete this method and replace calls to self.sample_rate_decimation with self.decimation.sample_rate
-
-        """
-        return self.decimation.sample_rate
 
     @property
     def harmonic_indices(self) -> List[int]:
@@ -344,15 +285,15 @@ class DecimationLevel(Base):
 
             Iterates over FCDecimation attributes:
                 "channels_estimated": to ensure all expected channels are in the group
-                "anti_alias_filter": check that the expected AAF was applied
-                "sample_rate,
-                "method",
-                "prewhitening_type",
-                "recoloring",
-                "pre_fft_detrend_type",
-                "min_num_stft_windows",
-                "window",
-                "harmonic_indices",
+                "decimation.anti_alias_filter": check that the expected AAF was applied
+                "decimation.sample_rate,
+                "decimation.method",
+                "stft.prewhitening_type",
+                "stft.recoloring",
+                "stft.pre_fft_detrend_type",
+                "stft.min_num_stft_windows",
+                "stft.window",
+                "stft.harmonic_indices",
         Returns
         -------
 
@@ -373,18 +314,18 @@ class DecimationLevel(Base):
             self.logger.info(msg)
             return False
 
-        # anti_alias_filter: Check that the data were
+        # anti_alias_filter: Check that the data were filtered the same way
         try:
-            assert fc_decimation.decimation_anti_alias_filter == self.decimation.anti_alias_filter
+            assert fc_decimation.time_series_decimation.anti_alias_filter == self.decimation.anti_alias_filter
         except AssertionError:
-            cond1 = self.anti_alias_filter == "default"
-            cond2 = fc_decimation.decimation_anti_alias_filter is None
+            cond1 = self.time_series_decimation.anti_alias_filter == "default"
+            cond2 = fc_decimation.time_series_decimation.anti_alias_filter is None
             if cond1 & cond2:
                 pass
             else:
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {fc_decimation.decimation_anti_alias_filter} and "
+                    f"{msg} FCdec {fc_decimation.time_series_decimation.anti_alias_filter} and "
                     f"{msg} processing config:{self.decimation.anti_alias_filter}"
                 )
                 raise NotImplementedError(msg)
@@ -478,6 +419,8 @@ class DecimationLevel(Base):
             # if harmonic_indices is -1, it means the archive kept all so we can skip this check.
             pass
         else:
+            msg = "WIP: harmonic indices in AuroraDecimationlevel are derived from processing bands -- Not robustly tested to compare with FCDecimation"
+            self.logger.debug(msg)
             harmonic_indices_requested = self.harmonic_indices
             fcdec_group_set = set(fc_decimation.harmonic_indices)
             processing_set = set(harmonic_indices_requested)
@@ -542,7 +485,7 @@ class DecimationLevel(Base):
         fc_dec_obj.stft.pre_fft_detrend_type = self.stft.pre_fft_detrend_type
         fc_dec_obj.stft.prewhitening_type = self.stft.prewhitening_type
         fc_dec_obj.stft.recoloring = self.stft.recoloring
-        fc_dec_obj.time_series_decimation.sample_rate = self.sample_rate_decimation
+        fc_dec_obj.time_series_decimation.sample_rate = self.decimation.sample_rate
         fc_dec_obj.stft.window = self.stft.window
 
         return fc_dec_obj

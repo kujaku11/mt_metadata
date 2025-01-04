@@ -116,7 +116,7 @@ class TestDecimation(unittest.TestCase):
     def test_fft_frequencies(self):
         dl1 = self.dl.copy()
         freqs = dl1.fft_frequencies
-        assert (len(freqs) == dl1.window.num_samples/2)
+        assert (len(freqs) == dl1.stft.window.num_samples/2)
 
 
     def test_update_with_match(self):
@@ -203,7 +203,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         self.dl.decimation_factor = 4
         self.dl.decimation_level = 1
         self.dl.id = 1
-        self.dl.sample_rate_decimation = 16
+        self.dl.time_series_decimation.sample_rate = 16
         for ch in ["ex", "ey", "hx", "hy", "hz"]:
             self.dl.add_channel(Channel(component=ch))
 
@@ -253,7 +253,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_window_false(self):
-        self.adl.window.type = "dpss"
+        self.adl.stft.window.type = "dpss"
         self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )

@@ -70,13 +70,6 @@ class Decimation(Base):
             logger.debug(msg)
             self.short_time_fourier_transform.per_window_detrend_type = ""
 
-        # if self.time_series_decimation.level == 0:
-        #     self.time_series_decimation.anti_alias_filter = None
-
-    @property
-    def window(self):
-        return self.stft.window
-
     def __len__(self) -> int:
         return len(self.channels)
 
@@ -96,6 +89,14 @@ class Decimation(Base):
             raise TypeError(msg)
 
     #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+
+    @property
+    def decimation(self) -> TimeSeriesDecimation:
+        """
+            Passthrough method to access self.time_series_decimation
+        """
+        return self.time_series_decimation
+
     @property
     def factor(self):
         """
@@ -159,22 +160,6 @@ class Decimation(Base):
         self.time_series_decimation.method = value
 
     @property
-    def decimation_anti_alias_filter(self) -> str:
-        """
-            Access the decimation anti_alias_filter description from the TSDecimation
-            :return: Description of how anti_alias_filtering is performed
-            :rtype: str
-        """
-        return self.time_series_decimation.anti_alias_filter
-
-    @decimation_method.setter
-    def decimation_anti_alias_filter(self, value: str) -> None:
-        """
-            Set the decimation_anti_alias_filter in the TSDecimation
-        """
-        self.time_series_decimation.anti_alias_filter = value
-
-    @property
     def decimation_sample_rate(self) -> float:
         """
             Access the decimation sample rate from the TSDecimation
@@ -183,29 +168,6 @@ class Decimation(Base):
         """
         return self.time_series_decimation.sample_rate
 
-    @property
-    def sample_rate_decimation(self) -> float:
-        """
-            TODO: Delete this function in 2025.
-
-            Access the decimation sample rate from the TSDecimation
-            :return:Time series sample rate after decimation (from the TSDecimation)
-            :rtype: str
-        """
-        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
-        logger.warning(msg)
-        return self.time_series_decimation.sample_rate
-
-    @sample_rate_decimation.setter
-    def sample_rate_decimation(self, value: float) -> None:
-        """
-            TODO: Delete this function in 2025.
-
-            Set the decimation sample_rate_decimation in the TSDecimation
-        """
-        msg = "sample_rate_decimation is deprecated -- use self.time_series_decimation.sample_rate"
-        logger.warning(msg)
-        self.time_series_decimation.sample_rate = value
 
     #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
 
@@ -446,14 +408,14 @@ class Decimation(Base):
 
         """
         required_num_samples = (
-            self.window.num_samples
-            + (self.stft.min_num_stft_windows - 1) * self.window.num_samples_advance
+            self.stft.window.num_samples
+            + (self.stft.min_num_stft_windows - 1) * self.stft.window.num_samples_advance
         )
         if n_samples_ts < required_num_samples:
             msg = (
                 f"{n_samples_ts} not enough samples for minimum of "
                 f"{self.stft.min_num_stft_windows} stft windows of length "
-                f"{self.window.num_samples} and overlap {self.window.overlap}"
+                f"{self.stft.window.num_samples} and overlap {self.stft.window.overlap}"
             )
             self.logger.warning(msg)
             return False
@@ -463,7 +425,7 @@ class Decimation(Base):
     @property
     def fft_frequencies(self) -> np.ndarray:
         """ Returns the one-sided fft frequencies (without Nyquist)"""
-        return self.window.fft_harmonics(self.sample_rate)
+        return self.stft.window.fft_harmonics(self.sample_rate)
 
 
 def fc_decimations_creator(
