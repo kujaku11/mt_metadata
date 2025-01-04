@@ -10,7 +10,7 @@ Development Notes:
     ["level", "factor", "method", "sample_rate", "anti_alias_filter"],
 
     TODO: Consider adding a parent_sample_rate attribute to this class
-    
+
 Created on Thu Dec 26 12:00:00 2024
 
 @author: kkappler
@@ -45,28 +45,6 @@ class TimeSeriesDecimation(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-    # Temporary workarounds while replacing legacy Decimation class
-    # @property
-    # def level(self):
-    #     return self.decimation_level
-    #
-    # @property
-    # def factor(self):
-    #     return self.decimation_factor
-    #
-    # @property
-    # def method(self):
-    #     return self.decimation_method
-    #
-    # @property
-    # def sample_rate(self):
-    #     return self.sample_rate_decimation
-
-
-#
-# def main():
-#     pass
-#
-#
-# if __name__ == "__main__":
-#     main()
+    # TODO: add this logic to __init__ and a test
+    # if self.level == 0:
+    #     self.anti_alias_filter = None

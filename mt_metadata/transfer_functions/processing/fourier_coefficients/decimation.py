@@ -70,9 +70,6 @@ class Decimation(Base):
             logger.debug(msg)
             self.short_time_fourier_transform.per_window_detrend_type = ""
 
-        # if self.time_series_decimation.level == 0:
-        #     self.time_series_decimation.anti_alias_filter = None
-
     @property
     def window(self):
         return self.stft.window
@@ -157,22 +154,6 @@ class Decimation(Base):
             Set the decimation level in the TSDecimation
         """
         self.time_series_decimation.method = value
-
-    @property
-    def decimation_anti_alias_filter(self) -> str:
-        """
-            Access the decimation anti_alias_filter description from the TSDecimation
-            :return: Description of how anti_alias_filtering is performed
-            :rtype: str
-        """
-        return self.time_series_decimation.anti_alias_filter
-
-    @decimation_method.setter
-    def decimation_anti_alias_filter(self, value: str) -> None:
-        """
-            Set the decimation_anti_alias_filter in the TSDecimation
-        """
-        self.time_series_decimation.anti_alias_filter = value
 
     @property
     def decimation_sample_rate(self) -> float:

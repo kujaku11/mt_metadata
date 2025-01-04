@@ -96,9 +96,6 @@ class DecimationLevel(Base):
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        # if self.decimation.level == 0:
-        #     self.anti_alias_filter = None
-
     @property
     def window(self) -> Window:
         """
@@ -110,14 +107,6 @@ class DecimationLevel(Base):
 
         """
         return self.stft.window
-
-    @property
-    def anti_alias_filter(self) -> str:
-        """
-        get anti_alais_filter from TimeSeriesDecimation.
-
-        """
-        return self.decimation.anti_alias_filter
 
     @property
     def bands(self) -> list:
@@ -344,15 +333,15 @@ class DecimationLevel(Base):
 
             Iterates over FCDecimation attributes:
                 "channels_estimated": to ensure all expected channels are in the group
-                "anti_alias_filter": check that the expected AAF was applied
-                "sample_rate,
-                "method",
-                "prewhitening_type",
-                "recoloring",
-                "pre_fft_detrend_type",
-                "min_num_stft_windows",
-                "window",
-                "harmonic_indices",
+                "decimation.anti_alias_filter": check that the expected AAF was applied
+                "decimation.sample_rate,
+                "decimation.method",
+                "stft.prewhitening_type",
+                "stft.recoloring",
+                "stft.pre_fft_detrend_type",
+                "stft.min_num_stft_windows",
+                "stft.window",
+                "stft.harmonic_indices",
         Returns
         -------
 
@@ -373,18 +362,18 @@ class DecimationLevel(Base):
             self.logger.info(msg)
             return False
 
-        # anti_alias_filter: Check that the data were
+        # anti_alias_filter: Check that the data were filtered the same way
         try:
-            assert fc_decimation.decimation_anti_alias_filter == self.decimation.anti_alias_filter
+            assert fc_decimation.time_series_decimation.anti_alias_filter == self.decimation.anti_alias_filter
         except AssertionError:
-            cond1 = self.anti_alias_filter == "default"
-            cond2 = fc_decimation.decimation_anti_alias_filter is None
+            cond1 = self.time_series_decimation.anti_alias_filter == "default"
+            cond2 = fc_decimation.time_series_decimation.anti_alias_filter is None
             if cond1 & cond2:
                 pass
             else:
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {fc_decimation.decimation_anti_alias_filter} and "
+                    f"{msg} FCdec {fc_decimation.time_series_decimation.anti_alias_filter} and "
                     f"{msg} processing config:{self.decimation.anti_alias_filter}"
                 )
                 raise NotImplementedError(msg)
