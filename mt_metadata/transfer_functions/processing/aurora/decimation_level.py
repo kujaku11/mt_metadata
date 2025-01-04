@@ -467,6 +467,8 @@ class DecimationLevel(Base):
             # if harmonic_indices is -1, it means the archive kept all so we can skip this check.
             pass
         else:
+            msg = "WIP: harmonic indices in AuroraDecimationlevel are derived from processing bands -- Not robustly tested to compare with FCDecimation"
+            self.logger.debug(msg)
             harmonic_indices_requested = self.harmonic_indices
             fcdec_group_set = set(fc_decimation.harmonic_indices)
             processing_set = set(harmonic_indices_requested)
