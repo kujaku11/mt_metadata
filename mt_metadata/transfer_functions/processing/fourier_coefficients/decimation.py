@@ -70,10 +70,6 @@ class Decimation(Base):
             logger.debug(msg)
             self.short_time_fourier_transform.per_window_detrend_type = ""
 
-    @property
-    def window(self):
-        return self.stft.window
-
     def __len__(self) -> int:
         return len(self.channels)
 
@@ -427,14 +423,14 @@ class Decimation(Base):
 
         """
         required_num_samples = (
-            self.window.num_samples
-            + (self.stft.min_num_stft_windows - 1) * self.window.num_samples_advance
+            self.stft.window.num_samples
+            + (self.stft.min_num_stft_windows - 1) * self.stft.window.num_samples_advance
         )
         if n_samples_ts < required_num_samples:
             msg = (
                 f"{n_samples_ts} not enough samples for minimum of "
                 f"{self.stft.min_num_stft_windows} stft windows of length "
-                f"{self.window.num_samples} and overlap {self.window.overlap}"
+                f"{self.stft.window.num_samples} and overlap {self.stft.window.overlap}"
             )
             self.logger.warning(msg)
             return False
@@ -444,7 +440,7 @@ class Decimation(Base):
     @property
     def fft_frequencies(self) -> np.ndarray:
         """ Returns the one-sided fft frequencies (without Nyquist)"""
-        return self.window.fft_harmonics(self.sample_rate)
+        return self.stft.window.fft_harmonics(self.sample_rate)
 
 
 def fc_decimations_creator(

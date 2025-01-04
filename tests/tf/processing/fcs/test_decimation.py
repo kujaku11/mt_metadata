@@ -116,7 +116,7 @@ class TestDecimation(unittest.TestCase):
     def test_fft_frequencies(self):
         dl1 = self.dl.copy()
         freqs = dl1.fft_frequencies
-        assert (len(freqs) == dl1.window.num_samples/2)
+        assert (len(freqs) == dl1.stft.window.num_samples/2)
 
 
     def test_update_with_match(self):
