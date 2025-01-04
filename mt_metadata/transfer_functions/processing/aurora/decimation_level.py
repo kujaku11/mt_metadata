@@ -216,7 +216,7 @@ class DecimationLevel(Base):
         ).T
         return band_edges
 
-    def frequency_bands_obj(self) -> FrequencyBands:  #  TODO: FIXME circular import when correctly dtyped -> FrequencyBands:
+    def frequency_bands_obj(self) -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
 
@@ -268,7 +268,7 @@ class DecimationLevel(Base):
             :return freqs: The frequencies at which the stft will be available.
             :rtype freqs: np.ndarray
         """
-        freqs = self.window.fft_harmonics(self.decimation.sample_rate)
+        freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
 
     @property
