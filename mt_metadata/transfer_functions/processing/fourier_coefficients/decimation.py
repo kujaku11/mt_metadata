@@ -98,10 +98,6 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def sample_rate(self) -> float:
-        return self.time_series_decimation.sample_rate
-
-    @property
     def decimation_level(self) -> int:
         """
             Access the decimation level from the TSDecimation
@@ -415,7 +411,7 @@ class Decimation(Base):
     @property
     def fft_frequencies(self) -> np.ndarray:
         """ Returns the one-sided fft frequencies (without Nyquist)"""
-        return self.stft.window.fft_harmonics(self.sample_rate)
+        return self.stft.window.fft_harmonics(self.decimation.sample_rate)
 
 
 def fc_decimations_creator(
