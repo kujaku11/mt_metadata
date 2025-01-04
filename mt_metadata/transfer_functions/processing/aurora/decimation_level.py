@@ -97,18 +97,6 @@ class DecimationLevel(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
-    def window(self) -> Window:
-        """
-            Convenience access to STFT window metadata.
-
-            This was placed here to allow access to legacy Decimation's window attribute.
-
-            Note: This maybe deprecated in future to use only direct access via self.stft.window.
-
-        """
-        return self.stft.window
-
-    @property
     def bands(self) -> list:
         """
         get bands, something weird is going on with appending.
@@ -213,7 +201,7 @@ class DecimationLevel(Base):
             Returns the delta_f in frequency domain df = 1 / (N * dt)
             Here dt is the sample interval after decimation
         """
-        return self.sample_rate_decimation / self.window.num_samples
+        return self.sample_rate_decimation / self.stft.window.num_samples
 
     @property
     def band_edges(self) -> np.ndarray:

@@ -253,7 +253,7 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
         )
 
     def test_window_false(self):
-        self.adl.window.type = "dpss"
+        self.adl.stft.window.type = "dpss"
         self.assertEqual(
             False, self.adl.is_consistent_with_archived_fc_parameters(self.dl, None)
         )
