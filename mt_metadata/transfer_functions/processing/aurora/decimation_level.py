@@ -48,6 +48,7 @@ def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
         Not clear this is really necessary
     TODO: Consider making this a method of FrequencyBands() class.
     TODO: Check typehint -- should None be allowed value in the band_list?
+    TODO: Consider adding columns lower_closed, upper_closed to df
 
     Parameters
     ----------
@@ -182,10 +183,7 @@ class DecimationLevel(Base):
         """
         Utility function that transforms a list of bands into a dataframe
 
-        Note: The decimation_level here is +1 to agree with EMTF convention.
-        Not clear this is really necessary
-
-        TODO: Consider adding columns lower_closed, upper_closed to df
+        See notes in `df_from_bands`.
 
         Returns
         -------

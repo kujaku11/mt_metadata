@@ -41,8 +41,8 @@ class TestFC(unittest.TestCase):
         self.fc.starting_sample_rate = 64
 
         self.dl = Decimation()
-        self.dl.decimation_factor = 4
-        self.dl.decimation_level = 1
+        self.dl.decimation.factor = 4
+        self.dl.decimation.level = 1
         self.dl.id = 1
         self.dl.time_series_decimation.sample_rate = 16.0
 
@@ -76,7 +76,7 @@ class TestFC(unittest.TestCase):
         fc2 = self.fc.copy()
         fc2.levels.remove("1")
         dl2 = self.dl.copy()
-        dl2.decimation_level = 6
+        dl2.decimation.level = 6
         dl2.id = 6
         fc2.add_decimation_level(dl2)
 
@@ -89,7 +89,7 @@ class TestFC(unittest.TestCase):
         fc2 = self.fc.copy()
         fc2.levels.remove("1")
         dl2 = self.dl.copy()
-        dl2.decimation_level = 6
+        dl2.decimation.level = 6
         dl2.id = 6
         fc2.add_decimation_level(dl2)
 
