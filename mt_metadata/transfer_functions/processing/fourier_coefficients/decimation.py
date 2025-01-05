@@ -98,22 +98,6 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def decimation_factor(self) -> float:
-        """
-            Access the decimation factor from the TSDecimation
-            :return: decimation factor
-            :rtype: float
-        """
-        return self.time_series_decimation.factor
-
-    @decimation_factor.setter
-    def decimation_factor(self, value: float) -> None:
-        """
-            Set the decimation factor in the TSDecimation
-        """
-        self.time_series_decimation.factor = value
-
-    @property
     def decimation_method(self) -> str:
         """
             Access the decimation method from the TSDecimation
