@@ -88,7 +88,7 @@ class Decimation(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
-    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     @property
     def decimation(self) -> TimeSeriesDecimation:
@@ -98,20 +98,6 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def decimation_sample_rate(self) -> float:
-        """
-            Access the decimation sample rate from the TSDecimation
-            :return: Time series sample rate after decimation (from the TSDecimation)
-            :rtype: float
-        """
-        return self.time_series_decimation.sample_rate
-
-
-    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
-
-    #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
-
-    @property
     def stft(self):
         return self.short_time_fourier_transform
 
@@ -119,7 +105,7 @@ class Decimation(Base):
     def harmonic_indices(self):
         return self.short_time_fourier_transform.harmonic_indices
 
-    #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
+    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     def update(self, other, match=[]):
         """
