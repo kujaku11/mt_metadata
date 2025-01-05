@@ -273,6 +273,7 @@ class DecimationLevel(Base):
             read them from the archive.
 
             TODO: Merge all checks of TimeSeriesDecimation parameters into a single check.
+            - e.g. Compress all decimation checks to: assert fc_decimation.decimation == self.decimation
 
             Parameters
             ----------
