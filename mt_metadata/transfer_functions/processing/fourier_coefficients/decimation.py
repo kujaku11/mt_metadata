@@ -98,22 +98,6 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def decimation_method(self) -> str:
-        """
-            Access the decimation method from the TSDecimation
-            :return: Description of how decimation is performed
-            :rtype: str
-        """
-        return self.time_series_decimation.method
-
-    @decimation_method.setter
-    def decimation_method(self, value: str) -> None:
-        """
-            Set the decimation level in the TSDecimation
-        """
-        self.time_series_decimation.method = value
-
-    @property
     def decimation_sample_rate(self) -> float:
         """
             Access the decimation sample rate from the TSDecimation
