@@ -88,7 +88,7 @@ class Decimation(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
-    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
+    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     @property
     def decimation(self) -> TimeSeriesDecimation:
@@ -98,90 +98,10 @@ class Decimation(Base):
         return self.time_series_decimation
 
     @property
-    def factor(self):
-        """
-        TODO: DELETE THIS IN 2025: factor should be deprecated, use TimeSeriesDecimation for this info.
-        """
-        msg = ("This method will be deprecated in a future release.  Use "
-               "self.time_series_decimation.factor or self.decimation_factor instead")
-        logger.warning(msg)
-        return self.decimation_factor
-
-    @property
-    def sample_rate(self) -> float:
-        return self.time_series_decimation.sample_rate
-
-    @property
-    def decimation_level(self) -> int:
-        """
-            Access the decimation level from the TSDecimation
-            :return: Integer decimation level
-            :rtype: int
-        """
-        return self.time_series_decimation.level
-
-    @decimation_level.setter
-    def decimation_level(self, value: int) -> None:
-        """
-            Set the decimation level in the TSDecimation
-        """
-        self.time_series_decimation.level = value
-
-    @property
-    def decimation_factor(self) -> float:
-        """
-            Access the decimation factor from the TSDecimation
-            :return: decimation factor
-            :rtype: float
-        """
-        return self.time_series_decimation.factor
-
-    @decimation_factor.setter
-    def decimation_factor(self, value: float) -> None:
-        """
-            Set the decimation factor in the TSDecimation
-        """
-        self.time_series_decimation.factor = value
-
-    @property
-    def decimation_method(self) -> str:
-        """
-            Access the decimation method from the TSDecimation
-            :return: Description of how decimation is performed
-            :rtype: str
-        """
-        return self.time_series_decimation.method
-
-    @decimation_method.setter
-    def decimation_method(self, value: str) -> None:
-        """
-            Set the decimation level in the TSDecimation
-        """
-        self.time_series_decimation.method = value
-
-    @property
-    def decimation_sample_rate(self) -> float:
-        """
-            Access the decimation sample rate from the TSDecimation
-            :return: Time series sample rate after decimation (from the TSDecimation)
-            :rtype: float
-        """
-        return self.time_series_decimation.sample_rate
-
-
-    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation Class -----#
-
-    #----- Begin (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
-
-    @property
     def stft(self):
         return self.short_time_fourier_transform
 
-    @property
-    def harmonic_indices(self):
-        return self.short_time_fourier_transform.harmonic_indices
-
-    #----- End (Possibly Temporary) methods for integrating ShortTimeFourierTransform Class -----#
+    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     def update(self, other, match=[]):
         """
@@ -425,7 +345,7 @@ class Decimation(Base):
     @property
     def fft_frequencies(self) -> np.ndarray:
         """ Returns the one-sided fft frequencies (without Nyquist)"""
-        return self.stft.window.fft_harmonics(self.sample_rate)
+        return self.stft.window.fft_harmonics(self.decimation.sample_rate)
 
 
 def fc_decimations_creator(

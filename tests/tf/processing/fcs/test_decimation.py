@@ -48,10 +48,10 @@ class TestDecimation(unittest.TestCase):
     def setUpClass(self):
 
         self.dl = Decimation()
-        self.dl.decimation_factor = 4
-        self.dl.decimation_level = 1
+        self.dl.decimation.factor = 4
+        self.dl.decimation.level = 1
         self.dl.id = 1
-        self.dl.time_series_decimation.sample_rate = 16.0
+        self.dl.decimation.sample_rate = 16.0
 
         self.start = "2020-01-01T00:00:00+00:00"
         self.end = "2020-01-01T00:20:00+00:00"
@@ -186,9 +186,6 @@ class TestDecimation(unittest.TestCase):
         with self.subTest("end"):
             self.assertEqual(self.end, self.dl.time_period.end)
 
-    def test_factor(self):
-        self.assertEqual(self.dl.decimation_factor, self.dl.factor)
-
     def test_window_length_true(self):
         self.assertEqual(True, self.dl.is_valid_for_time_series_length(4096))
 
@@ -200,8 +197,8 @@ class TestDecimationAuroraDecimationLevel(unittest.TestCase):
     def setUp(self):
 
         self.dl = Decimation()
-        self.dl.decimation_factor = 4
-        self.dl.decimation_level = 1
+        self.dl.decimation.factor = 4
+        self.dl.decimation.level = 1
         self.dl.id = 1
         self.dl.time_series_decimation.sample_rate = 16
         for ch in ["ex", "ey", "hx", "hy", "hz"]:
