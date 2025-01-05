@@ -101,10 +101,6 @@ class Decimation(Base):
     def stft(self):
         return self.short_time_fourier_transform
 
-    @property
-    def harmonic_indices(self):
-        return self.short_time_fourier_transform.harmonic_indices
-
     #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     def update(self, other, match=[]):
