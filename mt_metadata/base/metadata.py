@@ -31,6 +31,8 @@ from . import helpers
 from mt_metadata.base.helpers import write_lines
 
 attr_dict = {}
+
+
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
@@ -119,7 +121,7 @@ class Base:
                         if value.size != other_value.size:
                             msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
                             self.logger.info(msg)
-                            fail=True
+                            fail = True
                             continue
                         if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
@@ -476,9 +478,7 @@ class Base:
             return value
         return self._validate_type(value, v_type)
 
-
-    @staticmethod
-    def setattr_skip_validation(self_obj, name, value):
+    def setattr_skip_validation(self, name, value):
         """
         Set attribute without validation
 
@@ -489,11 +489,7 @@ class Base:
         :type value: described in value_dict
 
         """
-        if isinstance(self_obj, Base):
-            self_obj.__dict__[name] = value
-        else:  # class obj
-            setattr(self_obj, name, value)
-
+        self.__dict__[name] = value
 
     def set_attr_from_name(self, name, value, skip_val=False):
         """
@@ -531,7 +527,7 @@ class Base:
                 raise AttributeError(error)
         else:
             if skip_val:
-                self.setattr_skip_validation(self, name, value)
+                self.setattr_skip_validation(name, value)
             else:
                 setattr(self, name, value)
 

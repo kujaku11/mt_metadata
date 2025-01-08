@@ -457,7 +457,7 @@ def recursive_split_setattr(base_object, name, value, sep=".", skip_val=False):
             base_object = getattr(base_object, key)
             recursive_split_setattr(base_object, other[0], value, skip_val=True)
         else:
-            base_object.setattr_skip_validation(base_object, key, value)
+            base_object.setattr_skip_validation(key, value)
     else:
         if other:
             base_object = getattr(base_object, key)
