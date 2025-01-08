@@ -38,9 +38,9 @@ attr_dict = {}
 
 class Base:
     __doc__ = write_lines(attr_dict)
+    _base_attr_loaded = False
 
     def __init__(self, attr_dict={}, **kwargs):
-
         self._changed = False
 
         self._class_name = validate_attribute(self.__class__.__name__)
@@ -48,12 +48,15 @@ class Base:
         self.logger = logger
         self._debug = False
 
-        self._set_attr_dict(attr_dict)
+        if not self._base_attr_loaded:
+            # silly: attr_dict has already been validated on json load, so we don't need to validate it again
+            self._set_attr_dict(attr_dict, skip_val=True)
+            self._base_attr_loaded = True
 
         for name, value in kwargs.items():
-            self.set_attr_from_name(name, value)
+            self.set_attr_from_name(name, value, skip_val=False)
 
-    def _set_attr_dict(self, attr_dict):
+    def _set_attr_dict(self, attr_dict, skip_val=False):
         """
         Set attribute dictionary and variables.
 
@@ -67,7 +70,7 @@ class Base:
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            self.set_attr_from_name(key, value_dict["default"])
+            self.set_attr_from_name(key, value_dict["default"], skip_val)
 
     def __str__(self):
         """
@@ -473,7 +476,26 @@ class Base:
             return value
         return self._validate_type(value, v_type)
 
-    def set_attr_from_name(self, name, value):
+
+    @staticmethod
+    def setattr_skip_validation(self_obj, name, value):
+        """
+        Set attribute without validation
+
+        :param name: name of attribute
+        :type name: string
+
+        :param value: value of the new attribute
+        :type value: described in value_dict
+
+        """
+        if isinstance(self_obj, Base):
+            self_obj.__dict__[name] = value
+        else:  # class obj
+            setattr(self_obj, name, value)
+
+
+    def set_attr_from_name(self, name, value, skip_val=False):
         """
         Helper function to set attribute from the given name.
 
@@ -497,7 +519,7 @@ class Base:
         """
         if "." in name:
             try:
-                helpers.recursive_split_setattr(self, name, value)
+                helpers.recursive_split_setattr(self, name, value, skip_val=skip_val)
             except AttributeError as error:
                 msg = (
                     "{0} is not in the current standards.  "
@@ -508,7 +530,10 @@ class Base:
                 self.logger.error(msg.format(name))
                 raise AttributeError(error)
         else:
-            setattr(self, name, value)
+            if skip_val:
+                self.setattr_skip_validation(self, name, value)
+            else:
+                setattr(self, name, value)
 
     def add_base_attribute(self, name, value, value_dict):
         """
