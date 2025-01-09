@@ -50,15 +50,13 @@ class Base:
         self.logger = logger
         self._debug = False
 
-        if not self._base_attr_loaded:
-            # silly: attr_dict has already been validated on json load, so we don't need to validate it again
-            self._set_attr_dict(attr_dict, skip_val=True)
-            self._base_attr_loaded = True
+        # attr_dict from subclass has already been validated on json load, so we don't need to validate it again
+        self._set_attr_dict(attr_dict, skip_validation=True)
 
         for name, value in kwargs.items():
-            self.set_attr_from_name(name, value, skip_val=False)
+            self.set_attr_from_name(name, value, skip_validation=False)
 
-    def _set_attr_dict(self, attr_dict, skip_val=False):
+    def _set_attr_dict(self, attr_dict, skip_validation=False):
         """
         Set attribute dictionary and variables.
 
@@ -66,13 +64,15 @@ class Base:
 
         :param attr_dict: attribute dictionary
         :type attr_dict: dict
+        :param skip_validation: skip validation/parse of the attribute dictionary
+        :type skip_validation: bool
 
         """
 
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            self.set_attr_from_name(key, value_dict["default"], skip_val)
+            self.set_attr_from_name(key, value_dict["default"], skip_validation)
 
     def __str__(self):
         """
@@ -491,7 +491,7 @@ class Base:
         """
         self.__dict__[name] = value
 
-    def set_attr_from_name(self, name, value, skip_val=False):
+    def set_attr_from_name(self, name, value, skip_validation=False):
         """
         Helper function to set attribute from the given name.
 
@@ -505,6 +505,8 @@ class Base:
         :type name: string
         :param value: attribute value
         :type value: type is defined by the attribute name
+        :param skip_validation: skip validation/parse of the key-value pair
+        :type skip_validation: bool
 
         :Example:
 
@@ -515,7 +517,7 @@ class Base:
         """
         if "." in name:
             try:
-                helpers.recursive_split_setattr(self, name, value, skip_val=skip_val)
+                helpers.recursive_split_setattr(self, name, value, skip_validation=skip_validation)
             except AttributeError as error:
                 msg = (
                     "{0} is not in the current standards.  "
@@ -526,7 +528,7 @@ class Base:
                 self.logger.error(msg.format(name))
                 raise AttributeError(error)
         else:
-            if skip_val:
+            if skip_validation:
                 self.setattr_skip_validation(name, value)
             else:
                 setattr(self, name, value)

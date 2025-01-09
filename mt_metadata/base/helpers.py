@@ -449,13 +449,31 @@ def recursive_split_getattr(base_object, name, sep="."):
     return value, prop
 
 
-def recursive_split_setattr(base_object, name, value, sep=".", skip_val=False):
+def recursive_split_setattr(base_object, name, value, sep=".", skip_validation=False):
+    """
+    Recursively split a name and set the value of the last key. Recursion splits on the separator present in the name.
+
+    :param base_object: The object having its attribute set, or a "parent" object in the recursive/nested scenario
+    :type base_object: object
+    :param name: The name of the attribute to set
+    :type name: str
+    :param value: The value to set the attribute to
+    :type value: any
+    :param sep: The separator to split the name on, defaults to "."
+    :type sep: str, optional
+    :param skip_validation: Whether to skip validation/parse of the attribute, defaults to False
+    :type skip_validation: Optional[bool]
+
+    :return: None
+    :rtype: NoneType
+
+    """
     key, *other = name.split(sep, 1)
 
-    if skip_val:
+    if skip_validation:
         if other:
             base_object = getattr(base_object, key)
-            recursive_split_setattr(base_object, other[0], value, skip_val=True)
+            recursive_split_setattr(base_object, other[0], value, skip_validation=True)
         else:
             base_object.setattr_skip_validation(key, value)
     else:
