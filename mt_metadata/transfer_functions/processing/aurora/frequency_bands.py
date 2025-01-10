@@ -1,9 +1,10 @@
 """
 Module containing FrequencyBands class representing a collection of Frequency Band objects.
 """
-from typing import Optional, Generator, Union
+from typing import Literal, Optional, Generator, Union
 import pandas as pd
 import numpy as np
+import warnings
 from loguru import logger
 
 from . import Band
@@ -12,11 +13,11 @@ from . import Band
 class FrequencyBands:
     """
     Collection of Band objects, typically used at a single decimation level.
-    
+
     Attributes
     ----------
     _band_edges : pd.DataFrame
-        DataFrame with columns ['lower_bound', 'upper_bound'] containing 
+        DataFrame with columns ['lower_bound', 'upper_bound'] containing
         frequency band boundaries
     """
 
@@ -45,7 +46,7 @@ class FrequencyBands:
     def band_edges(self, value: Union[np.ndarray, pd.DataFrame]) -> None:
         """
         Set band edges from either numpy array or DataFrame
-        
+
         Parameters
         ----------
         value : np.ndarray or pd.DataFrame
@@ -55,7 +56,7 @@ class FrequencyBands:
             if value.ndim != 2 or value.shape[1] != 2:
                 raise ValueError("band_edges array must be 2D with shape (n_bands, 2)")
             self._band_edges = pd.DataFrame(
-                value, 
+                value,
                 columns=['lower_bound', 'upper_bound']
             )
         elif isinstance(value, pd.DataFrame):
@@ -69,7 +70,7 @@ class FrequencyBands:
             raise TypeError(
                 "band_edges must be numpy array or DataFrame"
             )
-        
+
         # Reset index to ensure 0-based integer indexing
         self._band_edges.reset_index(drop=True, inplace=True)
 
@@ -83,40 +84,70 @@ class FrequencyBands:
         """Get band edges as numpy array"""
         return self._band_edges.values
 
-    def validate(self) -> None:
+    def sort(self, by: str = "center_frequency", ascending: bool = True) -> None:
         """
-        Validate and potentially reorder bands based on center frequencies.
-        """
-        band_centers = self.band_centers()
+        Sort bands by specified criterion.
         
-        # Check if band centers are monotonically increasing
-        if not np.all(band_centers[1:] > band_centers[:-1]):
-            logger.warning(
-                "Band centers are not monotonic. Attempting to reorganize bands."
+        Parameters
+        ----------
+        by : str
+            Criterion to sort by:
+            - "lower_bound": Sort by lower frequency bound
+            - "upper_bound": Sort by upper frequency bound
+            - "center_frequency": Sort by geometric center frequency (default)
+        ascending : bool
+            If True, sort in ascending order, else descending
+        """
+        if by in ["lower_bound", "upper_bound"]:
+            self._band_edges.sort_values(by=by, ascending=ascending, inplace=True)
+        elif by == "center_frequency":
+            centers = self.band_centers()
+            self._band_edges = self._band_edges.iloc[
+                np.argsort(centers)[::(-1 if not ascending else 1)]
+            ].reset_index(drop=True)
+        else:
+            raise ValueError(
+                f"Invalid sort criterion: {by}. Must be one of: "
+                "'lower_bound', 'upper_bound', 'center_frequency'"
             )
-            # Reorder bands based on center frequencies
-            self._band_edges = self._band_edges.iloc[np.argsort(band_centers)].reset_index(drop=True)
 
-    def bands(self, direction: str = "increasing_frequency") -> Generator[Band, None, None]:
+    def bands(
+        self,
+        direction: str = "increasing_frequency",
+        sortby: Optional[str] = None
+    ) -> Generator[Band, None, None]:
         """
         Generate Band objects in specified order.
-
+        
         Parameters
         ----------
         direction : str
             Order of iteration: "increasing_frequency" or "increasing_period"
-
+        sortby : str, optional
+            Sort bands before iteration:
+            - "lower_bound": Sort by lower frequency bound
+            - "upper_bound": Sort by upper frequency bound
+            - "center_frequency": Sort by geometric center frequency
+            If None, uses existing order
+            
         Yields
         ------
         Band
             Band object for each frequency band
         """
-        indices = range(self.number_of_bands)
-        if direction == "increasing_period":
-            indices = reversed(indices)
-            
-        for idx in indices:
-            yield self.band(idx)
+        if sortby is not None or direction == "increasing_period":
+            # Create a copy to avoid modifying original
+            temp_bands = FrequencyBands(self._band_edges.copy())
+            temp_bands.sort(
+                by=sortby or "center_frequency",
+                ascending=(direction == "increasing_frequency")
+            )
+            bands_to_iterate = temp_bands
+        else:
+            bands_to_iterate = self
+
+        for idx in range(bands_to_iterate.number_of_bands):
+            yield bands_to_iterate.band(idx)
 
     def band(self, i_band: int) -> Band:
         """
@@ -153,11 +184,24 @@ class FrequencyBands:
             Center frequencies/periods for each band
         """
         band_centers = np.array([
-            self.band(i).center_frequency 
+            self.band(i).center_frequency
             for i in range(self.number_of_bands)
         ])
-        
+
         if frequency_or_period == "period":
             band_centers = 1.0 / band_centers
-            
+
         return band_centers
+
+    def validate(self) -> None:
+        """
+        Validate and potentially reorder bands based on center frequencies.
+        """
+        band_centers = self.band_centers()
+        
+        # Check if band centers are monotonically increasing
+        if not np.all(band_centers[1:] > band_centers[:-1]):
+            logger.warning(
+                "Band centers are not monotonic. Attempting to reorganize bands."
+            )
+            self.sort(by="center_frequency")
