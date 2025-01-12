@@ -66,8 +66,14 @@ class TestFrequencyBands:
         # Test validate method
         assert fb.validate() is None
         
-        # Test bands generator
-        assert isinstance(fb.bands(), GeneratorType)
+        # Test bands default return type (list)
+        bands = fb.bands()
+        assert isinstance(bands, list)
+        assert len(bands) == basic_band_edges.shape[0]
+        
+        # Test bands generator return type
+        bands_gen = fb.bands(rtype="generator")
+        assert isinstance(bands_gen, GeneratorType)
         
         # Test single band access
         b = fb.band(0)
@@ -142,3 +148,61 @@ class TestFrequencyBands:
         assert fb.band(0).frequency_min == 0.1
         assert fb.band(1).frequency_min == 0.2
         assert fb.band(2).frequency_min == 0.3
+
+    def test_bands_return_types(self, sample_band_edges):
+        """Test different return types from bands method"""
+        fb = FrequencyBands(sample_band_edges)
+        
+        # Test default return type (list)
+        default_bands = fb.bands()
+        assert isinstance(default_bands, list)
+        assert len(default_bands) == 3
+        assert all(isinstance(b, Band) for b in default_bands)
+        
+        # Test explicit list return type
+        list_bands = fb.bands(rtype="list")
+        assert isinstance(list_bands, list)
+        assert len(list_bands) == 3
+        assert all(isinstance(b, Band) for b in list_bands)
+        
+        # Test generator return type
+        gen_bands = fb.bands(rtype="generator")
+        assert isinstance(gen_bands, GeneratorType)
+        
+        # Convert generator to list to check contents
+        gen_bands_list = list(gen_bands)
+        assert len(gen_bands_list) == 3
+        assert all(isinstance(b, Band) for b in gen_bands_list)
+        
+        # Test that list and generator versions give same results
+        for list_band, gen_band in zip(list_bands, gen_bands_list):
+            assert list_band.frequency_min == gen_band.frequency_min
+            assert list_band.frequency_max == gen_band.frequency_max
+        
+        # Test invalid rtype
+        with pytest.raises(ValueError, match="rtype must be either 'list' or 'generator'"):
+            fb.bands(rtype="invalid")
+
+    def test_bands_sorting_with_return_types(self, sample_band_edges):
+        """Test sorting works correctly with different return types"""
+        # Create bands in reverse order
+        reversed_edges = sample_band_edges[::-1]
+        fb = FrequencyBands(reversed_edges)
+        
+        # Test list return type with sorting
+        list_bands = fb.bands(sortby="lower_bound", rtype="list")
+        assert isinstance(list_bands, list)
+        assert list_bands[0].frequency_min == 0.1
+        assert list_bands[-1].frequency_min == 0.3
+        
+        # Test generator return type with sorting
+        gen_bands = fb.bands(sortby="lower_bound", rtype="generator")
+        assert isinstance(gen_bands, GeneratorType)
+        gen_bands_list = list(gen_bands)
+        assert gen_bands_list[0].frequency_min == 0.1
+        assert gen_bands_list[-1].frequency_min == 0.3
+        
+        # Test that both return types give same sorted results
+        for list_band, gen_band in zip(list_bands, gen_bands_list):
+            assert list_band.frequency_min == gen_band.frequency_min
+            assert list_band.frequency_max == gen_band.frequency_max

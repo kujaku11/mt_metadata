@@ -1,7 +1,7 @@
 """
 Module containing FrequencyBands class representing a collection of Frequency Band objects.
 """
-from typing import Literal, Optional, Generator, Union
+from typing import Literal, Optional, Generator, Union, List
 import pandas as pd
 import numpy as np
 import warnings
@@ -36,6 +36,14 @@ class FrequencyBands:
             self.band_edges = band_edges
         else:
             self._band_edges = pd.DataFrame(columns=['lower_bound', 'upper_bound'])
+
+    def __str__(self) -> str:
+        """Returns a Description of frequency bands"""
+        intro = "Frequency Bands:"
+        return f"{intro} \n{self._band_edges}"
+
+    def __repr__(self):
+        return self.__str__()
 
     @property
     def band_edges(self) -> pd.DataFrame:
@@ -87,7 +95,7 @@ class FrequencyBands:
     def sort(self, by: str = "center_frequency", ascending: bool = True) -> None:
         """
         Sort bands by specified criterion.
-        
+
         Parameters
         ----------
         by : str
@@ -114,11 +122,12 @@ class FrequencyBands:
     def bands(
         self,
         direction: str = "increasing_frequency",
-        sortby: Optional[str] = None
-    ) -> Generator[Band, None, None]:
+        sortby: Optional[str] = None,
+        rtype: str = "list"
+    ) -> Union[List[Band], Generator[Band, None, None]]:
         """
         Generate Band objects in specified order.
-        
+
         Parameters
         ----------
         direction : str
@@ -129,11 +138,15 @@ class FrequencyBands:
             - "upper_bound": Sort by upper frequency bound
             - "center_frequency": Sort by geometric center frequency
             If None, uses existing order
-            
-        Yields
-        ------
-        Band
-            Band object for each frequency band
+        rtype : str
+            Return type: "list" or "generator". Default is "list" for easier reuse.
+            Use "generator" for memory efficiency when bands are only iterated once.
+
+        Returns
+        -------
+        Union[List[Band], Generator[Band, None, None]]
+            Band objects for each frequency band, either as a list or generator
+            depending on rtype parameter.
         """
         if sortby is not None or direction == "increasing_period":
             # Create a copy to avoid modifying original
@@ -146,8 +159,18 @@ class FrequencyBands:
         else:
             bands_to_iterate = self
 
-        for idx in range(bands_to_iterate.number_of_bands):
-            yield bands_to_iterate.band(idx)
+        # Create generator
+        def band_generator():
+            for idx in range(bands_to_iterate.number_of_bands):
+                yield bands_to_iterate.band(idx)
+
+        # Return as requested type
+        if rtype == "generator":
+            return band_generator()
+        elif rtype == "list":
+            return list(band_generator())
+        else:
+            raise ValueError("rtype must be either 'list' or 'generator'")
 
     def band(self, i_band: int) -> Band:
         """
@@ -198,7 +221,7 @@ class FrequencyBands:
         Validate and potentially reorder bands based on center frequencies.
         """
         band_centers = self.band_centers()
-        
+
         # Check if band centers are monotonically increasing
         if not np.all(band_centers[1:] > band_centers[:-1]):
             logger.warning(
