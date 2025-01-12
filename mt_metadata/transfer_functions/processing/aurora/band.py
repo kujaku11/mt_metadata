@@ -144,3 +144,17 @@ class Band(Base):
     def center_period(self) -> float:
         """ Returns the inverse of center frequency."""
         return 1.0 / self.center_frequency
+
+    def overlaps(self, other) -> bool:
+        """ Check if this band overlaps with another"""
+        ivl = self.to_interval()
+        other_ivl = other.to_interval()
+        return ivl.overlaps(other_ivl)
+
+    def contains(self, other) -> bool:
+        """ Check if this band contains nother """
+        ivl = self.to_interval()
+        cond1 = ivl.__contains__(other.lower_bound)
+        cond2 = ivl.__contains__(other.upper_bound)
+        return cond1 & cond2
+
