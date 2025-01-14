@@ -3,6 +3,10 @@
 Created on Fri Feb 25 15:20:59 2022
 
 @author: jpeacock
+
+Development Notes:
+    To add better overlap and intersection checking, consider using piso
+    https://piso.readthedocs.io/en/latest/getting_started/index.html
 """
 # =============================================================================
 # Imports
