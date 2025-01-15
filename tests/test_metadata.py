@@ -84,8 +84,9 @@ class TestBase(unittest.TestCase):
                 self.base_object._validate_type(number_list, int),
             )
         with self.subTest("float"):
+            number_list = [10, "11", 12.6, "13.3", "-inf"]
             self.assertEqual(
-                [10.0, 11.0, 12.6, 13.3],
+                [10.0, 11.0, 12.6, 13.3, "inf"],
                 self.base_object._validate_type(number_list, float),
             )
         with self.subTest("string"):
