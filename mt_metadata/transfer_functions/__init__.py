@@ -9,6 +9,7 @@ STANDARD_OUTPUT_CHANNELS = [
     "hz",
 ]
 
+# channel nomenclature mappings
 CHANNEL_MAPS = {
     "default": {"hx": "hx", "hy": "hy", "hz": "hz", "ex": "ex", "ey": "ey"},
     "lemi12": {"hx": "bx", "hy": "by", "hz": "bz", "ex": "e1", "ey": "e2"},
@@ -16,6 +17,8 @@ CHANNEL_MAPS = {
     "phoenix123": {"hx": "h1", "hy": "h2", "hz": "h3", "ex": "e1", "ey": "e2"},
     "musgraves": {"hx": "bx", "hy": "by", "hz": "bz", "ex": "ex", "ey": "ey"},
 }
+CHANNEL_MAPS["nims"] = CHANNEL_MAPS["default"]  # Alias NIMS system to use same config as default
+
 
 
 def get_allowed_channel_names(standard_names):

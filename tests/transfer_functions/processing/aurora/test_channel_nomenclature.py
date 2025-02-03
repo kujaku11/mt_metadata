@@ -9,8 +9,29 @@ Created on Thu Feb 24 14:11:24 2022
 # =============================================================================
 import unittest
 from mt_metadata.transfer_functions.processing.aurora import ChannelNomenclature
-
+from mt_metadata.transfer_functions.processing.aurora.channel_nomenclature import SupportedNomenclature
 from mt_metadata.transfer_functions import CHANNEL_MAPS
+
+
+def test_supported_nomenclatures_lists_are_consistent():
+    """
+        The official list of supported nomenclatures is in
+        mt_metadata/transfer_functions/processing/aurora/standards/channel_nomenclatures.json
+        These are accessed through the CHANNEL_MAPS dictionary
+
+        Another list for docstring purposes is in
+        mt_metadata/transfer_functions/processing/aurora/channel_nomenlclature.py as
+        SupportedNomenclature
+
+        Check that these two are consistent.
+
+        We don't care about order so use set equality, not list equality.
+
+    """
+    supported_nomenclatures = CHANNEL_MAPS.keys()
+    typehint_supported_nomenclatures = list(SupportedNomenclature.__args__)
+    assert set(supported_nomenclatures) == set(typehint_supported_nomenclatures)
+
 
 # =============================================================================
 
