@@ -58,13 +58,14 @@ class TestChannelNomenclature(unittest.TestCase):
             self.assertTrue(cond)
 
     def test_channel_sets(self):
-        keyword = list(self.channel_maps.keys())[0]
-        ch_nom = ChannelNomenclature(keyword=keyword)
-        assert len(ch_nom.ex_ey) == 2
-        assert len(ch_nom.ex_ey_hz) == 3
-        assert len(ch_nom.hx_hy_hz) == 3
-        assert len(ch_nom.hx_hy) == 2
-        assert len(ch_nom.channels) == 5
+        allowed_keywords = list(self.channel_maps.keys())
+        for keyword in allowed_keywords:
+            ch_nom = ChannelNomenclature(keyword=keyword)
+            assert len(ch_nom.ex_ey) == 2
+            assert len(ch_nom.ex_ey_hz) == 3
+            assert len(ch_nom.hx_hy_hz) == 3
+            assert len(ch_nom.hx_hy) == 2
+            assert len(ch_nom.channels) == 5
 
     def test_repr(self):
         """Takes the __repr__ string, and casts to a dict (via json), and compares to channel_map attr"""

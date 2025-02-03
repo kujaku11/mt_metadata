@@ -11,7 +11,7 @@ from mt_metadata.base import get_schema, Base
 from mt_metadata.transfer_functions import CHANNEL_MAPS
 from .standards import SCHEMA_FN_PATHS
 
-from typing import Literal
+from typing import Dict, Literal
 # =============================================================================
 attr_dict = get_schema("channel_nomenclature", SCHEMA_FN_PATHS)
 
@@ -76,29 +76,18 @@ class ChannelNomenclature(Base):
         self._keyword = keyword
         self.update()
 
-    def get_channel_map(self) -> dict:
+    def get_channel_map(self) -> Dict[str,str]:
         """
             Based on self.keyword return the mapping between conventional channel names and
             the custom channel names in the particular nomenclature.
 
-            TODO: replace if/elif/elif...elif/else with check that keyword.lower() in CHANNEL_MAPS.keys()
-             But beware, NIMS is just a map to default and is not currently a key in CHANNEL_MAPS.
-            TODO: update typehints to use Dict[str,str]
         """
-        if self.keyword.upper() in ["DEFAULT", "NIMS"]:
-            channel_map = CHANNEL_MAPS["default"]
-        elif self.keyword.upper() == "LEMI12":
-            channel_map = CHANNEL_MAPS["lemi12"]
-        elif self.keyword.upper() == "LEMI34":
-            channel_map = CHANNEL_MAPS["lemi34"]
-        elif self.keyword.upper() == "PHOENIX123":
-            channel_map = CHANNEL_MAPS["phoenix123"]
-        elif self.keyword.upper() == "MUSGRAVES":
-            channel_map = CHANNEL_MAPS["musgraves"]
-        else:
-            msg = f"channel mt_system {self.keyword} unknown"
+        try:
+            return CHANNEL_MAPS[self.keyword.lower()]
+        except KeyError:
+            msg = f"channel mt_system {self.keyword} unknown)"
             raise NotImplementedError(msg)
-        return channel_map
+
 
     def update(self) -> None:
         """
