@@ -252,9 +252,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
-        line.format(
-            f"**{key}**", c1, "**Description**", c2, "**Example**", c3
-        ),
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -449,14 +447,43 @@ def recursive_split_getattr(base_object, name, sep="."):
     return value, prop
 
 
-def recursive_split_setattr(base_object, name, value, sep="."):
+def recursive_split_setattr(
+    base_object, name, value, sep=".", skip_validation=False
+):
+    """
+    Recursively split a name and set the value of the last key. Recursion splits on the separator present in the name.
+
+    :param base_object: The object having its attribute set, or a "parent" object in the recursive/nested scenario
+    :type base_object: object
+    :param name: The name of the attribute to set
+    :type name: str
+    :param value: The value to set the attribute to
+    :type value: any
+    :param sep: The separator to split the name on, defaults to "."
+    :type sep: str, optional
+    :param skip_validation: Whether to skip validation/parse of the attribute, defaults to False
+    :type skip_validation: Optional[bool]
+
+    :return: None
+    :rtype: NoneType
+
+    """
     key, *other = name.split(sep, 1)
 
-    if other:
-        base_object = getattr(base_object, key)
-        recursive_split_setattr(base_object, other[0], value)
+    if skip_validation:
+        if other:
+            base_object = getattr(base_object, key)
+            recursive_split_setattr(
+                base_object, other[0], value, skip_validation=True
+            )
+        else:
+            base_object.setattr_skip_validation(key, value)
     else:
-        setattr(base_object, key, value)
+        if other:
+            base_object = getattr(base_object, key)
+            recursive_split_setattr(base_object, other[0], value)
+        else:
+            setattr(base_object, key, value)
 
 
 def structure_dict(meta_dict, sep="."):
@@ -637,7 +664,6 @@ def element_to_string(element):
 # Helper function to be sure everything is encoded properly
 # =============================================================================
 class NumpyEncoder(json.JSONEncoder):
-
     """
     Need to encode numpy ints and floats for json to work
     """

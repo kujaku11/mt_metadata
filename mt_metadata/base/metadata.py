@@ -31,6 +31,8 @@ from . import helpers
 from mt_metadata.base.helpers import write_lines
 
 attr_dict = {}
+
+
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
@@ -38,9 +40,9 @@ attr_dict = {}
 
 class Base:
     __doc__ = write_lines(attr_dict)
+    _base_attr_loaded = False
 
     def __init__(self, attr_dict={}, **kwargs):
-
         self._changed = False
 
         self._class_name = validate_attribute(self.__class__.__name__)
@@ -48,12 +50,14 @@ class Base:
         self.logger = logger
         self._debug = False
 
-        self._set_attr_dict(attr_dict)
+        # attr_dict from subclass has already been validated on json load, so we shouldn't need to validate it again...
+        # re-validation of the attribute dictionary used to contribute to some slowness in instantiation of subclasses
+        self._set_attr_dict(attr_dict, skip_validation=True)
 
         for name, value in kwargs.items():
-            self.set_attr_from_name(name, value)
+            self.set_attr_from_name(name, value, skip_validation=False)
 
-    def _set_attr_dict(self, attr_dict):
+    def _set_attr_dict(self, attr_dict, skip_validation=False):
         """
         Set attribute dictionary and variables.
 
@@ -61,13 +65,15 @@ class Base:
 
         :param attr_dict: attribute dictionary
         :type attr_dict: dict
+        :param skip_validation: skip validation/parse of the attribute dictionary
+        :type skip_validation: bool
 
         """
 
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            self.set_attr_from_name(key, value_dict["default"])
+            self.set_attr_from_name(key, value_dict["default"], skip_validation)
 
     def __str__(self):
         """
@@ -116,7 +122,7 @@ class Base:
                         if value.size != other_value.size:
                             msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
                             self.logger.info(msg)
-                            fail=True
+                            fail = True
                             continue
                         if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
@@ -329,7 +335,11 @@ class Base:
                 + f" are allowed.  Allowing {option_list} to be set to {value}."
             )
             return True, other_possible, msg
-        return False, other_possible, f"Value '{value}' for metadata field '{name}' not found in options list {option_list}"
+        return (
+            False,
+            other_possible,
+            f"Value '{value}' for metadata field '{name}' not found in options list {option_list}",
+        )
 
     def __setattr__(self, name, value):
         """
@@ -399,7 +409,9 @@ class Base:
                 # check options
                 if v_dict["style"] == "controlled vocabulary":
                     options = v_dict["options"]
-                    accept, other, msg = self._validate_option(name, value, options)
+                    accept, other, msg = self._validate_option(
+                        name, value, options
+                    )
                     if not accept:
                         self.logger.error(msg.format(value, options))
                         raise MTSchemaError(msg.format(value, options))
@@ -473,7 +485,20 @@ class Base:
             return value
         return self._validate_type(value, v_type)
 
-    def set_attr_from_name(self, name, value):
+    def setattr_skip_validation(self, name, value):
+        """
+        Set attribute without validation
+
+        :param name: name of attribute
+        :type name: string
+
+        :param value: value of the new attribute
+        :type value: described in value_dict
+
+        """
+        self.__dict__[name] = value
+
+    def set_attr_from_name(self, name, value, skip_validation=False):
         """
         Helper function to set attribute from the given name.
 
@@ -487,6 +512,8 @@ class Base:
         :type name: string
         :param value: attribute value
         :type value: type is defined by the attribute name
+        :param skip_validation: skip validation/parse of the key-value pair
+        :type skip_validation: bool
 
         :Example:
 
@@ -497,7 +524,9 @@ class Base:
         """
         if "." in name:
             try:
-                helpers.recursive_split_setattr(self, name, value)
+                helpers.recursive_split_setattr(
+                    self, name, value, skip_validation=skip_validation
+                )
             except AttributeError as error:
                 msg = (
                     "{0} is not in the current standards.  "
@@ -508,7 +537,10 @@ class Base:
                 self.logger.error(msg.format(name))
                 raise AttributeError(error)
         else:
-            setattr(self, name, value)
+            if skip_validation:
+                self.setattr_skip_validation(name, value)
+            else:
+                setattr(self, name, value)
 
     def add_base_attribute(self, name, value, value_dict):
         """
