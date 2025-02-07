@@ -50,9 +50,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.author", "none"),
                 ("provenance.archive.comments", "IRIS DMC MetaData"),
-                ("provenance.archive.name", None),
                 ("provenance.archive.url", "http://www.iris.edu/mda/EM/GAA54"),
                 ("provenance.creation_time", "2018-01-03T12:46:46+00:00"),
                 (
@@ -60,10 +58,6 @@ class TestEMTFXML(unittest.TestCase):
                     "Gary Egbert, Lana Erofeev and Anna Kelbert",
                 ),
                 ("provenance.creator.email", "egbert@coas.oregonstate.edu"),
-                (
-                    "provenance.creator.name",
-                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
-                ),
                 ("provenance.creator.organization", "Oregon State University"),
                 ("provenance.creator.url", "http://oregonstate.edu"),
                 ("provenance.software.author", None),
@@ -74,11 +68,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
-                ("provenance.submitter.name", "Anna Kelbert"),
-                (
-                    "provenance.submitter.organization",
-                    "U.S. Geological Survey",
-                ),
+                ("provenance.submitter.organization", "U.S. Geological Survey"),
                 ("provenance.submitter.url", "http://geomag.usgs.gov"),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["GAA54b"]),
@@ -91,10 +81,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.id", "GAA54"),
                 (
                     "transfer_function.processed_by.author",
-                    "Gary Egbert, Lana Erofeev and Anna Kelbert",
-                ),
-                (
-                    "transfer_function.processed_by.name",
                     "Gary Egbert, Lana Erofeev and Anna Kelbert",
                 ),
                 ("transfer_function.processed_date", "1980-01-01"),
