@@ -2114,7 +2114,7 @@ class TF:
                 "tipper": "t",
                 "tipper_error": "t_err",
                 "survey_metadata": "survey_metadata",
-                "station_metadata": "station_metadata",
+                # "station_metadata": "station_metadata",
             }
         )
 
