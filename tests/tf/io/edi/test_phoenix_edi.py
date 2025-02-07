@@ -15,6 +15,7 @@ from mt_metadata.transfer_functions.io import edi
 from mt_metadata.transfer_functions import TF
 from mt_metadata import TF_EDI_PHOENIX
 
+
 # =============================================================================
 # Phoenix
 # =============================================================================
@@ -334,7 +335,7 @@ class TestFromTF(unittest.TestCase):
             if edi_key in [
                 "comments",
                 "transfer_function.remote_references",
-                "transfer_function.processing_parameters",
+                # "transfer_function.processing_parameters",
             ]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
