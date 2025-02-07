@@ -2375,7 +2375,6 @@ class TF:
         if not isinstance(avg_obj, ZongeMTAvg):
             raise TypeError(f"Input must be a ZMM object not {type(avg_obj)}")
         self.survey_metadata = avg_obj.survey_metadata
-        self.station_metadata = avg_obj.station_metadata
 
         self.period = 1.0 / avg_obj.frequency
         self.impedance = avg_obj.z
