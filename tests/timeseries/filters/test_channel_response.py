@@ -29,7 +29,10 @@ class TestFAPFilter(unittest.TestCase):
     def setUp(self):
 
         self.td = TimeDelayFilter(
-            units_in="volts", units_out="volts", delay=-0.25, name="example_time_delay"
+            units_in="volts",
+            units_out="volts",
+            delay=-0.25,
+            name="example_time_delay",
         )
         self.fap = FrequencyResponseTableFilter(
             units_in="volts", units_out="volts", name="example_fap"
@@ -194,7 +197,10 @@ class TestFAPFilter(unittest.TestCase):
         self.pz.normalization_factor = 2002.269
 
         self.cf = CoefficientFilter(
-            units_in="v", units_out="v", name="example_coefficient", gain=10,
+            units_in="v",
+            units_out="v",
+            name="example_coefficient",
+            gain=10,
         )
 
         self.cr = ChannelResponse(
@@ -204,7 +210,9 @@ class TestFAPFilter(unittest.TestCase):
 
     def test_pass_band(self):
         self.assertTrue(
-            np.isclose(self.cr.pass_band, np.array([0.1018629, 1.02334021])).all()
+            np.isclose(
+                self.cr.pass_band, np.array([0.1018629, 1.02334021])
+            ).all()
         )
 
     def test_complex_response(self):
@@ -252,7 +260,8 @@ class TestFAPFilter(unittest.TestCase):
 
     def test_names(self):
         self.assertListEqual(
-            self.cr.names, [self.pz.name, self.fap.name, self.cf.name, self.td.name]
+            self.cr.names,
+            [self.pz.name, self.fap.name, self.cf.name, self.td.name],
         )
 
     def test_total_delay(self):
@@ -264,7 +273,6 @@ class TestFAPFilter(unittest.TestCase):
     def test_instrument_sensitivity(self):
         s = 62.01227179
         for sig_figs in [3, 6, 9]:
-            print(self.cr.compute_instrument_sensitivity(sig_figs=sig_figs))
             with self.subTest(msg=f"significant_digits {sig_figs}"):
                 self.assertAlmostEqual(
                     self.cr.compute_instrument_sensitivity(sig_figs=sig_figs),
@@ -322,6 +330,7 @@ class TestFAPFilter(unittest.TestCase):
 
     #     with self.subTest("test name"):
     #         self.assertEqual(stage.name, cr.frequenciesap.name)
+
 
 # =============================================================================
 # Run

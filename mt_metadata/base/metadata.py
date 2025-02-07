@@ -50,8 +50,10 @@ class Base:
         self.logger = logger
         self._debug = False
 
-        # attr_dict from subclass has already been validated on json load, so we shouldn't need to validate it again...
-        # re-validation of the attribute dictionary used to contribute to some slowness in instantiation of subclasses
+        # attr_dict from subclass has already been validated on json load, so
+        # we shouldn't need to validate it again re-validation of the attribute
+        # dictionary used to contribute to some slowness in instantiation of
+        # subclasses
         self._set_attr_dict(attr_dict, skip_validation=True)
 
         for name, value in kwargs.items():
