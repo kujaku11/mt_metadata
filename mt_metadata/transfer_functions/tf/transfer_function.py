@@ -41,7 +41,6 @@ class TransferFunction(Base):
         self.processing_config = None
 
         super().__init__(attr_dict=attr_dict)
-        self.processing_parameters = []
 
         for key, value in kwargs.items():
             self.set_attr_from_name(key, value)

@@ -384,11 +384,6 @@ class TestEMpowerTF(unittest.TestCase):
             "transfer_function.data_quality.rating.value = 0",
             "transfer_function.id = 701_merged_wrcal",
             "transfer_function.processed_date = 2023-05-30",
-            (
-                "transfer_function.processing_parameters.processing_parameters = "
-                "[NDec = 1, NFFT = 128, Ntype = 1, RRType = None, "
-                "RemoveLargeLines = true, RotMaxE = false]"
-            ),
             "transfer_function.remote_references = []",
             "transfer_function.runs_processed = ['701_merged_wrcala']",
             "transfer_function.sign_convention = +",
