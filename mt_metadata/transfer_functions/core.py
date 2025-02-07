@@ -1941,7 +1941,7 @@ class TF:
                     "residual_covariance": "residual_covariance",
                     "transfer_function_error": "tf_err",
                     "survey_metadata": "survey_metadata",
-                    "station_metadata": "station_metadata",
+                    # "station_metadata": "station_metadata",
                     "_rotation_angle": "rotation_angle",
                 }
             )
@@ -1954,7 +1954,7 @@ class TF:
                     "tipper": "t",
                     "tipper_error": "t_err",
                     "survey_metadata": "survey_metadata",
-                    "station_metadata": "station_metadata",
+                    # "station_metadata": "station_metadata",
                     "_rotation_angle": "rotation_angle",
                 }
             )
