@@ -50,6 +50,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.author", "none"),
                 ("provenance.archive.comments", "IRIS DMC MetaData"),
                 ("provenance.archive.name", None),
                 ("provenance.archive.url", "http://www.iris.edu/mda/ZU/NMX20"),

@@ -63,6 +63,8 @@ attr_dict.add_dict(
     get_schema("citation", TS_SCHEMA_FN_PATHS), None, keys=["doi"]
 )
 attr_dict["doi"]["required"] = False
+
+
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
