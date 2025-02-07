@@ -118,6 +118,8 @@ class Base:
                 )
             fail = False
             for key, value in home_dict.items():
+                if "creation_time" in key:
+                    continue
                 try:
                     other_value = other_dict[key]
                     if isinstance(value, np.ndarray):
