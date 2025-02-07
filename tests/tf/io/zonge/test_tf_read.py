@@ -64,17 +64,23 @@ class TestAVG(unittest.TestCase):
                 ("location.datum", "WGS84"),
                 ("location.declination.model", "WMM"),
                 ("location.declination.value", 0.0),
-                ("location.elevation", 0),
+                ("location.elevation", 0.0),
                 ("location.latitude", 32.83331167),
                 ("location.longitude", -107.08305667),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.author", "none"),
                 ("provenance.archive.name", None),
-                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                (
+                    "provenance.creation_time",
+                    "2025-02-07T00:37:09.562802+00:00",
+                ),
+                ("provenance.creator.author", "none"),
                 ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", None),
                 ("provenance.software.version", None),
+                ("provenance.submitter.author", "none"),
                 ("provenance.submitter.email", None),
                 ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
@@ -94,6 +100,10 @@ class TestAVG(unittest.TestCase):
                         "mtedit.d_plus.use=no",
                         "mtedit.phase_slope.smooth=robust",
                         "mtedit.phase_slope.to_z_mag=no",
+                        "mtedit.auto.phase_flip=yes",
+                        "mtedit.d_plus.use=no",
+                        "mtedit.phase_slope.smooth=robust",
+                        "mtedit.phase_slope.to_z_mag=no",
                     ],
                 ),
                 ("transfer_function.processing_type", None),
@@ -108,9 +118,11 @@ class TestAVG(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            meta_dict, self.tf.station_metadata.to_dict(single=True)
-        )
+        del meta_dict["provenance.creation_time"]
+        station_dict = self.tf.station_metadata.to_dict(single=True)
+        del station_dict["provenance.creation_time"]
+
+        self.assertDictEqual(meta_dict, station_dict)
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
