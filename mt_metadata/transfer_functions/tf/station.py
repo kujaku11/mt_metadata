@@ -21,7 +21,6 @@ from mt_metadata.timeseries.standards import (
     SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
 )
 from mt_metadata.utils.validators import validate_value_type
-from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 from . import (
     Fdsn,
     Orientation,
@@ -30,7 +29,9 @@ from . import (
     Location,
     TimePeriod,
     Run,
+    TransferFunction,
 )
+
 from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
@@ -67,9 +68,6 @@ attr_dict.add_dict(
 )
 attr_dict["doi"]["required"] = False
 
-attr_dict = copy.deepcopy(attr_dict)
-attr_dict["transfer_function.processing_paramters"]["default"] = []
-
 
 # =============================================================================
 class Station(Base):
@@ -87,6 +85,8 @@ class Station(Base):
         self.transfer_function = TransferFunction()
         self.runs = ListDict()
 
+        attr_dict = copy.deepcopy(attr_dict)
+        attr_dict["transfer_function.processing_paramters"]["default"] = []
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         print("Initializing")
