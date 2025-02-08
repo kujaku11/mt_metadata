@@ -85,12 +85,8 @@ class Station(Base):
         self.transfer_function = TransferFunction()
         self.runs = ListDict()
 
-        attr_dict = copy.deepcopy(attr_dict)
-        attr_dict["transfer_function.processing_paramters"]["default"] = []
         super().__init__(attr_dict=attr_dict, **kwargs)
-
-        print("Initializing")
-        print(self.transfer_function.processing_parameters)
+        self.transfer_function.processing_parameters = []
 
     def __add__(self, other):
         if isinstance(other, Station):
