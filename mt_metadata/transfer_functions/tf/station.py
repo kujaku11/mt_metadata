@@ -12,6 +12,7 @@ Created on Wed Dec 23 21:30:36 2020
 # Imports
 # =============================================================================
 import numpy as np
+import copy
 from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
@@ -20,6 +21,7 @@ from mt_metadata.timeseries.standards import (
     SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
 )
 from mt_metadata.utils.validators import validate_value_type
+from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 from . import (
     Fdsn,
     Orientation,
@@ -28,7 +30,6 @@ from . import (
     Location,
     TimePeriod,
     Run,
-    TransferFunction,
 )
 from mt_metadata.utils.list_dict import ListDict
 
@@ -56,13 +57,18 @@ attr_dict.add_dict(
 )
 
 attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
-attr_dict.add_dict(TransferFunction()._attr_dict, "transfer_function")
+attr_dict.add_dict(
+    copy.deepcopy(TransferFunction()._attr_dict), "transfer_function"
+)
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(
     get_schema("citation", TS_SCHEMA_FN_PATHS), None, keys=["doi"]
 )
 attr_dict["doi"]["required"] = False
+
+attr_dict = copy.deepcopy(attr_dict)
+attr_dict["transfer_function.processing_paramters"]["default"] = []
 
 
 # =============================================================================
@@ -80,7 +86,11 @@ class Station(Base):
         self.time_period = TimePeriod()
         self.transfer_function = TransferFunction()
         self.runs = ListDict()
+
         super().__init__(attr_dict=attr_dict, **kwargs)
+
+        print("Initializing")
+        print(self.transfer_function.processing_parameters)
 
     def __add__(self, other):
         if isinstance(other, Station):

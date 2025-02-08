@@ -1096,7 +1096,6 @@ class EDI(object):
             elif "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
                 if "processing_parameters" in key:
-                    print(key, value)
                     param = key.split(".")[-1]
                     sm.transfer_function.processing_parameters.append(
                         f"{param}={value}"
