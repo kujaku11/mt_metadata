@@ -86,7 +86,15 @@ class Station(Base):
         self.runs = ListDict()
 
         super().__init__(attr_dict=attr_dict, **kwargs)
+        # for now this is a hack.  Somewhere processing paramters is being
+        # set globally.  This will reset to default of empty list
         self.transfer_function.processing_parameters = []
+        try:
+            self.transfer_function.processing_parameters = kwargs[
+                "transfer_function.processing_parameters"
+            ]
+        except KeyError:
+            pass
 
     def __add__(self, other):
         if isinstance(other, Station):
