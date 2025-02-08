@@ -54,7 +54,7 @@ class Base:
         # we shouldn't need to validate it again re-validation of the attribute
         # dictionary used to contribute to some slowness in instantiation of
         # subclasses
-        self._set_attr_dict(attr_dict, skip_validation=True)
+        self._set_attr_dict(deepcopy(attr_dict), skip_validation=True)
 
         for name, value in kwargs.items():
             self.set_attr_from_name(name, value, skip_validation=False)
