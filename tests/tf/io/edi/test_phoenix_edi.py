@@ -335,7 +335,7 @@ class TestFromTF(unittest.TestCase):
             if edi_key in [
                 "comments",
                 "transfer_function.remote_references",
-                # "transfer_function.processing_parameters",
+                "transfer_function.processing_parameters",
             ]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
