@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -21,6 +21,7 @@ from . import (
     Fdsn,
     Orientation,
     Person,
+    provenance,
     Provenance,
     Location,
     TimePeriod,
@@ -46,8 +47,9 @@ attr_dict.add_dict(
     keys=["name", "comments", "organization"],
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
+
 attr_dict.add_dict(
-    Provenance()._attr_dict,
+    provenance.attr_dict,
     "provenance",
 )
 

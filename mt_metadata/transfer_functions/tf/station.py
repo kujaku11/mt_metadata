@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -20,6 +20,7 @@ from mt_metadata.timeseries.standards import (
     SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
 )
 from mt_metadata.utils.validators import validate_value_type
+from mt_metadata.timeseries import provenance
 from . import (
     Fdsn,
     Orientation,
@@ -51,7 +52,7 @@ attr_dict.add_dict(
 )
 attr_dict.add_dict(get_schema("orientation", TS_SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
-    Provenance()._attr_dict,
+    provenance.attr_dict,
     "provenance",
 )
 
