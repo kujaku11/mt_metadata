@@ -701,8 +701,8 @@ def requires(**requirements):
 
     Parameters
     ----------
-    **requirements : dict[str, obj]
-        Dictionary of package name and object pairs required for
+    **requirements : obj
+        keywords of package name and the required object for
         a function.
 
     Returns
