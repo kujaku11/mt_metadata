@@ -5,8 +5,13 @@ Test FAP tables
 
 """
 import unittest
+import pytest
 import numpy as np
-from obspy.core import inventory
+
+try:
+    from obspy.core import inventory
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment

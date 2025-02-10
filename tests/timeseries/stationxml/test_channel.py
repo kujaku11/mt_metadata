@@ -12,9 +12,13 @@ Created on Sun Feb 21 15:17:41 2021
 # Imports
 # =============================================================================
 import unittest
+import pytest
 from collections import OrderedDict
 
-from obspy import read_inventory
+try:
+    from obspy import read_inventory
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries.filters.obspy_stages import (

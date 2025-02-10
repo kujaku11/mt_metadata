@@ -23,7 +23,11 @@ Notes:
 
 """
 import unittest
-from obspy.core import inventory
+import pytest
+try:
+    from obspy.core import inventory
+except ImportError:
+    pytest.skip("obspy is not installed.", allow_module_level=True)
 
 from mt_metadata.timeseries.filters import (
     ChannelResponse,

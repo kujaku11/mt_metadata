@@ -4,7 +4,7 @@ Test translation from xml to mtml back to xml
 
 Created on Fri Mar 26 08:15:49 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -14,7 +14,11 @@ Created on Fri Mar 26 08:15:49 2021
 # Imports
 # =============================================================================
 import unittest
-from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+import pytest
+try:
+    from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 from mt_metadata import STATIONXML_MAGNETIC
 from obspy.core import inventory
 
