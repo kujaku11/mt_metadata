@@ -6,7 +6,6 @@ Idea here is to add logic to interrogate stage filters received from StationXML
 # Imports
 # =============================================================================
 import numpy as np
-import obspy
 from loguru import logger
 
 from mt_metadata.timeseries.filters import (
@@ -124,7 +123,7 @@ def create_filter_from_stage(stage):
 
     """
 
-    if isinstance(stage, obspy.core.inventory.response.PolesZerosResponseStage):
+    try:
         if stage.poles == [] and stage.zeros == []:
             if (
                 "counts" not in stage.input_units.lower()
@@ -137,18 +136,20 @@ def create_filter_from_stage(stage):
                 return create_coefficent_filter_from_stage(stage)
 
         return create_pole_zero_filter_from_stage(stage)
+    except AttributeError:
+        pass
 
-    elif isinstance(
-        stage, obspy.core.inventory.response.CoefficientsTypeResponseStage
-    ):
+    try:
         is_a_delay_filter = check_if_coefficient_filter_is_delay_only(stage)
         if is_a_delay_filter:
             obspy_filter = create_time_delay_filter_from_stage(stage)
         else:
             obspy_filter = create_coefficent_filter_from_stage(stage)
         return obspy_filter
+    except AttributeError:
+        pass
 
-    elif isinstance(stage, obspy.core.inventory.response.FIRResponseStage):
+    try:
         try:
             if isinstance(stage.coefficients, list):
                 pass
@@ -162,18 +163,22 @@ def create_filter_from_stage(stage):
             raise ValueError(msg)
         obspy_filter = create_fir_filter_from_stage(stage)
         return obspy_filter
+    except AttributeError:
+        pass
 
-    elif isinstance(
-        stage, obspy.core.inventory.response.ResponseListResponseStage
-    ):
+    try:
         obspy_filter = create_frequency_response_table_filter_from_stage(stage)
         return obspy_filter
+    except AttributeError:
+        pass
 
-    elif isinstance(stage, obspy.core.inventory.response.ResponseStage):
+    try:
         obspy_filter = create_coefficent_filter_from_stage(stage)
         return obspy_filter
+    except AttributeError:
+        pass
 
     else:
-        msg = "Filter Stage of type {type(stage)} not known, or supported"
+        msg = f"Filter Stage of type {type(stage)} not known, or supported"
         logger.info(msg)
         raise TypeError(msg)
