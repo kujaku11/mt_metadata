@@ -19,31 +19,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup Conda
+    - name: Setup Miniconda
       uses: s-weigand/setup-conda@v1.0.6
       with:
         update-conda: false
+        activate-environment: mtmetadata-test
         python-version: ${{ matrix.python-version }}
 
     - name: Install Env
       shell: bash
       run: |
         python --version
-        conda create -n mtmetadata-test python=${{ matrix.python-version }}
-        source activate mtmetadata-test
-        conda install pytest
-        conda install pytest-cov
+        conda install -c conda-forge pytest
+        conda install -c conda-forge pytest-cov
         
     - name: Install Our Package
       shell: bash
       run: |
-        source activate mtmetadata-test
+        # source activate mtmetadata-test
         pip install -e .
         conda list
+        pip freeze
     - name: Run Tests
       shell: bash
       run: |
-        source activate mtmetadata-test
+        # source activate mtmetadata-test
         pytest --cov=./ --cov-report=xml --cov=mt_metadata
         
     - name: "Upload coverage to Codecov"
