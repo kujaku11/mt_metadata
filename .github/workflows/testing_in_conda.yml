@@ -25,6 +25,7 @@ jobs:
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
+        activate-environment: mtmetadata-test
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
 
