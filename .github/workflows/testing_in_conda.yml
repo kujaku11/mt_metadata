@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v3
     - name: Setup Miniconda
-      uses: s-weigand/setup-conda@v1.0.6
+      uses: conda-incubator/setup-miniconda@v2.1.1
       with:
         update-conda: false
         activate-environment: mtmetadata-test
@@ -30,8 +30,7 @@ jobs:
       shell: bash
       run: |
         python --version
-        conda install -c conda-forge pytest
-        conda install -c conda-forge pytest-cov
+        conda install -c conda-forge pytest pytest-cov
         
     - name: Install Our Package
       shell: bash
