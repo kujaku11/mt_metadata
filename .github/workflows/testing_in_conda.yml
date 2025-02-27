@@ -22,7 +22,6 @@ jobs:
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v2.1.1
       with:
-        update-conda: false
         activate-environment: mtmetadata-test
         python-version: ${{ matrix.python-version }}
 
