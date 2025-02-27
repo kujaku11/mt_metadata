@@ -24,7 +24,7 @@ DATETIME_HINT = Union[
     np.datetime64,
     pd.Timestamp,
     str,
-    datetime,
+    datetime.datetime,
 ]
 
 try:
