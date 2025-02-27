@@ -11,6 +11,9 @@ jobs:
   setup-build:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -el {0}
     strategy:
       fail-fast: false
       matrix:
@@ -18,15 +21,14 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v2.1.1
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        activate-environment: mtmetadata-test
+        auto-update-conda: true
         python-version: ${{ matrix.python-version }}
 
     - name: Install Env
-      shell: bash
       run: |
         python --version
         conda install -c conda-forge pytest pytest-cov
@@ -37,10 +39,9 @@ jobs:
         pip install -e .
         conda list
         pip freeze
+        
     - name: Run Tests
-      shell: bash
-      run: |
-        pytest --cov=./ --cov-report=xml --cov=mt_metadata
+      run: pytest --cov=./ --cov-report=xml --cov=mt_metadata
         
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v3
