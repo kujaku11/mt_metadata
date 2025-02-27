@@ -35,14 +35,12 @@ jobs:
     - name: Install Our Package
       shell: bash
       run: |
-        # source activate mtmetadata-test
         pip install -e .
         conda list
         pip freeze
     - name: Run Tests
       shell: bash
       run: |
-        # source activate mtmetadata-test
         pytest --cov=./ --cov-report=xml --cov=mt_metadata
         
     - name: "Upload coverage to Codecov"
