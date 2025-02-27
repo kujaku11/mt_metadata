@@ -25,21 +25,20 @@ jobs:
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        activate-environment: mtmetadata-test
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
 
     - name: Install Env
       run: |
         python --version
-        conda install -c conda-forge pytest pytest-cov
+        conda install pytest
+        conda install pytest-cov
         
     - name: Install Our Package
       shell: bash
       run: |
         pip install -e .
         conda list
-        pip freeze
         
     - name: Run Tests
       run: pytest --cov=./ --cov-report=xml --cov=mt_metadata
