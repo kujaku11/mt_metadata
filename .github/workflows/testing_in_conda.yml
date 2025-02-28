@@ -30,7 +30,7 @@ jobs:
     - name: Install Env
       run: |
         python --version
-        conda install pytest=8.3.3
+        conda install pytest=8.1.2
         conda install pytest-cov
         conda install pytest-subtests
         
