@@ -10,12 +10,23 @@
         "example": "[1, 2, 3]",
 		"default": null
     },
-	"channels": {
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "ID given to the FC group",
+        "options": [],
+        "alias": [],
+        "example": "aurora_01",
+		"default": null
+    },
+	"channels_estimated": {
         "type": "string",
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "list of channels",
+        "description": "list of channels estimated",
         "options": [],
         "alias": [],
         "example": "[ex, hy]",

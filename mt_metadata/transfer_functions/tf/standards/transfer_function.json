@@ -23,7 +23,7 @@
         ],
         "alias": [],
         "example": "+",
-		"default": null
+		"default": "+"
     },
     "units": {
         "type": "string",
@@ -83,6 +83,17 @@
         "alias": [],
         "example": "[nfft=4096, n_windows=16]",
 		"default": []
+    },
+    "processing_type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of processing",
+        "options": [],
+        "alias": [],
+        "example": "robust remote reference",
+		"default": null
     },
 	"coordinate_system": {
         "type": "string",

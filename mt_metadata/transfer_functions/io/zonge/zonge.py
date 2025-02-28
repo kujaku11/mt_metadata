@@ -16,6 +16,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from loguru import logger
 
 from .metadata import Header
 from mt_metadata.transfer_functions.tf import (
@@ -25,6 +26,8 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
     Electric,
 )
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
+
 
 # ==============================================================================
 # deal with avg files output from mtedit
@@ -35,7 +38,7 @@ class ZongeMTAvg:
     """
 
     def __init__(self, fn=None, **kwargs):
-
+        self.logger = logger
         self.header = Header()
 
         self.info_keys = [
@@ -119,7 +122,7 @@ class ZongeMTAvg:
         else:
             self._fn = None
 
-    def read(self, fn=None):
+    def read(self, fn=None, get_elevation=False):
         """
         Read into a pandas data frame
 
@@ -173,6 +176,12 @@ class ZongeMTAvg:
 
         self.z, self.z_err = self._fill_z()
         self.t, self.t_err = self._fill_t()
+
+        if self.header.elevation == 0 and get_elevation:
+            if self.header.latitude != 0 and self.header.longitude != 0:
+                self.header.elevation = get_nm_elev(
+                    self.header.latitude, self.header.longitude
+                )
 
     def to_complex(self, zmag, zphase):
         """
@@ -250,7 +259,9 @@ class ZongeMTAvg:
         """
 
         if "tzx" not in self.df.comp.to_list():
-            self.header.logger.debug("No Tipper found in %s", self.fn.name)
+            self.header.logger.debug(
+                "No Tipper found in {self.fn.name}",
+            )
             return None, None
 
         t = np.zeros((self.n_freq, 1, 2), dtype=complex)
@@ -470,7 +481,10 @@ class ZongeMTAvg:
 
     @property
     def survey_metadata(self):
-        return Survey()
+        sm = Survey()
+        sm.add_station(self.station_metadata)
+        sm.update_time_period()
+        return sm
 
     def write(self, fn):
         """

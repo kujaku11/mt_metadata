@@ -118,18 +118,27 @@ class TestWriteEMTFXML(unittest.TestCase):
         self.assertEqual(self.x0.field_notes, self.x1.field_notes)
 
     def test_processing_info(self):
-        with self.subTest("attribute"):
-            self.assertDictEqual(
-                self.x0.processing_info.to_dict(single=True),
-                self.x1.processing_info.to_dict(single=True),
-            )
+        d0 = self.x0.processing_info.to_dict(single=True)
+        d1 = self.x1.processing_info.to_dict(single=True)
 
-        # The rounding is not the same
-        with self.subTest("to_xml"):
-            self.assertMultiLineEqual(
-                self.x0.processing_info.to_xml(string=True),
-                self.x1.processing_info.to_xml(string=True),
-            )
+        for key, value_0 in d0.items():
+            value_1 = d1[key]
+            with self.subTest(f"{key}"):
+                if "tag" in key:
+                    self.assertNotEqual(value_0, value_1)
+                else:
+                    self.assertEqual(value_0, value_1)
+
+    def test_processing_info_to_xml(self):
+        x0 = self.x0.processing_info.to_xml(string=True).split("\n")
+        x1 = self.x1.processing_info.to_xml(string=True).split("\n")
+
+        for line_0, line_1 in zip(x0, x1):
+            with self.subTest(line_0):
+                if "ProcessingTag" in line_0:
+                    self.assertNotEqual(line_0, line_1)
+                else:
+                    self.assertEqual(line_0, line_1)
 
     def test_statistical_estimates(self):
         for estimate_01 in self.x0.statistical_estimates.estimates_list:

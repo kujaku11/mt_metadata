@@ -22,10 +22,8 @@ from mt_metadata.utils import validators
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata import REQUIRED_KEYS
 from mt_metadata.base.helpers import NumpyEncoder
-from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata import LOG_LEVEL
+from loguru import logger
 
-logger = setup_logger(__name__, fn="metadata_schema", level=LOG_LEVEL)
 # =============================================================================
 # base dictionary
 # =============================================================================
@@ -69,8 +67,11 @@ class BaseDict(MutableMapping):
         try:
             return self.__dict__[key]
         except KeyError as error:
-            msg = "%s %s is not in dictionary yet. Returning default schema dictionary."
-            logger.debug(msg, error, key)
+            msg = (
+                f"{error}, {key} is not in dictionary yet. "
+                "Returning default schema dictionary."
+            )
+            logger.debug(msg)
             return {
                 "type": "string",
                 "required": False,
@@ -139,7 +140,9 @@ class BaseDict(MutableMapping):
 
         """
         if not isinstance(add_dict, (dict, MutableMapping)):
-            msg = "add_dict takes only a dictionary not type {0}".format(type(add_dict))
+            msg = "add_dict takes only a dictionary not type {0}".format(
+                type(add_dict)
+            )
             logger.error(msg)
             raise TypeError(msg)
 
@@ -183,12 +186,24 @@ class BaseDict(MutableMapping):
         end = [r"\end{tabular}", r"\label{tab:}", r"\end{table}"]
         header = [
             " & ".join(
-                [r"\textbf{Metadata Key}", r"\textbf{Description}", r"\textbf{Example}"]
+                [
+                    r"\textbf{Metadata Key}",
+                    r"\textbf{Description}",
+                    r"\textbf{Example}",
+                ]
             )
             + " \\ \toprule"
         ]
 
-        order = ["name", "required", "units", "type", "style", "description", "example"]
+        order = [
+            "name",
+            "required",
+            "units",
+            "type",
+            "style",
+            "description",
+            "example",
+        ]
 
         level_dict = OrderedDict(sorted(self.items(), key=itemgetter(0)))
 
@@ -199,14 +214,18 @@ class BaseDict(MutableMapping):
         lines = []
         for name, v_dict in level_dict.items():
             if not v_dict["options"] in [None, "none", "None", []]:
-                v_dict["description"] += ".  Options: {0}".format(v_dict["options"])
+                v_dict["description"] += ".  Options: {0}".format(
+                    v_dict["options"]
+                )
             line = [
                 r"\entry{{{0}}}".format(name)
                 + "".join(["{{{0}}}".format(v_dict[ii]) for ii in order[1:]])
             ]
             lines.append(line[0])
 
-        all_lines = beginning + header + ["\n".join(lines[0:first_table_len])] + end
+        all_lines = (
+            beginning + header + ["\n".join(lines[0:first_table_len])] + end
+        )
         for ii in range(ntables - 1):
             stable = beginning + header
             for kk in range(max_entries):
@@ -243,11 +262,12 @@ class BaseDict(MutableMapping):
             raise MTSchemaError(msg)
 
         with open(csv_fn, "r") as fid:
-            logger.debug("Reading schema CSV %s", csv_fn)
+            logger.debug(f"Reading schema CSV {csv_fn}")
             lines = fid.readlines()
 
         header = validators.validate_header(
-            [ss.strip().lower() for ss in lines[0].strip().split(",")], attribute=True
+            [ss.strip().lower() for ss in lines[0].strip().split(",")],
+            attribute=True,
         )
         attribute_dict = {}
         for line in lines[1:]:
@@ -256,7 +276,9 @@ class BaseDict(MutableMapping):
             line_dict = dict(
                 [
                     (key, ss.strip())
-                    for key, ss in zip(header, line.strip().split(",", len(header) - 1))
+                    for key, ss in zip(
+                        header, line.strip().split(",", len(header) - 1)
+                    )
                 ]
             )
 
@@ -294,7 +316,9 @@ class BaseDict(MutableMapping):
                         line.append("None")
                     else:
                         line.append(
-                            '"{0}"'.format(value).replace(",", "|").replace("'", "")
+                            '"{0}"'.format(value)
+                            .replace(",", "|")
+                            .replace("'", "")
                         )
                 else:
                     line.append("{0}".format(self[key][rkey]))
@@ -318,7 +342,9 @@ class BaseDict(MutableMapping):
 
         json_fn = Path(json_fn)
 
-        json_dict = dict([(k, v) for k, v in self.items() if k not in ["logger"]])
+        json_dict = dict(
+            [(k, v) for k, v in self.items() if k not in ["logger"]]
+        )
         with open(json_fn, "w") as fid:
             json.dump(json_dict, fid, cls=NumpyEncoder, indent=indent)
 

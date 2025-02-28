@@ -7,21 +7,21 @@ Test to instantite some filters based in StationXML inputs.
 
 Notes:
     1. In this example I have we are receiving a Network level XML and we need to iterate
-    through it to get the stations, channels and stages.   In general we will need a 
+    through it to get the stations, channels and stages.   In general we will need a
     methods that work with these XMLs and iterate through them.
-    
+
     It looks like obspy's Inventory() chunks the StationXML stages up nicely.
-    Moreover we can use instance checks (eg isinstance() as way to confirm we are 
-    getting what we think we are getting, 
-    
-    2. It looks like stage.__dict__ is pretty comprehensive, but I dont like how it passes 
-    poles as _poles and zeros as _zeros.   
+    Moreover we can use instance checks (eg isinstance() as way to confirm we are
+    getting what we think we are getting,
+
+    2. It looks like stage.__dict__ is pretty comprehensive, but I dont like how it passes
+    poles as _poles and zeros as _zeros.
     Actually, here's the thing, our filter class looks like it could just wrap the stage
 
     3. Obspy contributions?  Do we want to contribute fap table readers for StationXML to obspy?
 
 
-ToDo: 
+ToDo:
 -test ZerosPolesGainContinuous vs ZerosPolesGainDiscrete
 (in one case we add a 'dt' as a kwarg)
 
@@ -36,7 +36,7 @@ import unittest
 from obspy.core import inventory
 
 from mt_metadata.timeseries.filters import (
-    ChannelResponseFilter,
+    ChannelResponse,
     PoleZeroFilter,
     CoefficientFilter,
     TimeDelayFilter,
@@ -67,7 +67,7 @@ class TestFilterMagnetic(unittest.TestCase):
 
     def test_instrument_sensitivity(self):
         filters_list = [create_filter_from_stage(s) for s in self.stages]
-        cr = ChannelResponseFilter(filters_list=filters_list)
+        cr = ChannelResponse(filters_list=filters_list)
 
         self.assertAlmostEqual(
             cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),

@@ -2,36 +2,40 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
     Karl Kappler
 
 :license: MIT
 
-This is a base class for filters.  We will extend this class for each specific 
-type of filter we need to implement.  Typical filters we will want to be able
-to support are:
-    
-- PoleZero (or 'zpk') responses like those provided by IRIS
-- Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
- calibrations via frequency sweep on a spectrum analyser.
-- Time Delay Filters: can come about in decimation, or from general 
- timing errors that have been characterized
-- Coefficient multipliers, i.e. frequency independent gains
-- FIR filters
-- IIR filters
+This is a base class for filters associated with calibration and instrument
+and acquistion system responses. We will extend this class for each specific
+type of filter we need to implement. Typical filters we will want to support:
 
-Note that many filters can be represented in more than one of these forms. 
-For example a Coefficient Multiplier can be seen as an FIR with a single 
-coefficient.  Similarly, an FIR can be represented as a 'zpk' filter with 
-no poles.  An IIR filter can also be associated with a zpk representation. 
-However, solving for the 'zpk' representation can be tedious and approximate
-and if we have for example, the known FIR coefficients, or FAP lookup table,
-then there is little to be gained by changing the representation.
+ - PoleZero (or 'zpk') responses like those provided by IRIS
+ - Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
+   calibrations via frequency sweep on a spectrum analyser.
+ - Time Delay Filters: can come about in decimation, or from general
+   timing errors that have been characterized
+ - Coefficient multipliers, i.e. frequency independent gains
+ - FIR filters
+ - IIR filters
 
-The "stages" that are described in the IRIS StationXML documentation appear
+Many filters can be represented in more than one of these forms. For example
+a Coefficient Multiplier can be seen as an FIR with a single coefficient.
+Similarly, an FIR can be represented as a 'zpk' filter with no poles.  An
+IIR filter can also be associated with a zpk representation.  However, solving
+for the 'zpk' representation can be tedious and approximate and if we have for
+example, the known FIR coefficients, or FAP lookup table, then there is little
+to be gained by changing the representation.
+
+The 'stages' that are described in the IRIS StationXML documentation appear
 to cover all possible linear time invariant filter types we are likely to
 encounter.
+
+A FilterBase object has a direction, defined by has units_in and units_out attrs.
+These are the units before and after multiplication by the complex_response
+of the filter in frequency domain.  It is very similar to an "obspy filter stage"
 
 """
 # =============================================================================
@@ -54,16 +58,35 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
 
-# Form is OBSPY_MAPPING['obspy_label'] = 'mth5_label'
-OBSPY_MAPPING = {}
-OBSPY_MAPPING["input_units"] = "units_in"
-OBSPY_MAPPING["name"] = "name"
-OBSPY_MAPPING["output_units"] = "units_out"
-OBSPY_MAPPING["stage_gain"] = "gain"
-OBSPY_MAPPING["description"] = "comments"
+def get_base_obspy_mapping():
+    """
+    Different filters have different mappings, but the attributes mapped here are common to all of them.
+    Hence the name "base obspy mapping"
+    Note: If we wanted to support inverse forms of these filters, and argument specifying filter direction could be added.
+
+    :return: mapping to an obspy filter, mapping['obspy_label'] = 'mt_metadata_label'
+    :rtype: dict
+    """
+    mapping = {}
+    mapping["description"] = "comments"
+    mapping["name"] = "name"
+    mapping["stage_gain"] = "gain"
+    mapping["input_units"] = "units_in"
+    mapping["output_units"] = "units_out"
+    return mapping
 
 
 class FilterBase(Base):
+    """
+    bstract base class is used to represent various forms of linear, time invariant (LTI) filters.
+    By convention, forward application of the filter is equivalent to multiplication in frequency domain by the
+    filter's complex response.  Removing the filter (applying the inverse) can be achieved by divding by the
+    filter's complex response.
+
+    This class is intended to support the calibration of data from archived units to physical units, although
+    it may find more application in future.
+
+    """
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -73,13 +96,17 @@ class FilterBase(Base):
 
         self._calibration_dt = MTime()
         self.comments = None
-        self.obspy_mapping = copy.deepcopy(OBSPY_MAPPING)
+        self._obspy_mapping = None
         self.gain = 1.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
         if self.gain == 0.0:
             self.gain = 1.0
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        return mapping
 
     @property
     def obspy_mapping(self):
@@ -89,7 +116,22 @@ class FilterBase(Base):
         :rtype: dict
 
         """
+        if self._obspy_mapping is None:
+            self._obspy_mapping = self.make_obspy_mapping()
         return self._obspy_mapping
+
+    @obspy_mapping.setter
+    def obspy_mapping(self, obspy_dict):
+        """
+        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
+        mt_metadata filter objects.
+        """
+        if not isinstance(obspy_dict, dict):
+            msg = f"Input must be a dictionary not {type(obspy_dict)}"
+            self.logger.error(msg)
+            raise TypeError(msg)
+
+        self._obspy_mapping = obspy_dict
 
     @property
     def name(self):
@@ -115,18 +157,6 @@ class FilterBase(Base):
         else:
             self._name = None
 
-    @obspy_mapping.setter
-    def obspy_mapping(self, obspy_dict):
-        """
-        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
-        mt_metadata filter objects.
-        """
-        if not isinstance(obspy_dict, dict):
-            msg = f"Input must be a dictionary not {type(obspy_dict)}"
-            self.logger.error(msg)
-            raise TypeError(msg)
-
-        self._obspy_mapping = obspy_dict
 
     @property
     def calibration_date(self):
@@ -215,6 +245,7 @@ class FilterBase(Base):
     @classmethod
     def from_obspy_stage(cls, stage, mapping=None):
         """
+        Expected to return a multiply operation function
 
         :param cls: a filter object
         :type cls: filter object
@@ -231,12 +262,12 @@ class FilterBase(Base):
         """
 
         if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
-            msg = "Expected a Stage and got a %s"
-            cls.logger.error(msg, type(stage))
-            raise TypeError(msg % type(stage))
+            msg = f"Expected a Stage and got a {type(stage)}"
+            cls().logger.error(msg)
+            raise TypeError(msg)
 
         if mapping is None:
-            mapping = cls().obspy_mapping
+            mapping = cls().make_obspy_mapping()
         kwargs = {}
         for obspy_label, mth5_label in mapping.items():
             try:
@@ -244,11 +275,11 @@ class FilterBase(Base):
             except KeyError:
                 print(f"Key {obspy_label} not found in stage object")
                 raise Exception
-
         return cls(**kwargs)
 
     def complex_response(self, frqs):
-        print("Filter Base class does not have a complex response defined")
+        msg = f"complex_response not defined for {self._class_name} class"
+        self.logger.info(msg)
         return None
 
     def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
@@ -372,3 +403,4 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
+

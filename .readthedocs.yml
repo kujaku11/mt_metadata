@@ -5,6 +5,11 @@
 # Required
 version: 2
 
+build:
+  os: "ubuntu-20.04"
+  tools:
+    python: "mambaforge-22.9"
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
@@ -14,10 +19,10 @@ sphinx:
 #  configuration: mkdocs.yml
 
 # Optionally build your docs in additional formats such as PDF
-formats:
-  - htmlzip
-  - epub
-  - pdf
+# formats:
+#  - htmlzip
+#  - epub
+#  - pdf
 
 # Optionally set the version of Python and requirements required to build your docs
 #python:

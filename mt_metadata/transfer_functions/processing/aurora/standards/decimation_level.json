@@ -10,6 +10,39 @@
         "example": "default",
 		"default": "default"
     },
+    "recoloring": {
+        "type": "bool",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Whether the data are recolored [True] or not [False].",
+        "options": [],
+        "alias": [],
+        "example": true,
+		"default": true
+    },
+    "min_num_stft_windows": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "How many FFT windows must be available for the time series to valid for STFT.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 2
+    },
+    "method": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Fourier transform method",
+        "options": ["fft", "wavelet", "other"],
+        "alias": [],
+        "example": "fft",
+		"default": "fft"
+    },
 	"prewhitening_type": {
         "type": "string",
         "required": true,
@@ -22,6 +55,17 @@
 		"default": "first difference"
     },
 	"extra_pre_fft_detrend_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Extra Pre FFT detrend method to be applied",
+        "options": ["linear", "other"],
+        "alias": [],
+        "example": "linear",
+		"default": "linear"
+    },
+    	"pre_fft_detrend_type": {
         "type": "string",
         "required": true,
         "style": "controlled vocabulary",
@@ -75,6 +119,27 @@
         "alias": [],
         "example": "hx, hy",
 		"default": "hx, hy"
+    },
+     "save_fcs": {
+        "type": "bool",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Whether the Fourier coefficients are saved [True] or not [False].",
+        "options": [],
+        "alias": [],
+        "example": true,
+		"default": false
+    },
+    	"save_fcs_type": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Format to use for fc storage",
+        "options": ["h5", "csv"],
+        "alias": [],
+        "example": "h5",
+		"default": "h5"
     }
-	
 }

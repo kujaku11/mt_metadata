@@ -127,6 +127,13 @@ UNITS_LIST = [
         "alias": "volts per meter",
     },
     {
+        "name": "volt per kilometer",
+        "description": "electric field",
+        "abbreviation": "V/km",
+        "plot_label": "Volt per Kilometer",
+        "alias": "volts per kilometer",
+    },
+    {
         "name": "millivolt per kilometer",
         "description": "electric field",
         "abbreviation": "mV/km",

@@ -2,12 +2,14 @@
 """
 Created on Fri Feb 19 16:14:41 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+import copy
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -24,6 +26,7 @@ from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
 
 from obspy.core import inventory
+from obspy import UTCDateTime
 
 # =============================================================================
 
@@ -32,6 +35,15 @@ class XMLChannelMTChannel(BaseTranslator):
     """
     translate back and forth between StationXML Channel and MT Channel
     """
+
+    understood_sensor_types = [
+        "logger",
+        "magnetometer",
+        "induction coil",
+        "coil",
+        "dipole",
+        "electrode"
+    ]
 
     def __init__(self):
         super().__init__()
@@ -108,8 +120,9 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # fill channel filters
         mt_channel.filter.name = list(mt_filters.keys())
-        mt_channel.filter.applied = [False] * len(list(mt_filters.keys()))
-
+        mt_channel.filter.applied = [True] * len(list(mt_filters.keys()))
+        if UTCDateTime(mt_channel.time_period.end) < UTCDateTime(mt_channel.time_period.start):
+            mt_channel.time_period.end = '2200-01-01T00:00:00+00:00'
         return mt_channel, mt_filters
 
     def mt_to_xml(self, mt_channel, filters_dict, hard_code=True):
@@ -217,6 +230,8 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
+        sensor.type = self._deduce_sensor_type(sensor)
+
         if not sensor.type:
             return mt_channel
 
@@ -487,21 +502,24 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         ch_filter_dict = {}
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
+            new_and_unnamed = False
             mt_filter = create_filter_from_stage(stage)
             if not mt_filter.name:
-                filter_name, new = self._add_filter_number(
+                filter_name, new_and_unnamed = self._add_filter_number(
                     existing_filters, mt_filter
                 )
                 mt_filter.name = filter_name
 
-                if new:
-                    self.logger.info(
-                        f"Found an unnamed filter, named it: '{mt_filter.name}'"
-                    )
-
             if mt_filter.decimation_active:
                 # keep filter names unique if same one used more than once
                 mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
+
+            if new_and_unnamed:
+                self.logger.info(
+                    f"Found an unnamed filter, named it: '{mt_filter.name}'"
+                )
+                existing_filters[filter_name] = mt_filter
+
             ch_filter_dict[mt_filter.name.lower()] = mt_filter
 
         return ch_filter_dict
@@ -563,3 +581,53 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.calibration_units_description = unit_obj.name
 
         return xml_channel
+
+
+    def _deduce_sensor_type(self, sensor):
+        """
+
+        :param sensor: Information about a sensor, usually extractes from FDSN XML
+        :type sensor: obspy.core.inventory.util.Equipment
+
+        :return:
+        """
+        original_sensor_type = sensor.type
+        original_sensor_description = sensor.description
+        # set sensor_type to be a string if it is None
+        if original_sensor_type is None:
+            sensor_type = ""  # make a string
+            msg = f"Sensor {sensor} does not have field type attr"
+            self.logger.debug(msg)
+        else:
+            sensor_type = copy.deepcopy(original_sensor_type)
+
+        if original_sensor_description is None:
+            sensor_description = ""  # make a string
+        else:
+            sensor_description = copy.deepcopy(original_sensor_type)
+
+
+        if sensor_type.lower() in self.understood_sensor_types:
+            return sensor_type
+        else:
+            self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
+
+        #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
+        if sensor_type.lower() == "bartington":
+            sensor_type = "magnetometer"
+        if not sensor_type:
+            if sensor_description == "Bartington 3-Axis Fluxgate Sensor":
+                sensor_type = "magnetometer"
+            if sensor_description:
+                if ("bf-4" in sensor_description.lower()) & ("schlumberger" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "magnetometer"
+                elif ("electric" in sensor_description.lower()) & ("dipole" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "dipole"
+
+
+        # reset sensor_type to None it it was not handled
+        if not sensor_type:
+            sensor_type = original_sensor_type
+            self.logger.error("sensor type could not be resolved")
+
+        return sensor_type

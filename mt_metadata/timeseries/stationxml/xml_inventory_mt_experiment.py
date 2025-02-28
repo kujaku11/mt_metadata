@@ -13,8 +13,8 @@ Created on Mon Feb 22 09:27:10 2021
 # =============================================================================
 from pathlib import Path
 from copy import deepcopy
+from loguru import logger
 
-from mt_metadata.utils.mt_logger import setup_logger
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml import (
     XMLNetworkMTSurvey,
@@ -35,7 +35,7 @@ class XMLInventoryMTExperiment:
     """
 
     def __init__(self):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.network_translator = XMLNetworkMTSurvey()
         self.station_translator = XMLStationMTStation()
         self.channel_translator = XMLChannelMTChannel()
@@ -88,9 +88,7 @@ class XMLInventoryMTExperiment:
                             run_channel.time_period.start = (
                                 mt_run.time_period.start
                             )
-                            run_channel.time_period.end = (
-                                mt_run.time_period.end
-                            )
+                            run_channel.time_period.end = mt_run.time_period.end
                             mt_run.add_channel(run_channel)
                     # if there are runs already try to match by start, end, sample_rate
                     # initialized runs have a sample rate of 0.  This could be an
@@ -172,7 +170,11 @@ class XMLInventoryMTExperiment:
             xml_network = self.network_translator.mt_to_xml(mt_survey)
             for mt_station in mt_survey.stations:
                 xml_station = self.station_translator.mt_to_xml(mt_station)
-                xml_station.site.country = mt_survey.country
+                if mt_survey.country is not None:
+                    xml_station.site.country = ",".join(
+                        [str(country) for country in mt_survey.country]
+                    )
+                # need to sort the runs by time
                 for mt_run in mt_station.runs:
                     xml_station = self.add_run(
                         xml_station, mt_run, mt_survey.filters
@@ -221,9 +223,7 @@ class XMLInventoryMTExperiment:
                 # Compare channel metadata if matches just add run.id if its
                 # not already there.
                 self.logger.debug(
-                    "Comparing %s to %s",
-                    xml_channel.code,
-                    existing_channel.code,
+                    f"Comparing {xml_channel.code} to {existing_channel.code}"
                 )
                 if self.compare_xml_channel(xml_channel, existing_channel):
                     find = True
@@ -286,9 +286,7 @@ class XMLInventoryMTExperiment:
         """
 
         if xml_channel_01.code != xml_channel_02.code:
-            self.logger.debug(
-                f"{xml_channel_01.code} != {xml_channel_02.code}"
-            )
+            self.logger.debug(f"{xml_channel_01.code} != {xml_channel_02.code}")
             return False
         if xml_channel_01.sample_rate != xml_channel_02.sample_rate:
             self.logger.debug(
@@ -314,9 +312,7 @@ class XMLInventoryMTExperiment:
                 f"{round(xml_channel_01.longitude, 3)} != {round(xml_channel_02.longitude, 3)}"
             )
             return False
-        if round(xml_channel_01.azimuth, 2) != round(
-            xml_channel_02.azimuth, 2
-        ):
+        if round(xml_channel_01.azimuth, 2) != round(xml_channel_02.azimuth, 2):
             self.logger.debug(
                 f"{round(xml_channel_01.azimuth, 2)} != {round(xml_channel_02.azimuth, 2)}"
             )

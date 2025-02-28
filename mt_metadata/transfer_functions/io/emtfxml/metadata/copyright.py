@@ -51,8 +51,10 @@ class Copyright(Base):
             required=required,
             order=[
                 "citation",
+                "selected_publications",
                 "acknowledgement",
                 "release_status",
                 "conditions_of_use",
+                "additional_info",
             ],
         )

@@ -20,7 +20,7 @@ from mt_metadata.transfer_functions import TF
 # =============================================================================
 
 
-class TestEMTFXML(unittest.TestCase):
+class TestZongeAVGTipper(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.tf = TF(fn=TF_AVG_TIPPER)
@@ -34,19 +34,19 @@ class TestEMTFXML(unittest.TestCase):
                 ("citation_journal.doi", None),
                 ("datum", "WGS84"),
                 ("geographic_name", None),
-                ("id", None),
+                ("id", "0"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 38.6653467),
+                ("northwest_corner.longitude", -113.1690717),
                 ("project", None),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 38.6653467),
+                ("southeast_corner.longitude", -113.1690717),
                 ("summary", None),
                 ("time_period.end_date", "1980-01-01"),
-                ("time_period.start_date", "1980-01-01"),
+                ("time_period.start_date", "2022-05-16"),
             ]
         )
 
@@ -69,19 +69,24 @@ class TestEMTFXML(unittest.TestCase):
                 ("location.longitude", -113.1690717),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.name", None),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                ("provenance.creator.name", None),
                 ("provenance.software.author", None),
                 ("provenance.software.name", None),
                 ("provenance.software.version", None),
                 ("provenance.submitter.email", None),
+                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["001"]),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "2022-05-16T23:46:18+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "22"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_by.name", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
@@ -91,9 +96,14 @@ class TestEMTFXML(unittest.TestCase):
                         "mtedit.phase_slope.to_z_mag=no",
                     ],
                 ),
+                ("transfer_function.processing_type", None),
                 ("transfer_function.remote_references", []),
                 ("transfer_function.runs_processed", ["001"]),
-                ("transfer_function.sign_convention", None),
+                ("transfer_function.sign_convention", "+"),
+                ("transfer_function.software.author", "Zonge International"),
+                ("transfer_function.software.last_updated", "2022/08/02"),
+                ("transfer_function.software.name", "MTEdit"),
+                ("transfer_function.software.version", "3.11n"),
                 ("transfer_function.units", None),
             ]
         )
@@ -137,7 +147,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("component", "ex"),
                 ("data_quality.rating.value", 0),
                 ("dipole_length", 100.0),
-                ("filter.applied", [False]),
+                ("filter.applied", [True]),
                 ("filter.name", []),
                 ("measurement_azimuth", 11.3),
                 ("measurement_tilt", 0.0),
@@ -176,7 +186,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("component", "ey"),
                 ("data_quality.rating.value", 0),
                 ("dipole_length", 100.0),
-                ("filter.applied", [False]),
+                ("filter.applied", [True]),
                 ("filter.name", []),
                 ("measurement_azimuth", 101.3),
                 ("measurement_tilt", 0.0),
@@ -214,7 +224,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channel_number", 0),
                 ("component", "hx"),
                 ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
+                ("filter.applied", [True]),
                 ("filter.name", []),
                 ("location.elevation", 0.0),
                 ("location.latitude", 0.0),
@@ -246,7 +256,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channel_number", 0),
                 ("component", "hy"),
                 ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
+                ("filter.applied", [True]),
                 ("filter.name", []),
                 ("location.elevation", 0.0),
                 ("location.latitude", 0.0),
@@ -278,7 +288,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channel_number", 0),
                 ("component", "hz"),
                 ("data_quality.rating.value", 0),
-                ("filter.applied", [False]),
+                ("filter.applied", [True]),
                 ("filter.name", []),
                 ("location.elevation", 0.0),
                 ("location.latitude", 0.0),

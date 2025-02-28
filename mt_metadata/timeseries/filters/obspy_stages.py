@@ -7,6 +7,7 @@ Idea here is to add logic to interrogate stage filters received from StationXML
 # =============================================================================
 import numpy as np
 import obspy
+from loguru import logger
 
 from mt_metadata.timeseries.filters import (
     CoefficientFilter,
@@ -15,9 +16,7 @@ from mt_metadata.timeseries.filters import (
     TimeDelayFilter,
     PoleZeroFilter,
 )
-from mt_metadata.utils.mt_logger import setup_logger
 
-logger = setup_logger("obspy_stages")
 # =============================================================================
 
 
@@ -132,14 +131,16 @@ def create_filter_from_stage(stage):
                 and "counts" not in stage.output_units.lower()
             ):
                 logger.info(
-                    "Converting PoleZerosResponseStage %s to a CoefficientFilter",
-                    stage.name,
+                    f"Converting PoleZerosResponseStage {stage.name} to a "
+                    "CoefficientFilter."
                 )
                 return create_coefficent_filter_from_stage(stage)
 
         return create_pole_zero_filter_from_stage(stage)
 
-    elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):
+    elif isinstance(
+        stage, obspy.core.inventory.response.CoefficientsTypeResponseStage
+    ):
         is_a_delay_filter = check_if_coefficient_filter_is_delay_only(stage)
         if is_a_delay_filter:
             obspy_filter = create_time_delay_filter_from_stage(stage)
@@ -152,9 +153,9 @@ def create_filter_from_stage(stage):
             if isinstance(stage.coefficients, list):
                 pass
             else:
-                msg = "expected list of coefficients, got %s"
-                logger.error(msg, type(stage.coefficients))
-                raise TypeError(msg % type(stage.coefficients))
+                msg = f"Expected list of coefficients, got {type(stage.coefficients)}"
+                logger.error(msg)
+                raise TypeError(msg)
         except TypeError:
             msg = "Something seems off with this FIR"
             logger.info(msg)
@@ -162,7 +163,9 @@ def create_filter_from_stage(stage):
         obspy_filter = create_fir_filter_from_stage(stage)
         return obspy_filter
 
-    elif isinstance(stage, obspy.core.inventory.response.ResponseListResponseStage):
+    elif isinstance(
+        stage, obspy.core.inventory.response.ResponseListResponseStage
+    ):
         obspy_filter = create_frequency_response_table_filter_from_stage(stage)
         return obspy_filter
 
@@ -171,6 +174,6 @@ def create_filter_from_stage(stage):
         return obspy_filter
 
     else:
-        msg = "Filter Stage of type %s not known, or supported"
-        logger.info(msg, type(stage))
-        raise TypeError(msg % type(stage))
+        msg = "Filter Stage of type {type(stage)} not known, or supported"
+        logger.info(msg)
+        raise TypeError(msg)

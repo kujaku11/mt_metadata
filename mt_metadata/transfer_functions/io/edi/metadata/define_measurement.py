@@ -63,14 +63,14 @@ class DefineMeasurement(Base):
     maxmeas           Maximum number of measurements       9999     yes
     maxrun            Maximum number of measurement runs   999      yes
     meas_####         HMeasurement or EMEasurment object   None     yes
-                      defining the measurement made [1]_
+                      defining the measurement made [1]__
     refelev           Reference elevation (m)              None     yes
     reflat            Reference latitude [2]_              None     yes
     refloc            Reference location                   None     yes
-    reflon            Reference longituted [2]_            None     yes
+    reflon            Reference longituted [2]__           None     yes
     reftype           Reference coordinate system          'cart'   yes
     units             Units of length                      m        yes
-    _define_meas_keys Keys to include in define_measurment [3]_     no
+    _define_meas_keys Keys to include in define_measurment [3]__     no
                       section.
     ================= ==================================== ======== ===========
 
@@ -192,7 +192,7 @@ class DefineMeasurement(Base):
                 meas_find = True
             elif ">=" in line:
                 if meas_find is True:
-                    break
+                    return
             elif meas_find is True and ">" not in line:
                 line = line.strip()
                 if len(line) > 2:
@@ -210,7 +210,7 @@ class DefineMeasurement(Base):
             elif ">" in line and meas_find:
                 if line.find("!") > 0:
                     pass
-                else:
+                elif "meas" in line.lower():
                     count += 1
                     line_list = _validate_str_with_equals(line)
                     m_dict = {}
@@ -220,6 +220,8 @@ class DefineMeasurement(Base):
                         value = ll_list[1]
                         m_dict[key] = value
                     self.measurement_list.append(m_dict)
+                else:
+                    return
 
     def read_measurement(self, edi_lines):
         """
@@ -242,7 +244,7 @@ class DefineMeasurement(Base):
                 - x
                 - y
                 - axm
-                -acqchn
+                - acqchn
 
         """
         self.get_measurement_lists(edi_lines)
@@ -292,7 +294,9 @@ class DefineMeasurement(Base):
                         value.azm = value.azimuth
                 if hasattr(self, key):
                     existing_ch = getattr(self, key)
-                    if value != existing_ch:
+                    existing_line = existing_ch.write_meas_line()
+                    value_line = value.write_meas_line()
+                    if existing_line != value_line:
                         value.chtype = f"rr{ch_type}".upper()
                         key = f"meas_rr{ch_type}"
                     else:
@@ -325,49 +329,45 @@ class DefineMeasurement(Base):
 
         # need to write the >XMEAS type, but sort by channel number
         m_key_list = []
+        count = 1.0
         for kk in list(self.__dict__.keys()):
             if kk.find("meas_") == 0:
-                try:
-                    m_key_list.append((kk.strip(), float(self.__dict__[kk].id)))
-                except TypeError:
-                    self.logger.debug(f"No {kk} information.")
+                key = kk.strip()
+                value = self.__dict__[kk].id
+                if value is None:
+                    value = count
+                    count += 1
+                elif isinstance(value, str):
+                    try:
+                        value = float(value)
+
+                    except TypeError:
+                        self.logger.warning(
+                            f"{key}.id cannot be converted to float"
+                        )
+                        value = count
+                        count += 1
+                elif isinstance(value, (float, int)):
+                    value = float(value)
+
+                else:
+                    raise ValueError(f"Could not convert {key}.id to float")
+
+                m_key_list.append((key, value))
 
         if len(m_key_list) == 0:
             self.logger.warning("No XMEAS information.")
         else:
             # need to sort the dictionary by chanel id
-            chn_count = 1
-            for x_key in sorted(m_key_list, key=lambda x: x[1]):
-                x_key = x_key[0]
+            for meas in sorted(m_key_list, key=lambda x: x[1]):
+                x_key = meas[0]
                 m_obj = getattr(self, x_key)
-                if m_obj.chtype is not None:
-                    m_obj.chtype = str(m_obj.chtype)
-                    if m_obj.chtype.lower().find("h") >= 0:
-                        head = "hmeas"
-                    elif m_obj.chtype.lower().find("e") >= 0:
-                        head = "emeas"
-                    else:
-                        head = "None"
-                else:
-                    head = "None"
+                if m_obj.id is None:
+                    m_obj.id = meas[1]
+                if m_obj.acqchan == "0":
+                    m_obj.acqchan = meas[1]
 
-                m_list = [">{0}".format(head.upper())]
-
-                for mkey, mfmt in m_obj._fmt_dict.items():
-                    if mkey == "acqchan":
-                        if getattr(m_obj, mkey) == "0":
-                            setattr(m_obj, mkey, chn_count)
-                            chn_count += 1
-
-                    try:
-                        m_list.append(
-                            f" {mkey.upper()}={getattr(m_obj, mkey):{mfmt}}"
-                        )
-                    except (ValueError, TypeError):
-                        m_list.append(f" {mkey.upper()}={0.0:{mfmt}}")
-
-                m_list.append("\n")
-                measurement_lines.append("".join(m_list))
+                measurement_lines.append(m_obj.write_meas_line())
 
         return measurement_lines
 
@@ -441,6 +441,7 @@ class DefineMeasurement(Base):
                     "chtype": channel.component,
                     "id": channel.channel_id,
                     "acqchan": channel.channel_number,
+                    "dip": channel.measurement_tilt,
                 }
             )
             setattr(self, f"meas_{channel.component.lower()}", meas)

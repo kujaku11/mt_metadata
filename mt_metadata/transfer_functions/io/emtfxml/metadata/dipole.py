@@ -58,13 +58,18 @@ class Dipole(Base):
         root = et.Element(
             self.__class__.__name__, {"name": self.name, "type": self.type}
         )
-        et.SubElement(root, "manufacturer").text = self.manufacturer
-        et.SubElement(
-            root, "length", {"units": "meters"}
-        ).text = f"{self.length:.3f}"
-        et.SubElement(
-            root, "azimuth", {"units": "degrees"}
-        ).text = f"{self.azimuth:.3f}"
+        try:
+            et.SubElement(root, "manufacturer").text = self.manufacturer
+        except AttributeError:
+            self.logger.debug("Dipole has no manufacturer information")
+        if self.length is not None:
+            et.SubElement(
+                root, "length", {"units": "meters"}
+            ).text = f"{self.length:.3f}"
+        if self.azimuth is not None:
+            et.SubElement(
+                root, "azimuth", {"units": "degrees"}
+            ).text = f"{self.azimuth:.3f}"
         for item in self.electrode:
             root.append(item.to_xml())
 

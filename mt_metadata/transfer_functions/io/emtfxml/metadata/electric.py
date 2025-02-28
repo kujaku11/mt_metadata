@@ -41,6 +41,11 @@ class Electric(Base):
 
         """
 
+        for attr in ["orientation", "x", "y", "z", "x2", "y2", "z2"]:
+            value = getattr(self, attr)
+            if value is None:
+                setattr(self, attr, 0)
+
         root = et.Element(
             self.__class__.__name__.capitalize(),
             {

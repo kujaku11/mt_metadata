@@ -9,13 +9,12 @@ Created on Thu Feb 17 14:15:20 2022
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .frequency_band import FrequencyBand
 
-from .standards import SCHEMA_FN_PATHS
-from .decimation_level import DecimationLevel
-from .stations import Stations
 from .band import Band
 from .channel_nomenclature import ChannelNomenclature
+from .decimation_level import DecimationLevel
+from .standards import SCHEMA_FN_PATHS
+from .stations import Stations
 
 
 # =============================================================================
@@ -29,7 +28,6 @@ class Processing(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.stations = Stations()
         self._decimations = []
         self.channel_nomenclature = ChannelNomenclature()
@@ -86,6 +84,12 @@ class Processing(Base):
                     raise TypeError(
                         f"List entry must be a DecimationLevel or dict object not {type(obj)}"
                     )
+
+        elif isinstance(value, str):
+            if len(value) > 4:
+                raise TypeError(f"Not sure what to do with {type(value)}")
+            else:
+                self._decimations = []
 
         else:
             raise TypeError(f"Not sure what to do with {type(value)}")
@@ -213,33 +217,23 @@ class Processing(Base):
             decimation_obj.decimation.factor = d
             decimation_obj.decimation.sample_rate = sr
             decimation_obj.window.num_samples = num_samples_window[i_level]
-            frequencies = decimation_obj.fft_frequecies
+            frequencies = decimation_obj.fft_frequencies
 
             for low, high in band_edges:
-                fb = FrequencyBand(left=low, right=high)
-                indices = fb.fourier_coefficient_indices(frequencies)
-                try:
-                    band = Band(
-                        decimation_level=i_level,
-                        frequency_min=low,
-                        frequency_max=high,
-                        index_min=indices[0],
-                        index_max=indices[-1],
-                    )
-                except IndexError:
-                    print("WHAAAAAAA?")
-                # now refine frequency edges based on "canonical" or "exact"
-                # self.decimations_dict[i_level].add_band(band)
+                band = Band(
+                    decimation_level=i_level,
+                    frequency_min=low,
+                    frequency_max=high,
+                )
+                band.set_indices_from_frequencies(frequencies)
                 decimation_obj.add_band(band)
             self.add_decimation_level(decimation_obj)
-        #            self.decimations_dict[i_level] = decimation_obj
-        print("OK")
 
-    #
     def json_fn(self):
         json_fn = self.id + "_processing_config.json"
         return json_fn
 
+    @property
     def num_decimation_levels(self):
         return len(self.decimations)
 
@@ -290,11 +284,14 @@ class Processing(Base):
         if not self.stations.remote:
             for decimation in self.decimations:
                 if decimation.estimator.engine == "RME_RR":
-                    print("No RR station specified, switching RME_RR to RME")
+                    self.logger.info(
+                        "No RR station specified, switching RME_RR to RME"
+                    )
                     decimation.estimator.engine = "RME"
 
         # Make sure that a local station is defined
         if not self.stations.local.id:
-            print("WARNING: Local station not specified")
-            print("Local station should be set from Kernel Dataset")
+            self.logger.warning(
+                "Local station not specified, should be set from Kernel Dataset"
+            )
             self.stations.from_dataset_dataframe(kernel_dataset.df)

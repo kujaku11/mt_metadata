@@ -47,18 +47,10 @@ attr_dict.add_dict(
 )
 attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(
-    get_schema("provenance", SCHEMA_FN_PATHS),
+    Provenance()._attr_dict,
     "provenance",
-    keys=["comments", "creation_time", "log"],
 )
-attr_dict.add_dict(
-    get_schema("software", SCHEMA_FN_PATHS), "provenance.software"
-)
-attr_dict.add_dict(
-    get_schema("person", SCHEMA_FN_PATHS),
-    "provenance.submitter",
-    keys=["author", "email", "organization"],
-)
+
 attr_dict["provenance.submitter.email"]["required"] = True
 attr_dict["provenance.submitter.organization"]["required"] = True
 
@@ -67,6 +59,8 @@ attr_dict.add_dict(get_schema("copyright", SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), None, keys=["doi"])
 attr_dict["doi"]["required"] = False
+
+
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -169,7 +163,7 @@ class Station(Base):
             return self.run_list.index(run_id)
         return None
 
-    def add_run(self, run_obj):
+    def add_run(self, run_obj, update=True):
         """
         Add a run, if one of the same name exists overwrite it.
 
@@ -195,6 +189,9 @@ class Station(Base):
         else:
             self.runs.append(run_obj)
 
+        if update:
+            self.update_time_period()
+
     def get_run(self, run_id):
         """
         Get a :class:`mt_metadata.timeseries.Run` object from the given
@@ -210,7 +207,7 @@ class Station(Base):
         self.logger.warning(f"Could not find {run_id} in runs.")
         return None
 
-    def remove_run(self, run_id):
+    def remove_run(self, run_id, update=True):
         """
         remove a run from the survey
 
@@ -221,6 +218,8 @@ class Station(Base):
 
         if self.has_run(run_id):
             self.runs.remove(run_id)
+            if update:
+                self.update_time_period()
         else:
             self.logger.warning(f"Could not find {run_id} to remove.")
 
@@ -263,6 +262,8 @@ class Station(Base):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
+        self.update_time_period()
+
     @property
     def run_list(self):
         """Return names of run in survey"""
@@ -297,22 +298,52 @@ class Station(Base):
         """
         update time period from run information
         """
-        start = []
-        end = []
-        for run in self.runs:
-            if run.time_period.start != "1980-01-01T00:00:00+00:00":
-                start.append(run.time_period.start)
-            if run.time_period.start != "1980-01-01T00:00:00+00:00":
-                end.append(run.time_period.end)
-        if start:
-            if self.time_period.start == "1980-01-01T00:00:00+00:00":
-                self.time_period.start = min(start)
-            else:
-                if self.time_period.start > min(start):
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for run in self.runs:
+                if run.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(run.time_period.start)
+                if run.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(run.time_period.end)
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
                     self.time_period.start = min(start)
-        if end:
-            if self.time_period.end == "1980-01-01T00:00:00+00:00":
-                self.time_period.end = max(end)
-            else:
-                if self.time_period.end < max(end):
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
                     self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)
+
+    def sort_runs_by_time(self, inplace=True, ascending=True):
+        """
+        return a list of runs sorted by start time in the order of ascending or
+        descending.
+
+        :param ascending: DESCRIPTION, defaults to True
+        :type ascending: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        run_ids = []
+        run_starts = []
+        for run_key, run_obj in self.runs.items():
+            run_ids.append(run_key)
+            run_starts.append(run_obj.time_period.start.split("+")[0])
+
+        index = np.argsort(np.array(run_starts, dtype=np.datetime64))
+
+        new_runs = ListDict()
+        for ii in index:
+            new_runs[run_ids[ii]] = self.runs[run_ids[ii]]
+
+        if inplace:
+            self.runs = new_runs
+        else:
+            return new_runs

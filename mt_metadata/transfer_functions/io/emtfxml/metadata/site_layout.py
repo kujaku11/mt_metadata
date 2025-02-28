@@ -54,11 +54,25 @@ class SiteLayout(Base):
                 elif ch_type in ["electric"]:
                     ch = Electric()
                 else:
-                    msg = "Channel type %s not supported"
-                    self.logger.error(msg, ch_type)
-                    raise ValueError(msg % ch_type)
+                    msg = f"Channel type {ch_type} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
                 ch.from_dict(item)
                 self._input_channels.append(ch)
+            elif isinstance(item, str):
+                if item.startswith("e"):
+                    ch = Electric(name=item)
+                elif item.startswith("b") or item.startswith("h"):
+                    ch = Magnetic(name=item)
+                else:
+                    msg = f"Channel {item} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
+                self._input_channels.append(ch)
+
+    @property
+    def input_channel_names(self):
+        return [ch.name.lower() for ch in self.input_channels]
 
     @property
     def output_channels(self):
@@ -80,11 +94,25 @@ class SiteLayout(Base):
                 elif ch_type in ["electric"]:
                     ch = Electric()
                 else:
-                    msg = "Channel type %s not supported"
-                    self.logger.error(msg, ch_type)
-                    raise ValueError(msg % ch_type)
+                    msg = f"Channel type {ch_type} not supported"
+                    self.logger.error(msg)
+                    raise ValueError(msg)
                 ch.from_dict(item)
                 self._output_channels.append(ch)
+            elif isinstance(item, str):
+                if item.startswith("e"):
+                    ch = Electric(name=item)
+                elif item.startswith("b") or item.startswith("h"):
+                    ch = Magnetic(name=item)
+                else:
+                    msg = "Channel %s not supported"
+                    self.logger.error(msg, item)
+                    raise ValueError(msg % item)
+                self._output_channels.append(ch)
+
+    @property
+    def output_channel_names(self):
+        return [ch.name.lower() for ch in self.output_channels]
 
     def read_dict(self, input_dict):
         """

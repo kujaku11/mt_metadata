@@ -12,7 +12,7 @@ import numpy as np
 
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
-from mt_metadata import TF_ZSS_TIPPER
+from mt_metadata import TF_ZSS_TIPPER, DEFAULT_CHANNEL_NOMENCLATURE
 
 # =============================================================================
 
@@ -35,8 +35,41 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertEqual(self.tf_obj.station, self.zmm_obj.station)
 
     def test_channels_recorded(self):
-        self.assertListEqual(
-            ["hx", "hy", "hz"], self.zmm_obj.channels_recorded
+        self.assertListEqual(["hx", "hy", "hz"], self.zmm_obj.channels_recorded)
+
+    def test_channels_dict(self):
+        self.assertDictEqual(
+            {"hx": "hx", "hy": "hy", "hz": "hz"}, self.zmm_obj.channel_dict
+        )
+
+    def test_channel_nomenclature(self):
+        self.assertDictEqual(
+            DEFAULT_CHANNEL_NOMENCLATURE,
+            self.zmm_obj.channel_nomenclature,
+        )
+
+    def test_ch_input_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["hx", "hy"],
+                "tf_error": ["hx", "hy"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_input_dict,
+        )
+
+    def test_ch_output_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["ex", "ey", "hz"],
+                "tf_error": ["ex", "ey", "hz"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_output_dict,
         )
 
     def test_hx(self):
@@ -110,14 +143,22 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertTrue(self.tf_obj.has_tipper())
 
     def test_station_metadata(self):
-        self.assertTrue(
-            self.tf_obj.station_metadata == self.zmm_obj.station_metadata
-        )
+        zmm_st = self.zmm_obj.station_metadata.to_dict(single=True)
+        tf_st = self.tf_obj.station_metadata.to_dict(single=True)
+        for zmm_key, zmm_value in zmm_st.items():
+            with self.subTest(zmm_key):
+                self.assertEqual(zmm_value, tf_st[zmm_key])
 
     def test_survey_metadata(self):
-        self.assertTrue(
-            self.tf_obj.survey_metadata == self.zmm_obj.survey_metadata
-        )
+        zmm_st = self.zmm_obj.survey_metadata.to_dict(single=True)
+        tf_st = self.tf_obj.survey_metadata.to_dict(single=True)
+        for zmm_key, zmm_value in zmm_st.items():
+            if zmm_key in ["id"]:
+                with self.subTest(zmm_key):
+                    self.assertNotEqual(zmm_value, tf_st[zmm_key])
+            else:
+                with self.subTest(zmm_key):
+                    self.assertEqual(zmm_value, tf_st[zmm_key])
 
 
 # =============================================================================

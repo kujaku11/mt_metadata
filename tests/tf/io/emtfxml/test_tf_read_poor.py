@@ -34,14 +34,7 @@ class TestEMTFXML(unittest.TestCase):
                 ("channels_recorded", ["ex", "ey", "hx", "hy", "hz"]),
                 (
                     "comments",
-                    "description:Magnetotelluric Transfer Functions; "
-                    "primary_data.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png; "
-                    "attachment.description:The original used to produce the XML; "
-                    "attachment.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm; "
-                    "site.data_quality_notes.comments.author:Jade Crosbie, "
-                    "Paul Bedrosian and Anna Kelbert; "
-                    "site.data_quality_notes.comments.value:good TF from 10 to "
-                    "10000 secs; site.data_quality_warnings.flag:0",
+                    "description:Magnetotelluric Transfer Functions; primary_data.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.png; attachment.description:The original used to produce the XML; attachment.filename:CAS04-CAS04bcd_REV06-CAS04bcd_NVR08.zmm; site.data_quality_notes.comments.author:Jade Crosbie, Paul Bedrosian and Anna Kelbert; site.data_quality_notes.comments.value:good TF from 10 to 10000 secs; site.data_quality_warnings.flag:0; site.data_quality_warnings.comments.author:Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
                 ("data_type", "mt"),
                 ("fdsn.id", "USMTArray.CAS04.2020"),
@@ -56,7 +49,24 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
+                ("provenance.archive.comments", "IRIS DMC MetaData"),
+                ("provenance.archive.name", None),
+                ("provenance.archive.url", "http://www.iris.edu/mda/8P/CAS04"),
                 ("provenance.creation_time", "2021-09-23T19:45:02+00:00"),
+                (
+                    "provenance.creator.author",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.email", "pbedrosian@usgs.gov"),
+                (
+                    "provenance.creator.name",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("provenance.creator.organization", "U.S. Geological Survey"),
+                (
+                    "provenance.creator.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
+                ),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -65,38 +75,53 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
+                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey, Geomagnetism Program",
+                ),
+                (
+                    "provenance.submitter.url",
+                    "https://www.usgs.gov/natural-hazards/geomagnetism",
                 ),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["CAS04a"]),
                 ("time_period.end", "2020-07-13T21:46:12+00:00"),
                 ("time_period.start", "2020-06-02T18:41:43+00:00"),
                 ("transfer_function.coordinate_system", "geopgraphic"),
+                ("transfer_function.data_quality.rating.value", 4),
                 ("transfer_function.id", "CAS04"),
-                ("transfer_function.processed_date", None),
+                ("transfer_function.processed_by.name", None),
+                ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
                     [
-                        "{remote_ref.type: Robust Remote Reference, "
-                        "remote_info.site.id: REV06, remote_info.site.name: "
-                        "Poso Creek, CA, USA}"
+                        "remote_info.site.id = REV06",
+                        "remote_info.site.name = Poso Creek, CA, USA",
+                        "remote_info.site.location.latitude = 35.71262",
+                        "remote_info.site.location.longitude = -119.466415",
+                        "remote_info.site.location.elevation = 61.05",
+                        "remote_info.site.orientation.angle_to_geographic_north = 0.0",
+                        "remote_info.site.orientation.layout = orthogonal",
                     ],
                 ),
                 (
-                    "transfer_function.remote_references",
-                    ["CAS04-CAS04bcd", "REV06-CAS04bcd", "NVR08"],
+                    "transfer_function.processing_type",
+                    "Robust Remote Reference",
                 ),
+                ("transfer_function.remote_references", ["REV06"]),
                 (
                     "transfer_function.runs_processed",
                     ["CAS04a", "CAS04b", "CAS04c", "CAS04d"],
                 ),
                 ("transfer_function.sign_convention", "exp(+ i\\omega t)"),
+                ("transfer_function.software.author", None),
+                ("transfer_function.software.last_updated", "2015-08-26"),
+                ("transfer_function.software.name", "EMTF"),
+                ("transfer_function.software.version", None),
                 ("transfer_function.units", None),
             ]
         )
-
         self.assertDictEqual(
             meta_dict, self.tf.station_metadata.to_dict(single=True)
         )
@@ -159,18 +184,18 @@ class TestEMTFXML(unittest.TestCase):
                     "informational purposes only.; "
                     "copyright.release_status:Unrestricted Release",
                 ),
-                ("datum", None),
+                ("datum", "WGS84"),
                 ("geographic_name", "CONUS South"),
                 ("id", "CONUS South"),
                 ("name", None),
-                ("northwest_corner.latitude", 0.0),
-                ("northwest_corner.longitude", 0.0),
+                ("northwest_corner.latitude", 37.63335),
+                ("northwest_corner.longitude", -121.46838),
                 ("project", "USMTArray"),
                 ("project_lead.email", None),
                 ("project_lead.organization", None),
                 ("release_license", "CC0-1.0"),
-                ("southeast_corner.latitude", 0.0),
-                ("southeast_corner.longitude", 0.0),
+                ("southeast_corner.latitude", 37.63335),
+                ("southeast_corner.longitude", -121.46838),
                 ("summary", "Magnetotelluric Transfer Functions"),
                 ("time_period.end_date", "2020-07-13"),
                 ("time_period.start_date", "2020-06-02"),

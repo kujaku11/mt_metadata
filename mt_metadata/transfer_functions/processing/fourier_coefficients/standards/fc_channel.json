@@ -1,5 +1,5 @@
 {
-    "name": {
+    "component": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -10,29 +10,40 @@
         "example": "ex",
 		"default": null
     },
-	"sample_rate_acquisition": {
+    "frequency_max": {
         "type": "float",
         "required": true,
         "style": "number",
         "units": "samples per second",
-        "description": "Original sample rate.",
+        "description": "Highest frequency present in the sprectrogam data.",
         "options": [],
         "alias": [],
-        "example": 60.0,
-		"default": 1
+        "example": 77.0,
+		"default": 0.0
     },
-	"sample_rate_decimation": {
+    "frequency_min": {
         "type": "float",
         "required": true,
         "style": "number",
         "units": "samples per second",
-        "description": "Sample rate of the decimation level.",
+        "description": "Lowest frequency present in the sprectrogam data.",
+        "options": [],
+        "alias": [],
+        "example": 99.0,
+		"default": 0.0
+    },
+	"sample_rate_decimation_level": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
         "options": [],
         "alias": [],
         "example": 60,
 		"default": 1
     },
-	"sample_rate_window": {
+	"sample_rate_window_step": {
         "type": "float",
         "required": true,
         "style": "number",

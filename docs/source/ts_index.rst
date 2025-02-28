@@ -1,7 +1,6 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-
 Time Series
 ==============================
 
@@ -24,6 +23,8 @@ Time Series
     ts_fdsn
     ts_filter_base
     ts_filtered
+    ts_funding_source
+    ts_geographic_location
     ts_instrument
     ts_location
     ts_magnetic

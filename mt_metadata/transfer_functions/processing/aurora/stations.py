@@ -4,6 +4,8 @@ Created on Thu Feb 24 13:58:07 2022
 
 @author: jpeacock
 """
+import pandas as pd
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -14,6 +16,7 @@ from .station import Station
 # =============================================================================
 attr_dict = get_schema("stations", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("station", SCHEMA_FN_PATHS), "local")
+
 
 # =============================================================================
 class Stations(Base):
@@ -65,6 +68,11 @@ class Stations(Base):
         elif isinstance(rr_station, Station):
             rr_station.remote = True
             self._remote.append(rr_station)
+
+        elif isinstance(rr_station, str):
+            if len(rr_station) > 4:
+                raise ValueError(f"not sure to do with {type(rr_station)}")
+
         else:
             raise ValueError(f"not sure to do with {type(rr_station)}")
 
@@ -74,7 +82,9 @@ class Stations(Base):
         """
 
         if not isinstance(rr, (Station, dict)):
-            raise TypeError(f"List entry must be a Station object not {type(rr)}")
+            raise TypeError(
+                f"List entry must be a Station object not {type(rr)}"
+            )
         if isinstance(rr, dict):
             obj = Station()
             obj.from_dict(rr)
@@ -107,14 +117,14 @@ class Stations(Base):
 
         """
 
-        station = df[df.remote == False].station_id.unique()[0]
-        rr_stations = df[df.remote == True].station_id.unique()
+        station = df[df.remote == False].station.unique()[0]
+        rr_stations = df[df.remote == True].station.unique()
 
-        self.local.from_dataset_dataframe(df[df.station_id == station])
+        self.local.from_dataset_dataframe(df[df.station == station])
 
         for rr_station in rr_stations:
             rr = Station()
-            rr.from_dataset_dataframe(df[df.station_id == rr_station])
+            rr.from_dataset_dataframe(df[df.station == rr_station])
             self.add_remote(rr)
 
     def to_dataset_dataframe(self):
@@ -126,14 +136,14 @@ class Stations(Base):
 
         """
 
-        local_df = self.local.to_dataset_dataframe()
-
+        df = self.local.to_dataset_dataframe()
         for rr in self.remote:
-            local_df = local_df.append(rr.to_dataset_dataframe())
+            remote_df = rr.to_dataset_dataframe()
+            df = pd.concat([df, remote_df])  # , axis=1, ignore_index=True)
 
-        local_df = local_df.reset_index()
+        df.reset_index(inplace=True, drop=True)
 
-        return local_df
+        return df
 
     def get_station(self, station_id):
         """

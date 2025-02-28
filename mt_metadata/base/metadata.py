@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 20:41:16 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -11,11 +11,11 @@ Created on Wed Dec 23 20:41:16 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import logging
 from copy import deepcopy
 from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
+from loguru import logger
 
 import json
 import pandas as pd
@@ -27,8 +27,7 @@ from mt_metadata.utils.validators import (
 )
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
-from mt_metadata.utils.mt_logger import setup_logger
-from mt_metadata import LOG_LEVEL
+
 from mt_metadata.base.helpers import write_lines
 
 attr_dict = {}
@@ -46,9 +45,7 @@ class Base:
 
         self._class_name = validate_attribute(self.__class__.__name__)
 
-        self.logger = setup_logger(
-            f"{__name__}.{self._class_name}", level=LOG_LEVEL
-        )
+        self.logger = logger
         self._debug = False
 
         self._set_attr_dict(attr_dict)
@@ -58,12 +55,12 @@ class Base:
 
     def _set_attr_dict(self, attr_dict):
         """
-        Set attribute dictionary and variables
+        Set attribute dictionary and variables.
 
-        :param attr_dict: DESCRIPTION
-        :type attr_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        should have the proper keys.
+
+        :param attr_dict: attribute dictionary
+        :type attr_dict: dict
 
         """
 
@@ -73,6 +70,12 @@ class Base:
             self.set_attr_from_name(key, value_dict["default"])
 
     def __str__(self):
+        """
+
+        :return: table describing attributes
+        :rtype: string
+
+        """
         meta_dict = self.to_dict()[self._class_name.lower()]
         lines = [f"{self._class_name}:"]
         for name, value in meta_dict.items():
@@ -110,14 +113,25 @@ class Base:
                 try:
                     other_value = other_dict[key]
                     if isinstance(value, np.ndarray):
+                        if value.size != other_value.size:
+                            msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
+                            self.logger.info(msg)
+                            fail=True
+                            continue
                         if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
                             self.logger.info(msg)
                             fail = True
-                    elif value != other_value:
-                        msg = f"{key}: {value} != {other_value}"
-                        self.logger.info(msg)
-                        fail = True
+                    elif isinstance(value, (float, int, complex)):
+                        if not np.isclose(value, other_value):
+                            msg = f"{key}: {value} != {other_value}"
+                            self.logger.info(msg)
+                            fail = True
+                    else:
+                        if value != other_value:
+                            msg = f"{key}: {value} != {other_value}"
+                            self.logger.info(msg)
+                            fail = True
                 except KeyError:
                     msg = "Cannot find {0} in other".format(key)
                     self.logger.info(msg)
@@ -125,6 +139,8 @@ class Base:
                 return False
             else:
                 return True
+        else:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -136,31 +152,22 @@ class Base:
         """
         Update attribute values from another like element, skipping None
 
-        :param other: DESCRIPTION
-        :type other: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param other: other Base object
+        :type other: :class:`mt_metadata.base.metadata.Base`
 
         """
         if not isinstance(other, type(self)):
             self.logger.warning(
-                "Cannot update %s with %s", type(self), type(other)
+                f"Cannot update {type(self)} with {type(other)}"
             )
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
-                msg = "%s is not equal %s != %s"
-                self.logger.error(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
+                msg = (
+                    f"{k} is not equal {self.get_attr_from_name(k)} != "
+                    f"{other.get_attr_from_name(k)}"
                 )
-                raise ValueError(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
-                )
+                self.logger.error(msg)
+                raise ValueError(msg)
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
@@ -182,8 +189,8 @@ class Base:
         Need to skip copying the logger
         need to copy properties as well.
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :return: Deep copy
+        :rtype: :class:`mt_metadata.base.metadata.Base`
 
         """
         copied = type(self)()
@@ -230,10 +237,10 @@ class Base:
         """
         return a descriptive string of the attribute if none returns for all
 
-        :param key: DESCRIPTION, defaults to None
-        :type key: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param name: attribute name for a specifice attribute, defaults to None
+        :type name: string, optional
+        :return: description of the attributes or specific attribute if asked
+        :rtype: string
 
         """
 
@@ -293,7 +300,7 @@ class Base:
             self.logger.exception(error)
             raise MTSchemaError(error)
 
-    def _validate_option(self, name, option_list):
+    def _validate_option(self, name, value, option_list):
         """
         validate the given attribute name agains possible options and check
         for aliases
@@ -308,21 +315,21 @@ class Base:
         :rtype: TYPE
 
         """
-        if name is None:
+        if value is None:
             return True, False, None
         options = [ss.lower() for ss in option_list]
         other_possible = False
         if "other" in options:
             other_possible = True
-        if name.lower() in options:
+        if value.lower() in options:
             return True, other_possible, None
-        elif name.lower() not in options and other_possible:
+        elif value.lower() not in options and other_possible:
             msg = (
-                "{0} not found in options list {1}, but other options"
-                + " are allowed.  Allowing {2} to be set to {0}."
+                f"Value '{value}' not found for metadata field '{name}' in options list {option_list}, but other options"
+                + f" are allowed.  Allowing {option_list} to be set to {value}."
             )
             return True, other_possible, msg
-        return False, other_possible, "{0} not found in options list {1}"
+        return False, other_possible, f"Value '{value}' for metadata field '{name}' not found in options list {option_list}"
 
     def __setattr__(self, name, value):
         """
@@ -377,14 +384,14 @@ class Base:
                 test_property = getattr(self.__class__, name, None)
                 if isinstance(test_property, property):
                     self.logger.debug(
-                        "Identified %s as property, using fset", name
+                        f"Identified {name} as property, using fset"
                     )
                     test_property.fset(self, value)
                     return
             except AttributeError:
                 pass
         if hasattr(self, "_attr_dict") and not name.startswith("_"):
-            self.logger.debug("Setting {0} to {1}".format(name, value))
+            self.logger.debug(f"Setting {name} to {value}")
             try:
                 v_dict = self._attr_dict[name]
                 v_type = self._get_standard_type(name)
@@ -392,7 +399,7 @@ class Base:
                 # check options
                 if v_dict["style"] == "controlled vocabulary":
                     options = v_dict["options"]
-                    accept, other, msg = self._validate_option(value, options)
+                    accept, other, msg = self._validate_option(name, value, options)
                     if not accept:
                         self.logger.error(msg.format(value, options))
                         raise MTSchemaError(msg.format(value, options))
@@ -411,18 +418,18 @@ class Base:
         name = self._validate_name(name)
         try:
             standards = self._attr_dict[name]
-            if isinstance(standards, logging.Logger):
+            if isinstance(standards, type(logger)):
                 return None
             return standards["type"]
         except KeyError:
             if name[0] != "_":
                 msg = (
-                    "{0} is not defined in the standards. "
-                    + " Should add attribute information with "
-                    + "add_base_attribute if the attribute is going to "
-                    + "propogate via to_dict, to_json, to_series"
+                    f"{name} is not defined in the standards. "
+                    " Should add attribute information with "
+                    "add_base_attribute if the attribute is going to "
+                    "propogate via to_dict, to_json, to_series"
                 )
-                self.logger.info(msg.format(name))
+                self.logger.info(msg)
             return None
 
     def get_attr_from_name(self, name):
@@ -432,8 +439,8 @@ class Base:
         The name can contain the name of an object which must be separated
         by a '.' for  e.g. {object_name}.{name} --> location.latitude
 
-        ..note:: this is a helper function for names with '.' in the name for
-                 easier getting when reading from dictionary.
+        .. note:: this is a helper function for names with '.' in the name for
+         easier getting when reading from dictionary.
 
         :param name: name of attribute to get.
         :type name: string
@@ -473,8 +480,8 @@ class Base:
         The name can contain the name of an object which must be separated
         by a '.' for  e.g. {object_name}.{name} --> location.latitude
 
-        ..note:: this is a helper function for names with '.' in the name for
-                 easier getting when reading from dictionary.
+        .. note:: this is a helper function for names with '.' in the name for
+         easier getting when reading from dictionary.
 
         :param name: name of attribute to get.
         :type name: string
@@ -515,8 +522,8 @@ class Base:
         :type value: described in value_dict
 
         :param value_dict: dictionary describing the attribute, must have keys
-            ['type', 'required', 'style', 'units', 'alias', 'description',
-             'options', 'example']
+         ['type', 'required', 'style', 'units', 'alias', 'description',
+          'options', 'example']
         :type name: string
 
         * type --> the data type [ str | int | float | bool ]
@@ -525,8 +532,8 @@ class Base:
         * units --> units of the attribute, must be a string
         * alias --> other possible names for the attribute
         * options --> if only a few options are accepted, separated by | or
-          comma.b [ option_01 | option_02 | other ]. 'other' means other options
-          available but not yet defined.
+           comma.b [ option_01 | option_02 | other ]. 'other' means other options
+           available but not yet defined.
         * example --> an example of the attribute
 
         :Example:
@@ -595,6 +602,9 @@ class Base:
                         meta_dict[name] = value
                     elif value.all() != 0:
                         meta_dict[name] = value
+                elif hasattr(value, "size"):
+                    if value.size > 0:
+                        meta_dict[name] = value
                 elif (
                     value
                     not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
@@ -624,7 +634,7 @@ class Base:
 
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
-            msg = "Input must be a dictionary not {0}".format(type(meta_dict))
+            msg = f"Input must be a dictionary not {type(meta_dict)}"
             self.logger.error(msg)
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
@@ -633,13 +643,13 @@ class Base:
             if class_name.lower() != self._class_name.lower():
                 msg = (
                     "name of input dictionary is not the same as class type "
-                    "input = %s, class type = %s"
+                    f"input = {class_name}, class type = {self._class_name}"
                 )
                 self.logger.debug(msg, class_name, self._class_name)
             meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
             self.logger.debug(
-                "Assuming input dictionary is of type %s", self._class_name
+                f"Assuming input dictionary is of type {self._class_name}",
             )
             meta_dict = helpers.flatten_dict(meta_dict)
         # set attributes by key.
@@ -696,9 +706,9 @@ class Base:
                 with open(json_str, "r") as fid:
                     json_dict = json.load(fid)
         elif not isinstance(json_str, (str, Path)):
-            msg = "Input must be valid JSON string not %"
-            self.logger.error(msg, type(json_str))
-            raise MTSchemaError(msg % type(json_str))
+            msg = f"Input must be valid JSON string not {type(json_str)}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
         self.from_dict(json_dict)
 
     def from_series(self, pd_series):
@@ -711,13 +721,13 @@ class Base:
         :param pd_series: Series containing metadata information
         :type pd_series: pandas.Series
 
-        ..todo:: Force types in series
+        .. todo:: Force types in series
 
         """
         if not isinstance(pd_series, pd.Series):
-            msg = "Input must be a Pandas.Series not type %s"
-            self.logger.error(msg, type(pd_series))
-            MTSchemaError(msg % type(pd_series))
+            msg = f"Input must be a Pandas.Series not type {type(pd_series)}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
         for key, value in pd_series.items():
             self.set_attr_from_name(key, value)
 

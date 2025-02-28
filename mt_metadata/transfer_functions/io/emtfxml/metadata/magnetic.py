@@ -40,7 +40,10 @@ class Magnetic(Base):
         :rtype: TYPE
 
         """
-
+        for attr in ["orientation", "x", "y", "z"]:
+            value = getattr(self, attr)
+            if value is None:
+                setattr(self, attr, 0)
         root = et.Element(
             self.__class__.__name__.capitalize(),
             {

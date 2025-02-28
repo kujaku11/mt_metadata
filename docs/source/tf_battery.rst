@@ -18,7 +18,7 @@ Battery
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **type**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | battery type                                  | pb-acid gel    |
+       | **Required**: :blue:`False`                  | Description of battery type.                  | pb-acid gel    |
        |                                              |                                               | cell           |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -68,7 +68,7 @@ Battery
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **voltage.start**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | start value of a diagnostic measurement       | 12.3           |
+       | **Required**: :blue:`False`                  | Starting value of a diagnostic measurement.   | 12.3           |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -93,7 +93,7 @@ Battery
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **voltage.end**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | end value of a diagnostic measurement         | 10             |
+       | **Required**: :blue:`False`                  | Ending value of a diagnostic measurement.     | 10             |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -118,8 +118,8 @@ Battery
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **comments**                                 | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | any comment about the battery                 | this is a      |
-       |                                              |                                               | comment        |
+       | **Required**: :blue:`False`                  | Any comments about the battery.               | discharged too |
+       |                                              |                                               | quickly        |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |

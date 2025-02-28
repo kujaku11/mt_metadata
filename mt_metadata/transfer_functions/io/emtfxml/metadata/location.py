@@ -19,6 +19,7 @@ from mt_metadata.base.helpers import write_lines, element_to_string
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Declination
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
@@ -241,6 +242,18 @@ class Location(Base):
             self.logger.warning(msg)
 
         return seconds
+
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        helpers._read_element(self, input_dict, "location")
+        helpers._read_element(self, input_dict["location"], "declination")
 
     def to_xml(self, string=False, required=True):
         """

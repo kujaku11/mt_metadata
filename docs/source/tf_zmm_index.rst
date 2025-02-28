@@ -1,7 +1,6 @@
 .. role:: red
 .. role:: blue
 .. role:: navy
-
 Z-Files
 ==============================
 

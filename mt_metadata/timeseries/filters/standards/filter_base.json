@@ -22,7 +22,7 @@
         "example": "ambient air temperature",
 		"default": null
     },
-	
+
     "type": {
         "type": "string",
         "required": true,
@@ -76,7 +76,7 @@
         "alias": [],
         "example": "2020-01-01",
 		"default": "1980-01-01"
-    }, 
+    },
 
     "gain": {
         "type": "float",

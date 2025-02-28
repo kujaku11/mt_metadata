@@ -8,7 +8,8 @@ Created on Sat Dec  4 14:13:37 2021
 # Imports
 # =============================================================================
 from mt_metadata.base import Base
-from mt_metadata.utils.mt_logger import setup_logger
+from mt_metadata.base.helpers import validate_name
+
 
 # ==============================================================================
 # Info object
@@ -29,6 +30,7 @@ class Information(Base):
         self.info_dict = {}
         self._phoenix_col_width = 38
         self._phoenix_file = False
+        self._empower_file = False
 
         self.phoenix_translation_dict = {
             "survey": "survey.id",
@@ -74,6 +76,37 @@ class Information(Base):
             "rrtype": "processing_parameter",
             "removelargelines": "processing_parameter",
             "rotmaxe": "processing_parameter",
+            "project": "survey.project",
+            "processedby": "transfer_function.processed_by.name",
+            "processingsoftware": "transfer_function.software.name",
+            "processingtag": "transfer_function.id",
+            "signconvention": "transfer_function.sign_convention",
+            "sitename": "station.geographic_name",
+            "survey": "survey.id",
+            "year": "survey.time_period.start_date",
+            "runlist": "transfer_function.runs_processed",
+            "remotesite": "transfer_function.remote_references",
+            "remoteref": "transfer_function.processing_parameters",
+        }
+
+        self.empower_translation_dict = {
+            "processingsoftware": "transfer_function.software.name",
+            "sitename": "station.geographic_name",
+            "year": "survey.time_period.start_date",
+            "process_date": "transfer_function.processed_date",
+            "declination": "station.location.declination.value",
+            "tag": "component",
+            "length": "dipole_length",
+            "ac": "ac.end",
+            "dc": "dc.end",
+            "negative_res": "contact_resistance.start",
+            "positive_res": "contact_resistance.end",
+            "sensor_type": "sensor.model",
+            "azimuth": "measured_azimuth",
+            "sensor_serial": "sensor.id",
+            "cal_name": "comments",
+            "saturation": "comments",
+            "instrument_type": "model",
         }
 
         super().__init__(attr_dict={})
@@ -123,6 +156,8 @@ class Information(Base):
                     and line.lower().find("station") >= 0
                 ):
                     self._phoenix_file = True
+                elif "empower" in line.lower():
+                    self._empower_file = True
                 if self._phoenix_file and len(line) > self._phoenix_col_width:
                     info_list.append(line[0 : self._phoenix_col_width].strip())
                     phoenix_list_02.append(
@@ -137,8 +172,12 @@ class Information(Base):
 
         info_list += phoenix_list_02
         # validate the information list
-        info_list = self._validate_info_list(info_list)
+        # empower has a specific format that cannot be sorted.
+        if self._empower_file:
+            info_list = self._validate_info_list(info_list, sort=False)
 
+        else:
+            info_list = self._validate_info_list(info_list, sort=True)
         return info_list
 
     def read_info(self, edi_lines):
@@ -148,71 +187,188 @@ class Information(Base):
 
         self.info_dict = {}
         self.info_list = self.get_info_list(edi_lines)
-        # make info items attributes of Information
-        for ll in self.info_list:
-            l_list = [None, ""]
-            # phoenix has lat an lon information in the notes but separated by
-            # a space instead of an = or :
-            if (
-                "lat" in ll.lower()
-                or "lon" in ll.lower()
-                or "lng" in ll.lower()
-            ):
-                l_list = ll.split()
-                if len(l_list) == 2:
-                    self.info_dict[l_list[0]] = l_list[1]
-                    continue
-                elif len(l_list) == 4:
-                    self.info_dict[l_list[0]] = l_list[1]
-                    self.info_dict[l_list[2]] = l_list[3]
-                    continue
-                elif len(l_list) == 6:
-                    self.info_dict[l_list[0]] = l_list[1] + l_list[2]
-                    self.info_dict[l_list[3]] = l_list[4] + l_list[5]
-                    continue
+        if self._empower_file:
+            self.info_dict, self.info_list = self._read_empower_info(
+                self.info_list
+            )
+        else:
+            # make info items attributes of Information
+            for ll in self.info_list:
+                l_list = [None, ""]
+                # phoenix has lat an lon information in the notes but separated by
+                # a space instead of an = or :
+                if (
+                    "lat" in ll.lower()
+                    or "lon" in ll.lower()
+                    or "lng" in ll.lower()
+                ):
+                    l_list = ll.split()
+                    if len(l_list) == 2:
+                        self.info_dict[l_list[0]] = l_list[1]
+                        continue
+                    elif len(l_list) == 4:
+                        self.info_dict[l_list[0]] = l_list[1]
+                        self.info_dict[l_list[2]] = l_list[3]
+                        continue
+                    elif len(l_list) == 6:
+                        self.info_dict[l_list[0]] = l_list[1] + l_list[2]
+                        self.info_dict[l_list[3]] = l_list[4] + l_list[5]
+                        continue
 
-            # need to check if there is an = or : seperator, which ever
-            # comes first is assumed to be the delimiter
-            sep = None
-            if ll.count(":") > 0 and ll.count("=") > 0:
-                if ll.find(":") < ll.find("="):
-                    sep = ":"
+                # need to check if there is an = or : seperator, which ever
+                # comes first is assumed to be the delimiter
+                l_key, l_value = self._read_line(ll)
+                if l_key:
+                    self.info_dict[l_key] = l_value
+
+        if not self._empower_file:
+            self.parse_info()
+
+        if self.info_list is None:
+            self.logger.info("Could not read information")
+            return
+
+    def _read_empower_info(self, info_list):
+        """
+        read empower style information block.  Structured as
+
+        Stations
+         Electrics
+          EX
+          EY
+         Magnetics
+          HX
+          HY
+          HZ
+
+        :param info_list: DESCRIPTION
+        :type info_list: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        ch_key = {
+            "e1": "ex",
+            "e2": "ey",
+            "h1": "hx",
+            "h2": "hy",
+            "h3": "hz",
+        }
+
+        info_dict = {}
+        comp = None
+        new_list = []
+        for line in info_list:
+            og_key, l_value = self._read_line(line)
+            l_key = validate_name(og_key.lower())
+            if l_value in [None]:
+                comp = l_key
+                if comp == "electrics":
+                    comp = "data_logger"
+                elif comp in ["ex", "ey", "hx", "hy", "hz"]:
+                    comp = f"run.{comp}"
+                continue
+            elif l_value in [""]:
+                continue
+            else:
+                if l_key in [
+                    "station_name",
+                    "min_value",
+                    "max_value",
+                    "detected_sensor_type",
+                    "coordinates",
+                    "gps_(min_-_max)",
+                    "temperature_(min_-_max)",
+                    "recording_id",
+                ]:
+                    continue
+                try:
+                    l_key = self.empower_translation_dict[l_key]
+                except KeyError:
+                    new_list.append(f"{l_key} = {l_value}")
+
+                l_value = l_value.encode("ascii", "ignore").decode().lower()
+                if l_value.count("[") >= 1 and l_value.count("]") >= 1:
+                    l_value = l_value.split("[")[0].strip()
+                if l_value.count("%") >= 0:
+                    l_value = l_value.replace("%", "")
+                if l_key in ["component"]:
+                    l_value = ch_key[l_value]
+
+                if comp:
+                    if comp in ["run.hx", "run.hy", "run.hz"]:
+                        if "ac" in l_key or "dc" in l_key:
+                            continue
+
+                    if "comments" in l_key:
+                        og_key = validate_name(og_key.lower())
+                        try:
+                            info_dict[
+                                f"{comp}.{l_key}"
+                            ] += f",{og_key}={l_value}"
+                        except KeyError:
+                            info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
+
+                    else:
+                        info_dict[f"{comp}.{l_key}"] = l_value
                 else:
-                    sep = "="
+                    info_dict[l_key.lower()] = l_value
 
-            elif ll.count(":") >= 1:
+        return info_dict, new_list
+
+    def _get_separator(self, line):
+        """
+        get separator to split line
+
+        :param line: DESCRIPTION
+        :type line: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        sep = None
+        if line.count(":") > 0 and line.count("=") > 0:
+            if line.find(":") < line.find("="):
                 sep = ":"
-                # colon_find = ll.find(":")
-            elif ll.count("=") >= 1:
+            else:
                 sep = "="
 
-            if sep:
-                l_list = ll.split(sep, 1)
-                if len(l_list) == 2:
-                    l_key = l_list[0].strip()
-                    l_value = l_list[1].strip().replace('"', "")
-                    if l_value.find("[") > 0 and l_value.find("]") > 0:
-                        if l_value.count(",") >= 1:
-                            l_sep = ","
-                        elif l_value.count(";") >= 1:
-                            l_sep = ";"
-                        else:
-                            l_sep = ""
+        elif line.count(":") >= 1:
+            sep = ":"
+            # colon_find = line.find(":")
+        elif line.count("=") >= 1:
+            sep = "="
+
+        return sep
+
+    def _read_line(self, line):
+        sep = self._get_separator(line)
+        if sep:
+            l_list = line.split(sep, 1)
+            if len(l_list) == 2:
+                l_key = l_list[0].strip()
+                l_value = l_list[1].strip().replace('"', "")
+                if l_value.find("[") > 0 and l_value.find("]") > 0:
+                    if l_value.count(",") >= 1:
+                        l_sep = ","
+                    elif l_value.count(";") >= 1:
+                        l_sep = ";"
+                    elif l_value.count(":") >= 1:
+                        l_sep = ":"
+                    else:
+                        l_sep = None
+                    if l_sep:
                         l_value = (
                             l_value.replace("[", "")
                             .replace("[", "")
                             .split(l_sep)
                         )
-                    self.info_dict[l_key] = l_value
-
+                return l_key, l_value
             else:
-                self.info_dict[l_list[0]] = None
-
-        self.parse_info()
-
-        if self.info_list is None:
-            self.logger.info("Could not read information")
-            return
+                return l_key, ""
+        else:
+            return line, None
 
     def write_info(self, info_list=None):
         """
@@ -228,7 +384,7 @@ class Information(Base):
 
         return info_lines
 
-    def _validate_info_list(self, info_list):
+    def _validate_info_list(self, info_list, sort=True):
         """
         check to make sure the info list input is valid, really just checking
         for Phoenix format where they put two columns in the file and remove
@@ -237,7 +393,11 @@ class Information(Base):
 
         new_info_list = []
         # try to remove repeating lines
-        for line in sorted(list(set(info_list))):
+        if sort:
+            info_list = sorted(list(set(info_list)))
+        else:
+            info_list = info_list
+        for line in info_list:
             # get rid of empty lines
             lt = str(line).strip()
             if len(lt) > 1:
@@ -275,7 +435,7 @@ class Information(Base):
                             )
                             new_dict[vkey] = item_value
                     else:
-                        self.logger.warngin("could not parse line %s", value)
+                        self.logger.warning(f"Could not parse line {value}")
                         raise KeyError
                 else:
                     if new_key == "processing_parameter":
@@ -285,11 +445,17 @@ class Information(Base):
                             new_dict[new_key] = value.split()[0]
                         elif key.lower().endswith("sen"):
                             comp = key.lower().split()[0]
-                            new_dict[
-                                f"{comp}.sensor.manufacturer"
-                            ] = "Phoenix Geophysics"
+                            new_dict[f"{comp}.sensor.manufacturer"] = (
+                                "Phoenix Geophysics"
+                            )
                             new_dict[f"{comp}.sensor.type"] = "Induction Coil"
                             new_dict[new_key] = value
+                        elif new_key in [
+                            "survey.time_period.start_date",
+                            "survey.time_period.end_date",
+                        ]:
+                            if value.count("-") == 1:
+                                new_dict[new_key] = value.split("-")[0]
                         else:
                             new_dict[new_key] = value
 
@@ -302,8 +468,8 @@ class Information(Base):
                 new_dict[key] = value
 
         if processing_parameters != []:
-            new_dict[
-                "transfer_function.processing_parameters"
-            ] = processing_parameters
+            new_dict["transfer_function.processing_parameters"] = (
+                processing_parameters
+            )
 
         self.info_dict = new_dict

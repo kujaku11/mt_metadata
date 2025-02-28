@@ -60,6 +60,17 @@ class TestListDict(unittest.TestCase):
         lc = self.ld.copy()
         self.assertEqual(self.ld, lc)
 
+    def test_pop(self):
+        self.ld["b"] = 1
+        b = self.ld.pop("b")
+        with self.subTest("value of b"):
+            self.assertEqual(b["b"], 1)
+        with self.subTest("b not in keys"):
+            self.assertNotIn("b", self.ld.keys())
+
+    def test_pop_fail(self):
+        self.assertRaises(KeyError, self.ld.pop, "h")
+
 
 class TestListDictSetIndex(unittest.TestCase):
     @classmethod
@@ -247,6 +258,43 @@ class TestListDictSlice(unittest.TestCase):
     def test_slice_mixed_03(self):
         b = self.ld[0:"b"]
         self.assertTrue(b == ListDict([("a", 0)]))
+
+    def test_get_index_slice_from_slice_fail(self):
+        self.assertRaises(
+            TypeError,
+            self.ld._get_index_slice_from_slice(False, slice(None, None, None)),
+        )
+
+    def test_get_index_slice_from_slice_fail_bad_keys(self):
+        self.assertRaises(
+            TypeError,
+            self.ld._get_index_slice_from_slice(
+                None, slice(False, False, False)
+            ),
+        )
+
+    def test_getitem_fail(self):
+        self.assertRaises(KeyError, self.ld.__getitem__, "z")
+
+    def test_getitem_fail_bad_type(self):
+        self.assertRaises(TypeError, self.ld.__getitem__, 10.0)
+
+    def test_setitem_fail(self):
+        self.assertRaises(
+            NotImplementedError, self.ld.__setitem__, slice(0, 1), None
+        )
+
+    def test_remove_fail(self):
+        self.assertRaises(KeyError, self.ld.remove, "z")
+
+    def test_remove_fail_bad_key_type(self):
+        self.assertRaises(TypeError, self.ld.remove, 10.0)
+
+    def test_extend_fail(self):
+        self.assertRaises(TypeError, self.ld.extend, ("x"))
+
+    def test_update_fail(self):
+        self.assertRaises(TypeError, self.ld.update, ("x"))
 
 
 # =============================================================================

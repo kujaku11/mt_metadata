@@ -13,7 +13,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     PoleZeroFilter,
     CoefficientFilter,
-    ChannelResponseFilter,
+    ChannelResponse,
     TimeDelayFilter,
 )
 from mt_metadata.utils.exceptions import MTSchemaError
@@ -197,7 +197,7 @@ class TestFAPFilter(unittest.TestCase):
             units_in="v", units_out="v", name="example_coefficient", gain=10,
         )
 
-        self.cr = ChannelResponseFilter(
+        self.cr = ChannelResponse(
             filters_list=[self.pz, self.fap, self.cf, self.td]
         )
         self.cr.frequencies = np.logspace(-5, 5, 500)
@@ -322,3 +322,9 @@ class TestFAPFilter(unittest.TestCase):
 
     #     with self.subTest("test name"):
     #         self.assertEqual(stage.name, cr.frequenciesap.name)
+
+# =============================================================================
+# Run
+# =============================================================================
+if __name__ == "__main__":
+    unittest.main()

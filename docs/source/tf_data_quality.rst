@@ -143,7 +143,7 @@ DataQuality
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **rating.author**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | author of who rated the data                  | gradstudent ace|
+       | **Required**: :blue:`False`                  | Author of who rated the data.                 | gradstudent ace|
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -168,7 +168,7 @@ DataQuality
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **rating.method**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | the method used to rate the data              | standard       |
+       | **Required**: :blue:`False`                  | The method used to rate the data.             | standard       |
        |                                              |                                               | deviation      |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -193,8 +193,8 @@ DataQuality
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **rating.value**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | a rating from 1-5 where 1 is bad and 5 is     | 4              |
-       |                                              | good and 0 if unrated                         |                |
+       | **Required**: :red:`True`                    | A rating from 1-5 where 1 is bad and 5 is     | 4              |
+       |                                              | good and 0 if unrated.                        |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: integer                            |                                               |                |

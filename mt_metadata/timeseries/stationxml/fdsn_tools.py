@@ -16,8 +16,13 @@ Created on Wed Sep 30 11:47:01 2020
 import logging
 import numpy as np
 
+from mt_metadata.timeseries import Copyright
+
 # =============================================================================
 logger = logging.getLogger(__name__)
+
+c = Copyright()
+keys = c._attr_dict["release_license"]["options"]
 
 release_dict = {
     "CC-0": "open",
@@ -34,6 +39,19 @@ release_dict = {
     "CC BY-NC-SA": "partial",
     "CC BY-NC-NC": "closed",
 }
+
+for key in keys:
+    if key.startswith("CC"):
+        if "SA" in key or "NA" in key or "ND" in key or "NC" in key:
+            if key.count("NC") > 1:
+                release_dict[key] = "closed"
+            else:
+                release_dict[key] = "partial"
+        else:
+            release_dict[key] = "open"
+    else:
+        release_dict[key] = "partial"
+
 
 period_code_dict = {
     "F": {"min": 1000, "max": 5000},
@@ -301,6 +319,11 @@ def read_channel_code(channel_code):
 
 def create_mt_component(channel_code):
     """
+    :param channel_code: Three character string {Period}{Component}{Orientation}
+    :type channel_code: string
+    :return: DESCRIPTION
+    :rtype: TYPE
+
     Create a component for an MT channel given the measurement and orientation
 
     >>> create_mt_component("LQN")
@@ -309,13 +332,9 @@ def create_mt_component(channel_code):
     """
     code_dict = read_channel_code(channel_code)
     if code_dict["measurement"] == "tide":
-        logger.warning(
-            "It is unikely that we have encountered tidal data here"
-        )
-        logger.warning("It is more likely that the channel code 'T' appeared")
-        logger.warning(
-            "Some historial MT data (PKD, SAO) used 'T' as the code for feedback coil magnetometers"
-        )
+        msg = ("Channel code indicates tidal data -- Some historial MT data (PKD, "
+               "SAO) used 'T' as the code for feedback coil magnetometers")
+        logger.warning(msg)
         code_dict = read_channel_code(channel_code.replace("T", "F"))
 
     mt_component = mt_components_dict[code_dict["measurement"]]

@@ -8,7 +8,7 @@ Created on Tue Feb 16 10:33:27 2021
 :license: MIT
 
 """
-from mt_metadata.utils.mt_logger import setup_logger
+from loguru import logger
 from obspy.core.inventory import Comment
 
 # =============================================================================
@@ -21,7 +21,7 @@ class BaseTranslator:
     """
 
     def __init__(self):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.xml_translator = {
             "alternate_code": None,
             "code": None,
@@ -92,34 +92,52 @@ class BaseTranslator:
 
             'a: b:c, d:e' -> {'a': 'b:c', 'd':'e'}
 
+            or
+
+            'a: b, b2, c: d:e' -> {'a': 'b:c', 'd':'e'}
+
             """
-            k, *other = comment_string.split(":", 1)
-            if other:
-                other = other[0]
-                key = k
-                if other.find(":") >= 0 and other.find(",") >= 0:
-                    if other.find(":") < other.find(","):
-                        if other.count(":") > 1:
-                            value, *maybe = other.split(",", 1)
-                            filled[key] = value.strip().replace(":", "--")
-                            if maybe:
-                                filled = parse(maybe[0].strip(), filled)
-                        else:
-                            filled[key] = other.replace(":", "--").strip()
-                    else:
-                        value, *maybe = other.split(",", 1)
-                        filled[key] = value.strip()
-                        if maybe:
-                            filled = parse(maybe[0].strip(), filled)
-                elif other.find(":") > 0:
-                    value, *maybe = other.split(":", 1)
-                    filled[key] = value.strip()
-                else:
-                    filled[key] = other.strip()
+            if "author:" in comment_string and "comments:" in comment_string:
+                author, comments = [
+                    s.strip()
+                    for s in comment_string.split("author:", 1)[1].split(
+                        "comments:", 1
+                    )
+                ]
+
+                if author.endswith(","):
+                    author = author[:-1]
+
+                return {"author": author, "comments": comments}
 
             else:
-                filled[k] = None
-            return filled
+                k, *other = comment_string.split(":", 1)
+                if other:
+                    other = other[0]
+                    key = k
+                    if other.find(":") >= 0 and other.find(",") >= 0:
+                        if other.find(":") < other.find(","):
+                            if other.count(":") > 1:
+                                value, *maybe = other.split(",", 1)
+                                filled[key] = value.strip().replace(":", "--")
+                                if maybe:
+                                    filled = parse(maybe[0].strip(), filled)
+                            else:
+                                filled[key] = other.replace(":", "--").strip()
+                        else:
+                            value, *maybe = other.split(",", 1)
+                            filled[key] = value.strip()
+                            if maybe:
+                                filled = parse(maybe[0].strip(), filled)
+                    elif other.find(":") > 0:
+                        value, *maybe = other.split(":", 1)
+                        filled[key] = value.strip()
+                    else:
+                        filled[key] = other.strip()
+
+                else:
+                    filled[k] = None
+                return filled
 
         # if the string is dictionary like, parse, otherwise skip
         if ":" in comment.value:
@@ -160,7 +178,9 @@ class BaseTranslator:
             if comment.subject == subject:
                 return comment
 
-        self.logger.info(f"Could not find {subject} in the given list of comments.")
+        self.logger.info(
+            f"Could not find {subject} in the given list of comments."
+        )
         return None
 
     def make_mt_comments(self, mt_element, mt_key_base="mt"):

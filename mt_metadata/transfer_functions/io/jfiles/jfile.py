@@ -10,7 +10,7 @@
 # ==============================================================================
 from pathlib import Path
 import numpy as np
-from collections import OrderedDict
+from loguru import logger
 
 from mt_metadata.transfer_functions.tf import (
     Survey,
@@ -20,8 +20,9 @@ from mt_metadata.transfer_functions.tf import (
     Magnetic,
 )
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.utils.mt_logger import setup_logger
 from .metadata import Header
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
+
 
 # ==============================================================================
 # Class to read j_file
@@ -32,7 +33,7 @@ class JFile:
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logger
         self.header = Header()
 
         self._jfn = None
@@ -161,7 +162,7 @@ class JFile:
 
         return j_lines
 
-    def read(self, fn=None):
+    def read(self, fn=None, get_elevation=False):
         """
         Read data from a j file
 
@@ -313,6 +314,12 @@ class JFile:
         self.z_err[np.where(self.z_err == np.inf)] = 10**6
         self.t_err[np.where(self.t_err == np.inf)] = 10**6
 
+        if self.header.elevation == 0 and get_elevation:
+            if self.header.latitude != 0 and self.header.longitude != 0:
+                self.header.elevation = get_nm_elev(
+                    self.header.latitude, self.header.longitude
+                )
+
     @property
     def station_metadata(self):
         sm = Station()
@@ -363,5 +370,6 @@ class JFile:
     @property
     def survey_metadata(self):
         sm = Survey()
+        sm.add_station(self.station_metadata)
 
         return sm

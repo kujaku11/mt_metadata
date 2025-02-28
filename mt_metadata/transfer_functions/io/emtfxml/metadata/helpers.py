@@ -55,7 +55,8 @@ def _convert_tag_to_capwords(element):
     """
 
     for item in element.iter():
-        item.tag = _capwords(item.tag)
+        if item.tag != "value":
+            item.tag = _capwords(item.tag)
 
     return element
 
@@ -76,13 +77,11 @@ def _write_single(parent, key, value, attributes={}):
 
 def _read_element(cls, root_dict, element_name):
     try:
-        value = root_dict[element_name]
-        element_dict = {element_name: value}
+        element_dict = {element_name: root_dict[element_name]}
         cls.from_dict(element_dict)
 
     except KeyError:
-        print(f"No {element_name} in EMTF XML")
-        cls.logger.debug(f"No {element_name} in EMTF XML")
+        cls.logger.warning(f"No {element_name} in EMTF XML")
 
 
 def _convert_keys_to_lower_case(root_dict):
@@ -146,8 +145,15 @@ def to_xml(cls, string=False, required=True, order=None):
         order = _get_attributes(cls)
     for attr in order:
         c_attr = getattr(cls, attr)
+        if c_attr is None:
+            continue
         if hasattr(c_attr, "to_xml") and callable(getattr(c_attr, "to_xml")):
-            root.append(c_attr.to_xml(required=required))
+            element = c_attr.to_xml(required=required)
+            if isinstance(element, list):
+                for item in element:
+                    root.append(item)
+            else:
+                root.append(element)
         elif isinstance(c_attr, list):
             for item in c_attr:
                 root.append(item.to_xml(required=required))
@@ -157,4 +163,4 @@ def to_xml(cls, string=False, required=True, order=None):
     if not string:
         return root
     else:
-        return element_to_string(root)
+        return element_to_string(_remove_null_values(root))

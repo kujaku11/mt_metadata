@@ -34,6 +34,25 @@ class DataQualityNotes(Base):
         self.comments = Comment()
         super().__init__(attr_dict=attr_dict, **kwargs)
 
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        try:
+            comments_dict = {
+                "comments": input_dict["data_quality_notes"].pop("comments")
+            }
+        except KeyError:
+            comments_dict = {"comments": ""}
+        self.comments = Comment()
+        self.comments.read_dict(comments_dict)
+        helpers._read_element(self, input_dict, "data_quality_notes")
+
     def to_xml(self, string=False, required=True):
         """
 

@@ -8,7 +8,6 @@ Created on Wed Nov 16 11:08:25 2022
 # Imports
 # =============================================================================
 from collections import OrderedDict
-from copy import deepcopy
 
 # =============================================================================
 
@@ -218,6 +217,12 @@ class ListDict:
         elif isinstance(key, int):
             key = self._get_key_from_index(key)
             self._home.__delitem__(key)
+        elif key is None:
+            try:
+                self._home.__delitem__(key)
+            except KeyError:
+                raise (KeyError("Could not find None in keys."))
+
         else:
             raise TypeError("could not identify an appropriate key from object")
 
@@ -269,3 +274,18 @@ class ListDict:
             )
 
         self._home.update(other)
+
+    def pop(self, key):
+        """
+        pop item off of dictionary.  The key must be verbatim
+
+        :param key: key of item to be popped off of dictionary
+        :type key: string
+        :return: item popped
+
+        """
+
+        if key in self.keys():
+            return dict([self._home.popitem(key)])
+        else:
+            raise KeyError(f"{key} is not in ListDict keys.")

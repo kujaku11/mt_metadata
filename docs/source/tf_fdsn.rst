@@ -18,7 +18,7 @@ Fdsn
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **id**                                       | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given FDSN archive ID name                    | MT001          |
+       | **Required**: :blue:`False`                  | Given FDSN archive ID name.                   | MT001          |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
@@ -43,8 +43,8 @@ Fdsn
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **network**                                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Given two character FDSN archive network code | EM             |
-       |                                              |                                               |                |
+       | **Required**: :blue:`False`                  | Given two character FDSN archive network      | EM             |
+       |                                              | code.                                         |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
@@ -68,9 +68,9 @@ Fdsn
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **channel_code**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Three character FDSN channel code             | LQN            |
-       |                                              |                                               |                |
-       | **Units**: None                              |                                               |                |
+       | **Required**: :blue:`False`                  | Three character FDSN channel code.            | LQN            |
+       |                                              | http://docs.fdsn.org/projects/source-         |                |
+       | **Units**: None                              | identifiers/en/v1.0/channel-codes.html        |                |
        |                                              |                                               |                |
        | **Type**: string                             |                                               |                |
        |                                              |                                               |                |
@@ -94,12 +94,62 @@ Fdsn
        | **new_epoch**                                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
        | **Required**: :blue:`False`                  | Boolean telling if a new epoch needs to be    | False          |
-       |                                              | created or not                                |                |
+       |                                              | created or not.                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
        | **Type**: boolean                            |                                               |                |
        |                                              |                                               |                |
        | **Style**: name                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`alternate_code`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **alternate_code**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Code                                | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`alternate_network_code`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **alternate_network_code**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :blue:`False`                  | Alternate Network Code                        | _INT-NON_FDSN,.|
+       |                                              |                                               | UNRESTRICTED,_U|
+       | **Units**: None                              |                                               | S-ALL,_US-     |
+       |                                              |                                               | MT,_US-MT-TA   |
+       | **Type**: string                             |                                               |                |
+       |                                              |                                               |                |
+       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |

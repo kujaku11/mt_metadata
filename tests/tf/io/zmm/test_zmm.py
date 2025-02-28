@@ -9,10 +9,11 @@ Created on Mon Sep 27 16:28:09 2021
 # =============================================================================
 import unittest
 import numpy as np
+import pathlib
 
 from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.zfiles import zmm
-from mt_metadata import TF_ZMM
+from mt_metadata import TF_ZMM, DEFAULT_CHANNEL_NOMENCLATURE
 
 # =============================================================================
 
@@ -38,6 +39,65 @@ class TestTranslateZmm(unittest.TestCase):
         self.assertListEqual(
             ["hx", "hy", "hz", "ex", "ey"], self.zmm_obj.channels_recorded
         )
+
+    def test_channels_dict(self):
+        self.assertDictEqual(
+            {"hx": "hx", "hy": "hy", "hz": "hz", "ex": "ex", "ey": "ey"},
+            self.zmm_obj.channel_dict,
+        )
+
+    def test_channel_nomenclature(self):
+        self.assertDictEqual(
+            DEFAULT_CHANNEL_NOMENCLATURE,
+            self.zmm_obj.channel_nomenclature,
+        )
+
+    def test_ch_input_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["hx", "hy"],
+                "tf_error": ["hx", "hy"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_input_dict,
+        )
+
+    def test_ch_output_dict(self):
+        self.assertDictEqual(
+            {
+                "isp": ["hx", "hy"],
+                "res": ["ex", "ey", "hz"],
+                "tf": ["ex", "ey", "hz"],
+                "tf_error": ["ex", "ey", "hz"],
+                "all": ["ex", "ey", "hz", "hx", "hy"],
+            },
+            self.zmm_obj._ch_output_dict,
+        )
+
+    def test_channel_string(self):
+        to_str = (
+            "Channel Metadata:\n\tChannel: ex          \n\tNumber: 4"
+            "           \n\tDl: 300         \n\tAzimuth: 0.0         "
+            "\n\tTilt: 0.0         "
+        )
+        with self.subTest("__str__"):
+            self.assertEqual(
+                self.zmm_obj.ex.__str__(),
+                to_str,
+            )
+        with self.subTest("__repr__"):
+            self.assertEqual(
+                self.zmm_obj.ex.__repr__(),
+                to_str,
+            )
+
+    def test_eq(self):
+        self.assertTrue(self.zmm_obj.__eq__(self.zmm_obj))
+
+    def test_not_equal(self):
+        self.assertRaises(TypeError, self.zmm_obj.__eq__, "a")
 
     def test_hx(self):
         with self.subTest("Testing Channel hx.channel", i=1):
@@ -136,8 +196,27 @@ class TestTranslateZmm(unittest.TestCase):
         zmm_st = self.zmm_obj.survey_metadata.to_dict(single=True)
         tf_st = self.tf_obj.survey_metadata.to_dict(single=True)
         for zmm_key, zmm_value in zmm_st.items():
-            with self.subTest(zmm_key):
-                self.assertEqual(zmm_value, tf_st[zmm_key])
+            if zmm_key in ["id"]:
+                with self.subTest(zmm_key):
+                    self.assertNotEqual(zmm_value, tf_st[zmm_key])
+            else:
+                with self.subTest(zmm_key):
+                    self.assertEqual(zmm_value, tf_st[zmm_key])
+
+    def test_write_read_write_zmm(self):
+        """
+        Have a zmm
+        Read it in, write it out.
+        Compare the output with the original
+        """
+        # import filecmp
+        out_file = pathlib.Path("test_output.zmm")
+        self.zmm_obj.write(out_file)
+        new_zmm_obj = zmm.ZMM(out_file)
+
+        self.assertEqual(self.zmm_obj, new_zmm_obj)
+        # assert filecmp.cmp(TF_ZMM, out_file)
+        out_file.unlink()
 
 
 # =============================================================================

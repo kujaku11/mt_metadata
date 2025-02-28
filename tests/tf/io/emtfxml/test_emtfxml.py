@@ -225,6 +225,60 @@ class TestEMTFXML(unittest.TestCase):
                     self.xml.field_notes.run_list[ii].to_dict(single=True),
                 )
 
+    def test_processing_info(self):
+        test_dict = OrderedDict(
+            [
+                ("process_date", "1980-01-01"),
+                (
+                    "processed_by",
+                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
+                ),
+                ("processing_software.author", "Gary Egbert"),
+                ("processing_software.last_mod", "2015-08-26"),
+                ("processing_software.name", "EMTF"),
+                (
+                    "processing_tag",
+                    "NMX20b_NMX20_NMW20_COR21_NMY21-NMX20b_NMX20_UTS18",
+                ),
+                ("remote_info.site.location.elevation", 0.0),
+                ("remote_info.site.location.latitude", 0.0),
+                ("remote_info.site.location.longitude", 0.0),
+                ("remote_info.site.orientation.angle_to_geographic_north", 0.0),
+                ("remote_info.site.orientation.layout", "orthogonal"),
+                ("remote_info.site.year_collected", 1980),
+                ("remote_ref.type", "Robust Multi-Station Reference"),
+                ("sign_convention", "exp(+ i\\omega t)"),
+            ]
+        )
+
+        self.assertDictEqual(
+            test_dict, self.xml.processing_info.to_dict(single=True)
+        )
+
+    def test_processing_info_none(self):
+        self.assertEqual(None, self.xml.processing_info.read_dict({}))
+
+    def test_remote_info_none(self):
+        self.assertEqual(
+            None, self.xml.processing_info.remote_info.read_dict({})
+        )
+
+    def test_remote_info_no_attributes(self):
+        self.assertEqual(
+            None,
+            self.xml.processing_info.remote_info.read_dict(
+                {"remote_info": None}
+            ),
+        )
+
+    def test_parse_comments_fail(self):
+        self.assertRaises(
+            TypeError, self.xml.site.comments.read_dict, {"comments": None}
+        )
+
+    def test_comments_to_xml_as_string(self):
+        self.assertIsInstance(self.xml.site.to_xml(string=True), str)
+
     def test_statistical_estimates(self):
         test_dict = OrderedDict(
             [
@@ -422,6 +476,36 @@ class TestEMTFXML(unittest.TestCase):
         self.assertDictEqual(
             test_dict, self.xml.site_layout.to_dict(single=True)
         )
+
+    def test_site_layout_bad_input_channels(self):
+        def set_input_channels(value):
+            self.xml.site_layout.input_channels = value
+
+        with self.subTest("bad string"):
+            self.assertRaises(ValueError, set_input_channels, "a")
+
+        with self.subTest("bad dict"):
+            self.assertRaises(ValueError, set_input_channels, {"a": None})
+
+    def test_site_layout_bad_output_channels(self):
+        def set_output_channels(value):
+            self.xml.site_layout.output_channels = value
+
+        with self.subTest("bad string"):
+            self.assertRaises(ValueError, set_output_channels, "a")
+
+        with self.subTest("bad dict"):
+            self.assertRaises(ValueError, set_output_channels, {"a": None})
+
+    # def test_site_layout_channel_to_xml_as_string_electric(self):
+    #     self.assertIsInstance(
+    #         self.xml.site_layout.output_channels[0].to_xml(string=True), str
+    #     )
+
+    # def test_site_layout_channel_to_xml_as_string_magnetic(self):
+    #     self.assertIsInstance(
+    #         self.xml.site_layout.input_channels[0].to_xml(string=True), str
+    #     )
 
     def test_period_range(self):
         test_dict = OrderedDict([("max", 29127.11), ("min", 4.65455)])

@@ -10,62 +10,22 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
+from mt_metadata.transfer_functions import CHANNEL_MAPS
+
 # =============================================================================
 attr_dict = get_schema("channel_nomenclature", SCHEMA_FN_PATHS)
-
-CHANNEL_MAPS = {}
-CHANNEL_MAPS["default"] = {
-    "hx": "hx",
-    "hy": "hy",
-    "hz": "hz",
-    "ex": "ex",
-    "ey": "ey",
-}
-CHANNEL_MAPS["lemi12"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e1",
-    "ey": "e2",
-}
-CHANNEL_MAPS["lemi34"] = {
-    "hx": "bx",
-    "hy": "by",
-    "hz": "bz",
-    "ex": "e3",
-    "ey": "e4",
-}
-CHANNEL_MAPS["phoenix123"] = {
-    "hx": "h1",
-    "hy": "h2",
-    "hz": "h3",
-    "ex": "e1",
-    "ey": "e2",
-}
 
 
 # =============================================================================
 class ChannelNomenclature(Base):
     __doc__ = write_lines(attr_dict)
 
-    def __init__(self, **kwargs):
+    def __init__(self, keyword=None):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        self._keyword = None
-
-    def update_by_keyword(self, keyword):
-        """
-        Assign the HEXY values "ex", "ey" etc based on a pre-defined dict that
-        corresponds to a common use case
-        Parameters
-        ----------
-        keyword
-
-        Returns
-        -------
-
-        """
-        raise NotImplementedError
+        super().__init__(attr_dict=attr_dict)
+        self._keyword = keyword
+        if self._keyword is not None:
+            self.update()
 
     @property
     def ex_ey(self):
@@ -74,6 +34,10 @@ class ChannelNomenclature(Base):
     @property
     def hx_hy(self):
         return [self.hx, self.hy]
+
+    @property
+    def hx_hy_hz(self):
+        return [self.hx, self.hy, self.hz]
 
     @property
     def ex_ey_hz(self):
@@ -98,26 +62,31 @@ class ChannelNomenclature(Base):
     @keyword.setter
     def keyword(self, keyword):
         self._keyword = keyword
-        self._update_by_keyword(keyword)
+        self.update()
 
-    def get_channel_map(self, keyword):
-        if keyword == "default":
+    def get_channel_map(self):
+        if self.keyword == "default":
             channel_map = CHANNEL_MAPS["default"]
-        elif keyword.upper() == "LEMI12":
+        elif self.keyword.upper() == "LEMI12":
             channel_map = CHANNEL_MAPS["lemi12"]
-        elif keyword.upper() == "LEMI34":
+        elif self.keyword.upper() == "LEMI34":
             channel_map = CHANNEL_MAPS["lemi34"]
-        elif keyword.upper() == "NIMS":
+        elif self.keyword.upper() == "NIMS":
             channel_map = CHANNEL_MAPS["default"]
-        elif keyword.upper() == "PHOENIX123":
+        elif self.keyword.upper() == "PHOENIX123":
             channel_map = CHANNEL_MAPS["phoenix123"]
+        elif self.keyword.upper() == "MUSGRAVES":
+            channel_map = CHANNEL_MAPS["musgraves"]
         else:
-            print(f"whoops mt_system {keyword} unknown")
-            raise NotImplementedError
+            msg = f"channel mt_system {self.keyword} unknown"
+            raise NotImplementedError(msg)
         return channel_map
 
-    def _update_by_keyword(self, keyword):
-        channel_map = self.get_channel_map(keyword)
+    def update(self):
+        """
+        Assign values to standard channel names "ex", "ey" etc based on channel_map dict
+        """
+        channel_map = self.get_channel_map()
         self.ex = channel_map["ex"]
         self.ey = channel_map["ey"]
         self.hx = channel_map["hx"]
@@ -129,5 +98,5 @@ class ChannelNomenclature(Base):
 
     @property
     def channels(self):
-        channels = list(self.get_channel_map(self.keyword).values())
+        channels = list(self.get_channel_map().values())
         return channels

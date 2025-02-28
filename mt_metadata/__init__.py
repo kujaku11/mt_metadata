@@ -39,14 +39,15 @@ you should only have to changes these dictionaries.
 
 __author__ = """Jared Peacock"""
 __email__ = "jpeacock@usgs.gov"
-__version__ = "0.2.3"
+__version__ = "0.3.9"
 
 # =============================================================================
 # Imports
 # =============================================================================
+import sys
 from pathlib import Path
 
-from mt_metadata.utils.mt_logger import setup_logger, load_logging_config
+from loguru import logger
 
 # =============================================================================
 # Global Variables
@@ -81,18 +82,30 @@ REQUIRED_KEYS = [
     "default",
 ]
 
+DEFAULT_CHANNEL_NOMENCLATURE = {
+    "hx": "hx",
+    "hy": "hy",
+    "hz": "hz",
+    "ex": "ex",
+    "ey": "ey",
+}
+
 # =============================================================================
 # Initiate loggers
 # =============================================================================
-LOG_LEVEL = "info"
-
-load_logging_config()
-debug_logger = setup_logger(
-    __name__, fn=f"mt_metadata_{LOG_LEVEL}", level=LOG_LEVEL
-)
-debug_logger.debug(f"Starting MT Metadata {LOG_LEVEL} Log File")
-
-error_logger = setup_logger("error", fn="mt_metadata_error", level="error")
+config = {
+    "handlers": [
+        {
+            "sink": sys.stdout,
+            "level": "INFO",
+            "colorize": True,
+            "format": "<level>{time} | {level: <3} | {name} | {function} | {message}</level>",
+        },
+    ],
+    "extra": {"user": "someone"},
+}
+logger.configure(**config)
+# logger.disable("mt_metadata")
 
 
 # test data files
@@ -134,8 +147,21 @@ TF_ZMM = DATA_DIR.joinpath("data/transfer_functions/tf_zmm.zmm")
 TF_ZSS_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_zss_tipper.zss")
 TF_JFILE = DATA_DIR.joinpath("data/transfer_functions/tf_jfile.j")
 TF_XML = DATA_DIR.joinpath("data/transfer_functions/tf_xml.xml")
+TF_XML_NO_SITE_LAYOUT = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_no_site_layout.xml"
+)
+TF_XML_COMPLETE_REMOTE_INFO = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_complete_remote_info.xml"
+)
+TF_XML_WITH_DERIVED_QUANTITIES = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_with_derived_quantities.xml"
+)
 TF_POOR_XML = DATA_DIR.joinpath("data/transfer_functions/tf_poor_xml.xml")
+TF_XML_MULTIPLE_ATTACHMENTS = DATA_DIR.joinpath(
+    "data/transfer_functions/tf_xml_multiple_attachments.xml"
+)
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
+TF_EDI_EMPOWER = DATA_DIR.joinpath("data/transfer_functions/tf_edi_empower.edi")
 TF_EDI_METRONIX = DATA_DIR.joinpath(
     "data/transfer_functions/tf_edi_metronix.edi"
 )

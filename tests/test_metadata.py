@@ -4,7 +4,7 @@ Tests for Metadata module
 
 .. todo::
     * write tests for to/from_xml
-    
+
 
 Created on Tue Apr 28 18:08:40 2020
 
@@ -120,6 +120,14 @@ class TestBase(unittest.TestCase):
 
         new = other.copy()
         self.assertEqual(other, new)
+
+    def test_equal_other(self):
+        assert (self.base_object == self.base_object.to_dict()["base"])
+
+    def test_equal_str(self):
+        self.assertFalse(self.base_object == "None")
+
+
 
 
 # =============================================================================

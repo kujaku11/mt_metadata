@@ -18,6 +18,15 @@ class FieldNotes(Base):
 
         super().__init__(**kwargs)
 
+    def __str__(self):
+        lines = []
+        for r in self.run_list:
+            lines.append(r.__str__())
+        return "\n".join(lines)
+
+    def __repr__(self):
+        return self.__str__()
+
     @property
     def run_list(self):
         return self._run_list

@@ -19,13 +19,14 @@ Created on Wed Apr 29 11:11:31 2020
 # =============================================================================
 import sys
 import re
-import logging
 from collections.abc import Iterable
 
 import numpy as np
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
 from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
+
+from loguru import logger
 
 # =============================================================================
 # validator functions
@@ -345,9 +346,7 @@ def validate_default(value_dict):
         if value_dict["default"] in [None]:
             if "list" in value_dict["style"]:
                 value = []
-            elif (
-                "date" in value_dict["style"] or "time" in value_dict["style"]
-            ):
+            elif "date" in value_dict["style"] or "time" in value_dict["style"]:
                 value = "1980-01-01T00:00:00+00:00"
             elif "controlled" in value_dict["style"]:
                 if "other" in value_dict["options"]:
@@ -379,6 +378,15 @@ def validate_default(value_dict):
 
 def validate_value_type(value, v_type, style=None):
     """
+
+    :param value:
+    :type value:
+    :param v_type:
+    :type v_type:
+    :param style:
+    :type style:
+    :return:
+
     validate type from standards
 
     """
@@ -405,7 +413,7 @@ def validate_value_type(value, v_type, style=None):
             + "to_series, you need to add attribute description using "
             + "class function add_base_attribute."
         )
-        print(msg)
+        logger.warning(msg)
         return value
 
     # if not a python type but a string organize into a dictionary
@@ -470,7 +478,7 @@ def validate_value_type(value, v_type, style=None):
 
         # if a number convert to appropriate type
         elif isinstance(
-            value, (float, np.float_, np.float16, np.float32, np.float64)
+            value, (float, np.float16, np.float32, np.float64)
         ):
             if v_type is int:
                 return int(value)
@@ -482,7 +490,7 @@ def validate_value_type(value, v_type, style=None):
         elif isinstance(value, Iterable):
             if v_type is str:
                 if isinstance(value, np.ndarray):
-                    value = value.astype(np.unicode_)
+                    value = value.astype(np.str_)
                 value = [
                     f"{v}".replace("'", "").replace('"', "") for v in value
                 ]
@@ -523,7 +531,7 @@ def validate_value_dict(value_dict):
 
     """
     if not isinstance(value_dict, dict):
-        if isinstance(value_dict, logging.Logger):
+        if isinstance(value_dict, type(logger)):
             return value_dict
         msg = f"Input must be a dictionary, not {type(value_dict)}"
         raise MTValidatorError(msg)
@@ -534,9 +542,9 @@ def validate_value_dict(value_dict):
         if key == "default":
             continue
         try:
-            value_dict[key] = getattr(
-                sys.modules[__name__], f"validate_{key}"
-            )(value_dict[key])
+            value_dict[key] = getattr(sys.modules[__name__], f"validate_{key}")(
+                value_dict[key]
+            )
         except KeyError:
             raise KeyError("Could not find {key} for validator {__name__}")
 

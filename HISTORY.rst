@@ -106,3 +106,96 @@ History
 * Fix issue #133 
 * Update EMTFXML ouptut format 
 * Add FC Metadata 
+
+0.3.0 (2023-09-29)
+---------------------
+
+* Fixing Bugs in https://github.com/kujaku11/mt_metadata/pull/138
+* adding a merge for TFs in https://github.com/kujaku11/mt_metadata/pull/136
+* Fix write EDI bugs in https://github.com/kujaku11/mt_metadata/pull/149
+* Use loguru instead of builtin logging in https://github.com/kujaku11/mt_metadata/pull/153
+* Loguru in https://github.com/kujaku11/mt_metadata/pull/154
+* Try to fix bug with filter assignment in https://github.com/kujaku11/mt_metadata/pull/155
+* Empower edi in https://github.com/kujaku11/mt_metadata/pull/158
+* TF survey metadata in https://github.com/kujaku11/mt_metadata/pull/159
+* added logic for if channel location values are None in https://github.com/kujaku11/mt_metadata/pull/160
+* Changes to support writing z-files with channel_nomenclature in https://github.com/kujaku11/mt_metadata/pull/161
+* Minor changes to support zfiles tests in https://github.com/kujaku11/mt_metadata/pull/163
+* Test aurora issue 295 in https://github.com/kujaku11/mt_metadata/pull/165
+* Fcs in https://github.com/kujaku11/mt_metadata/pull/142
+* Fcs in https://github.com/kujaku11/mt_metadata/pull/166
+* Update environment.yml in https://github.com/kujaku11/mt_metadata/pull/167
+* updating documentation in https://github.com/kujaku11/mt_metadata/pull/168
+
+0.3.1 (2023-10-15)
+-----------------------
+
+* Minor bug fixes
+
+0.3.2 (2023-11-08)
+-----------------------
+
+* remove restriction on Pandas < 2
+* minor bug fixes
+
+0.3.3 (2023-11-08)
+-----------------------
+
+* update pandas.append to concat
+
+0.3.4 ()
+-----------------------
+
+* Update HISTORY.rst by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/179
+* Remove filter direction attributes by @kkappler in https://github.com/kujaku11/mt_metadata/pull/181
+* Fix issue 173 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/182
+* Patch 173 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/183
+* Add some common helper functions by @kkappler in https://github.com/kujaku11/mt_metadata/pull/185
+* Bug fix in FC layer by @kkappler in https://github.com/kujaku11/mt_metadata/pull/186
+* Fix mth5 issue 187 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/187
+* bug fixes by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/180
+* updating how a TF is initiated, initialize xarray is expensive by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/188
+* Change default value of `get_elevation` to False by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/191
+* Updating git clone address in the readme by @xandrd in https://github.com/kujaku11/mt_metadata/pull/189
+* Fix how Z-files read/write by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/192
+* Adjust how TF._initialize_transfer_function is setup by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/193
+* Add Ability to store processing configuration in TF by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/196
+* Bump version: 0.3.3 → 0.3.4 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/198
+
+
+0.3.5 ()
+---------------------
+
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/200
+* Fix issue #202 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/203
+* Patches by @kkappler in https://github.com/kujaku11/mt_metadata/pull/205
+* Bump version: 0.3.4 → 0.3.5 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/206
+
+0.3.6 ()
+---------------------
+
+* add method for accessing mag channel names by @kkappler in https://github.com/kujaku11/mt_metadata/pull/210
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/208
+* Fix mth5 issue 207 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/209
+* Minor changes  by @kkappler in https://github.com/kujaku11/mt_metadata/pull/211
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/212
+
+0.3.7 (2024-08-16)
+---------------------
+
+* Minor fixes numpy 2.0 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/213
+* Fix issue 216 by @kkappler in https://github.com/kujaku11/mt_metadata/pull/218
+* Patches  by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/219
+* add u0 and r0 as regression parameters by @kkappler in https://github.com/kujaku11/mt_metadata/pull/220
+* Updating EMTF XML and StationXML writers by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/217
+* Patches by @kkappler in https://github.com/kujaku11/mt_metadata/pull/221
+* Patches by @kkappler in https://github.com/kujaku11/mt_metadata/pull/223
+* Bump version: 0.3.6 → 0.3.7 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/225 
+
+0.3.8 (2024-09-30)
+----------------------
+
+* Add pop to ListDict by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/226
+* Fix EDI Tipper flip by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/228
+* Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/227
+* Bump version: 0.3.7 → 0.3.8 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/229 

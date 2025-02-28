@@ -11,13 +11,12 @@ with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
 requirements = [
-    "concurrent-log-handler",
     "numpy",
-    "pandas<=1.5.3",
-    "pyyaml",
+    "pandas",
     "obspy",
     "matplotlib",
     "xarray",
+    "loguru",
 ]
 
 setup_requirements = [
@@ -57,7 +56,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/kujaku11/mt_metadata",
-    version="0.2.3",
+    version="0.3.9",
     zip_safe=False,
     package_data={
         "": [

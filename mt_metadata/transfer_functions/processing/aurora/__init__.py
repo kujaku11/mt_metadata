@@ -5,7 +5,6 @@ from .window import Window
 from .decimation import Decimation
 from .decimation_level import DecimationLevel
 from .estimator import Estimator
-from .frequency_band import FrequencyBand
 from .processing import Processing
 from .regression import Regression
 from .run import Run
@@ -21,7 +20,6 @@ __all__ = [
     "Decimation",
     "DecimationLevel",
     "Estimator",
-    "FrequencyBand",
     "Processing",
     "Regression",
     "Run",

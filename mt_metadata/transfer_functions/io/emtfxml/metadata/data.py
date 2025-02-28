@@ -70,6 +70,34 @@ class TransferFunction(Base):
             "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
         }
 
+        self._skip_derived_data = True
+        self._derived_keys = [
+            "rho",
+            "rho_var",
+            "phs",
+            "phs_var",
+            "tipphs",
+            "tipphs_var",
+            "tipmag",
+            "tipmag_var",
+            "zstrike",
+            "zstrike_var",
+            "zskew",
+            "zskew_var",
+            "zellip",
+            "zellip_var",
+            "tstrike",
+            "tstrike_var",
+            "tskew",
+            "tskew_var",
+            "tellip",
+            "tellip_var",
+            "indmag",
+            "indmag_var",
+            "indang",
+            "indang_var",
+        ]
+
         super().__init__(attr_dict={})
 
     @property
@@ -305,16 +333,27 @@ class TransferFunction(Base):
         :rtype: TYPE
 
         """
+
         for key in block.keys():
             comp = key.replace("_", "").replace(".", "_")
             if comp in ["value"]:
                 continue
+            elif self._skip_derived_data:
+                if comp in self._derived_keys:
+                    continue
             try:
                 dtype = self.dtype_dict[block[key]["type"]]
             except KeyError:
                 dtype = "unknown"
 
-            value_list = block[key]["value"]
+            try:
+                value_list = block[key]["value"]
+            except KeyError:
+                self.logger.debug(
+                    "No value for %s at period index %s", comp, period_index
+                )
+                continue
+
             if not isinstance(value_list, list):
                 value_list = [value_list]
             for item in value_list:
@@ -343,11 +382,13 @@ class TransferFunction(Base):
         :rtype: TYPE
 
         """
+        if self._skip_derived_data:
+            self.logger.debug("Skipping derived quantities.")
         try:
             n_periods = int(float((root_dict["data"]["count"].strip())))
         except KeyError:
             n_periods = len(root_dict["data"]["period"])
-            print(n_periods)
+
         self.initialize_arrays(n_periods)
         for ii, block in enumerate(root_dict["data"]["period"]):
             self.period[ii] = float(block["value"])
@@ -367,7 +408,7 @@ class TransferFunction(Base):
         period_element = et.SubElement(
             parent,
             "Period",
-            {"value": f"{self.period[index]:.6e}", "units": "secs"},
+            {"value": f"{self.period[index]:.12e}", "units": "secs"},
         )
 
         for key in self.array_dict.keys():

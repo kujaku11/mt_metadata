@@ -157,7 +157,7 @@ class TestSurvey(unittest.TestCase):
                 self.survey_object.state, ["Manitoba", "Saskatchewan"]
             )
 
-    def test_acuired_by(self):
+    def test_aqcuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
         self.assertEqual(self.survey_object.acquired_by.author, "MT")
 
@@ -232,6 +232,72 @@ class TestSurvey(unittest.TestCase):
                 self.survey_object.time_period.end,
                 "2020-12-01T12:12:12+00:00",
             )
+
+
+class TestAddStation(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.station_01 = Station()
+        self.station_01.location.latitude = 40.0
+        self.station_01.location.longitude = -120
+        self.station_01.id = "mt01"
+        self.station_01.time_period.start = "2023-01-01T00:00:00"
+        self.station_01.time_period.end = "2023-01-03T00:00:00"
+
+        self.station_02 = Station()
+        self.station_02.location.latitude = 35.0
+        self.station_02.location.longitude = -115
+        self.station_02.id = "mt02"
+        self.station_02.time_period.start = "2023-01-03T00:00:00"
+        self.station_02.time_period.end = "2023-01-06T00:00:00"
+
+        self.survey = Survey(id="test")
+        self.survey.add_station(self.station_01)
+        self.survey.add_station(self.station_02)
+
+    def test_time_period(self):
+        with self.subTest("start"):
+            self.assertEqual(
+                self.survey.time_period.start, self.station_01.time_period.start
+            )
+        with self.subTest("end"):
+            self.assertEqual(
+                self.survey.time_period.end, self.station_02.time_period.end
+            )
+
+    def test_bounding_box(self):
+        with self.subTest("northwest corner latitude"):
+            self.assertEqual(
+                self.station_01.location.latitude,
+                self.survey.northwest_corner.latitude,
+            )
+        with self.subTest("northwest corner longitude"):
+            self.assertEqual(
+                self.station_01.location.longitude,
+                self.survey.northwest_corner.longitude,
+            )
+        with self.subTest("southeast corner latitude"):
+            self.assertEqual(
+                self.station_02.location.latitude,
+                self.survey.southeast_corner.latitude,
+            )
+        with self.subTest("southeast corner longitude"):
+            self.assertEqual(
+                self.station_02.location.longitude,
+                self.survey.southeast_corner.longitude,
+            )
+
+    def test_station_list(self):
+        self.assertListEqual(
+            self.survey.station_names, [self.station_01.id, self.station_02.id]
+        )
+
+    def test_remove_station(self):
+        self.survey.remove_station("mt02")
+
+        self.assertListEqual(self.survey.station_names, [self.station_01.id])
+
+        self.survey.add_station(self.station_02)
 
 
 # =============================================================================
