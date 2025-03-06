@@ -2,7 +2,7 @@
 """
 Created on Tue Feb 23 23:13:19 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -12,9 +12,13 @@ Created on Tue Feb 23 23:13:19 2021
 # Imports
 # =============================================================================
 import unittest
+import pytest
 
 from mt_metadata.timeseries import Experiment
-from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+try:
+    from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 from mt_metadata import (
     MT_EXPERIMENT_MULTIPLE_RUNS,
     MT_EXPERIMENT_MULTIPLE_RUNS_02,

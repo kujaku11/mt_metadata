@@ -1,13 +1,13 @@
-import copy
 import numpy as np
-from obspy.core import inventory
+try:
+    from obspy.core import inventory
+except ImportError:
+    inventory = None
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
-from mt_metadata.base.helpers import write_lines
-
+from mt_metadata.base.helpers import write_lines, requires
 
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
@@ -27,6 +27,7 @@ class CoefficientFilter(FilterBase):
         if self.gain == 0.0:
             self.gain = 1.0
 
+    @requires(obspy=inventory)
     def to_obspy(
         self,
         stage_number=1,
