@@ -10,10 +10,15 @@
 import numpy as np
 from scipy.interpolate import interp1d
 
-from obspy.core.inventory.response import (
-    ResponseListResponseStage,
-    ResponseListElement,
-)
+from mt_metadata.base.helpers import requires
+
+try:
+    from obspy.core.inventory.response import (
+        ResponseListResponseStage,
+        ResponseListElement,
+    )
+except ImportError:
+    ResponseListResponseStage = ResponseListElement = None
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
@@ -170,6 +175,7 @@ class FrequencyResponseTableFilter(FilterBase):
         """
         return self._empirical_frequencies.max()
 
+    @requires(obspy=(ResponseListResponseStage and ResponseListElement))
     def to_obspy(
         self,
         stage_number=1,

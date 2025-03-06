@@ -16,6 +16,7 @@ from copy import deepcopy
 import numpy as np
 
 from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import requires
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
@@ -27,7 +28,10 @@ from mt_metadata.timeseries.filters import (
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from obspy.core import inventory
+try:
+    from obspy.core import inventory
+except ImportError:
+    inventory = None
 
 # =============================================================================
 attr_dict = get_schema("channel_response", SCHEMA_FN_PATHS)
@@ -375,6 +379,7 @@ class ChannelResponse(Base):
 
         return True
 
+    @requires(obspy=inventory)
     def to_obspy(self, sample_rate=1):
         """
         Output :class:`obspy.core.inventory.InstrumentSensitivity` object that

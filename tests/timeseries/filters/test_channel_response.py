@@ -16,9 +16,6 @@ from mt_metadata.timeseries.filters import (
     ChannelResponse,
     TimeDelayFilter,
 )
-from mt_metadata.utils.exceptions import MTSchemaError
-
-from obspy.core.inventory.response import ResponseListResponseStage
 
 
 class TestFAPFilter(unittest.TestCase):

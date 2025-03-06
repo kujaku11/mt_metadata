@@ -12,20 +12,17 @@ with open("HISTORY.rst") as history_file:
 
 requirements = [
     "numpy",
+    "scipy",
     "pandas",
-    "obspy",
     "matplotlib",
     "xarray",
     "loguru",
 ]
 
-setup_requirements = [
-    "pytest-runner",
-]
-
-test_requirements = [
-    "pytest>=3",
-]
+extras_require = {
+        'obspy': ["obspy"],
+        'test': ["pytest>=3"]
+}
 
 setup(
     author="Jared Peacock",
@@ -52,9 +49,7 @@ setup(
     keywords="mt_metadata",
     name="mt_metadata",
     packages=find_packages(include=["mt_metadata", "mt_metadata.*"]),
-    setup_requires=setup_requirements,
     test_suite="tests",
-    tests_require=test_requirements,
     url="https://github.com/kujaku11/mt_metadata",
     version="0.3.9",
     zip_safe=False,
@@ -65,4 +60,5 @@ setup(
             "data/transfer_functions/*.edi",
         ]
     },
+    extras_require=extras_require,
 )

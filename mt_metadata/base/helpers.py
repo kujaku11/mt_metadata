@@ -694,3 +694,52 @@ def validate_name(name, pattern=None):
     if name is None:
         return "unknown"
     return name.replace(" ", "_")
+
+
+def requires(**requirements):
+    """Decorate a function with optional dependencies.
+
+    Parameters
+    ----------
+    **requirements : obj
+        keywords of package name and the required object for
+        a function.
+
+    Returns
+    -------
+    decorated_function : function
+        Original function if all soft dependencies are met, otherwise
+        it returns an empty function which prints why it is not running.
+
+    Examples
+    --------
+    ```
+    try:
+        import obspy
+    except ImportError:
+        obspy = None
+
+    @requires(obspy=obspy)
+    def obspy_function():
+        ...
+        # does something using obspy
+
+    """
+    # Check the requirements, add missing package name in the list `missing`.
+    missing = []
+    for key, item in requirements.items():
+        if not item:
+            missing.append(key)
+
+    def decorated_function(function):
+        """Wrap function."""
+        if not missing:
+            return function
+        else:
+            def passer(*args, **kwargs):
+                print(("Missing dependencies: {d}.".format(d=missing)))
+                print(("Not running `{}`.".format(function.__name__)))
+
+            return passer
+
+    return decorated_function
