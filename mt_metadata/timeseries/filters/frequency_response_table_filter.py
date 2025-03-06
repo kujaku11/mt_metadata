@@ -23,9 +23,7 @@ from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(
-    get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS)
-)
+attr_dict.add_dict(get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS))
 
 # =============================================================================
 
@@ -72,7 +70,9 @@ class FrequencyResponseTableFilter(FilterBase):
         if isinstance(value, (list, tuple, np.ndarray)):
             self._empirical_frequencies = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -98,7 +98,9 @@ class FrequencyResponseTableFilter(FilterBase):
             self._empirical_amplitudes = np.array(value, dtype=float)
 
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -142,7 +144,9 @@ class FrequencyResponseTableFilter(FilterBase):
                     self._empirical_phases = np.deg2rad(self._empirical_phases)
 
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -187,7 +191,8 @@ class FrequencyResponseTableFilter(FilterBase):
         """
         response_elements = []
         for f, a, p in zip(self.frequencies, self.amplitudes, self.phases):
-            element = ResponseListElement(f, a, p)
+            # phase needs to be in degrees.
+            element = ResponseListElement(f, a, np.rad2deg(p))
             response_elements.append(element)
 
         rs = ResponseListResponseStage(
