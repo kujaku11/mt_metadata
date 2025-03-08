@@ -16,6 +16,8 @@ Created on Tue Apr 28 18:08:40 2020
 # =============================================================================
 
 import unittest
+
+import numpy as np
 from mt_metadata.base import Base
 from mt_metadata.utils.exceptions import MTValidatorError
 
@@ -84,13 +86,14 @@ class TestBase(unittest.TestCase):
                 self.base_object._validate_type(number_list, int),
             )
         with self.subTest("float"):
+            number_list = [10, "11", 12.6, "13.3", "-inf"]
             self.assertEqual(
-                [10.0, 11.0, 12.6, 13.3],
+                [10.0, 11.0, 12.6, 13.3, -np.inf],
                 self.base_object._validate_type(number_list, float),
             )
         with self.subTest("string"):
             self.assertEqual(
-                ["10", "11", "12.6", "13.3"],
+                ["10", "11", "12.6", "13.3", "-inf"],
                 self.base_object._validate_type(number_list, str),
             )
         with self.subTest("bool"):

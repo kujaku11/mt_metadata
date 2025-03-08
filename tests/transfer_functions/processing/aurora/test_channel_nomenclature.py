@@ -9,8 +9,29 @@ Created on Thu Feb 24 14:11:24 2022
 # =============================================================================
 import unittest
 from mt_metadata.transfer_functions.processing.aurora import ChannelNomenclature
-
+from mt_metadata.transfer_functions.processing.aurora.channel_nomenclature import SupportedNomenclature
 from mt_metadata.transfer_functions import CHANNEL_MAPS
+
+
+def test_supported_nomenclatures_lists_are_consistent():
+    """
+        The official list of supported nomenclatures is in
+        mt_metadata/transfer_functions/processing/aurora/standards/channel_nomenclatures.json
+        These are accessed through the CHANNEL_MAPS dictionary
+
+        Another list for docstring purposes is in
+        mt_metadata/transfer_functions/processing/aurora/channel_nomenlclature.py as
+        SupportedNomenclature
+
+        Check that these two are consistent.
+
+        We don't care about order so use set equality, not list equality.
+
+    """
+    supported_nomenclatures = CHANNEL_MAPS.keys()
+    typehint_supported_nomenclatures = list(SupportedNomenclature.__args__)
+    assert set(supported_nomenclatures) == set(typehint_supported_nomenclatures)
+
 
 # =============================================================================
 
@@ -37,13 +58,14 @@ class TestChannelNomenclature(unittest.TestCase):
             self.assertTrue(cond)
 
     def test_channel_sets(self):
-        keyword = list(self.channel_maps.keys())[0]
-        ch_nom = ChannelNomenclature(keyword=keyword)
-        assert len(ch_nom.ex_ey) == 2
-        assert len(ch_nom.ex_ey_hz) == 3
-        assert len(ch_nom.hx_hy_hz) == 3
-        assert len(ch_nom.hx_hy) == 2
-        assert len(ch_nom.channels) == 5
+        allowed_keywords = list(self.channel_maps.keys())
+        for keyword in allowed_keywords:
+            ch_nom = ChannelNomenclature(keyword=keyword)
+            assert len(ch_nom.ex_ey) == 2
+            assert len(ch_nom.ex_ey_hz) == 3
+            assert len(ch_nom.hx_hy_hz) == 3
+            assert len(ch_nom.hx_hy) == 2
+            assert len(ch_nom.channels) == 5
 
     def test_repr(self):
         """Takes the __repr__ string, and casts to a dict (via json), and compares to channel_map attr"""

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb 17 14:15:20 2022
+Created on Fri Jan 31 13:39:39 2025
 
 @author: jpeacock
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
@@ -11,14 +12,18 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
+from mt_metadata.timeseries import TimePeriod
+
 # =============================================================================
-attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
-# =============================================================================
+attr_dict = get_schema("feature_fc_run", SCHEMA_FN_PATHS)
+attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 
 
-class Decimation(Base):
+# =============================================================================
+class FeatureFCRun(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
+        self.time_period = TimePeriod()
         super().__init__(attr_dict=attr_dict, **kwargs)

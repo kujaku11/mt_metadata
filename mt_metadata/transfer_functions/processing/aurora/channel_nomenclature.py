@@ -8,15 +8,27 @@
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions import CHANNEL_MAPS
 from .standards import SCHEMA_FN_PATHS
 
-from mt_metadata.transfer_functions import CHANNEL_MAPS
-
+from typing import Dict, Literal
 # =============================================================================
 attr_dict = get_schema("channel_nomenclature", SCHEMA_FN_PATHS)
 
+# ====================== Nomenclature definitions for typehints and docstrings ============= #
+
+SupportedNomenclature = Literal[
+    "default",
+    "lemi12",
+    "lemi34",
+    "musgraves",
+    "nims",
+    "phoenix123",
+]
+
 
 # =============================================================================
+
 class ChannelNomenclature(Base):
     __doc__ = write_lines(attr_dict)
 
@@ -64,25 +76,20 @@ class ChannelNomenclature(Base):
         self._keyword = keyword
         self.update()
 
-    def get_channel_map(self):
-        if self.keyword == "default":
-            channel_map = CHANNEL_MAPS["default"]
-        elif self.keyword.upper() == "LEMI12":
-            channel_map = CHANNEL_MAPS["lemi12"]
-        elif self.keyword.upper() == "LEMI34":
-            channel_map = CHANNEL_MAPS["lemi34"]
-        elif self.keyword.upper() == "NIMS":
-            channel_map = CHANNEL_MAPS["default"]
-        elif self.keyword.upper() == "PHOENIX123":
-            channel_map = CHANNEL_MAPS["phoenix123"]
-        elif self.keyword.upper() == "MUSGRAVES":
-            channel_map = CHANNEL_MAPS["musgraves"]
-        else:
-            msg = f"channel mt_system {self.keyword} unknown"
-            raise NotImplementedError(msg)
-        return channel_map
+    def get_channel_map(self) -> Dict[str,str]:
+        """
+            Based on self.keyword return the mapping between conventional channel names and
+            the custom channel names in the particular nomenclature.
 
-    def update(self):
+        """
+        try:
+            return CHANNEL_MAPS[self.keyword.lower()]
+        except KeyError:
+            msg = f"channel mt_system {self.keyword} unknown)"
+            raise NotImplementedError(msg)
+
+
+    def update(self) -> None:
         """
         Assign values to standard channel names "ex", "ey" etc based on channel_map dict
         """
@@ -93,7 +100,7 @@ class ChannelNomenclature(Base):
         self.hy = channel_map["hy"]
         self.hz = channel_map["hz"]
 
-    def unpack(self):
+    def unpack(self) -> tuple:
         return self.ex, self.ey, self.hx, self.hy, self.hz
 
     @property
