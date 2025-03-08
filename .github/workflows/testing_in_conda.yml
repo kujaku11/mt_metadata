@@ -16,40 +16,34 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
+    defaults:
+      run:
+        shell: bash -el {0}
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup Conda
-      uses: s-weigand/setup-conda@v1
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
       with:
-        update-conda: false
+        auto-update-conda: true
         python-version: ${{ matrix.python-version }}
 
     - name: Install Env
-      shell: bash
       run: |
         python --version
-        conda create -n mtmetadata-test python=${{ matrix.python-version }}
-        source activate mtmetadata-test
-        conda install pytest
-        conda install pytest-cov
+        pip install pytest
+        pip install pytest-cov
+        pip install pytest-subtests
         
     - name: Install Our Package
-      shell: bash
       run: |
-        source activate mtmetadata-test
         pip install -e .
         conda list
     - name: Run Tests
-      shell: bash
-      run: |
-        source activate mtmetadata-test
-        pytest --cov=./ --cov-report=xml --cov=mt_metadata
-        
+      run: pytest --cov=./ --cov-report=xml --cov=mt_metadata
+
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v3
       with:
         fail_ci_if_error: false
         verbose: true
         flags: tests
-        
