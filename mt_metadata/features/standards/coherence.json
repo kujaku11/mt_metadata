@@ -1,0 +1,35 @@
+{
+    "channel_1": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "The first channel of two channels in the coherence calculation.",
+        "options": [],
+        "alias": [],
+        "example": "ex",
+        "default": null
+    },
+    "channel_2": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "The second channel of two channels in the coherence calculation.",
+        "options": [],
+        "alias": [],
+        "example": "hy",
+        "default": null
+    },
+    "detrend": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "How to detrend the data segments before fft.",
+        "options": ["linear", "constant"],
+        "alias": [],
+        "example": "constant",
+        "default": "linear"
+    }
+}
