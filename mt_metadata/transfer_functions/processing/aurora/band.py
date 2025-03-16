@@ -41,6 +41,11 @@ class Band(Base):
         return self.frequency_max
 
     @property
+    def width(self) -> float:
+        """ returns the width of the band (the bandwidth)."""
+        return self.upper_bound - self.lower_bound
+
+    @property
     def lower_closed(self) -> bool:
         return self.to_interval().closed_left
 
@@ -157,4 +162,21 @@ class Band(Base):
         cond1 = ivl.__contains__(other.lower_bound)
         cond2 = ivl.__contains__(other.upper_bound)
         return cond1 & cond2
+
+    @property
+    def fractional_bandwidth(self):
+        """
+            See
+            - https://en.wikipedia.org/wiki/Bandwidth_(signal_processing)#Fractional_bandwidth
+            - https://en.wikipedia.org/wiki/Q_factor
+
+        Returns
+        -------
+
+        """
+        return self.width / self.center_frequency
+
+    @property
+    def Q(self):
+        return 1./self.fractional_bandwidth
 
