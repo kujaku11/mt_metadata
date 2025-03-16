@@ -58,12 +58,12 @@ class Coherence(Base):
         """
             Calls scipy's coherence function.
             TODO: Consider making this return an xarray indexed by frequency.
-            
+
             Parameters
             ----------
             ts_1
             ts_2
-    
+
             Returns
             -------
 
@@ -77,3 +77,4 @@ class Coherence(Base):
             detrend=self.detrend,
         )
         return frequencies, coh_squared
+
