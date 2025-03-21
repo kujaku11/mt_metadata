@@ -197,7 +197,7 @@ class FrequencyResponseTableFilter(FilterBase):
         """
         response_elements = []
         # phase needs to be in degrees.
-        if np.abs(self.phases).mean() < 2 * np.pi:
+        if np.abs(self.phases).max() < 2 * np.pi:
             phases = np.rad2deg(self.phases)
         else:
             phases = self.phases
