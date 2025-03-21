@@ -196,9 +196,13 @@ class FrequencyResponseTableFilter(FilterBase):
 
         """
         response_elements = []
-        for f, a, p in zip(self.frequencies, self.amplitudes, self.phases):
-            # phase needs to be in degrees.
-            element = ResponseListElement(f, a, np.rad2deg(p))
+        # phase needs to be in degrees.
+        if np.abs(self.phases).mean() < 2 * np.pi:
+            phases = np.rad2deg(self.phases)
+        else:
+            phases = self.phases
+        for f, a, p in zip(self.frequencies, self.amplitudes, phases):
+            element = ResponseListElement(f, a, p)
             response_elements.append(element)
 
         rs = ResponseListResponseStage(
