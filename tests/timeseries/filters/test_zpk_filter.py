@@ -6,13 +6,17 @@ Created on Sat Nov 20 17:13:27 2021
 """
 
 import unittest
+import pytest
 
 import numpy as np
 
 from mt_metadata.timeseries.filters import PoleZeroFilter
 from mt_metadata.utils.exceptions import MTSchemaError
 
-from obspy.core.inventory.response import PolesZerosResponseStage
+try:
+    from obspy.core.inventory.response import PolesZerosResponseStage
+except ImportError:
+    PolesZerosResponseStage = None
 
 
 class TestZPKFilter(unittest.TestCase):
@@ -86,6 +90,7 @@ class TestZPKFilter(unittest.TestCase):
             )
             self.assertTrue(abs(slope) < 1)
 
+    @pytest.mark.skipif(PolesZerosResponseStage is None, reason="obspy is not installed.")
     def test_to_obspy_stage(self):
         stage = self.pz.to_obspy(2, sample_rate=10, normalization_frequency=1)
 

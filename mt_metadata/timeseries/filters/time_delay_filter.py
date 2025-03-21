@@ -9,7 +9,13 @@
 """
 
 import numpy as np
-from obspy.core import inventory
+
+from mt_metadata.base.helpers import requires
+
+try:
+    from obspy.core import inventory
+except ImportError:
+    inventory = None
 
 from mt_metadata.base import get_schema
 from mt_metadata.timeseries.filters.filter_base import FilterBase
@@ -35,6 +41,7 @@ class TimeDelayFilter(FilterBase):
         mapping["decimation_delay"] = "delay"
         return mapping
 
+    @requires(obspy=inventory)
     def to_obspy(self, stage_number=1, sample_rate=1, normalization_frequency=0):
         """
         Convert to an obspy stage

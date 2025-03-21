@@ -7,12 +7,15 @@
 
 """
 import numpy as np
-import obspy
+try:
+    import obspy
+except ImportError:
+    obspy = None
 import scipy.signal as signal
 
 from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
+from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries.filters.filter_base import FilterBase, get_base_obspy_mapping
 from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
 # =============================================================================
@@ -134,6 +137,7 @@ class PoleZeroFilter(FilterBase):
         """
         return self.gain * self.normalization_factor
 
+    @requires(obspy=obspy)
     def to_obspy(
         self,
         stage_number=1,

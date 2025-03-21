@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 18 16:33:42 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -10,8 +10,12 @@ Created on Thu Feb 18 16:33:42 2021
 """
 
 import unittest
-from mt_metadata.timeseries.stationxml.utils import BaseTranslator
-from obspy.core.inventory import Comment
+import pytest
+try:
+    from mt_metadata.timeseries.stationxml.utils import BaseTranslator
+    from obspy.core.inventory import Comment
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 
 class TestReadXMLComment(unittest.TestCase):

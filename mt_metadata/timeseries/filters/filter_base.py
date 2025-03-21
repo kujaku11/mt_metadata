@@ -41,7 +41,6 @@ of the filter in frequency domain.  It is very similar to an "obspy filter stage
 # =============================================================================
 # Imports
 # =============================================================================
-import obspy
 import numpy as np
 
 from mt_metadata.base.helpers import write_lines
@@ -262,20 +261,17 @@ class FilterBase(Base):
 
         """
 
-        if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
-            msg = f"Expected a Stage and got a {type(stage)}"
-            cls().logger.error(msg)
-            raise TypeError(msg)
-
         if mapping is None:
             mapping = cls().make_obspy_mapping()
         kwargs = {}
-        for obspy_label, mth5_label in mapping.items():
-            try:
-                kwargs[mth5_label] = stage.__dict__[obspy_label]
-            except KeyError:
-                print(f"Key {obspy_label} not found in stage object")
-                raise Exception
+
+        try:
+            for obspy_label, mth5_label in mapping.items():
+                    kwargs[mth5_label] = getattr(stage, obspy_label)
+        except AttributeError:
+            msg = f"Expected a Stage and got a {type(stage)}"
+            cls().logger.error(msg)
+            raise TypeError(msg)
         return cls(**kwargs)
 
     def complex_response(self, frqs):
