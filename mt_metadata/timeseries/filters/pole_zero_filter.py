@@ -24,10 +24,11 @@ attr_dict.add_dict(get_schema("pole_zero_filter", SCHEMA_FN_PATHS))
 # =============================================================================
 
 
-
 class PoleZeroFilter(FilterBase):
     def __init__(self, **kwargs):
 
+        self._poles = np.empty(0, dtype=complex)
+        self._zeros = np.empty(0, dtype=complex)
         super().__init__()
 
         super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)

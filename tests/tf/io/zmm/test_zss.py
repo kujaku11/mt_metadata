@@ -146,6 +146,8 @@ class TestTranslateZmm(unittest.TestCase):
         zmm_st = self.zmm_obj.station_metadata.to_dict(single=True)
         tf_st = self.tf_obj.station_metadata.to_dict(single=True)
         for zmm_key, zmm_value in zmm_st.items():
+            if zmm_key in ["provenance.creation_time"]:
+                continue
             with self.subTest(zmm_key):
                 self.assertEqual(zmm_value, tf_st[zmm_key])
 

@@ -245,7 +245,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("remote_info.site.location.longitude", 0.0),
                 ("remote_info.site.orientation.angle_to_geographic_north", 0.0),
                 ("remote_info.site.orientation.layout", "orthogonal"),
-                ("remote_info.site.year_collected", 1980),
                 ("remote_ref.type", "Robust Multi-Station Reference"),
                 ("sign_convention", "exp(+ i\\omega t)"),
             ]

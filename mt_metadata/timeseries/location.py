@@ -21,6 +21,8 @@ from . import Declination
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("declination", SCHEMA_FN_PATHS), "declination")
+
+
 # =============================================================================
 class Location(Base):
     __doc__ = write_lines(attr_dict)
@@ -28,6 +30,9 @@ class Location(Base):
     def __init__(self, **kwargs):
 
         self.declination = Declination()
+        self._latitude = 0.0
+        self._longitude = 0.0
+        self._elevation = 0.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -70,7 +75,9 @@ class Location(Base):
             lat_value = float(latitude)
 
         except TypeError:
-            self.logger.debug("Could not convert {0} setting to 0".format(latitude))
+            self.logger.debug(
+                "Could not convert {0} setting to 0".format(latitude)
+            )
             return 0.0
 
         except ValueError:
@@ -102,7 +109,9 @@ class Location(Base):
             lon_value = float(longitude)
 
         except TypeError:
-            self.logger.debug("Could not convert {0} setting to 0".format(longitude))
+            self.logger.debug(
+                "Could not convert {0} setting to 0".format(longitude)
+            )
             return 0.0
 
         except ValueError:
@@ -130,7 +139,9 @@ class Location(Base):
         try:
             elev_value = float(elevation)
         except (ValueError, TypeError):
-            msg = "Could not convert {0} to a number setting to 0".format(elevation)
+            msg = "Could not convert {0} to a number setting to 0".format(
+                elevation
+            )
             self.logger.debug(msg)
             elev_value = 0.0
 
@@ -188,7 +199,9 @@ class Location(Base):
 
         p_list = position_str.split(":")
         if len(p_list) != 3:
-            msg = "{0} not correct format, should be DD:MM:SS".format(position_str)
+            msg = "{0} not correct format, should be DD:MM:SS".format(
+                position_str
+            )
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -204,7 +217,9 @@ class Location(Base):
 
         position_value = sign * (abs(deg) + minutes / 60.0 + sec / 3600.0)
 
-        self.logger.debug("Converted {0} to {1}".format(position_str, position_value))
+        self.logger.debug(
+            "Converted {0} to {1}".format(position_str, position_value)
+        )
 
         return position_value
 
