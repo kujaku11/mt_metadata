@@ -33,6 +33,10 @@ jobs:
         python --version
         conda install pytest
         conda install pytest-cov
+    - name: Install Our Package
+      run: |
+        pip install -e .
+        conda list
 
     - name: Install optionals
       run: |
