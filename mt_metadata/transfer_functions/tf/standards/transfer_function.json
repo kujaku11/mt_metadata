@@ -23,7 +23,7 @@
         ],
         "alias": [],
         "example": "+",
-		"default": null
+		"default": "+"
     },
     "units": {
         "type": "string",

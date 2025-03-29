@@ -10,6 +10,7 @@ Created on Sat Dec  4 14:13:37 2021
 from mt_metadata.base import Base
 from mt_metadata.base.helpers import validate_name
 
+
 # ==============================================================================
 # Info object
 # ==============================================================================
@@ -444,11 +445,17 @@ class Information(Base):
                             new_dict[new_key] = value.split()[0]
                         elif key.lower().endswith("sen"):
                             comp = key.lower().split()[0]
-                            new_dict[
-                                f"{comp}.sensor.manufacturer"
-                            ] = "Phoenix Geophysics"
+                            new_dict[f"{comp}.sensor.manufacturer"] = (
+                                "Phoenix Geophysics"
+                            )
                             new_dict[f"{comp}.sensor.type"] = "Induction Coil"
                             new_dict[new_key] = value
+                        elif new_key in [
+                            "survey.time_period.start_date",
+                            "survey.time_period.end_date",
+                        ]:
+                            if value.count("-") == 1:
+                                new_dict[new_key] = value.split("-")[0]
                         else:
                             new_dict[new_key] = value
 
@@ -461,8 +468,8 @@ class Information(Base):
                 new_dict[key] = value
 
         if processing_parameters != []:
-            new_dict[
-                "transfer_function.processing_parameters"
-            ] = processing_parameters
+            new_dict["transfer_function.processing_parameters"] = (
+                processing_parameters
+            )
 
         self.info_dict = new_dict

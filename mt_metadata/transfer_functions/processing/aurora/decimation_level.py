@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+    This module contains the DecimationLevel class.
+    TODO: Factor or rename.  The decimation level class here has information about the entire processing.
+
 Created on Thu Feb 17 14:15:20 2022
 
 @author: jpeacock
@@ -12,18 +15,23 @@ import pandas as pd
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.transfer_functions.processing.fourier_coefficients import (
+            Decimation as FCDecimation,
+        )
+from typing import List, Union
 
 from .band import Band
-from .decimation import Decimation
+from ..time_series_decimation import TimeSeriesDecimation as Decimation
+from ..short_time_fourier_transform import ShortTimeFourierTransform as STFT
 from .estimator import Estimator
+from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
-from .window import Window
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("decimation", SCHEMA_FN_PATHS), "decimation")
-attr_dict.add_dict(get_schema("window", SCHEMA_FN_PATHS), "window")
+attr_dict.add_dict(Decimation()._attr_dict, "decimation")
+attr_dict.add_dict(STFT()._attr_dict, "stft")
 attr_dict.add_dict(get_schema("regression", SCHEMA_FN_PATHS), "regression")
 attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 
@@ -31,12 +39,15 @@ attr_dict.add_dict(get_schema("estimator", SCHEMA_FN_PATHS), "estimator")
 # =============================================================================
 
 
-def df_from_bands(band_list):
+def df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     """
     Utility function that transforms a list of bands into a dataframe
 
     Note: The decimation_level here is +1 to agree with EMTF convention.
         Not clear this is really necessary
+    TODO: Consider making this a method of FrequencyBands() class.
+    TODO: Check typehint -- should None be allowed value in the band_list?
+    TODO: Consider adding columns lower_closed, upper_closed to df
 
     Parameters
     ----------
@@ -70,56 +81,23 @@ def df_from_bands(band_list):
     out_df.reset_index(inplace=True, drop=True)
     return out_df
 
-def get_fft_harmonics(samples_per_window, sample_rate):
-    """
-    Works for odd and even number of points.
-
-    Could be midified with kwargs to support one_sided, two_sided, ignore_dc
-    ignore_nyquist, and etc.  Could actally take FrequencyBands as an argument
-    if we wanted as well.
-
-    Parameters
-    ----------
-    samples_per_window: integer
-        Number of samples in a window that will be Fourier transformed.
-    sample_rate: float
-            Inverse of time step between samples,
-            Samples per second
-
-    Returns
-    -------
-    harmonic_frequencies: numpy array
-        The frequencies that the fft will be computed.
-        These are one-sided (positive frequencies only)
-        Does not return Nyquist
-        Does return DC component
-    """
-    n_fft_harmonics = int(samples_per_window / 2)  # no bin at Nyquist,
-    delta_t = 1.0 / sample_rate
-    harmonic_frequencies = np.fft.fftfreq(samples_per_window, d=delta_t)
-    harmonic_frequencies = harmonic_frequencies[0:n_fft_harmonics]
-    return harmonic_frequencies
-
 
 class DecimationLevel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
 
-        self.window = Window()
         self.decimation = Decimation()
         self.regression = Regression()
         self.estimator = Estimator()
+        self.stft = STFT()
 
         self._bands = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
-        # if self.decimation.level == 0:
-        #     self.anti_alias_filter = None
-
     @property
-    def bands(self):
+    def bands(self) -> list:
         """
         get bands, something weird is going on with appending.
 
@@ -165,7 +143,7 @@ class DecimationLevel(Base):
         else:
             raise TypeError(f"Not sure what to do with {type(value)}")
 
-    def add_band(self, band):
+    def add_band(self, band: Union[Band, dict]) -> None:
         """
         add a band
         """
@@ -184,7 +162,7 @@ class DecimationLevel(Base):
         self._bands.append(obj)
 
     @property
-    def lower_bounds(self):
+    def lower_bounds(self) -> np.ndarray:
         """
         get lower bounds index values into an array.
         """
@@ -192,7 +170,7 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_min for band in self.bands]))
 
     @property
-    def upper_bounds(self):
+    def upper_bounds(self) -> np.ndarray:
         """
         get upper bounds index values into an array.
         """
@@ -200,14 +178,11 @@ class DecimationLevel(Base):
         return np.array(sorted([band.index_max for band in self.bands]))
 
     @property
-    def bands_dataframe(self):
+    def bands_dataframe(self) -> pd.DataFrame:
         """
-        This is just a utility function that transforms a list of bands into a dataframe
+        Utility function that transforms a list of bands into a dataframe
 
-        Note: The decimation_level here is +1 to agree with EMTF convention.
-        Not clear this is really necessary
-
-        ToDo: Consider adding columns lower_edge, upper_edge to df
+        See notes in `df_from_bands`.
 
         Returns
         -------
@@ -218,47 +193,62 @@ class DecimationLevel(Base):
         return bands_df
 
     @property
-    def frequency_sample_interval(self):
-        return self.sample_rate_decimation/self.window.num_samples
+    def frequency_sample_interval(self) -> float:
+        """
+            Returns the delta_f in frequency domain df = 1 / (N * dt)
+            Here dt is the sample interval after decimation
+        """
+        return self.decimation.sample_rate / self.stft.window.num_samples
 
     @property
-    def band_edges(self):
+    def band_edges(self) -> np.ndarray:
+        """
+            Returns the band edges as a numpy array
+            :return band_edges: 2D numpy array, one row per frequency band and two columns
+            :rtype band_edges: np.ndarray
+        """
         bands_df = self.bands_dataframe
         band_edges = np.vstack(
             (bands_df.frequency_min.values, bands_df.frequency_max.values)
         ).T
         return band_edges
 
-    def frequency_bands_obj(self):
+    def frequency_bands_obj(self) -> FrequencyBands:
         """
         Gets a FrequencyBands object that is used as input to processing.
-        This used to be needed because I only had
 
-        ToDO: consider adding .to_frequnecy_bands() method directly to self.bands
+        Used by Aurora.
+
+        TODO: consider adding .to_frequency_bands() method directly to self.bands
+
         Returns
         -------
+        frequency_bands:  FrequencyBands
+            A FrequencyBands object that can be used as an iterator for processing.
 
         """
-        from mt_metadata.transfer_functions.processing.aurora.band import (
-            FrequencyBands,
-        )
-
         frequency_bands = FrequencyBands(band_edges=self.band_edges)
         return frequency_bands
 
     @property
-    def fft_frequencies(self):
-        freqs = get_fft_harmonics(
-            self.window.num_samples, self.decimation.sample_rate
-        )
+    def fft_frequencies(self) -> np.ndarray:
+        """
+            Gets the harmonics of the STFT.
+
+            :return freqs: The frequencies at which the stft will be available.
+            :rtype freqs: np.ndarray
+        """
+        freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
 
     @property
-    def sample_rate_decimation(self):
-        return self.decimation.sample_rate
-
-    @property
-    def harmonic_indices(self):
+    def harmonic_indices(self) -> List[int]:
+        """
+            Loops over all bands and returns a list of the harminic indices.
+            TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
+            :return: list of fc indices (integers)
+            :rtype: List[int]
+        """
         return_list = []
         for band in self.bands:
             fc_indices = band.harmonic_indices
@@ -270,13 +260,195 @@ class DecimationLevel(Base):
     def local_channels(self):
         return self.input_channels + self.output_channels
 
-    def to_fc_decimation(self, remote=False, ignore_harmonic_indices=True):
+    def is_consistent_with_archived_fc_parameters(
+        self,
+        fc_decimation: FCDecimation,
+        remote: bool
+    ):
+        """
+            Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
+            within the archive (fc_decimation) with an aurora decimation level (self), and tells whether the
+            parameters are in agreement. If True, this allows aurora to skip the calculation of FCs and instead
+            read them from the archive.
+
+            TODO: Merge all checks of TimeSeriesDecimation parameters into a single check.
+            - e.g. Compress all decimation checks to: assert fc_decimation.decimation == self.decimation
+
+            Parameters
+            ----------
+            decimation_level: FCDecimation
+                metadata describing the parameters used to compute an archived spectrogram
+            remote: bool
+                If True, we are looking for reference channels, not local channels in the FCGroup.
+
+            Iterates over FCDecimation attributes:
+                "channels_estimated": to ensure all expected channels are in the group
+                "decimation.anti_alias_filter": check that the expected AAF was applied
+                "decimation.sample_rate,
+                "decimation.method",
+                "stft.prewhitening_type",
+                "stft.recoloring",
+                "stft.pre_fft_detrend_type",
+                "stft.min_num_stft_windows",
+                "stft.window",
+                "stft.harmonic_indices",
+        Returns
+        -------
+
+        :return:
+        """
+        # channels_estimated: Checks that the archived spectrogram has the required channels
+        if remote:
+            required_channels = self.reference_channels
+        else:
+            required_channels = self.local_channels
+        try:
+            assert set(required_channels).issubset(fc_decimation.channels_estimated)
+        except AssertionError:
+            msg = (
+                f"required_channels for processing {required_channels} not available"
+                f"-- fc channels estimated are {fc_decimation.channels_estimated}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # anti_alias_filter: Check that the data were filtered the same way
+        try:
+            assert fc_decimation.time_series_decimation.anti_alias_filter == self.decimation.anti_alias_filter
+        except AssertionError:
+            cond1 = self.time_series_decimation.anti_alias_filter == "default"
+            cond2 = fc_decimation.time_series_decimation.anti_alias_filter is None
+            if cond1 & cond2:
+                pass
+            else:
+                msg = (
+                    "Antialias Filters Not Compatible -- need to add handling for "
+                    f"{msg} FCdec {fc_decimation.time_series_decimation.anti_alias_filter} and "
+                    f"{msg} processing config:{self.decimation.anti_alias_filter}"
+                )
+                raise NotImplementedError(msg)
+
+        # sample_rate
+        try:
+            assert (
+                fc_decimation.time_series_decimation.sample_rate
+                == self.decimation.sample_rate
+            )
+        except AssertionError:
+            msg = (
+                f"Sample rates do not agree: fc {fc_decimation.time_series_decimation.sample_rate} differs from "
+                f"processing config {self.decimation.sample_rate}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # transform method (fft, wavelet, etc.)
+        try:
+            assert fc_decimation.short_time_fourier_transform.method == self.stft.method  # FFT, Wavelet, etc.
+        except AssertionError:
+            msg = (
+                "Transform methods do not agree: "
+                f"fc {fc_decimation.short_time_fourier_transform.method} != processing config {self.stft.method}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # prewhitening_type
+        try:
+            assert fc_decimation.stft.prewhitening_type == self.stft.prewhitening_type
+        except AssertionError:
+            msg = (
+                "prewhitening_type does not agree "
+                f"fc {fc_decimation.stft.prewhitening_type} != processing config {self.stft.prewhitening_type}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # recoloring
+        try:
+            assert fc_decimation.stft.recoloring == self.stft.recoloring
+        except AssertionError:
+            msg = (
+                "recoloring does not agree "
+                f"fc {fc_decimation.stft.recoloring} != processing config {self.stft.recoloring}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # pre_fft_detrend_type
+        try:
+            assert (
+                fc_decimation.stft.pre_fft_detrend_type
+                == self.stft.pre_fft_detrend_type
+            )
+        except AssertionError:
+            msg = (
+                "pre_fft_detrend_type does not agree "
+                f"fc {fc_decimation.stft.pre_fft_detrend_type} != processing config {self.stft.pre_fft_detrend_type}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # min_num_stft_windows
+        try:
+            assert (
+                fc_decimation.stft.min_num_stft_windows
+                == self.stft.min_num_stft_windows
+            )
+        except AssertionError:
+            msg = (
+                "min_num_stft_windows do not agree "
+                f"fc {fc_decimation.stft.min_num_stft_windows} != processing config {self.stft.min_num_stft_windows}"
+            )
+            self.logger.info(msg)
+            return False
+
+        # window
+        try:
+            assert fc_decimation.stft.window == self.stft.window
+        except AssertionError:
+            msg = "window does not agree: "
+            msg = f"{msg} FC Group: {fc_decimation.stft.window} "
+            msg = f"{msg} Processing Config  {self.stft.window}"
+            self.logger.info(msg)
+            return False
+
+        if -1 in fc_decimation.stft.harmonic_indices:
+            # if harmonic_indices is -1, it means the archive kept all so we can skip this check.
+            pass
+        else:
+            msg = "WIP: harmonic indices in AuroraDecimationlevel are derived from processing bands -- Not robustly tested to compare with FCDecimation"
+            self.logger.debug(msg)
+            harmonic_indices_requested = self.harmonic_indices
+            fcdec_group_set = set(fc_decimation.stft.harmonic_indices)
+            processing_set = set(harmonic_indices_requested)
+            if processing_set.issubset(fcdec_group_set):
+                pass
+            else:
+                msg = (
+                    f"Processing FC indices {processing_set} is not contained "
+                    f"in FC indices {fcdec_group_set}"
+                )
+                self.logger.info(msg)
+                return False
+
+        # Getting here means no checks were failed. The FCDecimation supports the processing config
+        return True
+
+    def to_fc_decimation(
+        self,
+        remote: bool = False,
+        ignore_harmonic_indices: bool = True,
+    ) -> FCDecimation:
         """
         Generates a FC Decimation() object for use with FC Layer in mth5.
 
+        TODO: this is being tested only in aurora -- move a test to mt_metadata or move the method.
         Ignoring for now these properties
         "time_period.end": "1980-01-01T00:00:00+00:00",
         "time_period.start": "1980-01-01T00:00:00+00:00",
+
+        TODO: FIXME: Assignment of TSDecimation can be done in one shot once #235 is addressed.
 
         Parameters
         ----------
@@ -293,27 +465,25 @@ class DecimationLevel(Base):
             A decimation object configured for STFT processing
 
         """
-        from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-            Decimation as FourierCoefficientDecimation,
-        )
-        fc_dec_obj = FourierCoefficientDecimation()
-        fc_dec_obj.anti_alias_filter = self.anti_alias_filter
+
+        fc_dec_obj = FCDecimation()
+        fc_dec_obj.time_series_decimation.anti_alias_filter = self.decimation.anti_alias_filter
         if remote:
             fc_dec_obj.channels_estimated = self.reference_channels
         else:
             fc_dec_obj.channels_estimated = self.local_channels
-        fc_dec_obj.decimation_factor = self.decimation.factor
-        fc_dec_obj.decimation_level = self.decimation.level
+        fc_dec_obj.time_series_decimation.factor = self.decimation.factor
+        fc_dec_obj.time_series_decimation.level = self.decimation.level
         if ignore_harmonic_indices:
             pass
         else:
-            fc_dec_obj.harmonic_indices = self.harmonic_indices()
+            fc_dec_obj.stft.harmonic_indices = self.harmonic_indices()
         fc_dec_obj.id = f"{self.decimation.level}"
-        fc_dec_obj.method = self.method
-        fc_dec_obj.pre_fft_detrend_type = self.pre_fft_detrend_type
-        fc_dec_obj.prewhitening_type = self.prewhitening_type
-        fc_dec_obj.recoloring = self.recoloring
-        fc_dec_obj.sample_rate_decimation = self.sample_rate_decimation
-        fc_dec_obj.window = self.window
+        fc_dec_obj.stft.method = self.stft.method
+        fc_dec_obj.stft.pre_fft_detrend_type = self.stft.pre_fft_detrend_type
+        fc_dec_obj.stft.prewhitening_type = self.stft.prewhitening_type
+        fc_dec_obj.stft.recoloring = self.stft.recoloring
+        fc_dec_obj.time_series_decimation.sample_rate = self.decimation.sample_rate
+        fc_dec_obj.stft.window = self.stft.window
 
         return fc_dec_obj

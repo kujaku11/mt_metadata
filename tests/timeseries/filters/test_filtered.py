@@ -55,7 +55,7 @@ class TestFiltered(unittest.TestCase):
 
     def test_accepts_numpy_array(self):
         filtered_obj = Filtered()
-        filtered_obj.name = ["filter_01","filter_02",]
+        filtered_obj.name = np.array(["filter_01","filter_02",])
         filtered_obj.applied = np.array([0,1])
         filtered_obj.applied = np.array([True, False])
         check = filtered_obj._check_consistency()
@@ -75,6 +75,10 @@ class TestFiltered(unittest.TestCase):
         filtered_obj.name = ["filter_01"]
         with self.assertRaises(MTSchemaError):
             filtered_obj.applied = {0}
+
+        with self.assertRaises(MTSchemaError):
+            filtered_obj.name = Filtered()
+
 
     def test_none_is_same_as_default(self):
         filtered_obj_1 = Filtered()

@@ -592,6 +592,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :return:
         """
         original_sensor_type = sensor.type
+        original_sensor_description = sensor.description
         # set sensor_type to be a string if it is None
         if original_sensor_type is None:
             sensor_type = ""  # make a string
@@ -600,16 +601,28 @@ class XMLChannelMTChannel(BaseTranslator):
         else:
             sensor_type = copy.deepcopy(original_sensor_type)
 
+        if original_sensor_description is None:
+            sensor_description = ""  # make a string
+        else:
+            sensor_description = copy.deepcopy(original_sensor_type)
+
+
         if sensor_type.lower() in self.understood_sensor_types:
             return sensor_type
         else:
             self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
 
         #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
-        if sensor.description == "Bartington 3-Axis Fluxgate Sensor":
+        if sensor_type.lower() == "bartington":
             sensor_type = "magnetometer"
-        elif sensor_type.lower() == "bartington":
-            sensor_type = "magnetometer"
+        if not sensor_type:
+            if sensor_description == "Bartington 3-Axis Fluxgate Sensor":
+                sensor_type = "magnetometer"
+            if sensor_description:
+                if ("bf-4" in sensor_description.lower()) & ("schlumberger" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "magnetometer"
+                elif ("electric" in sensor_description.lower()) & ("dipole" in sensor_description.lower()):  # BSL-NCEDC
+                    sensor_type = "dipole"
 
 
         # reset sensor_type to None it it was not handled

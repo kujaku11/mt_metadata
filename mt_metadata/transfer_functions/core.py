@@ -274,7 +274,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return run_metadata.copy()
+        return run_metadata
 
     def _validate_station_metadata(self, station_metadata):
         """
@@ -298,7 +298,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return station_metadata.copy()
+        return station_metadata
 
     def _validate_survey_metadata(self, survey_metadata):
         """
@@ -328,7 +328,7 @@ class TF:
                 )
                 self.logger.error(msg)
                 raise TypeError(msg)
-        return survey_metadata.copy()
+        return survey_metadata
 
     ### Properties ------------------------------------------------------------
     @property
@@ -375,7 +375,9 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(station_metadata)
+            station_metadata = self._validate_station_metadata(
+                station_metadata
+            )
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -1475,9 +1477,8 @@ class TF:
         """
         self.station_metadata.id = validate_name(station_name)
         if self.station_metadata.runs[0].id is None:
-            r = self.station_metadata.runs[0].copy()
+            r = self.station_metadata.runs.pop(None)
             r.id = f"{self.station_metadata.id}a"
-            self.station_metadata.runs.remove(None)
             self.station_metadata.runs.append(r)
 
     @property
@@ -1872,9 +1873,13 @@ class TF:
             edi_obj.t = self.tipper.data
             edi_obj.t_err = self.tipper_error.data
         edi_obj.frequency = 1.0 / self.period
-        edi_obj.rotation_angle = np.repeat(
-            self._rotation_angle, self.period.size
-        )
+
+        if isinstance(self._rotation_angle, (int, float)):
+            edi_obj.rotation_angle = np.repeat(
+                self._rotation_angle, self.period.size
+            )
+        else:
+            edi_obj.rotation_angle = self._rotation_angle
 
         # fill from survey metadata
         edi_obj.survey_metadata = self.survey_metadata
@@ -1939,6 +1944,7 @@ class TF:
                     "transfer_function_error": "tf_err",
                     "survey_metadata": "survey_metadata",
                     "station_metadata": "station_metadata",
+                    "_rotation_angle": "rotation_angle",
                 }
             )
         else:
@@ -1951,6 +1957,7 @@ class TF:
                     "tipper_error": "t_err",
                     "survey_metadata": "survey_metadata",
                     "station_metadata": "station_metadata",
+                    "_rotation_angle": "rotation_angle",
                 }
             )
         for tf_key, edi_key in k_dict.items():
@@ -2164,9 +2171,9 @@ class TF:
         """
         zmm_kwargs = {}
         zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
-        zmm_kwargs[
-            "inverse_channel_nomenclature"
-        ] = self.inverse_channel_nomenclature
+        zmm_kwargs["inverse_channel_nomenclature"] = (
+            self.inverse_channel_nomenclature
+        )
         if hasattr(self, "decimation_dict"):
             zmm_kwargs["decimation_dict"] = self.decimation_dict
         zmm_obj = ZMM(**zmm_kwargs)

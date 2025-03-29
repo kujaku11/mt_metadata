@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 31 11:21:17 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -163,14 +163,24 @@ class TestStation(unittest.TestCase):
             self.assertRaises(TypeError, set_runs, [Run(), Station()])
 
     def test_add_runs(self):
+        """
+        Adds a run to the station object via adding another station object.
+
+        TODO: Could add some validation that the station id of the other station is same, otherwise warn.
+
+        """
         station_02 = Station()
         station_02.runs.append(Run(id="two"))
         self.station_object.runs.append(Run(id="one"))
+
+        # test _add method that passes
         self.station_object += station_02
         with self.subTest("length"):
             self.assertEqual(len(self.station_object), 2)
         with self.subTest("list equal"):
             self.assertListEqual(["one", "two"], self.station_object.run_list)
+        with self.assertRaises(TypeError):
+            self.station_object + None
 
     def test_remove_runs(self):
         self.station_object.runs.append(Run(id="one"))
