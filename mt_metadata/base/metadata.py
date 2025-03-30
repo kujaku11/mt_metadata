@@ -16,6 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
+from typing import Union
 
 import json
 import pandas as pd
@@ -85,10 +86,14 @@ class Base:
     def __repr__(self):
         return self.to_json()
 
-    def __eq__(self, other):
-        if other in [None]:
-            return False
-        elif isinstance(other, (Base, dict, str, pd.Series)):
+    def __eq__(self, other: Union["Base", dict, str, pd.Series]) -> bool:
+        """
+            Checks for equality between self and input argument `other`.
+
+            TODO: Once python 3.10 and lower are supported, change "Base" to Self in typehints.
+
+        """
+        if isinstance(other, (Base, dict, str, pd.Series)):
             home_dict = self.to_dict(single=True, required=False)
             if isinstance(other, Base):
                 other_dict = other.to_dict(single=True, required=False)
@@ -133,13 +138,15 @@ class Base:
                             self.logger.info(msg)
                             fail = True
                 except KeyError:
-                    msg = "Cannot find {0} in other".format(key)
+                    msg = f"Cannot find key {key} in other"
                     self.logger.info(msg)
             if fail:
                 return False
             else:
                 return True
         else:
+            msg = f"Unable to evaluate equality of {type(self)} with {type(other)}"
+            self.logger.info(msg)
             return False
 
     def __ne__(self, other):
