@@ -88,66 +88,84 @@ class Base:
 
     def __eq__(self, other: Union["Base", dict, str, pd.Series]) -> bool:
         """
+
             Checks for equality between self and input argument `other`.
+
+            Logic:
+             - verify that object is of expected dtype (else return False)
+             - form two dicts, one representing self and one representing other
+             - compare the two dicts
+             - return the outcome of the comparison
+
+            :param other: Another Base object, or it's representation as dict, str, pd.Series
+            :type other: Union["Base", dict, str, pd.Series]
 
             TODO: Once python 3.10 and lower are supported, change "Base" to Self in typehints.
 
         """
-        if isinstance(other, (Base, dict, str, pd.Series)):
-            home_dict = self.to_dict(single=True, required=False)
-            if isinstance(other, Base):
-                other_dict = other.to_dict(single=True, required=False)
-            elif isinstance(other, dict):
-                other_dict = other
-            elif isinstance(other, str):
-                if other.lower() in ["none", "null", "unknown"]:
-                    return False
-                other_dict = OrderedDict(
-                    sorted(json.loads(other).items(), key=itemgetter(0))
-                )
-            elif isinstance(other, pd.Series):
-                other_dict = OrderedDict(
-                    sorted(other.to_dict().items(), key=itemgetter(0))
-                )
-            else:
-                raise ValueError(
-                    f"Cannot compare {self._class_name} with {type(other)}"
-                )
-            fail = False
-            for key, value in home_dict.items():
-                try:
-                    other_value = other_dict[key]
-                    if isinstance(value, np.ndarray):
-                        if value.size != other_value.size:
-                            msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
-                            self.logger.info(msg)
-                            fail=True
-                            continue
-                        if not (value == other_value).all():
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    elif isinstance(value, (float, int, complex)):
-                        if not np.isclose(value, other_value):
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    else:
-                        if value != other_value:
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                except KeyError:
-                    msg = f"Cannot find key {key} in other"
-                    self.logger.info(msg)
-            if fail:
-                return False
-            else:
-                return True
-        else:
+        # validate dtype
+        allowed_input_dtypes = (Base, dict, str, pd.Series)
+        if not isinstance(other, allowed_input_dtypes):
             msg = f"Unable to evaluate equality of {type(self)} with {type(other)}"
             self.logger.info(msg)
             return False
+
+        # form two dicts, one for self and one for other
+        home_dict = self.to_dict(single=True, required=False)
+        if isinstance(other, Base):
+            other_dict = other.to_dict(single=True, required=False)
+        elif isinstance(other, dict):
+            other_dict = other
+        elif isinstance(other, str):
+            if other.lower() in ["none", "null", "unknown"]:
+                return False
+            other_dict = OrderedDict(
+                sorted(json.loads(other).items(), key=itemgetter(0))
+            )
+        elif isinstance(other, pd.Series):
+            other_dict = OrderedDict(
+                sorted(other.to_dict().items(), key=itemgetter(0))
+            )
+        else:
+            raise ValueError(
+                f"Cannot compare {self._class_name} with {type(other)}"
+            )
+
+        # Compare the two dicts
+        fail = False
+        for key, value in home_dict.items():
+            try:
+                other_value = other_dict[key]
+                if isinstance(value, np.ndarray):
+                    if value.size != other_value.size:
+                        msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
+                        self.logger.info(msg)
+                        fail=True
+                        continue
+                    if not (value == other_value).all():
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                elif isinstance(value, (float, int, complex)):
+                    if not np.isclose(value, other_value):
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                else:
+                    if value != other_value:
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+            except KeyError:
+                msg = f"Cannot find key {key} in other"
+                self.logger.info(msg)
+
+        # return the outcome of the comparison
+        if fail:
+            return False
+        else:
+            return True
+
 
     def __ne__(self, other):
         return not self.__eq__(other)
