@@ -1,0 +1,42 @@
+[project]
+name = "mt_metadata"
+version = "0.3.9"
+description = "Metadata for magnetotelluric data"
+authors = [
+    {name = "JP", email = "peacock.jared@gmail.com"},
+    {name = "Jared Peacock", email = "jpeacock@usgs.gov"},
+]
+dependencies = [
+    "loguru",
+    "matplotlib",
+    "numpy",
+    "obspy",
+    "pandas",
+    "xarray",
+]
+requires-python = ">=3.7"
+readme = "README.md"
+license = {text = "MIT license"}
+keywords = ["mt_metadata"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/kujaku11/mt_metadata"
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
