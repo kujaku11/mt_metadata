@@ -180,8 +180,12 @@ class XMLStationMTStation(BaseTranslator):
         )
 
         for xml_key, mt_key in self.xml_translator.items():
+            # need to skip code because we just set it above and it needs to be upper.
+            if xml_key in ["code"]:
+                continue
             if xml_key in ["alternate_code"]:
                 xml_station.alternate_code = mt_station.id
+
             if mt_key is None:
                 msg = "Cannot currently map mt_key.station to inventory.station.{0}".format(
                     xml_key

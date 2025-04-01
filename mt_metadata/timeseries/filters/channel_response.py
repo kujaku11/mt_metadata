@@ -317,7 +317,7 @@ class ChannelResponse(Base):
             result /= np.max(np.abs(result))
         return result
 
-    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=12):
+    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=16):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
 
@@ -340,7 +340,7 @@ class ChannelResponse(Base):
 
         return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
 
-    def compute_total_gain(self, sig_figs=12):
+    def compute_total_gain(self, sig_figs=16):
         """
         Computing the total sensitivity seems to be different than just adding all the gains together.
         Overall the total sensitivity is useless for MT cause they don't have the ability to use the units.
@@ -363,7 +363,7 @@ class ChannelResponse(Base):
         """
         total_gain = 1
         for mt_filter in self.filters_list:
-            total_gain += mt_filter.gain
+            total_gain *= mt_filter.gain
 
         return round(total_gain, sig_figs - int(np.floor(np.log10(abs(total_gain)))))
 
