@@ -51,7 +51,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
                 ("provenance.archive.comments", "IRIS DMC MetaData"),
-                ("provenance.archive.name", None),
                 ("provenance.archive.url", "http://www.iris.edu/mda/ZU/NMX20"),
                 ("provenance.creation_time", "2021-03-17T14:47:44+00:00"),
                 (
@@ -59,10 +58,6 @@ class TestEMTFXML(unittest.TestCase):
                     "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
                 ("provenance.creator.email", "pbedrosian@usgs.gov"),
-                (
-                    "provenance.creator.name",
-                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
-                ),
                 ("provenance.creator.organization", "U.S. Geological Survey"),
                 (
                     "provenance.creator.url",
@@ -76,7 +71,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
-                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey, Geomagnetism Program",
@@ -96,10 +90,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.id", "NMX20"),
                 (
                     "transfer_function.processed_by.author",
-                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
-                ),
-                (
-                    "transfer_function.processed_by.name",
                     "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
                 ("transfer_function.processed_date", "1980-01-01"),

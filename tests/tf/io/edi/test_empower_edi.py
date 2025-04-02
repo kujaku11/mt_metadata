@@ -376,7 +376,6 @@ class TestEMpowerTF(unittest.TestCase):
             "provenance.software.name = EMTF FCU",
             "provenance.software.version = 4.0",
             "provenance.submitter.author = EMTF FCU",
-            "provenance.submitter.name = EMTF FCU",
             "survey.datum = WGS84",
             "survey.id = 0",
             "survey.release_license = CC0-1.0",

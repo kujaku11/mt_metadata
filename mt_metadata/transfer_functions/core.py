@@ -375,9 +375,7 @@ class TF:
         """
 
         if station_metadata is not None:
-            station_metadata = self._validate_station_metadata(
-                station_metadata
-            )
+            station_metadata = self._validate_station_metadata(station_metadata)
 
             runs = ListDict()
             if self.run_metadata.id not in ["0", 0, None]:
@@ -1943,7 +1941,7 @@ class TF:
                     "residual_covariance": "residual_covariance",
                     "transfer_function_error": "tf_err",
                     "survey_metadata": "survey_metadata",
-                    "station_metadata": "station_metadata",
+                    # "station_metadata": "station_metadata",
                     "_rotation_angle": "rotation_angle",
                 }
             )
@@ -1956,7 +1954,7 @@ class TF:
                     "tipper": "t",
                     "tipper_error": "t_err",
                     "survey_metadata": "survey_metadata",
-                    "station_metadata": "station_metadata",
+                    # "station_metadata": "station_metadata",
                     "_rotation_angle": "rotation_angle",
                 }
             )
@@ -2054,7 +2052,7 @@ class TF:
                 f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
             )
         self.survey_metadata = emtfxml_obj.survey_metadata
-        self.station_metadata = emtfxml_obj.station_metadata
+        self.station_metadata = self.survey_metadata.stations[0]
 
         self.period = emtfxml_obj.data.period
         self.impedance = emtfxml_obj.data.z
@@ -2116,7 +2114,7 @@ class TF:
                 "tipper": "t",
                 "tipper_error": "t_err",
                 "survey_metadata": "survey_metadata",
-                "station_metadata": "station_metadata",
+                # "station_metadata": "station_metadata",
             }
         )
 
@@ -2377,7 +2375,6 @@ class TF:
         if not isinstance(avg_obj, ZongeMTAvg):
             raise TypeError(f"Input must be a ZMM object not {type(avg_obj)}")
         self.survey_metadata = avg_obj.survey_metadata
-        self.station_metadata = avg_obj.station_metadata
 
         self.period = 1.0 / avg_obj.frequency
         self.impedance = avg_obj.z

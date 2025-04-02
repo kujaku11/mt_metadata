@@ -50,11 +50,9 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
                 ("provenance.creation_time", "2020-06-05T12:06:27+00:00"),
                 ("provenance.creator.author", "Heinrich Brasse"),
                 ("provenance.creator.email", "heinrich.brasse@fu-berlin.de"),
-                ("provenance.creator.name", "Heinrich Brasse"),
                 (
                     "provenance.creator.organization",
                     "Freie Universitaet Berlin",
@@ -68,7 +66,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
-                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey Geomagnetism Program",
@@ -82,7 +79,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "SMG1"),
                 ("transfer_function.processed_by.author", "Heinrich Brasse"),
-                ("transfer_function.processed_by.name", "Heinrich Brasse"),
                 ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.processing_type", ""),

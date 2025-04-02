@@ -56,6 +56,7 @@ from mt_metadata.utils.mttime import MTime
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
 
+
 def get_base_obspy_mapping():
     """
     Different filters have different mappings, but the attributes mapped here are common to all of them.
@@ -85,6 +86,7 @@ class FilterBase(Base):
     it may find more application in future.
 
     """
+
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -96,6 +98,7 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
+        self._name = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -154,7 +157,6 @@ class FilterBase(Base):
             self._name = str(value).lower().replace("/", " per ")
         else:
             self._name = None
-
 
     @property
     def calibration_date(self):
@@ -398,4 +400,3 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
-

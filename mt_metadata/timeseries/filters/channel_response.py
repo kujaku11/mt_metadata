@@ -26,7 +26,7 @@ from mt_metadata.timeseries.filters import (
     FrequencyResponseTableFilter,
     FIRFilter,
 )
-from mt_metadata.timeseries.filters.filter_base import FilterBase
+
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
@@ -184,7 +184,7 @@ class ChannelResponse(Base):
     def normalization_frequency(self):
         """get normalization frequency from ZPK or FAP filter"""
 
-        if self._normalization_frequency == 0.0:
+        if self._normalization_frequency in [0.0, None]:
             if self.pass_band is not None:
                 return np.round(10 ** np.mean(np.log10(self.pass_band)), 3)
 
@@ -235,10 +235,14 @@ class ChannelResponse(Base):
         indices = list(np.arange(len(self.filters_list)))
 
         if not include_delay:
-            indices = [i for i in indices if self.filters_list[i].type != "time delay"]
+            indices = [
+                i for i in indices if self.filters_list[i].type != "time delay"
+            ]
 
         if not include_decimation:
-            indices = [i for i in indices if not self.filters_list[i].decimation_active]
+            indices = [
+                i for i in indices if not self.filters_list[i].decimation_active
+            ]
 
         return indices
 
