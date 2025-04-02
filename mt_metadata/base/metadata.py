@@ -16,7 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
-from typing import Union
+from typing import Optional, Union
 
 import json
 import pandas as pd
@@ -86,7 +86,11 @@ class Base:
     def __repr__(self):
         return self.to_json()
 
-    def __eq__(self, other: Union["Base", dict, str, pd.Series]) -> bool:
+    def __eq__(
+        self,
+        other: Union["Base", dict, str, pd.Series],
+        ignore_keys: Optional[Union[list, tuple]] = None
+    ) -> bool:
         """
 
             Checks for equality between self and input argument `other`.
@@ -98,6 +102,8 @@ class Base:
              - return the outcome of the comparison
 
             :param other: Another Base object, or it's representation as dict, str, pd.Series
+            :type other: Union["Base", dict, str, pd.Series]
+            :param ignore_keys: An iterable of keys to ignore during the comparison.
             :type other: Union["Base", dict, str, pd.Series]
 
             TODO: Once python 3.10 and lower are supported, change "Base" to Self in typehints.
@@ -131,9 +137,15 @@ class Base:
                 f"Cannot compare {self._class_name} with {type(other)}"
             )
 
+        # set ignire keys to empty iterable if it was none
+        if ignore_keys is None:
+            ignore_keys = ()
+
         # Compare the two dicts
         fail = False
         for key, value in home_dict.items():
+            if key in ignore_keys:
+                continue
             try:
                 other_value = other_dict[key]
                 if isinstance(value, np.ndarray):
