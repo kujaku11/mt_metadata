@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+Module for `aurora` Run metadata container with useful built-in methods.
+
 Created on Thu Feb 17 14:15:20 2022
 
 @author: jpeacock
+
 """
 # =============================================================================
 # Imports
@@ -12,6 +15,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.timeseries import TimePeriod
 from .channel import Channel
+from typing import Union
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
@@ -20,6 +24,10 @@ class Run(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+            Constructor.
+
+        """
         self._input = []
         self._output = []
         self._time_periods = []
@@ -27,16 +35,16 @@ class Run(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
-    def input_channel_names(self):
+    def input_channel_names(self) -> list:
         """list of channel names"""
         return [ch.id for ch in self._input]
 
     @property
-    def input_channels(self):
+    def input_channels(self) -> list:
         return self._input
 
     @input_channels.setter
-    def input_channels(self, values):
+    def input_channels(self, values: Union[list, str, Channel, dict]) -> None:
         self._input = []
         if not isinstance(values, list):
             values = [values]
@@ -90,16 +98,33 @@ class Run(Base):
         return self._time_periods
 
     @time_periods.setter
-    def time_periods(self, values):
+    def time_periods(self, values: Union[list, dict, TimePeriod]) -> None:
+        """
+            Sets self.time_periods
+
+        Parameters
+        ----------
+        values: Union[list, dict, TimePeriod]
+            If it is a list, the elements of the list must be TimePerid or dictionary representations of TimePeriods
+
+        """
         self._time_periods = []
         if not isinstance(values, list):
             values = [values]
 
         for item in values:
-            if not isinstance(item, TimePeriod):
+            if isinstance(item, TimePeriod):
+                self._time_periods.append(item)
+            elif isinstance(item, dict):
+                try:
+                    tp = TimePeriod()
+                    tp.from_dict(item)
+                    self._time_periods.append(tp)
+                except Exception as e:
+                    msg = f"Could not unpack dict to TimePeriod, got exception {e}"
+                    raise ValueError(msg)
+            else:
                 raise TypeError(f"not sure what to do with type {type(item)}")
-
-            self._time_periods.append(item)
 
     @property
     def channel_scale_factors(self):
