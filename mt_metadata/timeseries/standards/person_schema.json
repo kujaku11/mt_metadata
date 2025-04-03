@@ -1,0 +1,58 @@
+{
+    "title": "person",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Persons name, should be full first and last name.",
+            "title": "name",
+            "examples": "person name",
+            "default": null,
+            "alias": []
+        },
+        "author": {
+            "type": "string",
+            "description": "Persons name, should be full first and last name.",
+            "title": "author",
+            "examples": "person name",
+            "default": null,
+            "alias": []
+        },
+        "organization": {
+            "type": "string",
+            "description": "Organization full name",
+            "title": "organization",
+            "examples": "mt gurus",
+            "default": null,
+            "alias": []
+        },
+        "email": {
+            "type": "string",
+            "description": "Email of the contact person",
+            "title": "email",
+            "examples": "mt.guru@em.org",
+            "default": null,
+            "alias": []
+        },
+        "url": {
+            "type": "string",
+            "description": "URL of the contact person",
+            "title": "url",
+            "examples": "em.org",
+            "default": null,
+            "alias": []
+        },
+        "comments": {
+            "type": "string",
+            "description": "Any comments about the person",
+            "title": "comments",
+            "examples": "expert digger",
+            "default": null,
+            "alias": []
+        }
+    },
+    "required": [
+        "name"
+    ],
+    "description": "person"
+}

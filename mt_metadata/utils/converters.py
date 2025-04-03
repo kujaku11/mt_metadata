@@ -40,7 +40,7 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: The JSON schema.
     """
-
+    filename = Path(filename)
     old = load_json(filename)
     object_name = filename.stem
 
@@ -68,4 +68,8 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
             new["properties"][key]["items"]["type"] = value["type"]
         if "alpha numeric" in value["style"]:
             new["properties"][key]["pattern"] = "^[a-zA-Z0-9]*$"
-    return new
+
+    new_file = filename.parent.joinpath(f"{object_name}_schema.json")
+    write_json(new_file, new)
+
+    return new_file
