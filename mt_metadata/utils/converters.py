@@ -144,3 +144,15 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
     write_json(new_file, new)
 
     return new_file
+
+
+def from_jsonschema_to_pydantic_basemodel(filename, **kwargs):
+    """
+    make basemodel from json schema
+
+    Parameters
+    ----------
+    filename : _type_
+        _description_
+    """
+    pass

@@ -14,6 +14,7 @@ class Person(BaseModel):
             description="Persons name, should be full first and last name.",
             examples="person name",
             title="name",
+            json_schema_extra={"units": "m"},
         ),
     ] = None
     author: Annotated[
