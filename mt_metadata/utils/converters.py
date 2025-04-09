@@ -155,4 +155,8 @@ def from_jsonschema_to_pydantic_basemodel(filename, **kwargs):
     filename : _type_
         _description_
     """
-    pass
+    
+    with open(filename, "r") as fid:
+        schema_dict: dict = json.load(fid)
+
+    

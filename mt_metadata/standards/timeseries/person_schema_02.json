@@ -1,0 +1,85 @@
+{
+    "properties": {
+        "name": {
+            "alias": "author",
+            "default": "",
+            "description": "Persons name, should be full first and last name.",
+            "examples": "person name",
+            "title": "name",
+            "type": "string",
+            "units": "m"
+        },
+        "author": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "description": "Persons name, should be full first and last name.",
+            "examples": "person name",
+            "title": "author"
+        },
+        "organization": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "description": "Organization full name",
+            "examples": "mt gurus",
+            "title": "organization"
+        },
+        "email": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "description": "Email of the contact person",
+            "examples": "mt.guru@em.org",
+            "title": "email"
+        },
+        "url": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "description": "URL of the contact person",
+            "examples": "em.org",
+            "title": "url"
+        },
+        "comments": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "default": null,
+            "description": "Any comments about the person",
+            "examples": "expert digger",
+            "title": "comments"
+        }
+    },
+    "title": "Person",
+    "type": "object"
+}

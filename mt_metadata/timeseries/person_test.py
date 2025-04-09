@@ -4,51 +4,54 @@
 
 from __future__ import annotations
 from typing import Annotated
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class Person(BaseModel):
+    model_config = ConfigDict(validate_assignment=True, validate_default=True)
     name: Annotated[
         str,
         Field(
-            description='Persons name, should be full first and last name.',
-            examples='person name',
-            title='name',
+            default="",
+            description="Persons name, should be full first and last name.",
+            examples="person name",
+            title="name",
+            json_schema_extra={"units": "m", "alias": "author"},
         ),
     ]
     author: Annotated[
         str | None,
         Field(
-            description='Persons name, should be full first and last name.',
-            examples='person name',
-            title='author',
+            description="Persons name, should be full first and last name.",
+            examples="person name",
+            title="author",
         ),
     ] = None
     organization: Annotated[
         str | None,
         Field(
-            description='Organization full name',
-            examples='mt gurus',
-            title='organization',
+            description="Organization full name",
+            examples="mt gurus",
+            title="organization",
         ),
     ] = None
     email: Annotated[
         str | None,
         Field(
-            description='Email of the contact person',
-            examples='mt.guru@em.org',
-            title='email',
+            description="Email of the contact person",
+            examples="mt.guru@em.org",
+            title="email",
         ),
     ] = None
     url: Annotated[
         str | None,
-        Field(description='URL of the contact person', examples='em.org', title='url'),
+        Field(description="URL of the contact person", examples="em.org", title="url"),
     ] = None
     comments: Annotated[
         str | None,
         Field(
-            description='Any comments about the person',
-            examples='expert digger',
-            title='comments',
+            description="Any comments about the person",
+            examples="expert digger",
+            title="comments",
         ),
     ] = None
