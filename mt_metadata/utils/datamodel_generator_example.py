@@ -27,8 +27,13 @@ parser = JsonSchemaParser(
     use_annotated=True,
     use_union_operator=True,
     field_constraints=True,
+    snake_case_field=True,
+    allow_extra_fields=True,
+    strip_default_none=False,
+    field_include_all_keys=True,
 )
 
 result = parser.parse()
 
-print(result)
+with open(filename.parent.joinpath(f"{filename.stem}.py"), "w") as fid:
+    fid.write(result)
