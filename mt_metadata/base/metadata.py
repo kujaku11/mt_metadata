@@ -30,44 +30,16 @@ from . import helpers
 
 from mt_metadata.base.helpers import write_lines
 
+from pydantic import BaseModel
+
 attr_dict = {}
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
 
 
-class Base:
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, attr_dict={}, **kwargs):
-
-        self._changed = False
-
-        self._class_name = validate_attribute(self.__class__.__name__)
-
-        self.logger = logger
-        self._debug = False
-
-        self._set_attr_dict(attr_dict)
-
-        for name, value in kwargs.items():
-            self.set_attr_from_name(name, value)
-
-    def _set_attr_dict(self, attr_dict):
-        """
-        Set attribute dictionary and variables.
-
-        should have the proper keys.
-
-        :param attr_dict: attribute dictionary
-        :type attr_dict: dict
-
-        """
-
-        self._attr_dict = attr_dict
-
-        for key, value_dict in attr_dict.items():
-            self.set_attr_from_name(key, value_dict["default"])
+class MetadataBase(BaseModel):
+    __doc__ = write_lines(self.model_json_schema())
 
     def __str__(self):
         """
@@ -76,11 +48,7 @@ class Base:
         :rtype: string
 
         """
-        meta_dict = self.to_dict()[self._class_name.lower()]
-        lines = [f"{self._class_name}:"]
-        for name, value in meta_dict.items():
-            lines.append(f"\t{name} = {value}")
-        return "\n".join(lines)
+        return self.model_dump()
 
     def __repr__(self):
         return self.to_json()
@@ -88,9 +56,9 @@ class Base:
     def __eq__(self, other):
         if other in [None]:
             return False
-        elif isinstance(other, (Base, dict, str, pd.Series)):
+        elif isinstance(other, (MetadataBase, dict, str, pd.Series)):
             home_dict = self.to_dict(single=True, required=False)
-            if isinstance(other, Base):
+            if isinstance(other, MetadataBase):
                 other_dict = other.to_dict(single=True, required=False)
             elif isinstance(other, dict):
                 other_dict = other
@@ -116,7 +84,7 @@ class Base:
                         if value.size != other_value.size:
                             msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
                             self.logger.info(msg)
-                            fail=True
+                            fail = True
                             continue
                         if not (value == other_value).all():
                             msg = f"{key}: {value} != {other_value}"
@@ -157,9 +125,7 @@ class Base:
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning(
-                f"Cannot update {type(self)} with {type(other)}"
-            )
+            self.logger.warning(f"Cannot update {type(self)} with {type(other)}")
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = (
@@ -175,14 +141,6 @@ class Base:
             else:
                 if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
                     self.set_attr_from_name(k, v)
-
-    @property
-    def changed(self):
-        return self._changed
-
-    @changed.setter
-    def changed(self, value):
-        self._changed = value
 
     def __deepcopy__(self, memodict={}):
         """
@@ -265,172 +223,6 @@ class Base:
                     lines.append("\t{0}: {1}".format(key, value))
                 lines.append("=" * 50)
         print("\n".join(lines))
-
-    def _validate_name(self, name):
-        """
-        validate the name to conform to the standards
-        name must be:
-            * all lower case {a-z; 1-9}
-            * must start with a letter
-            * categories are separated by '.'
-            * words separated by '_'
-
-        {object}.{name_name}
-
-        '/' will be replaced with '.'
-        converted to all lower case
-
-        :param name: name name
-        :type name: string
-        :return: valid name name
-        :rtype: string
-
-        """
-        return validate_attribute(name)
-
-    def _validate_type(self, value, v_type, style=None):
-        """
-        validate type from standards
-
-        """
-
-        try:
-            return validate_value_type(value, v_type, style=style)
-        except MTSchemaError as error:
-            self.logger.exception(error)
-            raise MTSchemaError(error)
-
-    def _validate_option(self, name, value, option_list):
-        """
-        validate the given attribute name agains possible options and check
-        for aliases
-
-        :param name: DESCRIPTION
-        :type name: TYPE
-        :param option_list: DESCRIPTION
-        :type option_list: TYPE
-        :param alias_list: DESCRIPTION
-        :type alias_list: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        if value is None:
-            return True, False, None
-        options = [ss.lower() for ss in option_list]
-        other_possible = False
-        if "other" in options:
-            other_possible = True
-        if value.lower() in options:
-            return True, other_possible, None
-        elif value.lower() not in options and other_possible:
-            msg = (
-                f"Value '{value}' not found for metadata field '{name}' in options list {option_list}, but other options"
-                + f" are allowed.  Allowing {option_list} to be set to {value}."
-            )
-            return True, other_possible, msg
-        return False, other_possible, f"Value '{value}' for metadata field '{name}' not found in options list {option_list}"
-
-    def __setattr__(self, name, value):
-        """
-        set attribute based on metadata standards
-
-        Something here doesnt allow other objects to be set as attributes
-
-        """
-        # skip these attribute because they are validated in the property
-        # setter.
-        skip_list = [
-            "latitude",
-            "longitude",
-            "elevation",
-            "start_date",
-            "end_date",
-            "start",
-            "end",
-            "applied",
-            "logger",
-            "changed",
-            "hdf5_reference",
-            "obspy_mapping",
-            "surveys",
-            "filters",
-            "stations",
-            "runs",
-            "channels",
-            "channels_recorded_all",
-            "channels_recorded_electric"
-            "channels_recorded_magnetic"
-            "channels_recorded_auxiliary",
-            "electrode",
-            "estimates_list",
-            "input_channels",
-            "output_channels",
-            "data_types_list",
-            "info_list",
-            "info_dict",
-            "filters_list",
-            "fn",
-        ]
-
-        if name in skip_list:
-            super().__setattr__(name, value)
-            return
-        if not name.startswith("_"):
-            # test if the attribute is a property first, if it is, then
-            # it will have its own defined setter, so use that one and
-            # skip validation.
-            try:
-                test_property = getattr(self.__class__, name, None)
-                if isinstance(test_property, property):
-                    self.logger.debug(
-                        f"Identified {name} as property, using fset"
-                    )
-                    test_property.fset(self, value)
-                    return
-            except AttributeError:
-                pass
-        if hasattr(self, "_attr_dict") and not name.startswith("_"):
-            self.logger.debug(f"Setting {name} to {value}")
-            try:
-                v_dict = self._attr_dict[name]
-                v_type = self._get_standard_type(name)
-                value = self._validate_type(value, v_type, v_dict["style"])
-                # check options
-                if v_dict["style"] == "controlled vocabulary":
-                    options = v_dict["options"]
-                    accept, other, msg = self._validate_option(name, value, options)
-                    if not accept:
-                        self.logger.error(msg.format(value, options))
-                        raise MTSchemaError(msg.format(value, options))
-                    if other and not accept:
-                        self.logger.warning(msg.format(value, options, name))
-                super().__setattr__(name, value)
-            except KeyError as error:
-                raise KeyError(error)
-        else:
-            super().__setattr__(name, value)
-
-    def _get_standard_type(self, name):
-        """
-        helper function to get the standard type for the given name
-        """
-        name = self._validate_name(name)
-        try:
-            standards = self._attr_dict[name]
-            if isinstance(standards, type(logger)):
-                return None
-            return standards["type"]
-        except KeyError:
-            if name[0] != "_":
-                msg = (
-                    f"{name} is not defined in the standards. "
-                    " Should add attribute information with "
-                    "add_base_attribute if the attribute is going to "
-                    "propogate via to_dict, to_json, to_series"
-                )
-                self.logger.info(msg)
-            return None
 
     def get_attr_from_name(self, name):
         """
@@ -578,18 +370,14 @@ class Base:
                 elif isinstance(value, dict):
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
-                            value[key] = obj.to_dict(
-                                nested=nested, required=required
-                            )
+                            value[key] = obj.to_dict(nested=nested, required=required)
                         else:
                             value[key] = obj
                 elif isinstance(value, list):
                     v_list = []
                     for obj in value:
                         if hasattr(obj, "to_dict"):
-                            v_list.append(
-                                obj.to_dict(nested=nested, required=required)
-                            )
+                            v_list.append(obj.to_dict(nested=nested, required=required))
                         else:
                             v_list.append(obj)
                     value = v_list
@@ -606,8 +394,7 @@ class Base:
                     if value.size > 0:
                         meta_dict[name] = value
                 elif (
-                    value
-                    not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
+                    value not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
                     or self._attr_dict[name]["required"]
                 ):
                     meta_dict[name] = value
