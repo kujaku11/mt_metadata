@@ -15,12 +15,15 @@ import textwrap
 import logging
 import json
 import numpy as np
+from typing import Dict, Any
 
 from collections.abc import MutableMapping
 from collections import OrderedDict, defaultdict
 from xml.etree import cElementTree as et
 from xml.dom import minidom
 from operator import itemgetter
+
+from pydantic import BaseModel
 
 # from mt_metadata.utils.units import get_unit_object
 
@@ -37,6 +40,30 @@ filter_descriptions = {
 # =============================================================================
 # write doc strings
 # =============================================================================
+
+
+def get_all_fields(model: BaseModel) -> Dict[str, Any]:
+    """
+    Iteratively get all fields in a BaseModel
+
+    Parameters
+    ----------
+    model : BaseModel
+        metadata basemodel
+
+    Returns
+    -------
+    Dict[str, Any]
+        dictionary keyed by attributes. Will be nested.
+    """
+    fields = {}
+    for field_name, field_value in model.model_fields.items():
+        if hasattr(field_value.annotation, "model_fields"):
+            fields[field_name] = field_value.annotation().all_attributes()
+        else:
+            fields[field_name] = field_value
+
+    return fields
 
 
 def wrap_description(description, column_width):
@@ -100,9 +127,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     lines = [
         hline,
-        line.format(
-            "**Metadata Key**", c1, "**Description**", c2, "**Example**", c3
-        ),
+        line.format("**Metadata Key**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -112,9 +137,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         d_lines = wrap_description(entry["description"], c2)
         e_lines = wrap_description(entry["example"], c3)
         # line 1 is with the entry
-        lines.append(
-            line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3)
-        )
+        lines.append(line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3))
         # line 2 skip an entry in the
         lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
         # line 3 required
@@ -133,9 +156,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 5 units
         lines.append(
-            line.format(
-                f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3
-            )
+            line.format(f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3)
         )
 
         # line 6 blank
@@ -143,9 +164,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 7 type
         lines.append(
-            line.format(
-                f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3
-            )
+            line.format(f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3)
         )
 
         # line 8 blank
@@ -153,9 +172,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 9 type
         lines.append(
-            line.format(
-                f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3
-            )
+            line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
         )
 
         # line 10 blank
@@ -178,23 +195,17 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         )
 
         # line 10 blank
-        lines.append(
-            line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3)
-        )
+        lines.append(line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3))
 
         # line 9 type
-        lines.append(
-            line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3)
-        )
+        lines.append(line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3))
 
         # line 10 blank
         if len(d_lines) > 11:
             lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
             for index, d_line in enumerate(d_lines[12:], 4):
                 try:
-                    lines.append(
-                        line.format(default[index], c1, d_line, c2, "", c3)
-                    )
+                    lines.append(line.format(default[index], c1, d_line, c2, "", c3))
                 except IndexError:
                     lines.append(line.format("", c1, d_line, c2, "", c3))
 
@@ -203,9 +214,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
             lines.append(line.format(default[3], c1, "", c2, "", c3))
             for index, d_line in enumerate(default[4:], 12):
                 try:
-                    lines.append(
-                        line.format(d_line, c1, d_lines[index], c2, "", c3)
-                    )
+                    lines.append(line.format(d_line, c1, d_lines[index], c2, "", c3))
                 except IndexError:
                     lines.append(line.format(d_line, c1, "", c2, "", c3))
         lines.append(hline)
@@ -252,9 +261,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
-        line.format(
-            f"**{key}**", c1, "**Description**", c2, "**Example**", c3
-        ),
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -344,9 +351,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
         for index, d_line in enumerate(d_lines[12:], 4):
             try:
-                lines.append(
-                    line.format(default[index], c1, d_line, c2, "", c3)
-                )
+                lines.append(line.format(default[index], c1, d_line, c2, "", c3))
             except IndexError:
                 lines.append(line.format("", c1, d_line, c2, "", c3))
 
@@ -355,9 +360,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         lines.append(line.format(default[3], c1, "", c2, "", c3))
         for index, d_line in enumerate(default[4:], 12):
             try:
-                lines.append(
-                    line.format(d_line, c1, d_lines[index], c2, "", c3)
-                )
+                lines.append(line.format(d_line, c1, d_lines[index], c2, "", c3))
             except IndexError:
                 lines.append(line.format(d_line, c1, "", c2, "", c3))
 
@@ -572,9 +575,7 @@ def element_to_dict(element):
             for k, v in dc.items():
                 child_dict[k].append(v)
         meta_dict = {
-            element.tag: {
-                k: v[0] if len(v) == 1 else v for k, v in child_dict.items()
-            }
+            element.tag: {k: v[0] if len(v) == 1 else v for k, v in child_dict.items()}
         }
         if "item" in meta_dict[element.tag].keys():
             meta_dict[element.tag] = meta_dict[element.tag]["item"]
@@ -637,7 +638,6 @@ def element_to_string(element):
 # Helper function to be sure everything is encoded properly
 # =============================================================================
 class NumpyEncoder(json.JSONEncoder):
-
     """
     Need to encode numpy ints and floats for json to work
     """

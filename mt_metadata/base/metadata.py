@@ -16,6 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
+from typing import List, Dict, Iterable, Union
 
 import json
 import pandas as pd
@@ -31,6 +32,7 @@ from . import helpers
 from mt_metadata.base.helpers import write_lines
 
 from pydantic import BaseModel
+from pydantic.fields import PrivateAttr, FieldInfo
 
 attr_dict = {}
 # =============================================================================
@@ -40,6 +42,11 @@ attr_dict = {}
 
 class MetadataBase(BaseModel):
     # __doc__ = write_lines(BaseModel.model_json_schema())
+
+    _default_keys: List[str] = PrivateAttr(
+        ["title", "annotation", "default", "examples", "description"]
+    )
+    _json_extras: List[str] = PrivateAttr(["units", "required"])
 
     def __str__(self) -> str:
         """
@@ -247,12 +254,57 @@ class MetadataBase(BaseModel):
 
         return self.__deepcopy__()
 
+    def get_all_fields(self) -> Dict:
+        """
+        Get all field attributes in the Metadata class.  Will
+        search recursively and return dotted keys.  For
+        instance `{location.latitude: ...}`.
+
+        Returns
+        -------
+        Dict
+            A flattened dictionary of dotted keys of all attributes
+            within the class.
+        """
+
+        return helpers.flatten_dict(helpers.get_all_fields(self))
+
     def get_attribute_list(self):
         """
         return a list of the attributes
         """
 
-        return sorted(list(self._attr_dict.keys()))
+        return sorted(self.get_all_fields().keys())
+
+    def _field_info_to_string(self, name: str, field_info: FieldInfo) -> str:
+        """
+        Create a string from a FieldInfo object for pretty printing
+
+        Parameters
+        ----------
+        name : str
+            name of the Field
+
+        field_info : FieldInfo
+            _description_
+
+        Returns
+        -------
+        str
+            _description_
+        """
+
+        line = [f"{name}:"]
+        for key in self._default_keys:
+            line.append(f"\t{key}: {getattr(field_info, key)}")
+        json_extras = field_info.json_schema_extra
+        if json_extras is not None:
+            for key in self._json_extras:
+                try:
+                    line.append(f"\t{key}: {json_extras[key]}")
+                except KeyError:
+                    pass
+        return "\n".join(line)
 
     def attribute_information(self, name=None):
         """
@@ -264,26 +316,20 @@ class MetadataBase(BaseModel):
         :rtype: string
 
         """
-
+        attr_dict = self.get_all_fields()
+        lines = []
         if name:
             try:
-                v_dict = OrderedDict(
-                    sorted(self._attr_dict[name].items(), key=itemgetter(0))
-                )
+                v_dict = OrderedDict(sorted(attr_dict[name].items(), key=itemgetter(0)))
             except KeyError as error:
                 msg = "{0} not attribute {1} found".format(error, name)
                 self.logger.error(msg)
                 raise MTSchemaError(msg)
-            lines = ["{0}:".format(name)]
-            for key, value in v_dict.items():
-                lines.append("\t{0}: {1}".format(key, value))
+            lines.append(self._field_info_to_string(name, v_dict))
         else:
             lines = []
-            for name, v_dict in self._attr_dict.items():
-                lines.append("{0}:".format(name))
-                v_dict = OrderedDict(sorted(v_dict.items(), key=itemgetter(0)))
-                for key, value in v_dict.items():
-                    lines.append("\t{0}: {1}".format(key, value))
+            for name, v_dict in attr_dict.items():
+                lines.append(self._field_info_to_string(name, v_dict))
                 lines.append("=" * 50)
         print("\n".join(lines))
 
@@ -310,23 +356,8 @@ class MetadataBase(BaseModel):
 
         """
 
-        name = self._validate_name(name)
-        v_type = self._get_standard_type(name)
-
-        if "." in name:
-            value, prop = helpers.recursive_split_getattr(self, name)
-            if prop:
-                return value
-        else:
-            value = getattr(self, name)
-            try:
-                if isinstance(getattr(type(self), name), property):
-                    return value
-            except AttributeError:
-                pass
-        if hasattr(value, "to_dict"):
-            return value
-        return self._validate_type(value, v_type)
+        value, _ = helpers.recursive_split_getattr(self, name)
+        return value
 
     def set_attr_from_name(self, name, value):
         """
@@ -350,20 +381,18 @@ class MetadataBase(BaseModel):
         >>> print(b.category.test_attr)
         '10'
         """
-        if "." in name:
-            try:
-                helpers.recursive_split_setattr(self, name, value)
-            except AttributeError as error:
-                msg = (
-                    "{0} is not in the current standards.  "
-                    + "To properly add the attribute use "
-                    + "add_base_attribute."
-                )
 
-                self.logger.error(msg.format(name))
-                raise AttributeError(error)
-        else:
-            setattr(self, name, value)
+        try:
+            helpers.recursive_split_setattr(self, name, value)
+        except AttributeError as error:
+            msg = (
+                "{0} is not in the current standards.  "
+                + "To properly add the attribute use "
+                + "add_base_attribute."
+            )
+
+            self.logger.error(msg.format(name))
+            raise AttributeError(error)
 
     def add_base_attribute(self, name, value, value_dict):
         """
