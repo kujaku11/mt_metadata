@@ -17,10 +17,12 @@ from operator import itemgetter
 from pathlib import Path
 from loguru import logger
 from typing import List, Dict, Iterable, Union
+from typing_extensions import deprecated
 
 import json
 import pandas as pd
 import numpy as np
+from xml.etree import cElementTree as et
 
 from mt_metadata.utils.validators import (
     validate_attribute,
@@ -31,7 +33,7 @@ from . import helpers
 
 from mt_metadata.base.helpers import write_lines
 
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model, ConfigDict
 from pydantic.fields import PrivateAttr, FieldInfo
 
 attr_dict = {}
@@ -41,7 +43,19 @@ attr_dict = {}
 
 
 class MetadataBase(BaseModel):
-    # __doc__ = write_lines(BaseModel.model_json_schema())
+    """
+    MetadataBase is the base class for all metadata objects.  `pydantic.BaseModel`
+    is inherited, thus Pydantic takes care of all the validating accoring to the
+    metadata given.
+
+    Functionality of pydantic.BaseModel are extended including ingesting more than
+    just a dictionary.
+
+    """
+
+    model_config = ConfigDict(
+        validate_assignment=True, use_attribute_docstrings=True, extra="allow"
+    )
 
     _default_keys: List[str] = PrivateAttr(
         ["title", "annotation", "default", "examples", "description"]
@@ -60,7 +74,7 @@ class MetadataBase(BaseModel):
     def __repr__(self) -> str:
         return self.to_json()
 
-    def __eq__(self, other):
+    def __eq__(self, other: Union["MetadataBase", Dict, str, pd.Series, et.Element]):
         """
            create a self.load that will take in a dict, str, pd.Series, xml, etc
            which will create a MetadataBase object.  Then Pydantic will deal
@@ -122,65 +136,97 @@ class MetadataBase(BaseModel):
         """
         if other in [None]:
             return False
-        elif isinstance(other, (MetadataBase, dict, str, pd.Series)):
-            home_dict = self.to_dict(single=True, required=False)
-            if isinstance(other, MetadataBase):
-                other_dict = other.to_dict(single=True, required=False)
-            elif isinstance(other, dict):
-                other_dict = other
-            elif isinstance(other, str):
-                if other.lower() in ["none", "null", "unknown"]:
-                    return False
-                other_dict = OrderedDict(
-                    sorted(json.loads(other).items(), key=itemgetter(0))
-                )
-            elif isinstance(other, pd.Series):
-                other_dict = OrderedDict(
-                    sorted(other.to_dict().items(), key=itemgetter(0))
-                )
-            else:
-                raise ValueError(
-                    f"Cannot compare {self._class_name} with {type(other)}"
-                )
-            fail = False
-            for key, value in home_dict.items():
-                try:
-                    other_value = other_dict[key]
-                    if isinstance(value, np.ndarray):
-                        if value.size != other_value.size:
-                            msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
-                            self.logger.info(msg)
-                            fail = True
-                            continue
-                        if not (value == other_value).all():
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    elif isinstance(value, (float, int, complex)):
-                        if not np.isclose(value, other_value):
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    else:
-                        if value != other_value:
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                except KeyError:
-                    msg = "Cannot find {0} in other".format(key)
-                    self.logger.info(msg)
-            if fail:
-                return False
-            else:
-                return True
+
+        elif isinstance(other, (dict, str, pd.Series, et.Element)):
+
+            other_dict = __class__().load(other).to_dict(single=True, required=False)
+
+        elif isinstance(other, MetadataBase):
+            other_dict = other.to_dict(single=True, required=False)
         else:
-            return False
+            raise ValueError(
+                f"Cannot compare {self.__class__.__name__} with {type(other)}"
+            )
+        home_dict = self.to_dict(single=True, required=False)
+        if home_dict == other_dict:
+            return True
+
+        fail = False
+        for key, value in home_dict.items():
+            try:
+                other_value = other_dict[key]
+                if isinstance(value, np.ndarray):
+                    if value.size != other_value.size:
+                        msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
+                        self.logger.info(msg)
+                        fail = True
+                        continue
+                    if not (value == other_value).all():
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                elif isinstance(value, (float, int, complex)):
+                    if not np.isclose(value, other_value):
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                else:
+                    if value != other_value:
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+            except KeyError:
+                msg = "Cannot find {0} in other".format(key)
+                self.logger.info(msg)
+        return fail
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __len__(self):
         return len(self.get_attribute_list())
+
+    def load(
+        self, other: Union["MetadataBase", Dict, str, pd.Series, et.Element]
+    ) -> None:
+        """
+        Load in an other object and populate attributes.  The other object
+        should have the same attributes as the current object.  If there are
+        attributes different than the current object validation will not be
+        accurate.  Consider making a new model if you want a different object.
+
+        Excepted types are:
+
+         - MetadataBase
+         - Dict
+         - JSON string
+         - Pandas Series
+         - XML element
+
+        Parameters
+        ----------
+        other : Union[MetadataBase, Dict, str, pd.Series, et.Element]
+            other object from which to fill attributes with.  Must have the
+            same attribute names as the current object.
+            If a different object is passed in validation will not be
+            accurate.
+        """
+        if isinstance(other, MetadataBase):
+            self.update(other)
+        elif isinstance(other, dict):
+            self.from_dict(other)
+        elif isinstance(other, str):
+            if other.lower() in ["none", "null", "unknown"]:
+                return
+            self.from_json(other)
+        elif isinstance(other, pd.Series):
+            self.from_series(other)
+        elif isinstance(other, et.Element):
+            self.from_xml(other)
+        else:
+            msg = f"Cannot load {type(other)} into {self.__class__.__name__}"
+            self.logger.error(msg)
+            raise MTSchemaError(msg)
 
     def update(self, other, match=[]):
         """
@@ -386,33 +432,41 @@ class MetadataBase(BaseModel):
             helpers.recursive_split_setattr(self, name, value)
         except AttributeError as error:
             msg = (
-                "{0} is not in the current standards.  "
+                f"{name} is not in the current standards.  "
                 + "To properly add the attribute use "
                 + "add_base_attribute."
             )
 
-            self.logger.error(msg.format(name))
+            self.logger.error(msg)
             raise AttributeError(error)
 
-    def add_base_attribute(self, name, value, value_dict):
+    @deprecated("add_base_attribute is deprecated. Use add_new_field.")
+    def add_base_attribute(
+        self,
+    ):
+        pass
+
+    def add_new_field(self, name: str, new_field_info: FieldInfo) -> BaseModel:
         """
+        This is going to be much different from older versions of mt_metadata.
+
+        This will return a new BaseModel with the added attribute.  Going to use
+        `pydantid.create_model` from the exsiting attribute information and the
+        added attribute.
+
         Add an attribute to _attr_dict so it will be included in the
         output dictionary
 
         :param name: name of attribute
         :type name: string
 
-        :param value: value of the new attribute
-        :type value: described in value_dict
+        :param new_field_info: value of the new attribute
+        :type new_field_info: pydantic.fields.FieldInfo
 
-        :param value_dict: dictionary describing the attribute, must have keys
-         ['type', 'required', 'style', 'units', 'alias', 'description',
-          'options', 'example']
-        :type name: string
+        Should include:
 
-        * type --> the data type [ str | int | float | bool ]
+        * annotated --> the data type [ str | int | float | bool ]
         * required --> required in the standards [ True | False ]
-        * style --> style of the string
         * units --> units of the attribute, must be a string
         * alias --> other possible names for the attribute
         * options --> if only a few options are accepted, separated by | or
@@ -422,21 +476,32 @@ class MetadataBase(BaseModel):
 
         :Example:
 
-        >>> extra = {'type': str,
-        >>> ...      'style': 'controlled vocabulary',
-        >>> ...      'required': False,
-        >>> ...      'units': celsius,
-        >>> ...      'description': 'local temperature',
-        >>> ...      'alias': ['temp'],
-        >>> ...      'options': [ 'ambient', 'air', 'other'],
-        >>> ...      'example': 'ambient'}
-        >>> r = Run()
-        >>> r.add_base_attribute('temperature', 'ambient', extra)
+        .. code-block:: python
+
+        from pydantic.fields import FieldInfo
+        new_field = FieldInfo(
+            annotated=str,
+            default="default_value",
+            required=False,
+            description="new field description",
+            alias="new_field_alias",
+            json_schema_extra={"units":"km"}
+            )
+
+        existing_basemodel = MetadataBase()
+        new_basemodel = existing_basemodel.add_base_attribute("new_attribute", new_field)
+        new_basemodel_object = new_basemodel()
 
         """
-        name = self._validate_name(name)
-        self._attr_dict.update({name: value_dict})
-        self.set_attr_from_name(name, value)
+        existing_model_fields = self.model_fields
+        existing_model_fields[name] = new_field_info
+        all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
+
+        return create_model(
+            name,
+            __base__=MetadataBase,
+            **all_fields,
+        )
 
     def to_dict(self, nested=False, single=False, required=True):
         """
@@ -454,7 +519,7 @@ class MetadataBase(BaseModel):
         """
 
         meta_dict = {}
-        for name in list(self._attr_dict.keys()):
+        for name in self.get_attribute_list():
             try:
                 value = self.get_attr_from_name(name)
                 if hasattr(value, "to_dict"):
@@ -495,7 +560,7 @@ class MetadataBase(BaseModel):
         if nested:
             meta_dict = helpers.structure_dict(meta_dict)
         meta_dict = {
-            self._class_name.lower(): OrderedDict(
+            self.__class__.__name__.lower(): OrderedDict(
                 sorted(meta_dict.items(), key=itemgetter(0))
             )
         }
@@ -519,16 +584,16 @@ class MetadataBase(BaseModel):
         keys = list(meta_dict.keys())
         if len(keys) == 1:
             class_name = keys[0]
-            if class_name.lower() != self._class_name.lower():
+            if class_name.lower() != self.__class__.__name__.lower():
                 msg = (
                     "name of input dictionary is not the same as class type "
-                    f"input = {class_name}, class type = {self._class_name}"
+                    f"input = {class_name}, class type = {self.__class__.__name__}"
                 )
-                self.logger.debug(msg, class_name, self._class_name)
+                self.logger.debug(msg, class_name, self.__class__.__name__)
             meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
             self.logger.debug(
-                f"Assuming input dictionary is of type {self._class_name}",
+                f"Assuming input dictionary is of type {self.__class__.__name__}",
             )
             meta_dict = helpers.flatten_dict(meta_dict)
         # set attributes by key.
