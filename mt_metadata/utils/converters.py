@@ -309,11 +309,20 @@ def generate_pydantic_basemodel(json_schema_path: str) -> Path:
 
         # Add attributes to Field
         field_parts.append(f"{TAB}default={field_default},")
+        ## need to add json_schema_extra attributes [units, required]
+        json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
             if attr_name in ["default"]:
                 continue
-            # if attr_value is not None:  # Skip if attribute is None
-            field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+            elif attr_name in ["units", "required"]:
+                json_schema_extra[attr_name] = attr_value
+            else:
+                field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+        field_parts.append(f"{TAB}json_schema_extra=" + "{")
+        for jkey, jvalue in json_schema_extra.items():
+            field_parts.append(f"{jkey}={jvalue}")
+        field_parts.append("}")
+
         if field_attrs["required"]:
             field_parts.append(")]\n")
         else:

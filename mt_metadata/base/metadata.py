@@ -39,9 +39,9 @@ attr_dict = {}
 
 
 class MetadataBase(BaseModel):
-    __doc__ = write_lines(self.model_json_schema())
+    # __doc__ = write_lines(BaseModel.model_json_schema())
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
 
         :return: table describing attributes
@@ -50,10 +50,69 @@ class MetadataBase(BaseModel):
         """
         return self.model_dump()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.to_json()
 
     def __eq__(self, other):
+        """
+           create a self.load that will take in a dict, str, pd.Series, xml, etc
+           which will create a MetadataBase object.  Then Pydantic will deal
+           with the __eq__:
+
+           if isinstance(other, BaseModel):
+            # When comparing instances of generic types for equality, as long as all field values are equal,
+            # only require their generic origin types to be equal, rather than exact type equality.
+            # This prevents headaches like MyGeneric(x=1) != MyGeneric[Any](x=1).
+            self_type = self.__pydantic_generic_metadata__['origin'] or self.__class__
+            other_type = other.__pydantic_generic_metadata__['origin'] or other.__class__
+
+            # Perform common checks first
+            if not (
+                self_type == other_type
+                and getattr(self, '__pydantic_private__', None) == getattr(other, '__pydantic_private__', None)
+                and self.__pydantic_extra__ == other.__pydantic_extra__
+            ):
+                return False
+
+            # We only want to compare pydantic fields but ignoring fields is costly.
+            # We'll perform a fast check first, and fallback only when needed
+            # See GH-7444 and GH-7825 for rationale and a performance benchmark
+
+            # First, do the fast (and sometimes faulty) __dict__ comparison
+            if self.__dict__ == other.__dict__:
+                # If the check above passes, then pydantic fields are equal, we can return early
+                return True
+
+            # We don't want to trigger unnecessary costly filtering of __dict__ on all unequal objects, so we return
+            # early if there are no keys to ignore (we would just return False later on anyway)
+            model_fields = type(self).model_fields.keys()
+            if self.__dict__.keys() <= model_fields and other.__dict__.keys() <= model_fields:
+                return False
+
+            # If we reach here, there are non-pydantic-fields keys, mapped to unequal values, that we need to ignore
+            # Resort to costly filtering of the __dict__ objects
+            # We use operator.itemgetter because it is much faster than dict comprehensions
+            # NOTE: Contrary to standard python class and instances, when the Model class has a default value for an
+            # attribute and the model instance doesn't have a corresponding attribute, accessing the missing attribute
+            # raises an error in BaseModel.__getattr__ instead of returning the class attribute
+            # So we can use operator.itemgetter() instead of operator.attrgetter()
+            getter = operator.itemgetter(*model_fields) if model_fields else lambda _: _utils._SENTINEL
+            try:
+                return getter(self.__dict__) == getter(other.__dict__)
+            except KeyError:
+                # In rare cases (such as when using the deprecated BaseModel.copy() method),
+                # the __dict__ may not contain all model fields, which is how we can get here.
+                # getter(self.__dict__) is much faster than any 'safe' method that accounts
+                # for missing keys, and wrapping it in a `try` doesn't slow things down much
+                # in the common case.
+                self_fields_proxy = _utils.SafeGetItemProxy(self.__dict__)
+                other_fields_proxy = _utils.SafeGetItemProxy(other.__dict__)
+                return getter(self_fields_proxy) == getter(other_fields_proxy)
+
+        # other instance is not a BaseModel
+        else:
+            return NotImplemented  # delegate to the other item in the comparison
+        """
         if other in [None]:
             return False
         elif isinstance(other, (MetadataBase, dict, str, pd.Series)):
@@ -151,30 +210,34 @@ class MetadataBase(BaseModel):
         :rtype: :class:`mt_metadata.base.metadata.Base`
 
         """
-        copied = type(self)()
-        for key in self.to_dict(single=True, required=False).keys():
-            try:
 
-                copied.set_attr_from_name(
-                    key, deepcopy(self.get_attr_from_name(key), memodict)
-                )
-            # Need the TypeError for objects that have no __reduce__ method
-            # like H5 references.
-            except (AttributeError, TypeError) as error:
-                self.logger.debug(error)
-                continue
-        # need to copy and properties
-        for key in self.__dict__.keys():
-            if key.startswith("_"):
-                test_property = getattr(self.__class__, key[1:], None)
-                if isinstance(test_property, property):
-                    value = getattr(self, key[1:])
-                    if hasattr(value, "copy"):
-                        setattr(copied, key[1:], value.copy())
-                    else:
-                        setattr(copied, key[1:], value)
+        try:
+            return self.model_copy(deep=True)
+        except Exception:
+            copied = type(self)()
+            for key in self.to_dict(single=True, required=False).keys():
+                try:
 
-        return copied
+                    copied.set_attr_from_name(
+                        key, deepcopy(self.get_attr_from_name(key), memodict)
+                    )
+                # Need the TypeError for objects that have no __reduce__ method
+                # like H5 references.
+                except (AttributeError, TypeError) as error:
+                    self.logger.debug(error)
+                    continue
+            # need to copy and properties
+            for key in self.__dict__.keys():
+                if key.startswith("_"):
+                    test_property = getattr(self.__class__, key[1:], None)
+                    if isinstance(test_property, property):
+                        value = getattr(self, key[1:])
+                        if hasattr(value, "copy"):
+                            setattr(copied, key[1:], value.copy())
+                        else:
+                            setattr(copied, key[1:], value)
+
+            return copied
 
     def copy(self):
         """
