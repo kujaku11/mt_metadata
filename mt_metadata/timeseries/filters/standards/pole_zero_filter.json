@@ -1,6 +1,6 @@
 {
     "poles": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": null,
@@ -11,7 +11,7 @@
 		"default": []
     },
     "zeros": {
-        "type": "string",
+        "type": "float",
         "required": true,
         "style": "number list",
         "units": null,

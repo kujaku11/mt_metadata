@@ -1,0 +1,34 @@
+{
+    "title": "estimator",
+    "type": "object",
+    "properties": {
+        "engine": {
+            "type": "string",
+            "default": "RME_RR",
+            "description": "The transfer function estimator engine",
+            "title": "engine",
+            "examples": "RME_RR",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "RME_RR",
+                "RME",
+                "other"
+            ]
+        },
+        "estimate_per_channel": {
+            "type": "boolean",
+            "default": true,
+            "description": "Estimate per channel",
+            "title": "estimate_per_channel",
+            "examples": "True",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "engine",
+        "estimate_per_channel"
+    ],
+    "description": "estimator"
+}

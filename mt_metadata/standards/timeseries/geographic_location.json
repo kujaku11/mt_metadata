@@ -1,0 +1,80 @@
+{
+    "title": "geographic_location",
+    "type": "object",
+    "properties": {
+        "country": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "Country of the geographic location, should be spelled out in full. Can be a list of countries.",
+            "title": "country",
+            "examples": "United States of America",
+            "alias": null,
+            "units": null
+        },
+        "state": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "State or province of the geographic location, should be spelled out in full. Can be a list of states or provinces.",
+            "title": "state",
+            "examples": "[Colorado, Utah]",
+            "alias": null,
+            "units": null
+        },
+        "county": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "County of the geographic location, should be spelled out in full. Can be a list of counties.",
+            "title": "county",
+            "examples": "[Douglass, Fayet]",
+            "alias": null,
+            "units": null
+        },
+        "township": {
+            "type": "string",
+            "default": null,
+            "description": "Township or city name or code.",
+            "title": "township",
+            "examples": "090",
+            "alias": null,
+            "units": null
+        },
+        "section": {
+            "type": "string",
+            "default": null,
+            "description": "Section name or code.",
+            "title": "section",
+            "examples": "012",
+            "alias": null,
+            "units": null
+        },
+        "quarter": {
+            "type": "string",
+            "default": null,
+            "description": "Quarter section code.",
+            "title": "quarter",
+            "examples": "400",
+            "alias": null,
+            "units": null
+        },
+        "parcel": {
+            "type": "string",
+            "default": null,
+            "description": "Land parcel ID.",
+            "title": "parcel",
+            "examples": "46b29a",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "geographic_location"
+}

@@ -1,0 +1,19 @@
+{
+    "title": "mt_edit",
+    "type": "object",
+    "properties": {
+        "version": {
+            "type": "string",
+            "default": "",
+            "description": "Version of MT Edit and date",
+            "title": "version",
+            "examples": "3.10m applied 2021/01/27",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "version"
+    ],
+    "description": "mt_edit"
+}

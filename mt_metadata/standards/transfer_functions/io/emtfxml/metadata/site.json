@@ -1,0 +1,114 @@
+{
+    "title": "site",
+    "type": "object",
+    "properties": {
+        "project": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the project",
+            "title": "project",
+            "examples": "USMTArray",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "survey": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the survey",
+            "title": "survey",
+            "examples": "MT 2020",
+            "alias": null,
+            "units": null
+        },
+        "year_collected": {
+            "type": "integer",
+            "default": null,
+            "description": "Year data collected",
+            "title": "year_collected",
+            "examples": "2020",
+            "alias": null,
+            "units": null
+        },
+        "country": {
+            "type": "string",
+            "default": "",
+            "description": "Country where data was collected",
+            "title": "country",
+            "examples": "USA",
+            "alias": null,
+            "units": null
+        },
+        "id": {
+            "type": "string",
+            "default": "",
+            "description": "Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
+            "title": "id",
+            "examples": "MT001",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "closest geographic name to the station",
+            "title": "name",
+            "examples": "\"Whitehorse, YK\"",
+            "alias": null,
+            "units": null
+        },
+        "acquired_by": {
+            "type": "string",
+            "default": "",
+            "description": "Person or group who collected the data",
+            "title": "acquired_by",
+            "examples": "MT Group",
+            "alias": null,
+            "units": null
+        },
+        "start": {
+            "type": "string",
+            "default": "1980-01-01T00:00:00",
+            "description": "Date time when the data collection started",
+            "title": "start",
+            "examples": "2020-01-01T12:00:00",
+            "alias": null,
+            "units": null
+        },
+        "end": {
+            "type": "string",
+            "default": "1980-01-01T00:00:00",
+            "description": "Date time when the data collection ended",
+            "title": "end",
+            "examples": "2020-05-01T12:00:00",
+            "alias": null,
+            "units": null
+        },
+        "run_list": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of runs recorded by the station. Should be a summary of all runss recorded",
+            "title": "run_list",
+            "examples": "\"[ mt001a, mt001b, mt001c ]\"",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "project",
+        "survey",
+        "year_collected",
+        "country",
+        "id",
+        "name",
+        "acquired_by",
+        "start",
+        "end",
+        "run_list"
+    ],
+    "description": "site"
+}

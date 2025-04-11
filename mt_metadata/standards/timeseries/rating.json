@@ -1,0 +1,37 @@
+{
+    "title": "rating",
+    "type": "object",
+    "properties": {
+        "author": {
+            "type": "string",
+            "default": null,
+            "description": "Author of who rated the data.",
+            "title": "author",
+            "examples": "gradstudent ace",
+            "alias": null,
+            "units": null
+        },
+        "method": {
+            "type": "string",
+            "default": null,
+            "description": "The method used to rate the data.",
+            "title": "method",
+            "examples": "standard deviation",
+            "alias": null,
+            "units": null
+        },
+        "value": {
+            "type": "integer",
+            "default": null,
+            "description": "A rating from 1-5 where 1 is bad and 5 is good and 0 if unrated.",
+            "title": "value",
+            "examples": "4",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "value"
+    ],
+    "description": "rating"
+}

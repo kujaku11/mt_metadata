@@ -1,0 +1,22 @@
+{
+    "title": "stations",
+    "type": "object",
+    "properties": {
+        "remote": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of remote sites",
+            "title": "remote",
+            "examples": "10",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "remote"
+    ],
+    "description": "stations"
+}

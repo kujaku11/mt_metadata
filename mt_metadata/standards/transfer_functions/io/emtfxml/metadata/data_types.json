@@ -1,0 +1,22 @@
+{
+    "title": "data_types",
+    "type": "object",
+    "properties": {
+        "data_types_list": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of data types",
+            "title": "data_types_list",
+            "examples": "[Z T]",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "data_types_list"
+    ],
+    "description": "data_types"
+}

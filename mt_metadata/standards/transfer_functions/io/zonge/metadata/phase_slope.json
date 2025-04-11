@@ -1,0 +1,39 @@
+{
+    "title": "phase_slope",
+    "type": "object",
+    "properties": {
+        "smooth": {
+            "type": "string",
+            "default": "None",
+            "description": "Type of smoothing for phase slope algorithm",
+            "title": "smooth",
+            "examples": "robust",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "robust",
+                "normal",
+                "None",
+                "minimal"
+            ]
+        },
+        "to_z_mag": {
+            "type": "string",
+            "default": "no",
+            "description": "Was hz used for smoothing for phase slope algorithm",
+            "title": "to_z_mag",
+            "examples": "no",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "no",
+                "yes"
+            ]
+        }
+    },
+    "required": [
+        "smooth",
+        "to_z_mag"
+    ],
+    "description": "phase_slope"
+}

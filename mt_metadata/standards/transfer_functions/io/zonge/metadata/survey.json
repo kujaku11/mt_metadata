@@ -1,0 +1,76 @@
+{
+    "title": "survey",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "default": "nsamt",
+            "description": "Type of EM survey",
+            "title": "type",
+            "examples": "nsamt",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "nsamt",
+                "csamt",
+                "mt"
+            ]
+        },
+        "array": {
+            "type": "string",
+            "default": "tensor",
+            "description": "Type of array",
+            "title": "array",
+            "examples": "tensor",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "tensor"
+            ]
+        },
+        "datum": {
+            "type": "string",
+            "default": "WGS84",
+            "description": "Datum of the location",
+            "title": "datum",
+            "examples": "WGS84",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "WGS84",
+                "NAD27",
+                "other"
+            ]
+        },
+        "u_t_m_zone": {
+            "type": "string",
+            "default": "",
+            "description": "UTM zone of location",
+            "title": "u_t_m_zone",
+            "examples": "12",
+            "alias": null,
+            "units": null
+        },
+        "proj": {
+            "type": "string",
+            "default": "UTM",
+            "description": "Projection of the location coordinates",
+            "title": "proj",
+            "examples": "UTM",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "UTM",
+                "other"
+            ]
+        }
+    },
+    "required": [
+        "type",
+        "array",
+        "datum",
+        "u_t_m_zone",
+        "proj"
+    ],
+    "description": "survey"
+}

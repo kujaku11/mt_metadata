@@ -1,0 +1,54 @@
+{
+    "title": "gps",
+    "type": "object",
+    "properties": {
+        "lat": {
+            "type": "float",
+            "default": 0.0,
+            "description": "latitude",
+            "title": "lat",
+            "examples": "10.3",
+            "alias": null,
+            "units": null
+        },
+        "lon": {
+            "type": "float",
+            "default": 0.0,
+            "description": "longitude",
+            "title": "lon",
+            "examples": "10.3",
+            "alias": null,
+            "units": null
+        },
+        "datum": {
+            "type": "string",
+            "default": "WGS84",
+            "description": "Datum of the location",
+            "title": "datum",
+            "examples": "WGS84",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "WGS84",
+                "NAD27",
+                "other"
+            ]
+        },
+        "u_t_m_zone": {
+            "type": "string",
+            "default": "",
+            "description": "UTM zone of location",
+            "title": "u_t_m_zone",
+            "examples": "12",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "lat",
+        "lon",
+        "datum",
+        "u_t_m_zone"
+    ],
+    "description": "gps"
+}

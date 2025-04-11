@@ -1,0 +1,23 @@
+{
+    "title": "auto",
+    "type": "object",
+    "properties": {
+        "phase_flip": {
+            "type": "string",
+            "default": "yes",
+            "description": "Was phase automatically flipped in processing",
+            "title": "phase_flip",
+            "examples": "yes",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "yes",
+                "no"
+            ]
+        }
+    },
+    "required": [
+        "phase_flip"
+    ],
+    "description": "auto"
+}

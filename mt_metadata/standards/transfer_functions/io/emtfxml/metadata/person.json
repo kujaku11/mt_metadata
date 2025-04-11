@@ -1,0 +1,52 @@
+{
+    "title": "person",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "author name",
+            "title": "name",
+            "examples": "person name",
+            "alias": [
+                "author"
+            ],
+            "units": null
+        },
+        "email": {
+            "type": "string",
+            "default": "",
+            "description": "email of the contact person",
+            "title": "email",
+            "examples": "mt.guru@em.org",
+            "alias": null,
+            "units": null
+        },
+        "org": {
+            "type": "string",
+            "default": "",
+            "description": "organization name",
+            "title": "org",
+            "examples": "mt gurus",
+            "alias": [
+                "organization"
+            ],
+            "units": null
+        },
+        "org_url": {
+            "type": "string",
+            "default": null,
+            "description": "URL of organization",
+            "title": "org_url",
+            "examples": "https://www.mt_gurus.org",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "email",
+        "org"
+    ],
+    "description": "person"
+}

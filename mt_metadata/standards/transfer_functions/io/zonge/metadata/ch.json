@@ -1,0 +1,80 @@
+{
+    "title": "ch",
+    "type": "object",
+    "properties": {
+        "a_d_card_s_n": {
+            "type": "string",
+            "default": null,
+            "description": "serial number of ad card for local and remote stations",
+            "title": "a_d_card_s_n",
+            "examples": "6545BAC6,BE380864",
+            "alias": null,
+            "units": null
+        },
+        "gdp_box": {
+            "type": "string",
+            "default": null,
+            "description": "Box number for local and remote stations",
+            "title": "gdp_box",
+            "examples": "18,15",
+            "alias": null,
+            "units": null
+        },
+        "stn": {
+            "type": "string",
+            "default": null,
+            "description": "station number of local and remote",
+            "title": "stn",
+            "examples": "1,2",
+            "alias": null,
+            "units": null
+        },
+        "number": {
+            "type": "string",
+            "default": null,
+            "description": "channel number for local and coil number of remote",
+            "title": "number",
+            "examples": "1, 2284",
+            "alias": null,
+            "units": null
+        },
+        "cmp": {
+            "type": "string",
+            "default": null,
+            "description": "component of local and remote stations",
+            "title": "cmp",
+            "examples": "ex,hy",
+            "alias": null,
+            "units": null
+        },
+        "c_res": {
+            "type": "string",
+            "default": null,
+            "description": "contact resistance for local and remote sensors",
+            "title": "c_res",
+            "examples": "0,0",
+            "alias": null,
+            "units": null
+        },
+        "azimuth": {
+            "type": "string",
+            "default": null,
+            "description": "azimuth for local and remote sensors",
+            "title": "azimuth",
+            "examples": "12.1,12.1",
+            "alias": null,
+            "units": null
+        },
+        "incl": {
+            "type": "string",
+            "default": null,
+            "description": "Inclination ",
+            "title": "incl",
+            "examples": "335754.685:4263553.435:1650.2",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "ch"
+}

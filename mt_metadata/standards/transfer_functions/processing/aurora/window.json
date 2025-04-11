@@ -1,0 +1,83 @@
+{
+    "title": "window",
+    "type": "object",
+    "properties": {
+        "num_samples": {
+            "type": "integer",
+            "default": null,
+            "description": "Number of samples in a single window",
+            "title": "num_samples",
+            "examples": "256",
+            "alias": null,
+            "units": "samples"
+        },
+        "overlap": {
+            "type": "integer",
+            "default": null,
+            "description": "Number of samples overlapped by adjacent windows",
+            "title": "overlap",
+            "examples": "32",
+            "alias": null,
+            "units": "samples"
+        },
+        "type": {
+            "type": "string",
+            "default": "boxcar",
+            "description": "name of the window type",
+            "title": "type",
+            "examples": "hamming",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "boxcar",
+                "triang",
+                "blackman",
+                "hamming",
+                "hann",
+                "bartlett",
+                "flattop",
+                "parzen",
+                "bohman",
+                "blackmanharris",
+                "nuttall",
+                "barthann",
+                "kaiser",
+                "gaussian",
+                "general_gaussian",
+                "slepian",
+                "chebwin",
+                "dpss"
+            ]
+        },
+        "clock_zero_type": {
+            "type": "string",
+            "default": "ignore",
+            "description": "how the clock-zero is specified",
+            "title": "clock_zero_type",
+            "examples": "user specified",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "user specified",
+                "data start",
+                "ignore"
+            ]
+        },
+        "clock_zero": {
+            "type": "string",
+            "default": null,
+            "description": "Start date and time of the first data window",
+            "title": "clock_zero",
+            "examples": "2020-02-01T09:23:45.453670+00:00",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "num_samples",
+        "overlap",
+        "type",
+        "clock_zero_type"
+    ],
+    "description": "window"
+}

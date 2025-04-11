@@ -1,0 +1,51 @@
+{
+    "title": "processing_info",
+    "type": "object",
+    "properties": {
+        "sign_convention": {
+            "type": "string",
+            "default": "exp(+ i\\omega t)",
+            "description": "Sign convention of the processing software output",
+            "title": "sign_convention",
+            "examples": "exp(+ i\\omega t)",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "exp(+ i\\omega t)",
+                "exp(- i\\omega t)",
+                "other"
+            ]
+        },
+        "processed_by": {
+            "type": "string",
+            "default": null,
+            "description": "Names of people who processed the data",
+            "title": "processed_by",
+            "examples": "MT Guru",
+            "alias": null,
+            "units": null
+        },
+        "process_date": {
+            "type": "string",
+            "default": null,
+            "description": "Date the data were processed",
+            "title": "process_date",
+            "examples": "2020-01-01",
+            "alias": null,
+            "units": null
+        },
+        "processing_tag": {
+            "type": "string",
+            "default": null,
+            "description": "List of remote references",
+            "title": "processing_tag",
+            "examples": "mt001-mt002",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "sign_convention"
+    ],
+    "description": "processing_info"
+}

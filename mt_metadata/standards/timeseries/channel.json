@@ -1,0 +1,146 @@
+{
+    "title": "channel",
+    "type": "object",
+    "properties": {
+        "channel_number": {
+            "type": "integer",
+            "default": null,
+            "description": "Channel number on the data logger.",
+            "title": "channel_number",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        },
+        "channel_id": {
+            "type": "string",
+            "default": null,
+            "description": "channel id given by the user or data logger",
+            "title": "channel_id",
+            "examples": "1001.11",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "type": "string",
+            "default": null,
+            "description": "Any comments about the channel.",
+            "title": "comments",
+            "examples": "ambient air temperature was chilly, ice on cables",
+            "alias": null,
+            "units": null
+        },
+        "component": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the component measured, can be uppercase and/or lowercase.  For now electric channels should start with an 'e' and magnetic channels start with an 'h', followed by the component. If there are multiples of the same channel the name could include an integer.  {type}{component}{number} --> Ex01.",
+            "title": "component",
+            "examples": "T",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "Ex",
+                "Ey",
+                "Hx",
+                "Hy",
+                "Hz",
+                "Bx",
+                "By",
+                "Bz",
+                "T",
+                "Battery",
+                "other"
+            ]
+        },
+        "measurement_azimuth": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Horizontal azimuth of the channel in measurement coordinate system spcified in station.orientation.reference_frame.  Default reference frame is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
+            "title": "measurement_azimuth",
+            "examples": "0",
+            "alias": [
+                "azimuth"
+            ],
+            "units": "degrees"
+        },
+        "measurement_tilt": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Vertical tilt of the channel in measurement coordinate system specified in station.orientation.reference_frame.  Default reference frame is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
+            "title": "measurement_tilt",
+            "examples": "0",
+            "alias": [
+                "dip"
+            ],
+            "units": "degrees"
+        },
+        "sample_rate": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Digital sample rate",
+            "title": "sample_rate",
+            "examples": "8",
+            "alias": [
+                "sampling_rate"
+            ],
+            "units": "samples per second"
+        },
+        "translated_azimuth": {
+            "type": "float",
+            "default": null,
+            "description": "Horizontal azimuth of the channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data in geomagnetic coordinates and then translated them to geographic coordinates you would set measurement_azimuth=0, translated_azimuth=-12.5 for a declination angle of N12.5E.",
+            "title": "translated_azimuth",
+            "examples": "0",
+            "alias": [
+                "azimuth"
+            ],
+            "units": "degrees"
+        },
+        "translated_tilt": {
+            "type": "float",
+            "default": null,
+            "description": "Tilt of channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data using a tripod you would set measurement_tilt=45, translated_tilt=0 for a vertical component.",
+            "title": "translated_tilt",
+            "examples": "0",
+            "alias": [
+                "dip"
+            ],
+            "units": "degrees"
+        },
+        "type": {
+            "type": "string",
+            "default": "",
+            "description": "Data type for the channel, should be a descriptive word that a user can understand.",
+            "title": "type",
+            "examples": "temperature",
+            "alias": null,
+            "units": null
+        },
+        "units": {
+            "type": "string",
+            "default": "",
+            "description": "Units of the data, should be in SI units and represented as the full name of the unit all lowercase.  If a complex unit use 'per' and '-'.",
+            "title": "units",
+            "examples": "celsius",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "metric",
+                "celsius",
+                "meters",
+                "degrees",
+                "kilograms",
+                "other"
+            ]
+        }
+    },
+    "required": [
+        "channel_number",
+        "component",
+        "measurement_azimuth",
+        "measurement_tilt",
+        "sample_rate",
+        "type",
+        "units"
+    ],
+    "description": "channel"
+}

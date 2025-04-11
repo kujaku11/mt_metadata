@@ -1,26 +1,31 @@
+# =====================================================
+# Imports
+# =====================================================
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated, Optional, List, Dict, Any
 
 
+# =====================================================
 class Person(BaseModel):
     model_config = ConfigDict(
-        validate_assignment=True, extras="allow", coerce_numbers_to_str=True
+        validate_assignment=True, coerce_numbers_to_str=True, validate_default=True
     )
     name: Annotated[
         str,
         Field(
-            default=None,
+            default="",
             type="string",
             description="Persons name, should be full first and last name.",
             title="name",
             examples="person name",
             alias=None,
             units=None,
+            required=True,
         ),
     ]
 
     author: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             type="string",
@@ -29,11 +34,12 @@ class Person(BaseModel):
             examples="person name",
             alias=None,
             units=None,
+            required=False,
         ),
-    ]
+    ] = None
 
     organization: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             type="string",
@@ -42,11 +48,12 @@ class Person(BaseModel):
             examples="mt gurus",
             alias=None,
             units=None,
+            required=False,
         ),
-    ]
+    ] = None
 
     email: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             type="string",
@@ -55,11 +62,12 @@ class Person(BaseModel):
             examples="mt.guru@em.org",
             alias=None,
             units=None,
+            required=False,
         ),
-    ]
+    ] = None
 
     url: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             type="string",
@@ -68,11 +76,12 @@ class Person(BaseModel):
             examples="em.org",
             alias=None,
             units=None,
+            required=False,
         ),
-    ]
+    ] = None
 
     comments: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             type="string",
@@ -81,5 +90,6 @@ class Person(BaseModel):
             examples="expert digger",
             alias=None,
             units=None,
+            required=False,
         ),
-    ]
+    ] = None

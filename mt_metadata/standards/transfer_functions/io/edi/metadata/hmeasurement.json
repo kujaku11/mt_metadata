@@ -1,0 +1,95 @@
+{
+    "title": "hmeasurement",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Channel number, could be location.channel_number.",
+            "title": "id",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        },
+        "chtype": {
+            "type": "string",
+            "default": "",
+            "description": "channel type, should start with an 'h' or 'b'",
+            "title": "chtype",
+            "examples": "hx",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "hx",
+                "hy",
+                "hz",
+                "other"
+            ]
+        },
+        "x": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of sensor relative center point in north direction",
+            "title": "x",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "y": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of sensor relative center point in east direction",
+            "title": "y",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "z": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of sensor relative center point in depth",
+            "title": "z",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "azm": {
+            "type": "float",
+            "default": 0.0,
+            "description": "orientation of the sensor relative to coordinate system, clockwise positive.",
+            "title": "azm",
+            "examples": "100.0",
+            "alias": null,
+            "units": "degrees"
+        },
+        "dip": {
+            "type": "float",
+            "default": 0.0,
+            "description": "orientation of the sensor relative to horizontal = 0",
+            "title": "dip",
+            "examples": "100.0",
+            "alias": null,
+            "units": "degrees"
+        },
+        "acqchan": {
+            "type": "string",
+            "default": "",
+            "description": "description of acquired channel",
+            "title": "acqchan",
+            "examples": "100.0",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "id",
+        "chtype",
+        "x",
+        "y",
+        "z",
+        "azm",
+        "dip",
+        "acqchan"
+    ],
+    "description": "hmeasurement"
+}

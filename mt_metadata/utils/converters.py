@@ -1,17 +1,52 @@
+"""
+Converters to convert old JSON schema to new JSON schema and then to pydantic basemodel
+and then to pydantic basemodel with types.
+
+"""
+
+# =====================================================
+# Imports
+# =====================================================
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 import json
+import black
 
 from pathlib import Path
 
 from mt_metadata.utils.mttime import MTime
 
-from datamodel_code_generator import DataModelType, PythonVersion
-from datamodel_code_generator.model import get_data_model_types
-from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+from pathlib import Path
+import json
+from pydantic import BaseModel, Field
+from typing import Annotated, Optional, List, Dict, Any, Union
 
+try:
+    from datamodel_code_generator import DataModelType, PythonVersion
+    from datamodel_code_generator.model import get_data_model_types
+    from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+except ImportError:
+    print(
+        "datamodel-codegen is not installed. Please install it using 'pip install datamodel-codegen'."
+    )
+
+# =====================================================
+# Constants
+# =====================================================
+# Define the path to the standards directory and the mt_metadata directory
 STANDARDS_SAVEPATH = Path(__file__).parent.parent.joinpath("standards")
 MTMETADATA_SAVEPATH = Path(__file__).parent.parent
+
+TYPE_MAPPING = {
+    "string": "str",
+    "integer": "int",
+    "number": "float",
+    "boolean": "bool",
+    "array": "List[Any]",
+    "object": "Dict[str, Any]",
+}
+TAB = " " * 4
+# =====================================================
 
 
 def load_json(filename: Union[str, Path]) -> Dict[str, Any]:
@@ -90,7 +125,7 @@ def get_alias_name(alias_name):
         return alias_name
 
 
-def get_new_basemodel_filename(filename, save_path=STANDARDS_SAVEPATH):
+def get_new_basemodel_filename(filename, save_path=MTMETADATA_SAVEPATH):
     """
     Get the new filename json schema
 
@@ -99,7 +134,8 @@ def get_new_basemodel_filename(filename, save_path=STANDARDS_SAVEPATH):
     filename : _type_
         _description_
     """
-
+    filename = Path(filename)
+    # Get the parts of the filename
     parts = Path(filename).parts
     index = parts.index("standards") + 1
     new_file_directory = save_path.joinpath("\\".join(parts[index:-1]))
@@ -108,7 +144,7 @@ def get_new_basemodel_filename(filename, save_path=STANDARDS_SAVEPATH):
     return new_filename
 
 
-def get_new_schema_filename(filename, save_path=MTMETADATA_SAVEPATH):
+def get_new_schema_filename(filename, save_path=STANDARDS_SAVEPATH):
     """
     Get the new filename for pydantic python file
 
@@ -147,13 +183,22 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
     new["description"] = object_name
     for key, value in old.items():
         new["properties"][key] = {}
-        new["properties"][key]["type"] = value["type"]
+        if "list" in value["style"]:
+            new["properties"][key]["type"] = "array"
+            new["properties"][key]["default"] = []
+            new["properties"][key]["items"] = {}
+            new["properties"][key]["items"]["type"] = value["type"]
+        else:
+            new["properties"][key]["type"] = value["type"]
+            new["properties"][key]["default"] = get_default_value(
+                value["type"],
+                default_value=value["default"],
+                required=value["required"],
+            )
         new["properties"][key]["description"] = value["description"]
         new["properties"][key]["title"] = key
         new["properties"][key]["examples"] = value["example"]
-        new["properties"][key]["default"] = get_default_value(
-            value["type"], default_value=value["default"], required=value["required"]
-        )
+
         new["properties"][key]["alias"] = get_alias_name(value["alias"])
         new["properties"][key]["units"] = value["units"]
         if value["required"]:
@@ -161,10 +206,7 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
         # need to sort out string formats
         if value["style"] == "controlled vocabulary":
             new["properties"][key]["enum"] = value["options"]
-        if "list" in value["style"]:
-            new["properties"][key]["type"] = "array"
-            new["properties"][key]["items"] = {}
-            new["properties"][key]["items"]["type"] = value["type"]
+
         if "alpha numeric" in value["style"]:
             new["properties"][key]["pattern"] = "^[a-zA-Z0-9]*$"
 
@@ -218,102 +260,95 @@ def from_jsonschema_to_pydantic_basemodel(filename: Union[str, Path], **kwargs) 
     return new_filename
 
 
-type_dict = {"string": str, "integer": int, "float": float}
-
-
-def from_jsonschema_to_pydantic_basemodel_homebrew(
-    filename: Union[str, Path], **kwargs
-) -> Path:
+def generate_pydantic_basemodel(json_schema_path: str) -> Path:
     """
-    Create a pydantic basemodel by hand
+    Generate a Pydantic model from a JSON schema file and save it to a Python file.
+    The generated model will use `Annotated` and `Field` for type annotations.
 
     Parameters
     ----------
-    filename : Union[str, Path]
-        _description_
+    json_schema_path : str
+        path to the JSON schema file
 
     Returns
     -------
     Path
         _description_
     """
-    tab = " " * 4
-    filename = Path(filename)
-    new_filename = get_new_basemodel_filename(filename)
-
-    with open(filename, "r") as fid:
+    with open(json_schema_path, "r") as fid:
         schema = json.load(fid)
 
-    lines = [
-        "# Imports",
-        "from __future__ import annotations",
-        "from typing import Annotated",
-        "from pydantic import BaseModel, ConfigDict, Field",
-        "",
+    new_filename = get_new_basemodel_filename(json_schema_path, MTMETADATA_SAVEPATH)
+
+    class_definitions = []
+    class_name = schema.get("title", "GeneratedModel").capitalize()
+
+    required_fields = schema.get("required", [])
+    properties = schema.get("properties", {})
+
+    # Create field definitions
+    for field_name, field_attrs in properties.items():
+        # Fallback to Any if type is unknown
+        field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
+        field_attrs["required"] = True
+        if field_name not in required_fields:
+            field_type = f"{field_type} | None"
+            field_attrs["required"] = False
+
+        field_default = get_default_value(
+            field_attrs["type"],
+            default_value=field_attrs["default"],
+            required=field_name in required_fields,
+        )
+        if field_default in [""]:
+            field_default = "''"
+
+        # Use Annotated with Field
+        field_definition = f"{TAB}{field_name}: Annotated[{field_type}, Field("
+        field_parts = [field_definition]
+
+        # Add attributes to Field
+        field_parts.append(f"{TAB}default={field_default},")
+        for attr_name, attr_value in field_attrs.items():
+            if attr_name in ["default"]:
+                continue
+            # if attr_value is not None:  # Skip if attribute is None
+            field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+        if field_attrs["required"]:
+            field_parts.append(")]\n")
+        else:
+            field_parts.append(f")] = {field_default}\n")
+
+        class_definitions.append("\n".join(field_parts))
+
+    # Generate the class definition
+    class_code = [
+        f"class {class_name}(BaseModel):",
+        f"{TAB}model_config = ConfigDict(validate_assignment=True, ",
+        "coerce_numbers_to_str=True, validate_default=True)",
+        "\n".join(class_definitions) or f"{TAB}pass",
     ]
 
-    class_name = schema["title"]
-    lines.append(f"class {class_name}(BaseModel):")
-    lines.append(
-        f"{tab}model_config = ConfigDict(extra='allow', validate_assignment=True)"
-    )
-    for field in schema["properties"]:
-        required = False
-        if field["title"] in schema["required"]:
-            required = True
+    lines = [
+        "#=====================================================",
+        "# Imports",
+        "#=====================================================",
+        "from pydantic import BaseModel, Field, ConfigDict",
+        "from typing import Annotated, Optional, List, Dict, Any\n",
+        # "from mt_metadata.base import MetadataBase",
+        "",
+        "#=====================================================",
+    ]
+    lines += class_code
+    line = "\n".join(lines)
 
-        lines.append(f"{field['title']}: Annotated[]")
+    # Format the code using black
+    # This will format the code according to PEP 8 style guide
+    line = black.format_str(line, mode=black.FileMode())
 
+    # Write to output file
+    with open(new_filename, "w") as f:
+        f.write(line)
 
-def convert_old_standards_to_new_standards():
-    """
-    Convert all old standards to json schema files
-    """
-    pass
-
-
-from typing import Any, Type, Optional
-from pydantic import BaseModel, Field, create_model
-from enum import Enum
-
-
-def json_schema_to_base_model(schema: dict[str, Any]) -> Type[BaseModel]:
-    type_mapping = {
-        "string": str,
-        "integer": int,
-        "number": float,
-        "boolean": bool,
-        "array": list,
-        "object": dict,
-    }
-
-    properties = schema.get("properties", {})
-    required_fields = schema.get("required", [])
-    model_fields = {}
-
-    for field_name, field_props in properties.items():
-        json_type = field_props.get("type", "string")
-        enum_values = field_props.get("enum")
-
-        if enum_values:
-            enum_name = f"{field_name.capitalize()}Enum"
-            field_type = Enum(enum_name, {v: v for v in enum_values})
-        else:
-            field_type = type_mapping.get(json_type, Any)
-
-        default_value = field_props.get("default", ...)
-        nullable = field_props.get("nullable", False)
-        description = field_props.get("title", "")
-
-        if nullable:
-            field_type = Optional[field_type]
-
-        if field_name not in required_fields:
-            default_value = field_props.get("default", None)
-
-        model_fields[field_name] = (
-            field_type,
-            Field(default_value, description=description),
-        )
-
-    return create_model(schema.get("title", "DynamicModel"), **model_fields)
+    print(f"Saved to {new_filename}")
+    return new_filename

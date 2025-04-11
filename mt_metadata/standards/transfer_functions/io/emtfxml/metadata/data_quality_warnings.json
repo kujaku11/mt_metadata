@@ -1,0 +1,17 @@
+{
+    "title": "data_quality_warnings",
+    "type": "object",
+    "properties": {
+        "flag": {
+            "type": "integer",
+            "default": null,
+            "description": "Flag for data quality",
+            "title": "flag",
+            "examples": "0",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "data_quality_warnings"
+}

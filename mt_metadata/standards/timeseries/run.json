@@ -1,0 +1,96 @@
+{
+    "title": "run",
+    "type": "object",
+    "properties": {
+        "channels_recorded_auxiliary": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of auxiliary channels recorded",
+            "title": "channels_recorded_auxiliary",
+            "examples": "[T]",
+            "alias": null,
+            "units": null
+        },
+        "channels_recorded_electric": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of electric channels recorded",
+            "title": "channels_recorded_electric",
+            "examples": "\"[Ex , Ey]\"",
+            "alias": null,
+            "units": null
+        },
+        "channels_recorded_magnetic": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of magnetic channels recorded",
+            "title": "channels_recorded_magnetic",
+            "examples": "\"[Hx , Hy , Hz]\"",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "type": "string",
+            "default": null,
+            "description": "Any comments on the run.",
+            "title": "comments",
+            "examples": "cows chewed cables",
+            "alias": null,
+            "units": null
+        },
+        "data_type": {
+            "type": "string",
+            "default": "BBMT",
+            "description": "Type of data recorded for this run.",
+            "title": "data_type",
+            "examples": "BBMT",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "RMT",
+                "AMT",
+                "BBMT",
+                "LPMT",
+                "ULPMT",
+                "other"
+            ]
+        },
+        "id": {
+            "type": "string",
+            "default": "",
+            "description": "Run ID should be station name followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or {station}001.",
+            "title": "id",
+            "examples": "001",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "sample_rate": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Digital sample rate for the run",
+            "title": "sample_rate",
+            "examples": "100",
+            "alias": null,
+            "units": "samples per second"
+        }
+    },
+    "required": [
+        "channels_recorded_auxiliary",
+        "channels_recorded_electric",
+        "channels_recorded_magnetic",
+        "data_type",
+        "id",
+        "sample_rate"
+    ],
+    "description": "run"
+}

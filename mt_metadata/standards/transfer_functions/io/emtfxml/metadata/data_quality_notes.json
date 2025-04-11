@@ -1,0 +1,35 @@
+{
+    "title": "data_quality_notes",
+    "type": "object",
+    "properties": {
+        "good_from_period": {
+            "type": "float",
+            "default": null,
+            "description": "Data are good for periods larger than this number",
+            "title": "good_from_period",
+            "examples": "0.01",
+            "alias": null,
+            "units": null
+        },
+        "good_to_period": {
+            "type": "float",
+            "default": null,
+            "description": "Data are good for periods smaller than this number",
+            "title": "good_to_period",
+            "examples": "1000",
+            "alias": null,
+            "units": null
+        },
+        "rating": {
+            "type": "integer",
+            "default": null,
+            "description": "Rating of the data from 0 to 5 where 5 is the best and 0 is unrated",
+            "title": "rating",
+            "examples": "4",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "data_quality_notes"
+}

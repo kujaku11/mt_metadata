@@ -1,0 +1,29 @@
+{
+    "title": "channels",
+    "type": "object",
+    "properties": {
+        "ref": {
+            "type": "string",
+            "default": "",
+            "description": "reference to the site name",
+            "title": "ref",
+            "examples": "site",
+            "alias": null,
+            "units": null
+        },
+        "units": {
+            "type": "string",
+            "default": "",
+            "description": "units of the distance coordinates",
+            "title": "units",
+            "examples": "site",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "ref",
+        "units"
+    ],
+    "description": "channels"
+}

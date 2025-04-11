@@ -1,0 +1,26 @@
+{
+    "title": "line",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": null,
+            "description": "Name of the line data collected on",
+            "title": "name",
+            "examples": "0",
+            "alias": null,
+            "units": null
+        },
+        "number": {
+            "type": "integer",
+            "default": null,
+            "description": "Line number",
+            "title": "number",
+            "examples": 0,
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "line"
+}

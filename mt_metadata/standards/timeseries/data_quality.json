@@ -1,0 +1,53 @@
+{
+    "title": "data_quality",
+    "type": "object",
+    "properties": {
+        "warnings": {
+            "type": "string",
+            "default": null,
+            "description": "any warnings about the data that should be noted",
+            "title": "warnings",
+            "examples": "periodic pipeline noise",
+            "alias": null,
+            "units": null
+        },
+        "good_from_period": {
+            "type": "float",
+            "default": null,
+            "description": "Data are good for periods larger than this number",
+            "title": "good_from_period",
+            "examples": "0.01",
+            "alias": null,
+            "units": null
+        },
+        "good_to_period": {
+            "type": "float",
+            "default": null,
+            "description": "Data are good for periods smaller than this number",
+            "title": "good_to_period",
+            "examples": "1000",
+            "alias": null,
+            "units": null
+        },
+        "flag": {
+            "type": "integer",
+            "default": null,
+            "description": "Flag for data quality",
+            "title": "flag",
+            "examples": "0",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "type": "string",
+            "default": null,
+            "description": "any comments about the data quality",
+            "title": "comments",
+            "examples": "0",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "data_quality"
+}

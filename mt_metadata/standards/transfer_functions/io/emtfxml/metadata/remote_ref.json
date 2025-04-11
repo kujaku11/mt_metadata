@@ -1,0 +1,19 @@
+{
+    "title": "remote_ref",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "default": "",
+            "description": "type of remote referencing",
+            "title": "type",
+            "examples": "robust multi-station remote referencing",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "type"
+    ],
+    "description": "remote_ref"
+}

@@ -1,0 +1,175 @@
+{
+    "title": "decimation_level",
+    "type": "object",
+    "properties": {
+        "anti_alias_filter": {
+            "type": "string",
+            "default": "default",
+            "description": "Name of anti alias filter to be applied",
+            "title": "anti_alias_filter",
+            "examples": "default",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "deafult",
+                "other"
+            ]
+        },
+        "recoloring": {
+            "type": "bool",
+            "default": null,
+            "description": "Whether the data are recolored [True] or not [False].",
+            "title": "recoloring",
+            "examples": true,
+            "alias": null,
+            "units": null
+        },
+        "min_num_stft_windows": {
+            "type": "integer",
+            "default": null,
+            "description": "How many FFT windows must be available for the time series to valid for STFT.",
+            "title": "min_num_stft_windows",
+            "examples": 4,
+            "alias": null,
+            "units": null
+        },
+        "method": {
+            "type": "string",
+            "default": "fft",
+            "description": "Fourier transform method",
+            "title": "method",
+            "examples": "fft",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "fft",
+                "wavelet",
+                "other"
+            ]
+        },
+        "prewhitening_type": {
+            "type": "string",
+            "default": "first difference",
+            "description": "Prewhitening method to be applied",
+            "title": "prewhitening_type",
+            "examples": "first difference",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "first difference",
+                "other"
+            ]
+        },
+        "extra_pre_fft_detrend_type": {
+            "type": "string",
+            "default": "linear",
+            "description": "Extra Pre FFT detrend method to be applied",
+            "title": "extra_pre_fft_detrend_type",
+            "examples": "linear",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "linear",
+                "other"
+            ]
+        },
+        "pre_fft_detrend_type": {
+            "type": "string",
+            "default": "linear",
+            "description": "Pre FFT detrend method to be applied",
+            "title": "pre_fft_detrend_type",
+            "examples": "linear",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "linear",
+                "other"
+            ]
+        },
+        "bands": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "integer"
+            },
+            "description": "List of bands",
+            "title": "bands",
+            "examples": "[]",
+            "alias": null,
+            "units": null
+        },
+        "input_channels": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of input channels (sources)",
+            "title": "input_channels",
+            "examples": "hx, hy",
+            "alias": null,
+            "units": null
+        },
+        "output_channels": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of output channels (responses)",
+            "title": "output_channels",
+            "examples": "ex, ey, hz",
+            "alias": null,
+            "units": null
+        },
+        "reference_channels": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of reference channels (remote sources)",
+            "title": "reference_channels",
+            "examples": "hx, hy",
+            "alias": null,
+            "units": null
+        },
+        "save_fcs": {
+            "type": "bool",
+            "default": null,
+            "description": "Whether the Fourier coefficients are saved [True] or not [False].",
+            "title": "save_fcs",
+            "examples": true,
+            "alias": null,
+            "units": null
+        },
+        "save_fcs_type": {
+            "type": "string",
+            "default": null,
+            "description": "Format to use for fc storage",
+            "title": "save_fcs_type",
+            "examples": "h5",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "h5",
+                "csv"
+            ]
+        }
+    },
+    "required": [
+        "anti_alias_filter",
+        "recoloring",
+        "min_num_stft_windows",
+        "method",
+        "prewhitening_type",
+        "extra_pre_fft_detrend_type",
+        "pre_fft_detrend_type",
+        "bands",
+        "input_channels",
+        "output_channels",
+        "reference_channels",
+        "save_fcs"
+    ],
+    "description": "decimation_level"
+}

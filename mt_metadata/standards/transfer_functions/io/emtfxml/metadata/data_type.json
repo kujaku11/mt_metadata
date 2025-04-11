@@ -1,0 +1,118 @@
+{
+    "title": "data_type",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the statistical estimate",
+            "title": "name",
+            "examples": "var",
+            "alias": null,
+            "units": null
+        },
+        "type": {
+            "type": "string",
+            "default": "real",
+            "description": "Type of number contained in the estimate",
+            "title": "type",
+            "examples": "real",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "real",
+                "complex"
+            ]
+        },
+        "description": {
+            "type": "string",
+            "default": "",
+            "description": "Description of the statistical estimate",
+            "title": "description",
+            "examples": "this is an estimate",
+            "alias": null,
+            "units": null
+        },
+        "external_url": {
+            "type": "string",
+            "default": "",
+            "description": "Full path to external link that has additional information",
+            "title": "external_url",
+            "examples": "http://www.iris.edu/dms/products/emtf/variance.html",
+            "alias": null,
+            "units": null
+        },
+        "intention": {
+            "type": "string",
+            "default": "",
+            "description": "The intension of the statistical estimate",
+            "title": "intention",
+            "examples": "error estimate",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "error estimate",
+                "signal coherence",
+                "signal power estimate",
+                "primary data type",
+                "derived data type"
+            ]
+        },
+        "tag": {
+            "type": "string",
+            "default": "",
+            "description": "A useful tag for the estimate",
+            "title": "tag",
+            "examples": "tipper",
+            "alias": null,
+            "units": null
+        },
+        "output": {
+            "type": "string",
+            "default": "",
+            "description": "Type of output channels in data type",
+            "title": "output",
+            "examples": "E",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "E",
+                "H"
+            ]
+        },
+        "input": {
+            "type": "string",
+            "default": "",
+            "description": "Type of input channels in data type",
+            "title": "input",
+            "examples": "E",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "E",
+                "H"
+            ]
+        },
+        "units": {
+            "type": "string",
+            "default": "",
+            "description": "Units for the data type",
+            "title": "units",
+            "examples": "[mV/km]/[nT]",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "type",
+        "description",
+        "external_url",
+        "intention",
+        "tag",
+        "output",
+        "input",
+        "units"
+    ],
+    "description": "data_type"
+}

@@ -1,0 +1,29 @@
+{
+    "title": "provenance",
+    "type": "object",
+    "properties": {
+        "create_time": {
+            "type": "string",
+            "default": "1980-01-01T00:00:00+00:00",
+            "description": "date and time the file was created",
+            "title": "create_time",
+            "examples": "2020-02-08T12:23:40.324600+00:00",
+            "alias": null,
+            "units": null
+        },
+        "creating_application": {
+            "type": "string",
+            "default": "mt_metadata",
+            "description": "name of the application that created the XML file",
+            "title": "creating_application",
+            "examples": "EMTF File Conversion Utilities 4.0",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "create_time",
+        "creating_application"
+    ],
+    "description": "provenance"
+}

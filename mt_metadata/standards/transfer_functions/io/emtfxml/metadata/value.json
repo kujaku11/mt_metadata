@@ -1,0 +1,49 @@
+{
+    "title": "value",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "name of value estimate",
+            "title": "name",
+            "examples": "tx",
+            "alias": null,
+            "units": null
+        },
+        "output": {
+            "type": "string",
+            "default": "",
+            "description": "output field component",
+            "title": "output",
+            "examples": "ex",
+            "alias": null,
+            "units": null
+        },
+        "input": {
+            "type": "string",
+            "default": "",
+            "description": "input field component",
+            "title": "input",
+            "examples": "hy",
+            "alias": null,
+            "units": null
+        },
+        "value": {
+            "type": "string",
+            "default": "",
+            "description": "value of the estimate",
+            "title": "value",
+            "examples": "10.1 + 11j",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "output",
+        "input",
+        "value"
+    ],
+    "description": "value"
+}

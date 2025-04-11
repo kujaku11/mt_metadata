@@ -1,0 +1,79 @@
+{
+    "title": "electric",
+    "type": "object",
+    "properties": {
+        "dipole_length": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Length of the dipole as measured in a straight line from electrode to electrode.",
+            "title": "dipole_length",
+            "examples": "55.25",
+            "alias": null,
+            "units": "meters"
+        },
+        "contact_resistance.start": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "float"
+            },
+            "description": "Starting contact resistance; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "contact_resistance.start",
+            "examples": "\"[1.2, 1.4]\"",
+            "alias": null,
+            "units": "ohms"
+        },
+        "contact_resistance.end": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "float"
+            },
+            "description": "Ending contact resistance; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "contact_resistance.end",
+            "examples": "\"[1.5, 1.8]\"",
+            "alias": null,
+            "units": "ohms"
+        },
+        "ac.start": {
+            "type": "float",
+            "default": null,
+            "description": "Starting AC value; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "ac.start",
+            "examples": "\"[52.1, 55.8]\"",
+            "alias": null,
+            "units": "volts"
+        },
+        "ac.end": {
+            "type": "float",
+            "default": null,
+            "description": "Ending AC value; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "ac.end",
+            "examples": "\"[45.3, 49.5]\"",
+            "alias": null,
+            "units": "volts"
+        },
+        "dc.start": {
+            "type": "float",
+            "default": null,
+            "description": "Starting DC value; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "dc.start",
+            "examples": "1.1",
+            "alias": null,
+            "units": "volts"
+        },
+        "dc.end": {
+            "type": "float",
+            "default": null,
+            "description": "Ending DC value; if more than one measurement input as a list of number [1 2 3 ...].",
+            "title": "dc.end",
+            "examples": "1.5",
+            "alias": null,
+            "units": "volts"
+        }
+    },
+    "required": [
+        "dipole_length"
+    ],
+    "description": "electric"
+}

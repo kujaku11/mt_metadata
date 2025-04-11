@@ -1,0 +1,64 @@
+{
+    "title": "emtf",
+    "type": "object",
+    "properties": {
+        "description": {
+            "type": "string",
+            "default": "",
+            "description": "description of what is in the file; default is magnetotelluric transfer functions",
+            "title": "description",
+            "examples": "Magnetotelluric Transfer Functions",
+            "alias": null,
+            "units": null
+        },
+        "product_id": {
+            "type": "string",
+            "default": "",
+            "description": "ID given as the archive ID of the station",
+            "title": "product_id",
+            "examples": "USMTArray.NVS11.2020",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "tags": {
+            "type": "string",
+            "default": "",
+            "description": "tags that help describe the data",
+            "title": "tags",
+            "examples": "impedance, induction vectors",
+            "alias": null,
+            "units": null
+        },
+        "sub_type": {
+            "type": "string",
+            "default": "MT_TF",
+            "description": "subject data type",
+            "title": "sub_type",
+            "examples": "MT_TF",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "MT_TF",
+                "LPMT_TF",
+                "other"
+            ]
+        },
+        "notes": {
+            "type": "string",
+            "default": null,
+            "description": "any notes applicable to the user on data present in the file",
+            "title": "notes",
+            "examples": "these are notes",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "description",
+        "product_id",
+        "tags",
+        "sub_type"
+    ],
+    "description": "emtf"
+}

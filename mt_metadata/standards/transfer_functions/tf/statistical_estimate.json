@@ -1,0 +1,84 @@
+{
+    "title": "statistical_estimate",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the statistical estimate",
+            "title": "name",
+            "examples": "transfer function",
+            "alias": null,
+            "units": null
+        },
+        "data_type": {
+            "type": "string",
+            "default": "complex",
+            "description": "Type of number contained in the estimate",
+            "title": "data_type",
+            "examples": "real",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "real",
+                "complex",
+                "other"
+            ]
+        },
+        "description": {
+            "type": "string",
+            "default": "",
+            "description": "Description of the statistical estimate",
+            "title": "description",
+            "examples": "this is an estimate",
+            "alias": null,
+            "units": null
+        },
+        "input_channels": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of input channels (sources)",
+            "title": "input_channels",
+            "examples": "[hx, hy]",
+            "alias": null,
+            "units": null
+        },
+        "output_channels": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "List of output channels (response).",
+            "title": "output_channels",
+            "examples": [
+                "ex",
+                "ey",
+                "hz"
+            ],
+            "alias": null,
+            "units": null
+        },
+        "units": {
+            "type": "string",
+            "default": "",
+            "description": "Units of the estimate.",
+            "title": "units",
+            "examples": "millivolts per kilometer per nanotesla",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "data_type",
+        "description",
+        "input_channels",
+        "output_channels",
+        "units"
+    ],
+    "description": "statistical_estimate"
+}

@@ -1,0 +1,37 @@
+{
+    "title": "provenance",
+    "type": "object",
+    "properties": {
+        "creation_time": {
+            "type": "string",
+            "default": "1980-01-01T00:00:00+00:00",
+            "description": "Date and time the file was created.",
+            "title": "creation_time",
+            "examples": "2020-02-08T12:23:40.324600+00:00",
+            "alias": null,
+            "units": null
+        },
+        "comments": {
+            "type": "string",
+            "default": null,
+            "description": "Any comments on provenance of the data.",
+            "title": "comments",
+            "examples": "all good",
+            "alias": null,
+            "units": null
+        },
+        "log": {
+            "type": "string",
+            "default": null,
+            "description": "A history of changes made to the data.",
+            "title": "log",
+            "examples": "2020-02-10T14:24:45+00:00 updated metadata",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "creation_time"
+    ],
+    "description": "provenance"
+}

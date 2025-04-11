@@ -1,0 +1,37 @@
+{
+    "title": "comment",
+    "type": "object",
+    "properties": {
+        "author": {
+            "type": "string",
+            "default": null,
+            "description": "Author who made the comment",
+            "title": "author",
+            "examples": "M. Tee",
+            "alias": [
+                "nome"
+            ],
+            "units": null
+        },
+        "date": {
+            "type": "string",
+            "default": null,
+            "description": "Date the comment was made",
+            "title": "date",
+            "examples": "2020-01-21",
+            "alias": null,
+            "units": null
+        },
+        "value": {
+            "type": "string",
+            "default": null,
+            "description": "Comment string",
+            "title": "value",
+            "examples": "This is a comment",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "comment"
+}

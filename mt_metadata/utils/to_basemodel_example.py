@@ -1,8 +1,22 @@
+"""
+Convert a JSON schema to a Pydantic model using the `pydantic` library.
+This script reads a JSON schema file, generates a Pydantic model with type annotations,
+and saves it to a Python file.
+
+It also formats the generated code using `black`.
+
+"""
+
+# =====================================================
+# Imports
+# =====================================================
+from pathlib import Path
 import json
 import subprocess
 from pydantic import BaseModel, Field
 from typing import Annotated, Optional, List, Dict, Any, Union
 
+# =====================================================
 # Map JSON Schema types to Python types
 TYPE_MAPPING = {
     "string": "str",
@@ -15,7 +29,21 @@ TYPE_MAPPING = {
 TAB = " " * 4
 
 
-def generate_pydantic_model_with_types(json_schema_path: str, output_path: str):
+def generate_pydantic_model_with_types(json_schema_path: str) -> Path:
+    """
+    Generate a Pydantic model from a JSON schema file and save it to a Python file.
+    The generated model will use `Annotated` and `Field` for type annotations.
+
+    Parameters
+    ----------
+    json_schema_path : str
+        path to the JSON schema file
+
+    Returns
+    -------
+    Path
+        _description_
+    """
     with open(json_schema_path, "r") as f:
         schema = json.load(f)
 

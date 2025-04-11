@@ -1,0 +1,35 @@
+{
+    "title": "software",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": null,
+            "description": "Name of the software used for processing",
+            "title": "name",
+            "examples": "EMTF",
+            "alias": null,
+            "units": null
+        },
+        "last_mod": {
+            "type": "string",
+            "default": null,
+            "description": "Date the software was last modified",
+            "title": "last_mod",
+            "examples": "2020-01-01",
+            "alias": null,
+            "units": null
+        },
+        "author": {
+            "type": "string",
+            "default": null,
+            "description": "Author of the software used for processing",
+            "title": "author",
+            "examples": "MT Guru",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "software"
+}

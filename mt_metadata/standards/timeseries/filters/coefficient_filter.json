@@ -1,0 +1,19 @@
+{
+    "title": "coefficient_filter",
+    "type": "object",
+    "properties": {
+        "gain": {
+            "type": "float",
+            "default": 1.0,
+            "description": "Scale factor for a simple coefficient filter.",
+            "title": "gain",
+            "examples": "100",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "gain"
+    ],
+    "description": "coefficient_filter"
+}

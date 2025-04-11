@@ -1,0 +1,19 @@
+{
+    "title": "time_delay_filter",
+    "type": "object",
+    "properties": {
+        "delay": {
+            "type": "float",
+            "default": 0.0,
+            "description": "The delay interval of the filter. This should be a single number.",
+            "title": "delay",
+            "examples": "-0.201",
+            "alias": null,
+            "units": "second"
+        }
+    },
+    "required": [
+        "delay"
+    ],
+    "description": "time_delay_filter"
+}

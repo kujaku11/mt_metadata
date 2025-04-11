@@ -1,0 +1,23 @@
+{
+    "title": "tx",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "default": "natural",
+            "description": "Type of EM source",
+            "title": "type",
+            "examples": "natural",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "natural",
+                "controlled source"
+            ]
+        }
+    },
+    "required": [
+        "type"
+    ],
+    "description": "tx"
+}

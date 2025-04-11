@@ -1,0 +1,89 @@
+{
+    "title": "electric",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "Name of the channel",
+            "title": "name",
+            "examples": "hx",
+            "alias": null,
+            "units": null
+        },
+        "orientation": {
+            "type": "float",
+            "default": 0.0,
+            "description": "orientation angle relative to geographic north",
+            "title": "orientation",
+            "examples": "11.9",
+            "alias": null,
+            "units": "degrees"
+        },
+        "x": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of negative sensor relative center point in north direction",
+            "title": "x",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "x2": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of positive sensor relative center point in north direction",
+            "title": "x2",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "y": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of negative sensor relative center point in east direction",
+            "title": "y",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "y2": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of positive sensor relative center point in east direction",
+            "title": "y2",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "z": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of negative sensor relative center point in depth",
+            "title": "z",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        },
+        "z2": {
+            "type": "float",
+            "default": 0.0,
+            "description": "location of positive sensor relative center point in depth",
+            "title": "z2",
+            "examples": "100.0",
+            "alias": null,
+            "units": "meters"
+        }
+    },
+    "required": [
+        "name",
+        "orientation",
+        "x",
+        "x2",
+        "y",
+        "y2",
+        "z",
+        "z2"
+    ],
+    "description": "electric"
+}

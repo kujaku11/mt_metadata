@@ -1,0 +1,22 @@
+{
+    "title": "statistical_estimates",
+    "type": "object",
+    "properties": {
+        "estimates_list": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of statistical estimates",
+            "title": "estimates_list",
+            "examples": "[var cov]",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "estimates_list"
+    ],
+    "description": "statistical_estimates"
+}

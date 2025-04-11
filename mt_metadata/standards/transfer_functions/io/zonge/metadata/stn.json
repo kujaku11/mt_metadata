@@ -1,0 +1,19 @@
+{
+    "title": "stn",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "",
+            "description": "name of the station",
+            "title": "name",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name"
+    ],
+    "description": "stn"
+}

@@ -1,0 +1,19 @@
+{
+    "title": "channel_response",
+    "type": "object",
+    "properties": {
+        "normalization_frequency": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Pass band frequency",
+            "title": "normalization_frequency",
+            "examples": "100",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "normalization_frequency"
+    ],
+    "description": "channel_response"
+}

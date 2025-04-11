@@ -1,0 +1,33 @@
+{
+    "title": "orientation",
+    "type": "object",
+    "properties": {
+        "angle_to_geographic_north": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Angle to geographic north of the station orientation",
+            "title": "angle_to_geographic_north",
+            "examples": 0,
+            "alias": null,
+            "units": "degrees"
+        },
+        "layout": {
+            "type": "string",
+            "default": "orthogonal",
+            "description": "Orientation of channels relative to each other",
+            "title": "layout",
+            "examples": "orthogonal",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "orthogonal",
+                "sitelayout"
+            ]
+        }
+    },
+    "required": [
+        "angle_to_geographic_north",
+        "layout"
+    ],
+    "description": "orientation"
+}

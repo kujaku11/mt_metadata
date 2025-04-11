@@ -1,0 +1,53 @@
+{
+    "title": "decimation",
+    "type": "object",
+    "properties": {
+        "level": {
+            "type": "integer",
+            "default": null,
+            "description": "Decimation level in sequential order",
+            "title": "level",
+            "examples": "0",
+            "alias": null,
+            "units": null
+        },
+        "factor": {
+            "type": "float",
+            "default": 1.0,
+            "description": "Decimation factor",
+            "title": "factor",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        },
+        "method": {
+            "type": "string",
+            "default": "default",
+            "description": "Type of decimation",
+            "title": "method",
+            "examples": "default",
+            "alias": null,
+            "units": "",
+            "enum": [
+                "default",
+                "other"
+            ]
+        },
+        "sample_rate": {
+            "type": "float",
+            "default": 1.0,
+            "description": "Sample rate of the data after decimation.",
+            "title": "sample_rate",
+            "examples": "256",
+            "alias": null,
+            "units": "samples per second"
+        }
+    },
+    "required": [
+        "level",
+        "factor",
+        "method",
+        "sample_rate"
+    ],
+    "description": "decimation"
+}

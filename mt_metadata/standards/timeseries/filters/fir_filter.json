@@ -1,0 +1,65 @@
+{
+    "title": "fir_filter",
+    "type": "object",
+    "properties": {
+        "coefficients": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "float"
+            },
+            "description": "The FIR coefficients associated with the filter stage response.",
+            "title": "coefficients",
+            "examples": "\"[0.25, 0.5, 0.25]\"",
+            "alias": null,
+            "units": null
+        },
+        "decimation_factor": {
+            "type": "integer",
+            "default": null,
+            "description": "Downsample factor.",
+            "title": "decimation_factor",
+            "examples": "16",
+            "alias": null,
+            "units": null
+        },
+        "decimation_input_sample_rate": {
+            "type": "float",
+            "default": null,
+            "description": "Sample rate of FIR taps.",
+            "title": "decimation_input_sample_rate",
+            "examples": "2000.0",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "gain_frequency": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Frequency of the reference gain, usually in passband.",
+            "title": "gain_frequency",
+            "examples": "0.0",
+            "alias": null,
+            "units": "hertz"
+        },
+        "symmetry": {
+            "type": "string",
+            "default": "NONE",
+            "description": "Symmetry of FIR coefficients",
+            "title": "symmetry",
+            "examples": "NONE",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "NONE",
+                "ODD",
+                "EVEN"
+            ]
+        }
+    },
+    "required": [
+        "coefficients",
+        "gain_frequency",
+        "symmetry"
+    ],
+    "description": "fir_filter"
+}
