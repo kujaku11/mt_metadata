@@ -14,7 +14,7 @@ import datetime
 import pandas as pd
 import numpy as np
 
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.utils.mttime import MTime, parse, _check_timestamp
 from obspy import UTCDateTime
 
 
@@ -51,14 +51,14 @@ class TestMTime(unittest.TestCase):
         self.input_fail = "01294055"
 
     def test_string_input_date_01(self):
-        t = MTime(self.date_str_01)
+        t = MTime(time_stamp=self.date_str_01)
 
         for key in self.keys[0:3]:
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
     def test_string_input_date_02(self):
-        t = MTime(self.date_str_02)
+        t = MTime(time_stamp=self.date_str_02)
         with self.subTest("year"):
             self.assertEqual(self.year, t.year)
         with self.subTest("month"):
@@ -67,44 +67,42 @@ class TestMTime(unittest.TestCase):
             self.assertNotEqual(self.day, t.day)
 
     def test_string_input_date_03(self):
-        t = MTime(self.date_str_03)
+        t = MTime(time_stamp=self.date_str_03)
 
         for key in self.keys[0:3]:
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
     def test_input_epoch_seconds(self):
-        t = MTime(self.epoch_seconds)
+        t = MTime(time_stamp=self.epoch_seconds)
 
         self.assertEqual(t, self.dt_true)
 
     def test_input_epoch_nanoseconds(self):
-        t = MTime(self.epoch_seconds * 1e9)
+        t = MTime(time_stamp=self.epoch_seconds * 1e9)
 
         self.assertEqual(t, self.dt_true)
 
     def test_input_seconds_fail(self):
         t = MTime(gps_time=True)
 
-        self.assertRaises(ValueError, t.parse, 10)
+        self.assertRaises(ValueError, parse, 10)
 
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
 
-        t = MTime(stamp)
+        t = MTime(time_stamp=stamp)
         for key in self.keys:
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_string_input_dt(self):
         t = MTime()
-        t.parse(self.dt_str_01)
+        parse(self.dt_str_01)
 
         for key in self.keys:
             with self.subTest(key):
@@ -113,13 +111,11 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_np_datetime64_str(self):
         ntime = np.datetime64(self.dt_str_01)
-        t = MTime(ntime)
+        t = MTime(time_stamp=ntime)
 
         for key in self.keys:
             with self.subTest(key):
@@ -128,13 +124,11 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_np_datetime64_ns(self):
         ntime = np.datetime64(int(self.epoch_seconds * 1e9), "ns")
-        t = MTime(ntime)
+        t = MTime(time_stamp=ntime)
 
         for key in self.keys:
             with self.subTest(key):
@@ -143,13 +137,11 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_np_datetime64_us(self):
         ntime = np.datetime64(int(self.epoch_seconds * 1e6), "us")
-        t = MTime(ntime)
+        t = MTime(time_stamp=ntime)
 
         for key in self.keys:
             with self.subTest(key):
@@ -158,13 +150,11 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_np_datetime64_ms(self):
         ntime = np.datetime64(int(self.epoch_seconds * 1e3), "ms")
-        t = MTime(ntime)
+        t = MTime(time_stamp=ntime)
 
         for key in self.keys:
             with self.subTest(key):
@@ -173,12 +163,10 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_obspy_utcdatetime(self):
-        t = MTime(UTCDateTime(self.dt_true))
+        t = MTime(time_stamp=UTCDateTime(self.dt_true))
 
         for key in self.keys:
             with self.subTest(key):
@@ -187,17 +175,15 @@ class TestMTime(unittest.TestCase):
         with self.subTest("isostring"):
             self.assertEqual(self.dt_true, t.iso_str)
         with self.subTest("epoch seconds"):
-            self.assertAlmostEqual(
-                self.epoch_seconds, t.epoch_seconds, places=4
-            )
+            self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_input_fail(self):
         t = MTime()
-        self.assertRaises(ValueError, t.parse, self.input_fail)
+        self.assertRaises(ValueError, parse, self.input_fail)
 
     def test_input_none(self):
         for t_value in [None, "", "None", "NONE", "none"]:
-            t = MTime(t_value)
+            t = MTime(time_stamp=t_value)
             self.assertEqual(t, "1980-01-01T00:00:00+00:00")
 
     def test_compare_dt(self):
@@ -230,14 +216,14 @@ class TestMTime(unittest.TestCase):
         self.assertIsInstance(dt_obj.tzinfo, tz.tzutc)
 
     def test_hash(self):
-        t1 = MTime(self.dt_true)
-        t2 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
+        t2 = MTime(time_stamp=self.dt_true)
 
         t_set = list(set([t1, t2]))
         self.assertListEqual(t_set, [t1.isoformat()])
 
     def test_add_time(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         t2 = t1 + 30
 
         with self.subTest("result"):
@@ -247,7 +233,7 @@ class TestMTime(unittest.TestCase):
             self.assertIsInstance(t2, MTime)
 
     def test_add_time_datetime_timedelta(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         t2 = t1 + datetime.timedelta(seconds=30)
 
         with self.subTest("result"):
@@ -257,7 +243,7 @@ class TestMTime(unittest.TestCase):
             self.assertIsInstance(t2, MTime)
 
     def test_add_time_np_timedelta(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         t2 = t1 + np.timedelta64(30, "s")
 
         with self.subTest("result"):
@@ -267,51 +253,51 @@ class TestMTime(unittest.TestCase):
             self.assertIsInstance(t2, MTime)
 
     def test_add_time_fail(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         self.assertRaises(ValueError, t1.__add__, self.dt_true)
 
     def test_subtract_time(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         t2 = t1 + 30
 
         self.assertEqual(30, t2 - t1)
 
     def test_subtract_timedelta(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         t2 = pd.Timedelta(seconds=30)
 
-        self.assertEqual(MTime("2020-01-20T12:14:50.123000+00:00"), t1 - t2)
+        self.assertEqual(MTime(time_stamp="2020-01-20T12:14:50.123000+00:00"), t1 - t2)
 
     def test_too_large(self):
-        t1 = MTime("3000-01-01T00:00:00")
+        t1 = MTime(time_stamp="3000-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.max)
 
     def test_too_small(self):
-        t1 = MTime("1400-01-01T00:00:00")
+        t1 = MTime(time_stamp="1400-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.min)
 
     def test_utc_too_large(self):
-        t1 = MTime(UTCDateTime("3000-01-01"))
+        t1 = MTime(time_stamp=UTCDateTime("3000-01-01"))
         self.assertEqual(t1, pd.Timestamp.max)
 
     def test_utc_too_small(self):
-        t1 = MTime(UTCDateTime("1400-01-01"))
+        t1 = MTime(time_stamp=UTCDateTime("1400-01-01"))
         self.assertEqual(t1, pd.Timestamp.min)
 
     def test_gps_time(self):
-        t1 = MTime(self.dt_true, gps_time=True)
-        gps_time = MTime(self.dt_true) - 13
+        t1 = MTime(time_stamp=self.dt_true, gps_time=True)
+        gps_time = MTime(time_stamp=self.dt_true) - 13
         self.assertTrue(gps_time, t1)
 
     def test_localize_utc(self):
-        t1 = MTime(self.dt_true)
+        t1 = MTime(time_stamp=self.dt_true)
         stamp = t1._localize_utc(t1._time_stamp)
         self.assertTrue(stamp.tz is not None)
 
     def test_check_timestamp_too_large(self):
         t1 = pd.Timestamp("3000-01-01T00:00:00")
         t_obj = MTime()
-        too_large, t2 = t_obj._check_timestamp(t1)
+        too_large, t2 = _check_timestamp(t1)
 
         with self.subTest("time"):
             self.assertEqual(t2, t_obj._tmax)
@@ -321,7 +307,7 @@ class TestMTime(unittest.TestCase):
     def test_check_timestamp_too_small(self):
         t1 = pd.Timestamp("1400-01-01T00:00:00")
         t_obj = MTime()
-        too_small, t2 = t_obj._check_timestamp(t1)
+        too_small, t2 = _check_timestamp(t1)
         with self.subTest("time"):
             self.assertEqual(t2, t_obj._tmin)
         with self.subTest("too small"):
@@ -346,8 +332,8 @@ class TestMTime(unittest.TestCase):
             self.assertEqual(True, too_small)
 
     def test_bad_24hour(self):
-        t = MTime("2020-01-01T24:00:00")
-        self.assertEqual(t, MTime("2020-01-02T00:00:00"))
+        t = MTime(time_stamp="2020-01-01T24:00:00")
+        self.assertEqual(t, MTime(time_stamp="2020-01-02T00:00:00"))
 
 
 # =============================================================================

@@ -359,7 +359,7 @@ class MTime(BaseModel):
      set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'
 
 
-    >>> t = MTime("3000-01-01")
+    >>> t = MTime(time_stamp="3000-01-01")
     [line 295] mt_metadata.utils.mttime.MTime.parse -
     INFO: 3000-01-01 is too large setting to 2262-04-11 23:47:16.854775807
 
@@ -471,7 +471,7 @@ class MTime(BaseModel):
             if equal return True, otherwise False
         """
         if not isinstance(other, MTime):
-            other = MTime(other)
+            other = MTime(time_stamp=other)
 
         epoch_seconds = bool(self.time_stamp.value == other.time_stamp.value)
 
@@ -523,7 +523,7 @@ class MTime(BaseModel):
             _True if other is less than the current time stamp, otherwise False
         """
         if not isinstance(other, MTime):
-            other = MTime(other)
+            other = MTime(time_stamp=other)
 
         return bool(self.time_stamp < other.time_stamp)
 
@@ -545,7 +545,7 @@ class MTime(BaseModel):
             otherwise False
         """
         if not isinstance(other, MTime):
-            other = MTime(other)
+            other = MTime(time_stamp=other)
 
         return bool(self.time_stamp <= other.time_stamp)
 
@@ -585,7 +585,7 @@ class MTime(BaseModel):
             otherwise False
         """
         if not isinstance(other, MTime):
-            other = MTime(other)
+            other = MTime(time_stamp=other)
 
         return bool(self.time_stamp >= other.time_stamp)
 
@@ -615,7 +615,7 @@ class MTime(BaseModel):
             logger.error(msg)
             raise ValueError(msg)
 
-        return MTime(self.time_stamp + other)
+        return MTime(time_stamp=self.time_stamp + other)
 
     def __sub__(
         self, other: int | float | datetime.timedelta | np.timedelta64
@@ -639,7 +639,7 @@ class MTime(BaseModel):
 
         else:
             try:
-                other = MTime(other)
+                other = MTime(time_stamp=other)
             except ValueError as error:
                 raise TypeError(error)
 
@@ -649,12 +649,12 @@ class MTime(BaseModel):
             raise ValueError(msg)
 
         if isinstance(other, MTime):
-            other = MTime(other)
+            other = MTime(time_stamp=other)
 
             return (self.time_stamp - other.time_stamp).total_seconds()
 
         elif isinstance(other, pd.Timedelta):
-            return MTime(self.time_stamp - other)
+            return MTime(time_stamp=self.time_stamp - other)
 
     def __hash__(self) -> int:
         return hash(self.isoformat())
