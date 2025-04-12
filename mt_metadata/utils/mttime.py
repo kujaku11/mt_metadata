@@ -24,6 +24,7 @@ from pydantic import (
     ValidationError,
     ValidationInfo,
     field_validator,
+    model_validator,
 )
 
 
@@ -104,6 +105,204 @@ def calculate_leap_seconds(year: int, month: int, day: int) -> int:
     return None
 
 
+# =============================================================================
+#  Functions for parsing time stamps
+# =============================================================================
+def _localize_utc(stamp: pd.Timestamp) -> pd.Timestamp:
+    """
+    Localize a time stamp to UTC.  This forces a timestamp
+    to have a timezone of UTC.
+
+    Parameters
+    ----------
+    stamp : pd.Timestamp
+        input timestamp
+
+    Returns
+    -------
+    pd.Timestamp
+        UTC time stamp
+    """
+
+    # check time zone and enforce UTC
+    if stamp.tz is None:
+        stamp = stamp.tz_localize("UTC").tz_convert("UTC")
+
+    return stamp
+
+
+# minimum and maximum time stamps for pandas
+# these are the minimum and maximum time stamps for pandas
+TMIN = _localize_utc(pd.Timestamp.min)
+TMAX = _localize_utc(pd.Timestamp.max)
+
+
+def _parse_string(dt_str: str) -> datetime.datetime:
+    """
+    arse string, check for order of day and month
+
+    Parameters
+    ----------
+    dt_str : str
+        date time string
+
+    Returns
+    -------
+    datetime.datetime
+        date time object
+
+    Raises
+    ------
+    ValueError
+        If unable to parse the string using datetime.dtparser
+    """
+
+    try:
+        return dtparser(dt_str)
+    except ValueError as ve:
+        error_24h = "hour must be in 0..23"
+        if error_24h in ve.args[0]:
+            # hh=24 was supplied -- this is legal if it is midnight
+            one_hour_earlier_dt_str = dt_str.replace("T24", "T23")
+            one_hour_earlier_result = dtparser(one_hour_earlier_dt_str)
+            result = one_hour_earlier_result + datetime.timedelta(hours=1)
+            return result
+        else:
+            try:
+                return dtparser(dt_str, dayfirst=True)
+            except ValueError:
+                msg = (
+                    "Could not parse string %s check formatting, "
+                    "should be YYYY-MM-DDThh:mm:ss.ns"
+                )
+                logger.error(msg, dt_str)
+                raise ValueError(msg % dt_str)
+
+
+def _fix_out_of_bounds_time_stamp(dt):
+    """
+
+    :param dt_str: DESCRIPTION
+    :type dt_str: TYPE
+    :raises ValueError: DESCRIPTION
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+    t_min_max = False
+
+    if dt.year > 2200:
+        logger.info(f"{dt} is too large setting to {TMAX}")
+        stamp = TMAX
+        t_min_max = True
+    elif dt.year < 1900:
+        logger.info(f"{dt} is too small setting to {TMIN}")
+        stamp = TMIN
+        t_min_max = True
+    else:
+        stamp = pd.Timestamp(dt)
+
+    return stamp, t_min_max
+
+
+def _check_timestamp(pd_timestamp):
+    """
+    check if time stamp is before or after earlies or latest time allowed
+
+    :param pd_timestamp: DESCRIPTION
+    :type pd_timestamp: TYPE
+    :return: DESCRIPTION
+    :rtype: TYPE
+
+    """
+
+    t_min_max = False
+    pd_timestamp = _localize_utc(pd_timestamp)
+
+    if pd_timestamp <= TMIN:
+        t_min_max = True
+        pd_timestamp = TMIN
+    elif pd_timestamp >= TMAX:
+        t_min_max = True
+        pd_timestamp = TMAX
+
+    return t_min_max, pd_timestamp
+
+
+def parse(
+    dt_str: Optional[
+        Union[float, int, np.datetime64, pd.Timestamp, str, UTCDateTime]
+    ] = None,
+    gps_time: bool = False,
+) -> pd.Timestamp:
+    """
+    Parse a date-time string using dateutil.parser
+
+    Need to use dateutil.parser.isoparser to get correct tzinfo=tzutc
+    If the input is a weird date string then try to use parse.
+
+    :param dt_str: date-time string
+    :type: string
+
+
+    """
+    t_min_max = False
+    if dt_str in [None, "", "none", "None", "NONE", "Na", {}]:
+        logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
+        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+
+    elif isinstance(dt_str, pd.Timestamp):
+        t_min_max, stamp = _check_timestamp(dt_str)
+
+    elif hasattr(dt_str, "isoformat"):
+        try:
+            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str.isoformat()))
+        except OutOfBoundsDatetime:
+            stamp, t_min_max = _fix_out_of_bounds_time_stamp(
+                _parse_string(dt_str.isoformat())
+            )
+
+    elif isinstance(dt_str, (float, int)):
+        # using 3E8 which is about the start of GPS time
+        ratio = dt_str / 3e8
+        if ratio < 1 and gps_time:
+            raise ValueError(
+                "Input is before GPS start time '1980/01/06', check value."
+            )
+        if dt_str / 3e8 < 1e3:
+            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str, unit="s"))
+            logger.debug("Assuming time input is in units of seconds")
+        else:
+            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str, unit="ns"))
+            logger.debug("Assuming time input is in units of nanoseconds")
+
+    else:
+        try:
+            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str))
+        except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
+            dt = _parse_string(dt_str)
+            stamp, t_min_max = _fix_out_of_bounds_time_stamp(dt)
+
+    if isinstance(stamp, (type(pd.NaT), type(None))):
+        logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
+        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+
+    # check time zone and enforce UTC
+    stamp = _localize_utc(stamp)
+
+    # there can be a machine round off error, if it is close to 1 round to
+    # microseconds
+    if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
+        stamp = stamp.round(freq="us")
+
+    if gps_time:
+        leap_seconds = calculate_leap_seconds(stamp.year, stamp.month, stamp.day)
+        logger.debug("Converting GPS time to UTC with %s leap seconds", leap_seconds)
+        stamp -= pd.Timedelta(seconds=leap_seconds)
+
+    return stamp
+
+
 # ==============================================================================
 # convenience date-time container
 # ==============================================================================
@@ -168,36 +367,52 @@ class MTime(BaseModel):
     time_stamp: Annotated[
         float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime,
         Field(
-            default_factory=pd.Timestamp("1980-01-01T00:00:00+00:00"),
+            default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
             description="Time in UTC format",
             examples=["1980-01-01T00:00:00+00:00"],
         ),
     ]
 
-    _tmin: PrivateAttr = pd.Timestamp.min.tz_localize("UTC").tz_convert("UTC")
-    _tmax: PrivateAttr = pd.Timestamp.max.tz_localize("UTC").tz_convert("UTC")
+    @field_validator("time_stamp", mode="before")
+    @classmethod
+    def validate_time_stamp(
+        cls,
+        field_value: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime,
+        validation_info: ValidationInfo,
+    ) -> pd.Timestamp:
+        """
+        Validate the input time stamp and convert it to a pandas timestamp.
+        This function is called before the model is created and is used to
+        validate the input data.
 
-    @field_validator("time_stamp", pre=True)
-    def parse_datetime(
-        cls, time_stamp: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
-    ) -> datetime:
+        The function will check if the input data is a string, float, int,
+        np.datetime64, pd.Timestamp, or UTCDateTime and convert to a
+        pd.Timestamp object.
+
+        If `gps_time` is True, the function will convert the time to UTC time
+        by subtracting the leap seconds from the GPS time.
+
+        If the input data is greater than pandas.Timestamp.max then the
+        value is set to :class:`pandas.Timestamp.max` = '2262-04-11 23:47:16.854775807'.
+
+        Similarly, If the input data is less than pandas.Timestamp.min then the value is
+        set to :class:`pandas.Timestamp.min` = '1677-09-21 00:12:43.145224193'.
+
+        Parameters
+        ----------
+        field_value : float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+            input time stamp
+        validation_info : ValidationInfo
+            Validation information object that contains the data and other
+            information about the model.
+
+        Returns
+        -------
+        pd.Timestamp
+            converted time stamp
+        """
         # Check if the time_stamp is a string and parse it
-        return cls.parse(time_stamp)
-
-    def __init__(self, time=None, gps_time=False):
-        self.logger = logger
-        self._tmin = pd.Timestamp.min.tz_localize("UTC").tz_convert("UTC")
-        self._tmax = pd.Timestamp.max.tz_localize("UTC").tz_convert("UTC")
-        self.gps_time = gps_time
-
-        self.parse(time)
-
-        if self.gps_time:
-            leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
-            self.logger.debug(
-                "Converting GPS time to UTC with %s leap seconds", leap_seconds
-            )
-            self._time_stamp -= pd.Timedelta(seconds=leap_seconds)
+        return parse(field_value, gps_time=validation_info.data["gps_time"])
 
     def __str__(self):
         return self.isoformat()
@@ -209,17 +424,16 @@ class MTime(BaseModel):
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        epoch_seconds = bool(self._time_stamp.value == other._time_stamp.value)
+        epoch_seconds = bool(self.time_stamp.value == other.time_stamp.value)
 
-        tz = bool(self._time_stamp.tz == other._time_stamp.tz)
+        tz = bool(self.time_stamp.tz == other.time_stamp.tz)
 
         if epoch_seconds and tz:
             return True
         elif epoch_seconds and not tz:
-            self.logger.info(
-                "Time zones are not equal %s != %s",
-                self._time_stamp.tz,
-                other._time_stamp.tz,
+            logger.info(
+                f"Time zones are not equal {self.time_stamp.tz} != "
+                "{other.time_stamp.tz}"
             )
             return False
         elif not epoch_seconds:
@@ -232,13 +446,13 @@ class MTime(BaseModel):
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        return bool(self._time_stamp < other._time_stamp)
+        return bool(self.time_stamp < other.time_stamp)
 
     def __le__(self, other):
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        return bool(self._time_stamp <= other._time_stamp)
+        return bool(self.time_stamp <= other.time_stamp)
 
     def __gt__(self, other):
         return not self.__lt__(other)
@@ -247,7 +461,7 @@ class MTime(BaseModel):
         if not isinstance(other, MTime):
             other = MTime(other)
 
-        return bool(self._time_stamp >= other._time_stamp)
+        return bool(self.time_stamp >= other.time_stamp)
 
     def __add__(self, other):
         """
@@ -257,7 +471,7 @@ class MTime(BaseModel):
         """
         if isinstance(other, (int, float)):
             other = pd.Timedelta(seconds=other)
-            self.logger.debug("Assuming other time is in seconds")
+            logger.debug("Assuming other time is in seconds")
 
         elif isinstance(other, (datetime.timedelta, np.timedelta64)):
             other = pd.Timedelta(other)
@@ -267,10 +481,10 @@ class MTime(BaseModel):
                 "Adding times stamps does not make sense, use either "
                 "pd.Timedelta or seconds as a float or int."
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
-        return MTime(self._time_stamp + other)
+        return MTime(self.time_stamp + other)
 
     def __sub__(self, other):
         """
@@ -285,7 +499,7 @@ class MTime(BaseModel):
 
         if isinstance(other, (int, float)):
             other = pd.Timedelta(seconds=other)
-            self.logger.debug("Assuming other time is in seconds")
+            logger.debug("Assuming other time is in seconds")
 
         elif isinstance(other, (datetime.timedelta, np.timedelta64)):
             other = pd.Timedelta(other)
@@ -298,273 +512,272 @@ class MTime(BaseModel):
 
         if not isinstance(other, (pd.Timedelta, MTime)):
             msg = "Subtracting times must be either timedelta or another time."
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
         if isinstance(other, MTime):
             other = MTime(other)
 
-            return (self._time_stamp - other._time_stamp).total_seconds()
+            return (self.time_stamp - other.time_stamp).total_seconds()
 
         elif isinstance(other, pd.Timedelta):
-            return MTime(self._time_stamp - other)
+            return MTime(self.time_stamp - other)
 
     def __hash__(self):
         return hash(self.isoformat())
 
     @property
     def iso_str(self):
-        return self._time_stamp.isoformat()
+        return self.time_stamp.isoformat()
 
     @property
     def iso_no_tz(self):
-        return self._time_stamp.isoformat().split("+", 1)[0]
+        return self.time_stamp.isoformat().split("+", 1)[0]
 
     @property
     def epoch_seconds(self):
-        return self._time_stamp.timestamp()
+        return self.time_stamp.timestamp()
 
     @epoch_seconds.setter
     def epoch_seconds(self, seconds):
-        self.logger.debug("reading time from epoch seconds, assuming UTC time zone")
-        self._time_stamp = pd.Timestamp(seconds, tz="UTC")
+        logger.debug("reading time from epoch seconds, assuming UTC time zone")
+        self.time_stamp = pd.Timestamp(seconds, tz="UTC")
 
-    def _parse_string(self, dt_str):
-        """
-        parse string, check for order of day and month
+    # def _parse_string(self, dt_str):
+    #     """
+    #     parse string, check for order of day and month
 
-        :param dt_str: DESCRIPTION
-        :type dt_str: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+    #     :param dt_str: DESCRIPTION
+    #     :type dt_str: TYPE
+    #     :return: DESCRIPTION
+    #     :rtype: TYPE
 
-        """
+    #     """
 
-        try:
-            return dtparser(dt_str)
-        except ValueError as ve:
-            error_24h = "hour must be in 0..23"
-            if error_24h in ve.args[0]:
-                # hh=24 was supplied -- this is legal if it is midnight
-                one_hour_earlier_dt_str = dt_str.replace("T24", "T23")
-                one_hour_earlier_result = dtparser(one_hour_earlier_dt_str)
-                result = one_hour_earlier_result + datetime.timedelta(hours=1)
-                return result
-            else:
-                try:
-                    return dtparser(dt_str, dayfirst=True)
-                except ValueError:
-                    msg = (
-                        "Could not parse string %s check formatting, "
-                        "should be YYYY-MM-DDThh:mm:ss.ns"
-                    )
-                    self.logger.error(msg, dt_str)
-                    raise ValueError(msg % dt_str)
+    #     try:
+    #         return dtparser(dt_str)
+    #     except ValueError as ve:
+    #         error_24h = "hour must be in 0..23"
+    #         if error_24h in ve.args[0]:
+    #             # hh=24 was supplied -- this is legal if it is midnight
+    #             one_hour_earlier_dt_str = dt_str.replace("T24", "T23")
+    #             one_hour_earlier_result = dtparser(one_hour_earlier_dt_str)
+    #             result = one_hour_earlier_result + datetime.timedelta(hours=1)
+    #             return result
+    #         else:
+    #             try:
+    #                 return dtparser(dt_str, dayfirst=True)
+    #             except ValueError:
+    #                 msg = (
+    #                     "Could not parse string %s check formatting, "
+    #                     "should be YYYY-MM-DDThh:mm:ss.ns"
+    #                 )
+    #                 logger.error(msg, dt_str)
+    #                 raise ValueError(msg % dt_str)
 
-    def _fix_out_of_bounds_time_stamp(self, dt):
-        """
+    # def _fix_out_of_bounds_time_stamp(self, dt):
+    #     """
 
-        :param dt_str: DESCRIPTION
-        :type dt_str: TYPE
-        :raises ValueError: DESCRIPTION
-        :return: DESCRIPTION
-        :rtype: TYPE
+    #     :param dt_str: DESCRIPTION
+    #     :type dt_str: TYPE
+    #     :raises ValueError: DESCRIPTION
+    #     :return: DESCRIPTION
+    #     :rtype: TYPE
 
-        """
-        t_min_max = False
+    #     """
+    #     t_min_max = False
 
-        if dt.year > 2200:
-            self.logger.info(f"{dt} is too large setting to {self._tmax}")
-            stamp = self._tmax
-            t_min_max = True
-        elif dt.year < 1900:
-            self.logger.info(f"{dt} is too small setting to {self._tmin}")
-            stamp = self._tmin
-            t_min_max = True
-        else:
-            stamp = pd.Timestamp(dt)
+    #     if dt.year > 2200:
+    #         logger.info(f"{dt} is too large setting to {TMAX}")
+    #         stamp = TMAX
+    #         t_min_max = True
+    #     elif dt.year < 1900:
+    #         logger.info(f"{dt} is too small setting to {TMIN}")
+    #         stamp = TMIN
+    #         t_min_max = True
+    #     else:
+    #         stamp = pd.Timestamp(dt)
 
-        return stamp, t_min_max
+    #     return stamp, t_min_max
 
-    def _localize_utc(self, stamp):
-        """
-        localize to UTC
+    # def _localize_utc(self, stamp):
+    #     """
+    #     localize to UTC
 
-        :param stamp: DESCRIPTION
-        :type stamp: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+    #     :param stamp: DESCRIPTION
+    #     :type stamp: TYPE
+    #     :return: DESCRIPTION
+    #     :rtype: TYPE
 
-        """
+    #     """
 
-        # check time zone and enforce UTC
-        if stamp.tz is None:
-            stamp = stamp.tz_localize("UTC").tz_convert("UTC")
+    #     # check time zone and enforce UTC
+    #     if stamp.tz is None:
+    #         stamp = stamp.tz_localize("UTC").tz_convert("UTC")
 
-        return stamp
+    #     return stamp
 
-    def _check_timestamp(self, pd_timestamp):
-        """
-        check if time stamp is before or after earlies or latest time allowed
+    # def _check_timestamp(self, pd_timestamp):
+    #     """
+    #     check if time stamp is before or after earlies or latest time allowed
 
-        :param pd_timestamp: DESCRIPTION
-        :type pd_timestamp: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+    #     :param pd_timestamp: DESCRIPTION
+    #     :type pd_timestamp: TYPE
+    #     :return: DESCRIPTION
+    #     :rtype: TYPE
 
-        """
+    #     """
 
-        t_min_max = False
-        pd_timestamp = self._localize_utc(pd_timestamp)
+    #     t_min_max = False
+    #     pd_timestamp = self._localize_utc(pd_timestamp)
 
-        if pd_timestamp <= self._tmin:
-            t_min_max = True
-            pd_timestamp = self._tmin
-        elif pd_timestamp >= self._tmax:
-            t_min_max = True
-            pd_timestamp = self._tmax
+    #     if pd_timestamp <= TMIN:
+    #         t_min_max = True
+    #         pd_timestamp = TMIN
+    #     elif pd_timestamp >= TMAX:
+    #         t_min_max = True
+    #         pd_timestamp = TMAX
 
-        return t_min_max, pd_timestamp
+    #     return t_min_max, pd_timestamp
 
-    def parse(
-        self,
-        dt_str: Optional[
-            Union[float, int, np.datetime64, pd.Timestamp, str, UTCDateTime]
-        ] = None,
-    ) -> None:  # TODO: add Self as s typehint 3.11
-        """
-        Parse a date-time string using dateutil.parser
+    # def parse(
+    #     self,
+    #     dt_str: Optional[
+    #         Union[float, int, np.datetime64, pd.Timestamp, str, UTCDateTime]
+    #     ] = None,
+    # ) -> None:
+    #     """
+    #     Parse a date-time string using dateutil.parser
 
-        Need to use dateutil.parser.isoparser to get correct tzinfo=tzutc
-        If the input is a weird date string then try to use parse.
+    #     Need to use dateutil.parser.isoparser to get correct tzinfo=tzutc
+    #     If the input is a weird date string then try to use parse.
 
-        :param dt_str: date-time string
-        :type: string
+    #     :param dt_str: date-time string
+    #     :type: string
 
+    #     """
+    #     t_min_max = False
+    #     if dt_str in [None, "", "none", "None", "NONE", "Na"]:
+    #         logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
+    #         stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
 
-        """
-        t_min_max = False
-        if dt_str in [None, "", "none", "None", "NONE", "Na"]:
-            self.logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
-            stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+    #     elif isinstance(dt_str, pd.Timestamp):
+    #         t_min_max, stamp = self._check_timestamp(dt_str)
 
-        elif isinstance(dt_str, pd.Timestamp):
-            t_min_max, stamp = self._check_timestamp(dt_str)
+    #     elif hasattr(dt_str, "isoformat"):
+    #         try:
+    #             t_min_max, stamp = self._check_timestamp(
+    #                 pd.Timestamp(dt_str.isoformat())
+    #             )
+    #         except OutOfBoundsDatetime:
+    #             stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
+    #                 self._parse_string(dt_str.isoformat())
+    #             )
 
-        elif hasattr(dt_str, "isoformat"):
-            try:
-                t_min_max, stamp = self._check_timestamp(
-                    pd.Timestamp(dt_str.isoformat())
-                )
-            except OutOfBoundsDatetime:
-                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(
-                    self._parse_string(dt_str.isoformat())
-                )
+    #     elif isinstance(dt_str, (float, int)):
+    #         # using 3E8 which is about the start of GPS time
+    #         ratio = dt_str / 3e8
+    #         if ratio < 1 and self.gps_time:
+    #             raise ValueError(
+    #                 "Input is before GPS start time '1980/01/06', check value."
+    #             )
+    #         if dt_str / 3e8 < 1e3:
+    #             t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str, unit="s"))
+    #             logger.debug("Assuming time input is in units of seconds")
+    #         else:
+    #             t_min_max, stamp = self._check_timestamp(
+    #                 pd.Timestamp(dt_str, unit="ns")
+    #             )
+    #             logger.debug("Assuming time input is in units of nanoseconds")
 
-        elif isinstance(dt_str, (float, int)):
-            # using 3E8 which is about the start of GPS time
-            ratio = dt_str / 3e8
-            if ratio < 1 and self.gps_time:
-                raise ValueError(
-                    "Input is before GPS start time '1980/01/06', check value."
-                )
-            if dt_str / 3e8 < 1e3:
-                t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str, unit="s"))
-                self.logger.debug("Assuming time input is in units of seconds")
-            else:
-                t_min_max, stamp = self._check_timestamp(
-                    pd.Timestamp(dt_str, unit="ns")
-                )
-                self.logger.debug("Assuming time input is in units of nanoseconds")
+    #     else:
+    #         try:
+    #             t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str))
+    #         except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
+    #             dt = self._parse_string(dt_str)
+    #             stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt)
 
-        else:
-            try:
-                t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str))
-            except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
-                dt = self._parse_string(dt_str)
-                stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt)
+    #     if isinstance(stamp, (type(pd.NaT), type(None))):
+    #         logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
+    #         stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
 
-        if isinstance(stamp, (type(pd.NaT), type(None))):
-            self.logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
-            stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+    #     # check time zone and enforce UTC
+    #     stamp = self._localize_utc(stamp)
 
-        # check time zone and enforce UTC
-        stamp = self._localize_utc(stamp)
+    #     # there can be a machine round off error, if it is close to 1 round to
+    #     # microseconds
+    #     if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
+    #         stamp = stamp.round(freq="us")
 
-        # there can be a machine round off error, if it is close to 1 round to
-        # microseconds
-        if round(stamp.nanosecond / 1000) == 1 and not t_min_max:
-            stamp = stamp.round(freq="us")
-
-        self._time_stamp = stamp
+    #     self.time_stamp = stamp
 
     @property
     def date(self):
-        return self._time_stamp.date().isoformat()
+        return self.time_stamp.date().isoformat()
 
     @property
     def year(self):
-        return self._time_stamp.year
+        return self.time_stamp.year
 
     @year.setter
     def year(self, value):
-        self._time_stamp = self._time_stamp.replace(year=value)
+        self.time_stamp = self.time_stamp.replace(year=value)
 
     @property
     def month(self):
-        return self._time_stamp.month
+        return self.time_stamp.month
 
     @month.setter
     def month(self, value):
-        self._time_stamp = self._time_stamp.replace(month=value)
+        self.time_stamp = self.time_stamp.replace(month=value)
 
     @property
     def day(self):
-        return self._time_stamp.day
+        return self.time_stamp.day
 
     @day.setter
     def day(self, value):
-        self._time_stamp = self._time_stamp.replace(day=value)
+        self.time_stamp = self.time_stamp.replace(day=value)
 
     @property
     def hour(self):
-        return self._time_stamp.hour
+        return self.time_stamp.hour
 
     @hour.setter
     def hour(self, value):
-        self._time_stamp = self._time_stamp.replace(hour=value)
+        self.time_stamp = self.time_stamp.replace(hour=value)
 
     @property
     def minutes(self):
-        return self._time_stamp.minute
+        return self.time_stamp.minute
 
     @minutes.setter
     def minutes(self, value):
-        self._time_stamp = self._time_stamp.replace(minute=value)
+        self.time_stamp = self.time_stamp.replace(minute=value)
 
     @property
     def seconds(self):
-        return self._time_stamp.second
+        return self.time_stamp.second
 
     @seconds.setter
     def seconds(self, value):
-        self._time_stamp = self._time_stamp.replace(second=value)
+        self.time_stamp = self.time_stamp.replace(second=value)
 
     @property
     def microseconds(self):
-        return self._time_stamp.microsecond
+        return self.time_stamp.microsecond
 
     @microseconds.setter
     def microseconds(self, value):
-        self._time_stamp = self._time_stamp.replace(microsecond=value)
+        self.time_stamp = self.time_stamp.replace(microsecond=value)
 
     @property
     def nanoseconds(self):
-        return self._time_stamp.nanosecond
+        return self.time_stamp.nanosecond
 
     @nanoseconds.setter
     def nanoseconds(self, value):
-        self._time_stamp = self._time_stamp.replace(nanosecond=value)
+        self.time_stamp = self.time_stamp.replace(nanosecond=value)
 
     def now(self):
         """
@@ -574,7 +787,7 @@ class MTime(BaseModel):
         :rtype: datetime with UTC timezone
 
         """
-        self._time_stamp = pd.Timestamp.utcnow()
+        self.time_stamp = pd.Timestamp.utcnow()
 
         return self
 
@@ -589,7 +802,7 @@ class MTime(BaseModel):
         :rtype: string
 
         """
-        return self._time_stamp.isoformat()
+        return self.time_stamp.isoformat()
 
     def isodate(self):
         """
@@ -598,7 +811,7 @@ class MTime(BaseModel):
         :rtype: string
 
         """
-        return self._time_stamp.isodate()
+        return self.time_stamp.isodate()
 
     def isocalendar(self):
         """
@@ -607,7 +820,7 @@ class MTime(BaseModel):
         :rtype: string
 
         """
-        return self._time_stamp.isocalendar()
+        return self.time_stamp.isocalendar()
 
 
 def get_now_utc():
