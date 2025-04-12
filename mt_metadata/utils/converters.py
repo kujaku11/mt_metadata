@@ -140,7 +140,7 @@ def get_new_basemodel_filename(filename, save_path=MTMETADATA_SAVEPATH):
     index = parts.index("standards") + 1
     new_file_directory = save_path.joinpath("\\".join(parts[index:-1]))
     new_file_directory.mkdir(parents=True, exist_ok=True)
-    new_filename = new_file_directory.joinpath(f"{filename.stem}.py")
+    new_filename = new_file_directory.joinpath(f"{filename.stem}_basemodel.py")
     return new_filename
 
 
@@ -260,14 +260,14 @@ def from_jsonschema_to_pydantic_basemodel(filename: Union[str, Path], **kwargs) 
     return new_filename
 
 
-def generate_pydantic_basemodel(json_schema_path: str) -> Path:
+def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     """
     Generate a Pydantic model from a JSON schema file and save it to a Python file.
     The generated model will use `Annotated` and `Field` for type annotations.
 
     Parameters
     ----------
-    json_schema_path : str
+    json_schema_filename : str | Path
         path to the JSON schema file
 
     Returns
@@ -275,10 +275,18 @@ def generate_pydantic_basemodel(json_schema_path: str) -> Path:
     Path
         _description_
     """
-    with open(json_schema_path, "r") as fid:
+    json_schema_filename = Path(json_schema_filename)
+    if not json_schema_filename.exists():
+        raise FileNotFoundError(f"{json_schema_filename} does not exist.")
+    if not json_schema_filename.suffix == ".json":
+        raise FileNotFoundError(
+            f"{json_schema_filename} is not a json file. Please provide a json file."
+        )
+
+    with open(json_schema_filename, "r") as fid:
         schema = json.load(fid)
 
-    new_filename = get_new_basemodel_filename(json_schema_path, MTMETADATA_SAVEPATH)
+    new_filename = get_new_basemodel_filename(json_schema_filename, MTMETADATA_SAVEPATH)
 
     class_definitions = []
     class_name = schema.get("title", "GeneratedModel").capitalize()
@@ -332,7 +340,7 @@ def generate_pydantic_basemodel(json_schema_path: str) -> Path:
 
     # Generate the class definition
     class_code = [
-        f"class {class_name}(BaseModel):",
+        f"class {class_name}(MetadataBase):",
         f"{TAB}model_config = ConfigDict(validate_assignment=True, ",
         "coerce_numbers_to_str=True, validate_default=True)",
         "\n".join(class_definitions) or f"{TAB}pass",
@@ -353,7 +361,10 @@ def generate_pydantic_basemodel(json_schema_path: str) -> Path:
 
     # Format the code using black
     # This will format the code according to PEP 8 style guide
-    line = black.format_str(line, mode=black.FileMode())
+    try:
+        line = black.format_str(line, mode=black.FileMode())
+    except Exception as error:
+        print(f"{json_schema_filename.name} Error formatting code: {error}")
 
     # Write to output file
     with open(new_filename, "w") as f:
