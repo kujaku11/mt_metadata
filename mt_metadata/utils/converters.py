@@ -45,6 +45,16 @@ TYPE_MAPPING = {
     "array": "List[Any]",
     "object": "Dict[str, Any]",
 }
+
+JSON_TYPE_MAPPING = {
+    "string": "string",
+    "integer": "integer",
+    "float": "number",
+    "boolean": "boolean",
+    "array": "array",
+    "object": "object",
+    "null": "null",
+}
 TAB = " " * 4
 # =====================================================
 
@@ -182,14 +192,22 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
     new["required"] = []
     new["description"] = object_name
     for key, value in old.items():
+
         new["properties"][key] = {}
+
+        # map type to JSON schema type
+        try:
+            json_type = JSON_TYPE_MAPPING[value["type"]]
+        except KeyError:
+            raise KeyError(f"Could not find the type {value['type']} in the type dict.")
+        # if the style is a list then use array
         if "list" in value["style"]:
             new["properties"][key]["type"] = "array"
             new["properties"][key]["default"] = []
             new["properties"][key]["items"] = {}
-            new["properties"][key]["items"]["type"] = value["type"]
+            new["properties"][key]["items"]["type"] = json_type
+
         else:
-            new["properties"][key]["type"] = value["type"]
             new["properties"][key]["default"] = get_default_value(
                 value["type"],
                 default_value=value["default"],
@@ -198,7 +216,7 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
         new["properties"][key]["description"] = value["description"]
         new["properties"][key]["title"] = key
         new["properties"][key]["examples"] = value["example"]
-
+        new["properties"][key]["type"] = json_type
         new["properties"][key]["alias"] = get_alias_name(value["alias"])
         new["properties"][key]["units"] = value["units"]
         if value["required"]:
@@ -260,6 +278,12 @@ def from_jsonschema_to_pydantic_basemodel(filename: Union[str, Path], **kwargs) 
     return new_filename
 
 
+def snake_to_camel(snake_str: str) -> str:
+    components = snake_str.split("_")
+    camel_case_str = "".join(x.title() for x in components)
+    return camel_case_str
+
+
 def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     """
     Generate a Pydantic model from a JSON schema file and save it to a Python file.
@@ -289,7 +313,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     new_filename = get_new_basemodel_filename(json_schema_filename, MTMETADATA_SAVEPATH)
 
     class_definitions = []
-    class_name = schema.get("title", "GeneratedModel").capitalize()
+    class_name = snake_to_camel(schema.get("title", "GeneratedModel"))
 
     required_fields = schema.get("required", [])
     properties = schema.get("properties", {})
@@ -320,16 +344,19 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         ## need to add json_schema_extra attributes [units, required]
         json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
-            if attr_name in ["default"]:
+            if attr_name in ["default", "title"]:
                 continue
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
             else:
                 field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
-        field_parts.append(f"{TAB}json_schema_extra=" + "{")
-        for jkey, jvalue in json_schema_extra.items():
-            field_parts.append(f"{jkey}={jvalue}")
-        field_parts.append("}")
+        # Add json_schema_extra as a dictionary
+        if json_schema_extra:
+            json_extra_line = f"{TAB}json_schema_extra=" + "{"
+            for jkey, jvalue in json_schema_extra.items():
+                json_extra_line += f"'{jkey}':{repr(jvalue)},"
+        json_extra_line += "},\n"
+        field_parts.append(json_extra_line)
 
         if field_attrs["required"]:
             field_parts.append(")]\n")
@@ -341,8 +368,8 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     # Generate the class definition
     class_code = [
         f"class {class_name}(MetadataBase):",
-        f"{TAB}model_config = ConfigDict(validate_assignment=True, ",
-        "coerce_numbers_to_str=True, validate_default=True)",
+        # f"{TAB}model_config = ConfigDict(validate_assignment=True, ",
+        # "coerce_numbers_to_str=True, validate_default=True)",
         "\n".join(class_definitions) or f"{TAB}pass",
     ]
 
@@ -350,9 +377,9 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         "#=====================================================",
         "# Imports",
         "#=====================================================",
-        "from pydantic import BaseModel, Field, ConfigDict",
+        "from pydantic import Field",
         "from typing import Annotated, Optional, List, Dict, Any\n",
-        # "from mt_metadata.base import MetadataBase",
+        "from mt_metadata.base import MetadataBase",
         "",
         "#=====================================================",
     ]

@@ -37,9 +37,13 @@ from pydantic import BaseModel, create_model, ConfigDict
 from pydantic.fields import PrivateAttr, FieldInfo
 
 attr_dict = {}
+
+
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
+class Base:
+    pass
 
 
 class MetadataBase(BaseModel):
@@ -322,6 +326,27 @@ class MetadataBase(BaseModel):
 
         return sorted(self.get_all_fields().keys())
 
+    @property
+    def _required_fields(self) -> List[str]:
+        """
+        Get a list of required fields, here required is defined
+        from the metadata standards.  There is a difference
+        between required in Pydantic, in that required means
+        it needs to be defined on instantiation.  The metadata
+        required means that the field needs to be in the standard
+        even though the value may be None.
+
+        Returns
+        -------
+        List[str]
+            List of required fields in the metadata standards.
+        """
+        return [
+            name
+            for name, field_info in self.get_all_fields().items()
+            if field_info.json_schema_extra["required"]
+        ]
+
     def _field_info_to_string(self, name: str, field_info: FieldInfo) -> str:
         """
         Create a string from a FieldInfo object for pretty printing
@@ -552,7 +577,7 @@ class MetadataBase(BaseModel):
                         meta_dict[name] = value
                 elif (
                     value not in [None, "1980-01-01T00:00:00+00:00", "1980", [], ""]
-                    or self._attr_dict[name]["required"]
+                    or name in self._required_fields
                 ):
                     meta_dict[name] = value
             else:
