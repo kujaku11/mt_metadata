@@ -111,7 +111,7 @@ def get_default_value(data_type, default_value=None, required=False):
             return 0
         else:
             return int(default_value)
-    elif data_type in ["float"]:
+    elif data_type in ["float", "number"]:
         if default_value is None:
             return 0.0
         else:
@@ -334,6 +334,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         )
         if field_default in [""]:
             field_default = "''"
+        print(f"{field_name}: {field_default}, {field_attrs['default']}")
 
         # Use Annotated with Field
         field_definition = f"{TAB}{field_name}: Annotated[{field_type}, Field("

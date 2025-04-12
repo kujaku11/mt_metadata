@@ -14,7 +14,18 @@ import numpy as np
 import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
 from obspy.core.utcdatetime import UTCDateTime  # for type hinting
-from typing import Optional, Union  # Self is importable in python 3.11+
+from typing import Optional, Union, Annotated
+
+from pydantic import (
+    BaseModel,
+    Field,
+    ConfigDict,
+    PrivateAttr,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+)
+
 
 from loguru import logger
 
@@ -44,7 +55,7 @@ leap_second_dict = {
 }
 
 
-def calculate_leap_seconds(year, month, day):
+def calculate_leap_seconds(year: int, month: int, day: int) -> int:
     """
     get the leap seconds for the given year to convert GPS time to UTC time
 
@@ -96,7 +107,7 @@ def calculate_leap_seconds(year, month, day):
 # ==============================================================================
 # convenience date-time container
 # ==============================================================================
-class MTime:
+class MTime(BaseModel):
     """
     Date and Time container based on :class:`pandas.Timestamp`
 
@@ -142,6 +153,37 @@ class MTime:
 
     """
 
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        json_encoders={pd.Timestamp: lambda v: v.isoformat()},
+    )
+
+    gps_time: Annotated[
+        bool,
+        Field(
+            description="Defines if the time give in GPS time [True] or UTC [False]",
+        ),
+    ] = False
+
+    time_stamp: Annotated[
+        float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime,
+        Field(
+            default_factory=pd.Timestamp("1980-01-01T00:00:00+00:00"),
+            description="Time in UTC format",
+            examples=["1980-01-01T00:00:00+00:00"],
+        ),
+    ]
+
+    _tmin: PrivateAttr = pd.Timestamp.min.tz_localize("UTC").tz_convert("UTC")
+    _tmax: PrivateAttr = pd.Timestamp.max.tz_localize("UTC").tz_convert("UTC")
+
+    @field_validator("time_stamp", pre=True)
+    def parse_datetime(
+        cls, time_stamp: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+    ) -> datetime:
+        # Check if the time_stamp is a string and parse it
+        return cls.parse(time_stamp)
+
     def __init__(self, time=None, gps_time=False):
         self.logger = logger
         self._tmin = pd.Timestamp.min.tz_localize("UTC").tz_convert("UTC")
@@ -151,9 +193,7 @@ class MTime:
         self.parse(time)
 
         if self.gps_time:
-            leap_seconds = calculate_leap_seconds(
-                self.year, self.month, self.day
-            )
+            leap_seconds = calculate_leap_seconds(self.year, self.month, self.day)
             self.logger.debug(
                 "Converting GPS time to UTC with %s leap seconds", leap_seconds
             )
@@ -286,9 +326,7 @@ class MTime:
 
     @epoch_seconds.setter
     def epoch_seconds(self, seconds):
-        self.logger.debug(
-            "reading time from epoch seconds, assuming UTC time zone"
-        )
+        self.logger.debug("reading time from epoch seconds, assuming UTC time zone")
         self._time_stamp = pd.Timestamp(seconds, tz="UTC")
 
     def _parse_string(self, dt_str):
@@ -391,15 +429,8 @@ class MTime:
     def parse(
         self,
         dt_str: Optional[
-            Union[
-                float,
-                int,
-                np.datetime64,
-                pd.Timestamp,
-                str,
-                UTCDateTime
-            ]
-        ] = None
+            Union[float, int, np.datetime64, pd.Timestamp, str, UTCDateTime]
+        ] = None,
     ) -> None:  # TODO: add Self as s typehint 3.11
         """
         Parse a date-time string using dateutil.parser
@@ -414,9 +445,7 @@ class MTime:
         """
         t_min_max = False
         if dt_str in [None, "", "none", "None", "NONE", "Na"]:
-            self.logger.debug(
-                "Time string is None, setting to 1980-01-01:00:00:00"
-            )
+            self.logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
             stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
 
         elif isinstance(dt_str, pd.Timestamp):
@@ -440,31 +469,23 @@ class MTime:
                     "Input is before GPS start time '1980/01/06', check value."
                 )
             if dt_str / 3e8 < 1e3:
-                t_min_max, stamp = self._check_timestamp(
-                    pd.Timestamp(dt_str, unit="s")
-                )
+                t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str, unit="s"))
                 self.logger.debug("Assuming time input is in units of seconds")
             else:
                 t_min_max, stamp = self._check_timestamp(
                     pd.Timestamp(dt_str, unit="ns")
                 )
-                self.logger.debug(
-                    "Assuming time input is in units of nanoseconds"
-                )
+                self.logger.debug("Assuming time input is in units of nanoseconds")
 
         else:
             try:
-                t_min_max, stamp = self._check_timestamp(
-                    pd.Timestamp(dt_str)
-                )
+                t_min_max, stamp = self._check_timestamp(pd.Timestamp(dt_str))
             except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
                 dt = self._parse_string(dt_str)
                 stamp, t_min_max = self._fix_out_of_bounds_time_stamp(dt)
 
         if isinstance(stamp, (type(pd.NaT), type(None))):
-            self.logger.debug(
-                "Time string is None, setting to 1980-01-01:00:00:00"
-            )
+            self.logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
             stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
 
         # check time zone and enforce UTC

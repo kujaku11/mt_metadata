@@ -105,7 +105,7 @@ class FilterBase(MetadataBase):
     gain: Annotated[
         float,
         Field(
-            default=None,
+            default=1.0,
             description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
             examples="1.0",
             type="number",
