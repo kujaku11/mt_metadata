@@ -10,17 +10,6 @@
             "example": "coherence",
             "default": ""
         },
-        "feature_params": {
-            "type": "dict",
-            "required": False,
-            "style": "dict",
-            "units": null,
-            "description": "Keyword arguments required to compute the feature (e.g., ch1, ch2, detrend).",
-            "options": [],
-            "alias": [],
-            "example": {},
-            "default": {}
-        },
         "weight_kernels": {
             "type": "list",
             "required": True,
