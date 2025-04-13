@@ -1,0 +1,35 @@
+{
+	"feature_name": {
+            "type": "string",
+            "required": True,
+            "style": "controlled vocabulary",
+            "units": null,
+            "description": "The name of the feature to evaluate (e.g., coherence, impedance_ratio).",
+            "options": ["coherence", "multiple coherence"],
+            "alias": [],
+            "example": "coherence",
+            "default": ""
+        },
+        "feature_params": {
+            "type": "dict",
+            "required": False,
+            "style": "dict",
+            "units": null,
+            "description": "Keyword arguments required to compute the feature (e.g., ch1, ch2, detrend).",
+            "options": [],
+            "alias": [],
+            "example": {},
+            "default": {}
+        },
+        "weight_kernels": {
+            "type": "list",
+            "required": True,
+            "style": "object list",
+            "units": null,
+            "description": "List of weight kernel instances to apply to this feature.",
+            "options": [],
+            "alias": [],
+            "example": [],
+            "default": []
+        }
+    }
