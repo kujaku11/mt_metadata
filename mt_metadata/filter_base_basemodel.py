@@ -1,27 +1,26 @@
 # =====================================================
 # Imports
 # =====================================================
+from typing import Annotated
+from pydantic import Field
+from enum import Enum
 import numpy as np
 import pandas as pd
-
-try:
-    from obspy.core.utcdatetime import UTCDateTime  # for type hinting
-
-    from_obspy = True
-except ImportError:
-    from_obspy = False
-
-from pydantic import (
-    Field,
-    field_validator,
-)
-from typing import Annotated, Any
-
-from mt_metadata.base import MetadataBase
 from mt_metadata.utils.mttime import MTime
+from pydantic import field_validator
+from mt_metadata.base import MetadataBase
 
 
 # =====================================================
+class TypeEnum(str, Enum):
+    fap_table = "fap_table"
+    zpk = "zpk"
+    time_delay = "time_delay"
+    coefficient = "coefficient"
+    fir = "fir"
+    other = "other"
+
+
 class FilterBase(MetadataBase):
     name: Annotated[
         str,
@@ -46,7 +45,6 @@ class FilterBase(MetadataBase):
             examples="ambient air temperature",
             type="string",
             alias=None,
-            format="email",
             json_schema_extra={
                 "units": None,
                 "required": False,
@@ -55,14 +53,13 @@ class FilterBase(MetadataBase):
     ] = None
 
     type: Annotated[
-        str,
+        TypeEnum,
         Field(
             default="",
             description="Type of filter, must be one of the available filters.",
             examples="fap_table",
             type="string",
             alias=None,
-            enum=["fap_table", "zpk", "time_delay", "coefficient", "fir", "other"],
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -103,7 +100,7 @@ class FilterBase(MetadataBase):
     ]
 
     calibration_date: Annotated[
-        str | float | int | np.datetime64 | pd.Timestamp | MTime,
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
@@ -115,7 +112,7 @@ class FilterBase(MetadataBase):
                 "required": False,
             },
         ),
-    ]
+    ] = None
 
     gain: Annotated[
         float,
@@ -135,23 +132,6 @@ class FilterBase(MetadataBase):
     @field_validator("calibration_date", mode="before")
     @classmethod
     def validate_calibration_date(
-        cls,
-        field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str,
-    ) -> MTime:
-        """
-        _summary_
-
-        Parameters
-        ----------
-        field_value : MTime | float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
-            _description_
-        validation_info : ValidationInfo
-            _description_
-
-        Returns
-        -------
-        MTime
-            _description_
-        """
-
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
         return MTime(time_stamp=field_value)

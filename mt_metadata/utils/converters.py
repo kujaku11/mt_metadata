@@ -363,7 +363,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
             for enum_value in field_attrs["enum"]:
                 enum_lines.append(f"{TAB}{enum_value} = '{enum_value}'")
             imports.append("from enum import Enum")
-            field_type = f"{snake_to_camel(field_name)}Enum | {field_type}"
+            field_type = f"{snake_to_camel(field_name)}Enum"
         field_attrs["required"] = True
         if field_name not in required_fields:
             field_type = f"{field_type} | None"
@@ -384,10 +384,14 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         # Add attributes to Field
         if field_attrs.get("default_factory", None) is None:
             field_parts.append(f"{TAB}default={field_default},")
+        else:
+            field_parts.append(
+                f"{TAB}default_factory={field_attrs['default_factory']},"
+            )
         ## need to add json_schema_extra attributes [units, required]
         json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
-            if attr_name in ["default", "title", "format", "enum"]:
+            if attr_name in ["default", "title", "format", "enum", "default_factory"]:
                 continue
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value

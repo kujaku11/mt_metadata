@@ -53,7 +53,7 @@ class FilterBase(MetadataBase):
     ] = None
 
     type: Annotated[
-        TypeEnum | str,
+        TypeEnum,
         Field(
             default="",
             description="Type of filter, must be one of the available filters.",
@@ -102,11 +102,11 @@ class FilterBase(MetadataBase):
     calibration_date: Annotated[
         MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
         Field(
+            default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
             examples="2020-01-01",
             type="string",
             alias=None,
-            default_factory="lambda: MTime(time_stamp=None)",
             json_schema_extra={
                 "units": None,
                 "required": False,

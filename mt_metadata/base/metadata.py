@@ -56,10 +56,11 @@ class MetadataBase(BaseModel):
         use_attribute_docstrings=True,
         extra="allow",
         arbitrary_types_allowed=True,  # need this for numpy and pd types
+        use_enum_values=True,
     )
 
     _default_keys: List[str] = PrivateAttr(
-        ["title", "annotation", "default", "examples", "description"]
+        ["annotation", "default", "examples", "description"]
     )
     _json_extras: List[str] = PrivateAttr(["units", "required"])
 
@@ -372,6 +373,17 @@ class MetadataBase(BaseModel):
                     line.append(f"\t{key}: {json_extras[key]}")
                 except KeyError:
                     pass
+        if "enum" in str(field_info.annotation).lower():
+            options = []
+            if "|" in str(field_info.annotation).lower():
+                for ii, ktype in enumerate(field_info.annotation.__args__):
+                    if "enum" in str(ktype):
+                        options += [obj.value for obj in ktype]
+            else:
+                options += [obj.value for obj in field_info.annotation.__args__]
+
+            line.append(f"\taccepted options: [{', '.join(options)}]")
+
         return "\n".join(line)
 
     def attribute_information(self, name=None):
@@ -388,9 +400,9 @@ class MetadataBase(BaseModel):
         lines = []
         if name:
             try:
-                v_dict = OrderedDict(sorted(attr_dict[name].items(), key=itemgetter(0)))
+                v_dict = attr_dict[name]
             except KeyError as error:
-                msg = "{0} not attribute {1} found".format(error, name)
+                msg = f"{error} not attribute {name} found."
                 self.logger.error(msg)
                 raise MTSchemaError(msg)
             lines.append(self._field_info_to_string(name, v_dict))
@@ -721,8 +733,9 @@ class MetadataBase(BaseModel):
         :return: XML element or string
 
         """
+        attr_dict = attr_dict = self.get_all_fields()
         element = helpers.dict_to_xml(
-            self.to_dict(nested=True, required=required), self._attr_dict
+            self.to_dict(nested=True, required=required), attr_dict
         )
         if not string:
             return element

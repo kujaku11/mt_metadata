@@ -482,7 +482,7 @@ def structure_dict(meta_dict, sep="."):
 def get_units(name, attr_dict):
     """ """
     try:
-        units = attr_dict[name]["units"]
+        units = attr_dict["json_schema_extra"]["units"]
         if not isinstance(units, str):
             units = "{0}".format(units)
     except KeyError:
