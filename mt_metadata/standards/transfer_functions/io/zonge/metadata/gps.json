@@ -3,29 +3,29 @@
     "type": "object",
     "properties": {
         "lat": {
-            "type": "float",
             "default": 0.0,
             "description": "latitude",
             "title": "lat",
             "examples": "10.3",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "lon": {
-            "type": "float",
             "default": 0.0,
             "description": "longitude",
             "title": "lon",
             "examples": "10.3",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "datum": {
-            "type": "string",
             "default": "WGS84",
             "description": "Datum of the location",
             "title": "datum",
             "examples": "WGS84",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -35,11 +35,11 @@
             ]
         },
         "u_t_m_zone": {
-            "type": "string",
             "default": "",
             "description": "UTM zone of location",
             "title": "u_t_m_zone",
             "examples": "12",
+            "type": "string",
             "alias": null,
             "units": null
         }

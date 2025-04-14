@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "channel_layout": {
-            "type": "string",
             "default": null,
             "description": "How the station channels were laid out.",
             "title": "channel_layout",
             "examples": "x",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -17,7 +17,7 @@
             ]
         },
         "channels_recorded": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -29,20 +29,20 @@
             "units": null
         },
         "comments": {
-            "type": "string",
             "default": null,
             "description": "Any comments on the station.",
             "title": "comments",
             "examples": "5 runs",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "data_type": {
-            "type": "string",
             "default": "BBMT",
             "description": "Type of data recorded. If multiple types input as a comma separated list.",
             "title": "data_type",
             "examples": "BBMT",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -55,26 +55,26 @@
             ]
         },
         "geographic_name": {
-            "type": "string",
             "default": "",
             "description": "Closest geographic name to the station, usually a city, but could be another common geographic location.",
             "title": "geographic_name",
             "examples": "\"Whitehorse, YK\"",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "id": {
-            "type": "string",
             "default": "",
             "description": "Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
             "title": "id",
             "examples": "MT001",
+            "type": "string",
             "alias": null,
             "units": null,
             "pattern": "^[a-zA-Z0-9]*$"
         },
         "run_list": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"

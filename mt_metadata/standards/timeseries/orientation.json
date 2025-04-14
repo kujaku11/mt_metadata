@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "method": {
-            "type": "string",
             "default": "",
             "description": "method for orienting station layout",
             "title": "method",
             "examples": "compass",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -18,11 +18,11 @@
             ]
         },
         "reference_frame": {
-            "type": "string",
             "default": "geographic",
             "description": "\"Reference frame for station layout.  There are only 2 options geographic and geomagnetic.  Both assume a right-handed coordinate system with North=0 E=90 and vertical positive downward\"",
             "title": "reference_frame",
             "examples": "geomagnetic",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -31,20 +31,20 @@
             ]
         },
         "angle_to_geographic_north": {
-            "type": "float",
             "default": null,
             "description": "\"Angle to rotate the data to align with geographic north. If this number is 0 then it is assumed the data are aligned with geographic north in a right handed coordinate system.\"",
             "title": "angle_to_geographic_north",
             "examples": "geomagnetic",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "value": {
-            "type": "string",
             "default": null,
             "description": "\"Channel orientation relative to each other\"",
             "title": "value",
             "examples": "orthogonal",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

@@ -52,7 +52,10 @@ class MetadataBase(BaseModel):
     """
 
     model_config = ConfigDict(
-        validate_assignment=True, use_attribute_docstrings=True, extra="allow"
+        validate_assignment=True,
+        use_attribute_docstrings=True,
+        extra="allow",
+        arbitrary_types_allowed=True,  # need this for numpy and pd types
     )
 
     _default_keys: List[str] = PrivateAttr(

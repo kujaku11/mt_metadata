@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "filename": {
-            "type": "string",
             "default": "",
             "description": "file name of the figure file that displays the data",
             "title": "filename",
             "examples": "example.png",
+            "type": "string",
             "alias": null,
             "units": null
         }

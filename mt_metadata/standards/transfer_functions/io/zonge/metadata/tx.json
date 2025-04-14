@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "type": {
-            "type": "string",
             "default": "natural",
             "description": "Type of EM source",
             "title": "type",
             "examples": "natural",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

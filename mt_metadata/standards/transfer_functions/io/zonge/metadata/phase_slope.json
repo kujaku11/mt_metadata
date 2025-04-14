@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "smooth": {
-            "type": "string",
             "default": "None",
             "description": "Type of smoothing for phase slope algorithm",
             "title": "smooth",
             "examples": "robust",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -18,11 +18,11 @@
             ]
         },
         "to_z_mag": {
-            "type": "string",
             "default": "no",
             "description": "Was hz used for smoothing for phase slope algorithm",
             "title": "to_z_mag",
             "examples": "no",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

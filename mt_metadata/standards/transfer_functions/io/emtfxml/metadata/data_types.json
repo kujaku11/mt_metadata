@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "data_types_list": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"

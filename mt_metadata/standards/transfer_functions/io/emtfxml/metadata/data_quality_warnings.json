@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "flag": {
-            "type": "integer",
             "default": null,
             "description": "Flag for data quality",
             "title": "flag",
             "examples": "0",
+            "type": "integer",
             "alias": null,
             "units": null
         }

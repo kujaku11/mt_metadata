@@ -64,7 +64,8 @@
             "examples": "2020-01-01",
             "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "gain": {
             "default": 1.0,

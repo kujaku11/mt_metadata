@@ -3,29 +3,29 @@
     "type": "object",
     "properties": {
         "title": {
-            "type": "string",
             "default": "",
             "description": "title of file",
             "title": "title",
             "examples": "BIRRP Version 5 basic mode output",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "station": {
-            "type": "string",
             "default": "",
             "description": "station name",
             "title": "station",
             "examples": "mt001",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "azimuth": {
-            "type": "float",
             "default": 0.0,
             "description": "rotation of full impedance tensor",
             "title": "azimuth",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         }

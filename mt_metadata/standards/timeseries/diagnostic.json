@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "end": {
-            "type": "float",
             "default": null,
             "description": "Ending value of a diagnostic measurement.",
             "title": "end",
             "examples": "10",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "start": {
-            "type": "float",
             "default": null,
             "description": "Starting value of a diagnostic measurement.",
             "title": "start",
             "examples": "12.3",
+            "type": "number",
             "alias": null,
             "units": null
         }

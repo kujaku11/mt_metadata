@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "name": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -15,7 +15,7 @@
             "units": null
         },
         "organization": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -27,7 +27,7 @@
             "units": null
         },
         "email": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -39,7 +39,7 @@
             "units": null
         },
         "url": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -51,16 +51,16 @@
             "units": null
         },
         "comments": {
-            "type": "string",
             "default": null,
             "description": "Any comments about the person",
             "title": "comments",
             "examples": "expert digger",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "grant_id": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"

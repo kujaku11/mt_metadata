@@ -3,49 +3,49 @@
     "type": "object",
     "properties": {
         "id": {
-            "type": "string",
             "default": "",
             "description": "Instrument ID number can be serial number or a designated ID.",
             "title": "id",
             "examples": "mt01",
+            "type": "string",
             "alias": [
                 "serial"
             ],
             "units": null
         },
         "manufacturer": {
-            "type": "string",
             "default": "",
             "description": "Who manufactured the instrument.",
             "title": "manufacturer",
             "examples": "mt gurus",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "type": {
-            "type": "string",
             "default": "",
             "description": "Description of the instrument type.",
             "title": "type",
             "examples": "broadband 32-bit",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "model": {
-            "type": "string",
             "default": null,
             "description": "Model version of the instrument.",
             "title": "model",
             "examples": "falcon5",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "name": {
-            "type": "string",
             "default": null,
             "description": "Standard marketing name of the instrument.",
             "title": "name",
             "examples": "falcon5",
+            "type": "string",
             "alias": null,
             "units": null
         }

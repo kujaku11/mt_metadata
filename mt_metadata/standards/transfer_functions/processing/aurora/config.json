@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "config_id": {
-            "type": "string",
             "default": "",
             "description": "ID of the configuration setup. ",
             "title": "config_id",
             "examples": "CAS04-01",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "longitude": {
-            "type": "float",
             "default": 0.0,
             "description": "Longitude of location in datum specified at survey level.",
             "title": "longitude",
             "examples": "14.23",
+            "type": "number",
             "alias": [
                 "lon",
                 "long"
@@ -24,11 +24,11 @@
             "units": "degrees"
         },
         "elevation": {
-            "type": "float",
             "default": 0.0,
             "description": "Elevation of location in datum specified at survey level.",
             "title": "elevation",
             "examples": "123.4",
+            "type": "number",
             "alias": [
                 "elev"
             ],

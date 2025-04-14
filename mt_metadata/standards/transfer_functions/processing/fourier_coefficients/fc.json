@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "decimation_levels": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -15,16 +15,16 @@
             "units": null
         },
         "id": {
-            "type": "string",
             "default": "",
             "description": "ID given to the FC group",
             "title": "id",
             "examples": "aurora_01",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "channels_estimated": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -36,20 +36,20 @@
             "units": null
         },
         "starting_sample_rate": {
-            "type": "float",
             "default": 1.0,
             "description": "Starting sample rate of the time series used to estimate FCs.",
             "title": "starting_sample_rate",
             "examples": 60,
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "method": {
-            "type": "string",
             "default": "fft",
             "description": "Fourier transform method",
             "title": "method",
             "examples": "fft",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

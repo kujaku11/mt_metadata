@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "id": {
-            "type": "float",
             "default": 0.0,
             "description": "Channel number, could be location.channel_number.",
             "title": "id",
             "examples": "1",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "chtype": {
-            "type": "string",
             "default": "",
             "description": "channel type, should start with an 'e'",
             "title": "chtype",
             "examples": "ex",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -26,74 +26,74 @@
             ]
         },
         "x": {
-            "type": "float",
             "default": 0.0,
             "description": "location of negative sensor relative center point in north direction",
             "title": "x",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "x2": {
-            "type": "float",
             "default": 0.0,
             "description": "location of positive sensor relative center point in north direction",
             "title": "x2",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "y": {
-            "type": "float",
             "default": 0.0,
             "description": "location of negative sensor relative center point in east direction",
             "title": "y",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "y2": {
-            "type": "float",
             "default": 0.0,
             "description": "location of positive sensor relative center point in east direction",
             "title": "y2",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "z": {
-            "type": "float",
             "default": 0.0,
             "description": "location of negative sensor relative center point in depth",
             "title": "z",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "z2": {
-            "type": "float",
             "default": 0.0,
             "description": "location of positive sensor relative center point in depth",
             "title": "z2",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "azm": {
-            "type": "float",
             "default": 0.0,
             "description": "orientation of the sensor relative to coordinate system, clockwise positive.",
             "title": "azm",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "acqchan": {
-            "type": "string",
             "default": "",
             "description": "description of acquired channel",
             "title": "acqchan",
             "examples": "100.0",
+            "type": "string",
             "alias": null,
             "units": null
         }

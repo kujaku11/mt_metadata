@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "country": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -15,7 +15,7 @@
             "units": null
         },
         "state": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -27,7 +27,7 @@
             "units": null
         },
         "county": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -39,38 +39,38 @@
             "units": null
         },
         "township": {
-            "type": "string",
             "default": null,
             "description": "Township or city name or code.",
             "title": "township",
             "examples": "090",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "section": {
-            "type": "string",
             "default": null,
             "description": "Section name or code.",
             "title": "section",
             "examples": "012",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "quarter": {
-            "type": "string",
             "default": null,
             "description": "Quarter section code.",
             "title": "quarter",
             "examples": "400",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "parcel": {
-            "type": "string",
             "default": null,
             "description": "Land parcel ID.",
             "title": "parcel",
             "examples": "46b29a",
+            "type": "string",
             "alias": null,
             "units": null
         }

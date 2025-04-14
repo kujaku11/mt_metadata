@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "name": {
-            "type": "string",
             "default": null,
             "description": "name of the job",
             "title": "name",
             "examples": "yellowstone",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "for": {
-            "type": "string",
             "default": null,
             "description": "who the job is for",
             "title": "for",
             "examples": "NSF",
+            "type": "string",
             "alias": null,
             "units": null
         }

@@ -3,29 +3,29 @@
     "type": "object",
     "properties": {
         "num_samples": {
-            "type": "integer",
             "default": null,
             "description": "Number of samples in a single window",
             "title": "num_samples",
             "examples": "256",
+            "type": "integer",
             "alias": null,
             "units": "samples"
         },
         "overlap": {
-            "type": "integer",
             "default": null,
             "description": "Number of samples overlapped by adjacent windows",
             "title": "overlap",
             "examples": "32",
+            "type": "integer",
             "alias": null,
             "units": "samples"
         },
         "type": {
-            "type": "string",
             "default": "boxcar",
             "description": "name of the window type",
             "title": "type",
             "examples": "hamming",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -50,11 +50,11 @@
             ]
         },
         "clock_zero_type": {
-            "type": "string",
             "default": "ignore",
             "description": "how the clock-zero is specified",
             "title": "clock_zero_type",
             "examples": "user specified",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -64,11 +64,11 @@
             ]
         },
         "clock_zero": {
-            "type": "string",
             "default": null,
             "description": "Start date and time of the first data window",
             "title": "clock_zero",
             "examples": "2020-02-01T09:23:45.453670+00:00",
+            "type": "string",
             "alias": null,
             "units": null
         }

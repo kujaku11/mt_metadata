@@ -3,34 +3,34 @@
     "type": "object",
     "properties": {
         "id": {
-            "type": "string",
             "default": "",
             "description": "Station ID",
             "title": "id",
             "examples": "mt001",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "mth5_path": {
-            "type": "string",
             "default": "",
             "description": "full path to MTH5 file where the station data is contained",
             "title": "mth5_path",
             "examples": "/home/mt/experiment_01.h5",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "remote": {
-            "type": "boolean",
             "default": false,
             "description": "remote station (True) or local station (False)",
             "title": "remote",
             "examples": "False",
+            "type": "boolean",
             "alias": null,
             "units": null
         },
         "runs": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"

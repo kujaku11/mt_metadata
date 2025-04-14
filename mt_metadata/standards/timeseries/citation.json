@@ -3,67 +3,69 @@
     "type": "object",
     "properties": {
         "doi": {
-            "type": "string",
             "default": "",
             "description": "full url of the doi number",
             "title": "doi",
             "examples": "http://doi.###",
+            "type": "string",
             "alias": [
                 "survey_doi"
             ],
-            "units": null
+            "units": null,
+            "format": "uri"
         },
         "authors": {
-            "type": "string",
             "default": null,
             "description": "author names",
             "title": "authors",
             "examples": "M.Tee A. Roura",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "title": {
-            "type": "string",
             "default": null,
             "description": "Full title of the citation",
             "title": "title",
             "examples": "Paper Title",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "year": {
-            "type": "string",
             "default": null,
             "description": "Year of citation",
             "title": "year",
             "examples": "2020",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "volume": {
-            "type": "string",
             "default": null,
             "description": "Journal volume of the citation",
             "title": "volume",
             "examples": "12",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "pages": {
-            "type": "string",
             "default": null,
             "description": "Page numbers of the citation",
             "title": "pages",
             "examples": "10-15",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "journal": {
-            "type": "string",
             "default": null,
             "description": "Journal title of citation",
             "title": "journal",
             "examples": "Journal of Geophysical Research",
+            "type": "string",
             "alias": null,
             "units": null
         }

@@ -3,16 +3,16 @@
     "type": "object",
     "properties": {
         "id": {
-            "type": "string",
             "default": "",
             "description": "run ID",
             "title": "id",
             "examples": "001",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "input_channels": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -24,7 +24,7 @@
             "units": null
         },
         "output_channels": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -36,7 +36,7 @@
             "units": null
         },
         "time_periods": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -48,11 +48,11 @@
             "units": null
         },
         "sample_rate": {
-            "type": "float",
             "default": 1.0,
             "description": "sample rate of the run",
             "title": "sample_rate",
             "examples": "1",
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         }

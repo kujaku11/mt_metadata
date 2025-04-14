@@ -3,83 +3,83 @@
     "type": "object",
     "properties": {
         "maxchan": {
-            "type": "integer",
             "default": null,
             "description": "maximum number of channels",
             "title": "maxchan",
             "examples": "16",
+            "type": "integer",
             "alias": null,
             "units": null
         },
         "maxrun": {
-            "type": "integer",
             "default": null,
             "description": "maximum number of runs",
             "title": "maxrun",
             "examples": "999",
+            "type": "integer",
             "alias": null,
             "units": null
         },
         "maxmeas": {
-            "type": "integer",
             "default": null,
             "description": "maximum number of measurements",
             "title": "maxmeas",
             "examples": "999",
+            "type": "integer",
             "alias": null,
             "units": null
         },
         "reftype": {
-            "type": "string",
             "default": null,
             "description": "Type of offset from reference center point.",
             "title": "reftype",
             "examples": "cart",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "refloc": {
-            "type": "string",
             "default": null,
             "description": "Description of location reference center point.",
             "title": "refloc",
             "examples": "here",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "reflat": {
-            "type": "float",
             "default": null,
             "description": "Latitude of reference center point.",
             "title": "reflat",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "reflon": {
-            "type": "float",
             "default": null,
             "description": "Longitude reference center point.",
             "title": "reflon",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "refelev": {
-            "type": "float",
             "default": null,
             "description": "Elevation reference center point.",
             "title": "refelev",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "units": {
-            "type": "string",
             "default": "m",
             "description": "In the EDI standards this is the elevation units.",
             "title": "units",
             "examples": "m",
+            "type": "string",
             "alias": null,
             "units": null
         }

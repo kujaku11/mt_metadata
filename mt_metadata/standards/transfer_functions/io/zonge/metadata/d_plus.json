@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "use": {
-            "type": "string",
             "default": "no",
             "description": "Was D+ used to smooth the response",
             "title": "use",
             "examples": "no",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

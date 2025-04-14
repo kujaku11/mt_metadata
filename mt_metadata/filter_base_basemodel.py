@@ -3,8 +3,10 @@
 # =====================================================
 import numpy as np
 import pandas as pd
+
 try:
     from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+
     from_obspy = True
 except ImportError:
     from_obspy = False
@@ -100,9 +102,9 @@ class FilterBase(MetadataBase):
     ]
 
     calibration_date: Annotated[
-        MTime | str | np.datetime64 | pd.Timestamp | float | int | None,
+        str | float | int | np.datetime64 | pd.Timestamp | MTime,
         Field(
-            default=None,
+            default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
             examples="2020-01-01",
             type="string",
@@ -112,9 +114,7 @@ class FilterBase(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
-    if from_obspy:
-        calibration_date.
+    ]
 
     gain: Annotated[
         float,

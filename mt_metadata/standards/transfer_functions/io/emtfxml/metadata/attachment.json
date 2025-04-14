@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "filename": {
-            "type": "string",
             "default": "",
             "description": "file name of the attached file data",
             "title": "filename",
             "examples": "example.zmm",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "description": {
-            "type": "string",
             "default": "",
             "description": "description of the attached file",
             "title": "description",
             "examples": "The original used to produce the XML",
+            "type": "string",
             "alias": null,
             "units": null
         }

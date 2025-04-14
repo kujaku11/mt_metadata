@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "description": {
-            "type": "string",
             "default": "",
             "description": "description of what is in the file; default is magnetotelluric transfer functions",
             "title": "description",
             "examples": "Magnetotelluric Transfer Functions",
+            "type": "string",
             "alias": null,
             "units": null
         }

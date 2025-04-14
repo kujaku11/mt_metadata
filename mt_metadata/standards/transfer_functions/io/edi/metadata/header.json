@@ -3,29 +3,30 @@
     "type": "object",
     "properties": {
         "acqby": {
-            "type": "string",
             "default": null,
             "description": "person, group, company, university that collected the data",
             "title": "acqby",
             "examples": "mt experts",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "acqdate": {
-            "type": "string",
             "default": "1980-01-01",
             "description": "Start date the time series data were collected",
             "title": "acqdate",
             "examples": "2020-01-01",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "coordinate_system": {
-            "type": "string",
             "default": "geographic",
             "description": "coordinate system the transfer function is currently in. Its preferred the transfer function be in a geographic coordinate system for archiving and sharing.",
             "title": "coordinate_system",
             "examples": "geopgraphic",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -35,137 +36,140 @@
             ]
         },
         "country": {
-            "type": "string",
             "default": null,
             "description": "Country name where data were collected.",
             "title": "country",
             "examples": "USA",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "county": {
-            "type": "string",
             "default": null,
             "description": "County name where data were collected.",
             "title": "county",
             "examples": "Douglas",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "dataid": {
-            "type": "string",
             "default": "",
             "description": "station ID.",
             "title": "dataid",
             "examples": "mt001",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "enddate": {
-            "type": "string",
             "default": null,
             "description": "End date the time series data were collected",
             "title": "enddate",
             "examples": "2020-01-01",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "empty": {
-            "type": "float",
             "default": 1e+32,
             "description": "null data values, usually a large number",
             "title": "empty",
             "examples": "1E+32",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "fileby": {
-            "type": "string",
             "default": "",
             "description": "person, group, company, university that made the file",
             "title": "fileby",
             "examples": "mt experts",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "filedate": {
-            "type": "string",
             "default": "",
             "description": "Date the file was made",
             "title": "filedate",
             "examples": "2020-01-01",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "progdate": {
-            "type": "string",
             "default": "",
             "description": "Date of the most recent update of the program used to make the file",
             "title": "progdate",
             "examples": "2020-01-01",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "progname": {
-            "type": "string",
             "default": "mt_metadata",
             "description": "Name of the program used to make the file.",
             "title": "progname",
             "examples": "mt_metadata",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "progvers": {
-            "type": "string",
             "default": "0.1.6",
             "description": "Version of the program used to make the file.",
             "title": "progvers",
             "examples": "0.1.6",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "project": {
-            "type": "string",
             "default": null,
             "description": "Name of the project the data was collected for, usually a short description or acronym of the project name.",
             "title": "project",
             "examples": "iMUSH",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "prospect": {
-            "type": "string",
             "default": null,
             "description": "Name of the prospect the data was collected for, usually a short description of the location",
             "title": "prospect",
             "examples": "Benton",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "loc": {
-            "type": "string",
             "default": null,
             "description": "Usually a short description of the location",
             "title": "loc",
             "examples": "Benton, CA",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "state": {
-            "type": "string",
             "default": null,
             "description": "State where the data were collected.",
             "title": "state",
             "examples": "CA",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "stdvers": {
-            "type": "string",
             "default": "SEG 1.0",
             "description": "EDI standards version SEG 1.0",
             "title": "stdvers",
             "examples": "SEG 1.0",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -177,20 +181,20 @@
             ]
         },
         "survey": {
-            "type": "string",
             "default": null,
             "description": "Name of the survey",
             "title": "survey",
             "examples": "CONUS",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "units": {
-            "type": "string",
             "default": "millivolts_per_kilometer_per_nanotesla",
             "description": "In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
             "title": "units",
             "examples": "millivolts_per_kilometer_per_nanotesla",
+            "type": "string",
             "alias": null,
             "units": null
         }

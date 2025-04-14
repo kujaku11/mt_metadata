@@ -3,29 +3,29 @@
     "type": "object",
     "properties": {
         "theta1": {
-            "type": "float",
             "default": 0.0,
             "description": "rotation angle for block x",
             "title": "theta1",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "theta2": {
-            "type": "float",
             "default": 0.0,
             "description": "rotation angle for block y",
             "title": "theta2",
             "examples": "90",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "phi": {
-            "type": "float",
             "default": 0.0,
             "description": "rotation angle for block",
             "title": "phi",
             "examples": "0",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         }

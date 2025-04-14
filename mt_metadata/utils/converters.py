@@ -228,6 +228,12 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
         if "alpha numeric" in value["style"]:
             new["properties"][key]["pattern"] = "^[a-zA-Z0-9]*$"
 
+        if "date" in value["style"]:
+            new["properties"][key]["format"] = "date-time"
+        elif "email" in value["style"]:
+            new["properties"][key]["format"] = "email"
+        elif "url" in value["style"]:
+            new["properties"][key]["format"] = "uri"
     new_file = get_new_schema_filename(filename)
     write_json(new_file, new)
 

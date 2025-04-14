@@ -2,6 +2,9 @@
 """
 Created on Wed May 13 19:10:46 2020
 
+For dealing with obsy.core.UTCDatetime and an soft requirement imports
+have a look at https://github.com/pydantic/pydantic/discussions/3673.
+
 @author: jpeacock
 """
 # =============================================================================
@@ -13,6 +16,8 @@ from dateutil.parser import parse as dtparser
 import numpy as np
 import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
+from typing import Optional, Annotated
+from loguru import logger
 
 try:
     from obspy.core.utcdatetime import UTCDateTime  # for type hinting
@@ -20,8 +25,6 @@ try:
     from_obspy = True
 except ImportError:
     from_obspy = False
-from typing import Optional, Union, Annotated
-from typing_extensions import deprecated
 
 from pydantic import (
     BaseModel,
@@ -31,8 +34,7 @@ from pydantic import (
     field_validator,
 )
 
-
-from loguru import logger
+from mt_metadata.base import MetadataBase
 
 # =============================================================================
 #  Get leap seconds
@@ -308,7 +310,7 @@ def parse(
 # ==============================================================================
 # convenience date-time container
 # ==============================================================================
-class MTime(BaseModel):
+class MTime(MetadataBase):
     """
     Date and Time container based on :class:`pandas.Timestamp`
 
@@ -452,7 +454,7 @@ class MTime(BaseModel):
         return self.isoformat()
 
     def __eq__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the time stamp is equal to another time stamp.
@@ -491,7 +493,7 @@ class MTime(BaseModel):
             return False
 
     def __ne__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the time stamp is not equal to another time stamp.
@@ -509,7 +511,7 @@ class MTime(BaseModel):
         return not self.__eq__(other)
 
     def __lt__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is less than the current time stamp.
@@ -530,7 +532,7 @@ class MTime(BaseModel):
         return bool(self.time_stamp < other.time_stamp)
 
     def __le__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is less than or equal to the current time stamp.
@@ -552,7 +554,7 @@ class MTime(BaseModel):
         return bool(self.time_stamp <= other.time_stamp)
 
     def __gt__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is greater than the current time stamp.
@@ -570,7 +572,7 @@ class MTime(BaseModel):
         return not self.__lt__(other)
 
     def __ge__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is greater than or equal to the current time stamp.

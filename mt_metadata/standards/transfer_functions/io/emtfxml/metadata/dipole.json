@@ -3,47 +3,47 @@
     "type": "object",
     "properties": {
         "manfacturer": {
-            "type": "string",
             "default": null,
             "description": "Name of the manufacturer of the instrument",
             "title": "manfacturer",
             "examples": "MT Gurus",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "length": {
-            "type": "float",
             "default": null,
             "description": "Dipole length",
             "title": "length",
             "examples": "10",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "azimuth": {
-            "type": "float",
             "default": null,
             "description": "Azimuth of the dipole relative to coordinate system",
             "title": "azimuth",
             "examples": "90",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "name": {
-            "type": "string",
             "default": null,
             "description": "Name of the dipole",
             "title": "name",
             "examples": "ex",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "type": {
-            "type": "string",
             "default": null,
             "description": "type of dipole",
             "title": "type",
             "examples": "wire",
+            "type": "string",
             "alias": null,
             "units": null
         }

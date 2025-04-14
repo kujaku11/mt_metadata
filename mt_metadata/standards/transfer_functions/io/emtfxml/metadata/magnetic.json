@@ -3,47 +3,47 @@
     "type": "object",
     "properties": {
         "name": {
-            "type": "string",
             "default": "",
             "description": "Name of the channel",
             "title": "name",
             "examples": "hx",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "orientation": {
-            "type": "float",
             "default": 0.0,
             "description": "orientation angle relative to geographic north",
             "title": "orientation",
             "examples": "11.9",
+            "type": "number",
             "alias": null,
             "units": "degrees"
         },
         "x": {
-            "type": "float",
             "default": 0.0,
             "description": "location of sensor relative center point in north direction",
             "title": "x",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "y": {
-            "type": "float",
             "default": 0.0,
             "description": "location of sensor relative center point in east direction",
             "title": "y",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         },
         "z": {
-            "type": "float",
             "default": 0.0,
             "description": "location of sensor relative center point in depth",
             "title": "z",
             "examples": "100.0",
+            "type": "number",
             "alias": null,
             "units": "meters"
         }

@@ -3,56 +3,56 @@
     "type": "object",
     "properties": {
         "component": {
-            "type": "string",
             "default": "",
             "description": "Name of channel",
             "title": "component",
             "examples": "ex",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "frequency_max": {
-            "type": "float",
             "default": 0.0,
             "description": "Highest frequency present in the sprectrogam data.",
             "title": "frequency_max",
             "examples": 77.0,
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "frequency_min": {
-            "type": "float",
             "default": 0.0,
             "description": "Lowest frequency present in the sprectrogam data.",
             "title": "frequency_min",
             "examples": 99.0,
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "sample_rate_decimation_level": {
-            "type": "float",
             "default": 1.0,
             "description": "Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
             "title": "sample_rate_decimation_level",
             "examples": 60,
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "sample_rate_window_step": {
-            "type": "float",
             "default": 1.0,
             "description": "Sample rate of the windows.",
             "title": "sample_rate_window_step",
             "examples": 4,
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "units": {
-            "type": "string",
             "default": "counts",
             "description": "Units of the channel",
             "title": "units",
             "examples": "millivolts",
+            "type": "string",
             "alias": null,
             "units": null
         }

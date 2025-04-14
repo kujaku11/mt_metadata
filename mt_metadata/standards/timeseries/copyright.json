@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "release_license": {
-            "type": "string",
             "default": "CC0-1.0",
             "description": "How the data can be used. The options are based on https://github.com/spdx/license-list-data",
             "title": "release_license",
             "examples": "CC BY",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

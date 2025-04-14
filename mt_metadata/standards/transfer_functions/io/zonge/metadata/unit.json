@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "length": {
-            "type": "string",
             "default": "m",
             "description": "Type of smoothing for phase slope algorithm",
             "title": "length",
             "examples": "m",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -17,11 +17,11 @@
             ]
         },
         "e": {
-            "type": "string",
             "default": null,
             "description": "Units for the electric field",
             "title": "e",
             "examples": "mV/km",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -31,11 +31,11 @@
             ]
         },
         "b": {
-            "type": "string",
             "default": "nT",
             "description": "Units for the magnetic field",
             "title": "b",
             "examples": "nT",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [

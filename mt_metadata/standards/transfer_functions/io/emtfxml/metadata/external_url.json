@@ -3,22 +3,23 @@
     "type": "object",
     "properties": {
         "description": {
-            "type": "string",
             "default": "",
             "description": "description of where the external URL points towards",
             "title": "description",
             "examples": "IRIS DMC Metadata",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "url": {
-            "type": "string",
             "default": "",
             "description": "full URL of where the data is stored",
             "title": "url",
             "examples": "http://www.iris.edu/mda/EM/NVS11",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "uri"
         }
     },
     "required": [

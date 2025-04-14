@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "engine": {
-            "type": "string",
             "default": "RME_RR",
             "description": "The transfer function estimator engine",
             "title": "engine",
             "examples": "RME_RR",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -17,11 +17,11 @@
             ]
         },
         "estimate_per_channel": {
-            "type": "boolean",
             "default": true,
             "description": "Estimate per channel",
             "title": "estimate_per_channel",
             "examples": "True",
+            "type": "boolean",
             "alias": null,
             "units": null
         }

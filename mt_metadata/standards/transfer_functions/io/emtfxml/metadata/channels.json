@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "ref": {
-            "type": "string",
             "default": "",
             "description": "reference to the site name",
             "title": "ref",
             "examples": "site",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "units": {
-            "type": "string",
             "default": "",
             "description": "units of the distance coordinates",
             "title": "units",
             "examples": "site",
+            "type": "string",
             "alias": null,
             "units": null
         }

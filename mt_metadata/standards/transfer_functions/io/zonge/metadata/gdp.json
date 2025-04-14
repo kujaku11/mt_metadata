@@ -3,38 +3,40 @@
     "type": "object",
     "properties": {
         "date": {
-            "type": "string",
             "default": null,
             "description": "start date of the measurement",
             "title": "date",
             "examples": "01/01/2020",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "time": {
-            "type": "string",
             "default": null,
             "description": "start time of the measurement",
             "title": "time",
             "examples": "12:00:00",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "date-time"
         },
         "type": {
-            "type": "string",
             "default": null,
             "description": "Type of GPD",
             "title": "type",
             "examples": "zen",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "prog_ver": {
-            "type": "string",
             "default": null,
             "description": "version of hadware in the GDP",
             "title": "prog_ver",
             "examples": 0,
+            "type": "string",
             "alias": null,
             "units": null
         }

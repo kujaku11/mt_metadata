@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "type": {
-            "type": "string",
             "default": "",
             "description": "type of remote referencing",
             "title": "type",
             "examples": "robust multi-station remote referencing",
+            "type": "string",
             "alias": null,
             "units": null
         }

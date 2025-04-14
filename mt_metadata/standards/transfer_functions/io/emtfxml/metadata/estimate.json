@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "name": {
-            "type": "string",
             "default": "",
             "description": "Name of the statistical estimate",
             "title": "name",
             "examples": "var",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "type": {
-            "type": "string",
             "default": "",
             "description": "Type of number contained in the estimate",
             "title": "type",
             "examples": "real",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -25,29 +25,30 @@
             ]
         },
         "description": {
-            "type": "string",
             "default": "",
             "description": "Description of the statistical estimate",
             "title": "description",
             "examples": "this is an estimate",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "external_url": {
-            "type": "string",
             "default": "",
             "description": "Full path to external link that has additional information",
             "title": "external_url",
             "examples": "http://www.iris.edu/dms/products/emtf/variance.html",
+            "type": "string",
             "alias": null,
-            "units": null
+            "units": null,
+            "format": "uri"
         },
         "intention": {
-            "type": "string",
             "default": "",
             "description": "The intension of the statistical estimate",
             "title": "intention",
             "examples": "error estimate",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -58,11 +59,11 @@
             ]
         },
         "tag": {
-            "type": "string",
             "default": "",
             "description": "A useful tag for the estimate",
             "title": "tag",
             "examples": "tipper",
+            "type": "string",
             "alias": null,
             "units": null
         }

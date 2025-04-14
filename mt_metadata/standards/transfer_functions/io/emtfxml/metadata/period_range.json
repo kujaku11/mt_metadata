@@ -3,20 +3,20 @@
     "type": "object",
     "properties": {
         "min": {
-            "type": "float",
             "default": 0.0,
             "description": "minimum period",
             "title": "min",
             "examples": "\"4.5E-5\"",
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         },
         "max": {
-            "type": "float",
             "default": 0.0,
             "description": "maxmimu period",
             "title": "max",
             "examples": "\"4.5E5\"",
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         }

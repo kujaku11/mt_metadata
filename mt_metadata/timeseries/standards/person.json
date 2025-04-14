@@ -57,7 +57,7 @@
     "comments": {
         "type": "string",
         "required": false,
-        "style": "email",
+        "style": "free form",
         "units": null,
         "description": "Any comments about the person",
         "options": [],

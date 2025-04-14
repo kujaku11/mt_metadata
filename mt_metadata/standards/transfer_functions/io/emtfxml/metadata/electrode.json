@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "location": {
-            "type": "string",
             "default": "",
             "description": "Direction of electrode",
             "title": "location",
             "examples": "N",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -19,20 +19,20 @@
             ]
         },
         "number": {
-            "type": "string",
             "default": "0",
             "description": "Electrode ID number",
             "title": "number",
             "examples": "1a",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "comments": {
-            "type": "string",
             "default": "",
             "description": "comments on the electrode",
             "title": "comments",
             "examples": "Ag-AgCl porous pot",
+            "type": "string",
             "alias": null,
             "units": null
         }

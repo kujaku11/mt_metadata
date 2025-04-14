@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "gain": {
-            "type": "float",
             "default": 1.0,
             "description": "Scale factor for a simple coefficient filter.",
             "title": "gain",
             "examples": "100",
+            "type": "number",
             "alias": null,
             "units": null
         }

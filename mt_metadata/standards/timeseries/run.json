@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "channels_recorded_auxiliary": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -15,7 +15,7 @@
             "units": null
         },
         "channels_recorded_electric": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -27,7 +27,7 @@
             "units": null
         },
         "channels_recorded_magnetic": {
-            "type": "array",
+            "type": "string",
             "default": [],
             "items": {
                 "type": "string"
@@ -39,20 +39,20 @@
             "units": null
         },
         "comments": {
-            "type": "string",
             "default": null,
             "description": "Any comments on the run.",
             "title": "comments",
             "examples": "cows chewed cables",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "data_type": {
-            "type": "string",
             "default": "BBMT",
             "description": "Type of data recorded for this run.",
             "title": "data_type",
             "examples": "BBMT",
+            "type": "string",
             "alias": null,
             "units": null,
             "enum": [
@@ -65,21 +65,21 @@
             ]
         },
         "id": {
-            "type": "string",
             "default": "",
             "description": "Run ID should be station name followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or {station}001.",
             "title": "id",
             "examples": "001",
+            "type": "string",
             "alias": null,
             "units": null,
             "pattern": "^[a-zA-Z0-9]*$"
         },
         "sample_rate": {
-            "type": "float",
             "default": 0.0,
             "description": "Digital sample rate for the run",
             "title": "sample_rate",
             "examples": "100",
+            "type": "number",
             "alias": null,
             "units": "samples per second"
         }

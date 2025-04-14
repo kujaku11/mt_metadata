@@ -3,11 +3,11 @@
     "type": "object",
     "properties": {
         "delay": {
-            "type": "float",
             "default": 0.0,
             "description": "The delay interval of the filter. This should be a single number.",
             "title": "delay",
             "examples": "-0.201",
+            "type": "number",
             "alias": null,
             "units": "second"
         }

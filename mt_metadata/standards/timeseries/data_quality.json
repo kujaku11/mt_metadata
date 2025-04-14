@@ -3,47 +3,47 @@
     "type": "object",
     "properties": {
         "warnings": {
-            "type": "string",
             "default": null,
             "description": "any warnings about the data that should be noted",
             "title": "warnings",
             "examples": "periodic pipeline noise",
+            "type": "string",
             "alias": null,
             "units": null
         },
         "good_from_period": {
-            "type": "float",
             "default": null,
             "description": "Data are good for periods larger than this number",
             "title": "good_from_period",
             "examples": "0.01",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "good_to_period": {
-            "type": "float",
             "default": null,
             "description": "Data are good for periods smaller than this number",
             "title": "good_to_period",
             "examples": "1000",
+            "type": "number",
             "alias": null,
             "units": null
         },
         "flag": {
-            "type": "integer",
             "default": null,
             "description": "Flag for data quality",
             "title": "flag",
             "examples": "0",
+            "type": "integer",
             "alias": null,
             "units": null
         },
         "comments": {
-            "type": "string",
             "default": null,
             "description": "any comments about the data quality",
             "title": "comments",
             "examples": "0",
+            "type": "string",
             "alias": null,
             "units": null
         }

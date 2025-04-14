@@ -3,10 +3,10 @@
     "type": "object",
     "properties": {
         "poles": {
-            "type": "array",
+            "type": "number",
             "default": [],
             "items": {
-                "type": "float"
+                "type": "number"
             },
             "description": "The complex-valued poles associated with the filter response.",
             "title": "poles",
@@ -15,10 +15,10 @@
             "units": null
         },
         "zeros": {
-            "type": "array",
+            "type": "number",
             "default": [],
             "items": {
-                "type": "float"
+                "type": "number"
             },
             "description": "The complex-valued zeros associated with the filter response.",
             "title": "zeros",
@@ -27,11 +27,11 @@
             "units": null
         },
         "normalization_factor": {
-            "type": "float",
             "default": 1.0,
             "description": "The scale factor to apply to the monic response.",
             "title": "normalization_factor",
             "examples": "\"[-1000.1]\"",
+            "type": "number",
             "alias": null,
             "units": null
         }
