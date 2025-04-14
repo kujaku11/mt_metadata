@@ -14,7 +14,15 @@ import datetime
 import pandas as pd
 import numpy as np
 
-from mt_metadata.utils.mttime import MTime, parse, _check_timestamp
+from mt_metadata.utils.mttime import (
+    MTime,
+    parse,
+    _check_timestamp,
+    _fix_out_of_bounds_time_stamp,
+    _localize_utc,
+    TMAX,
+    TMIN,
+)
 from obspy import UTCDateTime
 
 
@@ -84,9 +92,7 @@ class TestMTime(unittest.TestCase):
         self.assertEqual(t, self.dt_true)
 
     def test_input_seconds_fail(self):
-        t = MTime(gps_time=True)
-
-        self.assertRaises(ValueError, parse, 10)
+        self.assertRaises(ValueError, parse, 10, gps_time=True)
 
     def test_pd_timestamp(self):
         stamp = pd.Timestamp(self.dt_true)
@@ -96,20 +102,19 @@ class TestMTime(unittest.TestCase):
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
     def test_string_input_dt(self):
-        t = MTime()
-        parse(self.dt_str_01)
+        t = MTime(time_stamp=self.dt_str_01)
 
         for key in self.keys:
             with self.subTest(key):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -122,7 +127,7 @@ class TestMTime(unittest.TestCase):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -135,7 +140,7 @@ class TestMTime(unittest.TestCase):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -148,7 +153,7 @@ class TestMTime(unittest.TestCase):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -161,7 +166,7 @@ class TestMTime(unittest.TestCase):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -173,7 +178,7 @@ class TestMTime(unittest.TestCase):
                 self.assertEqual(getattr(self, key), getattr(t, key))
 
         with self.subTest("isostring"):
-            self.assertEqual(self.dt_true, t.iso_str)
+            self.assertEqual(self.dt_true, t.isoformat())
         with self.subTest("epoch seconds"):
             self.assertAlmostEqual(self.epoch_seconds, t.epoch_seconds, places=4)
 
@@ -291,43 +296,39 @@ class TestMTime(unittest.TestCase):
 
     def test_localize_utc(self):
         t1 = MTime(time_stamp=self.dt_true)
-        stamp = t1._localize_utc(t1._time_stamp)
+        stamp = _localize_utc(t1.time_stamp)
         self.assertTrue(stamp.tz is not None)
 
     def test_check_timestamp_too_large(self):
         t1 = pd.Timestamp("3000-01-01T00:00:00")
-        t_obj = MTime()
         too_large, t2 = _check_timestamp(t1)
 
         with self.subTest("time"):
-            self.assertEqual(t2, t_obj._tmax)
+            self.assertEqual(t2, TMAX)
         with self.subTest("too small"):
             self.assertEqual(True, too_large)
 
     def test_check_timestamp_too_small(self):
         t1 = pd.Timestamp("1400-01-01T00:00:00")
-        t_obj = MTime()
         too_small, t2 = _check_timestamp(t1)
         with self.subTest("time"):
-            self.assertEqual(t2, t_obj._tmin)
+            self.assertEqual(t2, TMIN)
         with self.subTest("too small"):
             self.assertEqual(True, too_small)
 
     def test_fix_out_of_bounds_too_large(self):
         dt = dtparser.parse("3000-01-01T00:00:00")
-        t_obj = MTime()
-        stamp, too_large = t_obj._fix_out_of_bounds_time_stamp(dt)
+        stamp, too_large = _fix_out_of_bounds_time_stamp(dt)
         with self.subTest("time"):
-            self.assertEqual(stamp, t_obj._tmax)
+            self.assertEqual(stamp, TMAX)
         with self.subTest("too large"):
             self.assertEqual(True, too_large)
 
     def test_fix_out_of_bounds_too_small(self):
         dt = dtparser.parse("1400-01-01T00:00:00")
-        t_obj = MTime()
-        stamp, too_small = t_obj._fix_out_of_bounds_time_stamp(dt)
+        stamp, too_small = _fix_out_of_bounds_time_stamp(dt)
         with self.subTest("time"):
-            self.assertEqual(stamp, t_obj._tmin)
+            self.assertEqual(stamp, TMIN)
         with self.subTest("too small"):
             self.assertEqual(True, too_small)
 

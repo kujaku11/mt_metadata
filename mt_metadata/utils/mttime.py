@@ -15,6 +15,7 @@ import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
 from obspy.core.utcdatetime import UTCDateTime  # for type hinting
 from typing import Optional, Union, Annotated
+from typing_extensions import deprecated
 
 from pydantic import (
     BaseModel,
@@ -668,6 +669,9 @@ class MTime(BaseModel):
         str
             ISO formatted string of the time stamp.
         """
+        logger.warning(
+            "iso_str will be deprecated in the future. Use isoformat() instead"
+        )
         return self.time_stamp.isoformat()
 
     @property
