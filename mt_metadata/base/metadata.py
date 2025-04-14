@@ -24,25 +24,19 @@ import pandas as pd
 import numpy as np
 from xml.etree import cElementTree as et
 
-from mt_metadata.utils.validators import (
-    validate_attribute,
-    validate_value_type,
-)
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
 
-from mt_metadata.base.helpers import write_lines
-
 from pydantic import BaseModel, create_model, ConfigDict
 from pydantic.fields import PrivateAttr, FieldInfo
-
-attr_dict = {}
 
 
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
 class Base:
+    """to keep things working for now delete when done with translation"""
+
     pass
 
 

@@ -1,10 +1,22 @@
 # =====================================================
 # Imports
 # =====================================================
-from pydantic import Field
-from typing import Annotated, Optional, List, Dict, Any
+import numpy as np
+import pandas as pd
+try:
+    from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+    from_obspy = True
+except ImportError:
+    from_obspy = False
+
+from pydantic import (
+    Field,
+    field_validator,
+)
+from typing import Annotated, Any
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.utils.mttime import MTime
 
 
 # =====================================================
@@ -88,7 +100,7 @@ class FilterBase(MetadataBase):
     ]
 
     calibration_date: Annotated[
-        str | None,
+        MTime | str | np.datetime64 | pd.Timestamp | float | int | None,
         Field(
             default=None,
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
@@ -101,6 +113,8 @@ class FilterBase(MetadataBase):
             },
         ),
     ] = None
+    if from_obspy:
+        calibration_date.
 
     gain: Annotated[
         float,
@@ -116,3 +130,27 @@ class FilterBase(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("calibration_date", mode="before")
+    @classmethod
+    def validate_calibration_date(
+        cls,
+        field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str,
+    ) -> MTime:
+        """
+        _summary_
+
+        Parameters
+        ----------
+        field_value : MTime | float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime
+            _description_
+        validation_info : ValidationInfo
+            _description_
+
+        Returns
+        -------
+        MTime
+            _description_
+        """
+
+        return MTime(time_stamp=field_value)

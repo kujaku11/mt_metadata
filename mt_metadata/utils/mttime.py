@@ -13,7 +13,13 @@ from dateutil.parser import parse as dtparser
 import numpy as np
 import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
-from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+
+try:
+    from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+
+    from_obspy = True
+except ImportError:
+    from_obspy = False
 from typing import Optional, Union, Annotated
 from typing_extensions import deprecated
 
@@ -21,11 +27,8 @@ from pydantic import (
     BaseModel,
     Field,
     ConfigDict,
-    PrivateAttr,
-    ValidationError,
     ValidationInfo,
     field_validator,
-    model_validator,
 )
 
 
@@ -231,9 +234,7 @@ def _check_timestamp(pd_timestamp):
 
 
 def parse(
-    dt_str: Optional[
-        Union[float, int, np.datetime64, pd.Timestamp, str, UTCDateTime]
-    ] = None,
+    dt_str: Optional[float | int | np.datetime64 | pd.Timestamp | str] = None,
     gps_time: bool = False,
 ) -> pd.Timestamp:
     """
@@ -379,7 +380,7 @@ class MTime(BaseModel):
     ] = False
 
     time_stamp: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime,
+        float | int | np.datetime64 | pd.Timestamp | str,
         Field(
             default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
             description="Time in UTC format",
@@ -391,7 +392,7 @@ class MTime(BaseModel):
     @classmethod
     def validate_time_stamp(
         cls,
-        field_value: float | int | np.datetime64 | pd.Timestamp | str | UTCDateTime,
+        field_value: float | int | np.datetime64 | pd.Timestamp | str,
         validation_info: ValidationInfo,
     ) -> pd.Timestamp:
         """
