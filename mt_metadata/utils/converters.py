@@ -8,27 +8,22 @@ and then to pydantic basemodel with types.
 # Imports
 # =====================================================
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Union
 import json
+
 import black
+import isort
+from loguru import logger
 
-from pathlib import Path
 
-from mt_metadata.utils.mttime import MTime
-
-from pathlib import Path
-import json
-from pydantic import BaseModel, Field
-from typing import Annotated, Optional, List, Dict, Any, Union
-
-try:
-    from datamodel_code_generator import DataModelType, PythonVersion
-    from datamodel_code_generator.model import get_data_model_types
-    from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
-except ImportError:
-    print(
-        "datamodel-codegen is not installed. Please install it using 'pip install datamodel-codegen'."
-    )
+# try:
+#     from datamodel_code_generator import DataModelType, PythonVersion
+#     from datamodel_code_generator.model import get_data_model_types
+#     from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+# except ImportError:
+#     logger.warning(
+#         "datamodel-codegen is not installed. Please install it using 'pip install datamodel-codegen'."
+#     )
 
 # =====================================================
 # Constants
@@ -86,16 +81,25 @@ def write_json(filename: Union[str, Path], data: Dict[str, Any]) -> None:
         json.dump(data, f, indent=4)
 
 
-def get_default_value(data_type, default_value=None, required=False):
+def get_default_value(
+    data_type: str, default_value: Any = None, required: bool = False
+) -> Any:
     """
-    get default value based on the data type
+    Get default value based on information provided.
 
     Parameters
     ----------
-    data_type : _type_
-        _description_
-    default_value : _type_, optional
-        _description_, by default None
+    data_type : str
+        data type name
+    default_value : Any, optional
+        given default value, by default None
+    required : bool, optional
+        is required, by default False
+
+    Returns
+    -------
+    Any
+        default value
     """
 
     if not required:
@@ -120,14 +124,14 @@ def get_default_value(data_type, default_value=None, required=False):
         return bool(default_value)
 
 
-def get_alias_name(alias_name):
+def get_alias_name(alias_name: str) -> str:
     """
     Get the alias name, and return None if empty
 
     Parameters
     ----------
-    alias_name : _type_
-        _description_
+    alias_name : str
+        alias name
     """
     if alias_name in [[], None, "", "None", "none"]:
         return None
@@ -135,14 +139,25 @@ def get_alias_name(alias_name):
         return alias_name
 
 
-def get_new_basemodel_filename(filename, save_path=MTMETADATA_SAVEPATH):
+def get_new_basemodel_filename(
+    filename: Path | str, save_path: Path = MTMETADATA_SAVEPATH
+) -> Path:
     """
-    Get the new filename json schema
+    Get new file name for new BaseModel.
+
+    Will place into `mt_metadata/mt_metadata/...`
 
     Parameters
     ----------
-    filename : _type_
-        _description_
+    filename : Path | str
+        json schema standards file name
+    save_path : Path, optional
+        default path to save to, by default MTMETADATA_SAVEPATH
+
+    Returns
+    -------
+    Path
+        new file path to new BaseModel object.
     """
     filename = Path(filename)
     # Get the parts of the filename
@@ -154,14 +169,24 @@ def get_new_basemodel_filename(filename, save_path=MTMETADATA_SAVEPATH):
     return new_filename
 
 
-def get_new_schema_filename(filename, save_path=STANDARDS_SAVEPATH):
+def get_new_schema_filename(
+    filename: str | Path, save_path: Path = STANDARDS_SAVEPATH
+) -> Path:
     """
-    Get the new filename for pydantic python file
+    Get new file path to a JSON schema file.  Will be place into
+    `mt_metadata/mt_metadata/standards/...`
 
     Parameters
     ----------
-    filename : _type_
-        _description_
+    filename : str | Path
+        old JSON file
+    save_path : Path, optional
+        default directory to save to, by default STANDARDS_SAVEPATH
+
+    Returns
+    -------
+    Path
+        new file path to JSON Schema file.
     """
 
     parts = Path(filename).parts
@@ -172,15 +197,24 @@ def get_new_schema_filename(filename, save_path=STANDARDS_SAVEPATH):
     return new_filename
 
 
-def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
+def to_json_schema(filename: str | Path) -> Path:
     """
-    Convert a dictionary to a JSON schema.
+    Convert old JSON files to a JSON Schema file.
 
-    Args:
-        data (Dict[str, Any]): The data to convert.
+    Parameters
+    ----------
+    filename : Union[str, Path]
+        file path to old JSON file
 
-    Returns:
-        Dict[str, Any]: The JSON schema.
+    Returns
+    -------
+    Path
+        File path to new JSON Schema file
+
+    Raises
+    ------
+    KeyError
+        if `type` is not in old JSON file
     """
     filename = Path(filename)
     old = load_json(filename)
@@ -221,67 +255,72 @@ def to_json_schema(filename: Union[str, Path]) -> Dict[str, Any]:
         new["properties"][key]["units"] = value["units"]
         if value["required"]:
             new["required"].append(key)
+
         # need to sort out string formats
         if value["style"] == "controlled vocabulary":
             new["properties"][key]["enum"] = value["options"]
 
-        if "alpha numeric" in value["style"]:
+        elif value["style"] == "alpha numeric":
             new["properties"][key]["pattern"] = "^[a-zA-Z0-9]*$"
 
-        if "date" in value["style"]:
+        elif value["style"] in ["date time", "date", "time"]:
             new["properties"][key]["format"] = "date-time"
-        elif "email" in value["style"]:
+
+        elif value["style"] in ["email"]:
             new["properties"][key]["format"] = "email"
-        elif "url" in value["style"]:
+
+        elif value["style"] in ["url"]:
             new["properties"][key]["format"] = "uri"
+
+    # write new file
     new_file = get_new_schema_filename(filename)
     write_json(new_file, new)
 
     return new_file
 
 
-def from_jsonschema_to_pydantic_basemodel(filename: Union[str, Path], **kwargs) -> Path:
-    """
-    make basemodel from json schema
+# def from_jsonschema_to_pydantic_basemodel(filename: Union[str, Path], **kwargs) -> Path:
+#     """
+#     make basemodel from json schema
 
-    Parameters
-    ----------
-    filename : _type_
-        _description_
-    """
-    filename = Path(filename)
-    new_filename = get_new_basemodel_filename(filename, MTMETADATA_SAVEPATH)
+#     Parameters
+#     ----------
+#     filename : _type_
+#         _description_
+#     """
+#     filename = Path(filename)
+#     new_filename = get_new_basemodel_filename(filename, MTMETADATA_SAVEPATH)
 
-    data_model_types = get_data_model_types(
-        DataModelType.PydanticV2BaseModel,
-        target_python_version=PythonVersion.PY_311,
-        target_datetime_class=MTime,
-    )
+#     data_model_types = get_data_model_types(
+#         DataModelType.PydanticV2BaseModel,
+#         target_python_version=PythonVersion.PY_311,
+#         target_datetime_class=MTime,
+#     )
 
-    parser = JsonSchemaParser(
-        filename,
-        data_model_type=data_model_types.data_model,
-        data_model_root_type=data_model_types.root_model,
-        data_model_field_type=data_model_types.field_model,
-        data_type_manager_type=data_model_types.data_type_manager,
-        dump_resolve_reference_action=data_model_types.dump_resolve_reference_action,
-        field_extra_keys=["alias", "units", "default", "required"],
-        use_annotated=True,
-        use_union_operator=True,
-        field_constraints=True,
-        snake_case_field=True,
-        allow_extra_fields=True,
-        strip_default_none=False,
-        field_include_all_keys=True,
-        apply_default_values_for_required_fields=True,
-    )
+#     parser = JsonSchemaParser(
+#         filename,
+#         data_model_type=data_model_types.data_model,
+#         data_model_root_type=data_model_types.root_model,
+#         data_model_field_type=data_model_types.field_model,
+#         data_type_manager_type=data_model_types.data_type_manager,
+#         dump_resolve_reference_action=data_model_types.dump_resolve_reference_action,
+#         field_extra_keys=["alias", "units", "default", "required"],
+#         use_annotated=True,
+#         use_union_operator=True,
+#         field_constraints=True,
+#         snake_case_field=True,
+#         allow_extra_fields=True,
+#         strip_default_none=False,
+#         field_include_all_keys=True,
+#         apply_default_values_for_required_fields=True,
+#     )
 
-    result = parser.parse()
+#     result = parser.parse()
 
-    with open(new_filename, "w") as fid:
-        fid.write(result)
+#     with open(new_filename, "w") as fid:
+#         fid.write(result)
 
-    return new_filename
+#     return new_filename
 
 
 def snake_to_camel(snake_str: str) -> str:
@@ -339,9 +378,13 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     for field_name, field_attrs in properties.items():
         # Fallback to Any if type is unknown
         field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
+        # get typing imports
         for type_key in type_imports.keys():
             if type_key in field_type:
                 imports.append(type_imports[type_key])
+
+        # if date time then use MTime as the object, need to add some types
+        # a default factory.
         if field_attrs.get("format") == "date-time":
             field_type = "MTime | str | float | int | np.datetime64 | pd.Timestamp"
             imports.append("import numpy as np")
@@ -349,9 +392,12 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
             imports.append("from mt_metadata.utils.mttime import MTime")
             field_attrs["default_factory"] = "lambda: MTime(time_stamp=None)"
             datetime_keys.append(field_name)
+
+        # if email format the use EmailStr object and import
         elif field_attrs.get("format") == "email":
             field_type = "EmailStr"
             imports.append("from pydantic import EmailStr")
+        # if uri format the use HttpUrl object and import
         elif field_attrs.get("format") == "uri":
             field_type = "HttpUrl"
             imports.append("from pydantic import HttpUrl")
@@ -364,16 +410,23 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
                 enum_lines.append(f"{TAB}{enum_value} = '{enum_value}'")
             imports.append("from enum import Enum")
             field_type = f"{snake_to_camel(field_name)}Enum"
+
+        # check if required.  Again required is a metadata standard not
+        # a pydantic standard. If required in pydantic then the user
+        # must supply a default value.  Which is not the older way
+        # mt-metadata was used, and not the desired way of using it.
         field_attrs["required"] = True
         if field_name not in required_fields:
             field_type = f"{field_type} | None"
             field_attrs["required"] = False
 
+        # get the default value based on type
         field_default = get_default_value(
             field_attrs["type"],
             default_value=field_attrs["default"],
             required=field_name in required_fields,
         )
+        # "" is skipped by pydantic need to set it at "''"
         if field_default in [""]:
             field_default = "''"
 
@@ -388,7 +441,8 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
             field_parts.append(
                 f"{TAB}default_factory={field_attrs['default_factory']},"
             )
-        ## need to add json_schema_extra attributes [units, required]
+
+        # need to add json_schema_extra attributes [units, required]
         json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
             if attr_name in ["default", "title", "format", "enum", "default_factory"]:
@@ -398,6 +452,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
             else:
                 field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+
         # Add json_schema_extra as a dictionary
         if json_schema_extra:
             json_extra_line = f"{TAB}json_schema_extra=" + "{"
@@ -423,11 +478,10 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
                 f"{TAB*2}return MTime(time_stamp=field_value)\n"
             )
 
-    # Generate the class definition
+    # Generate the class definition, dont need config dict as that is
+    # already initiated in MetadataBase.
     class_code = [
         f"class {class_name}(MetadataBase):",
-        # f"{TAB}model_config = ConfigDict(validate_assignment=True, ",
-        # "coerce_numbers_to_str=True, validate_default=True)",
         "\n".join(class_definitions) or f"{TAB}pass",
     ]
 
@@ -438,7 +492,6 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         "#=====================================================",
         f"{imports}",
         "from mt_metadata.base import MetadataBase",
-        "",
         "#=====================================================",
     ]
 
@@ -451,11 +504,21 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     try:
         line = black.format_str(line, mode=black.FileMode())
     except Exception as error:
-        print(f"{json_schema_filename.name} Error formatting code: {error}")
+        logger.warning(
+            f"{json_schema_filename.name} Error formatting code using black: {error}"
+        )
+
+    # format using isort
+    try:
+        line = isort.code(line)
+    except Exception as error:
+        logger.warning(
+            f"{json_schema_filename.name} Error formatting code using isort: {error}"
+        )
 
     # Write to output file
     with open(new_filename, "w") as f:
         f.write(line)
 
-    print(f"Saved to {new_filename}")
+    logger.info(f"Saved to {new_filename}")
     return new_filename

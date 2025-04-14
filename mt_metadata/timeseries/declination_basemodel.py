@@ -1,0 +1,81 @@
+# =====================================================
+# Imports
+# =====================================================
+from enum import Enum
+from typing import Annotated
+
+from mt_metadata.base import MetadataBase
+from pydantic import Field
+
+
+# =====================================================
+class ModelEnum(str, Enum):
+    EMAG2 = "EMAG2"
+    EMM = "EMM"
+    HDGM = "HDGM"
+    IGRF = "IGRF"
+    WMM = "WMM"
+    unknown = "unknown"
+    other = "other"
+
+
+class Declination(MetadataBase):
+    comments: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="any comments on declination",
+            examples="estimated from WMM 2016",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None
+
+    model: Annotated[
+        ModelEnum,
+        Field(
+            default=WMM,
+            description="geomagnetic reference model used to calculate declination",
+            examples="WMM",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    epoch: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Epoch for which declination was approximated in.",
+            examples="2020",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None
+
+    value: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="declination angle relative to geographic north positive clockwise",
+            examples="12.3",
+            type="number",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]

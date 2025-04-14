@@ -1,14 +1,14 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
-from pydantic import Field
 from enum import Enum
+from typing import Annotated
+
 import numpy as np
 import pandas as pd
-from mt_metadata.utils.mttime import MTime
-from pydantic import field_validator
 from mt_metadata.base import MetadataBase
+from mt_metadata.utils.mttime import MTime
+from pydantic import Field, field_validator
 
 
 # =====================================================
