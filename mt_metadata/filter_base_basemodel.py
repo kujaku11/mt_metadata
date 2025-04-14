@@ -46,6 +46,7 @@ class FilterBase(MetadataBase):
             examples="ambient air temperature",
             type="string",
             alias=None,
+            format="email",
             json_schema_extra={
                 "units": None,
                 "required": False,

@@ -290,6 +290,13 @@ def snake_to_camel(snake_str: str) -> str:
     return camel_case_str
 
 
+type_imports = {
+    "List": "from typing import List",
+    "Dict": "from typing import Dict",
+    "Any": "from typing import Any",
+}
+
+
 def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     """
     Generate a Pydantic model from a JSON schema file and save it to a Python file.
@@ -324,10 +331,39 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     required_fields = schema.get("required", [])
     properties = schema.get("properties", {})
 
+    imports = ["from typing import Annotated", "from pydantic import Field"]
+
+    datetime_keys = []
+    enum_lines = []
     # Create field definitions
     for field_name, field_attrs in properties.items():
         # Fallback to Any if type is unknown
         field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
+        for type_key in type_imports.keys():
+            if type_key in field_type:
+                imports.append(type_imports[type_key])
+        if field_attrs.get("format") == "date-time":
+            field_type = "MTime | str | float | int | np.datetime64 | pd.Timestamp"
+            imports.append("import numpy as np")
+            imports.append("import pandas as pd")
+            imports.append("from mt_metadata.utils.mttime import MTime")
+            field_attrs["default_factory"] = "lambda: MTime(time_stamp=None)"
+            datetime_keys.append(field_name)
+        elif field_attrs.get("format") == "email":
+            field_type = "EmailStr"
+            imports.append("from pydantic import EmailStr")
+        elif field_attrs.get("format") == "uri":
+            field_type = "HttpUrl"
+            imports.append("from pydantic import HttpUrl")
+
+        # enumerated types
+        if field_attrs.get("enum", None) is not None:
+            # Convert enum list to a string representation
+            enum_lines.append(f"class {snake_to_camel(field_name)}Enum(str, Enum):")
+            for enum_value in field_attrs["enum"]:
+                enum_lines.append(f"{TAB}{enum_value} = '{enum_value}'")
+            imports.append("from enum import Enum")
+            field_type = f"{snake_to_camel(field_name)}Enum | {field_type}"
         field_attrs["required"] = True
         if field_name not in required_fields:
             field_type = f"{field_type} | None"
@@ -340,21 +376,22 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         )
         if field_default in [""]:
             field_default = "''"
-        print(f"{field_name}: {field_default}, {field_attrs['default']}")
 
         # Use Annotated with Field
         field_definition = f"{TAB}{field_name}: Annotated[{field_type}, Field("
         field_parts = [field_definition]
 
         # Add attributes to Field
-        field_parts.append(f"{TAB}default={field_default},")
+        if field_attrs.get("default_factory", None) is None:
+            field_parts.append(f"{TAB}default={field_default},")
         ## need to add json_schema_extra attributes [units, required]
         json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
-            if attr_name in ["default", "title"]:
+            if attr_name in ["default", "title", "format", "enum"]:
                 continue
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
+
             else:
                 field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
         # Add json_schema_extra as a dictionary
@@ -372,6 +409,16 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
         class_definitions.append("\n".join(field_parts))
 
+    if datetime_keys:
+        imports.append("from pydantic import field_validator")
+        for key in datetime_keys:
+            class_definitions.append(
+                f"{TAB}@field_validator('{key}', mode='before')\n"
+                f"{TAB}@classmethod\n"
+                f"{TAB}def validate_{key}(cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str):\n"
+                f"{TAB*2}return MTime(time_stamp=field_value)\n"
+            )
+
     # Generate the class definition
     class_code = [
         f"class {class_name}(MetadataBase):",
@@ -380,16 +427,18 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         "\n".join(class_definitions) or f"{TAB}pass",
     ]
 
+    imports = "\n".join(imports)
     lines = [
         "#=====================================================",
         "# Imports",
         "#=====================================================",
-        "from pydantic import Field",
-        "from typing import Annotated, Optional, List, Dict, Any\n",
+        f"{imports}",
         "from mt_metadata.base import MetadataBase",
         "",
         "#=====================================================",
     ]
+
+    lines += enum_lines
     lines += class_code
     line = "\n".join(lines)
 

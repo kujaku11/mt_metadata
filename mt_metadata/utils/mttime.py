@@ -674,6 +674,22 @@ class MTime(MetadataBase):
         """
         return self.isoformat()
 
+    def from_dict(
+        self,
+        value: str | int | float | np.datetime64 | pd.Timestamp,
+        skip_none=False,
+    ) -> None:
+        """
+        This will have to accept just a single value, not a dict.
+        This is to keep original functionality.
+
+        Parameters
+        ----------
+        value : str | int | float | np.datetime64 | pd.Timestamp
+            time stamp value
+        """
+        self.time_stamp = value
+
     @property
     def iso_str(self) -> str:
         """
