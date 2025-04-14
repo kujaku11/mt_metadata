@@ -201,7 +201,7 @@ def _fix_out_of_bounds_time_stamp(dt):
         stamp = TMIN
         t_min_max = True
     else:
-        stamp = pd.Timestamp(dt)
+        stamp = pd.Timestamp(dt, tz="UTC")
 
     return stamp, t_min_max
 
@@ -250,7 +250,7 @@ def parse(
     t_min_max = False
     if dt_str in [None, "", "none", "None", "NONE", "Na", {}]:
         logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
-        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00", tz="UTC")
 
     elif isinstance(dt_str, pd.Timestamp):
         t_min_max, stamp = _check_timestamp(dt_str)
@@ -286,7 +286,7 @@ def parse(
 
     if isinstance(stamp, (type(pd.NaT), type(None))):
         logger.debug("Time string is None, setting to 1980-01-01:00:00:00")
-        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00")
+        stamp = pd.Timestamp("1980-01-01T00:00:00+00:00", tz="UTC")
 
     # check time zone and enforce UTC
     stamp = _localize_utc(stamp)
@@ -301,7 +301,7 @@ def parse(
         logger.debug("Converting GPS time to UTC with %s leap seconds", leap_seconds)
         stamp -= pd.Timedelta(seconds=leap_seconds)
 
-    return stamp
+    return _localize_utc(stamp)
 
 
 # ==============================================================================
