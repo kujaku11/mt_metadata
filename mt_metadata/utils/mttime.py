@@ -27,7 +27,6 @@ except ImportError:
     from_obspy = False
 
 from pydantic import (
-    BaseModel,
     Field,
     ConfigDict,
     ValidationInfo,

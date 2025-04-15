@@ -3,27 +3,26 @@
 # =====================================================
 from enum import Enum
 from typing import Annotated
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from mt_metadata.utils.location_helpers import convert_position_str2float, DatumEnum
 
 
 # =====================================================
-class DatumEnum(str, Enum):
-    WGS84 = "WGS84"
-    NAD83 = "NAD83"
-    other = "other"
 
 
 class Location(MetadataBase):
     latitude: Annotated[
-        float,
+        float | str,
         Field(
             default=0.0,
             description="latitude of location in datum specified at survey level",
             examples="23.134",
             type="number",
             alias=["lat"],
+            ge=-90.0,
+            le=90.0,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
@@ -32,13 +31,15 @@ class Location(MetadataBase):
     ]
 
     longitude: Annotated[
-        float,
+        float | str,
         Field(
             default=0.0,
             description="longitude of location in datum specified at survey level",
             examples="14.23",
             type="number",
             alias=["lon", "long"],
+            ge=-180.0,
+            le=180.0,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
@@ -107,9 +108,9 @@ class Location(MetadataBase):
     ] = None
 
     datum: Annotated[
-        DatumEnum | None,
+        DatumEnum,
         Field(
-            default=None,
+            default="WGS84",
             description="Datum of the location values.  Usually a well known datum like WGS84.",
             examples="WGS84",
             type="string",
@@ -119,7 +120,7 @@ class Location(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ] = "WGS84"
 
     x: Annotated[
         float | None,
@@ -255,3 +256,22 @@ class Location(MetadataBase):
             },
         ),
     ] = None
+
+    @field_validator("latitude", "longitude", mode="before")
+    @classmethod
+    def validate_position(
+        cls,
+        value,
+    ):
+        if isinstance(value, str):
+            value = convert_position_str2float(value)
+        else:
+            try:
+                value = float(value)
+            except ValueError:
+                raise ValueError("latitude and longitude must be float or str")
+        if not (abs(value) <= 90) and cls.model_fields_set == {"latitude"}:
+            raise ValueError("latitude must be between -90 and 90 degrees")
+        if not (abs(value) <= 180) and cls.model_fields_set == {"longitude"}:
+            raise ValueError("longitude must be between -180 and 180 degrees")
+        return value
