@@ -153,7 +153,7 @@ class Auxiliary(MetadataBase):
     type: Annotated[
         str,
         Field(
-            default=auxiliary,
+            default="auxiliary",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
             examples="temperature",
             type="string",
