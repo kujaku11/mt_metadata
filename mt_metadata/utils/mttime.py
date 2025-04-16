@@ -453,7 +453,8 @@ class MTime(MetadataBase):
         return self.isoformat()
 
     def __eq__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the time stamp is equal to another time stamp.
@@ -492,7 +493,8 @@ class MTime(MetadataBase):
             return False
 
     def __ne__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the time stamp is not equal to another time stamp.
@@ -510,7 +512,8 @@ class MTime(MetadataBase):
         return not self.__eq__(other)
 
     def __lt__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is less than the current time stamp.
@@ -531,7 +534,8 @@ class MTime(MetadataBase):
         return bool(self.time_stamp < other.time_stamp)
 
     def __le__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is less than or equal to the current time stamp.
@@ -553,7 +557,8 @@ class MTime(MetadataBase):
         return bool(self.time_stamp <= other.time_stamp)
 
     def __gt__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is greater than the current time stamp.
@@ -571,7 +576,8 @@ class MTime(MetadataBase):
         return not self.__lt__(other)
 
     def __ge__(
-        self, other: float | int | np.datetime64 | pd.Timestamp | str  # | UTCDateTime
+        self,
+        other: float | int | np.datetime64 | pd.Timestamp | str,  # | UTCDateTime
     ) -> bool:
         """
         Checks if the other is greater than or equal to the current time stamp.

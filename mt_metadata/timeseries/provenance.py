@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -23,6 +23,7 @@ attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "creator")
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "submitter")
 attr_dict.add_dict(get_schema("person", SCHEMA_FN_PATHS), "archive")
 attr_dict.add_dict(get_schema("software", SCHEMA_FN_PATHS), "software")
+
 
 # =============================================================================
 class Provenance(Base):
@@ -46,4 +47,4 @@ class Provenance(Base):
 
     @creation_time.setter
     def creation_time(self, dt_str):
-        self._creation_dt.parse(dt_str)
+        self._creation_dt.time_stamp = dt_str
