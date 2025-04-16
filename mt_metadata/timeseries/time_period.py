@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -18,6 +18,8 @@ from mt_metadata.utils.mttime import MTime
 
 # =============================================================================
 attr_dict = get_schema("time_period", SCHEMA_FN_PATHS)
+
+
 # =============================================================================
 class TimePeriod(Base):
     __doc__ = write_lines(attr_dict)
@@ -34,7 +36,7 @@ class TimePeriod(Base):
 
     @start.setter
     def start(self, start_date):
-        self._start_dt = MTime(start_date)
+        self._start_dt = MTime(time_stamp=start_date)
 
     @property
     def end(self):
@@ -42,7 +44,7 @@ class TimePeriod(Base):
 
     @end.setter
     def end(self, stop_date):
-        self._end_dt = MTime(stop_date)
+        self._end_dt = MTime(time_stamp=stop_date)
 
     @property
     def start_date(self):
@@ -50,7 +52,7 @@ class TimePeriod(Base):
 
     @start_date.setter
     def start_date(self, start_date):
-        self._start_dt = MTime(start_date)
+        self._start_dt = MTime(time_stamp=start_date)
 
     @property
     def end_date(self):
@@ -58,4 +60,4 @@ class TimePeriod(Base):
 
     @end_date.setter
     def end_date(self, stop_date):
-        self._end_dt = MTime(stop_date)
+        self._end_dt = MTime(time_stamp=stop_date)
