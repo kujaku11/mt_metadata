@@ -461,10 +461,10 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         json_extra_line += "},\n"
         field_parts.append(json_extra_line)
 
-        if field_attrs["required"]:
-            field_parts.append(")]\n")
-        else:
-            field_parts.append(f")] = {field_default}\n")
+        # if field_attrs["required"]:
+        field_parts.append(")]\n")
+        # else:
+        #     field_parts.append(f")] = {field_default}\n")
 
         class_definitions.append("\n".join(field_parts))
 
