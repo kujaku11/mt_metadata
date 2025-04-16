@@ -8,15 +8,15 @@ from pydantic import Field, AliasChoices
 
 
 # =====================================================
-class Range(MetadataBase):
+class MinMaxRange(MetadataBase):
     """
     Range of values.
 
     Attributes
     ----------
-    min : float
+    minimum : float
         Minimum value of the range.
-    max : float
+    maximum : float
         Maximum value of the range.
     """
 
@@ -27,7 +27,7 @@ class Range(MetadataBase):
             description="Minimum value of the range.",
             examples="1.0",
             type="number",
-            validation_alias=AliasChoices("start", "minimum", "min"),
+            validation_alias=AliasChoices("minimum", "min"),
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -41,7 +41,49 @@ class Range(MetadataBase):
             description="Maximum value of the range.",
             examples="1.0",
             type="number",
-            validation_alias=AliasChoices("end", "maximum", "max"),
+            validation_alias=AliasChoices("maximum", "max"),
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+
+class StartEndRange(MetadataBase):
+    """
+    Range of values.
+
+    Attributes
+    ----------
+    start : float
+        starting value of the range.
+    end : float
+        Ending value of the range.
+    """
+
+    start: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="Starting value.",
+            examples="1.0",
+            type="number",
+            validation_alias=AliasChoices("start", "beginning"),
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+    end: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="Ending value of the range.",
+            examples="1.0",
+            type="number",
+            validation_alias=AliasChoices("end", "finish"),
             json_schema_extra={
                 "units": None,
                 "required": True,

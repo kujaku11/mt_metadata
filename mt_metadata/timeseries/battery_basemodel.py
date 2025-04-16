@@ -4,6 +4,7 @@
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.timeseries.range_basemodel import StartEndRange
 from pydantic import Field
 
 
@@ -39,35 +40,20 @@ class Battery(MetadataBase):
         ),
     ] = None
 
-    voltage.start: Annotated[
-        float | None,
+    voltage: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Starting voltage",
-            examples="14.3",
-            type="number",
+            default=StartEndRange(),
+            description="Range of voltages.",
+            examples="Range(minimum=0.0, maximum=1.0)",
+            type="object",
             alias=None,
             json_schema_extra={
                 "units": "volts",
                 "required": False,
             },
         ),
-    ] = None
-
-    voltage.end: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Ending voltage",
-            examples="12.1",
-            type="number",
-            alias=None,
-            json_schema_extra={
-                "units": "volts",
-                "required": False,
-            },
-        ),
-    ] = None
+    ]
 
     comments: Annotated[
         str | None,

@@ -57,6 +57,7 @@ class MetadataBase(BaseModel):
         extra="allow",
         arbitrary_types_allowed=True,  # need this for numpy and pd types
         use_enum_values=True,
+        coerce_numbers_to_str=True,
     )
 
     _default_keys: List[str] = PrivateAttr(

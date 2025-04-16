@@ -3,10 +3,10 @@
 # =====================================================
 from enum import Enum
 from typing import Annotated
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.location_helpers import convert_position_str2float, DatumEnum
+from mt_metadata.utils.location_helpers import validate_position, DatumEnum
 
 
 # =====================================================
@@ -259,19 +259,5 @@ class Location(MetadataBase):
 
     @field_validator("latitude", "longitude", mode="before")
     @classmethod
-    def validate_position(
-        cls,
-        value,
-    ):
-        if isinstance(value, str):
-            value = convert_position_str2float(value)
-        else:
-            try:
-                value = float(value)
-            except ValueError:
-                raise ValueError("latitude and longitude must be float or str")
-        if not (abs(value) <= 90) and cls.model_fields_set == {"latitude"}:
-            raise ValueError("latitude must be between -90 and 90 degrees")
-        if not (abs(value) <= 180) and cls.model_fields_set == {"longitude"}:
-            raise ValueError("longitude must be between -180 and 180 degrees")
-        return value
+    def validate_position(cls, value, info: ValidationInfo):
+        return validate_position(value, info.field_name)

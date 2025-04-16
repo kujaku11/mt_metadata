@@ -59,7 +59,7 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
     fields = {}
     for field_name, field_value in model.model_fields.items():
         if hasattr(field_value.annotation, "model_fields"):
-            fields[field_name] = field_value.annotation().all_attributes()
+            fields[field_name] = field_value.annotation().get_all_fields()
         else:
             fields[field_name] = field_value
 

@@ -151,6 +151,45 @@ def _assert_seconds(seconds: float | int) -> float:
     return seconds
 
 
+def validate_position(value: str | float, position_type: str) -> float:
+    """
+    Validate position value (latitude or longitude) and convert to float.
+
+    Parameters
+    ----------
+    value : str | float
+        The position value to validate and convert.
+    position_type : str
+        The type of position ('latitude' or 'longitude').
+
+    Returns
+    -------
+    float
+        The validated and converted position value.
+
+    Raises
+    ------
+    ValueError
+        If the value is not a valid latitude or longitude.
+    """
+    if position_type not in ["latitude", "longitude"]:
+        raise ValueError("position_type must be 'latitude' or 'longitude'")
+
+    if isinstance(value, str) and ":" in value:
+        value = convert_position_str2float(value)
+    else:
+        try:
+            value = float(value)
+        except ValueError:
+            raise ValueError("latitude and longitude must be float or str")
+
+    if not (abs(value) <= 90) and position_type in ["latitude", "lat"]:
+        raise ValueError("latitude must be between -90 and 90 degrees")
+    if not (abs(value) <= 180) and position_type in ["longitude", "lon"]:
+        raise ValueError("longitude must be between -180 and 180 degrees")
+    return value
+
+
 class DatumEnum(str, Enum):
     """
     Enum of datums for use in the metadata model.
