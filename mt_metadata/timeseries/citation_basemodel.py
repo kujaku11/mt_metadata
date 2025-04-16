@@ -3,11 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-import numpy as np
-import pandas as pd
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.mttime import MTime
-from pydantic import Field, HttpUrl, field_validator
+from pydantic import Field, HttpUrl, AliasChoices
 
 
 # =====================================================
@@ -19,7 +16,8 @@ class Citation(MetadataBase):
             description="full url of the doi number",
             examples="http://doi.###",
             type="string",
-            alias=["survey_doi"],
+            alias=[],
+            validation_alias=AliasChoices("doi", "survey_doi"),
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -40,7 +38,7 @@ class Citation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     title: Annotated[
         str | None,
@@ -55,22 +53,23 @@ class Citation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     year: Annotated[
-        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        str | None,
         Field(
-            default_factory=lambda: MTime(time_stamp=None),
+            default=None,
             description="Year of citation",
             examples="2020",
             type="string",
             alias=None,
+            pattern=r"^\d{4}$",
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     volume: Annotated[
         str | None,
@@ -85,7 +84,7 @@ class Citation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     pages: Annotated[
         str | None,
@@ -100,7 +99,7 @@ class Citation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     journal: Annotated[
         str | None,
@@ -115,11 +114,4 @@ class Citation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
-
-    @field_validator("year", mode="before")
-    @classmethod
-    def validate_year(
-        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
-    ):
-        return MTime(time_stamp=field_value)
+    ]

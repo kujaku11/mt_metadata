@@ -676,6 +676,8 @@ class NumpyEncoder(json.JSONEncoder):
         # For now turn references into a generic string
         elif "h5" in str(type(obj)):
             return str(obj)
+        elif hasattr(obj, "unicode_string"):
+            return obj.unicode_string()
         return json.JSONEncoder.default(self, obj)
 
 
