@@ -95,7 +95,7 @@ class Comment(MetadataBase):
         """
         if isinstance(value, str):
             if "|" in value:
-                parts = value.split("|")
+                parts = [ss.strip() for ss in value.split("|")]
                 self.value = parts[-1]
                 if len(parts) == 3:
                     self.time_stamp = parts[0]
