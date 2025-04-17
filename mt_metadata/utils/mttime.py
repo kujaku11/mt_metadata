@@ -668,7 +668,7 @@ class MTime(MetadataBase):
     def __hash__(self) -> int:
         return hash(self.isoformat())
 
-    def to_dict(self, nested=False, single=False, required=True) -> dict[str, str]:
+    def to_dict(self, nested=False, single=False, required=True) -> str:
         """
         Convert the time stamp to a dictionary with the ISO format string.
 
