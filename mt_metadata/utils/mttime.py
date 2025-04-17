@@ -674,8 +674,8 @@ class MTime(MetadataBase):
 
         Returns
         -------
-        dict[str, str]
-            Dictionary with the ISO format string.
+        str
+            The ISO format string.
         """
         return self.isoformat()
 
