@@ -19,6 +19,7 @@ import unittest
 from mt_metadata.base import Base
 from mt_metadata.utils.exceptions import MTValidatorError
 
+
 # =============================================================================
 # Tests
 # =============================================================================
@@ -63,17 +64,13 @@ class TestBase(unittest.TestCase):
     def test_validate_type(self):
 
         with self.subTest("float"):
-            self.assertEqual(
-                10.0, self.base_object._validate_type("10", "float")
-            )
+            self.assertEqual(10.0, self.base_object._validate_type("10", "float"))
         with self.subTest("integer"):
             self.assertEqual(10, self.base_object._validate_type("10", int))
         with self.subTest("string"):
             self.assertEqual("10", self.base_object._validate_type(10, str))
         with self.subTest("bool"):
-            self.assertEqual(
-                True, self.base_object._validate_type("true", bool)
-            )
+            self.assertEqual(True, self.base_object._validate_type("true", bool))
 
     def test_list_validation_type(self):
 
@@ -101,9 +98,7 @@ class TestBase(unittest.TestCase):
 
     def test_update(self):
         other = Base()
-        other.add_base_attribute(
-            self.extra_name, self.extra_value, self.extra_v_dict
-        )
+        other.add_base_attribute(self.extra_name, self.extra_value, self.extra_v_dict)
 
         other.extra_attribute = 12
 
@@ -113,21 +108,17 @@ class TestBase(unittest.TestCase):
 
     def test_copy(self):
         other = Base()
-        other.add_base_attribute(
-            self.extra_name, self.extra_value, self.extra_v_dict
-        )
+        other.add_base_attribute(self.extra_name, self.extra_value, self.extra_v_dict)
         other.extra_attribute = 12
 
         new = other.copy()
         self.assertEqual(other, new)
 
     def test_equal_other(self):
-        assert (self.base_object == self.base_object.to_dict()["base"])
+        assert self.base_object == self.base_object.to_dict()["base"]
 
     def test_equal_str(self):
         self.assertFalse(self.base_object == "None")
-
-
 
 
 # =============================================================================
