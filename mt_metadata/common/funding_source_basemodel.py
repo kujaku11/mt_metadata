@@ -4,7 +4,7 @@
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from pydantic import Field, HttpUrl, EmailStr
 
 
 # =====================================================
@@ -13,8 +13,6 @@ class FundingSource(MetadataBase):
         str | None,
         Field(
             default=None,
-            type="string",
-            items={"type": "string"},
             description="Persons name, should be full first and last name.",
             examples="person name",
             alias=None,
@@ -23,14 +21,12 @@ class FundingSource(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     organization: Annotated[
         str | None,
         Field(
             default=None,
-            type="string",
-            items={"type": "string"},
             description="Organization full name",
             examples="mt gurus",
             alias=None,
@@ -39,14 +35,12 @@ class FundingSource(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     email: Annotated[
-        str | None,
+        EmailStr | None,
         Field(
             default=None,
-            type="string",
-            items={"type": "string"},
             description="Email of the contact person",
             examples="mt.guru@em.org",
             alias=None,
@@ -55,14 +49,12 @@ class FundingSource(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     url: Annotated[
-        str | None,
+        HttpUrl | None,
         Field(
             default=None,
-            type="string",
-            items={"type": "string"},
             description="URL of the contact person",
             examples="em.org",
             alias=None,
@@ -71,7 +63,7 @@ class FundingSource(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     comments: Annotated[
         str | None,
@@ -79,21 +71,18 @@ class FundingSource(MetadataBase):
             default=None,
             description="Any comments about the person",
             examples="expert digger",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     grant_id: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
-            type="string",
-            items={"type": "string"},
             description="Grant ID number or name",
             examples="MT-01-2020",
             alias=None,
@@ -102,4 +91,4 @@ class FundingSource(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
