@@ -9,16 +9,5 @@
             "alias": [],
             "example": "coherence",
             "default": ""
-        },
-        "weight_kernels": {
-            "type": "list",
-            "required": True,
-            "style": "object list",
-            "units": null,
-            "description": "List of weight kernel instances to apply to this feature.",
-            "options": [],
-            "alias": [],
-            "example": [],
-            "default": []
         }
     }
