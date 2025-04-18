@@ -7,6 +7,9 @@ import numpy as np
 import pandas as pd
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.person_basemodel import Person
+from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common.software_basemodel import Software
 from pydantic import Field, field_validator
 
 
@@ -56,6 +59,62 @@ class Provenance(MetadataBase):
             },
         ),
     ] = None
+
+    creator: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Person who created the data.",
+            examples="Person(name=J. Pedantic, email=jped@mt.com)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    submitter: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Person who submitted the data.",
+            examples="Person(name=submitter_name, email=submitter@email)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    archive: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Archive from which the data was downloaded from.",
+            examples="Person(name=archive_name, url=https://archive.url)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    software: Annotated[
+        Software,
+        Field(
+            default_factory=Software,
+            description="Software used to create the data.",
+            examples="Software(name=mt_metadata, version=0.1)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
     @field_validator("creation_time", mode="before")
     @classmethod
