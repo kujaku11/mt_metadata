@@ -199,3 +199,12 @@ History
 * Fix EDI Tipper flip by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/228
 * Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/227
 * Bump version: 0.3.7 → 0.3.8 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/229 
+
+0.x.x ()
+----------------------
+
+* The underlying code has been refactored using Pydantic to improve performance and maintainability.
+* The metadata structure has been updated to better align with the latest standards and practices in geophysical data management.
+* The documentation has been improved to provide clearer guidance on usage and examples.
+* Tests have been update to `pytest`
+* `filtered` has been update to use a list of filters `AppliedFilter` objects and can include stage.
