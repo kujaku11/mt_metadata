@@ -102,6 +102,15 @@ class Comment(MetadataBase):
         str
             formatted comment
         """
+        if self.value is None:
+            return None
+
+        if self.time_stamp == "1980-01-01T00:00:00+00:00":
+            if self.author in [None, ""]:
+                return self.value
+            return f" {self.author} | {self.value}"
+        if self.author in [None, ""]:
+            return f"{self.time_stamp} | {self.value}"
         return f"{self.time_stamp} | {self.author} | {self.value}"
 
     def from_dict(
