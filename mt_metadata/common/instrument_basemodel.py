@@ -4,7 +4,7 @@
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from pydantic import Field, AliasChoices
 
 
 # =====================================================
@@ -15,8 +15,7 @@ class Instrument(MetadataBase):
             default="",
             description="Instrument ID number can be serial number or a designated ID.",
             examples="mt01",
-            type="string",
-            alias=["serial"],
+            validation_alias=AliasChoices("id", "serial"),
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -30,7 +29,6 @@ class Instrument(MetadataBase):
             default="",
             description="Who manufactured the instrument.",
             examples="mt gurus",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -45,7 +43,6 @@ class Instrument(MetadataBase):
             default="",
             description="Description of the instrument type.",
             examples="broadband 32-bit",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -60,14 +57,13 @@ class Instrument(MetadataBase):
             default=None,
             description="Model version of the instrument.",
             examples="falcon5",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     name: Annotated[
         str | None,
@@ -75,11 +71,10 @@ class Instrument(MetadataBase):
             default=None,
             description="Standard marketing name of the instrument.",
             examples="falcon5",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
