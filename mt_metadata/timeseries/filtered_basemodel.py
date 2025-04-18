@@ -4,74 +4,86 @@
 from collections import OrderedDict
 from typing import Annotated
 from typing_extensions import Self
-from pydantic import (
-    Field,
-    computed_field,
-    field_validator,
-    ValidationInfo,
-)
+from pydantic import Field, computed_field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.comment_basemodel import Comment
 
 
 # =====================================================
-class Filtered(MetadataBase):
-    applied_dict: OrderedDict[str, bool] = {
+
+# this will be a better way of keeping track of filter names and
+# if they have been applied or not.  This can also include the stage
+# number of the filter and could be extended to other attributes.
+
+
+class AppliedFilter(MetadataBase):
+    name: Annotated[
+        str,
         Field(
-            default_factory=OrderedDict,
-            description="Dictionary of filter names and if they have been applied.",
-            examples='{"lowpass_magnetic": True, "counts2mv": False}',
+            default=None,
+            description="Name of the filter.",
+            examples="low pass",
+            json_schema_extra={"units": None, "required": True},
+        ),
+    ]
+
+    applied: Annotated[
+        bool,
+        Field(
+            default=False,
+            description="Whether the filter has been applied.",
+            examples=True,
+            json_schema_extra={"units": None, "required": True},
+        ),
+    ]
+
+    stage: Annotated[
+        int | None,
+        Field(
+            default=None,
+            description="Stage of the filter in the processing chain.",
+            examples=1,
+            json_schema_extra={"units": None, "required": False},
+        ),
+    ]
+
+
+class Filtered(MetadataBase):
+    applied_list: Annotated[
+        list[AppliedFilter],
+        Field(
+            default_factory=list,
+            description="List of applied filters.",
+            examples=["AppliedFilter(name='low pass', applied=True)"],
+            alias=None,
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
-        )
-    }
+        ),
+    ]
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
+    @computed_field
     def applied(self) -> list[bool]:
         """
         Return a list of booleans indicating if the filter has been applied.
         """
-        return list(self.applied_dict.values())
+        return [filter.applied for filter in self.applied_list]
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
+    @computed_field
     def name(self) -> list[str]:
         """
         Return a list of filter names.
         """
-        return list(self.applied_dict.keys())
+        return [filter.name for filter in self.applied_list]
 
-    @name.setter
-    def name(self, value: list[str]) -> None:
+    @computed_field
+    def stage(self) -> list[int | None]:
         """
-        Set the filter names.
+        Return a list of filter stages.
         """
-        for name in value:
-            self.applied_dict[name] = self.applied_dict.get(name, True)
-
-    # this won't work see https://github.com/pydantic/pydantic/issues/1577
-    # def __setattr__(self, key, val):
-    #     method = self.__config__.property_set_methods.get(key)
-    #     if method is None:
-    #         super().__setattr__(key, val)
-    #     else:
-    #         getattr(self, method)(val)
-
-    # class Config:
-    #     property_set_methods = {"coords": "set_coords"}
-    @applied.setter
-    def applied(self, value: list[bool]) -> None:
-        """
-        Set the filter names.
-        """
-        if len(value) != len(self.applied_dict.keys()):
-            raise ValueError(
-                "Length of applied list must match length of filter names."
-            )
+        return [filter.stage for filter in self.applied_list]
 
     comments: Annotated[
         Comment | None,
@@ -97,3 +109,54 @@ class Filtered(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    def to_dict(
+        self, nested=False, single=False, required=True, include_stage=False
+    ) -> OrderedDict:
+        """
+        Convert the Filtered object to an OrderedDict. For now stage is not included
+        for backwards compatibility.  This should be updated in the future.
+        """
+        if include_stage:
+            return OrderedDict(
+                {
+                    "applied": self.applied,
+                    "name": self.name,
+                    "stage": self.stage,
+                    "comments": self.comments,
+                }
+            )
+        return OrderedDict(
+            {
+                "applied": self.applied,
+                "name": self.name,
+                "comments": self.comments,
+            }
+        )
+
+    def from_dict(self, data: dict) -> Self:
+        """
+        Populate the Filtered object from a dictionary.
+        """
+        applied_list = []
+        if "stage" in data:
+            for index in range(len(data["applied"])):
+                applied_list.append(
+                    AppliedFilter(
+                        name=data["name"][index],
+                        applied=data["applied"][index],
+                        stage=data["stage"][index],
+                    )
+                )
+        else:
+            # If "stage" is not in data, use the length of "applied" to determine the number of filters
+            for index in range(len(data["applied"])):
+                applied_list.append(
+                    AppliedFilter(
+                        name=data["name"][index],
+                        applied=data["applied"][index],
+                        stage=index,  # Default to index if stage is not provided
+                    )
+                )
+
+        self.applied_list = applied_list
