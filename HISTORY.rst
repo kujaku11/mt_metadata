@@ -208,3 +208,5 @@ History
 * The documentation has been improved to provide clearer guidance on usage and examples.
 * Tests have been update to `pytest`
 * `filtered` has been update to use a list of filters `AppliedFilter` objects and can include stage.
+* `Comments` is now an object with attributes including `value`, `author`, and `date`.
+* Moved many common class objects to folder called `common` to reduce redundancy.
