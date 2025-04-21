@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common import Comment
 from mt_metadata.utils.mttime import MTime
 
 

@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.fdsn_basemodel import Fdsn
+from mt_metadata.common import Fdsn
 
 
 def test_fdsn_default_values():

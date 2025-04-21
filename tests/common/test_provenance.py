@@ -1,9 +1,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-from mt_metadata.common.provenance_basemodel import Provenance
-from mt_metadata.common.person_basemodel import Person
-from mt_metadata.common.software_basemodel import Software
+from mt_metadata.common import Provenance, Person, Software
 from mt_metadata.utils.mttime import MTime
 
 

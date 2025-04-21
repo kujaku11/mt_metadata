@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from mt_metadata.timeseries.time_period_basemodel import TimePeriod
+from mt_metadata.timeseries import TimePeriod
 from mt_metadata.utils.mttime import MTime
 
 

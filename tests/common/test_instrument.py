@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.instrument_basemodel import Instrument
+from mt_metadata.common import Instrument
 
 
 def test_instrument_default_values():

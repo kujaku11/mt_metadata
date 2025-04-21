@@ -1,6 +1,6 @@
 import pytest
-from mt_metadata.timeseries.declination_basemodel import Declination, ModelEnum
-from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common.declination import Declination, ModelEnum
+from mt_metadata.common import Comment
 
 
 def test_declination_default_values():

@@ -1,7 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.person_basemodel import Person
-from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common import Person, Comment
 
 
 def test_person_default_values():

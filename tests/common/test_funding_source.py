@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.funding_source_basemodel import FundingSource
+from mt_metadata.common import FundingSource
 
 
 def test_funding_source_default_values():

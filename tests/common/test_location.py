@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.location_basemodel import Location
+from mt_metadata.common import Location
 from mt_metadata.utils.location_helpers import DatumEnum
 
 

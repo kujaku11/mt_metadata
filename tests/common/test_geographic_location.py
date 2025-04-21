@@ -1,5 +1,5 @@
 import pytest
-from mt_metadata.common.geographic_location_basemodel import GeographicLocation
+from mt_metadata.common import GeographicLocation
 
 
 def test_geographic_location_default_values():

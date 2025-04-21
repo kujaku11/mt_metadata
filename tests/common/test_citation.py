@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.timeseries.citation_basemodel import Citation
+from mt_metadata.common import Citation
 
 
 def test_citation_default_values():

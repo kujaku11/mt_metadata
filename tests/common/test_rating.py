@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common.rating_basemodel import Rating
+from mt_metadata.common import Rating
 
 
 def test_rating_default_values():

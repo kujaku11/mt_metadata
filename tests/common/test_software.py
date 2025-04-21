@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-from mt_metadata.common.software_basemodel import Software
+from mt_metadata.common import Software
 from mt_metadata.utils.mttime import MTime
 
 

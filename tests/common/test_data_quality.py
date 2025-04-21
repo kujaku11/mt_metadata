@@ -1,5 +1,5 @@
 import pytest
-from mt_metadata.timeseries.data_quality_basemodel import DataQuality
+from mt_metadata.timeseries import DataQuality
 
 
 def test_data_quality_default_values():

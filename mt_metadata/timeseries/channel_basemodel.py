@@ -5,7 +5,28 @@ from enum import Enum
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from mt_metadata.common import (
+    Comment,
+    Rating,
+    DataQuality,
+    Filtered,
+    TimePeriod,
+    Instrument,
+    Fdsn,
+)
+from pydantic import Field, field_validator, ValidationInfo
+
+# dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
+# attr_dict.add_dict(dq_dict, "data_quality")
+# attr_dict.add_dict(get_schema("filtered", SCHEMA_FN_PATHS), "filter")
+# attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
+# attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "sensor")
+# attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
+# attr_dict.add_dict(
+#     get_schema("location", SCHEMA_FN_PATHS),
+#     "location",
+#     keys=["latitude", "longitude", "elevation"],
+# )
 
 
 # =====================================================
@@ -21,6 +42,7 @@ class ComponentEnum(str, Enum):
     T = "T"
     Battery = "Battery"
     other = "other"
+    none = ""
 
 
 class UnitsEnum(str, Enum):
@@ -29,7 +51,26 @@ class UnitsEnum(str, Enum):
     meters = "meters"
     degrees = "degrees"
     kilograms = "kilograms"
+    volts = "volts"
+    amps = "amps"
+    ohms = "ohms"
+    hertz = "hertz"
+    pascals = "pascals"
+    tesla = "tesla"
+    gauss = "gauss"
+    microvolts = "microvolts"
+    millivolts = "millivolts"
+    nanotesla = "nanotesla"
+    microtesla = "microtesla"
+    millitesla = "millitesla"
+    microamps = "microamps"
+    milliamps = "milliamps"
+    microohms = "microohms"
+    milliohms = "milliohms"
+    counts = "counts"
+    counts_per_second = "counts per second"
     other = "other"
+    none = ""
 
 
 class Channel(MetadataBase):
@@ -61,12 +102,12 @@ class Channel(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     comments: Annotated[
-        str | None,
+        Comment,
         Field(
-            default=None,
+            default_factory=Comment,
             description="Any comments about the channel.",
             examples="ambient air temperature was chilly, ice on cables",
             type="string",
@@ -76,7 +117,7 @@ class Channel(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     component: Annotated[
         ComponentEnum,
@@ -151,7 +192,7 @@ class Channel(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     translated_tilt: Annotated[
         float | None,
@@ -166,7 +207,7 @@ class Channel(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     type: Annotated[
         str,
@@ -197,3 +238,13 @@ class Channel(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value
