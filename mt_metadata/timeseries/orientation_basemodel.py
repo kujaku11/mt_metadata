@@ -30,7 +30,7 @@ class Orientation(MetadataBase):
     method: Annotated[
         MethodEnum,
         Field(
-            default="",
+            default="compass",
             description="method for orienting station layout",
             examples="compass",
             type="string",
@@ -45,7 +45,7 @@ class Orientation(MetadataBase):
     reference_frame: Annotated[
         ReferenceFrameEnum,
         Field(
-            default=geographic,
+            default="geographic",
             description='"Reference frame for station layout.  There are only 2 options geographic and geomagnetic.  Both assume a right-handed coordinate system with North=0 E=90 and vertical positive downward"',
             examples="geomagnetic",
             type="string",
@@ -70,7 +70,7 @@ class Orientation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     value: Annotated[
         ValueEnum | None,
@@ -85,4 +85,4 @@ class Orientation(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
