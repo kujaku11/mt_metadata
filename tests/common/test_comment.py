@@ -249,3 +249,111 @@ def test_comment_to_dict_with_none_value():
 
     result = comment.to_dict()
     assert result is None
+
+
+def test_comment_eq_with_identical_objects():
+    """
+    Test __eq__ with two identical Comment objects.
+    """
+    comment1 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+    comment2 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+
+    assert comment1 == comment2
+
+
+def test_comment_eq_with_different_objects():
+    """
+    Test __eq__ with two different Comment objects.
+    """
+    comment1 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+    comment2 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a different comment.",
+    )
+
+    assert comment1 != comment2
+
+
+def test_comment_eq_with_string():
+    """
+    Test __eq__ with a Comment object and a string.
+    """
+    comment = Comment(
+        value="This is a test comment.",
+    )
+    string = "This is a test comment."
+
+    assert comment == string
+
+
+def test_comment_eq_with_non_comment_object():
+    """
+    Test __eq__ with a Comment object and a non-Comment object.
+    """
+    comment = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+    non_comment = {"time_stamp": "2023-05-01T12:00:00+00:00", "author": "J. Pedantic"}
+
+    assert comment != non_comment
+
+
+def test_comment_eq_with_partial_values():
+    """
+    Test __eq__ with Comment objects having partial values.
+    """
+    comment1 = Comment(value="This is a test comment.")
+    comment2 = Comment(value="This is a test comment.")
+
+    assert comment1 == comment2
+
+
+def test_comment_eq_with_different_time_stamps():
+    """
+    Test __eq__ with Comment objects having different time stamps.
+    """
+    comment1 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+    comment2 = Comment(
+        time_stamp="2023-05-02T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+
+    assert comment1 != comment2
+
+
+def test_comment_eq_with_different_authors():
+    """
+    Test __eq__ with Comment objects having different authors.
+    """
+    comment1 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="J. Pedantic",
+        value="This is a test comment.",
+    )
+    comment2 = Comment(
+        time_stamp="2023-05-01T12:00:00+00:00",
+        author="A. Different",
+        value="This is a test comment.",
+    )
+
+    assert comment1 != comment2

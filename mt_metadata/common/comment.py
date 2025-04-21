@@ -90,6 +90,33 @@ class Comment(MetadataBase):
                         self.author = parts[0]
         return self
 
+    # need to override __eq__ to compare the values of the object
+    # otherwise the __eq__ from MetadataBase will be used which
+    # assumes an object.
+    def __eq__(self, other: object) -> bool:
+        """
+        Check if two Comment objects are equal.
+
+        Parameters
+        ----------
+        other : object
+            The object to compare with.
+
+        Returns
+        -------
+        bool
+            True if the objects are equal, False otherwise.
+        """
+        if isinstance(other, str):
+            other = Comment(value=other)
+        elif isinstance(other, dict):
+            other = Comment(**other)
+        return (
+            self.author == other.author
+            and self.time_stamp == other.time_stamp
+            and self.value == other.value
+        )
+
     def to_dict(self, nested=False, single=False, required=True) -> str:
         """
         Returns the comment as "{time_stamp} | {author} | {comment}"

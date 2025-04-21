@@ -37,7 +37,7 @@ def test_provenance_custom_values():
     )
 
     assert provenance.creation_time.isoformat() == "2023-05-01T12:00:00+00:00"
-    assert provenance.comments.value == "Data created for testing."
+    assert provenance.comments == "Data created for testing."
     assert provenance.log == "2023-05-02T14:00:00+00:00 updated metadata"
     assert provenance.creator.name == "J. Pedantic"
     assert provenance.creator.email == "jped@mt.com"
