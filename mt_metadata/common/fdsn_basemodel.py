@@ -29,11 +29,11 @@ class Fdsn(MetadataBase):
         str | None,
         Field(
             default=None,
-            description="Given two character FDSN archive network code.",
+            description="Given two character FDSN archive network code. Needs to be 2 alpha numeric characters.",
             examples="EM",
             type="string",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9]{2}$",
             json_schema_extra={
                 "units": None,
                 "required": False,
@@ -49,7 +49,7 @@ class Fdsn(MetadataBase):
             examples="LQN",
             type="string",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9]{3}*$",
             json_schema_extra={
                 "units": None,
                 "required": False,
