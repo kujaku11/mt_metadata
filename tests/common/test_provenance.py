@@ -37,14 +37,14 @@ def test_provenance_custom_values():
     )
 
     assert provenance.creation_time.isoformat() == "2023-05-01T12:00:00+00:00"
-    assert provenance.comments == "Data created for testing."
+    assert provenance.comments.value == "Data created for testing."
     assert provenance.log == "2023-05-02T14:00:00+00:00 updated metadata"
     assert provenance.creator.name == "J. Pedantic"
     assert provenance.creator.email == "jped@mt.com"
     assert provenance.submitter.name == "Submitter Name"
     assert provenance.submitter.email == "submitter@email.com"
     assert provenance.archive.name == "Archive Name"
-    assert provenance.archive.url == "https://archive.url"
+    assert provenance.archive.url.unicode_string() == "https://archive.url/"
     assert provenance.software.name == "mt_metadata"
     assert provenance.software.version == "0.1"
 
@@ -95,7 +95,7 @@ def test_provenance_partial_values():
         creator=Person(name="J. Pedantic"),
     )
 
-    assert provenance.comments == "Partial data"
+    assert provenance.comments.value == "Partial data"
     assert provenance.creator.name == "J. Pedantic"
     assert provenance.creator.email is None
     assert provenance.submitter.name == ""
