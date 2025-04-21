@@ -5,7 +5,14 @@ from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.comment_basemodel import Comment
-from pydantic import EmailStr, Field, AnyUrl, field_validator, ValidationInfo
+from pydantic import (
+    EmailStr,
+    Field,
+    AnyUrl,
+    field_validator,
+    ValidationInfo,
+    AliasChoices,
+)
 
 
 # =====================================================
@@ -16,24 +23,10 @@ class Person(MetadataBase):
             default="",
             description="Persons name, should be full first and last name.",
             examples="person name",
-            alias=None,
+            validation_alias=AliasChoices("name", "author"),
             json_schema_extra={
                 "units": None,
                 "required": True,
-            },
-        ),
-    ]
-
-    author: Annotated[
-        str | None,
-        Field(
-            default=None,
-            description="Persons name, should be full first and last name.",
-            examples="person name",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
             },
         ),
     ]

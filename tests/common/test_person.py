@@ -11,7 +11,6 @@ def test_person_default_values():
     person = Person()
 
     assert person.name == ""
-    assert person.author is None
     assert person.organization is None
     assert person.email is None
     assert person.url is None
@@ -33,7 +32,6 @@ def test_person_custom_values():
     )
 
     assert person.name == "John Doe"
-    assert person.author == "J. Doe"
     assert person.organization == "MT Gurus"
     assert person.email == "john.doe@mtgurus.org"
     assert person.url.unicode_string() == "https://mtgurus.org/"
@@ -51,7 +49,6 @@ def test_person_partial_values():
     )
 
     assert person.name == "Jane Smith"
-    assert person.author is None
     assert person.organization is None
     assert person.email == "jane.smith@mtgurus.org"
     assert person.url is None
@@ -93,3 +90,12 @@ def test_person_comments_as_comment_object():
     person = Person(comments=comment)
 
     assert person.comments == comment
+
+
+def test_author_alias():
+    """
+    Test the Person model with the author alias.
+    """
+    person = Person(author="J. Doe")
+
+    assert person.name == "J. Doe"
