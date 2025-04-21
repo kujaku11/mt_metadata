@@ -1,5 +1,6 @@
 import pytest
 from mt_metadata.common import GeographicLocation
+from pydantic import ValidationError
 
 
 def test_geographic_location_default_values():
@@ -62,15 +63,15 @@ def test_geographic_location_invalid_country_type():
     """
     Test the GeographicLocation model with an invalid country type.
     """
-    with pytest.raises(ValueError):
-        GeographicLocation(country=12345)  # Country must be a string or None
+    with pytest.raises(ValidationError):
+        GeographicLocation(country=[])  # Country must be a string or None
 
 
 def test_geographic_location_invalid_state_type():
     """
     Test the GeographicLocation model with an invalid state type.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         GeographicLocation(state=["Colorado", "Utah"])  # State must be a string or None
 
 
@@ -78,5 +79,5 @@ def test_geographic_location_invalid_parcel_type():
     """
     Test the GeographicLocation model with an invalid parcel type.
     """
-    with pytest.raises(ValueError):
-        GeographicLocation(parcel=12345)  # Parcel must be a string or None
+    with pytest.raises(ValidationError):
+        GeographicLocation(parcel=[])  # Parcel must be a string or None

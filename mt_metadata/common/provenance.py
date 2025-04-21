@@ -7,10 +7,8 @@ import numpy as np
 import pandas as pd
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.common.person_basemodel import Person
-from mt_metadata.common.comment_basemodel import Comment
-from mt_metadata.common.software_basemodel import Software
-from pydantic import Field, field_validator
+from mt_metadata.common import Person, Comment, Software
+from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
@@ -31,9 +29,9 @@ class Provenance(MetadataBase):
     ]
 
     comments: Annotated[
-        str | None,
+        Comment,
         Field(
-            default=None,
+            default_factory=Comment,
             description="Any comments on provenance of the data.",
             examples="all good",
             type="string",
@@ -43,7 +41,7 @@ class Provenance(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     log: Annotated[
         str | None,
@@ -58,7 +56,7 @@ class Provenance(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     creator: Annotated[
         Person,
@@ -122,3 +120,13 @@ class Provenance(MetadataBase):
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
         return MTime(time_stamp=field_value)
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value

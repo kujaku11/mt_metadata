@@ -123,10 +123,6 @@ def test_comment_partial_values():
     assert comment.value == "failure at midnight."
 
 
-import pytest
-from mt_metadata.common.comment_basemodel import Comment
-
-
 def test_comment_to_dict_with_full_values():
     """
     Test the to_dict method with all fields set.
@@ -189,10 +185,6 @@ def test_comment_to_dict_with_none_value():
 
     result = comment.to_dict()
     assert result is None
-
-
-import pytest
-from mt_metadata.common.comment_basemodel import Comment
 
 
 def test_comment_to_dict_with_full_values():

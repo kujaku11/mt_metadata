@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from mt_metadata.common import Provenance, Person, Software
 from mt_metadata.utils.mttime import MTime
+from pydantic import ValidationError
 
 
 def test_provenance_default_values():
@@ -13,7 +14,7 @@ def test_provenance_default_values():
 
     assert isinstance(provenance.creation_time, MTime)
     assert provenance.creation_time.isoformat() == "1980-01-01T00:00:00+00:00"
-    assert provenance.comments is None
+    assert provenance.comments.value is None
     assert provenance.log is None
     assert isinstance(provenance.creator, Person)
     assert isinstance(provenance.submitter, Person)
@@ -52,7 +53,7 @@ def test_provenance_invalid_creation_time():
     """
     Test the Provenance model with an invalid creation_time value.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         Provenance(creation_time="invalid-date")
 
 
@@ -106,7 +107,7 @@ def test_provenance_invalid_creator_type():
     """
     Test the Provenance model with an invalid creator type.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         Provenance(creator="invalid_creator")  # Creator must be a Person object
 
 
@@ -114,5 +115,5 @@ def test_provenance_invalid_software_type():
     """
     Test the Provenance model with an invalid software type.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         Provenance(software="invalid_software")  # Software must be a Software object

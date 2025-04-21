@@ -1,5 +1,6 @@
 import pytest
-from mt_metadata.timeseries import DataQuality
+from mt_metadata.common import DataQuality
+from pydantic import ValidationError
 
 
 def test_data_quality_default_values():
@@ -54,13 +55,13 @@ def test_data_quality_invalid_values():
     """
     Test the DataQuality model with invalid values.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         DataQuality(good_from_period="invalid")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         DataQuality(good_to_period="invalid")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         DataQuality(flag="invalid")
 
 

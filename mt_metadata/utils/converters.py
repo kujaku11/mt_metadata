@@ -374,8 +374,18 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
     datetime_keys = []
     enum_lines = []
+    has_comment = False
     # Create field definitions
     for field_name, field_attrs in properties.items():
+        # Check if the field is a comment
+        if field_name in ["comments", "comment"]:
+            has_comment = True
+            field_type = "Comment"
+            imports.append("from mt_metadata.utils.comment import Comment")
+            field_attrs["default_factory"] = "lambda: Comment()"
+            class_definitions.append(f"{TAB}{field_name}: {field_type}")
+
+            continue
         # Fallback to Any if type is unknown
         field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
         # get typing imports
@@ -477,6 +487,16 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
                 f"{TAB}def validate_{key}(cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str):\n"
                 f"{TAB*2}return MTime(time_stamp=field_value)\n"
             )
+
+    if has_comment:
+        class_definitions.append(
+            f"{TAB}@field_validator('comments', mode='before)\n"
+            f"{TAB}@classmethod\n"
+            f"{TAB}def validate_comments(cls, value, info: ValidationInfo) -> Comment:\n"
+            f"{TAB*2}if isinstance(value, str):\n"
+            f"{TAB*3}return Comment(value=value)\n"
+            f"{TAB*2}return value\n"
+        )
 
     # Generate the class definition, dont need config dict as that is
     # already initiated in MetadataBase.

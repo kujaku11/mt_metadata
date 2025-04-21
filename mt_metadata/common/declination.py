@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common import Comment
 from pydantic import Field, field_validator, ValidationInfo
 
 
