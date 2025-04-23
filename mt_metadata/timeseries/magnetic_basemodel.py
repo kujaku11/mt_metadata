@@ -3,68 +3,52 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+from mt_metadata.common import StartEndRange
+from mt_metadata.timeseries.channel_basemodel import Channel
 
 
 # =====================================================
-class Magnetic(MetadataBase):
-    h_field_min.start: Annotated[
-        float | None,
+class Magnetic(Channel):
+    component: Annotated[
+        str,
         Field(
-            default=None,
-            description="Minimum magnetic field strength at beginning of measurement.",
-            examples="40345.1",
-            type="number",
+            default="",
+            description="Component of the electric field.",
+            examples="hx",
             alias=None,
+            pattern=r"^[hHbB][a-zA-Z]*$",
             json_schema_extra={
-                "units": "nt",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    h_field_min.end: Annotated[
-        float | None,
+    h_field_min: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Minimum magnetic field strength at end of measurement.",
-            examples="50453.2",
-            type="number",
+            default_factory=StartEndRange,
+            description="minimum of field strength at the beginning and end",
+            examples="StartEndRange(start=0.01, end=0.02)",
             alias=None,
             json_schema_extra={
-                "units": "nt",
-                "required": False,
+                "units": "nanotesla",
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    h_field_max.start: Annotated[
-        float | None,
+    h_field_max: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Maximum magnetic field strength at beginning of measurement.",
-            examples="34565.2",
-            type="number",
+            default_factory=StartEndRange,
+            description="maximum of field strength at the beginning and end",
+            examples="StartEndRange(start=0.1, end=2.0)",
             alias=None,
             json_schema_extra={
-                "units": "nt",
-                "required": False,
+                "units": "nanotesla",
+                "required": True,
             },
         ),
-    ] = None
-
-    h_field_max.end: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Maximum magnetic field strength at end of measurement.",
-            examples="34526.1",
-            type="number",
-            alias=None,
-            json_schema_extra={
-                "units": "nt",
-                "required": False,
-            },
-        ),
-    ] = None
+    ]

@@ -147,53 +147,53 @@ class Filtered(MetadataBase):
                 self.name.extend(["unknown"] * abs(diff))
         return self
 
-    def to_dict(
-        self, nested=False, single=False, required=True, include_stage=False
-    ) -> OrderedDict:
-        """
-        Convert the Filtered object to an OrderedDict. For now stage is not included
-        for backwards compatibility.  This should be updated in the future.
-        """
-        if include_stage:
-            return OrderedDict(
-                {
-                    "applied": self.applied,
-                    "name": self.name,
-                    "stage": self.stage,
-                    "comments": self.comments.to_dict(),
-                }
-            )
-        return OrderedDict(
-            {
-                "applied": self.applied,
-                "name": self.name,
-                "comments": self.comments.to_dict(),
-            }
-        )
+    # def to_dict(
+    #     self, nested=False, single=False, required=True, include_stage=False
+    # ) -> OrderedDict:
+    #     """
+    #     Convert the Filtered object to an OrderedDict. For now stage is not included
+    #     for backwards compatibility.  This should be updated in the future.
+    #     """
+    #     if include_stage:
+    #         return OrderedDict(
+    #             {
+    #                 "applied": self.applied,
+    #                 "name": self.name,
+    #                 "stage": self.stage,
+    #                 "comments": self.comments.to_dict(),
+    #             }
+    #         )
+    #     return OrderedDict(
+    #         {
+    #             "applied": self.applied,
+    #             "name": self.name,
+    #             "comments": self.comments.to_dict(),
+    #         }
+    #     )
 
-    def from_dict(self, data: dict) -> Self:
-        """
-        Populate the Filtered object from a dictionary.
-        """
-        applied_list = []
-        if "stage" in data:
-            for index in range(len(data["applied"])):
-                applied_list.append(
-                    AppliedFilter(
-                        name=data["name"][index],
-                        applied=data["applied"][index],
-                        stage=data["stage"][index],
-                    )
-                )
-        else:
-            # If "stage" is not in data, use the length of "applied" to determine the number of filters
-            for index in range(len(data["applied"])):
-                applied_list.append(
-                    AppliedFilter(
-                        name=data["name"][index],
-                        applied=data["applied"][index],
-                        stage=index,  # Default to index if stage is not provided
-                    )
-                )
+    # def from_dict(self, data: dict) -> Self:
+    #     """
+    #     Populate the Filtered object from a dictionary.
+    #     """
+    #     applied_list = []
+    #     if "stage" in data:
+    #         for index in range(len(data["applied"])):
+    #             applied_list.append(
+    #                 AppliedFilter(
+    #                     name=data["name"][index],
+    #                     applied=data["applied"][index],
+    #                     stage=data["stage"][index],
+    #                 )
+    #             )
+    #     else:
+    #         # If "stage" is not in data, use the length of "applied" to determine the number of filters
+    #         for index in range(len(data["applied"])):
+    #             applied_list.append(
+    #                 AppliedFilter(
+    #                     name=data["name"][index],
+    #                     applied=data["applied"][index],
+    #                     stage=index,  # Default to index if stage is not provided
+    #                 )
+    #             )
 
-        self.applied_list = applied_list
+    #     self.applied_list = applied_list

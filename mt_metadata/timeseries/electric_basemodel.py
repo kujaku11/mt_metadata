@@ -3,13 +3,11 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.common import (
-    StartEndRange,
-)
-from mt_metadata.timeseries.electrode_basemodel import Electrode
-from mt_metadata.timeseries.channel_basemodel import Channel
-from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field
+
+from mt_metadata.common import StartEndRange
+from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries.electrode_basemodel import Electrode
 
 
 # =====================================================
