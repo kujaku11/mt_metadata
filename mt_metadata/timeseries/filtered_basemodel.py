@@ -4,10 +4,16 @@
 from collections import OrderedDict
 from typing import Annotated
 from typing_extensions import Self
-from pydantic import Field, computed_field, field_validator, ValidationInfo
+from pydantic import (
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+    ValidationInfo,
+)
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
+from mt_metadata.common.comment import Comment
 
 
 # =====================================================
@@ -51,12 +57,15 @@ class AppliedFilter(MetadataBase):
 
 
 class Filtered(MetadataBase):
-    applied_list: Annotated[
-        list[AppliedFilter],
+
+    _filter_list: list[AppliedFilter] = PrivateAttr(default_factory=list)
+
+    applied: Annotated[
+        list[bool],
         Field(
             default_factory=list,
-            description="List of applied filters.",
-            examples=["AppliedFilter(name='low pass', applied=True)"],
+            description="List of booleans indicating if the filter has been applied.",
+            examples=[True, False],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -65,34 +74,44 @@ class Filtered(MetadataBase):
         ),
     ]
 
-    @computed_field
-    @property
-    def applied(self) -> list[bool]:
-        """
-        Return a list of booleans indicating if the filter has been applied.
-        """
-        return [filter.applied for filter in self.applied_list]
+    name: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="List of filter names.",
+            examples=["low pass", "high pass"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    @computed_field
-    @property
-    def name(self) -> list[str]:
-        """
-        Return a list of filter names.
-        """
-        return [filter.name for filter in self.applied_list]
+    # def applied(self) -> list[bool]:
+    #     """
+    #     Return a list of booleans indicating if the filter has been applied.
+    #     """
+    #     return [filter.applied for filter in self.applied_list]
 
-    @computed_field
-    @property
-    def stage(self) -> list[int | None]:
-        """
-        Return a list of filter stages.
-        """
-        return [filter.stage for filter in self.applied_list]
+    # def name(self) -> list[str]:
+    #     """
+    #     Return a list of filter names.
+    #     """
+    #     return [filter.name for filter in self.applied_list]
+
+    # @computed_field
+    # @property
+    # def stage(self) -> list[int | None]:
+    #     """
+    #     Return a list of filter stages.
+    #     """
+    #     return [filter.stage for filter in self.applied_list]
 
     comments: Annotated[
-        Comment | None,
+        Comment,
         Field(
-            default=None,
+            default_factory=Comment,
             description="Any comments on filters.",
             examples="low pass is not calibrated",
             type="string",
@@ -113,6 +132,20 @@ class Filtered(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @model_validator(mode="after")
+    def validate_applied_and_names(self) -> Self:
+        """
+        Validate the applied_list to ensure it contains only AppliedFilter objects.
+        """
+
+        if len(self.name) != len(self.applied):
+            diff = len(self.name) - len(self.applied)
+            if diff > 0:
+                self.applied.extend([True] * diff)
+            else:
+                self.name.extend(["unknonwn"] * abs(diff))
+        return self
 
     def to_dict(
         self, nested=False, single=False, required=True, include_stage=False
