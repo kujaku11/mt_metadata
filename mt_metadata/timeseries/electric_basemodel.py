@@ -3,19 +3,38 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
+from mt_metadata.common import (
+    StartEndRange,
+)
+from mt_metadata.timeseries.electrode_basemodel import Electrode
+from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field
 
 
 # =====================================================
-class Electric(MetadataBase):
+class Electric(Channel):
+    component: Annotated[
+        str,
+        Field(
+            default="",
+            description="Component of the electric field.",
+            examples="Ex",
+            alias=None,
+            pattern=r"^[eE][a-zA-Z]*$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
     dipole_length: Annotated[
         float,
         Field(
             default=0.0,
             description="Length of the dipole as measured in a straight line from electrode to electrode.",
             examples="55.25",
-            type="number",
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -24,94 +43,72 @@ class Electric(MetadataBase):
         ),
     ]
 
-    contact_resistance.start: Annotated[
-        float | None,
+    positive: Annotated[
+        Electrode,
         Field(
-            default=None,
-            type="number",
-            items={"type": "number"},
-            description="Starting contact resistance; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples='"[1.2, 1.4]"',
+            default_factory=Electrode,
+            description="Positive electrode.",
+            examples="Electrode()",
             alias=None,
             json_schema_extra={
-                "units": "ohms",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    contact_resistance.end: Annotated[
-        float | None,
+    negative: Annotated[
+        Electrode,
         Field(
-            default=None,
-            type="number",
-            items={"type": "number"},
-            description="Ending contact resistance; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples='"[1.5, 1.8]"',
+            default_factory=Electrode,
+            description="Negative electrode.",
+            examples="Electrode()",
             alias=None,
             json_schema_extra={
-                "units": "ohms",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    ac.start: Annotated[
-        float | None,
+    contact_resistance: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Starting AC value; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples='"[52.1, 55.8]"',
-            type="number",
+            default_factory=StartEndRange,
+            description="Contact resistance start and end values.",
+            examples="StartEndRange()",
             alias=None,
             json_schema_extra={
-                "units": "volts",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    ac.end: Annotated[
-        float | None,
+    ac: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Ending AC value; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples='"[45.3, 49.5]"',
-            type="number",
+            default_factory=StartEndRange,
+            description="AC start and end values.",
+            examples="StartEndRange()",
             alias=None,
             json_schema_extra={
-                "units": "volts",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
+    ]
 
-    dc.start: Annotated[
-        float | None,
+    dc: Annotated[
+        StartEndRange,
         Field(
-            default=None,
-            description="Starting DC value; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples="1.1",
-            type="number",
+            default_factory=StartEndRange,
+            description="DC start and end values.",
+            examples="StartEndRange()",
             alias=None,
             json_schema_extra={
-                "units": "volts",
-                "required": False,
+                "units": None,
+                "required": True,
             },
         ),
-    ] = None
-
-    dc.end: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Ending DC value; if more than one measurement input as a list of number [1 2 3 ...].",
-            examples="1.5",
-            type="number",
-            alias=None,
-            json_schema_extra={
-                "units": "volts",
-                "required": False,
-            },
-        ),
-    ] = None
+    ]

@@ -1,9 +1,6 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
-from typing import Annotated
-
 from mt_metadata.timeseries.channel_basemodel import Channel
 from pydantic import Field
 
