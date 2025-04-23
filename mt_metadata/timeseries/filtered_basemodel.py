@@ -7,7 +7,7 @@ from typing_extensions import Self
 from pydantic import Field, computed_field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common.comment_basemodel import Comment
+from mt_metadata.common import Comment
 
 
 # =====================================================

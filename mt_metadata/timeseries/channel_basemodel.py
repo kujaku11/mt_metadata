@@ -165,7 +165,7 @@ class Channel(MetadataBase):
             description="Digital sample rate",
             examples="8",
             type="number",
-            alias=["sampling_rate"],
+            validation_alias=AliasChoices("sample_rate", "sampling_rate"),
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
