@@ -5,7 +5,6 @@ from mt_metadata.common import (
     Comment,
     Instrument,
     DataQuality,
-    Rating,
     TimePeriod,
     Fdsn,
 )
@@ -32,7 +31,6 @@ def test_channel_default_values():
     assert channel.type == ""
     assert channel.units == ""
     assert isinstance(channel.data_quality, DataQuality)
-    assert isinstance(channel.rating, Rating)
     assert isinstance(channel.filter, Filtered)
     assert isinstance(channel.time_period, TimePeriod)
     assert isinstance(channel.sensor, Instrument)

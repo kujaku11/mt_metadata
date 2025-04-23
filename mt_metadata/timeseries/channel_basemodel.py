@@ -7,7 +7,6 @@ from typing import Annotated
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
     Comment,
-    Rating,
     DataQuality,
     TimePeriod,
     Instrument,
@@ -239,20 +238,6 @@ class Channel(MetadataBase):
             description="Data quality for the channel.",
             examples="",
             type="object",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
-    rating: Annotated[
-        Rating,
-        Field(
-            default_factory=Rating,
-            description="Rating for the channel.",
-            examples="Rating()",
             alias=None,
             json_schema_extra={
                 "units": None,

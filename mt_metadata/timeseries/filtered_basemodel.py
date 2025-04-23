@@ -15,6 +15,7 @@ from mt_metadata.common import Comment
 # this will be a better way of keeping track of filter names and
 # if they have been applied or not.  This can also include the stage
 # number of the filter and could be extended to other attributes.
+# TODO: figure out setting a applied and name.
 
 
 class AppliedFilter(MetadataBase):
@@ -31,7 +32,7 @@ class AppliedFilter(MetadataBase):
     applied: Annotated[
         bool,
         Field(
-            default=False,
+            default=True,
             description="Whether the filter has been applied.",
             examples=True,
             json_schema_extra={"units": None, "required": True},
@@ -65,6 +66,7 @@ class Filtered(MetadataBase):
     ]
 
     @computed_field
+    @property
     def applied(self) -> list[bool]:
         """
         Return a list of booleans indicating if the filter has been applied.
@@ -72,6 +74,7 @@ class Filtered(MetadataBase):
         return [filter.applied for filter in self.applied_list]
 
     @computed_field
+    @property
     def name(self) -> list[str]:
         """
         Return a list of filter names.
@@ -79,6 +82,7 @@ class Filtered(MetadataBase):
         return [filter.name for filter in self.applied_list]
 
     @computed_field
+    @property
     def stage(self) -> list[int | None]:
         """
         Return a list of filter stages.
