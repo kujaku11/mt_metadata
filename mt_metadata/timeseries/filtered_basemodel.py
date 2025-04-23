@@ -144,7 +144,7 @@ class Filtered(MetadataBase):
             if diff > 0:
                 self.applied.extend([True] * diff)
             else:
-                self.name.extend(["unknonwn"] * abs(diff))
+                self.name.extend(["unknown"] * abs(diff))
         return self
 
     def to_dict(
@@ -160,14 +160,14 @@ class Filtered(MetadataBase):
                     "applied": self.applied,
                     "name": self.name,
                     "stage": self.stage,
-                    "comments": self.comments,
+                    "comments": self.comments.to_dict(),
                 }
             )
         return OrderedDict(
             {
                 "applied": self.applied,
                 "name": self.name,
-                "comments": self.comments,
+                "comments": self.comments.to_dict(),
             }
         )
 
