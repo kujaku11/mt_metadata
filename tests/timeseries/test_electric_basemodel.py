@@ -3,7 +3,7 @@ from pydantic import ValidationError
 from mt_metadata.timeseries.electric_basemodel import Electric
 from mt_metadata.timeseries.electrode_basemodel import Electrode
 from mt_metadata.common import StartEndRange
-from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries.channel_basemodel import ChannelBase
 
 
 def test_electric_inherits_channel():
@@ -12,7 +12,7 @@ def test_electric_inherits_channel():
     """
     electric = Electric()
 
-    assert isinstance(electric, Channel)
+    assert isinstance(electric, ChannelBase)
     assert electric.component == ""
     assert electric.dipole_length == 0.0
     assert isinstance(electric.positive, Electrode)
