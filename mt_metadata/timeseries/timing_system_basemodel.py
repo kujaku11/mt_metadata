@@ -4,16 +4,16 @@
 from typing import Annotated, Any
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from mt_metadata.common import Comment
+from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
 class TimingSystem(MetadataBase):
     comments: Annotated[
-        str | None,
+        Comment,
         Field(
-            default=None,
-            type="string",
+            default_factory=Comment,
             description="Any comment on the timing system.",
             examples="GPS locked with internal quartz clock",
             alias=None,
@@ -22,13 +22,12 @@ class TimingSystem(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     drift: Annotated[
-        Any,
+        float,
         Field(
             default=0.0,
-            type="float",
             description="Estimated drift of the timing system.",
             examples="0.001",
             alias=None,
@@ -42,8 +41,7 @@ class TimingSystem(MetadataBase):
     type: Annotated[
         str,
         Field(
-            default=GPS,
-            type="string",
+            default="GPS",
             description="Type of timing system.",
             examples="GPS",
             alias=None,
@@ -55,10 +53,9 @@ class TimingSystem(MetadataBase):
     ]
 
     uncertainty: Annotated[
-        Any,
+        float,
         Field(
             default=0.0,
-            type="float",
             description="Estimated uncertainty of the timing system.",
             examples="0.0002",
             alias=None,
@@ -70,10 +67,9 @@ class TimingSystem(MetadataBase):
     ]
 
     n_satellites: Annotated[
-        Any | None,
+        int | None,
         Field(
             default=None,
-            type="int",
             description="Number of satellites used for timing.",
             examples="6",
             alias=None,
@@ -82,4 +78,14 @@ class TimingSystem(MetadataBase):
                 "required": False,
             },
         ),
-    ] = None
+    ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value

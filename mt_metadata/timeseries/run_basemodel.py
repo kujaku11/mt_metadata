@@ -5,8 +5,17 @@ from enum import Enum
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
-from pydantic import Field
+from mt_metadata.common import (
+    Comment,
+    Fdsn,
+    TimePeriod,
+    Person,
+    Provenance,
+)
+
+from mt_metadata.timeseries.data_logger_basemodel import DataLogger
+from mt_metadata.utils.list_dict import ListDict
+from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
@@ -121,3 +130,111 @@ class Run(MetadataBase):
             },
         ),
     ]
+
+    acquired_by: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Information about the group that collected the data.",
+            examples="Person()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    metadata_by: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Information about the group that collected the metadata.",
+            examples="Person()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    provenance: Annotated[
+        Provenance,
+        Field(
+            default_factory=Provenance,
+            description="Provenance information about the run.",
+            examples="Provenance()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=TimePeriod,
+            description="Time period for the run.",
+            examples="TimePeriod(start='2020-01-01', end='2020-12-31')",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    data_logger: Annotated[
+        DataLogger,
+        Field(
+            default_factory=DataLogger,
+            description="Data Logger information used to collect the run.",
+            examples="DataLogger()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    fdsn: Annotated[
+        Fdsn,
+        Field(
+            default_factory=Fdsn,
+            description="FDSN information for the run.",
+            examples="Fdsn()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    # channels: Annotated[
+    #     ListDict,
+    #     Field(
+    #         default_factory=ListDict,
+    #         description="ListDict of channel objects collected in this run.",
+    #         examples="ListDict()",
+    #         alias=None,
+    #         json_schema_extra={
+    #             "units": None,
+    #             "required": False,
+    #         },
+    #     ),
+    # ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value

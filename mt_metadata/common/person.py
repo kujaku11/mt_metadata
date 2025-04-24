@@ -74,7 +74,7 @@ class Person(MetadataBase):
     ]
 
     comments: Annotated[
-        Comment | str,
+        Comment,
         Field(
             default_factory=Comment,
             description="Any comments about the person",

@@ -4,8 +4,8 @@
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.timeseries.range_basemodel import StartEndRange
-from pydantic import Field
+from mt_metadata.common import StartEndRange, Comment
+from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
@@ -56,16 +56,25 @@ class Battery(MetadataBase):
     ]
 
     comments: Annotated[
-        str | None,
+        Comment,
         Field(
-            default=None,
-            description="Any comments about the battery.",
-            examples="discharged too quickly",
-            type="string",
+            default_factory=Comment,
+            description="Any comments about the channel.",
+            examples="ambient air temperature was chilly, ice on cables",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value
