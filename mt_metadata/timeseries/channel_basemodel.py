@@ -15,18 +15,7 @@ from mt_metadata.common import (
 )
 from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
-
-# dq_dict.add_dict(get_schema("rating", SCHEMA_FN_PATHS), "rating")
-# attr_dict.add_dict(dq_dict, "data_quality")
-# attr_dict.add_dict(get_schema("filtered", SCHEMA_FN_PATHS), "filter")
-# attr_dict.add_dict(get_schema("time_period", SCHEMA_FN_PATHS), "time_period")
-# attr_dict.add_dict(get_schema("instrument", SCHEMA_FN_PATHS), "sensor")
-# attr_dict.add_dict(get_schema("fdsn", SCHEMA_FN_PATHS), "fdsn")
-# attr_dict.add_dict(
-#     get_schema("location", SCHEMA_FN_PATHS),
-#     "location",
-#     keys=["latitude", "longitude", "elevation"],
-# )
+from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================
@@ -363,3 +352,35 @@ class Channel(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    # def channel_response(self, filters_dict):
+    #     """
+    #     full channel response from a dictionary of filter objects
+    #     """
+
+    #     mt_filter_list = []
+    #     for name in self.filter.name:
+    #         try:
+    #             mt_filter = filters_dict[name]
+    #             mt_filter_list.append(mt_filter)
+    #         except KeyError:
+    #             msg = f"Could not find {name} in filters dictionary, skipping"
+    #             self.logger.error(msg)
+    #             continue
+    #     # compute instrument sensitivity and units in/out
+    #     return ChannelResponse(filters_list=mt_filter_list)
+
+    @property
+    def unit_object(self):
+        """
+        Some channels have a unit object that is used to convert between units.
+        This is a property that returns the unit object for the channel.
+        The unit object is created using the units attribute of the channel.
+        The unit object is used to convert between units and to get the unit
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        return get_unit_object(self.units)
