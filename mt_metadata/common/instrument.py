@@ -18,7 +18,7 @@ class Instrument(MetadataBase):
             validation_alias=AliasChoices("id", "serial"),
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
         ),
     ]
@@ -32,7 +32,7 @@ class Instrument(MetadataBase):
             alias=None,
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
         ),
     ]
@@ -46,7 +46,7 @@ class Instrument(MetadataBase):
             alias=None,
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
         ),
     ]

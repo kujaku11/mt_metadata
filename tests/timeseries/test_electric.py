@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 31 11:21:17 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -17,7 +17,8 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Electric
+from mt_metadata.timeseries.electric_basemodel import Electric
+
 
 # =============================================================================
 #
@@ -49,6 +50,7 @@ class TestElectric(unittest.TestCase):
                 "measurement_tilt": 0.0,
                 "negative.elevation": 100.0,
                 "negative.id": "a",
+                "negative.datum": "WGS84",
                 "negative.latitude": 12.12,
                 "negative.longitude": -111.12,
                 "negative.manufacturer": "test",
@@ -56,6 +58,7 @@ class TestElectric(unittest.TestCase):
                 "negative.type": "pb-pbcl",
                 "positive.elevation": 101.0,
                 "positive.id": "b",
+                "positive.datum": "WGS84",
                 "positive.latitude": 12.123,
                 "positive.longitude": -111.14,
                 "positive.manufacturer": "test",
