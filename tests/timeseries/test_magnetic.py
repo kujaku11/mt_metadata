@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 31 11:21:17 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -17,7 +17,8 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Magnetic
+from mt_metadata.timeseries.magnetic_basemodel import Magnetic
+
 
 # =============================================================================
 #

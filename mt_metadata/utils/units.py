@@ -14,20 +14,41 @@ case strings.
 # =============================================================================
 import pandas as pd
 from enum import Enum
+from typing import Annotated
+
+from pydantic import BaseModel, Field, ConfigDict, AliasChoices
 
 # =============================================================================
 
 
-class Unit:
-    def __init__(self, **kwargs):
-        self.name = None
-        self.description = None
-        self.abbreviation = None
-        self.plot_label = None
-        self.alias = None
+class Unit(BaseModel):
+    model_config = ConfigDict(
+        validate_assignment=True,
+        extra="allow",
+        use_enum_values=True,
+        coerce_numbers_to_str=True,
+    )
 
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+    name: Annotated[
+        str | None, Field(default=None, description="Common name of the unit.")
+    ]
+    description = Annotated[
+        str | None, Field(default=None, description="Description of the unit.")
+    ]
+    symbol = Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Symbol like representation of the unit",
+            validation_alias=AliasChoices("symbol", "abbrviation"),
+        ),
+    ]
+    plot_label = Annotated[
+        str | None, Field(default=None, description="Plot label of the unit.")
+    ]
+    alias = Annotated[
+        str | None, Field(default=None, description="Alias name of unit.")
+    ]
 
     def __str__(self):
         lines = [
