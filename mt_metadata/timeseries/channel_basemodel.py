@@ -15,36 +15,10 @@ from mt_metadata.common import (
 )
 from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
-from mt_metadata.utils.units import get_unit_object
+from mt_metadata.utils.units import get_unit_object, UnitsEnum
 
 
 # =====================================================
-class UnitsEnum(str, Enum):
-    metric = "metric"
-    celsius = "celsius"
-    meters = "meters"
-    degrees = "degrees"
-    kilograms = "kilograms"
-    volts = "volts"
-    amps = "amps"
-    ohms = "ohms"
-    hertz = "hertz"
-    pascals = "pascals"
-    tesla = "tesla"
-    gauss = "gauss"
-    microvolts = "microvolts"
-    millivolts = "millivolts"
-    nanotesla = "nanotesla"
-    microtesla = "microtesla"
-    millitesla = "millitesla"
-    microamps = "microamps"
-    milliamps = "milliamps"
-    microohms = "microohms"
-    milliohms = "milliohms"
-    counts = "counts"
-    counts_per_second = "counts per second"
-    other = "other"
-    none = ""
 
 
 class PartialLocation(Location):
@@ -96,7 +70,9 @@ class PartialLocation(Location):
     ]
 
 
-class Channel(MetadataBase):
+# this is a channel base for channels that have multiple sensors and locations like an
+# electric dipole.
+class ChannelBase(MetadataBase):
     channel_number: Annotated[
         int,
         Field(
@@ -301,40 +277,12 @@ class Channel(MetadataBase):
         ),
     ]
 
-    sensor: Annotated[
-        Instrument,
-        Field(
-            default_factory=Instrument,
-            description="Sensor for the channel.",
-            examples="Instrument()",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
     fdsn: Annotated[
         Fdsn,
         Field(
             default_factory=Fdsn,
             description="FDSN information for the channel.",
             examples="Fdsn()",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
-    location: Annotated[
-        PartialLocation,
-        Field(
-            default_factory=PartialLocation,
-            description="Location information for the channel.",
-            examples="PartialLocation(latitude=0.0, longitude=0.0, elevation=0.0)",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -384,3 +332,35 @@ class Channel(MetadataBase):
             _description_
         """
         return get_unit_object(self.units)
+
+
+# this would be a normal channel that has a single sensor and location.
+class Channel(ChannelBase):
+
+    sensor: Annotated[
+        Instrument,
+        Field(
+            default_factory=Instrument,
+            description="Sensor for the channel.",
+            examples="Instrument()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    location: Annotated[
+        PartialLocation,
+        Field(
+            default_factory=PartialLocation,
+            description="Location information for the channel.",
+            examples="PartialLocation(latitude=0.0, longitude=0.0, elevation=0.0)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]

@@ -8,10 +8,12 @@ The dictionaries UNITS is keyed by these lower
 case strings.
 
 """
+
 # =============================================================================
 # Import
 # =============================================================================
 import pandas as pd
+from enum import Enum
 
 # =============================================================================
 
@@ -87,7 +89,7 @@ UNITS_LIST = [
     {
         "name": "microvolt",
         "description": "electric potential",
-        "abbreviation": "\u03BCV",
+        "abbreviation": "\u03bcV",
         "plot_label": "microVolt",
         "alias": "microvolts",
     },
@@ -108,7 +110,7 @@ UNITS_LIST = [
     {
         "name": "microtesla",
         "description": "magnetic field",
-        "abbreviation": "\u03BCT",
+        "abbreviation": "\u03bcT",
         "plot_label": "microTesla",
         "alias": "",
     },
@@ -150,7 +152,7 @@ UNITS_LIST = [
     {
         "name": "microvolt per meter",
         "description": "electric field",
-        "abbreviation": "\u03BCV/m",
+        "abbreviation": "\u03bcV/m",
         "plot_label": "microVolt per Meter",
         "alias": "microvolts per meter",
     },
@@ -231,3 +233,38 @@ def get_unit_object(unit, allow_none=True):
             f"Could not find {unit} in accetable units.  "
             "See mt_metadata.utils.units.py for more information"
         )
+
+
+# Create an Enum class for the licenses
+UnitsEnum = Enum(
+    "LicenseEnum",  # Name of the Enum
+    {entry["name"]: entry["name"] for entry in UNITS_LIST},  # Members
+)
+
+
+class UnitsEnum(str, Enum):
+    metric = "metric"
+    celsius = "celsius"
+    meters = "meters"
+    degrees = "degrees"
+    kilograms = "kilograms"
+    volts = "volts"
+    amps = "amps"
+    ohms = "ohms"
+    hertz = "hertz"
+    pascals = "pascals"
+    tesla = "tesla"
+    gauss = "gauss"
+    microvolts = "microvolts"
+    millivolts = "millivolts"
+    nanotesla = "nanotesla"
+    microtesla = "microtesla"
+    millitesla = "millitesla"
+    microamps = "microamps"
+    milliamps = "milliamps"
+    microohms = "microohms"
+    milliohms = "milliohms"
+    counts = "counts"
+    counts_per_second = "counts per second"
+    other = "other"
+    none = ""

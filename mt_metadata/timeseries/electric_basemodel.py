@@ -6,12 +6,13 @@ from typing import Annotated
 from pydantic import Field
 
 from mt_metadata.common import StartEndRange
-from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries.channel_basemodel import ChannelBase
 from mt_metadata.timeseries.electrode_basemodel import Electrode
 
 
 # =====================================================
-class Electric(Channel):
+class Electric(ChannelBase):
+
     component: Annotated[
         str,
         Field(
