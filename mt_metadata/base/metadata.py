@@ -1082,11 +1082,19 @@ class MetadataBase(BaseModel):
         List[str]
             List of required fields in the metadata standards.
         """
-        return [
-            name
-            for name, field_info in self.get_all_fields().items()
-            if field_info.json_schema_extra["required"]
-        ]
+        required_fields = []
+        for name, field_info in self.get_all_fields().items():
+            if field_info.json_schema_extra is None:
+                print(name, field_info)
+            if field_info.json_schema_extra["required"]:
+                required_fields.append(name)
+
+        return required_fields
+        # return [
+        #     name
+        #     for name, field_info in self.get_all_fields().items()
+        #     if field_info.json_schema_extra["required"]
+        # ]
 
     def _field_info_to_string(self, name: str, field_info: FieldInfo) -> str:
         """
@@ -1297,6 +1305,18 @@ class MetadataBase(BaseModel):
 
         meta_dict = {}
         for name in self.get_attribute_list():
+            if "comments" in name:
+                # this is a hack to get around the fact that comments are not
+                # in the standard.  Need to remove the last part of the name
+                # to get the attribute name.
+                # will change in the future.
+                name = ".".join(name.split(".")[:-1])
+                if "time_stamp" in name or "author" in name:
+                    continue
+                value = self.get_attr_from_name(name).to_dict()
+                if value is not None:
+                    meta_dict[name] = value
+                continue
             try:
                 value = self.get_attr_from_name(name)
                 if hasattr(value, "to_dict"):

@@ -64,9 +64,47 @@ class PartialLocation(Location):
     This is used to avoid circular imports.
     """
 
-    latitude: float | None = None
-    longitude: float | None = None
-    elevation: float | None = None
+    latitude: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Latitude of the location.",
+            examples="12.324",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+            },
+        ),
+    ]
+
+    longitude: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Longitude of the location.",
+            examples="12.324",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+            },
+        ),
+    ]
+
+    elevation: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Elevation of the location.",
+            examples="1234.0",
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": False,
+            },
+        ),
+    ]
 
 
 class Channel(MetadataBase):

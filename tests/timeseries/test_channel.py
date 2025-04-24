@@ -41,6 +41,7 @@ class TestChannel(unittest.TestCase):
                 "filter.applied": [False, True],
                 "filter.comments": "test",
                 "filter.name": ["lowpass", "counts2mv"],
+                "location.datum": "WGS84",
                 "location.elevation": 1234.0,
                 "location.latitude": 12.324,
                 "location.longitude": -112.03,
