@@ -10,13 +10,14 @@ https://github.com/spdx/license-list-data/blob/main/json/licenses.json
 # =============================================================================
 # Imports
 # =============================================================================
+from pathlib import Path
 from enum import Enum
 import json
 
 # ==============================================================================
 
 # Load the licenses JSON file
-filename = r"c:\Users\peaco\Downloads\licenses.json"
+filename = Path(__file__).parent.joinpath("licenses.json")
 with open(filename, "r") as fid:
     licenses = json.load(fid)
 
