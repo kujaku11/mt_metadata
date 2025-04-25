@@ -139,6 +139,12 @@ all_units = [
         "symbol": "count",
         "plot_label": "Digital Counts",
     },
+    {
+        "name": "samples",
+        "description": "number of samples",
+        "symbol": "samples",
+        "plot_label": "Samples",
+    },
 ]
 for prefix_name, prefix_symbol in prefixes.items():
     for unit_name, unit_details in {**base_units, **derived_units}.items():
