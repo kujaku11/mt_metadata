@@ -10,6 +10,7 @@ from pydantic import (
     field_validator,
     model_validator,
     ValidationInfo,
+    PrivateAttr,
 )
 
 from mt_metadata.base import MetadataBase
@@ -57,6 +58,7 @@ class AppliedFilter(MetadataBase):
 
 
 class Filtered(MetadataBase):
+    _objects_included = PrivateAttr({"applied_filter": AppliedFilter})
 
     filter_list: Annotated[
         list[AppliedFilter],
