@@ -459,6 +459,10 @@ def recursive_split_setattr(base_object, name, value, sep="."):
         base_object = getattr(base_object, key)
         recursive_split_setattr(base_object, other[0], value)
     else:
+        # if the value is a list or dict then we need to add accordingly
+        if isinstance(value, list):
+            pass
+
         setattr(base_object, key, value)
 
 

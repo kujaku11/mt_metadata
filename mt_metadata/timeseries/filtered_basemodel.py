@@ -3,10 +3,10 @@
 # =====================================================
 from collections import OrderedDict
 from typing import Annotated
-from typing_extensions import Self
+from typing_extensions import Self, deprecated
+from loguru import logger
 from pydantic import (
     Field,
-    PrivateAttr,
     field_validator,
     model_validator,
     ValidationInfo,
@@ -58,7 +58,19 @@ class AppliedFilter(MetadataBase):
 
 class Filtered(MetadataBase):
 
-    _filter_list: list[AppliedFilter] = PrivateAttr(default_factory=list)
+    filter_list: Annotated[
+        list[AppliedFilter],
+        Field(
+            default_factory=list,
+            description="List of AppliedFilter() objects.",
+            examples=("[AppliedFilter(name='filter_name', applied=True, stage=1)]"),
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
     applied: Annotated[
         list[bool],
@@ -67,6 +79,9 @@ class Filtered(MetadataBase):
             description="List of booleans indicating if the filter has been applied.",
             examples=[True, False],
             alias=None,
+            deprecated=deprecated(
+                "'applied' will be deprecated in the future use an AppliedFilter object."
+            ),
             json_schema_extra={
                 "units": None,
                 "required": False,
@@ -81,32 +96,15 @@ class Filtered(MetadataBase):
             description="List of filter names.",
             examples=["low pass", "high pass"],
             alias=None,
+            deprecated=deprecated(
+                "'name' will be deprecated in the future use an AppliedFilter object."
+            ),
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
     ]
-
-    # def applied(self) -> list[bool]:
-    #     """
-    #     Return a list of booleans indicating if the filter has been applied.
-    #     """
-    #     return [filter.applied for filter in self.applied_list]
-
-    # def name(self) -> list[str]:
-    #     """
-    #     Return a list of filter names.
-    #     """
-    #     return [filter.name for filter in self.applied_list]
-
-    # @computed_field
-    # @property
-    # def stage(self) -> list[int | None]:
-    #     """
-    #     Return a list of filter stages.
-    #     """
-    #     return [filter.stage for filter in self.applied_list]
 
     comments: Annotated[
         Comment,
@@ -138,7 +136,11 @@ class Filtered(MetadataBase):
         """
         Validate the applied_list to ensure it contains only AppliedFilter objects.
         """
-
+        if self.name != [] or self.applied != []:
+            logger.warning(
+                "'applied' and 'name' will be deprecated in the future append an "
+                "AppliedFilter(name='name', applied=True) to 'filter_list'."
+            )
         if len(self.name) != len(self.applied):
             diff = len(self.name) - len(self.applied)
             if diff > 0:
