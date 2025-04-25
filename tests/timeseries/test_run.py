@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 31 11:21:17 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -17,7 +17,13 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
+
+# from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
+from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
+from mt_metadata.timeseries.electric_basemodel import Electric
+from mt_metadata.timeseries.magnetic_basemodel import Magnetic
+from mt_metadata.timeseries.run_basemodel import Run
+
 
 # =============================================================================
 #
@@ -62,9 +68,7 @@ class TestRun(unittest.TestCase):
         }
 
         self.meta_dict = {
-            "run": OrderedDict(
-                sorted(self.meta_dict["run"].items(), key=itemgetter(0))
-            )
+            "run": OrderedDict(sorted(self.meta_dict["run"].items(), key=itemgetter(0)))
         }
         self.run_object = Run()
 
@@ -155,9 +159,7 @@ class TestRun(unittest.TestCase):
                 self.run_object.channels_recorded_electric,
             )
         with self.subTest("in list magnetic"):
-            self.assertListEqual(
-                ["hx"], self.run_object.channels_recorded_magnetic
-            )
+            self.assertListEqual(["hx"], self.run_object.channels_recorded_magnetic)
         with self.subTest("in list auxiliary"):
             self.assertListEqual(
                 ["temperature"], self.run_object.channels_recorded_auxiliary

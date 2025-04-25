@@ -215,19 +215,20 @@ class Run(MetadataBase):
         ),
     ]
 
-    # channels: Annotated[
-    #     ListDict,
-    #     Field(
-    #         default_factory=ListDict,
-    #         description="ListDict of channel objects collected in this run.",
-    #         examples="ListDict()",
-    #         alias=None,
-    #         json_schema_extra={
-    #             "units": None,
-    #             "required": False,
-    #         },
-    #     ),
-    # ]
+    channels: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,
+            description="ListDict of channel objects collected in this run.",
+            examples="ListDict()",
+            alias=None,
+            exclude=True,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
     @field_validator("comments", mode="before")
     @classmethod

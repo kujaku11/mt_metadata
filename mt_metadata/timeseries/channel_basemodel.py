@@ -15,7 +15,7 @@ from mt_metadata.common import (
 )
 from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
-from mt_metadata.utils.units import get_unit_object, UnitsEnum
+from mt_metadata.utils.units import get_unit_object, Unit
 
 
 # =====================================================
@@ -221,7 +221,7 @@ class ChannelBase(MetadataBase):
     ]
 
     units: Annotated[
-        UnitsEnum,
+        str,
         Field(
             default="",
             description="Units of the data, should be in SI units and represented as the full name of the unit all lowercase.  If a complex unit use 'per' and '-'.",
@@ -301,6 +301,34 @@ class ChannelBase(MetadataBase):
             return Comment(value=value)
         return value
 
+    @field_validator("units", mode="before")
+    @classmethod
+    def validate_units(cls, value: str, info: ValidationInfo) -> str:
+        """
+        validate units base on input string will return the long name
+
+        Parameters
+        ----------
+        value : units string
+            unit string separated by either '/' for division or ' ' for
+            multiplication.  Or 'per' and ' ', respectively
+        info : ValidationInfo
+            _description_
+
+        Returns
+        -------
+        str
+            return the long descriptive name of the unit. For example 'kilometers'.
+        """
+
+        try:
+            unit_object = get_unit_object(value)
+            return unit_object.name
+        except ValueError as error:
+            raise KeyError(error)
+        except KeyError as error:
+            raise KeyError(error)
+
     # def channel_response(self, filters_dict):
     #     """
     #     full channel response from a dictionary of filter objects
@@ -319,7 +347,7 @@ class ChannelBase(MetadataBase):
     #     return ChannelResponse(filters_list=mt_filter_list)
 
     @property
-    def unit_object(self):
+    def unit_object(self) -> Unit:
         """
         Some channels have a unit object that is used to convert between units.
         This is a property that returns the unit object for the channel.
@@ -328,8 +356,8 @@ class ChannelBase(MetadataBase):
 
         Returns
         -------
-        _type_
-            _description_
+        Unit
+            BaseModel object with unit attributes
         """
         return get_unit_object(self.units)
 

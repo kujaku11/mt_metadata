@@ -210,7 +210,7 @@ class Unit(BaseModel):
         if not isinstance(other, Unit):
             raise TypeError("The other object must be an instance of the Unit class.")
 
-        if separator in ["/", "per"]:
+        if separator in ["/", "per", " per "]:
             name_separator = " per "
             symbol_separator = "/"
         else:
@@ -254,7 +254,7 @@ def find_separator(unit_string: str) -> str:
     """
 
     find_dict = {}
-    for sep in [" ", "/", "per"]:
+    for sep in ["/", " per ", " "]:
         find_dict[sep] = unit_string.find(sep)
     # Sort the dictionary by the index of the separator in the unit string
     # and return the first separator found
@@ -286,12 +286,12 @@ def parse_unit_string(unit_string: str) -> list[dict]:
     separator = ""
     while separator != None:
         separator = find_separator(unit_string)
-        print(unit_string)
         parts = unit_string.split(separator, 1)
-        if parts == []:
+        if parts in []:
             break
 
-        result.append({"name": parts[0].strip(), "sep": separator})
+        if parts[0].strip() not in ["", " per "]:
+            result.append({"name": parts[0].strip(), "sep": separator})
         try:
             unit_string = parts[1].strip()
         except IndexError:
@@ -341,7 +341,7 @@ def get_unit_object(unit: str, allow_none=True) -> Unit:
     if len(units_parts) == 1:
         return get_unit_from_df(units_parts[0]["name"], allow_none=allow_none)
     elif len(units_parts) == 0:
-        raise ValueError("No unit found in the unit string.")
+        raise ValueError(f"No unit found in the unit string.")
     elif len(units_parts) > 1:
         unit = get_unit_from_df(units_parts[0]["name"], allow_none=allow_none)
         for entry in units_parts[1:]:

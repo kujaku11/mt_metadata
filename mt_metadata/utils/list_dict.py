@@ -289,3 +289,7 @@ class ListDict:
             return dict([self._home.popitem(key)])
         else:
             raise KeyError(f"{key} is not in ListDict keys.")
+
+    def to_dict(self, single=False, nested=False, required=False) -> None:
+        """ """
+        return None
