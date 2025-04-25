@@ -1,106 +1,50 @@
 """
 processing_weights candidate:
-
-(base) kkappler@morgan:~/software/irismt/aurora/aurora/config/templates$ diff processing_configuration_template.json test_processing_config_with_weights_block.json
-157a158,244
->                     },
->                     "weights": {
->                         "ex": {
->                           "combination_style": "multiplication",
->                           "features":[
->                             {
->                               "feature_name": "coherence",
->                               "feature_params": {
->                                 "ch1": "ex",
->                                 "ch2": "hy"
->                               },
->                               "window_style": "threshold",
->                               "window_params": {
->                                 "min": 0.8,
->                                 "max": "+inf"
->                               }
->                           },
->                           {
->                             "feature_name": "multiple_coherence",
->                             "feature_params": {
->                               "output_channel": "ex"
->                             },
->                             "window_style": "threshold",
->                             "window_params": {
->                               "min": 0.9,
->                               "max": 1.1
->                             }
->                           }
->                         ]
->                         },
->                         "ey": {
->                           "combination_style": "multiplication",
->                           "features":[
->                             {
->                               "feature_name": "coherence",
->                               "feature_params": {
->                                 "ch1": "ey",
->                                 "ch2": "hx"
->                               },
->                               "window_style": "threshold",
->                               "window_params": {
->                                 "min": 0.8,
->                                 "max": "+inf"
->                               }
->                           },
->                           {
->                             "feature_name": "multiple_coherence",
->                             "feature_params": {
->                               "output_channel": "ey"
->                             },
->                             "window_style": "threshold",
->                             "window_params": {
->                               "min": 0.9,
->                               "max": 1.1
->                             }
->                           }
->                         ]
->                         },
->                         "hz": {
->                           "combination_style": "multiplication",
->                           "features":[
->                             {
->                               "feature_name": "coherence",
->                               "feature_params": {
->                                 "ch1": "hx",
->                                 "ch2": "rx"
->                               },
->                               "window_style": "threshold",
->                               "window_params": {
->                                 "min": 0.8,
->                                 "max": "+inf"
->                               }
->                           },
->       {
->         "feature_name": "coherence",
->         "feature_params": {
->           "ch1": "hy",
->           "ch2": "ry"
->         },
->         "window_style": "threshold",
->         "window_params": {
->           "min": 0.7,
->           "max": 0.999
->         }
->       }
->     ]
->   }
-
+    {
+                            "channel_weight_spec": {
+                                "output_channels": [
+                                    "ex"
+                                ],
+                                "combination_style": "multiplication",
+                                "features": [
+                                    {
+                                        "feature_name": "coherence",
+                                        "feature_params": {
+                                            "ch1": "ex",
+                                            "ch2": "hy"
+                                        },
+                                        "window_style": "threshold",
+                                        "window_params": {
+                                            "min": 0.8,
+                                            "max": "+inf"
+                                        }
+                                    },
+                                    {
+                                        "feature_name": "multiple_coherence",
+                                        "feature_params": {
+                                            "output_channel": "ex"
+                                        },
+                                        "window_style": "threshold",
+                                        "window_params": {
+                                            "min": 0.9,
+                                            "max": 1.1
+                                        }
+                                    }
+                                ]
+                            }
+                        }
 """
 """
 
     Notes, and doc for weights PR.
-`
 
-    processing_weights is a candidate name for the json block like the following:
+    channel_weight_specs is a candidate name for the json block like the following:
     >>> diff processing_configuration_template.json test_processing_config_with_weights_block.json
+    (Another candidate name could be `processing_weights`, or `weights`, but the final nomenclature
+    can be sorted out after there is a functional prototype with the appropriate structure.)
 
-    This block is basically a dict that maps an output channel name to a ChannelWeightSpec object.
+
+    This block is basically a dict that maps an output channel name to a ChannelWeightSpec (CWS) object.
 
     There are at least three places we would like to be able to plug in such a dict to the processing flow.
     1. At the frequency_band level, so that each band can be associated with a specialty CWS
@@ -114,40 +58,33 @@ processing_weights candidate:
     when you output a json, it looks like the `decimations` level should be named:
     `decimation_levels` instead.
 
-    TODO: QUESTION for Jared
-    Note the block of processing, called bands, which follows with an itearble of:
+    The general model I'll try to follow will be to open an itearable of objects
+    with a plural of the object name. For example, the processing block called "bands"
+    follows with an itearble of:
     {
-                            "band": {
-                                "center_averaging_type": "geometric",
-                                "closed": "left",
-                                "decimation_level": 0,
-                                "frequency_max": 0.23828125,
-                                "frequency_min": 0.19140625,
-                                "index_max": 30,
-                                "index_min": 25
-                            }
-                        }
-                        ...
-                        {
-                            "band": {
-                                "center_averaging_type": "geometric",
-                                "closed": "left",
-                                "decimation_level": 0,
-                                "frequency_max": 0.23828125,
-                                "frequency_min": 0.19140625,
-                                "index_max": 30,
-                                "index_min": 25
-                            }
-                        }
+        "band": {
+            "center_averaging_type": "geometric",
+            ...
+            "index_min": 25
+        }
+    }
+    ...
+    {
+        "band": {
+            "center_averaging_type": "geometric",
+            ...
+            "index_min": 25
+        }
+    }
 
-    This feels redundant, do we need to call them band? Probably more explicit.
     Will start by plugging this into the DecimationLevel.
 
-    So
+    TODO: Determine if this class, which represents a single element of a list
+    of channel weight specs, which will be in the json, should have a wrapper or not.
+
     In the same way that a DecimationLevel has Bands,
-    A ProcessingWeights has ChWtSpecs.
+    it will also have ChannelWeightSpecs.
 """
-# channel_weight_spec.py
 
 # from .feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
