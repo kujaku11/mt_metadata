@@ -1,3 +1,152 @@
+"""
+processing_weights candidate:
+
+(base) kkappler@morgan:~/software/irismt/aurora/aurora/config/templates$ diff processing_configuration_template.json test_processing_config_with_weights_block.json
+157a158,244
+>                     },
+>                     "weights": {
+>                         "ex": {
+>                           "combination_style": "multiplication",
+>                           "features":[
+>                             {
+>                               "feature_name": "coherence",
+>                               "feature_params": {
+>                                 "ch1": "ex",
+>                                 "ch2": "hy"
+>                               },
+>                               "window_style": "threshold",
+>                               "window_params": {
+>                                 "min": 0.8,
+>                                 "max": "+inf"
+>                               }
+>                           },
+>                           {
+>                             "feature_name": "multiple_coherence",
+>                             "feature_params": {
+>                               "output_channel": "ex"
+>                             },
+>                             "window_style": "threshold",
+>                             "window_params": {
+>                               "min": 0.9,
+>                               "max": 1.1
+>                             }
+>                           }
+>                         ]
+>                         },
+>                         "ey": {
+>                           "combination_style": "multiplication",
+>                           "features":[
+>                             {
+>                               "feature_name": "coherence",
+>                               "feature_params": {
+>                                 "ch1": "ey",
+>                                 "ch2": "hx"
+>                               },
+>                               "window_style": "threshold",
+>                               "window_params": {
+>                                 "min": 0.8,
+>                                 "max": "+inf"
+>                               }
+>                           },
+>                           {
+>                             "feature_name": "multiple_coherence",
+>                             "feature_params": {
+>                               "output_channel": "ey"
+>                             },
+>                             "window_style": "threshold",
+>                             "window_params": {
+>                               "min": 0.9,
+>                               "max": 1.1
+>                             }
+>                           }
+>                         ]
+>                         },
+>                         "hz": {
+>                           "combination_style": "multiplication",
+>                           "features":[
+>                             {
+>                               "feature_name": "coherence",
+>                               "feature_params": {
+>                                 "ch1": "hx",
+>                                 "ch2": "rx"
+>                               },
+>                               "window_style": "threshold",
+>                               "window_params": {
+>                                 "min": 0.8,
+>                                 "max": "+inf"
+>                               }
+>                           },
+>       {
+>         "feature_name": "coherence",
+>         "feature_params": {
+>           "ch1": "hy",
+>           "ch2": "ry"
+>         },
+>         "window_style": "threshold",
+>         "window_params": {
+>           "min": 0.7,
+>           "max": 0.999
+>         }
+>       }
+>     ]
+>   }
+
+"""
+"""
+
+    Notes, and doc for weights PR.
+`
+
+    processing_weights is a candidate name for the json block like the following:
+    >>> diff processing_configuration_template.json test_processing_config_with_weights_block.json
+
+    This block is basically a dict that maps an output channel name to a ChannelWeightSpec object.
+
+    There are at least three places we would like to be able to plug in such a dict to the processing flow.
+    1. At the frequency_band level, so that each band can be associated with a specialty CWS
+    2. At the decimation_level level, so that all bands in a GIB have a common, default.
+    3. At a high level, so that all processing uses them.
+    TAI: In future, hopefully we could insert a custom CWS for a specific band, but leave
+    all other bands to use the DecimationLevel defaul CWS, for example.  i.e. the CWS can
+    be defined for different scopes.
+
+    TODO FIXME: IN mt_metadata/transfer_functions/processing/auaora/processing.py
+    when you output a json, it looks like the `decimations` level should be named:
+    `decimation_levels` instead.
+
+    TODO: QUESTION for Jared
+    Note the block of processing, called bands, which follows with an itearble of:
+    {
+                            "band": {
+                                "center_averaging_type": "geometric",
+                                "closed": "left",
+                                "decimation_level": 0,
+                                "frequency_max": 0.23828125,
+                                "frequency_min": 0.19140625,
+                                "index_max": 30,
+                                "index_min": 25
+                            }
+                        }
+                        ...
+                        {
+                            "band": {
+                                "center_averaging_type": "geometric",
+                                "closed": "left",
+                                "decimation_level": 0,
+                                "frequency_max": 0.23828125,
+                                "frequency_min": 0.19140625,
+                                "index_max": 30,
+                                "index_min": 25
+                            }
+                        }
+
+    This feels redundant, do we need to call them band? Probably more explicit.
+    Will start by plugging this into the DecimationLevel.
+
+    So
+    In the same way that a DecimationLevel has Bands,
+    A ProcessingWeights has ChWtSpecs.
+"""
 # channel_weight_spec.py
 
 # from .feature_weight_spec import FeatureWeightSpec

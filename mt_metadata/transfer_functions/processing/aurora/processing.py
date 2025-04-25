@@ -84,7 +84,7 @@ class Processing(Base):
                     raise TypeError(
                         f"List entry must be a DecimationLevel or dict object not {type(obj)}"
                     )
-
+        # TODO: Add some doc describing the role of this weird check for a long string
         elif isinstance(value, str):
             if len(value) > 4:
                 raise TypeError(f"Not sure what to do with {type(value)}")

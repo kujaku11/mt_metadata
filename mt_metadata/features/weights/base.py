@@ -1,6 +1,12 @@
 """
     The base class for a weighting kernel.
 
+    TODO: Decide if this should be an mt_metadata object?
+    Case 1: BaseWeightKernel is mt_metadata. Then:
+    - The class is serializable, json outputtable
+    - All classes that extend this are auromatically mt_metadata classes
+    Probably not, actually, 
+
 """
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
