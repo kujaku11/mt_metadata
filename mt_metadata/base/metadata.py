@@ -420,9 +420,8 @@ class Base:
             try:
                 test_property = getattr(self.__class__, name, None)
                 if isinstance(test_property, property):
-                    self.logger.debug(
-                        f"Identified {name} as property, using fset"
-                    )
+                    msg = f"Identified {name} as property, using fset"
+                    self.logger.debug(msg)
                     test_property.fset(self, value)
                     return
             except AttributeError:
