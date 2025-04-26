@@ -38,9 +38,19 @@ class TestChannel(unittest.TestCase):
                 "data_quality.rating.method": "ml",
                 "data_quality.rating.value": 4,
                 "data_quality.warnings": "No warnings",
-                "filter.applied": [False, True],
                 "filter.comments": "test",
-                "filter.name": ["lowpass", "counts2mv"],
+                "filter.filter_list": [
+                    {
+                        "applied_filter": OrderedDict(
+                            [("applied", False), ("name", "unknown"), ("stage", 1)]
+                        )
+                    },
+                    {
+                        "applied_filter": OrderedDict(
+                            [("applied", True), ("name", "unknown"), ("stage", 2)]
+                        )
+                    },
+                ],
                 "location.datum": "WGS84",
                 "location.elevation": 1234.0,
                 "location.latitude": 12.324,

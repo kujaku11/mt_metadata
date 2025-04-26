@@ -161,37 +161,37 @@ class Filtered(MetadataBase):
 
         return self
 
-    def to_dict(
-        self, single: bool = False, nested: bool = False, required: bool = True
-    ) -> dict:
-        """
-        Convert the object to a dictionary.
+    # def to_dict(
+    #     self, single: bool = False, nested: bool = False, required: bool = True
+    # ) -> dict:
+    #     """
+    #     Convert the object to a dictionary.
 
-        Parameters
-        ----------
-        single : bool, optional
-            Whether to return a single dictionary or a list of dictionaries,
-            by default False.
+    #     Parameters
+    #     ----------
+    #     single : bool, optional
+    #         Whether to return a single dictionary or a list of dictionaries,
+    #         by default False.
 
-        Returns
-        -------
-        dict
-            Dictionary representation of the object.
-        """
-        d = super().to_dict(single=single)
-        if single:
-            try:
-                d.pop("name")
-                d.pop("applied")
-            except KeyError:
-                pass
-        else:
-            try:
-                d["filtered"].pop("name")
-                d["filtered"].pop("applied")
-            except KeyError:
-                pass
-        return d
+    #     Returns
+    #     -------
+    #     dict
+    #         Dictionary representation of the object.
+    #     """
+    #     d = super().to_dict(single=single)
+    #     if single:
+    #         try:
+    #             d.pop("name")
+    #             d.pop("applied")
+    #         except KeyError:
+    #             pass
+    #     else:
+    #         try:
+    #             d["filtered"].pop("name")
+    #             d["filtered"].pop("applied")
+    #         except KeyError:
+    #             pass
+    #     return d
 
     def add_filter(
         self,
