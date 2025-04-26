@@ -11,7 +11,8 @@ def test_monotonic_weight_kernel():
     }
 
     # Initialize the kernel
-    kernel = MonotonicWeightKernel().from_dict(kernel_dict)
+    kernel = MonotonicWeightKernel()
+    kernel.from_dict(kernel_dict)
 
     # Test input values
     test_values = np.array([0.1, 0.3, 0.5, 0.8, 1.0])
