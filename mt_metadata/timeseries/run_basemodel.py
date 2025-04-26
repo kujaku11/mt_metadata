@@ -2,7 +2,10 @@
 # Imports
 # =====================================================
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, AnyStr
+from loguru import logger
+from collections import OrderedDict
+from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
@@ -15,17 +18,49 @@ from mt_metadata.common import (
 
 from mt_metadata.timeseries.data_logger_basemodel import DataLogger
 from mt_metadata.utils.list_dict import ListDict
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import (
+    Field,
+    field_validator,
+    ValidationInfo,
+    computed_field,
+    model_validator,
+)
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import CoreSchema, core_schema
+from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
+from mt_metadata.timeseries.electric_basemodel import Electric
+from mt_metadata.timeseries.magnetic_basemodel import Magnetic
 
 
 # =====================================================
 class DataTypeEnum(str, Enum):
+    "DataTypeEnum"
+
     RMT = "RMT"
     AMT = "AMT"
     BBMT = "BBMT"
     LPMT = "LPMT"
     ULPMT = "ULPMT"
+    MT = "MT"
     other = "other"
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: type[Enum], handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        # Define a schema that validates and converts input to lowercase
+        return core_schema.no_info_plain_validator_function(cls._validate_lowercase)
+
+    @classmethod
+    def _validate_lowercase(cls, value: str) -> str:
+        if not isinstance(value, str):
+            raise TypeError(f"Expected string, got {type(value)}")
+        value_lower = value.lower()
+        valid_values = [member.value.lower() for member in cls]
+        if value_lower not in valid_values:
+            raise ValueError(f"Invalid value: {value}. Must be one of {valid_values}.")
+        return value
 
 
 class Run(MetadataBase):
@@ -73,6 +108,15 @@ class Run(MetadataBase):
             },
         ),
     ]
+
+    @computed_field
+    def channels_recorded_all(self) -> list[str]:
+        """
+        List of all channels recorded in the run.
+        """
+        return sorted(
+            [ch.component for ch in self.channels.values() if ch.component is not None]
+        )
 
     comments: Annotated[
         Comment,
@@ -220,7 +264,7 @@ class Run(MetadataBase):
         Field(
             default_factory=ListDict,
             description="ListDict of channel objects collected in this run.",
-            examples="ListDict()",
+            examples="ListDict(Electric(), Magnetic(), Auxiliary())",
             alias=None,
             exclude=True,
             json_schema_extra={
@@ -239,3 +283,248 @@ class Run(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @model_validator(mode="after")
+    def validate_channels_recorded(self) -> Self:
+        """
+        Validate that the value is a list of strings.
+        """
+        for electric in self.channels_recorded_electric:
+            if electric not in self.channels.keys():
+                self.add_channel(Electric(component=electric))
+        for magnetic in self.channels_recorded_magnetic:
+            if magnetic not in self.channels.keys():
+                self.add_channel(Magnetic(component=magnetic))
+        for auxiliary in self.channels_recorded_auxiliary:
+            if auxiliary not in self.channels.keys():
+                self.add_channel(Auxiliary(component=auxiliary))
+        return self
+
+    @field_validator("channels", mode="before")
+    @classmethod
+    def validate_channels(cls, value, info: ValidationInfo) -> ListDict:
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
+            msg = (
+                "input run_list must be an iterable, should be a list or dict "
+                f"not {type(value)}"
+            )
+            logger.error(msg)
+            raise TypeError(msg)
+
+        fails = []
+        channels = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, channel in enumerate(value_list):
+
+            if isinstance(channel, (dict, OrderedDict)):
+                try:
+                    ch_type = channel["type"]
+                    if ch_type is None:
+                        ch_type = channel["component"][0]
+
+                    if ch_type in ["electric", "e"]:
+                        ch = Electric()
+                    elif ch_type in ["magnetic", "b", "h"]:
+                        ch = Magnetic()
+                    else:
+                        ch = Auxiliary()
+
+                    ch.from_dict(channel)
+                    channels.append(ch)
+                except KeyError:
+                    msg = f"Item {ii} is not type(channel); type={type(channel)}"
+                    fails.append(msg)
+                    logger.error(msg)
+            elif not isinstance(channel, (Auxiliary, Electric, Magnetic)):
+                msg = f"Item {ii} is not type(channel); type={type(channel)}"
+                fails.append(msg)
+                logger.error(msg)
+            else:
+                channels.append(channel)
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+
+        cls._update_channels_recorded(cls)
+
+        return channels
+
+    def _update_channels_recorded(self):
+        """
+        Update the channels recorded lists based on the channels in the run.
+        """
+        self.channels_recorded_auxiliary = [
+            ch.component for ch in self.channels if isinstance(ch, Auxiliary)
+        ]
+        self.channels_recorded_electric = [
+            ch.component for ch in self.channels if isinstance(ch, Electric)
+        ]
+        self.channels_recorded_magnetic = [
+            ch.component for ch in self.channels if isinstance(ch, Magnetic)
+        ]
+
+    def __len__(self):
+        return len(self.channels)
+
+    def __add__(self, other):
+        if isinstance(other, Run):
+            self.channels.extend(other.channels)
+
+            return self
+        else:
+            msg = f"Can only merge Run objects, not {type(other)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+    def update(self, other, match=[]):
+        """
+        Update attribute values from another like element, skipping None
+
+        :param other: DESCRIPTION
+        :type other: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        if not isinstance(other, type(self)):
+            logger.warning(f"Cannot update {type(self)} with {type(other)}")
+        for k in match:
+            if self.get_attr_from_name(k) != other.get_attr_from_name(k):
+                msg = (
+                    f"{k} is not equal {self.get_attr_from_name(k)} != "
+                    "{other.get_attr_from_name(k)}"
+                )
+                logger.error(msg)
+                raise ValueError(msg)
+        for k, v in other.to_dict(single=True).items():
+            if hasattr(v, "size"):
+                if v.size > 0:
+                    self.set_attr_from_name(k, v)
+            else:
+                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+                    self.set_attr_from_name(k, v)
+
+        ## Need this because channels are set when setting channels_recorded
+        ## and it initiates an empty channel, but we need to fill it with
+        ## the appropriate metadata.
+        for ch in other.channels:
+            self.add_channel(ch)
+
+    def has_channel(self, component):
+        """
+        Check to see if the channel already exists
+
+        :param component: channel component to look for
+        :type component: string
+        :return: True if found, False if not
+        :rtype: boolean
+
+        """
+
+        if component in self.channels_recorded_all:
+            return True
+        return False
+
+    def channel_index(self, component):
+        """
+        get index of the channel in the channel list
+        """
+        if self.has_channel(component):
+            return self.channels_recorded_all.index(component)
+        return None
+
+    def get_channel(self, component):
+        """
+        Get a channel
+
+        :param component: channel component to look for
+        :type component: string
+        :return: channel object based on channel type
+        :rtype: :class:`mt_metadata.timeseries.Channel`
+
+        """
+
+        if self.has_channel(component):
+            return self.channels[component]
+
+    def add_channel(self, channel_obj, update=True):
+        """
+        Add a channel to the list, check if one exists if it does overwrite it
+
+        :param channel_obj: channel object to add
+        :type channel_obj: :class:`mt_metadata.timeseries.Channel`
+
+        """
+        if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
+            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
+            logger.error(msg)
+            raise ValueError(msg)
+        if channel_obj.component is None:
+            if not isinstance(channel_obj, Auxiliary):
+                msg = "component cannot be empty"
+                logger.error(msg)
+                raise ValueError(msg)
+
+        if self.has_channel(channel_obj.component):
+            self.channels[channel_obj.component].update(channel_obj)
+            logger.debug(
+                f"Run {channel_obj.component} already exists, updating metadata"
+            )
+
+        else:
+            self.channels.append(channel_obj)
+
+        self._update_channels_recorded()
+
+        if update:
+            self.update_time_period()
+
+    def remove_channel(self, channel_id):
+        """
+        remove a run from the survey
+
+        :param component: channel component to look for
+        :type component: string
+
+        """
+
+        if self.has_channel(channel_id):
+            self.channels.remove(channel_id)
+            self._update_channels_recorded()
+        else:
+            logger.warning(f"Could not find {channel_id} to remove.")
+
+    @property
+    def n_channels(self):
+        return self.__len__()
+
+    def update_time_period(self):
+        """
+        update time period from the channels
+        """
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for channel in self.channels:
+                if channel.time_period.start != "1980-01-01T00:00:00+00:00":
+                    start.append(channel.time_period.start)
+                if channel.time_period.end != "1980-01-01T00:00:00+00:00":
+                    end.append(channel.time_period.end)
+
+            if start:
+                if self.time_period.start == "1980-01-01T00:00:00+00:00":
+                    self.time_period.start = min(start)
+                else:
+                    if self.time_period.start > min(start):
+                        self.time_period.start = min(start)
+
+            if end:
+                if self.time_period.end == "1980-01-01T00:00:00+00:00":
+                    self.time_period.end = max(end)
+                else:
+                    if self.time_period.end < max(end):
+                        self.time_period.end = max(end)

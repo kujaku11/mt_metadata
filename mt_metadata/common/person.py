@@ -2,6 +2,7 @@
 # Imports
 # =====================================================
 from typing import Annotated
+from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
@@ -12,6 +13,7 @@ from pydantic import (
     field_validator,
     ValidationInfo,
     AliasChoices,
+    model_validator,
 )
 
 
@@ -96,3 +98,13 @@ class Person(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @model_validator(mode="after")
+    def validate_author(self) -> Self:
+        """
+        Validate that the author is not empty.
+        """
+        if hasattr(self, "author"):
+            if self.author != self.name:
+                self.name = self.author
+        return self
