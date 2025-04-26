@@ -66,21 +66,10 @@ class DecimationLevel(Base):
     @property
     def bands(self) -> List[Band]:
         """
-        get bands, something weird is going on with appending.
+            Return bands.
 
-        TODO: Consider making the bands setter cast everything from dict to band when setting.
-         Then this method can be replaced by a simple `return self._bands`
-         Reason: We access bands much more frequently than we assign them.
         """
-        return_list = []
-        for band in self._bands:
-            if isinstance(band, dict):
-                b = Band()
-                b.from_dict(band)
-            elif isinstance(band, Band):
-                b = band
-            return_list.append(b)
-        return return_list
+        return self._bands
 
     @bands.setter
     def bands(self, value):
