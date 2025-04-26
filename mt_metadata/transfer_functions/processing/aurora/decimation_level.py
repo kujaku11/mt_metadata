@@ -74,7 +74,7 @@ class DecimationLevel(Base):
     @bands.setter
     def bands(self, value):
         """
-        Set bands make sure they are a band object
+        Set bands. If any are in dict form, cast them to Band objects before setting.
 
         :param value: list of bands
         :type value: list, Band
@@ -101,58 +101,45 @@ class DecimationLevel(Base):
 
             self._bands.append(band)
 
-    # @property
-    # def channel_weight_specs(self) -> List[ChannelWeightSpec]:
-    #     """
-    #         Return the channel weight spec objects.
-    #         If they are in dict form, cast them to ChannelWeightSpec objects before returning.
-    #
-    #     TODO: Consider making the channel_weight_specs setter cast everything from dict to
-    #      ChannelWeightSpec when setting. Then this method can be replaced by a simple
-    #      `return self._channel_weight_specs`
-    #      Reason: We access channel_weight_specs much more frequently than we assign them.
-    #
-    #     """
-    #     return_list = []
-    #     for channel_weight_spec in self._channel_weight_specs:
-    #         if isinstance(channel_weight_spec, dict):
-    #             cws = ChannelWeightSpec()
-    #             cws.from_dict(channel_weight_spec)
-    #         elif isinstance(channel_weight_spec, ChannelWeightSpec):
-    #             cws = channel_weight_spec
-    #         return_list.append(cws)
-    #     return return_list
-    #
-    # @channel_weight_specs.setter
-    # def bands(self, value: List[Union[dict, ChannelWeightSpec]]):
-    #     """
-    #     Set channel_weight_specs make sure they are a ChannelWeightSpec object
-    #
-    #     :param value: list of ChannelWeightSpec objects
-    #     :type value: list, Band
-    #
-    #     """
-    #
-    #     if isinstance(value, ChannelWeightSpec):
-    #         self._channel_weight_specs = [value]
-    #
-    #     elif isinstance(value, list):
-    #         self._bands = []
-    #         for obj in value:
-    #             if not isinstance(obj, (Band, dict)):
-    #                 raise TypeError(
-    #                     f"List entry must be a Band object not {type(obj)}"
-    #                 )
-    #             if isinstance(obj, dict):
-    #                 band = Band()
-    #                 band.from_dict(obj)
-    #
-    #             else:
-    #                 band = obj
-    #
-    #             self._bands.append(band)
-    #     else:
-    #         raise TypeError(f"Not sure what to do with {type(value)}")
+    @property
+    def channel_weight_specs(self) -> List[ChannelWeightSpec]:
+        """
+            Return the channel weight spec objects.
+
+        """
+        return self._channel_weight_specs
+
+    @channel_weight_specs.setter
+    def bands(self, value: List[Union[dict, ChannelWeightSpec]]) -> None:
+        """
+        Set channel_weight_specs.
+        If any are in dict form, cast to ChannelWeightSpec before assigning.
+
+        :param value: list of ChannelWeightSpec objects
+        :type value: list, ChannelWeightSpec
+
+        """
+        # Handle singleton cases
+        if isinstance(value, (Band, dict)):
+            value = [value, ]
+
+        if not isinstance(value, list):
+            raise TypeError(f"Not sure what to do with {type(value)}")
+
+        self._channel_weight_specs = []
+        for obj in value:
+            if not isinstance(obj, (ChannelWeightSpec, dict)):
+                raise TypeError(
+                    f"List entry must be a Band object not {type(obj)}"
+                )
+            if isinstance(obj, dict):
+                cws = ChannelWeightSpec()
+                cws.from_dict(obj)
+
+            else:
+                cws = obj
+
+            self._channel_weight_specs.append(cws)
 
     def add_band(self, band: Union[Band, dict]) -> None:
         """
