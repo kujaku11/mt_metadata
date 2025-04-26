@@ -9,6 +9,8 @@ Created on Thu Feb 17 14:15:20 2022
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+# from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
+# from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
 
 from .band import Band
 from .channel_nomenclature import ChannelNomenclature
@@ -52,6 +54,7 @@ class Processing(Base):
         """
         dictionary of decimations levels
 
+        TODO: replace this convoluted setter with the model used for DecimationLevel.bands setter.
         :param value: dict of decimation levels
         :type value: dict
 
@@ -75,7 +78,6 @@ class Processing(Base):
             for obj in value:
                 if isinstance(value, DecimationLevel):
                     self._decimations.append(obj)
-
                 elif isinstance(obj, dict):
                     level = DecimationLevel()
                     level.from_dict(obj)
