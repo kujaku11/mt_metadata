@@ -143,12 +143,22 @@ class Filtered(MetadataBase):
                 "'applied' and 'name' will be deprecated in the future append an "
                 "AppliedFilter(name='name', applied=True) to 'filter_list'."
             )
+
         if len(self.name) != len(self.applied):
             diff = len(self.name) - len(self.applied)
             if diff > 0:
                 self.applied.extend([True] * diff)
             else:
                 self.name.extend(["unknown"] * abs(diff))
+
+        if len(self.name) != len(self.filter_list):
+            for name, applied, index in zip(
+                self.name, self.applied, range(len(self.name))
+            ):
+                self.filter_list.append(
+                    AppliedFilter(name=name, applied=applied, stage=index + 1)
+                )
+
         return self
 
     # def to_dict(

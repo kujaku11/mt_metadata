@@ -27,6 +27,7 @@ from xml.etree import cElementTree as et
 from mt_metadata.utils.validators import (
     validate_attribute,
     validate_value_type,
+    validate_name,
 )
 from mt_metadata.utils.exceptions import MTSchemaError
 from . import helpers
@@ -913,16 +914,16 @@ class MetadataBase(BaseModel):
                 elif isinstance(value, (float, int, complex)):
                     if not np.isclose(value, other_value):
                         msg = f"{key}: {value} != {other_value}"
-                        self.logger.info(msg)
+                        logger.info(msg)
                         fail = True
                 else:
                     if value != other_value:
                         msg = f"{key}: {value} != {other_value}"
-                        self.logger.info(msg)
+                        logger.info(msg)
                         fail = True
             except KeyError:
                 msg = "Cannot find {0} in other".format(key)
-                self.logger.info(msg)
+                logger.info(msg)
         return fail
 
     def __ne__(self, other):
@@ -970,7 +971,7 @@ class MetadataBase(BaseModel):
             self.from_xml(other)
         else:
             msg = f"Cannot load {type(other)} into {self.__class__.__name__}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise MTSchemaError(msg)
 
     def update(self, other, match=[]):
@@ -982,14 +983,14 @@ class MetadataBase(BaseModel):
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning(f"Cannot update {type(self)} with {type(other)}")
+            logger.warning(f"Cannot update {type(self)} with {type(other)}")
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = (
                     f"{k} is not equal {self.get_attr_from_name(k)} != "
                     f"{other.get_attr_from_name(k)}"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
@@ -1022,7 +1023,7 @@ class MetadataBase(BaseModel):
                 # Need the TypeError for objects that have no __reduce__ method
                 # like H5 references.
                 except (AttributeError, TypeError) as error:
-                    self.logger.debug(error)
+                    logger.debug(error)
                     continue
             # need to copy and properties
             for key in self.__dict__.keys():
@@ -1154,7 +1155,7 @@ class MetadataBase(BaseModel):
                 v_dict = attr_dict[name]
             except KeyError as error:
                 msg = f"{error} not attribute {name} found."
-                self.logger.error(msg)
+                logger.error(msg)
                 raise MTSchemaError(msg)
             lines.append(self._field_info_to_string(name, v_dict))
         else:
@@ -1222,7 +1223,7 @@ class MetadataBase(BaseModel):
                 + "add_base_attribute."
             )
 
-            self.logger.error(msg)
+            logger.error(msg)
             raise AttributeError(error)
 
     @deprecated("add_base_attribute is deprecated. Use add_new_field.")
@@ -1336,7 +1337,7 @@ class MetadataBase(BaseModel):
                             v_list.append(obj)
                     value = v_list
             except AttributeError as error:
-                self.logger.debug(error)
+                logger.debug(error)
                 value = None
             if required:
                 if isinstance(value, (np.ndarray)):
@@ -1357,7 +1358,7 @@ class MetadataBase(BaseModel):
         if nested:
             meta_dict = helpers.structure_dict(meta_dict)
         meta_dict = {
-            self.__class__.__name__.lower(): OrderedDict(
+            validate_name(self.__class__.__name__): OrderedDict(
                 sorted(meta_dict.items(), key=itemgetter(0))
             )
         }
@@ -1376,20 +1377,20 @@ class MetadataBase(BaseModel):
         """
         if not isinstance(meta_dict, (dict, OrderedDict)):
             msg = f"Input must be a dictionary not {type(meta_dict)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
         if len(keys) == 1:
             class_name = keys[0]
-            if class_name.lower() != self.__class__.__name__.lower():
+            if class_name.lower() != validate_name(self.__class__.__name__):
                 msg = (
                     "name of input dictionary is not the same as class type "
                     f"input = {class_name}, class type = {self.__class__.__name__}"
                 )
-                self.logger.debug(msg, class_name, self.__class__.__name__)
+                logger.debug(msg, class_name, self.__class__.__name__)
             meta_dict = helpers.flatten_dict(meta_dict[class_name])
         else:
-            self.logger.debug(
+            logger.debug(
                 f"Assuming input dictionary is of type {self.__class__.__name__}",
             )
             meta_dict = helpers.flatten_dict(meta_dict)
@@ -1448,7 +1449,7 @@ class MetadataBase(BaseModel):
                     json_dict = json.load(fid)
         elif not isinstance(json_str, (str, Path)):
             msg = f"Input must be valid JSON string not {type(json_str)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise MTSchemaError(msg)
         self.from_dict(json_dict)
 
@@ -1467,7 +1468,7 @@ class MetadataBase(BaseModel):
         """
         if not isinstance(pd_series, pd.Series):
             msg = f"Input must be a Pandas.Series not type {type(pd_series)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise MTSchemaError(msg)
         for key, value in pd_series.items():
             self.set_attr_from_name(key, value)
