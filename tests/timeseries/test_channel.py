@@ -42,12 +42,20 @@ class TestChannel(unittest.TestCase):
                 "filter.filter_list": [
                     {
                         "applied_filter": OrderedDict(
-                            [("applied", False), ("name", "unknown"), ("stage", 1)]
+                            [
+                                ("applied", False),
+                                ("name", "low_pass"),
+                                ("stage", 1),
+                            ]
                         )
                     },
                     {
                         "applied_filter": OrderedDict(
-                            [("applied", True), ("name", "unknown"), ("stage", 2)]
+                            [
+                                ("applied", True),
+                                ("name", "sensor_response"),
+                                ("stage", 2),
+                            ]
                         )
                     },
                 ],
