@@ -89,11 +89,10 @@ Candidate names: processing_weights, feature_weights, channel_weights_spec
     it will also have ChannelWeightSpecs.
 """
 
-# from .feature_weight_spec import FeatureWeightSpec
-from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
+from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
 from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
@@ -116,15 +115,15 @@ class ChannelWeightSpec(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
-    def features(self) -> List[FeatureWeightSpec]:
+    def feature_weight_specs(self) -> List[FeatureWeightSpec]:
         """
-            Return features.
+            Return feature_weight_specs.
 
         """
-        return self._features
+        return self._feature_weight_specs
 
-    @features.setter
-    def features(self, value: Union[List[Union[FeatureWeightSpec, dict]], FeatureWeightSpec]) -> None:
+    @feature_weight_specs.setter
+    def feature_weight_specs(self, value: Union[List[Union[FeatureWeightSpec, dict]], FeatureWeightSpec]) -> None:
         """
         Set features. If any are in dict form, cast them to FeatureWeightSpec objects before setting.
 

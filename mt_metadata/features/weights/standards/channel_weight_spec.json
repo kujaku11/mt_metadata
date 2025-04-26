@@ -21,12 +21,12 @@
         "example": "[ ex ey hz ]",
 		"default": []
     },
-    "features": {
+    "feature_weight_specs": {
         "type": "integer",
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "List of feature weighting schemes to use for TF processing ",
+        "description": "List of feature weighting schemes to use for TF processing.",
         "options": [],
         "alias": [],
         "example": "[]",
