@@ -9,5 +9,16 @@
             "alias": [],
             "example": "multiplication",
             "default": "multiplication"
-        }
+        },
+    "output_channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of tf ouput channels for which this weighting scheme will be applied",
+        "options": [],
+        "alias": [],
+        "example": "[ ex ey hz ]",
+		"default": []
+    }
     }
