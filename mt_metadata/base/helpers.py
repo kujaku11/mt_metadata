@@ -462,13 +462,17 @@ def recursive_split_setattr(base_object, name, value, sep="."):
         # if the value is a list or dict then we need to add accordingly
         if isinstance(value, list):
             if isinstance(value[0], (dict, OrderedDict)):
-
                 new_list = []
                 for obj_dict in value:
                     obj_key = list(obj_dict.keys())[0]
-                    obj = base_object._objects_included[obj_key]()
-                    obj.from_dict(obj_dict)
-                    new_list.append(obj)
+                    try:
+                        obj = base_object._objects_included[obj_key]()
+                        obj.from_dict(obj_dict)
+                        new_list.append(obj)
+                    except KeyError:
+                        raise KeyError(
+                            f"Could not find {obj_key} in {base_object._objects_included}"
+                        )
                 value = new_list
 
         setattr(base_object, key, value)
