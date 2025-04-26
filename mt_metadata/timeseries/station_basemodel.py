@@ -1,27 +1,23 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
+
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from pydantic import Field
+from mt_metadata.common import (
+    DataTypeEnum,
+    ChannelLayoutEnum,
+    Fdsn,
+    Location,
+    Person,
+    Declination,
+    GeographicLocation,
+)
 
 
 # =====================================================
-class ChannelLayoutEnum(str, Enum):
-    L = "L"
-    X = "X"
-    other = "other"
-
-
-class DataTypeEnum(str, Enum):
-    RMT = "RMT"
-    AMT = "AMT"
-    BBMT = "BBMT"
-    LPMT = "LPMT"
-    ULPMT = "ULPMT"
-    other = "other"
 
 
 class Station(MetadataBase):

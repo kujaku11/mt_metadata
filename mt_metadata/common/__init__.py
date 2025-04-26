@@ -39,7 +39,7 @@ from .software import Software
 from .provenance import Provenance
 from .time_period import TimePeriod
 from .range import MinMaxRange, StartEndRange
-from .enumerations import DataTypeEnum
+from .enumerations import DataTypeEnum, ChannelLayoutEnum
 
 
 __all__ = [
@@ -62,4 +62,5 @@ __all__ = [
     "FundingSource",
     "Software",
     "DataTypeEnum",
+    "ChannelLayoutEnum",
 ]
