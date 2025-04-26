@@ -39,7 +39,7 @@ class Rating(MetadataBase):
     ]
 
     value: Annotated[
-        int,
+        int | None,
         Field(
             default=None,
             description="A rating from 1-5 where 1 is bad and 5 is good and 0 if unrated.",

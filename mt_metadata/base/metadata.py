@@ -422,9 +422,7 @@ class Base:
                 # check options
                 if v_dict["style"] == "controlled vocabulary":
                     options = v_dict["options"]
-                    accept, other, msg = self._validate_option(
-                        name, value, options
-                    )
+                    accept, other, msg = self._validate_option(name, value, options)
                     if not accept:
                         self.logger.error(msg.format(value, options))
                         raise MTSchemaError(msg.format(value, options))
@@ -1033,51 +1031,72 @@ class MetadataBase(BaseModel):
                 if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
                     self.set_attr_from_name(k, v)
 
-    def __deepcopy__(self, memodict={}):
+    ## cannot override the __deepcopy__ method in pydantic.BaseModel otherwise bad
+    ## things happen.
+    # def __deepcopy__(self, memodict={}):
+    #     """
+    #     Need to skip copying the logger
+    #     need to copy properties as well.
+
+    #     :return: Deep copy
+    #     :rtype: :class:`mt_metadata.base.metadata.Base`
+
+    #     """
+
+    #     try:
+    #         return self.model_copy(deep=True)
+    #     except Exception as exception:
+    #         logger.exception(exception)
+    #         # copied = type(self)()
+    #         # for key in self.to_dict(single=True, required=False).keys():
+    #         #     try:
+
+    #         #         copied.set_attr_from_name(
+    #         #             key, deepcopy(self.get_attr_from_name(key), memodict)
+    #         #         )
+    #         #     # Need the TypeError for objects that have no __reduce__ method
+    #         #     # like H5 references.
+    #         #     except (AttributeError, TypeError) as error:
+    #         #         logger.debug(error)
+    #         #         continue
+    #         # # need to copy and properties
+    #         # for key in self.__dict__.keys():
+    #         #     if key.startswith("_"):
+    #         #         test_property = getattr(self.__class__, key[1:], None)
+    #         #         if isinstance(test_property, property):
+    #         #             value = getattr(self, key[1:])
+    #         #             if hasattr(value, "copy"):
+    #         #                 setattr(copied, key[1:], value.copy())
+    #         #             else:
+    #         #                 setattr(copied, key[1:], value)
+
+    #         # return copied
+
+    # def copy(self):
+    #     """
+    #     Copy object
+
+    #     """
+
+    #     return self.__deepcopy__()
+
+    def copy(self, deep=True) -> "MetadataBase":
         """
-        Need to skip copying the logger
-        need to copy properties as well.
+        Create a copy of the current object.  This is a wrapper around the
+        pydantic copy method.
 
-        :return: Deep copy
-        :rtype: :class:`mt_metadata.base.metadata.Base`
+        Parameters
+        ----------
+        deep : bool, optional
+            If True, create a deep copy of the object. The default is True.
 
+        Returns
+        -------
+        MetadataBase
+            A copy of the current object.
         """
 
-        try:
-            return self.model_copy(deep=True)
-        except Exception:
-            copied = type(self)()
-            for key in self.to_dict(single=True, required=False).keys():
-                try:
-
-                    copied.set_attr_from_name(
-                        key, deepcopy(self.get_attr_from_name(key), memodict)
-                    )
-                # Need the TypeError for objects that have no __reduce__ method
-                # like H5 references.
-                except (AttributeError, TypeError) as error:
-                    logger.debug(error)
-                    continue
-            # need to copy and properties
-            for key in self.__dict__.keys():
-                if key.startswith("_"):
-                    test_property = getattr(self.__class__, key[1:], None)
-                    if isinstance(test_property, property):
-                        value = getattr(self, key[1:])
-                        if hasattr(value, "copy"):
-                            setattr(copied, key[1:], value.copy())
-                        else:
-                            setattr(copied, key[1:], value)
-
-            return copied
-
-    def copy(self):
-        """
-        Copy object
-
-        """
-
-        return self.__deepcopy__()
+        return self.model_copy(deep=deep)
 
     def get_all_fields(self) -> Dict:
         """

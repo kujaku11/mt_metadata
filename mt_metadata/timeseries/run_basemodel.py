@@ -289,13 +289,15 @@ class Run(MetadataBase):
         """
         Validate that the value is a list of strings.
         """
-        for electric in self.channels_recorded_electric:
+        # need to make each another object list() otherwise the contents
+        # get overwritten with the new channel.
+        for electric in list(self.channels_recorded_electric):
             if electric not in self.channels.keys():
                 self.add_channel(Electric(component=electric))
-        for magnetic in self.channels_recorded_magnetic:
+        for magnetic in list(self.channels_recorded_magnetic):
             if magnetic not in self.channels.keys():
                 self.add_channel(Magnetic(component=magnetic))
-        for auxiliary in self.channels_recorded_auxiliary:
+        for auxiliary in list(self.channels_recorded_auxiliary):
             if auxiliary not in self.channels.keys():
                 self.add_channel(Auxiliary(component=auxiliary))
         return self
@@ -349,32 +351,44 @@ class Run(MetadataBase):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-        cls._update_channels_recorded(cls)
+        cls()._update_channels_recorded()
 
         return channels
+
+    def _empty_channels_recorded(self):
+        """
+        Empty the channels recorded lists.
+        """
+        self.channels_recorded_auxiliary.clear()
+        self.channels_recorded_electric.clear()
+        self.channels_recorded_magnetic.clear()
 
     def _update_channels_recorded(self):
         """
         Update the channels recorded lists based on the channels in the run.
         """
-        self.channels_recorded_auxiliary = [
-            ch.component for ch in self.channels if isinstance(ch, Auxiliary)
-        ]
-        self.channels_recorded_electric = [
-            ch.component for ch in self.channels if isinstance(ch, Electric)
-        ]
-        self.channels_recorded_magnetic = [
-            ch.component for ch in self.channels if isinstance(ch, Magnetic)
-        ]
+        self._empty_channels_recorded()
+        self.channels_recorded_auxiliary = sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Auxiliary)]
+        )
+        self.channels_recorded_electric = sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Electric)]
+        )
+        self.channels_recorded_magnetic = sorted(
+            [ch.component for ch in self.channels if isinstance(ch, Magnetic)]
+        )
 
-    def __len__(self):
-        return len(self.channels)
+    # def __len__(self):
+    #     return len(self.channels)
 
-    def __add__(self, other):
+    def merge(self, other, inplace=True):
         if isinstance(other, Run):
             self.channels.extend(other.channels)
-
-            return self
+            self._update_channels_recorded()
+            if inplace:
+                self.update_time_period()
+            else:
+                return self.copy()
         else:
             msg = f"Can only merge Run objects, not {type(other)}"
             logger.error(msg)
@@ -494,19 +508,20 @@ class Run(MetadataBase):
 
         if self.has_channel(channel_id):
             self.channels.remove(channel_id)
+
             self._update_channels_recorded()
         else:
             logger.warning(f"Could not find {channel_id} to remove.")
 
     @property
     def n_channels(self):
-        return self.__len__()
+        return len(self.channels)
 
     def update_time_period(self):
         """
         update time period from the channels
         """
-        if self.__len__() > 0:
+        if self.n_channels > 0:
             start = []
             end = []
             for channel in self.channels:

@@ -481,7 +481,9 @@ def recursive_split_setattr(base_object, name, value, sep=".", skip_validation=F
     else:
         # if the value is a list or dict then we need to add accordingly
         if isinstance(value, list):
-            if isinstance(value[0], (dict, OrderedDict)):
+            if len(value) == 0:
+                value = []
+            elif isinstance(value[0], (dict, OrderedDict)):
                 new_list = []
                 for obj_dict in value:
                     obj_key = list(obj_dict.keys())[0]

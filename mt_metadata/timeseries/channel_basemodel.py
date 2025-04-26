@@ -74,7 +74,7 @@ class PartialLocation(Location):
 # electric dipole.
 class ChannelBase(MetadataBase):
     channel_number: Annotated[
-        int,
+        int | None,
         Field(
             default=None,
             description="Channel number on the data logger.",

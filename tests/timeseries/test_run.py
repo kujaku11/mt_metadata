@@ -32,41 +32,49 @@ class TestRun(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
         self.meta_dict = {
-            "run": {
-                "acquired_by.author": "MT guru",
-                "acquired_by.comments": "lazy",
-                "channels_recorded_auxiliary": ["temperature"],
-                "channels_recorded_electric": ["ex", "ey"],
-                "channels_recorded_magnetic": ["hx", "hy", "hz"],
-                "comments": "Cloudy solar panels failed",
-                "data_logger.firmware.author": "MT instruments",
-                "data_logger.firmware.name": "FSGMT",
-                "data_logger.firmware.version": "12.120",
-                "data_logger.id": "mt091",
-                "data_logger.manufacturer": "T. Lurric",
-                "data_logger.model": "Ichiban",
-                "data_logger.power_source.comments": "rats",
-                "data_logger.power_source.id": "12",
-                "data_logger.power_source.type": "pb acid",
-                "data_logger.power_source.voltage.end": 12.0,
-                "data_logger.power_source.voltage.start": 14.0,
-                "data_logger.timing_system.comments": "solid",
-                "data_logger.timing_system.drift": 0.001,
-                "data_logger.timing_system.type": "GPS",
-                "data_logger.timing_system.uncertainty": 0.000001,
-                "data_logger.type": "broadband",
-                "data_type": "mt",
-                "id": "mt01a",
-                "provenance.comments": "provenance comments",
-                "provenance.log": "provenance log",
-                "metadata_by.author": "MT guru",
-                "metadata_by.comments": "lazy",
-                "sample_rate": 256.0,
-                "time_period.end": "1980-01-01T00:00:00+00:00",
-                "time_period.start": "1980-01-01T00:00:00+00:00",
-            }
+            "run": OrderedDict(
+                [
+                    ("acquired_by.comments", "lazy"),
+                    ("acquired_by.name", "MT guru"),
+                    ("channels_recorded_auxiliary", ["temperature"]),
+                    ("channels_recorded_electric", ["ex", "ey"]),
+                    ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
+                    ("comments", "Cloudy solar panels failed"),
+                    ("data_logger.firmware.author", "MT instruments"),
+                    ("data_logger.firmware.name", "FSGMT"),
+                    ("data_logger.firmware.version", "12.120"),
+                    ("data_logger.id", "mt091"),
+                    ("data_logger.manufacturer", "T. Lurric"),
+                    ("data_logger.model", "Ichiban"),
+                    ("data_logger.power_source.comments", "rats"),
+                    ("data_logger.power_source.id", "12"),
+                    ("data_logger.power_source.type", "pb acid"),
+                    ("data_logger.power_source.voltage.end", 12.0),
+                    ("data_logger.power_source.voltage.start", 14.0),
+                    ("data_logger.timing_system.comments", "solid"),
+                    ("data_logger.timing_system.drift", 0.001),
+                    ("data_logger.timing_system.type", "GPS"),
+                    ("data_logger.timing_system.uncertainty", 1e-06),
+                    ("data_logger.type", "broadband"),
+                    ("data_type", "mt"),
+                    ("id", "mt01a"),
+                    ("metadata_by.comments", "lazy"),
+                    ("metadata_by.name", "x"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.comments", "provenance comments"),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.log", "provenance log"),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
+                    ("sample_rate", 256.0),
+                    ("time_period.end", "1980-01-01T00:00:00+00:00"),
+                    ("time_period.start", "1980-01-01T00:00:00+00:00"),
+                ]
+            )
         }
-
         self.meta_dict = {
             "run": OrderedDict(sorted(self.meta_dict["run"].items(), key=itemgetter(0)))
         }
@@ -121,12 +129,21 @@ class TestRun(unittest.TestCase):
         with self.subTest("n_channels"):
             self.assertEqual(self.run_object.n_channels, 6)
         with self.subTest("length"):
-            self.assertEqual(len(self.run_object), 6)
+            self.assertEqual(self.run_object.n_channels, 6)
+
+    def test_set_channels_recoreded_electric(self):
+        self.run_object.channels_recorded_electric = ["ex", "ey"]
+        with self.subTest("length"):
+            self.assertEqual(self.run_object.n_channels, 2)
+        with self.subTest("in list"):
+            self.assertListEqual(
+                ["ex", "ey"], self.run_object.channels_recorded_electric
+            )
 
     def test_set_channels(self):
         self.run_object.channels = [Electric(component="ez")]
         with self.subTest("length"):
-            self.assertEqual(len(self.run_object), 1)
+            self.assertEqual(self.run_object.n_channels, 1)
         with self.subTest("in list"):
             self.assertListEqual(["ez"], self.run_object.channels_recorded_all)
 
@@ -141,13 +158,13 @@ class TestRun(unittest.TestCase):
 
     def test_add_channels(self):
         run_02 = Run()
-        run_02.channels.append(Electric(component="ex"))
-        run_02.channels.append(Magnetic(component="hx"))
-        run_02.channels.append(Auxiliary(component="temperature"))
-        self.run_object.channels.append(Electric(component="ey"))
-        self.run_object += run_02
+        run_02.add_channel(Electric(component="ex"))
+        run_02.add_channel(Magnetic(component="hx"))
+        run_02.add_channel(Auxiliary(component="temperature"))
+        self.run_object.add_channel(Electric(component="ey"))
+        self.run_object.merge(run_02)
         with self.subTest("length"):
-            self.assertEqual(len(self.run_object), 4)
+            self.assertEqual(self.run_object.n_channels, 4)
         with self.subTest("In list all"):
             self.assertListEqual(
                 sorted(["ex", "ey", "hx", "temperature"]),
@@ -166,7 +183,7 @@ class TestRun(unittest.TestCase):
             )
 
     def test_remove_channel(self):
-        self.run_object.channels.append(Electric(component="ex"))
+        self.run_object.add_channel(Electric(component="ex"))
         self.run_object.remove_channel("ex")
         self.assertListEqual([], self.run_object.channels_recorded_all)
 
