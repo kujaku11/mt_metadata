@@ -110,7 +110,7 @@ class DecimationLevel(Base):
         return self._channel_weight_specs
 
     @channel_weight_specs.setter
-    def bands(self, value: List[Union[dict, ChannelWeightSpec]]) -> None:
+    def channel_weight_specs(self, value: List[Union[dict, ChannelWeightSpec]]) -> None:
         """
         Set channel_weight_specs.
         If any are in dict form, cast to ChannelWeightSpec before assigning.
@@ -120,7 +120,7 @@ class DecimationLevel(Base):
 
         """
         # Handle singleton cases
-        if isinstance(value, (Band, dict)):
+        if isinstance(value, (ChannelWeightSpec, dict)):
             value = [value, ]
 
         if not isinstance(value, list):
