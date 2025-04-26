@@ -36,6 +36,8 @@ from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
+from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
+from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
@@ -80,26 +82,9 @@ class DecimationLevel(Base):
         :type value: list, Band
 
         """
-        # Handle singleton cases
-        if isinstance(value, (Band, dict)):
-            value = [value, ]
-
-        if not isinstance(value, list):
-            raise TypeError(f"Not sure what to do with {type(value)}")
-
-        self._bands = []
-        for obj in value:
-            if not isinstance(obj, (Band, dict)):
-                raise TypeError(
-                    f"List entry must be a Band object not {type(obj)}"
-                )
-            if isinstance(obj, dict):
-                band = Band()
-                band.from_dict(obj)
-            else:
-                band = obj
-
-            self._bands.append(band)
+        values = validate_setter_input(value, Band)
+        bands_list = [cast_to_class_if_dict(obj, Band) for obj in values]
+        self._bands = bands_list
 
     @property
     def channel_weight_specs(self) -> List[ChannelWeightSpec]:
@@ -119,27 +104,9 @@ class DecimationLevel(Base):
         :type value: list, ChannelWeightSpec
 
         """
-        # Handle singleton cases
-        if isinstance(value, (ChannelWeightSpec, dict)):
-            value = [value, ]
-
-        if not isinstance(value, list):
-            raise TypeError(f"Not sure what to do with {type(value)}")
-
-        self._channel_weight_specs = []
-        for obj in value:
-            if not isinstance(obj, (ChannelWeightSpec, dict)):
-                raise TypeError(
-                    f"List entry must be a Band object not {type(obj)}"
-                )
-            if isinstance(obj, dict):
-                cws = ChannelWeightSpec()
-                cws.from_dict(obj)
-
-            else:
-                cws = obj
-
-            self._channel_weight_specs.append(cws)
+        values = validate_setter_input(value, ChannelWeightSpec)
+        cws_list = [cast_to_class_if_dict(obj, ChannelWeightSpec) for obj in values]
+        self._channel_weight_specs = cws_list
 
     def add_band(self, band: Union[Band, dict]) -> None:
         """
