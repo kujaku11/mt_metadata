@@ -145,6 +145,12 @@ all_units = [
         "symbol": "samples",
         "plot_label": "Samples",
     },
+    {
+        "name": "celsius",
+        "description": "Unit of temperature",
+        "symbol": "C",
+        "plot_label": "Celsius",
+    },
 ]
 for prefix_name, prefix_symbol in prefixes.items():
     for unit_name, unit_details in {**base_units, **derived_units}.items():
@@ -287,6 +293,8 @@ def parse_unit_string(unit_string: str) -> list[dict]:
         Example: [{"name": "mV", "sep": " "}, {"name": "nT", "sep": "/"}, {"name": "[", "sep": None},
                   {"name": "km", "sep": " "}, {"name": "ohm", "sep": None}, {"name": "]", "sep": None}]
     """
+    if not isinstance(unit_string, str):
+        raise TypeError("The unit_string must be a string.")
     unit_string = unit_string.replace("[", "").replace("]", "")
     result = []
     separator = ""

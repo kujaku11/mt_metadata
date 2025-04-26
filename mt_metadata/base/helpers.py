@@ -61,7 +61,8 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
         if hasattr(field_value.annotation, "model_fields"):
             fields[field_name] = field_value.annotation().get_all_fields()
         else:
-            fields[field_name] = field_value
+            if field_value.deprecated is None:
+                fields[field_name] = field_value
 
     return fields
 

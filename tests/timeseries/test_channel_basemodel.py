@@ -60,7 +60,7 @@ def test_channel_custom_values():
         translated_azimuth=50.0,
         translated_tilt=5.0,
         type="electric",
-        units="volts",
+        units="volt",
         location=PartialLocation(latitude=45.0, longitude=-120.0, elevation=500.0),
     )
 
@@ -75,7 +75,7 @@ def test_channel_custom_values():
     assert channel.translated_azimuth == 50.0
     assert channel.translated_tilt == 5.0
     assert channel.type == "electric"
-    assert channel.units == "volts"
+    assert channel.units == "volt"
     assert isinstance(channel.location, PartialLocation)
     assert channel.location.latitude == 45.0
     assert channel.location.longitude == -120.0
@@ -120,7 +120,7 @@ def test_channel_invalid_units():
     """
     Test the Channel model with an invalid units value.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Channel(units=12345)  # units must be a string or a valid UnitsEnum value
 
 
@@ -231,7 +231,7 @@ def test_channel_base_custom_values():
         translated_azimuth=50.0,
         translated_tilt=5.0,
         type="electric",
-        units="volts",
+        units="volt",
     )
 
     assert channel_base.channel_number == 1
@@ -245,7 +245,7 @@ def test_channel_base_custom_values():
     assert channel_base.translated_azimuth == 50.0
     assert channel_base.translated_tilt == 5.0
     assert channel_base.type == "electric"
-    assert channel_base.units == "volts"
+    assert channel_base.units == "volt"
 
 
 def test_channel_base_invalid_component():
@@ -260,5 +260,5 @@ def test_channel_base_invalid_units():
     """
     Test the ChannelBase model with an invalid units value.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         ChannelBase(units=12345)  # units must be a string or a valid UnitsEnum value
