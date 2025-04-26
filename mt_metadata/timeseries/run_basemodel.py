@@ -1,8 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
-from typing import Annotated, AnyStr
+from typing import Annotated
 from loguru import logger
 from collections import OrderedDict
 from typing_extensions import Self
@@ -14,6 +13,7 @@ from mt_metadata.common import (
     TimePeriod,
     Person,
     Provenance,
+    DataTypeEnum,
 )
 
 from mt_metadata.timeseries.data_logger_basemodel import DataLogger
@@ -25,42 +25,13 @@ from pydantic import (
     computed_field,
     model_validator,
 )
-from pydantic import GetCoreSchemaHandler
-from pydantic_core import CoreSchema, core_schema
-from mt_metadata.timeseries.channel_basemodel import Channel
+
 from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
 from mt_metadata.timeseries.electric_basemodel import Electric
 from mt_metadata.timeseries.magnetic_basemodel import Magnetic
 
 
 # =====================================================
-class DataTypeEnum(str, Enum):
-    "DataTypeEnum"
-
-    RMT = "RMT"
-    AMT = "AMT"
-    BBMT = "BBMT"
-    LPMT = "LPMT"
-    ULPMT = "ULPMT"
-    MT = "MT"
-    other = "other"
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: type[Enum], handler: GetCoreSchemaHandler
-    ) -> CoreSchema:
-        # Define a schema that validates and converts input to lowercase
-        return core_schema.no_info_plain_validator_function(cls._validate_lowercase)
-
-    @classmethod
-    def _validate_lowercase(cls, value: str) -> str:
-        if not isinstance(value, str):
-            raise TypeError(f"Expected string, got {type(value)}")
-        value_lower = value.lower()
-        valid_values = [member.value.lower() for member in cls]
-        if value_lower not in valid_values:
-            raise ValueError(f"Invalid value: {value}. Must be one of {valid_values}.")
-        return value
 
 
 class Run(MetadataBase):
