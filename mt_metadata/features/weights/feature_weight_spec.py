@@ -38,7 +38,7 @@ class FeatureWeightSpec(Base):
 
         weight_kernels = kwargs.get("weight_kernels", [])
         self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
-        
+
     @property
     def feature_params(self):
         return self._feature_params
@@ -57,29 +57,29 @@ class FeatureWeightSpec(Base):
         Ensure weight_kernels are properly initialized.
         """
         self._weight_kernels = _unpack_weight_kernels(weight_kernels=value)
-        
 
-    def from_dict(self, input_dict):
-        """
-        Custom from_dict to handle non-schema elements like feature_params and weight_kernels.
-        """
-        # Filter input_dict to include only keys defined in the schema
-        schema_keys = set(self._attr_dict.keys())
-        schema_dict = {k: v for k, v in input_dict.items() if k in schema_keys}
 
-        # Call the base class's from_dict with the filtered dictionary
-        super().from_dict(schema_dict)
+    # def from_dict(self, input_dict):
+    #     """
+    #     Custom from_dict to handle non-schema elements like feature_params and weight_kernels.
+    #     """
+    #     # Filter input_dict to include only keys defined in the schema
+    #     schema_keys = set(self._attr_dict.keys())
+    #     schema_dict = {k: v for k, v in input_dict.items() if k in schema_keys}
+    #
+    #     # Call the base class's from_dict with the filtered dictionary
+    #     super().from_dict(schema_dict)
+    #
+    #     self.feature_params = input_dict.get("feature_params", {})
+    #
+    #     weight_kernels = input_dict.get("weight_kernels", [])
+    #     self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
+    #
+    # def to_dict(self):
+    #     out = super().to_dict()
+    #     out["feature_params"] = self.feature_params
+    #     return out
 
-        self.feature_params = input_dict.get("feature_params", {})
-
-        weight_kernels = input_dict.get("weight_kernels", [])
-        self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
-
-    def to_dict(self):
-        out = super().to_dict()
-        out["feature_params"] = self.feature_params
-        return out
-    
     def evaluate(self, feature_values):
         """
         Evaluate this feature's weighting based on the list of kernels.

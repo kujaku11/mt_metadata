@@ -1,5 +1,5 @@
 """
-processing_weights candidate:
+candidate data structure:
     {
                             "channel_weight_spec": {
                                 "output_channels": [
@@ -33,6 +33,9 @@ processing_weights candidate:
                                 ]
                             }
                         }
+
+Candidate names: processing_weights, feature_weights, channel_weights_spec
+
 """
 """
 
@@ -51,7 +54,7 @@ processing_weights candidate:
     2. At the decimation_level level, so that all bands in a GIB have a common, default.
     3. At a high level, so that all processing uses them.
     TAI: In future, hopefully we could insert a custom CWS for a specific band, but leave
-    all other bands to use the DecimationLevel defaul CWS, for example.  i.e. the CWS can
+    all other bands to use the DecimationLevel default CWS, for example.  i.e. the CWS can
     be defined for different scopes.
 
     TODO FIXME: IN mt_metadata/transfer_functions/processing/auaora/processing.py
@@ -91,9 +94,10 @@ from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-
 from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
-
+from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
+from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
+from typing import List, Union
 attr_dict = get_schema("channel_weight_spec", SCHEMA_FN_PATHS)
 
 class ChannelWeightSpec(Base):
@@ -103,45 +107,34 @@ class ChannelWeightSpec(Base):
     Defines a weighting model for one output channel (e.g., ex, ey, hz).
     Combines multiple feature-based weighting specifications into a
     single weight using the specified combination strategy.
+
+
     """
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
         super().__init__(attr_dict=attr_dict, **kwargs)
-        # super().__init__()
-        # self.from_dict(kwargs)
-        self.features = kwargs.get("features", [])
-        # self._features = [
-        #     FeatureWeightSpec(**f) if isinstance(f, dict) else f
-        #     for f in kwargs.get("features", [])
-        # ]
 
-    def from_dict(self, input_dict):
+    @property
+    def features(self) -> List[FeatureWeightSpec]:
         """
-        Override the from_dict method to handle the 'features' attribute explicitly.
+            Return features.
+
         """
-        super().from_dict(input_dict)  # Populate attributes from the schema
-        if "features" in input_dict:
-            self.features = [
-                FeatureWeightSpec(**f) if isinstance(f, dict) else f
-                for f in input_dict["features"]
-            ]
+        return self._features
 
+    @features.setter
+    def features(self, value: Union[List[Union[FeatureWeightSpec, dict]], FeatureWeightSpec]) -> None:
+        """
+        Set features. If any are in dict form, cast them to FeatureWeightSpec objects before setting.
 
-    # TODO: consider adding this:
-    # def to_dict(self):
-    #     """
-    #     Since features isn’t in the schema, to_dict() won’t include it.
-    #     If you ever need to dump this object to a fully serializable form
-    #     (e.g., for caching, metadata output), you might want:
-    #
-    #     Returns
-    #     -------
-    #
-    #     """
-    #     out = super().to_dict()
-    #     out["features"] = [f.to_dict() for f in self.features]
-    #     return out
+        :param value: FeatureWeightSpecs or equivalent dicts
+        :type value: Union[List[Union[FeatureWeightSpec, dict]]
+
+        """
+        values = validate_setter_input(value, FeatureWeightSpec)
+        fws_list = [cast_to_class_if_dict(obj, FeatureWeightSpec) for obj in values]
+        self._features = fws_list
 
     @property
     def features(self):

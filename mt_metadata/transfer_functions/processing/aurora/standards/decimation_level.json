@@ -15,7 +15,7 @@
         "required": true,
         "style": "name list",
         "units": null,
-        "description": "List of feature weighting schemes to use for TF processing ",
+        "description": "List of weighting schemes to use for TF processing for each output channel",
         "options": [],
         "alias": [],
         "example": "[]",
