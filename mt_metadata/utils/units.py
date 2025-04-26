@@ -293,7 +293,7 @@ def parse_unit_string(unit_string: str) -> list[dict]:
     while separator != None:
         separator = find_separator(unit_string)
         parts = unit_string.split(separator, 1)
-        if parts in []:
+        if parts == []:
             break
 
         if parts[0].strip() not in ["", " per "]:
