@@ -161,53 +161,59 @@ class Filtered(MetadataBase):
 
         return self
 
-    # def to_dict(
-    #     self, nested=False, single=False, required=True, include_stage=False
-    # ) -> OrderedDict:
-    #     """
-    #     Convert the Filtered object to an OrderedDict. For now stage is not included
-    #     for backwards compatibility.  This should be updated in the future.
-    #     """
-    #     if include_stage:
-    #         return OrderedDict(
-    #             {
-    #                 "applied": self.applied,
-    #                 "name": self.name,
-    #                 "stage": self.stage,
-    #                 "comments": self.comments.to_dict(),
-    #             }
-    #         )
-    #     return OrderedDict(
-    #         {
-    #             "applied": self.applied,
-    #             "name": self.name,
-    #             "comments": self.comments.to_dict(),
-    #         }
-    #     )
+    def add_filter(
+        self,
+        applied_filter: AppliedFilter = None,
+        name: str = None,
+        applied: bool = True,
+        stage: int | None = None,
+    ) -> None:
+        """
+        Add a filter to the filter list.
 
-    # def from_dict(self, data: dict) -> Self:
-    #     """
-    #     Populate the Filtered object from a dictionary.
-    #     """
-    #     applied_list = []
-    #     if "stage" in data:
-    #         for index in range(len(data["applied"])):
-    #             applied_list.append(
-    #                 AppliedFilter(
-    #                     name=data["name"][index],
-    #                     applied=data["applied"][index],
-    #                     stage=data["stage"][index],
-    #                 )
-    #             )
-    #     else:
-    #         # If "stage" is not in data, use the length of "applied" to determine the number of filters
-    #         for index in range(len(data["applied"])):
-    #             applied_list.append(
-    #                 AppliedFilter(
-    #                     name=data["name"][index],
-    #                     applied=data["applied"][index],
-    #                     stage=index,  # Default to index if stage is not provided
-    #                 )
-    #             )
+        Parameters
+        ----------
+        name : str
+            Name of the filter.
+        applied : bool, optional
+            Whether the filter has been applied, by default True.
+        stage : int | None, optional
+            Stage of the filter in the processing chain, by default None.
+        """
+        if applied_filter is not None:
+            if not isinstance(applied_filter, AppliedFilter):
+                raise TypeError("applied_filter must be an instance of AppliedFilter")
+            if applied_filter.stage is None:
+                applied_filter.stage = len(self.filter_list) + 1
+            self.filter_list.append(applied_filter)
+        else:
+            if name is None:
+                raise ValueError("name must be provided if applied_filter is None")
+            if not isinstance(name, str):
+                raise TypeError("name must be a string")
+            if stage is None:
+                stage = len(self.filter_list) + 1
+            self.filter_list.append(
+                AppliedFilter(name=name, applied=applied, stage=stage)
+            )
 
-    #     self.applied_list = applied_list
+    def remove_filter(self, name: str, reset_stages: bool = True) -> None:
+        """
+        Remove a filter from the filter list.
+
+        Parameters
+        ----------
+        name : str
+            Name of the filter to remove.
+        reset_stages : bool, optional
+            Whether to reset the stages of the remaining filters, by default True.
+        """
+
+        new_list = []
+        for f in self.filter_list:
+            if f.name == name:
+                continue
+            if reset_stages:
+                f.stage = len(new_list) + 1
+            new_list.append(f)
+        self.filter_list = new_list
