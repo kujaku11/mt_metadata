@@ -6,6 +6,14 @@
 Created on Thu Feb 17 14:15:20 2022
 
 @author: jpeacock
+
+
+TODO: Make/Import  class ChannelWeightSpec():
+    def __init__(self, **kwargs):
+        pass
+
+- DecimationLevel will have a _channel_weight_specs property, which is the list of ChannelWeightSpec objects
+
 """
 # =============================================================================
 # Imports
@@ -27,6 +35,7 @@ from .estimator import Estimator
 from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
+from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)
@@ -50,14 +59,18 @@ class DecimationLevel(Base):
         self.stft = STFT()
 
         self._bands = []
+        self._channel_weight_specs = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     @property
-    def bands(self) -> list:
+    def bands(self) -> List[Band]:
         """
         get bands, something weird is going on with appending.
 
+        TODO: Consider making the bands setter cast everything from dict to band when setting.
+         Then this method can be replaced by a simple `return self._bands`
+         Reason: We access bands much more frequently than we assign them.
         """
         return_list = []
         for band in self._bands:
@@ -78,27 +91,79 @@ class DecimationLevel(Base):
         :type value: list, Band
 
         """
+        # Handle singleton cases
+        if isinstance(value, (Band, dict)):
+            value = [value, ]
 
-        if isinstance(value, Band):
-            self._bands = [value]
-
-        elif isinstance(value, list):
-            self._bands = []
-            for obj in value:
-                if not isinstance(obj, (Band, dict)):
-                    raise TypeError(
-                        f"List entry must be a Band object not {type(obj)}"
-                    )
-                if isinstance(obj, dict):
-                    band = Band()
-                    band.from_dict(obj)
-
-                else:
-                    band = obj
-
-                self._bands.append(band)
-        else:
+        if not isinstance(value, list):
             raise TypeError(f"Not sure what to do with {type(value)}")
+
+        self._bands = []
+        for obj in value:
+            if not isinstance(obj, (Band, dict)):
+                raise TypeError(
+                    f"List entry must be a Band object not {type(obj)}"
+                )
+            if isinstance(obj, dict):
+                band = Band()
+                band.from_dict(obj)
+            else:
+                band = obj
+
+            self._bands.append(band)
+
+    # @property
+    # def channel_weight_specs(self) -> List[ChannelWeightSpec]:
+    #     """
+    #         Return the channel weight spec objects.
+    #         If they are in dict form, cast them to ChannelWeightSpec objects before returning.
+    #
+    #     TODO: Consider making the channel_weight_specs setter cast everything from dict to
+    #      ChannelWeightSpec when setting. Then this method can be replaced by a simple
+    #      `return self._channel_weight_specs`
+    #      Reason: We access channel_weight_specs much more frequently than we assign them.
+    #
+    #     """
+    #     return_list = []
+    #     for channel_weight_spec in self._channel_weight_specs:
+    #         if isinstance(channel_weight_spec, dict):
+    #             cws = ChannelWeightSpec()
+    #             cws.from_dict(channel_weight_spec)
+    #         elif isinstance(channel_weight_spec, ChannelWeightSpec):
+    #             cws = channel_weight_spec
+    #         return_list.append(cws)
+    #     return return_list
+    #
+    # @channel_weight_specs.setter
+    # def bands(self, value: List[Union[dict, ChannelWeightSpec]]):
+    #     """
+    #     Set channel_weight_specs make sure they are a ChannelWeightSpec object
+    #
+    #     :param value: list of ChannelWeightSpec objects
+    #     :type value: list, Band
+    #
+    #     """
+    #
+    #     if isinstance(value, ChannelWeightSpec):
+    #         self._channel_weight_specs = [value]
+    #
+    #     elif isinstance(value, list):
+    #         self._bands = []
+    #         for obj in value:
+    #             if not isinstance(obj, (Band, dict)):
+    #                 raise TypeError(
+    #                     f"List entry must be a Band object not {type(obj)}"
+    #                 )
+    #             if isinstance(obj, dict):
+    #                 band = Band()
+    #                 band.from_dict(obj)
+    #
+    #             else:
+    #                 band = obj
+    #
+    #             self._bands.append(band)
+    #     else:
+    #         raise TypeError(f"Not sure what to do with {type(value)}")
 
     def add_band(self, band: Union[Band, dict]) -> None:
         """
@@ -112,7 +177,6 @@ class DecimationLevel(Base):
         if isinstance(band, dict):
             obj = Band()
             obj.from_dict(band)
-
         else:
             obj = band
 
