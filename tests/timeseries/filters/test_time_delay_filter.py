@@ -6,13 +6,17 @@ Created on Sat Nov 20 17:13:27 2021
 """
 
 import unittest
+import pytest
 
 import numpy as np
 
 from mt_metadata.timeseries.filters import TimeDelayFilter
 from mt_metadata.utils.exceptions import MTSchemaError
 
-from obspy.core.inventory.response import CoefficientsTypeResponseStage
+try:
+    from obspy.core.inventory.response import CoefficientsTypeResponseStage
+except ImportError:
+    CoefficientsTypeResponseStage = None
 
 
 class TestTimeDelayFilter(unittest.TestCase):
@@ -62,6 +66,7 @@ class TestTimeDelayFilter(unittest.TestCase):
         pb = self.td.pass_band(self.f)
         self.assertTrue(np.isclose(pb, np.array([self.f.min(), self.f.max()])).all())
 
+    @pytest.mark.skipif(CoefficientsTypeResponseStage is None, reason="obspy is not installed.")
     def test_to_obspy_stage(self):
         stage = self.td.to_obspy(2, sample_rate=10, normalization_frequency=1)
 

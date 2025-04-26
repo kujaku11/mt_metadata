@@ -68,7 +68,7 @@ class Header(Base):
         self.stn = STN()
         self.line = Line()
         self.unit = Unit()
-        self.job = Job
+        self.job = Job()
         self._elevation = 0.0
         super().__init__(attr_dict=attr_dict, **kwargs)
 

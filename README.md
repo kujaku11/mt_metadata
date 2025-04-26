@@ -13,11 +13,11 @@
 
 MT Metadata is a project led by [IRIS-PASSCAL MT Software working group](https://www.iris.edu/hq/about_iris/governance/mt_soft>) and USGS to develop tools that standardize magnetotelluric metadata, well, at least create tools for standards that are generally accepted.  This include the two main types of magnetotelluric data
 
-- **Time Series** 
+- **Time Series**
     - Structured as:
         - Experiment -> Survey -> Station -> Run -> Channel
     - Supports translation to/from **StationXML**
-        
+
 - **Transfer Functions**
     - Supports (will support) to/from:
         - **EDI** (most common format)
@@ -42,12 +42,19 @@ Most people will be using the transfer functions, but a lot of that metadata com
 
 `git clone https://github.com/kujaku11/mt_metadata.git`
 
-`python setup.py install`
+`pip install .`
 
-You can add the flag `-e` if you want to change the code.
+You can add the flag `-e` if you want to install the source repository in an editable state.
 
 ## PIP
 `pip install mt_metadata`
+
+> You can install with optional packages by appending `[option_name]` to the package name during the
+> `pip` install command. E.g:
+>
+> `pip install mt_metadata[obspy]`
+>
+> or `pip install .[obspy]` if building from source.
 
 ## Conda
 
@@ -55,7 +62,7 @@ You can add the flag `-e` if you want to change the code.
 
 # Standards
 
-Each metadata keyword has an associated standard that goes with it.  These are stored internally in JSON file.  The JSON files are read in when the package is loaded to initialize the standards.  Each keyword is described by:  
+Each metadata keyword has an associated standard that goes with it.  These are stored internally in JSON file.  The JSON files are read in when the package is loaded to initialize the standards.  Each keyword is described by:
 
 - **type** - How the value should be represented based on very basic types
 
@@ -71,7 +78,7 @@ Each metadata keyword has an associated standard that goes with it.  These are s
     - *Controlled Vocabulary* only certain values are allowed according to **options**
     - *Date* a date and/or time string in ISO format
     - *Number* a float or integer
-    - *Boolean* the value can only be True or False 
+    - *Boolean* the value can only be True or False
 
 - **units** - Units of the value
 - **description** - Full description of what the metadata key is meant to convey.
@@ -88,7 +95,7 @@ Each metadata object is based on a Base class that has methods:
 - to_from_dict
 - attribute_information
 
-And each object has a doc string that describes the standard: 
+And each object has a doc string that describes the standard:
 
 
 | **Metadata Key**                             | **Description**                               | **Example**    |
@@ -201,4 +208,4 @@ print(x.to_xml(string=True))
 Credits
 -------
 
-This project is in cooperation with the Incorporated Research Institutes of Seismology, the U.S. Geological Survey, and other collaborators.  Facilities of the IRIS Consortium are supported by the National Science Foundation’s Seismological Facilities for the Advancement of Geoscience (SAGE) Award under Cooperative Support Agreement EAR-1851048.  USGS is partially funded through the Community for Data Integration and IMAGe through the Minerals Resources Program. 
+This project is in cooperation with the Incorporated Research Institutes of Seismology, the U.S. Geological Survey, and other collaborators.  Facilities of the IRIS Consortium are supported by the National Science Foundation’s Seismological Facilities for the Advancement of Geoscience (SAGE) Award under Cooperative Support Agreement EAR-1851048.  USGS is partially funded through the Community for Data Integration and IMAGe through the Minerals Resources Program.

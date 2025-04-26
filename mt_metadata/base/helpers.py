@@ -263,6 +263,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         "",
         hline,
         line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -453,7 +454,25 @@ def recursive_split_getattr(base_object, name, sep="."):
     return value, prop
 
 
-def recursive_split_setattr(base_object, name, value, sep="."):
+def recursive_split_setattr(base_object, name, value, sep=".", skip_validation=False):
+    """
+    Recursively split a name and set the value of the last key. Recursion splits on the separator present in the name.
+
+    :param base_object: The object having its attribute set, or a "parent" object in the recursive/nested scenario
+    :type base_object: object
+    :param name: The name of the attribute to set
+    :type name: str
+    :param value: The value to set the attribute to
+    :type value: any
+    :param sep: The separator to split the name on, defaults to "."
+    :type sep: str, optional
+    :param skip_validation: Whether to skip validation/parse of the attribute, defaults to False
+    :type skip_validation: Optional[bool]
+
+    :return: None
+    :rtype: NoneType
+
+    """
     key, *other = name.split(sep, 1)
 
     if other:
@@ -713,3 +732,53 @@ def validate_name(name, pattern=None):
     if name is None:
         return "unknown"
     return name.replace(" ", "_")
+
+
+def requires(**requirements):
+    """Decorate a function with optional dependencies.
+
+    Parameters
+    ----------
+    **requirements : obj
+        keywords of package name and the required object for
+        a function.
+
+    Returns
+    -------
+    decorated_function : function
+        Original function if all soft dependencies are met, otherwise
+        it returns an empty function which prints why it is not running.
+
+    Examples
+    --------
+    ```
+    try:
+        import obspy
+    except ImportError:
+        obspy = None
+
+    @requires(obspy=obspy)
+    def obspy_function():
+        ...
+        # does something using obspy
+
+    """
+    # Check the requirements, add missing package name in the list `missing`.
+    missing = []
+    for key, item in requirements.items():
+        if not item:
+            missing.append(key)
+
+    def decorated_function(function):
+        """Wrap function."""
+        if not missing:
+            return function
+        else:
+
+            def passer(*args, **kwargs):
+                print(("Missing dependencies: {d}.".format(d=missing)))
+                print(("Not running `{}`.".format(function.__name__)))
+
+            return passer
+
+    return decorated_function

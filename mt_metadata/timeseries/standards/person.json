@@ -1,7 +1,7 @@
 {
     "name": {
         "type": "string",
-        "required": true,
+        "required": false,
         "style": "free form",
         "units": null,
         "description": "Persons name, should be full first and last name.",

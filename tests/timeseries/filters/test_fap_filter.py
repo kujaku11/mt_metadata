@@ -8,11 +8,15 @@ import pathlib
 import unittest
 
 import numpy as np
+import pytest
 
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.utils.exceptions import MTSchemaError
 
-from obspy.core.inventory.response import ResponseListResponseStage
+try:
+    from obspy.core.inventory.response import ResponseListResponseStage
+except ImportError:
+    ResponseListResponseStage = None
 
 
 class TestFAPFilter(unittest.TestCase):
@@ -228,6 +232,7 @@ class TestFAPFilter(unittest.TestCase):
                 np.isclose(cr_phase[:-10], self.fap.phases[:-10]).all()
             )
 
+    @pytest.mark.skipif(ResponseListResponseStage is None, reason="obspy is not installed.")
     def test_to_obspy_stage(self):
         stage = self.fap.to_obspy(2, sample_rate=10, normalization_frequency=1)
 

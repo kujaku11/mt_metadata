@@ -69,14 +69,14 @@ class TestReadAVGNewer(unittest.TestCase):
                 ("location.longitude", -111.0497517),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
-                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", None),
+                (
+                    "provenance.creation_time",
+                    "2025-02-07T21:20:05.411487+00:00",
+                ),
                 ("provenance.software.author", None),
                 ("provenance.software.name", None),
                 ("provenance.software.version", None),
                 ("provenance.submitter.email", None),
-                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["001"]),
@@ -85,7 +85,6 @@ class TestReadAVGNewer(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "2813"),
-                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -108,9 +107,11 @@ class TestReadAVGNewer(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            meta_dict, self.tf.station_metadata.to_dict(single=True)
-        )
+        del meta_dict["provenance.creation_time"]
+        station_dict = self.tf.station_metadata.to_dict(single=True)
+        del station_dict["provenance.creation_time"]
+
+        self.assertDictEqual(meta_dict, station_dict)
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(

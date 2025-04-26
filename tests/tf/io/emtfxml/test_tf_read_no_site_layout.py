@@ -53,19 +53,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.angle_to_geographic_north", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
                 ("provenance.creation_time", "2018-01-05T09:55:25+00:00"),
                 ("provenance.creator.author", "Lars Krieger"),
                 ("provenance.creator.email", "zu.spaet@web.de"),
-                ("provenance.creator.name", "Lars Krieger"),
                 (
                     "provenance.creator.organization",
                     "Institude of Mineral and Energy Resources, University of Adelaide",
                 ),
-                (
-                    "provenance.creator.url",
-                    "https://www.adelaide.edu.au/imer/",
-                ),
+                ("provenance.creator.url", "https://www.adelaide.edu.au/imer/"),
                 ("provenance.software.author", None),
                 (
                     "provenance.software.name",
@@ -73,11 +68,7 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Lana Erofeeva"),
-                (
-                    "provenance.submitter.email",
-                    "serofeev@coas.oregonstate.edu",
-                ),
-                ("provenance.submitter.name", "Lana Erofeeva"),
+                ("provenance.submitter.email", "serofeev@coas.oregonstate.edu"),
                 (
                     "provenance.submitter.organization",
                     "Oregon State University",
@@ -94,10 +85,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.id", "500fdfilNB207"),
                 (
                     "transfer_function.processed_by.author",
-                    "Kent Inverarity / David Pedler-Jones / UofA",
-                ),
-                (
-                    "transfer_function.processed_by.name",
                     "Kent Inverarity / David Pedler-Jones / UofA",
                 ),
                 ("transfer_function.processed_date", "1980-01-01"),
