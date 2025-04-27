@@ -213,3 +213,4 @@ History
 * In `timeseries.Run` use `add_channel` to add a channel if you `append`, `extend`, or `insert` a channel, then you must run `Run._update_channel` to update the metata.
 * `MetadataBase` no longer overrides `__deepcopy__` uses `model_copy(deep=True)` under the hood.
 * Cannot use len() on `Run` or `Channel` objects, use `len(Run.channels)` or `len(Channel)` instead.  
+* There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation``

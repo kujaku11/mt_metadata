@@ -455,7 +455,14 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         # need to add json_schema_extra attributes [units, required]
         json_schema_extra = {}
         for attr_name, attr_value in field_attrs.items():
-            if attr_name in ["default", "title", "format", "enum", "default_factory"]:
+            if attr_name in [
+                "default",
+                "title",
+                "format",
+                "enum",
+                "type",
+                "default_factory",
+            ]:
                 continue
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
@@ -490,13 +497,15 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
     if has_comment:
         class_definitions.append(
-            f"{TAB}@field_validator('comments', mode='before)\n"
+            f"{TAB}@field_validator('comments', mode='before')\n"
             f"{TAB}@classmethod\n"
             f"{TAB}def validate_comments(cls, value, info: ValidationInfo) -> Comment:\n"
             f"{TAB*2}if isinstance(value, str):\n"
             f"{TAB*3}return Comment(value=value)\n"
             f"{TAB*2}return value\n"
         )
+
+        imports.append("from pydantic import field_validator, ValidationInfo")
 
     # Generate the class definition, dont need config dict as that is
     # already initiated in MetadataBase.

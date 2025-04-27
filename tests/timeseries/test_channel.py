@@ -6,7 +6,7 @@ from operator import itemgetter
 
 from mt_metadata.timeseries.channel_basemodel import (
     Channel,
-    PartialLocation,
+    BasicLocation,
     ChannelBase,
 )
 from mt_metadata.common import (
@@ -142,24 +142,24 @@ def custom_channel():
         translated_tilt=5.0,
         type="electric",
         units="volt",
-        location=PartialLocation(latitude=45.0, longitude=-120.0, elevation=500.0),
+        location=BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0),
     )
 
 
 @pytest.fixture
-def default_partial_location():
+def default_basic_location():
     """
-    Fixture to provide a default PartialLocation object.
+    Fixture to provide a default BasicLocation object.
     """
-    return PartialLocation()
+    return BasicLocation()
 
 
 @pytest.fixture
-def custom_partial_location():
+def custom_basic_location():
     """
-    Fixture to provide a PartialLocation object with custom values.
+    Fixture to provide a BasicLocation object with custom values.
     """
-    return PartialLocation(latitude=45.0, longitude=-120.0, elevation=500.0)
+    return BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0)
 
 
 @pytest.fixture
@@ -213,7 +213,7 @@ def test_channel_default_values(default_channel):
     assert isinstance(channel.time_period, TimePeriod)
     assert isinstance(channel.sensor, Instrument)
     assert isinstance(channel.fdsn, Fdsn)
-    assert isinstance(channel.location, PartialLocation)
+    assert isinstance(channel.location, BasicLocation)
     assert channel.location.latitude is None
     assert channel.location.longitude is None
     assert channel.location.elevation is None
@@ -237,32 +237,10 @@ def test_channel_custom_values(custom_channel):
     assert channel.translated_tilt == 5.0
     assert channel.type == "electric"
     assert channel.units == "volt"
-    assert isinstance(channel.location, PartialLocation)
+    assert isinstance(channel.location, BasicLocation)
     assert channel.location.latitude == 45.0
     assert channel.location.longitude == -120.0
     assert channel.location.elevation == 500.0
-
-
-def test_partial_location_default_values(default_partial_location):
-    """
-    Test the default values of the PartialLocation model.
-    """
-    location = default_partial_location
-
-    assert location.latitude is None
-    assert location.longitude is None
-    assert location.elevation is None
-
-
-def test_partial_location_custom_values(custom_partial_location):
-    """
-    Test the PartialLocation model with custom values.
-    """
-    location = custom_partial_location
-
-    assert location.latitude == 45.0
-    assert location.longitude == -120.0
-    assert location.elevation == 500.0
 
 
 def test_channel_base_default_values(default_channel_base):

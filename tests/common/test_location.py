@@ -1,7 +1,45 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.common import Location
+from mt_metadata.common import BasicLocation, Location
 from mt_metadata.utils.location_helpers import DatumEnum
+
+
+@pytest.fixture
+def default_basic_location():
+    """
+    Fixture to provide a default BasicLocation object.
+    """
+    return BasicLocation()
+
+
+@pytest.fixture
+def custom_basic_location():
+    """
+    Fixture to provide a BasicLocation object with custom values.
+    """
+    return BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0)
+
+
+def test_basic_location_default_values(default_basic_location):
+    """
+    Test the default values of the BasicLocation model.
+    """
+    location = default_basic_location
+
+    assert location.latitude is None
+    assert location.longitude is None
+    assert location.elevation is None
+
+
+def test_basic_location_custom_values(custom_basic_location):
+    """
+    Test the BasicLocation model with custom values.
+    """
+    location = custom_basic_location
+
+    assert location.latitude == 45.0
+    assert location.longitude == -120.0
+    assert location.elevation == 500.0
 
 
 def test_location_default_values():

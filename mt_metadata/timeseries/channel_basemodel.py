@@ -11,7 +11,7 @@ from mt_metadata.common import (
     TimePeriod,
     Instrument,
     Fdsn,
-    Location,
+    BasicLocation,
 )
 from mt_metadata.timeseries.filtered_basemodel import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
@@ -19,55 +19,6 @@ from mt_metadata.utils.units import get_unit_object, Unit
 
 
 # =====================================================
-
-
-class PartialLocation(Location):
-    """
-    A partial location class that only includes the latitude, longitude, and elevation.
-    This is used to avoid circular imports.
-    """
-
-    latitude: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Latitude of the location.",
-            examples="12.324",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": False,
-            },
-        ),
-    ]
-
-    longitude: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Longitude of the location.",
-            examples="12.324",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": False,
-            },
-        ),
-    ]
-
-    elevation: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Elevation of the location.",
-            examples="1234.0",
-            alias=None,
-            json_schema_extra={
-                "units": "meters",
-                "required": False,
-            },
-        ),
-    ]
 
 
 # this is a channel base for channels that have multiple sensors and locations like an
@@ -380,11 +331,11 @@ class Channel(ChannelBase):
     ]
 
     location: Annotated[
-        PartialLocation,
+        BasicLocation,
         Field(
-            default_factory=PartialLocation,
+            default_factory=BasicLocation,
             description="Location information for the channel.",
-            examples="PartialLocation(latitude=0.0, longitude=0.0, elevation=0.0)",
+            examples="BasicLocation(latitude=0.0, longitude=0.0, elevation=0.0)",
             alias=None,
             json_schema_extra={
                 "units": None,

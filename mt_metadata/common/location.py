@@ -6,57 +6,85 @@ from pydantic import Field, field_validator, ValidationInfo, AliasChoices
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.location_helpers import validate_position, DatumEnum
+from mt_metadata.common import Declination, GeographicLocation
 
 
 # =====================================================
 
 
-class Location(MetadataBase):
+class BasicLocation(MetadataBase):
+    """
+    A partial location class that only includes the latitude, longitude, and elevation.
+    This is used to avoid circular imports.
+    """
+
     latitude: Annotated[
-        float | str,
+        float | None,
         Field(
-            default=0.0,
-            description="latitude of location in datum specified at survey level",
-            examples="23.134",
-            alias_value=AliasChoices("latitude", "lat"),
-            ge=-90.0,
-            le=90.0,
+            default=None,
+            description="Latitude of the location.",
+            examples="12.324",
+            alias=None,
             json_schema_extra={
                 "units": "degrees",
-                "required": True,
+                "required": False,
             },
         ),
     ]
 
     longitude: Annotated[
-        float | str,
+        float | None,
         Field(
-            default=0.0,
-            description="longitude of location in datum specified at survey level",
-            examples="14.23",
-            alias_value=AliasChoices("longitude", "lon", "long"),
-            ge=-180.0,
-            le=180.0,
+            default=None,
+            description="Longitude of the location.",
+            examples="12.324",
+            alias=None,
             json_schema_extra={
                 "units": "degrees",
-                "required": True,
+                "required": False,
             },
         ),
     ]
 
     elevation: Annotated[
-        float,
+        float | None,
         Field(
-            default=0.0,
-            description="elevation of location in datum specified at survey level",
-            examples="123.4",
-            alias_value=AliasChoices("elevation", "elev"),
+            default=None,
+            description="Elevation of the location.",
+            examples="1234.0",
+            alias=None,
             json_schema_extra={
                 "units": "meters",
-                "required": True,
+                "required": False,
             },
         ),
     ]
+
+    datum: Annotated[
+        DatumEnum,
+        Field(
+            default="WGS84",
+            description="Datum of the location values.  Usually a well known datum like WGS84.",
+            examples="WGS84",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = "WGS84"
+
+    @field_validator("latitude", "longitude", mode="before")
+    @classmethod
+    def validate_position(cls, value, info: ValidationInfo):
+        return validate_position(value, info.field_name)
+
+
+class Location(BasicLocation):
+    """
+    Positional location of a geographic point
+    """
 
     latitude_uncertainty: Annotated[
         float | None,
@@ -99,21 +127,6 @@ class Location(MetadataBase):
             },
         ),
     ]
-
-    datum: Annotated[
-        DatumEnum,
-        Field(
-            default="WGS84",
-            description="Datum of the location values.  Usually a well known datum like WGS84.",
-            examples="WGS84",
-            type="string",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ] = "WGS84"
 
     x: Annotated[
         float | None,
@@ -241,7 +254,37 @@ class Location(MetadataBase):
         ),
     ]
 
-    @field_validator("latitude", "longitude", mode="before")
-    @classmethod
-    def validate_position(cls, value, info: ValidationInfo):
-        return validate_position(value, info.field_name)
+
+class StationLocation(Location):
+    """
+    A class that represents the location of a station. It includes latitude, longitude, elevation,
+    and other related attributes.
+    """
+
+    declination: Annotated[
+        Declination | None,
+        Field(
+            default=None,
+            description="Declination of the location.",
+            examples="Declination(10.0)",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+            },
+        ),
+    ] = None
+
+    geographic_location: Annotated[
+        GeographicLocation | None,
+        Field(
+            default=None,
+            description="Geographic location of the station.",
+            examples="GeographicLocation(latitude=12.34, longitude=56.78)",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None

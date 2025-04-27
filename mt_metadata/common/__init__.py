@@ -23,9 +23,10 @@
 # """
 
 # ### !!! DO NOT CHANGE THE ORDER !!!
+from .enumerations import DataTypeEnum, ChannelLayoutEnum
+from .range import MinMaxRange, StartEndRange
 from .comment import Comment
 from .declination import Declination
-from .location import Location
 from .geographic_location import GeographicLocation
 from .instrument import Instrument
 from .fdsn import Fdsn
@@ -36,18 +37,18 @@ from .copyright import Copyright
 from .person import Person
 from .funding_source import FundingSource
 from .software import Software
-from .provenance import Provenance
 from .time_period import TimePeriod
-from .range import MinMaxRange, StartEndRange
-from .enumerations import DataTypeEnum, ChannelLayoutEnum
+from .provenance import Provenance
+from .location import BasicLocation, Location, StationLocation
 
 
 __all__ = [
+    "DataTypeEnum",
+    "ChannelLayoutEnum",
     "Comment",
     "MinMaxRange",
     "StartEndRange",
     "Declination",
-    "Location",
     "GeographicLocation",
     "Instrument",
     "Fdsn",
@@ -55,12 +56,12 @@ __all__ = [
     "DataQuality",
     "Citation",
     "Copyright",
-    "Provenance",
     "Person",
     "FundingSource",
-    "TimePeriod",
-    "FundingSource",
     "Software",
-    "DataTypeEnum",
-    "ChannelLayoutEnum",
+    "TimePeriod",
+    "Provenance",
+    "BasicLocation",
+    "Location",
+    "StationLocation",
 ]
