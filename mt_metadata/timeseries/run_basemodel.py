@@ -322,8 +322,6 @@ class Run(MetadataBase):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-        cls()._update_channels_recorded()
-
         return channels
 
     def _empty_channels_recorded(self):

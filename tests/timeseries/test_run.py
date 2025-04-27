@@ -263,7 +263,7 @@ def test_invalid_channel_addition(run_object, subtests):
     """Test adding invalid channels to the Run object."""
     with subtests.test("Invalid channel type"):
         with pytest.raises(ValueError):
-            run_object.add_channel("invalid_channel")
+            run_object.add_channel([])
 
     with subtests.test("Missing component for non-auxiliary channel"):
         with pytest.raises(ValueError):
