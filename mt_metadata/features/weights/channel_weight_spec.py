@@ -133,18 +133,7 @@ class ChannelWeightSpec(Base):
         """
         values = validate_setter_input(value, FeatureWeightSpec)
         fws_list = [cast_to_class_if_dict(obj, FeatureWeightSpec) for obj in values]
-        self._features = fws_list
-
-    @property
-    def features(self):
-        return self._features
-
-    @features.setter
-    def features(self, val):
-        self._features = [
-            FeatureWeightSpec(**f) if isinstance(f, dict) else f for f in val
-        ]
-
+        self._feature_weight_specs = fws_list
 
     def evaluate(self, feature_values_dict):
         """
