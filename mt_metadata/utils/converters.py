@@ -383,9 +383,9 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
             field_type = "Comment"
             imports.append("from mt_metadata.common import Comment")
             field_attrs["default_factory"] = "lambda: Comment()"
-            class_definitions.append(f"{TAB}{field_name}: {field_type}")
+            # class_definitions.append(f"{TAB}{field_name}: {field_type}")
 
-            continue
+            # continue
         # Fallback to Any if type is unknown
         field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
         # get typing imports
@@ -479,7 +479,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         field_parts.append(json_extra_line)
 
         # if field_attrs["required"]:
-        field_parts.append(")]\n")
+        field_parts.append("{TAB})]\n")
         # else:
         #     field_parts.append(f")] = {field_default}\n")
 

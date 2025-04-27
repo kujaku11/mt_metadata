@@ -7,6 +7,7 @@ from pydantic import Field, field_validator, ValidationInfo, AliasChoices
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.location_helpers import validate_position, DatumEnum
 from mt_metadata.common import Declination, GeographicLocation
+from pyproj import CRS
 
 
 # =====================================================
@@ -61,24 +62,37 @@ class BasicLocation(MetadataBase):
     ]
 
     datum: Annotated[
-        DatumEnum,
+        str | int,
         Field(
             default="WGS84",
             description="Datum of the location values.  Usually a well known datum like WGS84.",
             examples="WGS84",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = "WGS84"
+    ]
 
     @field_validator("latitude", "longitude", mode="before")
     @classmethod
     def validate_position(cls, value, info: ValidationInfo):
         return validate_position(value, info.field_name)
+
+    @field_validator("datum", mode="before")
+    @classmethod
+    def validate_datum(cls, value: str | int) -> str:
+        """
+        Validate the datum value and convert it to the appropriate enum type.
+        """
+        try:
+            datum_crs = CRS.from_user_input(value)
+            return datum_crs.name
+        except Exception:
+            raise ValueError(
+                f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
+            )
 
 
 class Location(BasicLocation):
