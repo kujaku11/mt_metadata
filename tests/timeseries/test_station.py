@@ -17,7 +17,11 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Run, Station
+
+# from mt_metadata.timeseries import Run, Station
+from mt_metadata.timeseries.station_basemodel import Station
+from mt_metadata.timeseries.run_basemodel import Run
+
 
 # =============================================================================
 #
@@ -141,14 +145,14 @@ class TestStation(unittest.TestCase):
     def test_set_runs_from_list(self):
         self.station_object.runs = [Run(id="one")]
         with self.subTest("length"):
-            self.assertEqual(len(self.station_object), 1)
+            self.assertEqual(self.station_object.n_runs, 1)
         with self.subTest("list equal"):
             self.assertListEqual(["one"], self.station_object.run_list)
 
     def test_set_runs_from_dict(self):
         self.station_object.runs = {"one": Run(id="one")}
         with self.subTest("length"):
-            self.assertEqual(len(self.station_object), 1)
+            self.assertEqual(self.station_object.n_runs, 1)
         with self.subTest("list equal"):
             self.assertListEqual(["one"], self.station_object.run_list)
 
@@ -174,9 +178,9 @@ class TestStation(unittest.TestCase):
         self.station_object.runs.append(Run(id="one"))
 
         # test _add method that passes
-        self.station_object += station_02
+        self.station_object.merge(station_02)
         with self.subTest("length"):
-            self.assertEqual(len(self.station_object), 2)
+            self.assertEqual(self.station_object.n_runs, 2)
         with self.subTest("list equal"):
             self.assertListEqual(["one", "two"], self.station_object.run_list)
         with self.assertRaises(TypeError):
@@ -212,13 +216,18 @@ class TestStationChannelsRecorded(unittest.TestCase):
 
     def test_full_channels(self):
         self.station.channels_recorded = ["Ex", "Ey", "Hx", "Hy"]
-        self.assertListEqual(
-            ["Ex", "Ey", "Hx", "Hy"], self.station.channels_recorded
-        )
+        self.assertListEqual(["Ex", "Ey", "Hx", "Hy"], self.station.channels_recorded)
+
+    def test_full_channels_stirng(self):
+        self.station.channels_recorded = ",".join(["Ex", "Ey", "Hx", "Hy"])
+        self.assertListEqual(["Ex", "Ey", "Hx", "Hy"], self.station.channels_recorded)
 
     def test_null(self):
-        self.station.channels_recorded = None
-        self.assertEqual([], self.station.channels_recorded)
+        self.station.channels_recorded = []
+        with self.subTest("Test no channels"):
+            self.assertEqual([], self.station.channels_recorded)
+        with self.subTest("n_runs"):
+            self.assertEqual(0, self.station.n_runs)
 
     def test_fail(self):
         def set_channels(values):

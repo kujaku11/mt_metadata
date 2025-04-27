@@ -381,7 +381,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         if field_name in ["comments", "comment"]:
             has_comment = True
             field_type = "Comment"
-            imports.append("from mt_metadata.utils.comment import Comment")
+            imports.append("from mt_metadata.common import Comment")
             field_attrs["default_factory"] = "lambda: Comment()"
             class_definitions.append(f"{TAB}{field_name}: {field_type}")
 

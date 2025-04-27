@@ -29,6 +29,7 @@ from .enumerations import (
     OrientationMethodEnum,
     GeographicReferenceFrameEnum,
     ChannelOrientationEnum,
+    GeomagneticModelEnum,
 )
 from .range import MinMaxRange, StartEndRange
 from .comment import Comment
@@ -55,6 +56,7 @@ __all__ = [
     "OrientationMethodEnum",
     "GeographicReferenceFrameEnum",
     "ChannelOrientationEnum",
+    "GeomagneticModelEnum",
     "Comment",
     "MinMaxRange",
     "StartEndRange",

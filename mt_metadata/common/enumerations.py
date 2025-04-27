@@ -60,3 +60,13 @@ class ChannelOrientationEnum(StrEnumerationBase):
     orthogonal = "orthogonal"
     station = "station"
     other = "other"
+
+
+class GeomagneticModelEnum(StrEnumerationBase):
+    EMAG2 = "EMAG2"
+    EMM = "EMM"
+    HDGM = "HDGM"
+    IGRF = "IGRF"
+    WMM = "WMM"
+    unknown = "unknown"
+    other = "other"

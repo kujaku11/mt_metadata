@@ -262,9 +262,9 @@ class StationLocation(Location):
     """
 
     declination: Annotated[
-        Declination | None,
+        Declination,
         Field(
-            default=None,
+            default_factory=Declination,
             description="Declination of the location.",
             examples="Declination(10.0)",
             alias=None,
@@ -273,12 +273,12 @@ class StationLocation(Location):
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     geographic_location: Annotated[
-        GeographicLocation | None,
+        GeographicLocation,
         Field(
-            default=None,
+            default_factory=GeographicLocation,
             description="Geographic location of the station.",
             examples="GeographicLocation(latitude=12.34, longitude=56.78)",
             alias=None,
@@ -287,4 +287,4 @@ class StationLocation(Location):
                 "required": False,
             },
         ),
-    ] = None
+    ]

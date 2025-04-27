@@ -438,16 +438,35 @@ class Run(MetadataBase):
 
     def add_channel(self, channel_obj, update=True):
         """
-        Add a channel to the list, check if one exists if it does overwrite it
+        Add a channel to the run.
+        If the channel already exists, update the metadata.
+        If the channel does not exist, add it to the list.
+        If the channel is a string, create a new channel object assuming the input
+        string is the component name.
 
-        :param channel_obj: channel object to add
-        :type channel_obj: :class:`mt_metadata.timeseries.Channel`
+        parameters
+        ----------
+        channel_obj: channel object to add to the run
+        update: boolean to update the time period of the run
+            if True, update the time period of the run to match the channel
+            if False, do not update the time period of the run
+
 
         """
-        if not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
+        if isinstance(channel_obj, (str)):
+
+            if channel_obj in ["electric", "e"]:
+                channel_obj = Electric(component=channel_obj)
+            elif channel_obj in ["magnetic", "b", "h"]:
+                channel_obj = Magnetic(component=channel_obj)
+            else:
+                channel_obj = Auxiliary(component=channel_obj)
+
+        elif not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
             msg = f"Input must be metadata.Channel not {type(channel_obj)}"
             logger.error(msg)
             raise ValueError(msg)
+
         if channel_obj.component is None:
             if not isinstance(channel_obj, Auxiliary):
                 msg = "component cannot be empty"

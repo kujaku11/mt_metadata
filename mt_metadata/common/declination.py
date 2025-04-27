@@ -1,23 +1,14 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
+from mt_metadata.common import Comment, GeomagneticModelEnum
 from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
-class ModelEnum(str, Enum):
-    EMAG2 = "EMAG2"
-    EMM = "EMM"
-    HDGM = "HDGM"
-    IGRF = "IGRF"
-    WMM = "WMM"
-    unknown = "unknown"
-    other = "other"
 
 
 class Declination(MetadataBase):
@@ -37,7 +28,7 @@ class Declination(MetadataBase):
     ]
 
     model: Annotated[
-        ModelEnum,
+        GeomagneticModelEnum,
         Field(
             default="IGRF",
             description="geomagnetic reference model used to calculate declination",
@@ -57,14 +48,13 @@ class Declination(MetadataBase):
             default=None,
             description="Epoch for which declination was approximated in.",
             examples="2020",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
         ),
-    ] = None
+    ]
 
     value: Annotated[
         float,
