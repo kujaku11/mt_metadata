@@ -4,6 +4,7 @@ import pandas as pd
 from collections import OrderedDict
 from mt_metadata.timeseries.station_basemodel import Station
 from mt_metadata.timeseries.run_basemodel import Run
+from pydantic import ValidationError
 
 
 @pytest.fixture
@@ -201,3 +202,102 @@ def test_channels_recorded(station_object, subtests):
     with subtests.test("Empty list"):
         station_object.channels_recorded = []
         assert station_object.channels_recorded == []
+
+
+@pytest.fixture
+def populated_station():
+    """Fixture to create a Station object with pre-populated runs."""
+    station = Station()
+    station.add_run(Run(id="001"))
+    station.add_run(Run(id="002"))
+    return station
+
+
+def test_set_channels_recorded(station_object, subtests):
+    """Test setting and validating channels recorded."""
+    with subtests.test("Valid list of channels"):
+        station_object.channels_recorded = ["Ex", "Ey", "Hx", "Hy"]
+        assert station_object.channels_recorded == ["Ex", "Ey", "Hx", "Hy"]
+
+    with subtests.test("Comma-separated string"):
+        station_object.channels_recorded = "Ex, Ey, Hx, Hy"
+        assert station_object.channels_recorded == ["Ex", "Ey", "Hx", "Hy"]
+
+    with subtests.test("Empty list"):
+        station_object.channels_recorded = []
+        assert station_object.channels_recorded == []
+
+    with subtests.test("Invalid input type"):
+        with pytest.raises(TypeError):
+            station_object.channels_recorded = True
+
+
+def test_add_run(station_object, subtests):
+    """Test adding runs to the Station object."""
+    run = Run(id="001")
+    station_object.add_run(run)
+
+    with subtests.test("Run added"):
+        assert station_object.run_list == ["001"]
+
+    with subtests.test("Number of runs"):
+        assert station_object.n_runs == 1
+
+
+def test_remove_run(populated_station, subtests):
+    """Test removing runs from the Station object."""
+    populated_station.remove_run("001")
+
+    with subtests.test("Run removed"):
+        assert "001" not in populated_station.run_list
+
+    with subtests.test("Remaining runs"):
+        assert populated_station.run_list == ["002"]
+
+
+def test_update_time_period(station_object, subtests):
+    """Test updating the time period based on runs."""
+    run = Run(id="001")
+    run.time_period.start = "2020-01-01T00:00:00"
+    run.time_period.end = "2020-12-01T12:12:12"
+    station_object.add_run(run)
+
+    with subtests.test("Start time"):
+        assert station_object.time_period.start == "2020-01-01T00:00:00+00:00"
+
+    with subtests.test("End time"):
+        assert station_object.time_period.end == "2020-12-01T12:12:12+00:00"
+
+
+def test_set_runs_fail(station_object, subtests):
+    """Test invalid run assignments."""
+    with subtests.test("Invalid input type (int)"):
+        with pytest.raises(TypeError):
+            station_object.runs = 10
+
+    with subtests.test("Invalid input type (mixed list)"):
+        with pytest.raises(TypeError):
+            station_object.runs = [Run(), Station()]
+
+
+def test_merge_stations(station_object, populated_station, subtests):
+    """Test merging two Station objects."""
+    station_object.add_run(Run(id="003"))
+    station_object.merge(populated_station)
+
+    with subtests.test("Number of runs after merge"):
+        assert station_object.n_runs == 3
+
+    with subtests.test("Run list after merge"):
+        assert sorted(station_object.run_list) == ["001", "002", "003"]
+
+
+def test_channels_recorded_validation(station_object, subtests):
+    """Test validation of channels recorded."""
+    with subtests.test("Valid channels"):
+        station_object.channels_recorded = ["Ex", "Ey"]
+        assert station_object.channels_recorded == ["Ex", "Ey"]
+
+    with subtests.test("Invalid channels"):
+        with pytest.raises(TypeError):
+            station_object.channels_recorded = True
