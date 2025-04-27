@@ -23,11 +23,18 @@
 # """
 
 # ### !!! DO NOT CHANGE THE ORDER !!!
-from .enumerations import DataTypeEnum, ChannelLayoutEnum
+from .enumerations import (
+    DataTypeEnum,
+    ChannelLayoutEnum,
+    OrientationMethodEnum,
+    GeographicReferenceFrameEnum,
+    ChannelOrientationEnum,
+)
 from .range import MinMaxRange, StartEndRange
 from .comment import Comment
 from .declination import Declination
 from .geographic_location import GeographicLocation
+from .orientation import Orientation
 from .instrument import Instrument
 from .fdsn import Fdsn
 from .rating import Rating
@@ -45,11 +52,15 @@ from .location import BasicLocation, Location, StationLocation
 __all__ = [
     "DataTypeEnum",
     "ChannelLayoutEnum",
+    "OrientationMethodEnum",
+    "GeographicReferenceFrameEnum",
+    "ChannelOrientationEnum",
     "Comment",
     "MinMaxRange",
     "StartEndRange",
     "Declination",
     "GeographicLocation",
+    "Orientation",
     "Instrument",
     "Fdsn",
     "Rating",

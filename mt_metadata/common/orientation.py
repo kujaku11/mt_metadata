@@ -6,29 +6,18 @@ from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from pydantic import Field
-
+from mt_metadata.common.enumerations import (
+    OrientationMethodEnum,
+    GeographicReferenceFrameEnum,
+    ChannelOrientationEnum,
+)
 
 # =====================================================
-class MethodEnum(str, Enum):
-    compass = "compass"
-    GPS = "GPS"
-    theodolite = "theodolite"
-    other = "other"
-
-
-class ReferenceFrameEnum(str, Enum):
-    geographic = "geographic"
-    geomagnetic = "geomagnetic"
-
-
-class ValueEnum(str, Enum):
-    orthogonal = "orthogonal"
-    other = "other"
 
 
 class Orientation(MetadataBase):
     method: Annotated[
-        MethodEnum,
+        OrientationMethodEnum,
         Field(
             default="compass",
             description="method for orienting station layout",
@@ -43,7 +32,7 @@ class Orientation(MetadataBase):
     ]
 
     reference_frame: Annotated[
-        ReferenceFrameEnum,
+        GeographicReferenceFrameEnum,
         Field(
             default="geographic",
             description='"Reference frame for station layout.  There are only 2 options geographic and geomagnetic.  Both assume a right-handed coordinate system with North=0 E=90 and vertical positive downward"',
@@ -73,9 +62,9 @@ class Orientation(MetadataBase):
     ]
 
     value: Annotated[
-        ValueEnum | None,
+        ChannelOrientationEnum | None,
         Field(
-            default=None,
+            default="orthogonal",
             description='"Channel orientation relative to each other"',
             examples="orthogonal",
             type="string",
