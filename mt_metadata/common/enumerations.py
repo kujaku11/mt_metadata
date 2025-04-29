@@ -79,3 +79,9 @@ class FilterTypeEnum(StrEnumerationBase):
     coefficient = "coefficient"
     fir = "fir"
     other = "other"
+
+
+class SymmetryEnum(str, Enum):
+    NONE = "NONE"
+    ODD = "ODD"
+    EVEN = "EVEN"

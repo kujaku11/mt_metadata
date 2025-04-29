@@ -31,6 +31,7 @@ from .enumerations import (
     ChannelOrientationEnum,
     GeomagneticModelEnum,
     FilterTypeEnum,
+    SymmetryEnum,
 )
 from .range import MinMaxRange, StartEndRange
 from .comment import Comment
@@ -59,6 +60,7 @@ __all__ = [
     "ChannelOrientationEnum",
     "GeomagneticModelEnum",
     "FilterTypeEnum",
+    "SymmetryEnum",
     "Comment",
     "MinMaxRange",
     "StartEndRange",
