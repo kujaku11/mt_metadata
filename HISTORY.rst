@@ -212,8 +212,8 @@ History
 * Moved many common class objects to folder called `common` to reduce redundancy.
 * In `timeseries.Run` use `add_channel` to add a channel if you `append`, `extend`, or `insert` a channel, then you must run `Run._update_channel` to update the metata.
 * `MetadataBase` no longer overrides `__deepcopy__` uses `model_copy(deep=True)` under the hood.
-* Cannot
 * Cannot use len() on `Run`, `Station`, `Survey` objects, use `Run.n_channels`, `Station.n_runs`, `Survey.n_stations` instead.
 * Cannot use `__add__` in `BaseModel` objects, bad things happen, use Object method `merge(other)` instead.  
 * There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation`
 * moved `def get_base_obspy_mapping` to `timeseries.filters.helper_functions`
+* Units have been updated to be more compliant with SI standards.  All unit names must be singular for example volts must be `volt`. Unit validation returns the long name in lowercase. "mV/km" will be returned as "millivolt per kilometer".  There is also a `Unit` object in `mt_metadata.utils.units` that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
