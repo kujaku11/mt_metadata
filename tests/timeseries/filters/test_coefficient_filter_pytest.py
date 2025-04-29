@@ -162,4 +162,4 @@ def test_to_obspy_stage(default_coefficient_filter_with_units, subtests):
 def test_helper_functions(subtests):
     """Test helper functions related to CoefficientFilter."""
     with subtests.test("MT2SI_MAGNETIC_FIELD_FILTER units_in"):
-        assert MT2SI_MAGNETIC_FIELD_FILTER.units_in == "nT"
+        assert MT2SI_MAGNETIC_FIELD_FILTER.units_in == "nanotesla"

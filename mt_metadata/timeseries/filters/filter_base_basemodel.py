@@ -12,12 +12,29 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment, FilterTypeEnum
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.timeseries.filters.helper_functions import get_base_obspy_mapping
 from mt_metadata.base.helpers import filter_descriptions
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
 
 # =====================================================
+
+
+def get_base_obspy_mapping():
+    """
+    Different filters have different mappings, but the attributes mapped here are common to all of them.
+    Hence the name "base obspy mapping"
+    Note: If we wanted to support inverse forms of these filters, and argument specifying filter direction could be added.
+
+    :return: mapping to an obspy filter, mapping['obspy_label'] = 'mt_metadata_label'
+    :rtype: dict
+    """
+    mapping = {}
+    mapping["description"] = "comments"
+    mapping["name"] = "name"
+    mapping["stage_gain"] = "gain"
+    mapping["input_units"] = "units_in"
+    mapping["output_units"] = "units_out"
+    return mapping
 
 
 class FilterBase(MetadataBase):

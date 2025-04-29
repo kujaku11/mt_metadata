@@ -1,26 +1,10 @@
 from loguru import logger
-from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
+from mt_metadata.timeseries.filters.coefficient_filter_basemodel import (
+    CoefficientFilter,
+)
 from mt_metadata.timeseries.filters.frequency_response_table_filter import (
     FrequencyResponseTableFilter,
 )
-
-
-def get_base_obspy_mapping():
-    """
-    Different filters have different mappings, but the attributes mapped here are common to all of them.
-    Hence the name "base obspy mapping"
-    Note: If we wanted to support inverse forms of these filters, and argument specifying filter direction could be added.
-
-    :return: mapping to an obspy filter, mapping['obspy_label'] = 'mt_metadata_label'
-    :rtype: dict
-    """
-    mapping = {}
-    mapping["description"] = "comments"
-    mapping["name"] = "name"
-    mapping["stage_gain"] = "gain"
-    mapping["input_units"] = "units_in"
-    mapping["output_units"] = "units_out"
-    return mapping
 
 
 def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwargs):
@@ -77,7 +61,7 @@ def make_frequency_response_table_filter(file_path, case="bf4"):
         fap_filter.frequencies = df["Frequency [Hz]"].values
         fap_filter.amplitudes = df["Amplitude [V/nT]"].values
         fap_filter.phases = np.deg2rad(df["Phase [degrees]"].values)
-        fap_filter.units_in = "volts"
+        fap_filter.units_in = "volt"
         fap_filter.units_out = "nanotesla"
         fap_filter.gain = 1.0
         fap_filter.name = "bf4"
@@ -98,8 +82,8 @@ def make_volt_per_meter_to_millivolt_per_km_converter():
     """
     coeff_filter = make_coefficient_filter(
         gain=1e-6,
-        units_in="millivolts per kilometer",
-        units_out="volts per meter",
+        units_in="millivolt per kilometer",
+        units_out="volt per meter",
         name="MT to SI electric field conversion",
     )
     return coeff_filter
