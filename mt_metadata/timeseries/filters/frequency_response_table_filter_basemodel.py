@@ -4,9 +4,22 @@
 from enum import Enum
 from typing import Annotated
 
+import numpy as np
+from scipy.interpolate import interp1d
+
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.timeseries.filters import FilterBase
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
+
+try:
+    from obspy.core.inventory.response import (
+        ResponseListResponseStage,
+        ResponseListElement,
+    )
+except ImportError:
+    ResponseListResponseStage = ResponseListElement = None
 
 
 # =====================================================
@@ -14,9 +27,9 @@ class InstrumentTypeEnum(str, Enum):
     other = "other"
 
 
-class FrequencyResponseTableFilter(MetadataBase):
+class FrequencyResponseTableFilter(FilterBase):
     frequencies: Annotated[
-        float,
+        np.ndarray | list[float],
         Field(
             default=[],
             items={"type": "number"},
@@ -31,7 +44,7 @@ class FrequencyResponseTableFilter(MetadataBase):
     ]
 
     amplitudes: Annotated[
-        float,
+        np.ndarray | list[float],
         Field(
             default=[],
             items={"type": "number"},
@@ -46,7 +59,7 @@ class FrequencyResponseTableFilter(MetadataBase):
     ]
 
     phases: Annotated[
-        float,
+        np.ndarray | list[float],
         Field(
             default=[],
             items={"type": "number"},
@@ -73,3 +86,10 @@ class FrequencyResponseTableFilter(MetadataBase):
             },
         ),
     ]
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        mapping["amplitudes"] = "_empirical_amplitudes"
+        mapping["frequencies"] = "_empirical_frequencies"
+        mapping["phases"] = "_empirical_phases"
+        return mapping
