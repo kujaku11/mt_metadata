@@ -3,8 +3,9 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
 # =====================================================
@@ -15,11 +16,11 @@ class CoefficientFilter(MetadataBase):
             default=1.0,
             description="Scale factor for a simple coefficient filter.",
             examples="100",
-            type="number",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]

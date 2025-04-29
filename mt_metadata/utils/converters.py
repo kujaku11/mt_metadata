@@ -118,6 +118,14 @@ def get_default_value(
     elif data_type in ["float", "number"]:
         if default_value is None:
             return 0.0
+        elif isinstance(default_value, str):
+            try:
+                return float(default_value)
+            except ValueError:
+                return 0.0
+        elif isinstance(default_value, (list, tuple)):
+            return []
+
         else:
             return float(default_value)
     elif data_type in ["boolean"]:

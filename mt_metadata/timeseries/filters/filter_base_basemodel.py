@@ -6,9 +6,11 @@ from typing import Annotated
 
 import numpy as np
 import pandas as pd
+from pydantic import Field, ValidationInfo, field_validator
+
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment
 from mt_metadata.utils.mttime import MTime
-from pydantic import Field, field_validator
 
 
 # =====================================================
@@ -28,29 +30,29 @@ class FilterBase(MetadataBase):
             default="",
             description="Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
             examples='"lowpass_magnetic"',
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]
 
     comments: Annotated[
         str | None,
         Field(
-            default=None,
+            default_factory=lambda: Comment(),
             description="Any comments about the filter.",
             examples="ambient air temperature",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
+            {TAB},
         ),
-    ] = None
+    ]
 
     type: Annotated[
         TypeEnum,
@@ -58,12 +60,12 @@ class FilterBase(MetadataBase):
             default="",
             description="Type of filter, must be one of the available filters.",
             examples="fap_table",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]
 
@@ -73,13 +75,13 @@ class FilterBase(MetadataBase):
             default="",
             description="Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
             examples="count",
-            type="string",
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]
 
@@ -89,13 +91,13 @@ class FilterBase(MetadataBase):
             default="",
             description="Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
             examples="millivolt",
-            type="string",
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]
 
@@ -105,14 +107,14 @@ class FilterBase(MetadataBase):
             default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
             examples="2020-01-01",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
             },
+            {TAB},
         ),
-    ] = None
+    ]
 
     gain: Annotated[
         float,
@@ -120,12 +122,12 @@ class FilterBase(MetadataBase):
             default=1.0,
             description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
             examples="1.0",
-            type="number",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
+            {TAB},
         ),
     ]
 
@@ -135,3 +137,10 @@ class FilterBase(MetadataBase):
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
         return MTime(time_stamp=field_value)
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value
