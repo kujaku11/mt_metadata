@@ -1,3 +1,4 @@
+from .filter_base_basemodel import FilterBase
 from .coefficient_filter import CoefficientFilter
 from .fir_filter import FIRFilter
 from .pole_zero_filter import PoleZeroFilter
@@ -7,6 +8,7 @@ from .channel_response import ChannelResponse
 
 
 __all__ = [
+    "FilterBase",
     "CoefficientFilter",
     "FIRFilter",
     "PoleZeroFilter",

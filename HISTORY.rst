@@ -215,4 +215,5 @@ History
 * Cannot
 * Cannot use len() on `Run`, `Station`, `Survey` objects, use `Run.n_channels`, `Station.n_runs`, `Survey.n_stations` instead.
 * Cannot use `__add__` in `BaseModel` objects, bad things happen, use Object method `merge(other)` instead.  
-* There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation``
+* There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation`
+* moved `def get_base_obspy_mapping` to `timeseries.filters.helper_functions`

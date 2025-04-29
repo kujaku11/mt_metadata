@@ -4,6 +4,25 @@ from mt_metadata.timeseries.filters.frequency_response_table_filter import (
     FrequencyResponseTableFilter,
 )
 
+
+def get_base_obspy_mapping():
+    """
+    Different filters have different mappings, but the attributes mapped here are common to all of them.
+    Hence the name "base obspy mapping"
+    Note: If we wanted to support inverse forms of these filters, and argument specifying filter direction could be added.
+
+    :return: mapping to an obspy filter, mapping['obspy_label'] = 'mt_metadata_label'
+    :rtype: dict
+    """
+    mapping = {}
+    mapping["description"] = "comments"
+    mapping["name"] = "name"
+    mapping["stage_gain"] = "gain"
+    mapping["input_units"] = "units_in"
+    mapping["output_units"] = "units_out"
+    return mapping
+
+
 def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwargs):
     """
 
@@ -101,7 +120,6 @@ def make_tesla_to_nanotesla_converter():
         name="MT to SI magnetic field conversion",
     )
     return coeff_filter
-
 
 
 def decimation_info_is_degenerate(obspy_stage):

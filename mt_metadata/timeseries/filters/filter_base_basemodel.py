@@ -5,18 +5,23 @@ from typing import Annotated
 
 import numpy as np
 import pandas as pd
-from pydantic import Field, ValidationInfo, field_validator
+from loguru import logger
+from pydantic import Field, ValidationInfo, field_validator, computed_field, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment, FilterTypeEnum
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.timeseries.filters.helper_functions import get_base_obspy_mapping
+from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
 
 # =====================================================
 
 
 class FilterBase(MetadataBase):
+    _obspy_mapping: dict = PrivateAttr({})
     name: Annotated[
         str,
         Field(
@@ -157,3 +162,215 @@ class FilterBase(MetadataBase):
             raise KeyError(error)
         except KeyError as error:
             raise KeyError(error)
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        return mapping
+
+    @property
+    def obspy_mapping(self):
+        """
+
+        :return: mapping to an obspy filter
+        :rtype: dict
+
+        """
+        if self._obspy_mapping == {}:
+            self._obspy_mapping = self.make_obspy_mapping()
+        return self._obspy_mapping
+
+    @obspy_mapping.setter
+    def obspy_mapping(self, obspy_dict):
+        """
+        set the obspy mapping: this is a dictionary relating attribute labels from obspy stage objects to
+        mt_metadata filter objects.
+        """
+        if not isinstance(obspy_dict, dict):
+            msg = f"Input must be a dictionary not {type(obspy_dict)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+        self._obspy_mapping = obspy_dict
+
+    @computed_field
+    @property
+    def total_gain(self) -> float:
+        """
+
+        :return: Total gain of the filter
+        :rtype: float
+
+        """
+        return self.gain
+
+    def get_filter_description(self):
+        """
+
+        :return: predetermined filter description based on the
+            type of filter
+        :rtype: string
+
+        """
+
+        if self.comments is None:
+            return filter_descriptions[self.type]
+
+        return self.comments
+
+    @classmethod
+    def from_obspy_stage(cls, stage, mapping=None):
+        """
+        Expected to return a multiply operation function
+
+        :param cls: a filter object
+        :type cls: filter object
+        :param stage: Obspy stage filter
+        :type stage: :class:`obspy.inventory.response.ResponseStage`
+        :param mapping: dictionary for mapping from an obspy stage,
+            defaults to None
+        :type mapping: dict, optional
+        :raises TypeError: If stage is not a
+            :class:`obspy.inventory.response.ResponseStage`
+        :return: the appropriate mt_metadata.timeseries.filter object
+        :rtype: mt_metadata.timeseries.filter object
+
+        """
+
+        if mapping is None:
+            mapping = cls().make_obspy_mapping()
+        kwargs = {}
+
+        try:
+            for obspy_label, mth5_label in mapping.items():
+                kwargs[mth5_label] = getattr(stage, obspy_label)
+        except AttributeError:
+            msg = f"Expected a Stage and got a {type(stage)}"
+            logger.error(msg)
+            raise TypeError(msg)
+        return cls(**kwargs)
+
+    def complex_response(self, frqs):
+        msg = f"complex_response not defined for {self.__class__.__name__} class"
+        logger.info(msg)
+        return None
+
+    def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
+        """
+
+        Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
+        having a "low" number of poles and zeros.  This method is not 100% robust to filters with a notch in them.
+
+        Try to estimate pass band of the filter from the flattest spots in
+        the amplitude.
+
+        The flattest spot is determined by calculating a sliding window
+        with length `window_len` and estimating normalized std.
+
+        ..note:: This only works for simple filters with
+         on flat pass band.
+
+        :param window_len: length of sliding window in points
+        :type window_len: integer
+
+        :param tol: the ratio of the mean/std should be around 1
+         tol is the range around 1 to find the flat part of the curve.
+        :type tol: float
+
+        :return: pass band frequencies
+        :rtype: np.ndarray
+
+        """
+
+        f = frequencies
+        cr = self.complex_response(f, **kwargs)
+        if cr is None:
+            logger.warning(
+                "complex response is None, cannot estimate pass band. Returning None"
+            )
+            return None
+        amp = np.abs(cr)
+        # precision is apparently an important variable here
+        if np.round(amp, 6).all() == np.round(amp.mean(), 6):
+            return np.array([f.min(), f.max()])
+
+        f_true = np.zeros_like(frequencies)
+        for ii in range(0, f.size - window_len, 1):
+            cr_window = np.array(amp[ii : ii + window_len])  # / self.amplitudes.max()
+            test = abs(1 - np.log10(cr_window.min()) / np.log10(cr_window.max()))
+
+            if test <= tol:
+                f_true[(f >= f[ii]) & (f <= f[ii + window_len])] = 1
+
+        pb_zones = np.reshape(np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2))
+
+        if pb_zones.shape[0] > 1:
+            logger.debug(
+                f"Found {pb_zones.shape[0]} possible pass bands, using the longest. "
+                "Use the estimated pass band with caution."
+            )
+        # pick the longest
+        try:
+            longest = np.argmax(np.diff(pb_zones, axis=1))
+            if pb_zones[longest, 1] >= f.size:
+                pb_zones[longest, 1] = f.size - 1
+        except ValueError:
+            logger.warning(
+                "No pass band could be found within the given frequency range. Returning None"
+            )
+            return None
+
+        return np.array([f[pb_zones[longest, 0]], f[pb_zones[longest, 1]]])
+
+    def generate_frequency_axis(self, sampling_rate, n_observations):
+        dt = 1.0 / sampling_rate
+        frequency_axis = np.fft.fftfreq(n_observations, d=dt)
+        frequency_axis = np.fft.fftshift(frequency_axis)
+        return frequency_axis
+
+    def plot_response(
+        self,
+        frequencies,
+        x_units="period",
+        unwrap=True,
+        pb_tol=1e-1,
+        interpolation_method="slinear",
+    ):
+        if frequencies is None:
+            frequencies = self.generate_frequency_axis(10.0, 1000)
+            x_units = "frequency"
+
+        kwargs = {
+            "title": self.name,
+            "unwrap": unwrap,
+            "x_units": x_units,
+            "label": self.name,
+        }
+
+        complex_response = self.complex_response(
+            frequencies, **{"interpolation_method": interpolation_method}
+        )
+        if hasattr(self, "poles"):
+            kwargs["poles"] = self.poles
+            kwargs["zeros"] = self.zeros
+
+        if hasattr(self, "pass_band"):
+            kwargs["pass_band"] = self.pass_band(
+                frequencies,
+                tol=pb_tol,
+                **{"interpolation_method": interpolation_method},
+            )
+
+        plot_response(frequencies, complex_response, **kwargs)
+
+    @property
+    def decimation_active(self):
+        """
+
+        :return: if decimation is prescribed
+        :rtype: bool
+
+        """
+        if hasattr(self, "decimation_factor"):
+            if self.decimation_factor != 1.0:
+                return True
+        return False

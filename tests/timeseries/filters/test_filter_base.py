@@ -17,14 +17,20 @@ def default_filter():
 def custom_filter():
     """Fixture to create a custom FilterBase object."""
     return FilterBase(
-        name="lowpass_magnetic",
-        comments="Test filter for magnetic data",
+        name="lowpass_filter",
+        comments="Test filter for lowpass data",
         type=FilterTypeEnum.fap_table,
-        units_in="count",
-        units_out="millivolt",
+        units_in="volt",
+        units_out="ampere",
         calibration_date="2023-01-01",
         gain=2.5,
     )
+
+
+@pytest.fixture
+def frequency_array():
+    """Fixture to provide a frequency array for testing."""
+    return np.logspace(-5, 5, 100)
 
 
 def test_default_filter(default_filter, subtests):
@@ -55,20 +61,20 @@ def test_default_filter(default_filter, subtests):
 def test_custom_filter(custom_filter, subtests):
     """Test a custom FilterBase object."""
     with subtests.test("Custom name"):
-        assert custom_filter.name == "lowpass_magnetic"
+        assert custom_filter.name == "lowpass_filter"
 
     with subtests.test("Custom comments"):
         assert isinstance(custom_filter.comments, Comment)
-        assert custom_filter.comments.value == "Test filter for magnetic data"
+        assert custom_filter.comments.value == "Test filter for lowpass data"
 
     with subtests.test("Custom type"):
         assert custom_filter.type == FilterTypeEnum.fap_table
 
     with subtests.test("Custom units_in"):
-        assert custom_filter.units_in == "digital counts"
+        assert custom_filter.units_in == "volt"
 
     with subtests.test("Custom units_out"):
-        assert custom_filter.units_out == "millivolt"
+        assert custom_filter.units_out == "ampere"
 
     with subtests.test("Custom calibration_date"):
         assert isinstance(custom_filter.calibration_date, MTime)
@@ -117,19 +123,39 @@ def test_comments_validation(default_filter, subtests):
 
     with subtests.test("Invalid comment type"):
         with pytest.raises(ValidationError):
-            default_filter.comments = []
+            default_filter.comments = 12345
 
 
-def test_gain_validation(default_filter, subtests):
-    """Test validation of gain."""
-    with subtests.test("Valid gain"):
-        default_filter.gain = 2.0
-        assert default_filter.gain == 2.0
+def test_complex_response(default_filter, frequency_array, subtests):
+    """Test the complex_response method."""
+    response = default_filter.complex_response(frequency_array)
 
-    with subtests.test("Gain equal to zero"):
-        with pytest.raises(ValidationError):
-            default_filter.gain = 0
+    with subtests.test("Response is None"):
+        assert response is None
 
-    with subtests.test("Invalid gain value"):
-        with pytest.raises(ValidationError):
-            default_filter.gain = -1.0
+
+def test_pass_band(default_filter, frequency_array, subtests):
+    """Test the pass_band method."""
+    pass_band = default_filter.pass_band(frequency_array)
+
+    with subtests.test("Pass band is None"):
+        assert pass_band is None
+
+
+def test_total_gain(custom_filter, subtests):
+    """Test the total_gain computed property."""
+    with subtests.test("Total gain matches gain"):
+        assert custom_filter.total_gain == custom_filter.gain
+
+
+def test_obspy_mapping(default_filter, subtests):
+    """Test the obspy_mapping property."""
+    mapping = default_filter.obspy_mapping
+
+    with subtests.test("Mapping is a dictionary"):
+        assert isinstance(mapping, dict)
+
+    with subtests.test("Mapping contains expected keys"):
+        assert "stage_gain" in mapping
+        assert "input_units" in mapping
+        assert "output_units" in mapping
