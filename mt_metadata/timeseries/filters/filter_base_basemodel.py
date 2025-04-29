@@ -108,6 +108,7 @@ class FilterBase(MetadataBase):
             description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
             examples="1.0",
             alias=None,
+            gt=0.0,
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -150,7 +151,7 @@ class FilterBase(MetadataBase):
         """
 
         try:
-            unit_object = get_unit_object(value)
+            unit_object = get_unit_object(value, allow_none=False)
             return unit_object.name
         except ValueError as error:
             raise KeyError(error)

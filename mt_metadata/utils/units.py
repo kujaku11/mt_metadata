@@ -13,9 +13,9 @@ case strings.
 # Import
 # =============================================================================
 import pandas as pd
-from enum import Enum
 from typing import Annotated
 from collections import OrderedDict
+from loguru import logger
 
 from pydantic import BaseModel, Field, ConfigDict, AliasChoices
 
@@ -137,6 +137,12 @@ all_units = [
         "name": "digital counts",
         "description": "digital counts from data logger",
         "symbol": "count",
+        "plot_label": "Digital Counts",
+    },
+    {
+        "name": "digital counts",
+        "description": "digital counts from data logger",
+        "symbol": "counts",
         "plot_label": "Digital Counts",
     },
     {
@@ -398,6 +404,11 @@ def get_unit_from_df(value: str, allow_none=True) -> Unit:
         )  # Return the first matching row as a Series
     else:
         if allow_none:
+            logger.warning(
+                f"Unit '{value}' not found in accepted units, setting to 'unknown'. "
+                "If this is an error raise an issue to add a unit. If an error needs "
+                "to be raised, set allow_none=False."
+            )
             return Unit(
                 name="unknown",
                 description="unknown",
@@ -405,4 +416,7 @@ def get_unit_from_df(value: str, allow_none=True) -> Unit:
                 plot_label="Unknown",
             )
         else:
-            raise KeyError(f"Unit '{value}' not found in the UNITS_DF DataFrame.")
+            raise KeyError(
+                f"Unit '{value}' not found in the UNITS_DF DataFrame. "
+                "If the units are real an need to be added raise an issue to add the unit."
+            )
