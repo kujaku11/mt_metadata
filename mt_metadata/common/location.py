@@ -5,7 +5,7 @@ from typing import Annotated
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.location_helpers import validate_position, DatumEnum
+from mt_metadata.utils.location_helpers import validate_position
 from mt_metadata.common import Declination, GeographicLocation
 from pyproj import CRS
 

@@ -21,6 +21,5 @@ class CoefficientFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]

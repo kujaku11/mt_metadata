@@ -395,7 +395,8 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
             # continue
         # Fallback to Any if type is unknown
-        field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
+        else:
+            field_type = TYPE_MAPPING.get(field_attrs.get("type", "string"), "Any")
         # get typing imports
         for type_key in type_imports.keys():
             if type_key in field_type:
@@ -435,7 +436,10 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         # mt-metadata was used, and not the desired way of using it.
         field_attrs["required"] = True
         if field_name not in required_fields:
-            field_type = f"{field_type} | None"
+            if "Comment" in field_type:
+                field_type = "Comment"
+            else:
+                field_type = f"{field_type} | None"
             field_attrs["required"] = False
 
         # get the default value based on type
@@ -487,7 +491,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
         field_parts.append(json_extra_line)
 
         # if field_attrs["required"]:
-        field_parts.append("{TAB})]\n")
+        field_parts.append(f"{TAB})]\n")
         # else:
         #     field_parts.append(f")] = {field_default}\n")
 

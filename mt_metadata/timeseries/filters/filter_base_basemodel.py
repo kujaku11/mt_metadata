@@ -1,7 +1,6 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 import numpy as np
@@ -9,18 +8,12 @@ import pandas as pd
 from pydantic import Field, ValidationInfo, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
+from mt_metadata.common import Comment, FilterTypeEnum
+from mt_metadata.utils.units import get_unit_object
 from mt_metadata.utils.mttime import MTime
 
 
 # =====================================================
-class TypeEnum(str, Enum):
-    fap_table = "fap_table"
-    zpk = "zpk"
-    time_delay = "time_delay"
-    coefficient = "coefficient"
-    fir = "fir"
-    other = "other"
 
 
 class FilterBase(MetadataBase):
@@ -35,12 +28,11 @@ class FilterBase(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
     comments: Annotated[
-        str | None,
+        Comment,
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the filter.",
@@ -50,12 +42,11 @@ class FilterBase(MetadataBase):
                 "units": None,
                 "required": False,
             },
-            {TAB},
         ),
     ]
 
     type: Annotated[
-        TypeEnum,
+        FilterTypeEnum,
         Field(
             default="",
             description="Type of filter, must be one of the available filters.",
@@ -65,7 +56,6 @@ class FilterBase(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -76,12 +66,10 @@ class FilterBase(MetadataBase):
             description="Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
             examples="count",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -92,12 +80,10 @@ class FilterBase(MetadataBase):
             description="Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
             examples="millivolt",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -112,7 +98,6 @@ class FilterBase(MetadataBase):
                 "units": None,
                 "required": False,
             },
-            {TAB},
         ),
     ]
 
@@ -127,7 +112,6 @@ class FilterBase(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -144,3 +128,31 @@ class FilterBase(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @field_validator("units_in", "units_out", mode="before")
+    @classmethod
+    def validate_units(cls, value: str, info: ValidationInfo) -> str:
+        """
+        validate units base on input string will return the long name
+
+        Parameters
+        ----------
+        value : units string
+            unit string separated by either '/' for division or ' ' for
+            multiplication.  Or 'per' and ' ', respectively
+        info : ValidationInfo
+            _description_
+
+        Returns
+        -------
+        str
+            return the long descriptive name of the unit. For example 'kilometers'.
+        """
+
+        try:
+            unit_object = get_unit_object(value)
+            return unit_object.name
+        except ValueError as error:
+            raise KeyError(error)
+        except KeyError as error:
+            raise KeyError(error)

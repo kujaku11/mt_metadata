@@ -70,3 +70,12 @@ class GeomagneticModelEnum(StrEnumerationBase):
     WMM = "WMM"
     unknown = "unknown"
     other = "other"
+
+
+class FilterTypeEnum(StrEnumerationBase):
+    fap_table = "fap_table"
+    zpk = "zpk"
+    time_delay = "time_delay"
+    coefficient = "coefficient"
+    fir = "fir"
+    other = "other"

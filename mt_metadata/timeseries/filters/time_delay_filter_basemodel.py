@@ -21,6 +21,5 @@ class TimeDelayFilter(MetadataBase):
                 "units": "second",
                 "required": True,
             },
-            {TAB},
         ),
     ]

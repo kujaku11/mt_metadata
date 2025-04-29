@@ -29,7 +29,6 @@ class FirFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -44,7 +43,6 @@ class FirFilter(MetadataBase):
                 "units": None,
                 "required": False,
             },
-            {TAB},
         ),
     ]
 
@@ -59,7 +57,6 @@ class FirFilter(MetadataBase):
                 "units": "samples per second",
                 "required": False,
             },
-            {TAB},
         ),
     ]
 
@@ -74,7 +71,6 @@ class FirFilter(MetadataBase):
                 "units": "hertz",
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -89,6 +85,5 @@ class FirFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]

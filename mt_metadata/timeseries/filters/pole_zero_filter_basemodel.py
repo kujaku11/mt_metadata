@@ -22,7 +22,6 @@ class PoleZeroFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -38,7 +37,6 @@ class PoleZeroFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -53,6 +51,5 @@ class PoleZeroFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]

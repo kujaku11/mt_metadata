@@ -21,6 +21,5 @@ class ChannelResponse(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]

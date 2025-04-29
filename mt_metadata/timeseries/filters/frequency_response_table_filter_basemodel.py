@@ -27,7 +27,6 @@ class FrequencyResponseTableFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -43,7 +42,6 @@ class FrequencyResponseTableFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -59,7 +57,6 @@ class FrequencyResponseTableFilter(MetadataBase):
                 "units": "degrees",
                 "required": True,
             },
-            {TAB},
         ),
     ]
 
@@ -74,6 +71,5 @@ class FrequencyResponseTableFilter(MetadataBase):
                 "units": None,
                 "required": True,
             },
-            {TAB},
         ),
     ]
