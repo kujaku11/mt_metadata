@@ -31,7 +31,7 @@ class FrequencyResponseTableFilter(FilterBase):
         str,
         Field(
             default="fap",
-            description="Type of filter.  Must be 'fap'",
+            description="Type of filter.  Must be 'fap' or 'frequency amplitude table'",
             examples="fap",
             alias=None,
             json_schema_extra={

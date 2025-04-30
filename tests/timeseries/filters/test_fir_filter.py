@@ -27,6 +27,7 @@ def test_default_fir_filter(fir_filter_default):
     assert fir_filter_default.decimation_factor == 1.0
     assert fir_filter_default.gain_frequency == 0.0
     assert fir_filter_default.symmetry == SymmetryEnum.NONE
+    assert fir_filter_default.type == "fir"
 
 
 def test_fir_filter_with_data(fir_filter_with_data):

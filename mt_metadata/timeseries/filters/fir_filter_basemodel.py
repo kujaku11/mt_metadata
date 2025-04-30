@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
+from loguru import logger
 from typing import Annotated
 
 from pydantic import Field, computed_field, field_validator, ValidationInfo
@@ -26,6 +26,19 @@ from mt_metadata.common import SymmetryEnum
 
 
 class FirFilter(FilterBase):
+    type: Annotated[
+        str,
+        Field(
+            default="fir",
+            description="Type of filter.  Must be 'fir'",
+            examples="fir",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
     coefficients: Annotated[
         np.ndarray | list[float],
         Field(
@@ -119,6 +132,18 @@ class FirFilter(FilterBase):
             return np.array(value.split(","), dtype=float)
         else:
             raise ValueError("Coefficients must be a list, tuple, or string.")
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type of filter is set to "fap"
+        """
+        if value not in ["fir"]:
+            logger.warning(
+                f"Filter type is set to {value}, but should be 'fir' for FrequencyResponseTableFilter."
+            )
+        return "fir"
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
