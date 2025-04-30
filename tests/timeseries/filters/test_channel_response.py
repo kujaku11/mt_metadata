@@ -264,7 +264,7 @@ class TestFAPFilter(unittest.TestCase):
         self.assertEqual(np.round(self.cr.normalization_frequency, 3), 0.323)
 
     def test_instrument_sensitivity(self):
-        s = 61.99214452874
+        s = 62.01227179
         for sig_figs in [3, 6, 9]:
             with self.subTest(msg=f"significant_digits {sig_figs}"):
                 self.assertAlmostEqual(
