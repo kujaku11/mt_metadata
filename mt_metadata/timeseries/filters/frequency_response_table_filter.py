@@ -78,7 +78,7 @@ class FrequencyResponseTableFilter(FilterBase):
             examples='"[-90, -90, -88, -80, -60, -30, 30, ... 50.0, 90.0, 90.0, 90.0]"',
             alias=None,
             json_schema_extra={
-                "units": "degrees",
+                "units": "radians",
                 "required": True,
             },
         ),

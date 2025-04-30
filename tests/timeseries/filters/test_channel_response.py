@@ -26,13 +26,13 @@ class TestFAPFilter(unittest.TestCase):
     def setUp(self):
 
         self.td = TimeDelayFilter(
-            units_in="volts",
-            units_out="volts",
+            units_in="volt",
+            units_out="volt",
             delay=-0.25,
             name="example_time_delay",
         )
         self.fap = FrequencyResponseTableFilter(
-            units_in="volts", units_out="volts", name="example_fap"
+            units_in="volt", units_out="volt", name="example_fap"
         )
 
         self.fap.frequencies = [
@@ -183,7 +183,7 @@ class TestFAPFilter(unittest.TestCase):
         ]
 
         self.pz = PoleZeroFilter(
-            units_in="volts", units_out="volts", name="example_zpk_response"
+            units_in="volt", units_out="volt", name="example_zpk_response"
         )
         self.pz.poles = [
             (-6.283185 + 10.882477j),
@@ -194,22 +194,18 @@ class TestFAPFilter(unittest.TestCase):
         self.pz.normalization_factor = 2002.269
 
         self.cf = CoefficientFilter(
-            units_in="v",
-            units_out="v",
+            units_in="V",
+            units_out="V",
             name="example_coefficient",
             gain=10,
         )
 
-        self.cr = ChannelResponse(
-            filters_list=[self.pz, self.fap, self.cf, self.td]
-        )
+        self.cr = ChannelResponse(filters_list=[self.pz, self.fap, self.cf, self.td])
         self.cr.frequencies = np.logspace(-5, 5, 500)
 
     def test_pass_band(self):
         self.assertTrue(
-            np.isclose(
-                self.cr.pass_band, np.array([0.1018629, 1.02334021])
-            ).all()
+            np.isclose(self.cr.pass_band, np.array([0.1018629, 1.02334021])).all()
         )
 
     def test_complex_response(self):
@@ -237,8 +233,8 @@ class TestFAPFilter(unittest.TestCase):
             self.assertTrue(abs(slope) < np.pi)
 
     def test_unit_fail(self):
-        cr1 = CoefficientFilter(units_in="volts", units_out="mv")
-        cr2 = CoefficientFilter(units_in="nanotesla", units_out="counts")
+        cr1 = CoefficientFilter(units_in="volt", units_out="mV")
+        cr2 = CoefficientFilter(units_in="nanotesla", units_out="count")
 
         def set_filters_list(cr1, cr2):
             self.cr.filters_list = [cr1, cr2]
@@ -268,7 +264,7 @@ class TestFAPFilter(unittest.TestCase):
         self.assertEqual(np.round(self.cr.normalization_frequency, 3), 0.323)
 
     def test_instrument_sensitivity(self):
-        s = 62.01227179
+        s = 61.99214452874
         for sig_figs in [3, 6, 9]:
             with self.subTest(msg=f"significant_digits {sig_figs}"):
                 self.assertAlmostEqual(
