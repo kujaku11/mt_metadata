@@ -1,60 +1,22 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-    Karl Kappler
-
-:license: MIT
-
-This is a base class for filters associated with calibration and instrument
-and acquistion system responses. We will extend this class for each specific
-type of filter we need to implement. Typical filters we will want to support:
-
- - PoleZero (or 'zpk') responses like those provided by IRIS
- - Frequency-Amplitude-Phase (FAP) tables: look up tables from laboratory
-   calibrations via frequency sweep on a spectrum analyser.
- - Time Delay Filters: can come about in decimation, or from general
-   timing errors that have been characterized
- - Coefficient multipliers, i.e. frequency independent gains
- - FIR filters
- - IIR filters
-
-Many filters can be represented in more than one of these forms. For example
-a Coefficient Multiplier can be seen as an FIR with a single coefficient.
-Similarly, an FIR can be represented as a 'zpk' filter with no poles.  An
-IIR filter can also be associated with a zpk representation.  However, solving
-for the 'zpk' representation can be tedious and approximate and if we have for
-example, the known FIR coefficients, or FAP lookup table, then there is little
-to be gained by changing the representation.
-
-The 'stages' that are described in the IRIS StationXML documentation appear
-to cover all possible linear time invariant filter types we are likely to
-encounter.
-
-A FilterBase object has a direction, defined by has units_in and units_out attrs.
-These are the units before and after multiplication by the complex_response
-of the filter in frequency domain.  It is very similar to an "obspy filter stage"
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
+
 import numpy as np
+import pandas as pd
+from loguru import logger
+from pydantic import Field, ValidationInfo, field_validator, computed_field, PrivateAttr
 
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment, FilterTypeEnum
 from mt_metadata.utils.units import get_unit_object, Unit
-from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.mttime import MTime
+from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 
 
-# =============================================================================
-attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-# =============================================================================
+# =====================================================
 
 
 def get_base_obspy_mapping():
@@ -75,35 +37,174 @@ def get_base_obspy_mapping():
     return mapping
 
 
-class FilterBase(Base):
-    """
-    bstract base class is used to represent various forms of linear, time invariant (LTI) filters.
-    By convention, forward application of the filter is equivalent to multiplication in frequency domain by the
-    filter's complex response.  Removing the filter (applying the inverse) can be achieved by divding by the
-    filter's complex response.
+class FilterBase(MetadataBase):
+    _obspy_mapping: dict = PrivateAttr({})
+    _filter_type: str = PrivateAttr("base")
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
+            examples='"lowpass_magnetic"',
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    This class is intended to support the calibration of data from archived units to physical units, although
-    it may find more application in future.
+    comments: Annotated[
+        Comment,
+        Field(
+            default_factory=lambda: Comment(),
+            description="Any comments about the filter.",
+            examples="ambient air temperature",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    """
+    type: Annotated[
+        str,
+        Field(
+            default="base",
+            description="Type of filter, must be one of the available filters.",
+            examples="fap_table",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    __doc__ = write_lines(attr_dict)
+    units_in: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
+            examples="count",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
+    units_out: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
+            examples="millivolt",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        self._units_in_obj = Unit()
-        self._units_out_obj = Unit()
+    calibration_date: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
+            examples="2020-01-01",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-        self._calibration_dt = MTime()
-        self.comments = None
-        self._obspy_mapping = None
-        self.gain = 1.0
-        self._name = None
+    gain: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
+            examples="1.0",
+            alias=None,
+            gt=0.0,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    @field_validator("calibration_date", mode="before")
+    @classmethod
+    def validate_calibration_date(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)
 
-        if self.gain == 0.0:
-            self.gain = 1.0
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type of filter is set to "fir"
+        """
+        # Get the expected filter type based on the actual class
+        # Make sure derived classes define their own _filter_type as class variable
+        expected_type = getattr(cls, "_filter_type", "base").default
+
+        if value != expected_type:
+            logger.warning(
+                f"Filter type is set to {value}, but should be "
+                f"{expected_type} for {cls.__name__}."
+            )
+        return expected_type
+
+    @field_validator("units_in", "units_out", mode="before")
+    @classmethod
+    def validate_units(cls, value: str, info: ValidationInfo) -> str:
+        """
+        validate units base on input string will return the long name
+
+        Parameters
+        ----------
+        value : units string
+            unit string separated by either '/' for division or ' ' for
+            multiplication.  Or 'per' and ' ', respectively
+        info : ValidationInfo
+            _description_
+
+        Returns
+        -------
+        str
+            return the long descriptive name of the unit. For example 'kilometers'.
+        """
+
+        try:
+            unit_object = get_unit_object(value, allow_none=False)
+            return unit_object.name
+        except ValueError as error:
+            raise KeyError(error)
+        except KeyError as error:
+            raise KeyError(error)
+
+    @property
+    def units_in_object(self) -> Unit:
+        return get_unit_object(self.units_in, allow_none=False)
+
+    @property
+    def units_out_object(self) -> Unit:
+        return get_unit_object(self.units_out, allow_none=False)
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
@@ -117,7 +218,7 @@ class FilterBase(Base):
         :rtype: dict
 
         """
-        if self._obspy_mapping is None:
+        if self._obspy_mapping == {}:
             self._obspy_mapping = self.make_obspy_mapping()
         return self._obspy_mapping
 
@@ -129,57 +230,14 @@ class FilterBase(Base):
         """
         if not isinstance(obspy_dict, dict):
             msg = f"Input must be a dictionary not {type(obspy_dict)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         self._obspy_mapping = obspy_dict
 
+    @computed_field
     @property
-    def name(self):
-        """
-
-        :return: name of the filter
-        :rtype: str
-
-        """
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        """
-        Set filter name
-
-        :param value: name of filter
-        :type value: sting
-
-        """
-        if value is not None:
-            self._name = str(value).lower().replace("/", " per ")
-        else:
-            self._name = None
-
-    @property
-    def calibration_date(self):
-        """
-
-        :return: calibration date (YYYY-MM-DD)
-        :rtype: string
-
-        """
-        return self._calibration_dt.date
-
-    @calibration_date.setter
-    def calibration_date(self, value):
-        """
-
-        :param value: set calibration date (YYYY-MM-DD)
-        :type value: string
-
-        """
-        self._calibration_dt.parse(value)
-
-    @property
-    def total_gain(self):
+    def total_gain(self) -> float:
         """
 
         :return: Total gain of the filter
@@ -187,46 +245,6 @@ class FilterBase(Base):
 
         """
         return self.gain
-
-    @property
-    def units_in(self):
-        """
-
-        :return: Input units of the filter
-        :rtype: string
-
-        """
-        return self._units_in_obj.abbreviation
-
-    @units_in.setter
-    def units_in(self, value):
-        """
-
-        :param value: input units of the filter
-        :type value: string
-
-        """
-        self._units_in_obj = get_unit_object(value)
-
-    @property
-    def units_out(self):
-        """
-
-        :return: Output units of the filter
-        :rtype: string
-
-        """
-        return self._units_out_obj.abbreviation
-
-    @units_out.setter
-    def units_out(self, value):
-        """
-
-        :param value: output units of the filter
-        :type value: string
-
-        """
-        self._units_out_obj = get_unit_object(value)
 
     def get_filter_description(self):
         """
@@ -237,7 +255,7 @@ class FilterBase(Base):
 
         """
 
-        if self.comments is None:
+        if self.comments.value is None:
             return filter_descriptions[self.type]
 
         return self.comments
@@ -267,16 +285,16 @@ class FilterBase(Base):
 
         try:
             for obspy_label, mth5_label in mapping.items():
-                    kwargs[mth5_label] = getattr(stage, obspy_label)
+                kwargs[mth5_label] = getattr(stage, obspy_label)
         except AttributeError:
             msg = f"Expected a Stage and got a {type(stage)}"
-            cls().logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
         return cls(**kwargs)
 
     def complex_response(self, frqs):
-        msg = f"complex_response not defined for {self._class_name} class"
-        self.logger.info(msg)
+        msg = f"complex_response not defined for {self.__class__.__name__} class"
+        logger.info(msg)
         return None
 
     def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
@@ -308,6 +326,11 @@ class FilterBase(Base):
 
         f = frequencies
         cr = self.complex_response(f, **kwargs)
+        if cr is None:
+            logger.warning(
+                "complex response is None, cannot estimate pass band. Returning None"
+            )
+            return None
         amp = np.abs(cr)
         # precision is apparently an important variable here
         if np.round(amp, 6).all() == np.round(amp.mean(), 6):
@@ -315,22 +338,16 @@ class FilterBase(Base):
 
         f_true = np.zeros_like(frequencies)
         for ii in range(0, f.size - window_len, 1):
-            cr_window = np.array(
-                amp[ii : ii + window_len]
-            )  # / self.amplitudes.max()
-            test = abs(
-                1 - np.log10(cr_window.min()) / np.log10(cr_window.max())
-            )
+            cr_window = np.array(amp[ii : ii + window_len])  # / self.amplitudes.max()
+            test = abs(1 - np.log10(cr_window.min()) / np.log10(cr_window.max()))
 
             if test <= tol:
                 f_true[(f >= f[ii]) & (f <= f[ii + window_len])] = 1
 
-        pb_zones = np.reshape(
-            np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2)
-        )
+        pb_zones = np.reshape(np.diff(np.r_[0, f_true, 0]).nonzero()[0], (-1, 2))
 
         if pb_zones.shape[0] > 1:
-            self.logger.debug(
+            logger.debug(
                 f"Found {pb_zones.shape[0]} possible pass bands, using the longest. "
                 "Use the estimated pass band with caution."
             )
@@ -340,7 +357,7 @@ class FilterBase(Base):
             if pb_zones[longest, 1] >= f.size:
                 pb_zones[longest, 1] = f.size - 1
         except ValueError:
-            self.logger.warning(
+            logger.warning(
                 "No pass band could be found within the given frequency range. Returning None"
             )
             return None

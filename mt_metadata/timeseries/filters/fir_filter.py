@@ -1,3 +1,13 @@
+# =====================================================
+# Imports
+# =====================================================
+from loguru import logger
+from typing import Annotated
+
+from pydantic import Field, computed_field, field_validator, ValidationInfo, PrivateAttr
+
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -9,33 +19,120 @@ except ImportError:
     FIRResponseStage = None
 import scipy.signal as signal
 
-from mt_metadata.base import get_schema
-from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
-from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
+from mt_metadata.common import SymmetryEnum
 
-# =============================================================================
-attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("fir_filter", SCHEMA_FN_PATHS))
-# =============================================================================
 
+# =====================================================
 
 
 class FIRFilter(FilterBase):
-    """
-    Note: Regarding the symmetery property the json standard indicates that
-    we expect the values "NONE", "ODD", "EVEN".  These are obspy standards.
-    StationXML gives options: "A", "B", "C".  A:NONE, B:ODD, C:EVEN
-    """
+    _filter_type: str = PrivateAttr("fir")
+    type: Annotated[
+        str,
+        Field(
+            default="fir",
+            description="Type of filter.  Must be 'fir'",
+            examples="fir",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+    coefficients: Annotated[
+        np.ndarray | list[float],
+        Field(
+            default_factory=lambda: np.empty(0),
+            items={"type": "number"},
+            description="The FIR coefficients associated with the filter stage response.",
+            examples='"[0.25, 0.5, 0.25]"',
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__()
+    decimation_factor: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Downsample factor.",
+            examples="16",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
-        self.type = "fir"
-        if not self.decimation_factor:
-            self.decimation_factor = 1.0
+    decimation_input_sample_rate: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Sample rate of FIR taps.",
+            examples="2000",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
+    @computed_field
+    @property
+    def output_sampling_rate(self) -> float:
+        return self.decimation_input_sample_rate / self.decimation_factor
+
+    gain_frequency: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="Frequency of the reference gain, usually in passband.",
+            examples="0.0",
+            alias=None,
+            json_schema_extra={
+                "units": "hertz",
+                "required": True,
+            },
+        ),
+    ]
+
+    symmetry: Annotated[
+        SymmetryEnum,
+        Field(
+            default="NONE",
+            description="Symmetry of FIR coefficients",
+            examples="NONE",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @field_validator("coefficients")
+    @classmethod
+    def validate_coefficients(
+        cls, value: list[float], info: ValidationInfo
+    ) -> list[float]:
+        """
+        Validate the coefficients to ensure they are a list of floats.
+        :param value: The value to validate.
+        :param info: Validation information.
+        :return: The validated value.
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            return np.array(value, dtype=float)
+        elif isinstance(value, str):
+            return np.array(value.split(","), dtype=float)
+        else:
+            raise ValueError("Coefficients must be a list, tuple, or string.")
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
@@ -45,33 +142,6 @@ class FIRFilter(FilterBase):
         mapping["decimation_input_sample_rate"] = "decimation_input_sample_rate"
         mapping["stage_gain_frequency"] = "gain_frequency"
         return mapping
-
-    @property
-    def output_sampling_rate(self):
-        return self.decimation_input_sample_rate / self.decimation_factor
-
-    @property
-    def coefficients(self):
-        return self._coefficients
-
-    @coefficients.setter
-    def coefficients(self, value):
-        """
-        Set the coefficients, make sure the input is validated
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        if isinstance(value, (list, tuple, np.ndarray)):
-            self._coefficients = np.array(value, dtype=float)
-
-        elif isinstance(value, str):
-            self._coefficients = np.array(value.split(","), dtype=float)
-
-        else:
-            self._coefficients = np.empty(0)
 
     @property
     def symmetry_corrected_coefficients(self):
@@ -103,7 +173,7 @@ class FIRFilter(FilterBase):
 
     @property
     def n_coefficients(self):
-        return len(self._coefficients)
+        return len(self.coefficients)
 
     @property
     def corrective_scalar(self):
@@ -130,9 +200,14 @@ class FIRFilter(FilterBase):
         plt.axis("tight")
         plt.show()
 
+        return fig
+
     @requires(obspy=FIRResponseStage)
     def to_obspy(
-        self, stage_number=1, normalization_frequency=1, sample_rate=1,
+        self,
+        stage_number=1,
+        normalization_frequency=1,
+        sample_rate=1,
     ):
         """
         create an obspy stage

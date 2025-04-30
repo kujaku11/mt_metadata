@@ -1,4 +1,4 @@
-from .filter_base_basemodel import FilterBase
+from .filter_base import FilterBase, get_base_obspy_mapping
 from .coefficient_filter import CoefficientFilter
 from .fir_filter import FIRFilter
 from .pole_zero_filter import PoleZeroFilter
@@ -8,6 +8,7 @@ from .channel_response import ChannelResponse
 
 
 __all__ = [
+    "get_base_obspy_mapping",
     "FilterBase",
     "CoefficientFilter",
     "FIRFilter",

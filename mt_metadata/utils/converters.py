@@ -563,3 +563,93 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
     logger.info(f"Saved to {new_filename}")
     return new_filename
+
+
+def clean_and_format_code(code_str, filename=None):
+    """
+    Clean and format Python code by removing unused imports and formatting with isort and black.
+
+    Parameters
+    ----------
+    code_str : str
+        Python code as a string
+    filename : str, optional
+        Filename for error reporting, by default None
+
+    Returns
+    -------
+    str
+        Cleaned and formatted code
+    """
+    # First, remove unused imports using autoflake
+    try:
+        import autoflake
+
+        code_str = autoflake.fix_code(
+            code_str,
+            remove_all_unused_imports=True,
+            remove_unused_variables=False,
+            expand_star_imports=True,
+        )
+    except ImportError:
+        logger.warning(
+            "autoflake is not installed. Unused imports will not be removed. "
+            "Install with 'pip install autoflake'."
+        )
+    except Exception as error:
+        if filename:
+            logger.warning(f"{filename} Error removing unused imports: {error}")
+        else:
+            logger.warning(f"Error removing unused imports: {error}")
+
+    # Then format using isort
+    try:
+        import_config = {
+            "force_single_line": False,  # One import per line
+            "force_alphabetical_sort_within_sections": True,  # Sort alphabetically within sections
+            "order_by_type": True,  # Order by import type
+            "sections": ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"],
+            "lines_after_imports": 2,  # Add 2 blank lines after imports
+        }
+
+        code_str = isort.code(code_str, **import_config)
+    except Exception as error:
+        if filename:
+            logger.warning(f"{filename} Error formatting code using isort: {error}")
+        else:
+            logger.warning(f"Error formatting code using isort: {error}")
+
+    # Finally format using black
+    try:
+        code_str = black.format_str(code_str, mode=black.FileMode())
+    except Exception as error:
+        if filename:
+            logger.warning(f"{filename} Error formatting code using black: {error}")
+        else:
+            logger.warning(f"Error formatting code using black: {error}")
+
+    return code_str
+
+
+def reformat(filename: str | Path) -> None:
+    """
+    Reformat a Python file by removing unused imports and formatting with isort and black.
+
+    Parameters
+    ----------
+    filename : str | Path
+        Path to the Python file to be reformatted
+    """
+    filename = Path(filename)
+    if not filename.exists():
+        raise FileNotFoundError(f"{filename} does not exist.")
+
+    with open(filename, "r") as f:
+        code_str = f.read()
+
+    # Clean and format the code
+    formatted_code = clean_and_format_code(code_str, filename)
+
+    # Write the formatted code back to the file
+    with open(filename, "w") as f:
+        f.write(formatted_code)
