@@ -787,7 +787,7 @@ def requires(**requirements):
     return decorated_function
 
 
-def object_to_array(value):
+def object_to_array(value, dtype=float):
     """
     Convert a value to a numpy array.
 
@@ -803,13 +803,13 @@ def object_to_array(value):
 
     """
     if isinstance(value, (list, tuple)):
-        return np.array(value, dtype=float)
+        return np.array(value, dtype=dtype)
     elif isinstance(value, np.ndarray):
-        return value.astype(float)
+        return value.astype(dtype)
     elif isinstance(value, str):
         # Handle string input (e.g., from JSON)
         try:
-            value = np.fromstring(value, sep=",", dtype=float)
+            value = np.fromstring(value, sep=",", dtype=dtype)
             if len(value) == 0:
                 logger.warning(
                     "String input is empty or cannot parse properly, returning an empty array."
@@ -822,18 +822,16 @@ def object_to_array(value):
             raise TypeError(msg)
     elif isinstance(value, (int, float)):
         # Handle single numeric input
-        return np.array([float(value)])
+        return np.array([float(value)], dtype=dtype)
     elif isinstance(value, bytes):
         # Handle bytes input (e.g., from binary files)
         try:
-            return np.frombuffer(value, dtype=float)
+            return np.frombuffer(value, dtype=dtype)
         except ValueError:
             msg = (
                 f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
             )
             raise TypeError(msg)
-    elif isinstance(value, np.ndarray):
-        return value
     else:
         msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
         raise TypeError(msg)
