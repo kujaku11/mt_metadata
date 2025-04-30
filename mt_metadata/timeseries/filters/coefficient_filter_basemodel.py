@@ -2,8 +2,10 @@
 # Imports
 # =====================================================
 from typing import Annotated
+from typing_extensions import Self
 import numpy as np
-from pydantic import Field
+from pydantic import Field, field_validator, ValidationInfo
+from loguru import logger
 
 from mt_metadata.timeseries.filters.filter_base_basemodel import FilterBase
 
@@ -17,6 +19,19 @@ from mt_metadata.base.helpers import requires
 
 # =====================================================
 class CoefficientFilter(FilterBase):
+    type: Annotated[
+        str,
+        Field(
+            default="coefficient",
+            description="Type of filter.  Must be 'coeeficent'",
+            examples="coefficient",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
     gain: Annotated[
         float,
         Field(
@@ -31,6 +46,18 @@ class CoefficientFilter(FilterBase):
             },
         ),
     ]
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type of filter is set to "fap"
+        """
+        if value != "coefficient":
+            logger.warning(
+                f"Filter type is set to {value}, but should be 'fap' for FrequencyResponseTableFilter."
+            )
+        return "coefficient"
 
     @requires(obspy=inventory)
     def to_obspy(
@@ -76,8 +103,8 @@ class CoefficientFilter(FilterBase):
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in,
-            self.units_out,
+            self.units_in_object.symbol,
+            self.units_out_object.symbol,
             cf_type,
             name=self.name,
             decimation_input_sample_rate=sample_rate,
@@ -88,8 +115,8 @@ class CoefficientFilter(FilterBase):
             numerator=[1],
             denominator=[],
             description=self.get_filter_description(),
-            input_units_description=self._units_in_obj.name,
-            output_units_description=self._units_out_obj.name,
+            input_units_description=self.units_in_object.name,
+            output_units_description=self.units_out_object.name,
         )
 
         return stage

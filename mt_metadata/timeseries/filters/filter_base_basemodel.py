@@ -10,7 +10,7 @@ from pydantic import Field, ValidationInfo, field_validator, computed_field, Pri
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment, FilterTypeEnum
-from mt_metadata.utils.units import get_unit_object
+from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.base.helpers import filter_descriptions
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
@@ -180,6 +180,14 @@ class FilterBase(MetadataBase):
         except KeyError as error:
             raise KeyError(error)
 
+    @property
+    def units_in_object(self) -> Unit:
+        return get_unit_object(self.units_in, allow_none=False)
+
+    @property
+    def units_out_object(self) -> Unit:
+        return get_unit_object(self.units_out, allow_none=False)
+
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
         return mapping
@@ -229,7 +237,7 @@ class FilterBase(MetadataBase):
 
         """
 
-        if self.comments is None:
+        if self.comments.value is None:
             return filter_descriptions[self.type]
 
         return self.comments

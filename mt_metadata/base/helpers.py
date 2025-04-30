@@ -13,6 +13,7 @@ Created on Wed Dec 23 20:37:52 2020
 # =============================================================================
 import textwrap
 import logging
+from loguru import logger
 import json
 import numpy as np
 from typing import Dict, Any
@@ -784,3 +785,55 @@ def requires(**requirements):
             return passer
 
     return decorated_function
+
+
+def object_to_array(value):
+    """
+    Convert a value to a numpy array.
+
+    Parameters
+    ----------
+    value : any
+        The value to convert.
+
+    Returns
+    -------
+    np.ndarray
+        The converted numpy array.
+
+    """
+    if isinstance(value, (list, tuple)):
+        return np.array(value, dtype=float)
+    elif isinstance(value, np.ndarray):
+        return value.astype(float)
+    elif isinstance(value, str):
+        # Handle string input (e.g., from JSON)
+        try:
+            value = np.fromstring(value, sep=",", dtype=float)
+            if len(value) == 0:
+                logger.warning(
+                    "String input is empty or cannot parse properly, returning an empty array."
+                )
+            return value
+        except ValueError:
+            msg = (
+                f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
+            )
+            raise TypeError(msg)
+    elif isinstance(value, (int, float)):
+        # Handle single numeric input
+        return np.array([float(value)])
+    elif isinstance(value, bytes):
+        # Handle bytes input (e.g., from binary files)
+        try:
+            return np.frombuffer(value, dtype=float)
+        except ValueError:
+            msg = (
+                f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
+            )
+            raise TypeError(msg)
+    elif isinstance(value, np.ndarray):
+        return value
+    else:
+        msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+        raise TypeError(msg)

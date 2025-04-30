@@ -35,6 +35,9 @@ def test_default_coefficient_filter(default_coefficient_filter, subtests):
     with subtests.test("Default comments"):
         assert default_coefficient_filter.comments.value == None
 
+    with subtests.test("Default filter type"):
+        assert default_coefficient_filter.type == "coefficient"
+
 
 def test_custom_coefficient_filter(custom_coefficient_filter, subtests):
     """Test a custom CoefficientFilter object."""

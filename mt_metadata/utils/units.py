@@ -71,6 +71,11 @@ base_units = {
         "description": "Unit of luminous intensity",
         "unicode_symbol": "cd",
     },
+    "radian": {
+        "symbol": "rad",
+        "description": "Unit of angle",
+        "unicode_symbol": "rad",
+    },
 }
 
 # Define derived units

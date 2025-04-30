@@ -73,7 +73,7 @@ class GeomagneticModelEnum(StrEnumerationBase):
 
 
 class FilterTypeEnum(StrEnumerationBase):
-    fap_table = "fap_table"
+    fap_table = "fap"
     zpk = "zpk"
     time_delay = "time_delay"
     coefficient = "coefficient"
