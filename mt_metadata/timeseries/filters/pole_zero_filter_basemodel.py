@@ -19,6 +19,7 @@ from mt_metadata.base.helpers import requires, object_to_array
 
 # =====================================================
 class PoleZeroFilter(FilterBase):
+    _filter_type: str = "zpk"
     type: Annotated[
         str,
         Field(
@@ -73,18 +74,6 @@ class PoleZeroFilter(FilterBase):
             },
         ),
     ]
-
-    @field_validator("type", mode="before")
-    @classmethod
-    def validate_type(cls, value, info: ValidationInfo) -> str:
-        """
-        Validate that the type of filter is set to "zpk"
-        """
-        if value not in ["zpk"]:
-            logger.warning(
-                f"Filter type is set to {value}, but should be 'zpk' for FrequencyResponseTableFilter."
-            )
-        return "zpk"
 
     @field_validator("poles", "zeros", mode="before")
     @classmethod

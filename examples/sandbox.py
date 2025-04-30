@@ -28,3 +28,8 @@ r = Run()
 # existing_channels.remove("ex")
 # r.channels = existing_channels
 # print(r.channels.keys())
+
+from mt_metadata.timeseries.filters.fir_filter_basemodel import FirFilter
+
+f = FirFilter()
+f.type = "fap"

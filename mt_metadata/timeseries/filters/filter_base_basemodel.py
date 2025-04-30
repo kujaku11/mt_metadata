@@ -39,6 +39,7 @@ def get_base_obspy_mapping():
 
 class FilterBase(MetadataBase):
     _obspy_mapping: dict = PrivateAttr({})
+    _filter_type: str = PrivateAttr("base")
     name: Annotated[
         str,
         Field(
@@ -68,9 +69,9 @@ class FilterBase(MetadataBase):
     ]
 
     type: Annotated[
-        FilterTypeEnum,
+        str,
         Field(
-            default="",
+            default="base",
             description="Type of filter, must be one of the available filters.",
             examples="fap_table",
             alias=None,
@@ -151,6 +152,23 @@ class FilterBase(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type of filter is set to "fir"
+        """
+        # Get the expected filter type based on the actual class
+        # Make sure derived classes define their own _filter_type as class variable
+        expected_type = getattr(cls, "_filter_type", "base").default
+
+        if value != expected_type:
+            logger.warning(
+                f"Filter type is set to {value}, but should be "
+                f"{expected_type} for {cls.__name__}."
+            )
+        return expected_type
 
     @field_validator("units_in", "units_out", mode="before")
     @classmethod

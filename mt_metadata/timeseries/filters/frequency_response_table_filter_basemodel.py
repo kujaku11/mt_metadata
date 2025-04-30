@@ -27,6 +27,7 @@ except ImportError:
 
 
 class FrequencyResponseTableFilter(FilterBase):
+    _filter_type: str = "fap"
     type: Annotated[
         str,
         Field(
@@ -137,18 +138,6 @@ class FrequencyResponseTableFilter(FilterBase):
             else:
                 return value
         return value
-
-    @field_validator("type", mode="before")
-    @classmethod
-    def validate_type(cls, value, info: ValidationInfo) -> str:
-        """
-        Validate that the type of filter is set to "fap"
-        """
-        if value not in ["fap", "frequency amplitude table"]:
-            logger.warning(
-                f"Filter type is set to {value}, but should be 'fap' for FrequencyResponseTableFilter."
-            )
-        return "fap"
 
     @property
     def min_frequency(self):

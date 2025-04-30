@@ -36,6 +36,7 @@ filter_descriptions = {
     "fir": "finite impaulse response filter",
     "fap": "frequency amplitude phase lookup table",
     "frequency response table": "frequency amplitude phase lookup table",
+    "base": "base filter",
 }
 
 # =============================================================================

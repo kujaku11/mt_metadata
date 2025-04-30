@@ -4,7 +4,7 @@
 from loguru import logger
 from typing import Annotated
 
-from pydantic import Field, computed_field, field_validator, ValidationInfo
+from pydantic import Field, computed_field, field_validator, ValidationInfo, PrivateAttr
 
 from mt_metadata.timeseries.filters import FilterBase
 
@@ -26,6 +26,7 @@ from mt_metadata.common import SymmetryEnum
 
 
 class FirFilter(FilterBase):
+    _filter_type: str = PrivateAttr("fir")
     type: Annotated[
         str,
         Field(
@@ -132,18 +133,6 @@ class FirFilter(FilterBase):
             return np.array(value.split(","), dtype=float)
         else:
             raise ValueError("Coefficients must be a list, tuple, or string.")
-
-    @field_validator("type", mode="before")
-    @classmethod
-    def validate_type(cls, value, info: ValidationInfo) -> str:
-        """
-        Validate that the type of filter is set to "fap"
-        """
-        if value not in ["fir"]:
-            logger.warning(
-                f"Filter type is set to {value}, but should be 'fir' for FrequencyResponseTableFilter."
-            )
-        return "fir"
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()

@@ -46,6 +46,9 @@ def test_default_pole_zero_filter(pole_zero_filter_default):
     assert pole_zero_filter_default.normalization_factor == 1.0
     assert pole_zero_filter_default.units_in == "volt"
     assert pole_zero_filter_default.units_out == "nanotesla"
+    assert pole_zero_filter_default.name == "example_zpk_response"
+    assert pole_zero_filter_default.type == "zpk"
+    assert pole_zero_filter_default._filter_type == "zpk"
 
 
 def test_pole_zero_filter_with_data(pole_zero_filter_with_data):
@@ -55,6 +58,15 @@ def test_pole_zero_filter_with_data(pole_zero_filter_with_data):
     assert pole_zero_filter_with_data.normalization_factor == 2002.269
     assert pole_zero_filter_with_data.units_in == "volt"
     assert pole_zero_filter_with_data.units_out == "nanotesla"
+    assert pole_zero_filter_with_data.type == "zpk"
+    assert pole_zero_filter_with_data._filter_type == "zpk"
+
+
+def test_type(pole_zero_filter_with_data, subtests):
+    """Test the type property."""
+    with subtests.test(msg="string input"):
+        pole_zero_filter_with_data.type = "fir"
+        assert pole_zero_filter_with_data.type == "zpk"
 
 
 def test_gain(pole_zero_filter_with_data, subtests):
