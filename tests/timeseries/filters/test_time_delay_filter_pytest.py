@@ -33,6 +33,7 @@ def test_default_time_delay_filter(time_delay_filter_default):
     assert time_delay_filter_default.units_in == "volt"
     assert time_delay_filter_default.units_out == "volt"
     assert time_delay_filter_default.name == "time delay"
+    assert time_delay_filter_default.type == "time delay"
 
 
 def test_time_delay_filter_with_data(time_delay_filter_with_data):
@@ -41,6 +42,13 @@ def test_time_delay_filter_with_data(time_delay_filter_with_data):
     assert time_delay_filter_with_data.units_in == "volt"
     assert time_delay_filter_with_data.units_out == "volt"
     assert time_delay_filter_with_data.name == "time delay"
+    assert time_delay_filter_with_data.type == "time delay"
+
+
+def test_filter_type(time_delay_filter_with_data):
+    """Test the filter type."""
+    time_delay_filter_default.type = "fir"
+    assert time_delay_filter_with_data.type == "time delay"
 
 
 def test_delay_property(time_delay_filter_with_data, subtests):

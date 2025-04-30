@@ -168,6 +168,15 @@ def fap_filter():
     return fap
 
 
+def test_type(fap_filter, subtests):
+    with subtests.test("test type"):
+        assert fap_filter.type == "fap"
+
+    with subtests.test("test type bad set to 'fir'"):
+        fap_filter.type = "fir"
+        assert fap_filter.type == "fap"
+
+
 def test_gain(fap_filter, subtests):
     with subtests.test(msg="string input"):
         fap_filter.gain = ".25"

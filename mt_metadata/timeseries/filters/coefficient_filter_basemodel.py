@@ -4,7 +4,7 @@
 from typing import Annotated
 from typing_extensions import Self
 import numpy as np
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import Field, PrivateAttr
 from loguru import logger
 
 from mt_metadata.timeseries.filters.filter_base_basemodel import FilterBase
@@ -19,7 +19,7 @@ from mt_metadata.base.helpers import requires
 
 # =====================================================
 class CoefficientFilter(FilterBase):
-    _filter_type: str = "coefficient"
+    _filter_type: str = PrivateAttr("coefficient")
     type: Annotated[
         str,
         Field(

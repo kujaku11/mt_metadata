@@ -12,19 +12,20 @@ try:
 except ImportError:
     inventory = None
 
-from pydantic import Field, computed_field, field_validator, ValidationInfo
+from pydantic import Field, field_validator, ValidationInfo, PrivateAttr
 
 from mt_metadata.timeseries.filters import FilterBase
 
 
 # =====================================================
 class TimeDelayFilter(FilterBase):
+    _filter_type: str = PrivateAttr("time delay")
     type: Annotated[
         str,
         Field(
-            default="fir",
+            default="time delay",
             description="Type of filter.  Must be 'fir'",
-            examples="fir",
+            examples="time delay",
             alias=None,
             json_schema_extra={
                 "units": None,

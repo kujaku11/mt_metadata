@@ -217,3 +217,4 @@ History
 * There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation`
 * moved `def get_base_obspy_mapping` to `timeseries.filters.helper_functions`
 * Units have been updated to be more compliant with SI standards.  All unit names must be singular for example volts must be `volt`. Unit validation returns the long name in lowercase. "mV/km" will be returned as "millivolt per kilometer".  There is also a `Unit` object in `mt_metadata.utils.units` that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
+* Filters type can only be a set value for the filter.  For example for an `FIRFilter` the type must be `FIR`.  The filter type is now a property of the filter object.  The filter type is not a property of the filter class.  This allows for more flexibility in the future.
