@@ -214,19 +214,29 @@ class FIRFilter(FilterBase):
         :rtype: TYPE
 
         """
-
+        # self, stage_sequence_number, stage_gain,
+        # stage_gain_frequency, input_units, output_units,
+        # symmetry="NONE", resource_id=None, resource_id2=None,
+        # name=None,
+        # coefficients=None, input_units_description=None,
+        # output_units_description=None, description=None,
+        # decimation_input_sample_rate=None, decimation_factor=None,
+        # decimation_offset=None, decimation_delay=None,
+        # decimation_correction=None
         rs = FIRResponseStage(
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in,
-            self.units_out,
-            normalization_frequency,
-            self.coefficients,
+            self.units_in_object.symbol,
+            self.units_out_object.symbol,
+            coefficients=self.coefficients.tolist(),
+            symmetry=self.symmetry,
             name=self.name,
             description=self.get_filter_description(),
-            input_units_description=self._units_in_obj.name,
-            output_units_description=self._units_out_obj.name,
+            input_units_description=self.units_in_object.name,
+            output_units_description=self.units_out_object.name,
+            decimation_input_sample_rate=self.decimation_input_sample_rate,
+            decimation_factor=self.decimation_factor,
         )
 
         return rs

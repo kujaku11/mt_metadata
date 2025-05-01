@@ -81,7 +81,7 @@ class FilterTypeEnum(StrEnumerationBase):
     other = "other"
 
 
-class SymmetryEnum(str, Enum):
+class SymmetryEnum(StrEnumerationBase):
     NONE = "NONE"
     ODD = "ODD"
     EVEN = "EVEN"

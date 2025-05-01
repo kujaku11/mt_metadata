@@ -83,6 +83,13 @@ class PoleZeroFilter(FilterBase):
         """
         return object_to_array(value, dtype=complex)
 
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        mapping["_zeros"] = "zeros"
+        mapping["_poles"] = "poles"
+        mapping["normalization_factor"] = "normalization_factor"
+        return mapping
+
     @property
     def n_poles(self):
         """
@@ -101,13 +108,6 @@ class PoleZeroFilter(FilterBase):
 
         """
         return len(self.zeros)
-
-    def make_obspy_mapping(self):
-        mapping = get_base_obspy_mapping()
-        mapping["_zeros"] = "zeros"
-        mapping["_poles"] = "poles"
-        mapping["normalization_factor"] = "normalization_factor"
-        return mapping
 
     def zero_pole_gain_representation(self):
         """

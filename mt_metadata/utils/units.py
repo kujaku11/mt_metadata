@@ -361,7 +361,10 @@ def get_unit_object(unit: str, allow_none=True) -> Unit:
     KeyError
         If the unit is not found in the DataFrame.
     """
-
+    # digital counts is a special case, as it is not in the UNITS_DF DataFrame
+    # but is used in the metadata. It is a placeholder for the unit of digital counts
+    if unit in ["digital counts"]:
+        return get_unit_from_df("digital counts", allow_none=allow_none)
     units_parts = parse_unit_string(unit)
     if len(units_parts) == 1:
         return get_unit_from_df(units_parts[0]["name"], allow_none=allow_none)

@@ -285,7 +285,10 @@ class FilterBase(MetadataBase):
 
         try:
             for obspy_label, mth5_label in mapping.items():
-                kwargs[mth5_label] = getattr(stage, obspy_label)
+                if mth5_label == "comments":
+                    kwargs[mth5_label] = Comment(value=getattr(stage, obspy_label))
+                else:
+                    kwargs[mth5_label] = getattr(stage, obspy_label)
         except AttributeError:
             msg = f"Expected a Stage and got a {type(stage)}"
             logger.error(msg)
