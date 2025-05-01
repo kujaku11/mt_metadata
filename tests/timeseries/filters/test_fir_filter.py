@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from mt_metadata.timeseries.filters.fir_filter_basemodel import FirFilter
+from mt_metadata.timeseries.filters import FirFilter
 from mt_metadata.common import SymmetryEnum
 
 

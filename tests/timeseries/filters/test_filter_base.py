@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-from mt_metadata.timeseries.filters.filter_base_basemodel import FilterBase
+from mt_metadata.timeseries.filters import FilterBase
 from mt_metadata.common import Comment, FilterTypeEnum
 from mt_metadata.utils.mttime import MTime
 from pydantic import ValidationError

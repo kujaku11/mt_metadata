@@ -8,19 +8,23 @@ Created on Wed Dec 23 21:30:36 2020
 :license: MIT
 
 """
+from typing import Optional, Union
+
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
 
+from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS
 from mt_metadata.utils.exceptions import MTSchemaError
-from typing import Optional, Union
+
 
 # =============================================================================
 attr_dict = get_schema("filtered", SCHEMA_FN_PATHS)
+
+
 # =============================================================================
 class Filtered(Base):
     """
@@ -71,9 +75,11 @@ class Filtered(Base):
 
         check = self._check_consistency()
         if not check:
-            msg = (f"Filter names and applied lists are not the same size. "
-                   f"Be sure to check the inputs. "
-                   f"names = {self._name}, applied = {self._applied}")
+            msg = (
+                f"Filter names and applied lists are not the same size. "
+                f"Be sure to check the inputs. "
+                f"names = {self._name}, applied = {self._applied}"
+            )
             self.logger.warning(msg)
 
     @property
@@ -103,14 +109,16 @@ class Filtered(Base):
         """
         # Handle cases where we did not pass an iterable
         if not hasattr(applied, "__iter__"):
-            self._applied = [self._applied_values_map[applied], ]
+            self._applied = [
+                self._applied_values_map[applied],
+            ]
             return
 
         # the returned type from a hdf5 dataset is a numpy array.
         if isinstance(applied, np.ndarray):
             applied = applied.tolist()
 
-        #sets an empty list to one default value
+        # sets an empty list to one default value
         if isinstance(applied, list) and len(applied) == 0:
             self._applied = [True]
             return
@@ -119,16 +127,16 @@ class Filtered(Base):
         if isinstance(applied, str):
             # Handle simple strings
             if applied in self._applied_values_map.keys():
-                self._applied = [self._applied_values_map[applied], ]
+                self._applied = [
+                    self._applied_values_map[applied],
+                ]
                 return
 
             # Handle string-lists (e.g. from json)
             if applied.find("[") >= 0:
                 applied = applied.replace("[", "").replace("]", "")
             if applied.count(",") > 0:
-                applied_list = [
-                    ss.strip().lower() for ss in applied.split(",")
-                ]
+                applied_list = [ss.strip().lower() for ss in applied.split(",")]
             else:
                 applied_list = [ss.lower() for ss in applied.split()]
         elif isinstance(applied, list):
@@ -152,11 +160,12 @@ class Filtered(Base):
         # check for consistency
         check = self._check_consistency()
         if not check:
-            msg = (f"Filter names and applied lists are not the same size. "
-                   f"Be sure to check the inputs. "
-                   f"names = {self._name}, applied = {self._applied}")
+            msg = (
+                f"Filter names and applied lists are not the same size. "
+                f"Be sure to check the inputs. "
+                f"names = {self._name}, applied = {self._applied}"
+            )
             self.logger.warning(msg)
-
 
     def _check_consistency(self) -> bool:
         """
@@ -168,12 +177,14 @@ class Filtered(Base):
         The filter has no name -- this could happen on intialization.
 
         :return: bool
-	    True if OK, False if not.
+            True if OK, False if not.
 
         """
         # This inconsistency is ok -- the filter may not have been assigned a name yet
         if self._name == [] and len(self._applied) > 0:
-            self.logger.debug("Name probably not yet initialized -- skipping consitency check")
+            self.logger.debug(
+                "Name probably not yet initialized -- skipping consitency check"
+            )
             return True
 
         # Otherwise self._name != []
@@ -195,7 +206,9 @@ class Filtered(Base):
             if len(self._applied) == 1:
                 msg = f"Assuming all filters have been applied as {self._applied[0]}"
                 self.logger.debug(msg)
-                self._applied = len(self.name) * [self._applied[0],]
+                self._applied = len(self.name) * [
+                    self._applied[0],
+                ]
                 msg = f"Explicitly set filter applied state to {self._applied[0]}"
                 self.logger.debug(msg)
                 return True
@@ -215,9 +228,7 @@ class Filtered(Base):
             return False
 
 
-def _applied_values_map(
-    treat_null_values_as: Optional[bool] = True
-) -> dict:
+def _applied_values_map(treat_null_values_as: Optional[bool] = True) -> dict:
     """
     helper function to simplify logic in applied setter.
 
@@ -232,8 +243,8 @@ def _applied_values_map(
     null_values = [None, "none", "None", "NONE", "null"]
     null_values_map = {x: treat_null_values_as for x in null_values}
     true_values = [True, 1, "1", "True", "true"]
-    true_values_map =  {x:True for x in true_values}
+    true_values_map = {x: True for x in true_values}
     false_values = [False, 0, "0", "False", "false"]
-    false_values_map =  {x:False for x in false_values}
+    false_values_map = {x: False for x in false_values}
     values_map = {**null_values_map, **true_values_map, **false_values_map}
     return values_map

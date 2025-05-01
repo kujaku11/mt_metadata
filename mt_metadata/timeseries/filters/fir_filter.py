@@ -1,17 +1,15 @@
 # =====================================================
 # Imports
 # =====================================================
-from loguru import logger
 from typing import Annotated
-
-from pydantic import Field, computed_field, field_validator, ValidationInfo, PrivateAttr
-
-from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
 import matplotlib.pyplot as plt
 import numpy as np
+from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
+
 
 try:
     from obspy.core.inventory.response import FIRResponseStage

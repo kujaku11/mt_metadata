@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from mt_metadata.timeseries.filters.pole_zero_filter_basemodel import PoleZeroFilter
+from mt_metadata.timeseries.filters import PoleZeroFilter
 from pydantic import ValidationError
 
 try:
@@ -171,3 +171,92 @@ def test_to_obspy_stage(pole_zero_filter_with_data, subtests):
 
     with subtests.test("test name"):
         assert stage.name == pole_zero_filter_with_data.name
+
+
+@pytest.mark.skipif(PolesZerosResponseStage is None, reason="obspy is not installed.")
+def test_from_obspy_stage(pole_zero_filter_with_data, subtests):
+    """Test the from_obspy_stage method."""
+    # First, create an obspy stage from our filter
+    obspy_stage = pole_zero_filter_with_data.to_obspy(
+        2, sample_rate=10, normalization_frequency=1
+    )
+
+    # Then create a new filter from the obspy stage
+    new_filter = PoleZeroFilter.from_obspy_stage(obspy_stage)
+
+    with subtests.test("test poles"):
+        assert np.allclose(new_filter.poles, pole_zero_filter_with_data.poles)
+
+    with subtests.test("test zeros"):
+        assert np.allclose(new_filter.zeros, pole_zero_filter_with_data.zeros)
+
+    with subtests.test("test normalization factor"):
+        assert (
+            pytest.approx(new_filter.normalization_factor)
+            == pole_zero_filter_with_data.normalization_factor
+        )
+
+    with subtests.test("test units"):
+        assert new_filter.units_in == pole_zero_filter_with_data.units_in
+        assert new_filter.units_out == pole_zero_filter_with_data.units_out
+
+    with subtests.test("test name"):
+        assert new_filter.name == pole_zero_filter_with_data.name
+
+    with subtests.test("test type"):
+        assert new_filter.type == "zpk"
+
+
+@pytest.mark.skipif(PolesZerosResponseStage is None, reason="obspy is not installed.")
+def test_from_obspy_stage_with_different_params(subtests):
+    """Test from_obspy_stage with explicitly constructed obspy stage."""
+    # Create an obspy stage with custom parameters
+    custom_stage = PolesZerosResponseStage(
+        stage_sequence_number=1,
+        stage_gain=5.5,
+        stage_gain_frequency=0.1,
+        input_units="V",
+        input_units_description="volts",
+        output_units="counts",
+        output_units_description="digital counts",
+        pz_transfer_function_type="LAPLACE (RADIANS/SECOND)",
+        normalization_frequency=0.5,
+        normalization_factor=2.5,
+        zeros=[(0 + 0j), (10 + 5j), (10 - 5j)],
+        poles=[(-1 + 1j), (-1 - 1j), (-5 + 0j)],
+        description="Custom PZ Filter",
+        name="Custom Filter Name",
+        resource_id=None,
+        resource_id2=None,
+    )
+
+    # Create filter from stage
+    filter_from_stage = PoleZeroFilter.from_obspy_stage(custom_stage)
+
+    # Verify the filter properties using subtests
+    with subtests.test("test type"):
+        assert filter_from_stage.type == "zpk"
+
+    with subtests.test("test name"):
+        assert filter_from_stage.name == "Custom Filter Name"
+
+    with subtests.test("test gain"):
+        assert filter_from_stage.gain == 5.5
+
+    with subtests.test("test poles"):
+        assert np.allclose(filter_from_stage.poles, [(-1 + 1j), (-1 - 1j), (-5 + 0j)])
+
+    with subtests.test("test zeros"):
+        assert np.allclose(filter_from_stage.zeros, [(0 + 0j), (10 + 5j), (10 - 5j)])
+
+    with subtests.test("test normalization factor"):
+        assert filter_from_stage.normalization_factor == 2.5
+
+    with subtests.test("test normalization frequency"):
+        assert filter_from_stage.normalization_frequency() != 0.5
+
+    with subtests.test("test units in"):
+        assert filter_from_stage.units_in == "volt"
+
+    with subtests.test("test units out"):
+        assert filter_from_stage.units_out == "digital counts"

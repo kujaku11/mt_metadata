@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from mt_metadata.timeseries.filters.time_delay_filter_basemodel import TimeDelayFilter
+from mt_metadata.timeseries.filters import TimeDelayFilter
 from pydantic import ValidationError
 
 try:

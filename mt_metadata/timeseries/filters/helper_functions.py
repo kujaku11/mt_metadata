@@ -1,4 +1,5 @@
 from loguru import logger
+
 from mt_metadata.timeseries.filters.coefficient_filter_basemodel import (
     CoefficientFilter,
 )

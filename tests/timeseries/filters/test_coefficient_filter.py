@@ -1,8 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from mt_metadata.timeseries.filters.coefficient_filter_basemodel import (
-    CoefficientFilter,
-)
+from mt_metadata.timeseries.filters import CoefficientFilter
 import numpy as np
 from mt_metadata.timeseries.filters.helper_functions import MT2SI_MAGNETIC_FIELD_FILTER
 from mt_metadata.utils.exceptions import MTSchemaError

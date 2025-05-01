@@ -1,31 +1,32 @@
 # =====================================================
 # Imports
 # =====================================================
+from copy import deepcopy
 from typing import Annotated
 
-from pydantic import (
-    Field,
-    field_validator,
-    ValidationInfo,
-    PrivateAttr,
-    computed_field,
-    model_validator,
-)
 import numpy as np
 from loguru import logger
-from copy import deepcopy
+from pydantic import (
+    computed_field,
+    Field,
+    field_validator,
+    model_validator,
+    PrivateAttr,
+    ValidationInfo,
+)
 
+from mt_metadata.base.helpers import object_to_array, requires
 from mt_metadata.timeseries.filters import (
-    FilterBase,
-    PoleZeroFilter,
     CoefficientFilter,
-    TimeDelayFilter,
-    FrequencyResponseTableFilter,
+    FilterBase,
     FIRFilter,
+    FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
 )
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from mt_metadata.base.helpers import requires, object_to_array
 from mt_metadata.utils.units import get_unit_object
+
 
 try:
     from obspy.core import inventory

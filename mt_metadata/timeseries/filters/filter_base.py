@@ -6,14 +6,14 @@ from typing import Annotated
 import numpy as np
 import pandas as pd
 from loguru import logger
-from pydantic import Field, ValidationInfo, field_validator, computed_field, PrivateAttr
+from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment, FilterTypeEnum
-from mt_metadata.utils.units import get_unit_object, Unit
-from mt_metadata.utils.mttime import MTime
 from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.common import Comment
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
+from mt_metadata.utils.mttime import MTime
+from mt_metadata.utils.units import get_unit_object, Unit
 
 
 # =====================================================
@@ -297,7 +297,9 @@ class FilterBase(MetadataBase):
         logger.info(msg)
         return None
 
-    def pass_band(self, frequencies, window_len=5, tol=0.5, **kwargs):
+    def pass_band(
+        self, frequencies: np.ndarray, window_len: int = 5, tol: float = 0.5, **kwargs
+    ) -> np.ndarray:
         """
 
         Caveat: This should work for most Fluxgate and feedback coil magnetometers, and basically most filters
@@ -324,7 +326,13 @@ class FilterBase(MetadataBase):
 
         """
 
-        f = frequencies
+        f = np.array(frequencies)
+        if f.size == 0:
+            logger.warning("Frequency array is empty, returning 1.0")
+            return None
+        elif f.size == 1:
+            logger.warning("Frequency array is too small, returning None")
+            return f
         cr = self.complex_response(f, **kwargs)
         if cr is None:
             logger.warning(
@@ -337,7 +345,7 @@ class FilterBase(MetadataBase):
             return np.array([f.min(), f.max()])
 
         f_true = np.zeros_like(frequencies)
-        for ii in range(0, f.size - window_len, 1):
+        for ii in range(0, int(f.size - window_len), 1):
             cr_window = np.array(amp[ii : ii + window_len])  # / self.amplitudes.max()
             test = abs(1 - np.log10(cr_window.min()) / np.log10(cr_window.max()))
 

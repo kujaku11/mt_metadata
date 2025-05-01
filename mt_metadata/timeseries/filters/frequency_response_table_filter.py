@@ -2,20 +2,20 @@
 # Imports
 # =====================================================
 from typing import Annotated
-from loguru import logger
 
 import numpy as np
+from loguru import logger
+from pydantic import Field, field_validator, ValidationInfo
 from scipy.interpolate import interp1d
 
-from pydantic import Field, field_validator, ValidationInfo
-
+from mt_metadata.base.helpers import object_to_array, requires
 from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
-from mt_metadata.base.helpers import requires, object_to_array
+
 
 try:
     from obspy.core.inventory.response import (
-        ResponseListResponseStage,
         ResponseListElement,
+        ResponseListResponseStage,
     )
 except ImportError:
     ResponseListResponseStage = ResponseListElement = None

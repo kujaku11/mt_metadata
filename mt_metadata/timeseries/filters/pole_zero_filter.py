@@ -1,11 +1,11 @@
 # =====================================================
 # Imports
 # =====================================================
-from loguru import logger
 from typing import Annotated
 
-from pydantic import Field, computed_field, field_validator, ValidationInfo
 import numpy as np
+from pydantic import Field, field_validator, ValidationInfo
+
 
 try:
     import obspy
@@ -13,8 +13,8 @@ except ImportError:
     obspy = None
 import scipy.signal as signal
 
-from mt_metadata.timeseries.filters import FilterBase
-from mt_metadata.base.helpers import requires, object_to_array
+from mt_metadata.base.helpers import object_to_array, requires
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
 
 # =====================================================
@@ -102,6 +102,13 @@ class PoleZeroFilter(FilterBase):
         """
         return len(self.zeros)
 
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        mapping["_zeros"] = "zeros"
+        mapping["_poles"] = "poles"
+        mapping["normalization_factor"] = "normalization_factor"
+        return mapping
+
     def zero_pole_gain_representation(self):
         """
 
@@ -186,7 +193,13 @@ class PoleZeroFilter(FilterBase):
 
         return h
 
-    def normalization_frequency(self, estimate="mean", window_len=5, tol=1e-4):
+    def normalization_frequency(
+        self,
+        frequencies: np.ndarray = np.logspace(-4, 4, 32),
+        estimate: str = "mean",
+        window_len: int = 5,
+        tol: float = 1e-4,
+    ) -> float:
         """
         Try to estimate the normalization frequency in the pass band
         by finding the flattest spot in the amplitude.
@@ -208,9 +221,10 @@ class PoleZeroFilter(FilterBase):
         :rtype: float
 
         """
-        pass_band = self.pass_band(window_len, tol)
-
-        if len(pass_band) == 0:
+        pass_band = self.pass_band(frequencies, window_len, tol)
+        if pass_band is None:
+            return np.NAN
+        if pass_band.size == 0:
             return np.NAN
 
         if estimate == "mean":

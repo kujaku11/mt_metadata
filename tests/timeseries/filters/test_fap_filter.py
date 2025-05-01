@@ -2,9 +2,7 @@ import pathlib
 import numpy as np
 import pytest
 from pydantic import ValidationError
-from mt_metadata.timeseries.filters.frequency_response_table_filter_basemodel import (
-    FrequencyResponseTableFilter,
-)
+from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.filters.helper_functions import (
     make_frequency_response_table_filter,
 )
