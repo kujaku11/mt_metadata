@@ -441,3 +441,192 @@ def test_to_obspy_stage_basic(fap_filter_basic, subtests):
     with subtests.test("Stage phases"):
         phases = np.array([r.phase for r in stage.response_list_elements])
         assert np.allclose(phases, fap_filter_basic.phases)
+
+
+@pytest.mark.skipif(ResponseListResponseStage is None, reason="obspy is not installed.")
+def test_from_obspy_stage(fap_filter_basic, subtests):
+    """Test the from_obspy_stage method with a filter to obspy conversion and back."""
+    # First, create an obspy stage from our filter
+    obspy_stage = fap_filter_basic.to_obspy(
+        stage_number=1, normalization_frequency=1.0, sample_rate=10.0
+    )
+
+    # Then create a new filter from the obspy stage
+    new_filter = FrequencyResponseTableFilter.from_obspy_stage(obspy_stage)
+
+    with subtests.test("test frequencies"):
+        assert np.allclose(new_filter.frequencies, fap_filter_basic.frequencies)
+
+    with subtests.test("test amplitudes"):
+        assert np.allclose(new_filter.amplitudes, fap_filter_basic.amplitudes)
+
+    with subtests.test("test phases"):
+        assert np.allclose(new_filter.phases, fap_filter_basic.phases)
+
+    with subtests.test("test gain"):
+        assert new_filter.gain == fap_filter_basic.gain
+
+    with subtests.test("test units in"):
+        assert new_filter.units_in == fap_filter_basic.units_in
+
+    with subtests.test("test units out"):
+        assert new_filter.units_out == fap_filter_basic.units_out
+
+    with subtests.test("test name"):
+        assert new_filter.name == fap_filter_basic.name
+
+    with subtests.test("test type"):
+        assert new_filter.type == "fap"
+
+
+@pytest.mark.skipif(ResponseListResponseStage is None, reason="obspy is not installed.")
+def test_from_obspy_stage_custom_parameters(subtests):
+    """Test from_obspy_stage with a manually created obspy stage."""
+    # Create response list elements
+    from obspy.core.inventory.response import ResponseListElement
+
+    response_elements = [
+        ResponseListElement(frequency=0.001, amplitude=0.001, phase=0.0),
+        ResponseListElement(frequency=0.01, amplitude=0.01, phase=np.pi / 4),
+        ResponseListElement(frequency=0.1, amplitude=0.1, phase=np.pi / 2),
+        ResponseListElement(frequency=1.0, amplitude=1.0, phase=3 * np.pi / 4),
+        ResponseListElement(frequency=10.0, amplitude=10.0, phase=np.pi),
+    ]
+
+    # Create a custom ResponseListResponseStage
+    custom_stage = ResponseListResponseStage(
+        stage_sequence_number=3,
+        stage_gain=2.5,
+        stage_gain_frequency=0.5,
+        input_units="V",
+        input_units_description="volts",
+        output_units="nT",
+        output_units_description="nanoteslas",
+        response_list_elements=response_elements,
+        name="Custom FAP Filter",
+        description="Test FAP filter from obspy stage",
+        resource_id=None,
+        resource_id2=None,
+        decimation_input_sample_rate=None,
+        decimation_factor=None,
+        decimation_offset=None,
+        decimation_delay=None,
+        decimation_correction=None,
+    )
+
+    # Create filter from stage
+    filter_from_stage = FrequencyResponseTableFilter.from_obspy_stage(custom_stage)
+
+    with subtests.test("test filter type"):
+        assert filter_from_stage.type == "fap"
+
+    with subtests.test("test name"):
+        assert filter_from_stage.name == "Custom FAP Filter"
+
+    with subtests.test("test frequencies"):
+        expected_frequencies = np.array([0.001, 0.01, 0.1, 1.0, 10.0])
+        assert np.allclose(filter_from_stage.frequencies, expected_frequencies)
+
+    with subtests.test("test amplitudes"):
+        expected_amplitudes = np.array([0.001, 0.01, 0.1, 1.0, 10.0])
+        assert np.allclose(filter_from_stage.amplitudes, expected_amplitudes)
+
+    with subtests.test("test phases"):
+        expected_phases = np.array([0.0, np.pi / 4, np.pi / 2, 3 * np.pi / 4, np.pi])
+        assert np.allclose(filter_from_stage.phases, expected_phases)
+
+    with subtests.test("test gain"):
+        assert filter_from_stage.gain == 2.5
+
+    with subtests.test("test units in"):
+        assert filter_from_stage.units_in == "volt"
+
+    with subtests.test("test units out"):
+        assert filter_from_stage.units_out == "nanotesla"
+
+    with subtests.test("test description"):
+        assert filter_from_stage.comments.value == "Test FAP filter from obspy stage"
+
+
+@pytest.mark.skipif(ResponseListResponseStage is None, reason="obspy is not installed.")
+def test_roundtrip_conversion(subtests):
+    """Test round-trip conversion from FrequencyResponseTableFilter to obspy and back."""
+    # Create original filter with specific values
+    original_filter = FrequencyResponseTableFilter(
+        frequencies=np.array([0.005, 0.05, 0.5, 5.0, 50.0]),
+        amplitudes=np.array([0.2, 0.4, 0.6, 0.8, 1.0]),
+        phases=np.deg2rad(np.array([-180, -90, 0, 90, 180])),
+        units_in="mV",
+        units_out="nT",
+        name="test roundtrip",
+        description="Test roundtrip conversion",
+        gain=3.5,
+    )
+
+    # Convert to obspy stage
+    obspy_stage = original_filter.to_obspy(
+        1, sample_rate=200, normalization_frequency=0.5
+    )
+
+    # Convert back to FrequencyResponseTableFilter
+    round_trip_filter = FrequencyResponseTableFilter.from_obspy_stage(obspy_stage)
+
+    with subtests.test("test frequencies preserved"):
+        assert np.allclose(round_trip_filter.frequencies, original_filter.frequencies)
+
+    with subtests.test("test amplitudes preserved"):
+        assert np.allclose(round_trip_filter.amplitudes, original_filter.amplitudes)
+
+    with subtests.test("test phases preserved"):
+        assert np.allclose(round_trip_filter.phases, original_filter.phases)
+
+    with subtests.test("test gain preserved"):
+        assert round_trip_filter.gain == original_filter.gain
+
+    with subtests.test("test units in preserved"):
+        assert round_trip_filter.units_in == original_filter.units_in
+
+    with subtests.test("test units out preserved"):
+        assert round_trip_filter.units_out == original_filter.units_out
+
+    with subtests.test("test name preserved"):
+        assert round_trip_filter.name == original_filter.name
+
+    with subtests.test("test description preserved"):
+        # Description might be updated in the obspy stage
+        assert round_trip_filter.comments.value is not None
+
+    with subtests.test("test type preserved"):
+        assert round_trip_filter.type == "fap"
+
+
+@pytest.mark.skipif(ResponseListResponseStage is None, reason="obspy is not installed.")
+def test_from_obspy_stage_with_empty_data(subtests):
+    """Test from_obspy_stage with empty response elements."""
+    # Create a ResponseListResponseStage with no response elements
+    empty_stage = ResponseListResponseStage(
+        stage_sequence_number=1,
+        stage_gain=1.0,
+        stage_gain_frequency=1.0,
+        input_units="V",
+        input_units_description="volts",
+        output_units="count",
+        output_units_description="digital counts",
+        response_list_elements=[],
+        name="Empty FAP Filter",
+    )
+
+    # Create filter from stage
+    empty_filter = FrequencyResponseTableFilter.from_obspy_stage(empty_stage)
+
+    with subtests.test("test filter created"):
+        assert isinstance(empty_filter, FrequencyResponseTableFilter)
+
+    with subtests.test("test empty frequencies"):
+        assert empty_filter.frequencies.size == 0
+
+    with subtests.test("test empty amplitudes"):
+        assert empty_filter.amplitudes.size == 0
+
+    with subtests.test("test empty phases"):
+        assert empty_filter.phases.size == 0

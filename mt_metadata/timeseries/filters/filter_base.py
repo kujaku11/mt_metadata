@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
+from typing import Annotated, Union
 
 import numpy as np
 import pandas as pd
@@ -9,11 +9,20 @@ from loguru import logger
 from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.base.helpers import filter_descriptions
+from mt_metadata.base.helpers import filter_descriptions, requires
 from mt_metadata.common import Comment
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object, Unit
+
+try:
+    from obspy.core.inventory.response import ResponseListResponseStage, ResponseStage
+
+    obspy_import = True
+except ImportError:
+    ResponseListResponseStage = None
+    ResponseStage = None
+    obspy_import = False
 
 
 # =====================================================
@@ -260,8 +269,13 @@ class FilterBase(MetadataBase):
 
         return self.comments
 
+    @requires(obspy=obspy_import)
     @classmethod
-    def from_obspy_stage(cls, stage, mapping=None):
+    def from_obspy_stage(
+        cls,
+        stage: Union[ResponseListResponseStage, ResponseStage],
+        mapping: dict = None,
+    ) -> "FilterBase":
         """
         Expected to return a multiply operation function
 
@@ -283,16 +297,36 @@ class FilterBase(MetadataBase):
             mapping = cls().make_obspy_mapping()
         kwargs = {}
 
-        try:
-            for obspy_label, mth5_label in mapping.items():
-                if mth5_label == "comments":
-                    kwargs[mth5_label] = Comment(value=getattr(stage, obspy_label))
-                else:
-                    kwargs[mth5_label] = getattr(stage, obspy_label)
-        except AttributeError:
-            msg = f"Expected a Stage and got a {type(stage)}"
+        if not isinstance(stage, (ResponseListResponseStage, ResponseStage)):
+            msg = f"Expected a ResponseStage and got a {type(stage)}"
             logger.error(msg)
             raise TypeError(msg)
+
+        if isinstance(stage, ResponseListResponseStage):
+            frequencies = []
+            amplitudes = []
+            phases = []
+            for element in stage.response_list_elements:
+                frequencies.append(element.frequency)
+                amplitudes.append(element.amplitude)
+                phases.append(element.phase)
+            kwargs["frequencies"] = np.array(frequencies)
+            kwargs["amplitudes"] = np.array(amplitudes)
+            kwargs["phases"] = np.array(phases)
+
+        for obspy_label, mth5_label in mapping.items():
+            if obspy_label in ["amplitudes", "phases", "frequencies"]:
+                continue
+            if mth5_label == "comments" or obspy_label == "description":
+                kwargs[mth5_label] = Comment(value=getattr(stage, obspy_label))
+            else:
+                try:
+                    kwargs[mth5_label] = getattr(stage, obspy_label)
+
+                except AttributeError:
+                    logger.warning(
+                        f"Attribute {obspy_label} not found in stage object, skipping."
+                    )
         return cls(**kwargs)
 
     def complex_response(self, frqs):

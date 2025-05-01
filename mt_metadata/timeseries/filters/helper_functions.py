@@ -1,9 +1,7 @@
 from loguru import logger
 
-from mt_metadata.timeseries.filters.coefficient_filter_basemodel import (
+from mt_metadata.timeseries.filters import (
     CoefficientFilter,
-)
-from mt_metadata.timeseries.filters.frequency_response_table_filter import (
     FrequencyResponseTableFilter,
 )
 
