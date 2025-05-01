@@ -8,7 +8,7 @@ from loguru import logger
 from pydantic import Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base.helpers import requires
-from mt_metadata.timeseries.filters import FilterBase
+from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
 
 
 try:
@@ -58,6 +58,11 @@ class TimeDelayFilter(FilterBase):
                 f"Filter type is set to {value}, but should be 'time delay' for TimeDelayFilter."
             )
         return "time delay"
+
+    def make_obspy_mapping(self):
+        mapping = get_base_obspy_mapping()
+        mapping["decimation_delay"] = "delay"
+        return mapping
 
     @requires(obspy=inventory)
     def to_obspy(self, stage_number=1, sample_rate=1, normalization_frequency=0):

@@ -136,3 +136,120 @@ def test_to_obspy_stage(time_delay_filter_with_data, subtests):
 
     with subtests.test("test type"):
         assert isinstance(stage, CoefficientsTypeResponseStage)
+
+
+@pytest.mark.skipif(
+    CoefficientsTypeResponseStage is None, reason="obspy is not installed."
+)
+def test_from_obspy_stage(time_delay_filter_with_data, subtests):
+    """Test the from_obspy_stage method."""
+    # First, create an obspy stage from our filter
+    obspy_stage = time_delay_filter_with_data.to_obspy(
+        2, sample_rate=10, normalization_frequency=1
+    )
+
+    # Then create a new filter from the obspy stage
+    new_filter = TimeDelayFilter.from_obspy_stage(obspy_stage)
+
+    with subtests.test("test delay value"):
+        assert new_filter.delay == time_delay_filter_with_data.delay
+
+    with subtests.test("test units in"):
+        assert new_filter.units_in == time_delay_filter_with_data.units_in
+
+    with subtests.test("test units out"):
+        assert new_filter.units_out == time_delay_filter_with_data.units_out
+
+    with subtests.test("test name"):
+        assert new_filter.name == time_delay_filter_with_data.name
+
+    with subtests.test("test filter type"):
+        assert new_filter.type == "time delay"
+
+    with subtests.test("test gain"):
+        assert new_filter.gain == time_delay_filter_with_data.gain
+
+
+@pytest.mark.skipif(
+    CoefficientsTypeResponseStage is None, reason="obspy is not installed."
+)
+def test_from_obspy_stage_with_custom_parameters(subtests):
+    """Test from_obspy_stage with manually created obspy stage."""
+    # Create an obspy stage with custom parameters
+    custom_stage = CoefficientsTypeResponseStage(
+        stage_sequence_number=3,
+        stage_gain=2.5,
+        stage_gain_frequency=0.5,
+        input_units="V",
+        input_units_description="volts",
+        output_units="counts",
+        output_units_description="digital counts",
+        cf_transfer_function_type="DIGITAL",
+        numerator=[1.0],
+        denominator=[1.0],
+        decimation_input_sample_rate=100.0,
+        decimation_factor=1,
+        decimation_offset=0,
+        decimation_delay=0.75,
+        decimation_correction=0.0,
+        name="Custom Delay Filter",
+        description="time delay filter",
+    )
+
+    # Create filter from stage
+    filter_from_stage = TimeDelayFilter.from_obspy_stage(custom_stage)
+
+    with subtests.test("test filter type"):
+        assert filter_from_stage.type == "time delay"
+
+    with subtests.test("test name"):
+        assert filter_from_stage.name == "Custom Delay Filter"
+
+    with subtests.test("test delay value"):
+        assert filter_from_stage.delay == 0.75
+
+    with subtests.test("test gain"):
+        assert filter_from_stage.gain == 2.5
+
+    with subtests.test("test units in"):
+        assert filter_from_stage.units_in == "volt"
+
+    with subtests.test("test units out"):
+        assert filter_from_stage.units_out == "digital counts"
+
+
+@pytest.mark.skipif(
+    CoefficientsTypeResponseStage is None, reason="obspy is not installed."
+)
+def test_roundtrip_conversion(subtests):
+    """Test round-trip conversion from TimeDelayFilter to obspy and back."""
+    # Create original filter with specific values
+    original_filter = TimeDelayFilter(
+        units_in="mV", units_out="nT", name="test delay", delay=0.123, gain=5.0
+    )
+
+    # Convert to obspy stage
+    obspy_stage = original_filter.to_obspy(
+        1, sample_rate=200, normalization_frequency=1
+    )
+
+    # Convert back to TimeDelayFilter
+    round_trip_filter = TimeDelayFilter.from_obspy_stage(obspy_stage)
+
+    with subtests.test("test delay preserved"):
+        assert round_trip_filter.delay == original_filter.delay
+
+    with subtests.test("test gain preserved"):
+        assert round_trip_filter.gain == original_filter.gain
+
+    with subtests.test("test units in preserved"):
+        assert round_trip_filter.units_in == original_filter.units_in
+
+    with subtests.test("test units out preserved"):
+        assert round_trip_filter.units_out == original_filter.units_out
+
+    with subtests.test("test name preserved"):
+        assert round_trip_filter.name == original_filter.name
+
+    with subtests.test("test type preserved"):
+        assert round_trip_filter.type == "time delay"
