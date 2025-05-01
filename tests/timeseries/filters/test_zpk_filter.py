@@ -39,27 +39,55 @@ def frequencies():
     return np.logspace(-5, 5, 500)
 
 
-def test_default_pole_zero_filter(pole_zero_filter_default):
+def test_default_pole_zero_filter(pole_zero_filter_default, subtests):
     """Test the default PoleZeroFilter instance."""
-    assert pole_zero_filter_default.poles.size == 0
-    assert pole_zero_filter_default.zeros.size == 0
-    assert pole_zero_filter_default.normalization_factor == 1.0
-    assert pole_zero_filter_default.units_in == "volt"
-    assert pole_zero_filter_default.units_out == "nanotesla"
-    assert pole_zero_filter_default.name == "example_zpk_response"
-    assert pole_zero_filter_default.type == "zpk"
-    assert pole_zero_filter_default._filter_type == "zpk"
+    with subtests.test("test poles size"):
+        assert pole_zero_filter_default.poles.size == 0
+
+    with subtests.test("test zeros size"):
+        assert pole_zero_filter_default.zeros.size == 0
+
+    with subtests.test("test normalization factor"):
+        assert pole_zero_filter_default.normalization_factor == 1.0
+
+    with subtests.test("test units in"):
+        assert pole_zero_filter_default.units_in == "volt"
+
+    with subtests.test("test units out"):
+        assert pole_zero_filter_default.units_out == "nanotesla"
+
+    with subtests.test("test name"):
+        assert pole_zero_filter_default.name == "example_zpk_response"
+
+    with subtests.test("test type"):
+        assert pole_zero_filter_default.type == "zpk"
+
+    with subtests.test("test private filter type"):
+        assert pole_zero_filter_default._filter_type == "zpk"
 
 
-def test_pole_zero_filter_with_data(pole_zero_filter_with_data):
+def test_pole_zero_filter_with_data(pole_zero_filter_with_data, subtests):
     """Test the PoleZeroFilter instance with sample data."""
-    assert pole_zero_filter_with_data.poles.size == 3
-    assert pole_zero_filter_with_data.zeros.size == 0
-    assert pole_zero_filter_with_data.normalization_factor == 2002.269
-    assert pole_zero_filter_with_data.units_in == "volt"
-    assert pole_zero_filter_with_data.units_out == "nanotesla"
-    assert pole_zero_filter_with_data.type == "zpk"
-    assert pole_zero_filter_with_data._filter_type == "zpk"
+    with subtests.test("test poles size"):
+        assert pole_zero_filter_with_data.poles.size == 3
+
+    with subtests.test("test zeros size"):
+        assert pole_zero_filter_with_data.zeros.size == 0
+
+    with subtests.test("test normalization factor"):
+        assert pole_zero_filter_with_data.normalization_factor == 2002.269
+
+    with subtests.test("test units in"):
+        assert pole_zero_filter_with_data.units_in == "volt"
+
+    with subtests.test("test units out"):
+        assert pole_zero_filter_with_data.units_out == "nanotesla"
+
+    with subtests.test("test type"):
+        assert pole_zero_filter_with_data.type == "zpk"
+
+    with subtests.test("test private filter type"):
+        assert pole_zero_filter_with_data._filter_type == "zpk"
 
 
 def test_type(pole_zero_filter_with_data, subtests):
@@ -93,10 +121,15 @@ def test_poles_and_zeros_type(pole_zero_filter_with_data, subtests):
         assert isinstance(pole_zero_filter_with_data.zeros, np.ndarray)
 
 
-def test_pass_band(pole_zero_filter_with_data, frequencies):
+def test_pass_band(pole_zero_filter_with_data, frequencies, subtests):
     """Test the pass_band method."""
     pb = pole_zero_filter_with_data.pass_band(frequencies, tol=1e-2)
-    assert np.allclose(pb, np.array([1.00000000e-05, 5.36363132e-01]))
+
+    with subtests.test("test pass band values"):
+        assert np.allclose(pb, np.array([1.00000000e-05, 5.36363132e-01]))
+
+    with subtests.test("test pass band is within frequencies range"):
+        assert pb[0] >= frequencies[0] and pb[-1] <= frequencies[-1]
 
 
 def test_complex_response(pole_zero_filter_with_data, frequencies, subtests):
