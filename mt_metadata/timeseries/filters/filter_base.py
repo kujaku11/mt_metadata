@@ -273,7 +273,7 @@ class FilterBase(MetadataBase):
     @classmethod
     def from_obspy_stage(
         cls,
-        stage: Union[ResponseListResponseStage, ResponseStage],
+        stage,  #   : Union[ResponseStage, ResponseListResponseStage],
         mapping: dict = None,
     ) -> "FilterBase":
         """
