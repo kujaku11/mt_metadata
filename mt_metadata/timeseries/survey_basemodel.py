@@ -14,7 +14,7 @@ from mt_metadata.common import (
     Comment,
     Person,
     Citation,
-    Location,
+    BasicLocation, 
     Fdsn,
     FundingSource,
     TimePeriod,
@@ -43,7 +43,7 @@ class Survey(MetadataBase):
     ]
 
     comments: Annotated[
-        str | None,
+        str | None | Comment,
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the survey.",
@@ -140,6 +140,162 @@ class Survey(MetadataBase):
         ),
     ]
 
+    fdsn: Annotated[
+        Fdsn,
+        Field(
+            default_factory=Fdsn,
+            description="FDSN web service information.",
+            examples="Fdsn()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    acquired_by: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Person or group that acquired the data.",
+            examples="Person()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    funding_source: Annotated[
+        FundingSource,
+        Field(
+            default_factory=FundingSource,
+            description="Funding source for the survey.",
+            examples="FundingSource()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    citation_dataset: Annotated[
+        Citation,
+        Field(
+            default_factory=Citation,
+            description="Citation for the dataset.",
+            examples="Citation()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    citation_journal: Annotated[
+        Citation,
+        Field(
+            default_factory=Citation,
+            description="Citation for the journal.",
+            examples="Citation()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    northwest_corner: Annotated[
+        BasicLocation,
+        Field(
+            default_factory=BasicLocation,
+            description="Northwest corner of the survey area.",
+            examples="BasicLocation()",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+            },
+        ),
+    ]
+
+    southeast_corner: Annotated[
+        BasicLocation,
+        Field(
+            default_factory=BasicLocation,
+            description="Southeast corner of the survey area.",
+            examples="BasicLocation()",
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": False,
+            },
+        ),
+    ]
+
+    country: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Country where the survey was conducted.",
+            examples="Canada",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    state: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="State or province where the survey was conducted.",
+            examples="Yukon",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    project_lead: Annotated[
+        Person,
+        Field(
+            default_factory=Person,
+            description="Person or group that led the project.",
+            examples="Person()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    release_license: Annotated[
+        str,
+        Field(
+            default="CC BY 4.0",
+            description="Release license for the data."
+            examples="CC BY 4.0",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+
+
     @field_validator("comments", mode="before")
     @classmethod
     def validate_comments(cls, value, info: ValidationInfo) -> Comment:
@@ -160,3 +316,13 @@ class Survey(MetadataBase):
             raise ValueError(
                 f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
             )
+        
+    @field_validator("release_license", mode="before")
+    @classmethod
+    def validate_release_license(cls, value: str, info: ValidationInfo) -> str:
+        """
+        Validate that the value is a valid license.
+        """
+        if isinstance(value, str):
+            copyright_object = Copyright(release_license=value)
+            return copyright_object.release_license
