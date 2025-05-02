@@ -49,7 +49,7 @@ from .funding_source import FundingSource
 from .software import Software
 from .time_period import TimePeriod
 from .provenance import Provenance
-from .location import BasicLocation, Location, StationLocation
+from .location import BasicLocationNoDatum, BasicLocation, Location, StationLocation
 
 
 __all__ = [
@@ -78,6 +78,7 @@ __all__ = [
     "Software",
     "TimePeriod",
     "Provenance",
+    "BasicLocationNoDatum",
     "BasicLocation",
     "Location",
     "StationLocation",

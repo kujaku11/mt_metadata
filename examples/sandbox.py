@@ -15,21 +15,7 @@
 #     }
 # }
 
-# f2 = Filtered()
-# f2.from_dict(d)
+from mt_metadata.timeseries.survey_basemodel import Survey
 
-from mt_metadata.timeseries.run_basemodel import Run
-from mt_metadata.timeseries.electric_basemodel import Electric
-
-r = Run()
-# r.copy()
-# r.add_channel(Electric(component="ex"))
-# existing_channels = r.channels.copy()
-# existing_channels.remove("ex")
-# r.channels = existing_channels
-# print(r.channels.keys())
-
-from mt_metadata.timeseries.filters.fir_filter_basemodel import FirFilter
-
-f = FirFilter()
-f.type = "fap"
+s = Survey()
+s.to_json()

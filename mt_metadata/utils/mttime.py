@@ -946,7 +946,7 @@ class MTime(MetadataBase):
         str
             _description_
         """
-        return self.time_stamp.isodate()
+        return self.time_stamp.date().isoformat()
 
     def isocalendar(self) -> str:
         """
@@ -978,3 +978,57 @@ def get_now_utc() -> "MTime":
     m_obj = MTime()
     m_obj.now()
     return m_obj.isoformat()
+
+
+class MTDate(MTime):
+    def __str__(self) -> str:
+        """
+        Represents the object as a string in ISO format.
+
+        Returns
+        -------
+        str
+            ISO formatted string of the time stamp.
+        """
+        return self.isodate()
+
+    def __repr__(self) -> str:
+        """
+        Represents the object as a string in ISO format.
+
+        Returns
+        -------
+        str
+            ISO formatted string of the time stamp.
+        """
+        return self.isodate()
+
+    def __hash__(self) -> int:
+        return hash(self.isodate())
+
+    def to_dict(self, nested=False, single=False, required=True) -> str:
+        """
+        Convert the time stamp to a dictionary with the ISO format string.
+
+        Returns
+        -------
+        str
+            The ISO format string.
+        """
+        return self.isodate()
+
+    def from_dict(
+        self,
+        value: str | int | float | np.datetime64 | pd.Timestamp,
+        skip_none=False,
+    ) -> None:
+        """
+        This will have to accept just a single value, not a dict.
+        This is to keep original functionality.
+
+        Parameters
+        ----------
+        value : str | int | float | np.datetime64 | pd.Timestamp
+            time stamp value
+        """
+        self.time_stamp = value

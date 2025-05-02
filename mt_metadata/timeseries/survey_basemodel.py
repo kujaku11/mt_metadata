@@ -14,7 +14,8 @@ from mt_metadata.common import (
     Comment,
     Person,
     Citation,
-    BasicLocation, 
+    Copyright,
+    BasicLocationNoDatum,
     Fdsn,
     FundingSource,
     TimePeriod,
@@ -43,7 +44,7 @@ class Survey(MetadataBase):
     ]
 
     comments: Annotated[
-        str | None | Comment,
+        Comment,
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the survey.",
@@ -211,11 +212,11 @@ class Survey(MetadataBase):
     ]
 
     northwest_corner: Annotated[
-        BasicLocation,
+        BasicLocationNoDatum,
         Field(
-            default_factory=BasicLocation,
+            default_factory=BasicLocationNoDatum,
             description="Northwest corner of the survey area.",
-            examples="BasicLocation()",
+            examples="BasicLocationNoDatum()",
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -225,11 +226,11 @@ class Survey(MetadataBase):
     ]
 
     southeast_corner: Annotated[
-        BasicLocation,
+        BasicLocationNoDatum,
         Field(
-            default_factory=BasicLocation,
+            default_factory=BasicLocationNoDatum,
             description="Southeast corner of the survey area.",
-            examples="BasicLocation()",
+            examples="BasicLocationNoDatum()",
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -284,7 +285,7 @@ class Survey(MetadataBase):
         str,
         Field(
             default="CC BY 4.0",
-            description="Release license for the data."
+            description="Release license for the data.",
             examples="CC BY 4.0",
             alias=None,
             json_schema_extra={
@@ -293,8 +294,6 @@ class Survey(MetadataBase):
             },
         ),
     ]
-
-
 
     @field_validator("comments", mode="before")
     @classmethod
@@ -316,7 +315,7 @@ class Survey(MetadataBase):
             raise ValueError(
                 f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
             )
-        
+
     @field_validator("release_license", mode="before")
     @classmethod
     def validate_release_license(cls, value: str, info: ValidationInfo) -> str:
