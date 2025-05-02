@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.utils.mttime import MTime, MDate
 
 
 # =====================================================
@@ -61,9 +61,9 @@ class TimePeriodDate(MetadataBase):
     """
 
     end_date: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime,
+        float | int | np.datetime64 | pd.Timestamp | str | MTime | MDate,
         Field(
-            default_factory=lambda: MTime(time_stamp="1980-01-01"),
+            default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="End date and time of collection in UTC.",
             examples="2020-02-04",
             type="string",
@@ -76,9 +76,9 @@ class TimePeriodDate(MetadataBase):
     ]
 
     start_date: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime,
+        float | int | np.datetime64 | pd.Timestamp | str | MTime | MDate,
         Field(
-            default_factory=lambda: MTime(time_stamp="1980-01-01"),
+            default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="Start date and time of collection in UTC.",
             examples="2020-02-01",
             alias=None,
@@ -90,11 +90,11 @@ class TimePeriodDate(MetadataBase):
         ),
     ]
 
-    @field_validator("start", "end", mode="before")
+    @field_validator("start_date", "end_date", mode="before")
     @classmethod
     def validate_time(cls, value, info: ValidationInfo) -> MTime:
         """
         Validate that the value is a valid time.
         """
-        mt_date = MTime(time_stamp=value)
+        mt_date = MDate(time_stamp=value)
         return mt_date.isodate()

@@ -18,7 +18,7 @@ from mt_metadata.common import (
     BasicLocationNoDatum,
     Fdsn,
     FundingSource,
-    TimePeriod,
+    TimePeriodDate,
 )
 
 from mt_metadata.timeseries.station_basemodel import Station
@@ -128,11 +128,11 @@ class Survey(MetadataBase):
     ]
 
     time_period: Annotated[
-        TimePeriod,
+        TimePeriodDate,
         Field(
-            default_factory=TimePeriod,
+            default_factory=TimePeriodDate,
             description="End date of the survey in UTC.",
-            examples="1995-01-01",
+            examples="TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')",
             alias=None,
             json_schema_extra={
                 "units": None,

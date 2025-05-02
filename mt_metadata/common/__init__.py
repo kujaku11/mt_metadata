@@ -47,7 +47,7 @@ from .copyright import Copyright
 from .person import Person
 from .funding_source import FundingSource
 from .software import Software
-from .time_period import TimePeriod
+from .time_period import TimePeriod, TimePeriodDate
 from .provenance import Provenance
 from .location import BasicLocationNoDatum, BasicLocation, Location, StationLocation
 
@@ -77,6 +77,7 @@ __all__ = [
     "FundingSource",
     "Software",
     "TimePeriod",
+    "TimePeriodDate",
     "Provenance",
     "BasicLocationNoDatum",
     "BasicLocation",

@@ -980,7 +980,7 @@ def get_now_utc() -> "MTime":
     return m_obj.isoformat()
 
 
-class MTDate(MTime):
+class MDate(MTime):
     def __str__(self) -> str:
         """
         Represents the object as a string in ISO format.
