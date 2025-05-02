@@ -1003,8 +1003,89 @@ class MDate(MTime):
         """
         return self.isodate()
 
+    def __add__(
+        self, other: int | float | datetime.timedelta | np.timedelta64
+    ) -> "MTime":
+        """
+        Add time to the existing time stamp.  Must be a time delta object
+        or a number in seconds.
+
+        .. note:: Adding two time stamps does not make sense, use either
+                 pd.Timedelta or seconds as a float or int.
+
+        """
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(days=other)
+            logger.debug("Assuming other time is in days")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        if not isinstance(other, (pd.Timedelta)):
+            msg = (
+                "Adding times stamps does not make sense, use either "
+                "pd.Timedelta or seconds as a float or int."
+            )
+            logger.error(msg)
+            raise ValueError(msg)
+
+        return MDate(time_stamp=self.time_stamp + other)
+
+    def __sub__(
+        self, other: int | float | datetime.timedelta | np.timedelta64
+    ) -> "MTime":
+        """
+        Get the time difference between to times in seconds.
+
+        :param other: other time value
+        :type other: [ str | float | int | datetime.datetime | np.datetime64 ]
+        :return: time difference in seconds
+        :rtype: float
+
+        """
+
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(days=other)
+            logger.info("Assuming other time is in seconds and not epoch seconds.")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        else:
+            try:
+                other = MTime(time_stamp=other)
+            except ValueError as error:
+                raise TypeError(error)
+
+        if not isinstance(other, (pd.Timedelta, MDate, MTime)):
+            msg = "Subtracting times must be either timedelta or another time."
+            logger.error(msg)
+            raise ValueError(msg)
+
+        if isinstance(other, (MDate, MTime)):
+            other = MDate(time_stamp=other)
+
+            return (self.time_stamp - other.time_stamp).total_seconds() / 86400
+
+        elif isinstance(other, pd.Timedelta):
+            return MDate(time_stamp=self.time_stamp - other)
+
     def __hash__(self) -> int:
         return hash(self.isodate())
+
+    def isoformat(self) -> str:
+        """
+        ISO formatted string of the time stamp.  This is the ISO format
+        string of the time stamp.
+
+        formatted as: YYYY-MM-DDThh:mm:ss.ssssss+00:00
+
+        Returns
+        -------
+        str
+            ISO formatted date time string
+        """
+        return self.isodate()
 
     def to_dict(self, nested=False, single=False, required=True) -> str:
         """
