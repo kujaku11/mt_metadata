@@ -135,6 +135,20 @@ class Survey(MetadataBase):
         ),
     ]
 
+    filters: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,
+            description="List of filters for channel responses.",
+            examples="ListDict[Filter()]",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
     summary: Annotated[
         str,
         Field(
@@ -262,7 +276,7 @@ class Survey(MetadataBase):
     ]
 
     country: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
             description="Country where the survey was conducted.",
@@ -276,7 +290,7 @@ class Survey(MetadataBase):
     ]
 
     state: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
             description="State or province where the survey was conducted.",
@@ -348,6 +362,19 @@ class Survey(MetadataBase):
             copyright_object = Copyright(release_license=value)
             return copyright_object.release_license
 
+    @field_validator("country", "state", mode="before")
+    @classmethod
+    def validate_areas(cls, value) -> list[str]:
+        """validate country and state to be a list"""
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",")]
+        elif isinstance(value, (list, tuple)):
+            return list(value)
+        elif value == None:
+            return None
+        else:
+            raise TypeError(f"Cannot make a list from types {type(value)}.")
+
     @field_validator("stations", mode="before")
     @classmethod
     def validate_stations(cls, value, info: ValidationInfo) -> ListDict:
@@ -389,69 +416,24 @@ class Survey(MetadataBase):
 
         return station
 
-    def merge(self, other, inplace=False):
+    @field_validator("filters", mode="before")
+    @classmethod
+    def validate_filters(cls, value: str | list, info: ValidationInfo) -> ListDict:
         """
-        Merge surveys together using the original metadata but adding other's stations.
 
         Parameters
         ----------
-        other : Survey
-            Survey object
-        inplace : bool, optional
-            merge in place, by default False
+        value : _type_
+            _description_
+        info : ValidationInfo
+            _description_
 
         Returns
         -------
-        Survey
-            merged surveys
-
-        Raises
-        ------
-        TypeError
-            If items cannot be merged.
+        ListDict
+            _description_
         """
-        if isinstance(other, Survey):
-            self.stations.extend(other.stations)
-            self.update_all()
-            if not inplace:
-                return self
-        else:
-            msg = f"Can only merge Survey objects, not {type(other)}"
-            logger.error(msg)
-            raise TypeError(msg)
-
-    @property
-    def n_stations(self) -> int:
-        """
-        Return the number of stations in the station.
-
-        :return: number of runs in the station
-        :rtype: int
-
-        """
-        return len(self.stations)
-
-    @property
-    def station_names(self):
-        """Return names of station in survey"""
-        return self.stations.keys()
-
-    @property
-    def filters(self):
-        """A dictionary of available filters"""
-        return self._filters
-
-    @filters.setter
-    def filters(self, value):
-        """
-        Set the filters dictionary
-
-        :param value: dictionary of filter objects
-        :type value: dictionary
-
-        """
-
-        filters = ListDict()
+        filters = []
         fails = []
         if value is None:
             return
@@ -513,7 +495,54 @@ class Survey(MetadataBase):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-        self._filters = filters
+        return filters
+
+    def merge(self, other: "Survey", inplace=False) -> "Survey":
+        """
+        Merge surveys together using the original metadata but adding other's stations.
+
+        Parameters
+        ----------
+        other : Survey
+            Survey object
+        inplace : bool, optional
+            merge in place, by default False
+
+        Returns
+        -------
+        Survey
+            merged surveys
+
+        Raises
+        ------
+        TypeError
+            If items cannot be merged.
+        """
+        if isinstance(other, Survey):
+            self.stations.extend(other.stations)
+            self.update_all()
+            if not inplace:
+                return self
+        else:
+            msg = f"Can only merge Survey objects, not {type(other)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+    @property
+    def n_stations(self) -> int:
+        """
+        Return the number of stations in the station.
+
+        :return: number of runs in the station
+        :rtype: int
+
+        """
+        return len(self.stations)
+
+    @property
+    def station_names(self):
+        """Return names of station in survey"""
+        return self.stations.keys()
 
     @property
     def filter_names(self):
@@ -614,12 +643,14 @@ class Survey(MetadataBase):
         Update the bounding box of the survey from the station information
 
         """
-        if self.__len__() > 0:
+        if self.n_stations > 0:
             lat = []
             lon = []
             for station in self.stations:
-                lat.append(station.location.latitude)
-                lon.append(station.location.longitude)
+                if station.location.latitude is not None:
+                    lat.append(station.location.latitude)
+                if station.location.longitude is not None:
+                    lon.append(station.location.longitude)
 
             if not len(lat) == 0:
                 self.southeast_corner.latitude = min(lat)
@@ -654,3 +685,10 @@ class Survey(MetadataBase):
                 else:
                     if self.time_period.end_date < max(end):
                         self.time_period.end_date = max(end)
+
+    def update_all(self):
+        """
+        Update time period and bounding box
+        """
+        self.update_time_period()
+        self.update_bounding_box()

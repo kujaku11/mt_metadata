@@ -5,13 +5,13 @@ from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
-from pydantic import Field, ValidationInfo, field_validator
+from pydantic import Field, ValidationInfo, field_validator, AnyHttpUrl, EmailStr
 
 
 # =====================================================
 class FundingSource(MetadataBase):
     name: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
             items={"type": "string"},
@@ -26,7 +26,7 @@ class FundingSource(MetadataBase):
     ]
 
     organization: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
             items={"type": "string"},
@@ -41,7 +41,7 @@ class FundingSource(MetadataBase):
     ]
 
     email: Annotated[
-        str | None,
+        list[EmailStr] | EmailStr | None,
         Field(
             default=None,
             items={"type": "string"},
@@ -56,7 +56,7 @@ class FundingSource(MetadataBase):
     ]
 
     url: Annotated[
-        str | None,
+        list[AnyHttpUrl] | AnyHttpUrl | None,
         Field(
             default=None,
             items={"type": "string"},
@@ -85,7 +85,7 @@ class FundingSource(MetadataBase):
     ]
 
     grant_id: Annotated[
-        str | None,
+        list[str] | str | None,
         Field(
             default=None,
             items={"type": "string"},
@@ -105,3 +105,35 @@ class FundingSource(MetadataBase):
         if isinstance(value, str):
             return Comment(value=value)
         return value
+
+    @field_validator("name", "organization", "email", "url", "grant_id", mode="before")
+    @classmethod
+    def validate_input(cls, value) -> list:
+        """
+        make sure the inputs are lists
+
+        Parameters
+        ----------
+        value : _type_
+            _description_
+
+        Returns
+        -------
+        list
+            _description_
+        """
+
+        if isinstance(value, (list, tuple)):
+            return list(value)
+
+        elif isinstance(value, (EmailStr, AnyHttpUrl)):
+            return [value]
+
+        elif isinstance(value, str):
+            return [item.strip() for item in value.split(",")]
+
+        elif value is None:
+            return None
+
+        else:
+            raise TypeError(f"Cannot form a list from types {type(value)}.")

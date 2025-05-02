@@ -53,7 +53,7 @@ class TestSurvey(unittest.TestCase):
                 "project_lead.author": "T. Lurric",
                 "project_lead.email": "mt@mt.org",
                 "project_lead.organization": "mt rules",
-                "release_license": "CC-0",
+                "release_license": "CC-BY-1.0",
                 "southeast_corner.latitude": -80.0,
                 "southeast_corner.longitude": -179.9,
                 "state": ["Manitoba"],
@@ -145,7 +145,7 @@ class TestSurvey(unittest.TestCase):
 
     def test_aqcuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
-        self.assertEqual(self.survey_object.acquired_by.author, "MT")
+        self.assertEqual(self.survey_object.acquired_by.name, "MT")
 
     def test_add_station(self):
         self.survey_object.add_station(Station(id="one"))
@@ -185,10 +185,10 @@ class TestSurvey(unittest.TestCase):
         survey_02 = Survey()
         survey_02.stations.append(Station(id="two"))
         self.survey_object.stations.append(Station(id="one"))
-        self.survey_object += survey_02
+        self.survey_object.merge(survey_02)
 
         with self.subTest("length"):
-            self.assertEqual(len(self.survey_object), 2)
+            self.assertEqual(self.survey_object.n_stations, 2)
 
         with self.subTest("compare list"):
             self.assertListEqual(["one", "two"], self.survey_object.station_names)
@@ -207,14 +207,14 @@ class TestSurvey(unittest.TestCase):
 
         with self.subTest("Test new start"):
             self.assertEqual(
-                self.survey_object.time_period.start,
-                "2020-01-01T00:00:00+00:00",
+                self.survey_object.time_period.start_date,
+                "2020-01-01",
             )
 
         with self.subTest("Test new end"):
             self.assertEqual(
-                self.survey_object.time_period.end,
-                "2020-12-01T12:12:12+00:00",
+                self.survey_object.time_period.end_date,
+                "2020-12-01",
             )
 
 
