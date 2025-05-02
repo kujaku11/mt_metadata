@@ -34,7 +34,7 @@ class TimePeriod(MetadataBase):
     start: Annotated[
         float | int | np.datetime64 | pd.Timestamp | str | MTime,
         Field(
-            default_factory=lambda: MTime(time_stamp="1980-01-01T00:00:00+00:00"),
+            default_factory=lambda: MTime(),
             description="Start date and time of collection in UTC.",
             examples="2020-02-01T09:23:45.453670+00:00",
             alias=None,
@@ -53,6 +53,18 @@ class TimePeriod(MetadataBase):
         Validate that the value is a valid time.
         """
         return MTime(time_stamp=value)
+
+    def start_is_default(self) -> bool:
+        """
+        Check if the start time is the default time.
+        """
+        return MTime(time_stamp=self.start).is_default()
+
+    def end_is_default(self) -> bool:
+        """
+        Check if the end time is the default time.
+        """
+        return MTime(time_stamp=self.end).is_default()
 
 
 class TimePeriodDate(MetadataBase):
@@ -98,3 +110,15 @@ class TimePeriodDate(MetadataBase):
         """
         mt_date = MDate(time_stamp=value)
         return mt_date.isodate()
+
+    def start_is_default(self) -> bool:
+        """
+        Check if the start time is the default time.
+        """
+        return MDate(time_stamp=self.start_date).is_default()
+
+    def end_is_default(self) -> bool:
+        """
+        Check if the end time is the default time.
+        """
+        return MDate(time_stamp=self.end_date).is_default()

@@ -26,12 +26,7 @@ try:
 except ImportError:
     from_obspy = False
 
-from pydantic import (
-    Field,
-    ConfigDict,
-    ValidationInfo,
-    field_validator,
-)
+from pydantic import Field, ConfigDict, ValidationInfo, field_validator, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 
@@ -368,6 +363,8 @@ class MTime(MetadataBase):
 
     """
 
+    _default_time: str = PrivateAttr("1980-01-01T00:00:00+00:00")
+
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         json_encoders={pd.Timestamp: lambda v: v.isoformat()},
@@ -383,9 +380,10 @@ class MTime(MetadataBase):
     time_stamp: Annotated[
         float | int | np.datetime64 | pd.Timestamp | str,
         Field(
-            default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
+            default_factory=lambda: pd.Timestamp(MTime._default_time.default),
+            # default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
             description="Time in UTC format",
-            examples=["1980-01-01T00:00:00+00:00"],
+            examples="1980-01-01T00:00:00+00:00",
         ),
     ]
 
@@ -667,6 +665,12 @@ class MTime(MetadataBase):
 
     def __hash__(self) -> int:
         return hash(self.isoformat())
+
+    def is_default(self) -> bool:
+        """
+        Test if the time_stamp value is the default value
+        """
+        return self.time_stamp == pd.Timestamp(self._default_time)
 
     def to_dict(self, nested=False, single=False, required=True) -> str:
         """
@@ -981,6 +985,7 @@ def get_now_utc() -> "MTime":
 
 
 class MDate(MTime):
+
     def __str__(self) -> str:
         """
         Represents the object as a string in ISO format.
@@ -1072,6 +1077,12 @@ class MDate(MTime):
 
     def __hash__(self) -> int:
         return hash(self.isodate())
+
+    def is_default(self):
+        """
+        Test if time_stamp is the default value
+        """
+        return self.isoformat() == pd.Timestamp(self._default_time).date().isoformat()
 
     def isoformat(self) -> str:
         """

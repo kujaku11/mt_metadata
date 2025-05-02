@@ -2,7 +2,7 @@
 """
 Created on Thu Dec 31 11:21:17 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -17,7 +17,9 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Station, Survey
+from mt_metadata.timeseries.station_basemodel import Station
+from mt_metadata.timeseries.survey_basemodel import Survey
+
 
 # =============================================================================
 #
@@ -92,28 +94,20 @@ class TestSurvey(unittest.TestCase):
     def test_start_date(self):
         with self.subTest("input date"):
             self.survey_object.time_period.start_date = "2020/01/02"
-            self.assertEqual(
-                self.survey_object.time_period.start_date, "2020-01-02"
-            )
+            self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
 
         with self.subTest("Input datetime"):
             self.survey_object.start_date = "01-02-2020T12:20:30.450000+00:00"
-            self.assertEqual(
-                self.survey_object.time_period.start_date, "2020-01-02"
-            )
+            self.assertEqual(self.survey_object.time_period.start_date, "2020-01-02")
 
     def test_end_date(self):
         with self.subTest("input date"):
             self.survey_object.time_period.end_date = "2020/01/02"
-            self.assertEqual(
-                self.survey_object.time_period.end_date, "2020-01-02"
-            )
+            self.assertEqual(self.survey_object.time_period.end_date, "2020-01-02")
 
         with self.subTest("Input datetime"):
             self.survey_object.end_date = "01-02-2020T12:20:30.45Z"
-            self.assertEqual(
-                self.survey_object.time_period.end_date, "2020-01-02"
-            )
+            self.assertEqual(self.survey_object.time_period.end_date, "2020-01-02")
 
     def test_latitude(self):
         self.survey_object.southeast_corner.latitude = "40:10:05.123"
@@ -130,22 +124,16 @@ class TestSurvey(unittest.TestCase):
     def test_funding_source(self):
         with self.subTest("name"):
             self.survey_object.funding_source.name = "NSF"
-            self.assertListEqual(
-                self.survey_object.funding_source.name, ["NSF"]
-            )
+            self.assertListEqual(self.survey_object.funding_source.name, ["NSF"])
         with self.subTest("organization"):
-            self.survey_object.funding_source.organization = (
-                "US governement, DOE"
-            )
+            self.survey_object.funding_source.organization = "US governement, DOE"
             self.assertListEqual(
                 self.survey_object.funding_source.organization,
                 ["US governement", "DOE"],
             )
         with self.subTest("grant_id"):
             self.survey_object.funding_source.grant_id = "a345"
-            self.assertListEqual(
-                self.survey_object.funding_source.grant_id, ["a345"]
-            )
+            self.assertListEqual(self.survey_object.funding_source.grant_id, ["a345"])
 
     def test_geographic_location(self):
         with self.subTest("country"):
@@ -153,9 +141,7 @@ class TestSurvey(unittest.TestCase):
             self.assertListEqual(self.survey_object.country, ["Canada"])
         with self.subTest("state"):
             self.survey_object.state = "Manitoba, Saskatchewan"
-            self.assertListEqual(
-                self.survey_object.state, ["Manitoba", "Saskatchewan"]
-            )
+            self.assertListEqual(self.survey_object.state, ["Manitoba", "Saskatchewan"])
 
     def test_aqcuired_by(self):
         self.survey_object.from_dict(self.meta_dict)
@@ -205,9 +191,7 @@ class TestSurvey(unittest.TestCase):
             self.assertEqual(len(self.survey_object), 2)
 
         with self.subTest("compare list"):
-            self.assertListEqual(
-                ["one", "two"], self.survey_object.station_names
-            )
+            self.assertListEqual(["one", "two"], self.survey_object.station_names)
 
     def test_remove_station(self):
         self.survey_object.stations.append(Station(id="one"))
@@ -258,11 +242,11 @@ class TestAddStation(unittest.TestCase):
     def test_time_period(self):
         with self.subTest("start"):
             self.assertEqual(
-                self.survey.time_period.start, self.station_01.time_period.start
+                self.survey.time_period.start_date, self.station_01.time_period.start
             )
         with self.subTest("end"):
             self.assertEqual(
-                self.survey.time_period.end, self.station_02.time_period.end
+                self.survey.time_period.end_date, self.station_02.time_period.end
             )
 
     def test_bounding_box(self):

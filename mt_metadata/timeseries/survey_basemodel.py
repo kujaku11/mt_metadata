@@ -1,8 +1,9 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
+from collections import OrderedDict
+from loguru import logger
 
 import numpy as np
 import pandas as pd
@@ -20,7 +21,14 @@ from mt_metadata.common import (
     FundingSource,
     TimePeriodDate,
 )
-
+from mt_metadata.timeseries.filters import (
+    PoleZeroFilter,
+    FrequencyResponseTableFilter,
+    TimeDelayFilter,
+    FIRFilter,
+    CoefficientFilter,
+)
+from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.timeseries.station_basemodel import Station
 
 
@@ -109,6 +117,20 @@ class Survey(MetadataBase):
             json_schema_extra={
                 "units": None,
                 "required": True,
+            },
+        ),
+    ]
+
+    stations: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,
+            description="List of stations recorded in the survey.",
+            examples="ListDict[Station(id=id)]",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
             },
         ),
     ]
@@ -325,3 +347,310 @@ class Survey(MetadataBase):
         if isinstance(value, str):
             copyright_object = Copyright(release_license=value)
             return copyright_object.release_license
+
+    @field_validator("stations", mode="before")
+    @classmethod
+    def validate_stations(cls, value, info: ValidationInfo) -> ListDict:
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
+            msg = (
+                "input stations must be an iterable, should be a list or dict "
+                f"not {type(value)}"
+            )
+            logger.error(msg)
+            raise TypeError(msg)
+
+        fails = []
+        stations = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, station_entry in enumerate(value_list):
+
+            if isinstance(station_entry, (dict, OrderedDict)):
+                try:
+                    station = Station()
+                    station.from_dict(station_entry)
+                    stations.append(station)
+                except KeyError:
+                    msg = f"Item {ii} is not type(Station); type={type(station_entry)}"
+                    fails.append(msg)
+                    logger.error(msg)
+            elif not isinstance(station_entry, (Station)):
+                msg = f"Item {ii} is not type(Run); type={type(station_entry)}"
+                fails.append(msg)
+                logger.error(msg)
+            else:
+                stations.append(station_entry)
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+
+        return station
+
+    def merge(self, other, inplace=False):
+        """
+        Merge surveys together using the original metadata but adding other's stations.
+
+        Parameters
+        ----------
+        other : Survey
+            Survey object
+        inplace : bool, optional
+            merge in place, by default False
+
+        Returns
+        -------
+        Survey
+            merged surveys
+
+        Raises
+        ------
+        TypeError
+            If items cannot be merged.
+        """
+        if isinstance(other, Survey):
+            self.stations.extend(other.stations)
+            self.update_all()
+            if not inplace:
+                return self
+        else:
+            msg = f"Can only merge Survey objects, not {type(other)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+    @property
+    def n_stations(self) -> int:
+        """
+        Return the number of stations in the station.
+
+        :return: number of runs in the station
+        :rtype: int
+
+        """
+        return len(self.stations)
+
+    @property
+    def station_names(self):
+        """Return names of station in survey"""
+        return self.stations.keys()
+
+    @property
+    def filters(self):
+        """A dictionary of available filters"""
+        return self._filters
+
+    @filters.setter
+    def filters(self, value):
+        """
+        Set the filters dictionary
+
+        :param value: dictionary of filter objects
+        :type value: dictionary
+
+        """
+
+        filters = ListDict()
+        fails = []
+        if value is None:
+            return
+
+        if isinstance(value, list):
+            if len(value) > 0:
+                if isinstance(value[0], (dict, OrderedDict, ListDict)):
+                    for ff in value:
+                        f_type = ff["type"]
+                        if f_type is None:
+                            msg = (
+                                "filter type is None do not know how to read the filter"
+                            )
+                            fails.append(msg)
+                            logger.error(msg)
+                        if f_type.lower() in ["zpk"]:
+                            f = PoleZeroFilter()
+                        elif f_type.lower() in ["coefficient"]:
+                            f = CoefficientFilter()
+                        elif f_type.lower() in ["time delay"]:
+                            f = TimeDelayFilter()
+                        elif f_type.lower() in ["fir"]:
+                            f = FIRFilter()
+                        elif f_type.lower() in ["frequency response table"]:
+                            f = FrequencyResponseTableFilter()
+                        else:
+                            msg = f"filter type {f_type} not supported."
+                            fails.append(msg)
+                            logger.error(msg)
+
+                        f.from_dict(ff)
+                        filters[f.name] = f
+
+        elif not isinstance(value, (dict, OrderedDict, ListDict)):
+            msg = (
+                "Filters must be a dictionary with keys = names of filters, "
+                f"not {type(value)}"
+            )
+            logger.error(msg)
+            raise TypeError(msg)
+        else:
+
+            for k, v in value.items():
+                if not isinstance(
+                    v,
+                    (
+                        PoleZeroFilter,
+                        CoefficientFilter,
+                        TimeDelayFilter,
+                        FrequencyResponseTableFilter,
+                        FIRFilter,
+                    ),
+                ):
+                    msg = f"Item {k} is not Filter type; type={type(v)}"
+                    fails.append(msg)
+                    logger.error(msg)
+                else:
+                    filters[k.lower()] = v
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+
+        self._filters = filters
+
+    @property
+    def filter_names(self):
+        """return a list of filter names"""
+        return list(self.filters.keys())
+
+    def has_station(self, station_id):
+        """
+        Has station id
+
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: True if exists or False if not
+        :rtype: boolean
+
+        """
+        if station_id in self.station_names:
+            return True
+        return False
+
+    def station_index(self, station_id):
+        """
+        Get station index
+
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: index value if station is found
+        :rtype: integer
+
+        """
+
+        if self.has_station(station_id):
+            return self.station_names.index(station_id)
+        return None
+
+    def add_station(self, station_obj, update=True):
+        """
+        Add a station, if has the same name update that object.
+
+        :param station_obj: station object to add
+        :type station_obj: `:class:`mt_metadata.timeseries.Station`
+
+        """
+
+        if not isinstance(station_obj, Station):
+            raise TypeError(
+                f"Input must be a mt_metadata.timeseries.Station object not {type(station_obj)}"
+            )
+
+        if self.has_station(station_obj.id):
+            self.stations[station_obj.id].update(station_obj)
+            logger.warning(
+                f"Station {station_obj.id} already exists, updating metadata"
+            )
+        else:
+            self.stations.append(station_obj)
+
+        if update:
+            self.update_bounding_box()
+            self.update_time_period()
+
+    def get_station(self, station_id):
+        """
+        Get a station from the station id
+
+        :param station_id: station id verbatim
+        :type station_id: string
+        :return: station object
+        :rtype: :class:`mt_metadata.timeseries.Station`
+
+        """
+
+        if self.has_station(station_id):
+            return self.stations[station_id]
+        else:
+            logger.warning(f"Could not find station {station_id}")
+            return None
+
+    def remove_station(self, station_id, update=True):
+        """
+        remove a station from the survey
+
+        :param station_id: station id verbatim
+        :type station_id: string
+
+        """
+
+        if self.has_station(station_id):
+            self.stations.remove(station_id)
+            if update:
+                self.update_bounding_box()
+                self.update_time_period()
+        else:
+            logger.warning(f"Could not find {station_id} to remove.")
+
+    def update_bounding_box(self):
+        """
+        Update the bounding box of the survey from the station information
+
+        """
+        if self.__len__() > 0:
+            lat = []
+            lon = []
+            for station in self.stations:
+                lat.append(station.location.latitude)
+                lon.append(station.location.longitude)
+
+            if not len(lat) == 0:
+                self.southeast_corner.latitude = min(lat)
+                self.northwest_corner.latitude = max(lat)
+            if not len(lon) == 0:
+                self.southeast_corner.longitude = max(lon)
+                self.northwest_corner.longitude = min(lon)
+
+    def update_time_period(self):
+        """
+        Update the start and end time of the survey based on the stations
+        """
+        if self.__len__() > 0:
+            start = []
+            end = []
+            for station in self.stations:
+                if not station.time_period.start_is_default():
+                    start.append(station.time_period.start)
+                if not station.time_period.end_is_default():
+                    end.append(station.time_period.end)
+
+            if start:
+                if self.time_period.start_is_default():
+                    self.time_period.start_date = min(start)
+                else:
+                    if self.time_period.start_date > min(start):
+                        self.time_period.start_date = min(start)
+
+            if end:
+                if self.time_period.end_is_default():
+                    self.time_period.end_date = max(end)
+                else:
+                    if self.time_period.end_date < max(end):
+                        self.time_period.end_date = max(end)

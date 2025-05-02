@@ -319,7 +319,7 @@ class Station(MetadataBase):
                 return self
         else:
             msg = f"Can only merge Station objects, not {type(other)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
     @property
