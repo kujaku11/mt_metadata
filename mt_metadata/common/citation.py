@@ -10,7 +10,7 @@ from pydantic import Field, HttpUrl, AliasChoices
 # =====================================================
 class Citation(MetadataBase):
     doi: Annotated[
-        HttpUrl,
+        HttpUrl | None,
         Field(
             default="",
             description="full url of the doi number",

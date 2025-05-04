@@ -13,7 +13,7 @@ from pydantic import Field, field_validator, ValidationInfo
 
 class Declination(MetadataBase):
     comments: Annotated[
-        Comment | str,
+        Comment,
         Field(
             default_factory=lambda: Comment(),
             description="any comments on declination",

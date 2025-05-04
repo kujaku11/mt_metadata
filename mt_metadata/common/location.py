@@ -13,7 +13,7 @@ from pyproj import CRS
 # =====================================================
 
 
-class BasicLocation(MetadataBase):
+class BasicLocationNoDatum(MetadataBase):
     """
     A partial location class that only includes the latitude, longitude, and elevation.
     This is used to avoid circular imports.
@@ -47,6 +47,13 @@ class BasicLocation(MetadataBase):
         ),
     ]
 
+    @field_validator("latitude", "longitude", mode="before")
+    @classmethod
+    def validate_position(cls, value, info: ValidationInfo):
+        return validate_position(value, info.field_name)
+
+
+class BasicLocation(BasicLocationNoDatum):
     elevation: Annotated[
         float | None,
         Field(
@@ -60,7 +67,6 @@ class BasicLocation(MetadataBase):
             },
         ),
     ]
-
     datum: Annotated[
         str | int,
         Field(
@@ -74,11 +80,6 @@ class BasicLocation(MetadataBase):
             },
         ),
     ]
-
-    @field_validator("latitude", "longitude", mode="before")
-    @classmethod
-    def validate_position(cls, value, info: ValidationInfo):
-        return validate_position(value, info.field_name)
 
     @field_validator("datum", mode="before")
     @classmethod

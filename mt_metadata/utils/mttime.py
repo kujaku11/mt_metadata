@@ -26,12 +26,7 @@ try:
 except ImportError:
     from_obspy = False
 
-from pydantic import (
-    Field,
-    ConfigDict,
-    ValidationInfo,
-    field_validator,
-)
+from pydantic import Field, ConfigDict, ValidationInfo, field_validator, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 
@@ -368,6 +363,8 @@ class MTime(MetadataBase):
 
     """
 
+    _default_time: str = PrivateAttr("1980-01-01T00:00:00+00:00")
+
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         json_encoders={pd.Timestamp: lambda v: v.isoformat()},
@@ -383,9 +380,10 @@ class MTime(MetadataBase):
     time_stamp: Annotated[
         float | int | np.datetime64 | pd.Timestamp | str,
         Field(
-            default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
+            default_factory=lambda: pd.Timestamp(MTime._default_time.default),
+            # default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
             description="Time in UTC format",
-            examples=["1980-01-01T00:00:00+00:00"],
+            examples="1980-01-01T00:00:00+00:00",
         ),
     ]
 
@@ -668,6 +666,12 @@ class MTime(MetadataBase):
     def __hash__(self) -> int:
         return hash(self.isoformat())
 
+    def is_default(self) -> bool:
+        """
+        Test if the time_stamp value is the default value
+        """
+        return self.time_stamp == pd.Timestamp(self._default_time)
+
     def to_dict(self, nested=False, single=False, required=True) -> str:
         """
         Convert the time stamp to a dictionary with the ISO format string.
@@ -946,7 +950,7 @@ class MTime(MetadataBase):
         str
             _description_
         """
-        return self.time_stamp.isodate()
+        return self.time_stamp.date().isoformat()
 
     def isocalendar(self) -> str:
         """
@@ -978,3 +982,145 @@ def get_now_utc() -> "MTime":
     m_obj = MTime()
     m_obj.now()
     return m_obj.isoformat()
+
+
+class MDate(MTime):
+
+    def __str__(self) -> str:
+        """
+        Represents the object as a string in ISO format.
+
+        Returns
+        -------
+        str
+            ISO formatted string of the time stamp.
+        """
+        return self.isodate()
+
+    def __repr__(self) -> str:
+        """
+        Represents the object as a string in ISO format.
+
+        Returns
+        -------
+        str
+            ISO formatted string of the time stamp.
+        """
+        return self.isodate()
+
+    def __add__(
+        self, other: int | float | datetime.timedelta | np.timedelta64
+    ) -> "MTime":
+        """
+        Add time to the existing time stamp.  Must be a time delta object
+        or a number in seconds.
+
+        .. note:: Adding two time stamps does not make sense, use either
+                 pd.Timedelta or seconds as a float or int.
+
+        """
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(days=other)
+            logger.debug("Assuming other time is in days")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        if not isinstance(other, (pd.Timedelta)):
+            msg = (
+                "Adding times stamps does not make sense, use either "
+                "pd.Timedelta or seconds as a float or int."
+            )
+            logger.error(msg)
+            raise ValueError(msg)
+
+        return MDate(time_stamp=self.time_stamp + other)
+
+    def __sub__(
+        self, other: int | float | datetime.timedelta | np.timedelta64
+    ) -> "MTime":
+        """
+        Get the time difference between to times in seconds.
+
+        :param other: other time value
+        :type other: [ str | float | int | datetime.datetime | np.datetime64 ]
+        :return: time difference in seconds
+        :rtype: float
+
+        """
+
+        if isinstance(other, (int, float)):
+            other = pd.Timedelta(days=other)
+            logger.info("Assuming other time is in seconds and not epoch seconds.")
+
+        elif isinstance(other, (datetime.timedelta, np.timedelta64)):
+            other = pd.Timedelta(other)
+
+        else:
+            try:
+                other = MTime(time_stamp=other)
+            except ValueError as error:
+                raise TypeError(error)
+
+        if not isinstance(other, (pd.Timedelta, MDate, MTime)):
+            msg = "Subtracting times must be either timedelta or another time."
+            logger.error(msg)
+            raise ValueError(msg)
+
+        if isinstance(other, (MDate, MTime)):
+            other = MDate(time_stamp=other)
+
+            return (self.time_stamp - other.time_stamp).total_seconds() / 86400
+
+        elif isinstance(other, pd.Timedelta):
+            return MDate(time_stamp=self.time_stamp - other)
+
+    def __hash__(self) -> int:
+        return hash(self.isodate())
+
+    def is_default(self):
+        """
+        Test if time_stamp is the default value
+        """
+        return self.isoformat() == pd.Timestamp(self._default_time).date().isoformat()
+
+    def isoformat(self) -> str:
+        """
+        ISO formatted string of the time stamp.  This is the ISO format
+        string of the time stamp.
+
+        formatted as: YYYY-MM-DDThh:mm:ss.ssssss+00:00
+
+        Returns
+        -------
+        str
+            ISO formatted date time string
+        """
+        return self.isodate()
+
+    def to_dict(self, nested=False, single=False, required=True) -> str:
+        """
+        Convert the time stamp to a dictionary with the ISO format string.
+
+        Returns
+        -------
+        str
+            The ISO format string.
+        """
+        return self.isodate()
+
+    def from_dict(
+        self,
+        value: str | int | float | np.datetime64 | pd.Timestamp,
+        skip_none=False,
+    ) -> None:
+        """
+        This will have to accept just a single value, not a dict.
+        This is to keep original functionality.
+
+        Parameters
+        ----------
+        value : str | int | float | np.datetime64 | pd.Timestamp
+            time stamp value
+        """
+        self.time_stamp = value
