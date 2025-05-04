@@ -174,7 +174,10 @@ def validate_position(value: str | float, position_type: str) -> float:
     if position_type not in ["latitude", "longitude"]:
         raise ValueError("position_type must be 'latitude' or 'longitude'")
 
-    if isinstance(value, str) and ":" in value:
+    if value in [None, "None"]:
+        return 0.0
+
+    elif isinstance(value, str) and ":" in value:
         value = convert_position_str2float(value)
     else:
         try:

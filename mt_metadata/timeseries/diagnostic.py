@@ -1,26 +1,40 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("diagnostic", SCHEMA_FN_PATHS)
-# =============================================================================
-class Diagnostic(Base):
-    __doc__ = write_lines(attr_dict)
+from mt_metadata.base import MetadataBase
+from pydantic import Field
 
-    def __init__(self, **kwargs):
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+# =====================================================
+class Diagnostic(MetadataBase):
+    end: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Ending value of a diagnostic measurement.",
+            examples="10",
+            type="number",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None
+
+    start: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="Starting value of a diagnostic measurement.",
+            examples="12.3",
+            type="number",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None

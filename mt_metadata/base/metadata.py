@@ -846,7 +846,7 @@ class MetadataBase(BaseModel):
         :rtype: string
 
         """
-        return self.model_dump()
+        return str(self.model_dump())
 
     def __repr__(self) -> str:
         return self.to_json()

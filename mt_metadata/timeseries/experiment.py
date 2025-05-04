@@ -3,12 +3,12 @@
 Containers for the full metadata tree
 
 Experiment --> Survey --> Station --> Run --> Channel
-                   
-Each level has a list attribute 
-    
+
+Each level has a list attribute
+
 Created on Mon Feb  8 21:25:40 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -18,6 +18,8 @@ Created on Mon Feb  8 21:25:40 2021
 # Imports
 # =============================================================================
 from collections import OrderedDict
+from typing import Annotated
+from pydantic import Field, field_validator
 from pathlib import Path
 from xml.etree import cElementTree as et
 import json
@@ -31,23 +33,30 @@ from .filters import (
     FIRFilter,
     FrequencyResponseTableFilter,
 )
-from mt_metadata.base import Base, helpers
+from mt_metadata.base import MetadataBase, helpers
 from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 
 
-class Experiment(Base):
+class Experiment(MetadataBase):
     """
     Top level of the metadata
     """
 
-    def __init__(self, surveys=[]):
-
-        super().__init__()
-
-        self.logger = logger
-        self.surveys = surveys
+    surveys: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,
+            description="List of surveys in the experiment",
+            title="List of Surveys",
+            example=[{"id": "survey_1"}, {"id": "survey_2"}],
+            json_schema_extra={
+                "required": False,
+                "units": None,
+            },
+        ),
+    ]
 
     def __str__(self):
         lines = ["Experiment Contents", "-" * 20]
@@ -56,9 +65,7 @@ class Experiment(Base):
             for survey in self.surveys:
                 lines.append(f"  Survey ID: {survey.id}")
                 lines.append(f"  Number of Stations: {len(survey)}")
-                lines.append(
-                    f"  Number of Filters: {len(survey.filters.keys())}"
-                )
+                lines.append(f"  Number of Filters: {len(survey.filters.keys())}")
                 lines.append(f"  {'-' * 20}")
                 for f_key, f_object in survey.filters.items():
                     lines.append(f"    Filter Name: {f_key}")
@@ -86,34 +93,27 @@ class Experiment(Base):
         return self.__str__()
 
     def __eq__(self, other):
-        return (
-            isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__
-        )
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __add__(self, other):
+    def merge(self, other):
         if isinstance(other, Experiment):
             self.surveys.extend(other.surveys)
 
             return self
         else:
             msg = f"Can only merge Experiment objects, not {type(other)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
-    def __len__(self):
+    def n_surveys(self):
         return len(self.surveys)
 
-    @property
-    def surveys(self):
-        """Return survey list"""
-        return self._surveys
-
-    @surveys.setter
-    def surveys(self, value):
+    @field_validator("surveys", mode="before")
+    @classmethod
+    def validate_surveys(cls, value) -> ListDict:
         """set the survey list"""
 
         if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
@@ -121,11 +121,11 @@ class Experiment(Base):
                 "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         fails = []
-        self._surveys = ListDict()
+        surveys = ListDict()
         if isinstance(value, (dict, ListDict, OrderedDict)):
             value_list = value.values()
 
@@ -137,13 +137,13 @@ class Experiment(Base):
             if isinstance(survey, (dict, OrderedDict)):
                 s = Survey()
                 s.from_dict(survey)
-                self._stations.append(s)
+                surveys.append(s)
             elif not isinstance(survey, Survey):
                 msg = f"Item {ii} is not type(Survey); type={type(survey)}"
                 fails.append(msg)
-                self.logger.error(msg)
+                logger.error(msg)
             else:
-                self._surveys.append(survey)
+                surveys.append(survey)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
@@ -199,9 +199,7 @@ class Experiment(Base):
 
         if self.has_survey(survey_obj.id):
             self.surveys[survey_obj.id].update(survey_obj)
-            self.logger.debug(
-                f"survey {survey_obj.id} already exists, updating metadata"
-            )
+            logger.debug(f"survey {survey_obj.id} already exists, updating metadata")
         else:
             self.surveys.append(survey_obj)
 
@@ -219,7 +217,7 @@ class Experiment(Base):
         if self.has_survey(survey_id):
             return self.surveys[survey_id]
         else:
-            self.logger.warning(f"Could not find survey {survey_id}")
+            logger.warning(f"Could not find survey {survey_id}")
             return None
 
     def to_dict(self, nested=False, required=True):
@@ -273,7 +271,7 @@ class Experiment(Base):
 
         if not isinstance(ex_dict, dict):
             msg = f"experiemnt input must be a dictionary not {type(ex_dict)}"
-            self.logger.debug(msg)
+            logger.debug(msg)
             raise TypeError(msg)
         if "experiment" not in ex_dict.keys():
             return
@@ -332,7 +330,7 @@ class Experiment(Base):
                     json_dict = json.load(fid)
         elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
-            self.logger.error(msg, type(json_str))
+            logger.error(msg, type(json_str))
             raise TypeError(msg % type(json_str))
         self.from_dict(json_dict, skip_none=skip_none)
 
@@ -376,30 +374,18 @@ class Experiment(Base):
                                 and channel.positive.longitude == 0
                                 and channel.positive.elevation == 0
                             ):
-                                channel.positive.latitude = (
-                                    station.location.latitude
-                                )
-                                channel.positive.longitude = (
-                                    station.location.longitude
-                                )
-                                channel.positive.elevation = (
-                                    station.location.elevation
-                                )
+                                channel.positive.latitude = station.location.latitude
+                                channel.positive.longitude = station.location.longitude
+                                channel.positive.elevation = station.location.elevation
                         else:
                             if (
                                 channel.location.latitude == 0
                                 and channel.location.longitude == 0
                                 and channel.location.elevation == 0
                             ):
-                                channel.location.latitude = (
-                                    station.location.latitude
-                                )
-                                channel.location.longitude = (
-                                    station.location.longitude
-                                )
-                                channel.location.elevation = (
-                                    station.location.elevation
-                                )
+                                channel.location.latitude = station.location.latitude
+                                channel.location.longitude = station.location.longitude
+                                channel.location.elevation = station.location.elevation
 
                         run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
@@ -458,7 +444,7 @@ class Experiment(Base):
                                 channel.from_dict(ch_dict, skip_none=skip_none)
                                 run_obj.add_channel(channel)
                         except KeyError:
-                            self.logger.debug(f"Could not find channel {ch}")
+                            logger.debug(f"Could not find channel {ch}")
                     run_obj.from_dict(run_dict, skip_none=skip_none)
                     station_obj.add_run(run_obj)
                 survey_obj.add_station(station_obj)
