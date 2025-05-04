@@ -29,7 +29,7 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
 )
 from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.timeseries.station_basemodel import Station
+from mt_metadata.timeseries import Station
 
 
 # =====================================================

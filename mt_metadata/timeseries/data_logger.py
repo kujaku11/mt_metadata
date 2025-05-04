@@ -7,8 +7,7 @@ from mt_metadata.common import (
     Instrument,
     Software,
 )
-from mt_metadata.timeseries.battery_basemodel import Battery
-from mt_metadata.timeseries.timing_system_basemodel import TimingSystem
+from mt_metadata.timeseries import Battery, TimingSystem
 from pydantic import Field
 
 

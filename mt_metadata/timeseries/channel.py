@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
+
 from typing import Annotated
 
 from mt_metadata.base import MetadataBase
@@ -13,7 +13,7 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries.filtered_basemodel import Filtered
+from mt_metadata.timeseries import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices
 from mt_metadata.utils.units import get_unit_object, Unit
 

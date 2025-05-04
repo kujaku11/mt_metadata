@@ -1,8 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from mt_metadata.timeseries.channel_basemodel import Channel
-from pydantic import Field
+from mt_metadata.timeseries import Channel
 
 
 # =====================================================

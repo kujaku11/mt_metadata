@@ -16,7 +16,7 @@ from mt_metadata.common import (
     DataTypeEnum,
 )
 
-from mt_metadata.timeseries.data_logger_basemodel import DataLogger
+from mt_metadata.timeseries import DataLogger, Auxiliary, Electric, Magnetic
 from mt_metadata.utils.list_dict import ListDict
 from pydantic import (
     Field,
@@ -25,10 +25,6 @@ from pydantic import (
     computed_field,
     model_validator,
 )
-
-from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
-from mt_metadata.timeseries.electric_basemodel import Electric
-from mt_metadata.timeseries.magnetic_basemodel import Magnetic
 
 
 # =====================================================
