@@ -24,8 +24,11 @@ class TestCoherence(unittest.TestCase):
         window_type = "hamming"
         window_length = 512
         coh_dict = {
-            "channel_1": "ex",
-            "channel_2": "hy",
+            # "channel_1": "ex",
+            # "channel_2": "hy",
+            "ch1": "ex",
+            "ch2": "hy",
+            "detrend" : "linear",
             "window.clock_zero_type": "ignore",
             "window.normalized": True,
             "window.num_samples": 512,
