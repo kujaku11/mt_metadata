@@ -1388,6 +1388,8 @@ class MetadataBase(BaseModel):
                         else:
                             v_list.append(obj)
                     value = v_list
+                elif hasattr(value, "unicode_string"):
+                    value = value.unicode_string()
             except AttributeError as error:
                 logger.debug(error)
                 value = None

@@ -780,8 +780,8 @@ def requires(**requirements):
         else:
 
             def passer(*args, **kwargs):
-                print(("Missing dependencies: {d}.".format(d=missing)))
-                print(("Not running `{}`.".format(function.__name__)))
+                logger.warning(f"Missing dependencies: {missing}.")
+                logger.warning(f"Not running `{function.__name__}`.")
 
             return passer
 

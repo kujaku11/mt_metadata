@@ -7,7 +7,7 @@ from loguru import logger
 
 import numpy as np
 import pandas as pd
-from pydantic import Field, ValidationInfo, field_validator
+from pydantic import Field, ValidationInfo, field_validator, computed_field
 from pyproj import CRS
 
 from mt_metadata.base import MetadataBase
@@ -43,7 +43,7 @@ class Survey(MetadataBase):
             description="Alpha numeric ID that will be unique for archiving.",
             examples="EMT20",
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -414,7 +414,7 @@ class Survey(MetadataBase):
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
-        return station
+        return stations
 
     @field_validator("filters", mode="before")
     @classmethod
@@ -496,6 +496,23 @@ class Survey(MetadataBase):
             raise TypeError("\n".join(fails))
 
         return filters
+
+    @computed_field
+    @property
+    def survey_extent(self) -> dict:
+        """
+        Return the survey extent as a dictionary with keys 'northwest' and 'southeast'.
+        """
+        return {
+            "latitude": {
+                "min": self.southeast_corner.latitude,
+                "max": self.northwest_corner.latitude,
+            },
+            "longitude": {
+                "min": self.northwest_corner.longitude,
+                "max": self.southeast_corner.longitude,
+            },
+        }
 
     def merge(self, other: "Survey", inplace=False) -> "Survey":
         """

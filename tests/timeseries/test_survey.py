@@ -33,15 +33,15 @@ class TestSurvey(unittest.TestCase):
         self.maxDiff = None
         self.meta_dict = {
             "survey": {
-                "acquired_by.author": "MT",
                 "acquired_by.comments": "tired",
+                "acquired_by.name": "MT",
                 "id": "MT001",
                 "fdsn.network": "EM",
-                "citation_dataset.doi": "http://doi.####",
+                "citation_dataset.doi": "http://doi/####",
                 "citation_journal.doi": None,
                 "comments": "comments",
                 "country": ["Canada"],
-                "datum": "WGS84",
+                "datum": "WGS 84",
                 "funding_source.name": ["NSF"],
                 "funding_source.organization": ["US governement"],
                 "funding_source.grant_id": ["a345"],
@@ -50,8 +50,8 @@ class TestSurvey(unittest.TestCase):
                 "northwest_corner.latitude": 80.0,
                 "northwest_corner.longitude": 179.9,
                 "project": "EM-EARTH",
-                "project_lead.author": "T. Lurric",
                 "project_lead.email": "mt@mt.org",
+                "project_lead.name": "T. Lurric",
                 "project_lead.organization": "mt rules",
                 "release_license": "CC-BY-1.0",
                 "southeast_corner.latitude": -80.0,

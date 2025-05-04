@@ -230,7 +230,7 @@ def _check_timestamp(pd_timestamp):
 
 
 def parse(
-    dt_str: Optional[float | int | np.datetime64 | pd.Timestamp | str] = None,
+    dt_str: Optional[float | int | np.datetime64 | pd.Timestamp | str | dict] = None,
     gps_time: bool = False,
 ) -> pd.Timestamp:
     """
@@ -276,6 +276,10 @@ def parse(
 
     else:
         try:
+            if isinstance(dt_str, dict):
+                gps_time = dt_str.get("gps_time", gps_time)
+                dt_str = dt_str.get("time_stamp", "1980-01-01T00:00:00+00:00")
+
             t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str))
         except (ValueError, TypeError, OutOfBoundsDatetime, OverflowError):
             dt = _parse_string(dt_str)
