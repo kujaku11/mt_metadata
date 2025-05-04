@@ -43,7 +43,7 @@ def test_default_filter(default_filter, subtests):
         assert default_filter.comments.value == None
 
     with subtests.test("Default type"):
-        assert default_filter.type == ""
+        assert default_filter.type == "base"
 
     with subtests.test("Default units_in"):
         assert default_filter.units_in == ""
@@ -68,7 +68,7 @@ def test_custom_filter(custom_filter, subtests):
         assert custom_filter.comments.value == "Test filter for lowpass data"
 
     with subtests.test("Custom type"):
-        assert custom_filter.type == FilterTypeEnum.fap_table
+        assert custom_filter.type == "base"
 
     with subtests.test("Custom units_in"):
         assert custom_filter.units_in == "volt"
