@@ -2,7 +2,7 @@
 """
 Created on Mon Feb  8 21:49:13 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -22,6 +22,8 @@ from mt_metadata.timeseries import (
     Survey,
     Experiment,
 )
+
+from mt_metadata.utils.mttime import MTime, MDate
 
 # =============================================================================
 
@@ -71,11 +73,11 @@ class TestExperiment(unittest.TestCase):
         self.assertTrue(input_survey == s)
 
     def test_add_experiments(self):
-        ex2 = Experiment([Survey(id="two")])
+        ex2 = Experiment(surveys=[Survey(id="two")])
         self.experiment.surveys.append(Survey(id="one"))
-        self.experiment += ex2
+        self.experiment.merge(ex2)
         with self.subTest(name="length"):
-            self.assertEqual(len(self.experiment), 2)
+            self.assertEqual(self.experiment.n_surveys, 2)
         with self.subTest(name="name equal"):
             self.assertListEqual(["one", "two"], self.experiment.survey_names)
 
@@ -127,11 +129,11 @@ class TestBuildExperiment(unittest.TestCase):
     def test_survey_time_period(self):
         with self.subTest("start"):
             self.assertEqual(
-                self.start, self.experiment.surveys[0].time_period.start
+                MDate(self.start), self.experiment.surveys[0].time_period.start_date
             )
         with self.subTest("end"):
             self.assertEqual(
-                self.end, self.experiment.surveys[0].time_period.end
+                MDate(self.end), self.experiment.surveys[0].time_period.end_date
             )
 
     def test_station_time_period(self):
@@ -150,10 +152,7 @@ class TestBuildExperiment(unittest.TestCase):
         with self.subTest("start"):
             self.assertEqual(
                 self.start,
-                self.experiment.surveys[0]
-                .stations[0]
-                .runs[0]
-                .time_period.start,
+                self.experiment.surveys[0].stations[0].runs[0].time_period.start,
             )
         with self.subTest("end"):
             self.assertEqual(
@@ -177,9 +176,7 @@ class TestBuildExperiment(unittest.TestCase):
             self.assertEqual(2, len(d["experiment"]["surveys"]))
 
         with self.subTest("runs"):
-            self.assertIn(
-                "runs", d["experiment"]["surveys"][0]["stations"][0].keys()
-            )
+            self.assertIn("runs", d["experiment"]["surveys"][0]["stations"][0].keys())
         with self.subTest("n_stations"):
             self.assertEqual(2, len(d["experiment"]["surveys"][0]["stations"]))
 
@@ -192,9 +189,7 @@ class TestBuildExperiment(unittest.TestCase):
             self.assertEqual(
                 7,
                 len(
-                    d["experiment"]["surveys"][0]["stations"][0]["runs"][0][
-                        "channels"
-                    ]
+                    d["experiment"]["surveys"][0]["stations"][0]["runs"][0]["channels"]
                 ),
             )
 

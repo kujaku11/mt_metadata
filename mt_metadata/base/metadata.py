@@ -16,7 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
-from typing import List, Dict, Iterable, Union
+from typing import List, Dict, Iterable, Union, Any
 from typing_extensions import deprecated
 
 import json
@@ -814,7 +814,79 @@ class Base:
         self.from_dict(helpers.element_to_dict(xml_element))
 
 
-class MetadataBase(BaseModel):
+class DotNotationBaseModel(BaseModel):
+    """Base model that supports dot notation for setting nested attributes."""
+
+    def __init__(self, **data):
+        # Process dot notation fields first
+        flat_data = {}
+        nested_data = {}
+
+        for key, value in data.items():
+            if "." in key:
+                # This is a dotted field, handle specially
+                self._set_nested_attribute(nested_data, key, value)
+            else:
+                # Regular field, pass to Pydantic as-is
+                flat_data[key] = value
+
+        # Merge the nested dict into flat dict (nested takes precedence)
+        flat_data.update(nested_data)
+
+        # Call parent constructor with processed data
+        super().__init__(**flat_data)
+
+    def _set_nested_attribute(
+        self, data_dict: Dict, dotted_key: str, value: Any
+    ) -> None:
+        """
+        Set a nested attribute in data_dict based on dotted key notation.
+
+        Example: time_period.start => {"time_period": {"start": value}}
+        """
+        parts = dotted_key.split(".")
+        current = data_dict
+
+        # Navigate to the deepest level, creating dicts along the way
+        for i, part in enumerate(parts[:-1]):
+            if part not in current:
+                current[part] = {}
+            elif not isinstance(current[part], dict):
+                # Convert to dict if it's not already
+                current[part] = {}
+            current = current[part]
+
+        # Set the final value
+        current[parts[-1]] = value
+
+    def update_attribute(self, attr_name: str, attr_value: Any) -> None:
+        """
+        Update a nested attribute using dot notation.
+
+        Example: update_attribute("time_period.start", "2020-01-01")
+        """
+        if "." not in attr_name:
+            # Directly set the attribute
+            setattr(self, attr_name, attr_value)
+            return
+
+        # For nested attributes, we need to navigate the object graph
+        parts = attr_name.split(".")
+        current = self
+
+        # Navigate to the deepest level
+        for part in parts[:-1]:
+            if not hasattr(current, part):
+                raise AttributeError(
+                    f"'{type(current).__name__}' has no attribute '{part}'"
+                )
+            current = getattr(current, part)
+
+        # Set the final attribute
+        setattr(current, parts[-1], attr_value)
+
+
+class MetadataBase(DotNotationBaseModel):
     """
     MetadataBase is the base class for all metadata objects.  `pydantic.BaseModel`
     is inherited, thus Pydantic takes care of all the validating accoring to the
@@ -838,6 +910,17 @@ class MetadataBase(BaseModel):
         ["annotation", "default", "examples", "description"]
     )
     _json_extras: List[str] = PrivateAttr(["units", "required"])
+
+    # def __init__(self, **kwargs):
+    #     """
+    #     Initialize the MetadataBase object.  This will take in a dictionary or
+    #     other objects and convert them to a dictionary.
+
+    #     :param kwargs: keyword arguments for the metadata object
+
+    #     """
+    #     self.from_dict(kwargs, skip_none=True)
+    #     super().__init__()
 
     def __str__(self) -> str:
         """
@@ -1026,10 +1109,10 @@ class MetadataBase(BaseModel):
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
             else:
                 if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
 
     ## cannot override the __deepcopy__ method in pydantic.BaseModel otherwise bad
     ## things happen.
@@ -1051,7 +1134,7 @@ class MetadataBase(BaseModel):
     #         # for key in self.to_dict(single=True, required=False).keys():
     #         #     try:
 
-    #         #         copied.set_attr_from_name(
+    #         #         copied.update_attribute(
     #         #             key, deepcopy(self.get_attr_from_name(key), memodict)
     #         #         )
     #         #     # Need the TypeError for objects that have no __reduce__ method
@@ -1243,6 +1326,9 @@ class MetadataBase(BaseModel):
         value, _ = helpers.recursive_split_getattr(self, name)
         return value
 
+    @deprecated(
+        "set_attr_from_name will be deprecated in the future. Use update_attribute."
+    )
     def set_attr_from_name(self, name, value):
         """
         Helper function to set attribute from the given name.
@@ -1267,7 +1353,7 @@ class MetadataBase(BaseModel):
         """
 
         try:
-            helpers.recursive_split_setattr(self, name, value)
+            self.update_attribute(name, value)
         except AttributeError as error:
             msg = (
                 f"{name} is not in the current standards.  "
@@ -1435,14 +1521,19 @@ class MetadataBase(BaseModel):
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
         if len(keys) == 1:
-            class_name = keys[0]
-            if class_name.lower() != validate_name(self.__class__.__name__):
-                msg = (
-                    "name of input dictionary is not the same as class type "
-                    f"input = {class_name}, class type = {self.__class__.__name__}"
-                )
-                logger.debug(msg, class_name, self.__class__.__name__)
-            meta_dict = helpers.flatten_dict(meta_dict[class_name])
+            print(type(meta_dict[keys[0]]))
+            if isinstance(keys[0], (dict, OrderedDict)):
+                class_name = keys[0]
+                if class_name.lower() != validate_name(self.__class__.__name__):
+                    msg = (
+                        "name of input dictionary is not the same as class type "
+                        f"input = {class_name}, class type = {self.__class__.__name__}"
+                    )
+                    logger.debug(msg, class_name, self.__class__.__name__)
+                meta_dict = helpers.flatten_dict(meta_dict[class_name])
+            else:
+                meta_dict = helpers.flatten_dict(meta_dict)
+
         else:
             logger.debug(
                 f"Assuming input dictionary is of type {self.__class__.__name__}",
@@ -1462,7 +1553,7 @@ class MetadataBase(BaseModel):
                     "1980-01-01T00:00:00+00:00",
                 ]:
                     continue
-            self.set_attr_from_name(name, value)
+            self.update_attribute(name, value)
 
     def to_json(self, nested=False, indent=" " * 4, required=True):
         """
@@ -1525,7 +1616,7 @@ class MetadataBase(BaseModel):
             logger.error(msg)
             raise MTSchemaError(msg)
         for key, value in pd_series.items():
-            self.set_attr_from_name(key, value)
+            self.update_attribute(key, value)
 
     def to_series(self, required=True):
         """

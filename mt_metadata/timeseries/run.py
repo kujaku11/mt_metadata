@@ -227,7 +227,7 @@ class Run(MetadataBase):
     ]
 
     channels: Annotated[
-        ListDict,
+        ListDict | list | dict | OrderedDict,
         Field(
             default_factory=ListDict,
             description="ListDict of channel objects collected in this run.",

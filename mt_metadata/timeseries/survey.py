@@ -122,7 +122,7 @@ class Survey(MetadataBase):
     ]
 
     stations: Annotated[
-        ListDict,
+        ListDict | list | dict | OrderedDict | tuple,
         Field(
             default_factory=ListDict,
             description="List of stations recorded in the survey.",
@@ -136,7 +136,7 @@ class Survey(MetadataBase):
     ]
 
     filters: Annotated[
-        ListDict,
+        ListDict | list | dict | OrderedDict | tuple,
         Field(
             default_factory=ListDict,
             description="List of filters for channel responses.",

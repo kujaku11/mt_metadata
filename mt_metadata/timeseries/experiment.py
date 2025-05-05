@@ -19,7 +19,7 @@ Created on Mon Feb  8 21:25:40 2021
 # =============================================================================
 from collections import OrderedDict
 from typing import Annotated
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, computed_field
 from pathlib import Path
 from xml.etree import cElementTree as et
 import json
@@ -45,7 +45,7 @@ class Experiment(MetadataBase):
     """
 
     surveys: Annotated[
-        ListDict,
+        ListDict | list | dict | OrderedDict,
         Field(
             default_factory=ListDict,
             description="List of surveys in the experiment",
@@ -58,7 +58,7 @@ class Experiment(MetadataBase):
         ),
     ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         lines = ["Experiment Contents", "-" * 20]
         if len(self.surveys) > 0:
             lines.append(f"Number of Surveys: {len(self.surveys)}")
@@ -89,16 +89,19 @@ class Experiment(MetadataBase):
 
         return "\n".join(lines)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         return not self.__eq__(other)
 
-    def merge(self, other):
+    def merge(self, other: "Experiment") -> "Experiment":
+        """
+        Merge two Experiment objects
+        """
         if isinstance(other, Experiment):
             self.surveys.extend(other.surveys)
 
@@ -108,7 +111,9 @@ class Experiment(MetadataBase):
             logger.error(msg)
             raise TypeError(msg)
 
-    def n_surveys(self):
+    @computed_field
+    @property
+    def n_surveys(self) -> int:
         return len(self.surveys)
 
     @field_validator("surveys", mode="before")
@@ -146,13 +151,14 @@ class Experiment(MetadataBase):
                 surveys.append(survey)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
+        return surveys
 
     @property
-    def survey_names(self):
+    def survey_names(self) -> list[str]:
         """Return names of surveys in experiment"""
         return self.surveys.keys()
 
-    def has_survey(self, survey_id):
+    def has_survey(self, survey_id: str) -> bool:
         """
         Has survey id
 
@@ -166,7 +172,7 @@ class Experiment(MetadataBase):
             return True
         return False
 
-    def survey_index(self, survey_id):
+    def survey_index(self, survey_id: str) -> int | None:
         """
         Get survey index
 
@@ -181,7 +187,7 @@ class Experiment(MetadataBase):
             return self.survey_names.index(survey_id)
         return None
 
-    def add_survey(self, survey_obj):
+    def add_survey(self, survey_obj: "Survey") -> None:
         """
         Add a survey, if has the same name update that object.
 
@@ -203,7 +209,7 @@ class Experiment(MetadataBase):
         else:
             self.surveys.append(survey_obj)
 
-    def get_survey(self, survey_id):
+    def get_survey(self, survey_id: str) -> "Survey":
         """
         Get a survey from the survey id
 
@@ -220,7 +226,7 @@ class Experiment(MetadataBase):
             logger.warning(f"Could not find survey {survey_id}")
             return None
 
-    def to_dict(self, nested=False, required=True):
+    def to_dict(self, nested: bool = False, required: bool = True) -> dict:
         """
         create a dictionary for the experiment object.
 
@@ -258,7 +264,7 @@ class Experiment(MetadataBase):
 
         return ex_dict
 
-    def from_dict(self, ex_dict, skip_none=True):
+    def from_dict(self, ex_dict: dict | OrderedDict, skip_none: bool = True) -> None:
         """
         fill from an input dictionary
 
@@ -281,7 +287,13 @@ class Experiment(MetadataBase):
             survey_object.from_dict(survey_dict, skip_none=skip_none)
             self.add_survey(survey_object)
 
-    def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
+    def to_json(
+        self,
+        fn: str | Path = None,
+        nested: bool = False,
+        indent: str = " " * 4,
+        required: bool = True,
+    ) -> str | None:
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
@@ -307,7 +319,7 @@ class Experiment(MetadataBase):
                 indent=indent,
             )
 
-    def from_json(self, json_str, skip_none=True):
+    def from_json(self, json_str: str, skip_none: bool = True) -> None:
         """
         read in a json string and update attributes of an object
 
@@ -334,7 +346,9 @@ class Experiment(MetadataBase):
             raise TypeError(msg % type(json_str))
         self.from_dict(json_dict, skip_none=skip_none)
 
-    def to_xml(self, fn=None, required=True, sort=True):
+    def to_xml(
+        self, fn: str | Path = None, required: bool = True, sort: bool = True
+    ) -> et.Element:
         """
         Write XML version of the experiment
 
@@ -397,7 +411,13 @@ class Experiment(MetadataBase):
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
 
-    def from_xml(self, fn=None, element=None, sort=True, skip_none=True):
+    def from_xml(
+        self,
+        fn: str | Path = None,
+        element: et.Element | None = None,
+        sort: bool = True,
+        skip_none: bool = True,
+    ) -> None:
         """
 
         :param fn: DESCRIPTION, defaults to None
@@ -453,7 +473,7 @@ class Experiment(MetadataBase):
             if sort:
                 self.sort()
 
-    def _pop_dictionary(self, in_dict, element):
+    def _pop_dictionary(self, in_dict: dict, element: str) -> list:
         """
         Pop off a key from an input dictionary, make sure output is a list
 
@@ -472,7 +492,7 @@ class Experiment(MetadataBase):
 
         return elements
 
-    def to_pickle(self, fn):
+    def to_pickle(self, fn: str | Path = None) -> None:
         """
         Write a pickle version of the experiment
 
@@ -484,7 +504,7 @@ class Experiment(MetadataBase):
         """
         pass
 
-    def from_pickle(self, fn):
+    def from_pickle(self, fn: str | Path = None) -> None:
         """
         Read pickle version of experiment
 
@@ -506,7 +526,7 @@ class Experiment(MetadataBase):
         """
         pass
 
-    def _read_filter_dict(self, filters_dict):
+    def _read_filter_dict(self, filters_dict: dict | None) -> ListDict:
         """
         Read in filter element an put it in the correct object
 
@@ -568,7 +588,7 @@ class Experiment(MetadataBase):
 
         return return_dict
 
-    def sort(self, inplace=True):
+    def sort(self, inplace: bool = True) -> "Experiment":
         """
         sort surveys, stations, runs, channels alphabetically/numerically
 

@@ -1,5 +1,5 @@
 import pytest
-from mt_metadata.common.declination import Declination, ModelEnum
+from mt_metadata.common.declination import Declination, GeomagneticModelEnum
 from mt_metadata.common import Comment
 
 
@@ -10,7 +10,7 @@ def test_declination_default_values():
     declination = Declination()
 
     assert declination.comments == Comment()
-    assert declination.model == ModelEnum.IGRF
+    assert declination.model == GeomagneticModelEnum.IGRF
     assert declination.epoch is None
     assert declination.value == 0.0
 
@@ -21,13 +21,13 @@ def test_declination_custom_values():
     """
     declination = Declination(
         comments="estimated from WMM 2020",
-        model=ModelEnum.WMM,
+        model=GeomagneticModelEnum.WMM,
         epoch="2020",
         value=12.3,
     )
 
     assert declination.comments.value == "estimated from WMM 2020"
-    assert declination.model == ModelEnum.WMM
+    assert declination.model == GeomagneticModelEnum.WMM
     assert declination.epoch == "2020"
     assert declination.value == 12.3
 
@@ -70,9 +70,9 @@ def test_declination_partial_values():
     """
     Test the Declination model with partial values.
     """
-    declination = Declination(model=ModelEnum.EMM, value=5.5)
+    declination = Declination(model=GeomagneticModelEnum.EMM, value=5.5)
 
     assert declination.comments == Comment()
-    assert declination.model == ModelEnum.EMM
+    assert declination.model == GeomagneticModelEnum.EMM
     assert declination.epoch is None
     assert declination.value == 5.5

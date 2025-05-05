@@ -21,7 +21,7 @@ from mt_metadata.common import (
     Orientation,
 )
 from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.timeseries.run_basemodel import Run
+from mt_metadata.timeseries import Run
 
 # =====================================================
 
@@ -199,7 +199,7 @@ class Station(MetadataBase):
     ]
 
     runs: Annotated[
-        ListDict,
+        ListDict | list | dict | OrderedDict | tuple,
         Field(
             default_factory=ListDict,
             description="List of runs recorded by the station.",

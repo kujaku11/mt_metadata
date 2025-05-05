@@ -1,7 +1,6 @@
 import pytest
 from pydantic import ValidationError
 from mt_metadata.common import BasicLocation, Location
-from mt_metadata.utils.location_helpers import DatumEnum
 
 
 @pytest.fixture
@@ -54,7 +53,7 @@ def test_location_default_values():
     assert location.latitude_uncertainty is None
     assert location.longitude_uncertainty is None
     assert location.elevation_uncertainty is None
-    assert location.datum == DatumEnum.WGS84
+    assert location.datum == "WGS 84"
     assert location.x is None
     assert location.y is None
     assert location.z is None
@@ -74,7 +73,7 @@ def test_location_custom_values():
         latitude_uncertainty=0.01,
         longitude_uncertainty=0.02,
         elevation_uncertainty=0.03,
-        datum=DatumEnum.NAD83,
+        datum="NAD83",
         x=10.0,
         y=20.0,
         z=30.0,
@@ -89,7 +88,7 @@ def test_location_custom_values():
     assert location.latitude_uncertainty == 0.01
     assert location.longitude_uncertainty == 0.02
     assert location.elevation_uncertainty == 0.03
-    assert location.datum == DatumEnum.NAD83
+    assert location.datum == "NAD 83"
     assert location.x == 10.0
     assert location.y == 20.0
     assert location.z == 30.0
@@ -131,7 +130,7 @@ def test_location_partial_values():
     assert location.latitude == 45.0
     assert location.longitude == -120.0
     assert location.elevation == 0.0
-    assert location.datum == DatumEnum.WGS84
+    assert location.datum == "WGS 84"
     assert location.latitude_uncertainty is None
     assert location.longitude_uncertainty is None
     assert location.elevation_uncertainty is None

@@ -164,9 +164,13 @@ class Comment(MetadataBase):
                         setattr(self, key, value[key])
                     except KeyError:
                         logger.warning(f"Could not find {key} in input dictionary.")
-            else:
+            elif len(value.keys()) == 1:
                 key = list(value.keys())[0]
                 self.value = value[key]
+
+            # this only happens on instance creation, so we can ignore it
+            else:
+                pass
 
         else:
             raise TypeError(f"Cannot parse type {type(value)}")

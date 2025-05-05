@@ -26,7 +26,14 @@ try:
 except ImportError:
     from_obspy = False
 
-from pydantic import Field, ConfigDict, ValidationInfo, field_validator, PrivateAttr
+from pydantic import (
+    BaseModel,
+    Field,
+    ConfigDict,
+    ValidationInfo,
+    field_validator,
+    PrivateAttr,
+)
 
 from mt_metadata.base import MetadataBase
 
@@ -308,7 +315,7 @@ def parse(
 # ==============================================================================
 # convenience date-time container
 # ==============================================================================
-class MTime(MetadataBase):
+class MTime(BaseModel):
     """
     Date and Time container based on :class:`pandas.Timestamp`
 

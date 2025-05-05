@@ -1,6 +1,5 @@
 import pytest
-from mt_metadata.common import Copyright
-from mt_metadata.utils.create_license_list import LicenseEnum
+from mt_metadata.common import Copyright, LicenseEnum
 
 
 def test_copyright_default_values():
