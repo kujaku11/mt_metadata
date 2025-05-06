@@ -57,7 +57,7 @@ class AppliedFilter(MetadataBase):
     ]
 
 
-class Filtered(MetadataBase):
+class Filter(MetadataBase):
     _objects_included = PrivateAttr({"applied_filter": AppliedFilter})
 
     filter_list: Annotated[
@@ -165,7 +165,8 @@ class Filtered(MetadataBase):
     #     self, single: bool = False, nested: bool = False, required: bool = True
     # ) -> dict:
     #     """
-    #     Convert the object to a dictionary.
+    #     Convert the object to a dictionary. To be compliant with older versions
+    #     of the metadata, use name and applied as lists
 
     #     Parameters
     #     ----------
@@ -178,19 +179,10 @@ class Filtered(MetadataBase):
     #     dict
     #         Dictionary representation of the object.
     #     """
-    #     d = super().to_dict(single=single)
-    #     if single:
-    #         try:
-    #             d.pop("name")
-    #             d.pop("applied")
-    #         except KeyError:
-    #             pass
-    #     else:
-    #         try:
-    #             d["filtered"].pop("name")
-    #             d["filtered"].pop("applied")
-    #         except KeyError:
-    #             pass
+    #     d = OrderedDict()
+    #     d["name"] = self.name
+    #     d["applied"] = self.applied
+    #     d["comments"] = self.comments.to_dict(single=single, nested=nested)
     #     return d
 
     def add_filter(

@@ -3,18 +3,19 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 from mt_metadata.common import StartEndRange
 from mt_metadata.timeseries import Channel
 
 
 # =====================================================
 class Magnetic(Channel):
+    _channel_type: str = PrivateAttr("magnetic")
     component: Annotated[
         str,
         Field(
             default="",
-            description="Component of the electric field.",
+            description="Component of the magnetic field.",
             examples="hx",
             alias=None,
             pattern=r"^[hHbB][a-zA-Z]*$",
@@ -48,6 +49,21 @@ class Magnetic(Channel):
             alias=None,
             json_schema_extra={
                 "units": "nanotesla",
+                "required": True,
+            },
+        ),
+    ]
+
+    type: Annotated[
+        str,
+        Field(
+            default="magnetic",
+            description="Data type for the channel, should be a descriptive word that a user can understand.",
+            examples="magnetic",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
                 "required": True,
             },
         ),

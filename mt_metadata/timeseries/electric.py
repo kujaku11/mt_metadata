@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from mt_metadata.common import StartEndRange
 from mt_metadata.timeseries import Channel, Electrode
@@ -11,6 +11,7 @@ from mt_metadata.timeseries import Channel, Electrode
 
 # =====================================================
 class Electric(Channel):
+    _channel_type: str = PrivateAttr("electric")
 
     component: Annotated[
         str,
@@ -103,6 +104,21 @@ class Electric(Channel):
             default_factory=StartEndRange,
             description="DC start and end values.",
             examples="StartEndRange()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    type: Annotated[
+        str,
+        Field(
+            default="electric",
+            description="Data type for the channel, should be a descriptive word that a user can understand.",
+            examples="electric",
+            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,

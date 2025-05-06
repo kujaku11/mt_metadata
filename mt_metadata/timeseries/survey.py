@@ -418,7 +418,9 @@ class Survey(MetadataBase):
 
     @field_validator("filters", mode="before")
     @classmethod
-    def validate_filters(cls, value: str | list, info: ValidationInfo) -> ListDict:
+    def validate_filters(
+        cls, value: str | list | ListDict, info: ValidationInfo
+    ) -> ListDict:
         """
 
         Parameters
@@ -433,15 +435,15 @@ class Survey(MetadataBase):
         ListDict
             _description_
         """
-        filters = []
+        filters = ListDict()
         fails = []
         if value is None:
             return
 
         if isinstance(value, list):
             if len(value) > 0:
-                if isinstance(value[0], (dict, OrderedDict, ListDict)):
-                    for ff in value:
+                for ff in value:
+                    if isinstance(ff, (dict, OrderedDict, ListDict)):
                         f_type = ff["type"]
                         if f_type is None:
                             msg = (
@@ -466,6 +468,21 @@ class Survey(MetadataBase):
 
                         f.from_dict(ff)
                         filters[f.name] = f
+                    elif isinstance(
+                        ff,
+                        (
+                            PoleZeroFilter,
+                            CoefficientFilter,
+                            FrequencyResponseTableFilter,
+                            TimeDelayFilter,
+                            FIRFilter,
+                        ),
+                    ):
+                        filters[ff.name] = ff
+                    else:
+                        msg = f"Item {ff} is not Filter type; type={type(ff)}"
+                        fails.append(msg)
+                        logger.error(msg)
 
         elif not isinstance(value, (dict, OrderedDict, ListDict)):
             msg = (
@@ -475,7 +492,6 @@ class Survey(MetadataBase):
             logger.error(msg)
             raise TypeError(msg)
         else:
-
             for k, v in value.items():
                 if not isinstance(
                     v,

@@ -4,9 +4,8 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 
-from mt_metadata.timeseries.channel_basemodel import (
+from mt_metadata.timeseries import (
     Channel,
-    BasicLocation,
     ChannelBase,
 )
 from mt_metadata.common import (
@@ -15,8 +14,9 @@ from mt_metadata.common import (
     DataQuality,
     TimePeriod,
     Fdsn,
+    BasicLocation,
 )
-from mt_metadata.timeseries.filtered_basemodel import Filtered
+from mt_metadata.timeseries import Filter
 
 
 @pytest.fixture
@@ -54,7 +54,7 @@ def meta_dict():
                     )
                 },
             ],
-            "location.datum": "WGS84",
+            "location.datum": "WGS 84",
             "location.elevation": 1234.0,
             "location.latitude": 12.324,
             "location.longitude": -112.03,
@@ -69,7 +69,7 @@ def meta_dict():
             "time_period.start": "1980-01-01T00:00:00+00:00",
             "translated_azimuth": 0.0,
             "translated_tilt": 0.0,
-            "type": "auxiliary",
+            "type": "base",
             "units": "celsius",
         }
     }
@@ -140,7 +140,7 @@ def custom_channel():
         sample_rate=8.0,
         translated_azimuth=50.0,
         translated_tilt=5.0,
-        type="electric",
+        type="base",
         units="volt",
         location=BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0),
     )
@@ -185,7 +185,7 @@ def custom_channel_base():
         sample_rate=8.0,
         translated_azimuth=50.0,
         translated_tilt=5.0,
-        type="electric",
+        type="base",
         units="volt",
     )
 
@@ -206,10 +206,10 @@ def test_channel_default_values(default_channel):
     assert channel.sample_rate == 0.0
     assert channel.translated_azimuth is None
     assert channel.translated_tilt is None
-    assert channel.type == ""
+    assert channel.type == "base"
     assert channel.units == ""
     assert isinstance(channel.data_quality, DataQuality)
-    assert isinstance(channel.filter, Filtered)
+    assert isinstance(channel.filter, Filter)
     assert isinstance(channel.time_period, TimePeriod)
     assert isinstance(channel.sensor, Instrument)
     assert isinstance(channel.fdsn, Fdsn)
@@ -235,7 +235,7 @@ def test_channel_custom_values(custom_channel):
     assert channel.sample_rate == 8.0
     assert channel.translated_azimuth == 50.0
     assert channel.translated_tilt == 5.0
-    assert channel.type == "electric"
+    assert channel.type == "base"
     assert channel.units == "volt"
     assert isinstance(channel.location, BasicLocation)
     assert channel.location.latitude == 45.0
@@ -259,10 +259,10 @@ def test_channel_base_default_values(default_channel_base):
     assert channel_base.sample_rate == 0.0
     assert channel_base.translated_azimuth is None
     assert channel_base.translated_tilt is None
-    assert channel_base.type == ""
+    assert channel_base.type == "base"
     assert channel_base.units == ""
     assert isinstance(channel_base.data_quality, DataQuality)
-    assert isinstance(channel_base.filter, Filtered)
+    assert isinstance(channel_base.filter, Filter)
     assert isinstance(channel_base.time_period, TimePeriod)
     assert isinstance(channel_base.fdsn, Fdsn)
 
@@ -283,5 +283,5 @@ def test_channel_base_custom_values(custom_channel_base):
     assert channel_base.sample_rate == 8.0
     assert channel_base.translated_azimuth == 50.0
     assert channel_base.translated_tilt == 5.0
-    assert channel_base.type == "electric"
+    assert channel_base.type == "base"
     assert channel_base.units == "volt"

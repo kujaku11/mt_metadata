@@ -12,7 +12,7 @@ class Citation(MetadataBase):
     doi: Annotated[
         HttpUrl | None,
         Field(
-            default="",
+            default=None,
             description="full url of the doi number",
             examples="http://doi.###",
             type="string",

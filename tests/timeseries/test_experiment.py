@@ -129,11 +129,13 @@ class TestBuildExperiment(unittest.TestCase):
     def test_survey_time_period(self):
         with self.subTest("start"):
             self.assertEqual(
-                MDate(self.start), self.experiment.surveys[0].time_period.start_date
+                MDate(time_stamp=self.start),
+                self.experiment.surveys[0].time_period.start_date,
             )
         with self.subTest("end"):
             self.assertEqual(
-                MDate(self.end), self.experiment.surveys[0].time_period.end_date
+                MDate(time_stamp=self.end.split("T")[0]),
+                self.experiment.surveys[0].time_period.end_date,
             )
 
     def test_station_time_period(self):

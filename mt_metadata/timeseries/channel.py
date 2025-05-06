@@ -3,6 +3,7 @@
 # =====================================================
 
 from typing import Annotated
+from loguru import logger
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
@@ -13,10 +14,10 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries import Filtered
-from pydantic import Field, field_validator, ValidationInfo, AliasChoices
+from mt_metadata.timeseries import Filter
+from pydantic import Field, field_validator, ValidationInfo, AliasChoices, PrivateAttr
 from mt_metadata.utils.units import get_unit_object, Unit
-
+from mt_metadata.timeseries.filters import ChannelResponse
 
 # =====================================================
 
@@ -24,6 +25,7 @@ from mt_metadata.utils.units import get_unit_object, Unit
 # this is a channel base for channels that have multiple sensors and locations like an
 # electric dipole.
 class ChannelBase(MetadataBase):
+    _channel_type: str = PrivateAttr("base")
     channel_number: Annotated[
         int | None,
         Field(
@@ -159,7 +161,7 @@ class ChannelBase(MetadataBase):
     type: Annotated[
         str,
         Field(
-            default="",
+            default="base",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
             examples="temperature",
             type="string",
@@ -201,11 +203,11 @@ class ChannelBase(MetadataBase):
     ]
 
     filter: Annotated[
-        Filtered,
+        Filter,
         Field(
-            default_factory=Filtered,
+            default_factory=Filter,
             description="Filtered data for the channel.",
-            examples="Filtered()",
+            examples="Filter()",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -280,22 +282,39 @@ class ChannelBase(MetadataBase):
         except KeyError as error:
             raise KeyError(error)
 
-    # def channel_response(self, filters_dict):
-    #     """
-    #     full channel response from a dictionary of filter objects
-    #     """
+    @field_validator("type", mode="before")
+    @classmethod
+    def validate_type(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the type channel
+        """
+        # Get the expected filter type based on the actual class
+        # Make sure derived classes define their own _filter_type as class variable
+        expected_type = getattr(cls, "_channel_type", "base").default
 
-    #     mt_filter_list = []
-    #     for name in self.filter.name:
-    #         try:
-    #             mt_filter = filters_dict[name]
-    #             mt_filter_list.append(mt_filter)
-    #         except KeyError:
-    #             msg = f"Could not find {name} in filters dictionary, skipping"
-    #             self.logger.error(msg)
-    #             continue
-    #     # compute instrument sensitivity and units in/out
-    #     return ChannelResponse(filters_list=mt_filter_list)
+        if value != expected_type:
+            logger.warning(
+                f"Channel type is set to {value}, but should be "
+                f"{expected_type} for {cls.__name__}."
+            )
+        return expected_type
+
+    def channel_response(self, filters_dict):
+        """
+        full channel response from a dictionary of filter objects
+        """
+
+        mt_filter_list = []
+        for name in self.filter.name:
+            try:
+                mt_filter = filters_dict[name]
+                mt_filter_list.append(mt_filter)
+            except KeyError:
+                msg = f"Could not find {name} in filters dictionary, skipping"
+                self.logger.error(msg)
+                continue
+        # compute instrument sensitivity and units in/out
+        return ChannelResponse(filters_list=mt_filter_list)
 
     @property
     def unit_object(self) -> Unit:

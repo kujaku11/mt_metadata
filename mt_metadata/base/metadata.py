@@ -828,7 +828,19 @@ class DotNotationBaseModel(BaseModel):
                 self._set_nested_attribute(nested_data, key, value)
             else:
                 # Regular field, pass to Pydantic as-is
-                flat_data[key] = value
+                if key == validate_name(self.__class__.__name__):
+                    if isinstance(value, dict):
+                        # If the value is a dict, we need to flatten it
+                        for nested_key, nested_value in value.items():
+                            if isinstance(nested_value, dict):
+                                # Flatten nested dicts
+                                self._set_nested_attribute(
+                                    nested_data, nested_key, nested_value
+                                )
+                            else:
+                                flat_data[nested_key] = nested_value
+                else:
+                    flat_data[key] = value
 
         # Merge the nested dict into flat dict (nested takes precedence)
         flat_data.update(nested_data)
@@ -1521,8 +1533,7 @@ class MetadataBase(DotNotationBaseModel):
             raise MTSchemaError(msg)
         keys = list(meta_dict.keys())
         if len(keys) == 1:
-            print(type(meta_dict[keys[0]]))
-            if isinstance(keys[0], (dict, OrderedDict)):
+            if isinstance(meta_dict[keys[0]], (dict, OrderedDict)):
                 class_name = keys[0]
                 if class_name.lower() != validate_name(self.__class__.__name__):
                     msg = (

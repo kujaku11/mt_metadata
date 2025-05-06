@@ -54,10 +54,10 @@ from .diagnostic import Diagnostic
 from .battery import Battery
 from .electrode import Electrode
 from .timing_system import TimingSystem
-from .filters.filtered import Filtered
+from .filtered import Filter, AppliedFilter
 from .filters.filter_base import FilterBase
 from .data_logger import DataLogger
-from .channel import Channel
+from .channel import Channel, ChannelBase
 from .auxiliary import Auxiliary
 from .electric import Electric
 from .magnetic import Magnetic
@@ -88,13 +88,15 @@ __all__ = [
     "TimePeriod",
     "Orientation",
     "Software",
-    "Filtered",
+    "Filter",
+    "AppliedFilter",
     "FilterBase",
     "DataLogger",
     "Survey",
     "Station",
     "Run",
     "Channel",
+    "ChannelBase",
     "Auxiliary",
     "Electric",
     "Magnetic",
