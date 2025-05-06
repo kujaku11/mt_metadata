@@ -305,10 +305,11 @@ class Run(MetadataBase):
 
                     ch.from_dict(channel)
                     channels.append(ch)
-                except KeyError:
+                except KeyError as error:
                     msg = f"Item {ii} is not type(channel); type={type(channel)}"
                     fails.append(msg)
                     logger.error(msg)
+                    logger.exception(error)
             elif not isinstance(channel, (Auxiliary, Electric, Magnetic)):
                 msg = f"Item {ii} is not type(channel); type={type(channel)}"
                 fails.append(msg)

@@ -113,11 +113,11 @@ class TestBuildExperiment(unittest.TestCase):
                         ch_obj = Auxiliary(component=ch, **kwargs)
                         run_obj.add_channel(ch_obj)
                     run_obj.update_time_period()
-                    station_obj.runs.append(run_obj)
+                    station_obj.add_run(run_obj)
                     station_obj.update_time_period()
-                survey_obj.stations.append(station_obj)
+                survey_obj.add_station(station_obj)
                 survey_obj.update_time_period()
-            self.experiment.surveys.append(survey_obj)
+            self.experiment.add_survey(survey_obj)
 
     def test_write_xml(self):
         experiment_xml = self.experiment.to_xml(required=True)

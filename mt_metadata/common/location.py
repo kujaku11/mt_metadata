@@ -70,9 +70,9 @@ class BasicLocation(BasicLocationNoDatum):
     datum: Annotated[
         str | int,
         Field(
-            default="WGS84",
+            default="WGS 84",
             description="Datum of the location values.  Usually a well known datum like WGS84.",
-            examples="WGS84",
+            examples="WGS 84",
             alias=None,
             json_schema_extra={
                 "units": None,
