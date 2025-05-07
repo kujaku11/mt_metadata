@@ -20,7 +20,9 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     create_mt_component,
 )
 
-from mt_metadata import timeseries as metadata
+
+from mt_metadata.timeseries import Electric, Magnetic, Auxiliary
+from mt_metadata.timeseries.filters import Filter
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
@@ -42,7 +44,7 @@ class XMLChannelMTChannel(BaseTranslator):
         "induction coil",
         "coil",
         "dipole",
-        "electrode"
+        "electrode",
     ]
 
     def __init__(self):
@@ -97,11 +99,11 @@ class XMLChannelMTChannel(BaseTranslator):
 
         ch_dict = read_channel_code(xml_channel.code)
         if ch_dict["measurement"] in ["electric"]:
-            mt_channel = metadata.Electric(type="electric")
+            mt_channel = Electric(type="electric")
         elif ch_dict["measurement"] in ["magnetic"]:
-            mt_channel = metadata.Magnetic(type="magnetic")
+            mt_channel = Magnetic(type="magnetic")
         else:
-            mt_channel = metadata.Auxiliary(type=ch_dict["measurement"])
+            mt_channel = Auxiliary(type=ch_dict["measurement"])
 
         mt_channel = self._get_mt_position(xml_channel, mt_channel)
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
@@ -113,7 +115,7 @@ class XMLChannelMTChannel(BaseTranslator):
             if mt_key:
                 value = getattr(xml_channel, xml_key)
                 if value:
-                    mt_channel.set_attr_from_name(mt_key, value)
+                    mt_channel.update_attribute(mt_key, value)
 
         if mt_channel.component is None:
             mt_channel.component = create_mt_component(xml_channel.code)
@@ -121,8 +123,10 @@ class XMLChannelMTChannel(BaseTranslator):
         # fill channel filters
         mt_channel.filter.name = list(mt_filters.keys())
         mt_channel.filter.applied = [True] * len(list(mt_filters.keys()))
-        if UTCDateTime(mt_channel.time_period.end) < UTCDateTime(mt_channel.time_period.start):
-            mt_channel.time_period.end = '2200-01-01T00:00:00+00:00'
+        if UTCDateTime(mt_channel.time_period.end) < UTCDateTime(
+            mt_channel.time_period.start
+        ):
+            mt_channel.time_period.end = "2200-01-01T00:00:00+00:00"
         return mt_channel, mt_filters
 
     def mt_to_xml(self, mt_channel, filters_dict, hard_code=True):
@@ -140,7 +144,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if not isinstance(
             mt_channel,
-            (metadata.Electric, metadata.Magnetic, metadata.Auxiliary),
+            (Electric, Magnetic, Auxiliary),
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
@@ -190,12 +194,8 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.types = ["geophysical".upper()]
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
-        xml_channel.restricted_status = release_dict[
-            xml_channel.restricted_status
-        ]
-        xml_channel = self._mt_to_xml_response(
-            mt_channel, filters_dict, xml_channel
-        )
+        xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
+        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -211,9 +211,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 xml_channel.dip = mt_channel.measurement_tilt % 360
 
             else:
-                setattr(
-                    xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key)
-                )
+                setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
 
         return xml_channel
 
@@ -236,7 +234,7 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
 
         if sensor.type.lower() in ["magnetometer", "induction coil", "coil"]:
-            if not isinstance(mt_channel, metadata.Magnetic):
+            if not isinstance(mt_channel, Magnetic):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -252,7 +250,7 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
-            if not isinstance(mt_channel, metadata.Electric):
+            if not isinstance(mt_channel, Electric):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -272,14 +270,12 @@ class XMLChannelMTChannel(BaseTranslator):
             mt_channel.negative.model = sensor.model
             mt_channel.negative.type = "electrode"
 
-            mt_channel.dipole_length = self._parse_dipole_length(
-                sensor.description
-            )
+            mt_channel.dipole_length = self._parse_dipole_length(sensor.description)
 
             return mt_channel
 
         else:
-            if not isinstance(mt_channel, metadata.Auxiliary):
+            if not isinstance(mt_channel, Auxiliary):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -479,9 +475,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
         name = xml_channel.response.response_stages[-1].output_units
-        description = xml_channel.response.response_stages[
-            -1
-        ].output_units_description
+        description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
@@ -545,9 +539,9 @@ class XMLChannelMTChannel(BaseTranslator):
                     return f_obj.name, False
 
         try:
-            last = sorted(
-                [k for k in existing_filters.keys() if mt_filter.type in k]
-            )[-1]
+            last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
+                -1
+            ]
         except IndexError:
             return f"{mt_filter.type}_{0:02}", True
         try:
@@ -582,7 +576,6 @@ class XMLChannelMTChannel(BaseTranslator):
 
         return xml_channel
 
-
     def _deduce_sensor_type(self, sensor):
         """
 
@@ -606,11 +599,12 @@ class XMLChannelMTChannel(BaseTranslator):
         else:
             sensor_description = copy.deepcopy(original_sensor_type)
 
-
         if sensor_type.lower() in self.understood_sensor_types:
             return sensor_type
         else:
-            self.logger.warning(f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}")
+            self.logger.warning(
+                f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
+            )
 
         #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
         if sensor_type.lower() == "bartington":
@@ -619,11 +613,14 @@ class XMLChannelMTChannel(BaseTranslator):
             if sensor_description == "Bartington 3-Axis Fluxgate Sensor":
                 sensor_type = "magnetometer"
             if sensor_description:
-                if ("bf-4" in sensor_description.lower()) & ("schlumberger" in sensor_description.lower()):  # BSL-NCEDC
+                if ("bf-4" in sensor_description.lower()) & (
+                    "schlumberger" in sensor_description.lower()
+                ):  # BSL-NCEDC
                     sensor_type = "magnetometer"
-                elif ("electric" in sensor_description.lower()) & ("dipole" in sensor_description.lower()):  # BSL-NCEDC
+                elif ("electric" in sensor_description.lower()) & (
+                    "dipole" in sensor_description.lower()
+                ):  # BSL-NCEDC
                     sensor_type = "dipole"
-
 
         # reset sensor_type to None it it was not handled
         if not sensor_type:
