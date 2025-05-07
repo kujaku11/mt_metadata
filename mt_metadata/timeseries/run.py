@@ -5,6 +5,7 @@ from typing import Annotated
 from loguru import logger
 from collections import OrderedDict
 from typing_extensions import Self
+import re
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
@@ -289,33 +290,14 @@ class Run(MetadataBase):
             value_list = value
 
         for ii, channel in enumerate(value_list):
-
-            if isinstance(channel, (dict, OrderedDict)):
-                try:
-                    ch_type = channel["type"]
-                    if ch_type is None:
-                        ch_type = channel["component"][0]
-
-                    if ch_type in ["electric", "e"]:
-                        ch = Electric()
-                    elif ch_type in ["magnetic", "b", "h"]:
-                        ch = Magnetic()
-                    else:
-                        ch = Auxiliary()
-
-                    ch.from_dict(channel)
-                    channels.append(ch)
-                except KeyError as error:
-                    msg = f"Item {ii} is not type(channel); type={type(channel)}"
-                    fails.append(msg)
-                    logger.error(msg)
-                    logger.exception(error)
-            elif not isinstance(channel, (Auxiliary, Electric, Magnetic)):
-                msg = f"Item {ii} is not type(channel); type={type(channel)}"
-                fails.append(msg)
+            try:
+                channels.append(cls._get_correct_channel_type(channel))
+            except KeyError as error:
+                msg = f"Could not find type in {channel}"
                 logger.error(msg)
-            else:
-                channels.append(channel)
+                logger.exception(error)
+                fails.append(msg)
+
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
 
@@ -383,10 +365,10 @@ class Run(MetadataBase):
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
             else:
                 if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
 
         ## Need this because channels are set when setting channels_recorded
         ## and it initiates an empty channel, but we need to fill it with
@@ -448,25 +430,7 @@ class Run(MetadataBase):
 
 
         """
-        if isinstance(channel_obj, (str)):
-
-            if channel_obj in ["electric", "e"]:
-                channel_obj = Electric(component=channel_obj)
-            elif channel_obj in ["magnetic", "b", "h"]:
-                channel_obj = Magnetic(component=channel_obj)
-            else:
-                channel_obj = Auxiliary(component=channel_obj)
-
-        elif not isinstance(channel_obj, (Magnetic, Electric, Auxiliary)):
-            msg = f"Input must be metadata.Channel not {type(channel_obj)}"
-            logger.error(msg)
-            raise ValueError(msg)
-
-        if channel_obj.component is None:
-            if not isinstance(channel_obj, Auxiliary):
-                msg = "component cannot be empty"
-                logger.error(msg)
-                raise ValueError(msg)
+        channel_obj = self._get_correct_channel_type(channel_obj)
 
         if self.has_channel(channel_obj.component):
             self.channels[channel_obj.component].update(channel_obj)
@@ -528,3 +492,62 @@ class Run(MetadataBase):
                 else:
                     if self.time_period.end < max(end):
                         self.time_period.end = max(end)
+
+    @classmethod
+    def _get_correct_channel_type(self, channel_obj):
+        """
+        Get the correct channel type based on the input channel object.
+
+        :param channel_obj: channel object to check
+        :type channel_obj: Channel
+        :return: correct channel type
+        :rtype: Channel
+
+        """
+        if isinstance(channel_obj, str):
+            if channel_obj.lower().startswith("e"):
+                return Electric(component=channel_obj)
+            elif (
+                channel_obj.lower().startswith("h")
+                or channel_obj.lower().startswith("b")
+                or channel_obj.lower() in ["magnetic"]
+            ):
+                return Magnetic(component=channel_obj)
+            else:
+                return Auxiliary(component=channel_obj)
+
+        elif isinstance(channel_obj, (dict, OrderedDict)):
+            try:
+                ch_type = channel_obj["type"]
+                if ch_type is None:
+                    ch_type = channel_obj["component"][0]
+
+                if ch_type.lower().startswith("e"):
+                    return Electric(**channel_obj)
+                elif (
+                    ch_type.lower().startswith("b")
+                    or ch_type.lower().startswith("b")
+                    or ch_type.lower() in ["magnetic"]
+                ):
+                    return Magnetic(**channel_obj)
+                else:
+                    return Auxiliary(**channel_obj)
+            except KeyError as error:
+                msg = f"Could not find type in {channel_obj}"
+                logger.error(msg)
+                logger.exception(error)
+                raise error
+
+        elif isinstance(channel_obj, (Electric, Magnetic, Auxiliary)):
+            if channel_obj.component is None:
+                if not isinstance(channel_obj, Auxiliary):
+                    msg = "component cannot be empty"
+                    logger.error(msg)
+                    raise ValueError(msg)
+            return channel_obj
+        else:
+            msg = (
+                f"Input must be mt_metadata.timeseries.Channel not {type(channel_obj)}"
+            )
+            logger.error(msg)
+            raise ValueError(msg)

@@ -68,9 +68,9 @@ class Survey(MetadataBase):
     datum: Annotated[
         str | int,
         Field(
-            default="WGS84",
+            default="WGS 84",
             description="Datum of latitude and longitude coordinates. Should be a well-known datum, such as WGS84, and will be the reference datum for all locations.  This is important for the user, they need to make sure all coordinates in the survey and child items (i.e. stations, channels) are referenced to this datum.",
-            examples="WGS84",
+            examples="WGS 84",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -320,9 +320,9 @@ class Survey(MetadataBase):
     release_license: Annotated[
         str,
         Field(
-            default="CC BY 4.0",
+            default="CC-BY-4.0",
             description="Release license for the data.",
-            examples="CC BY 4.0",
+            examples="CC-BY-4.0",
             alias=None,
             json_schema_extra={
                 "units": None,

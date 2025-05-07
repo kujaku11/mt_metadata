@@ -273,7 +273,8 @@ class ChannelBase(MetadataBase):
         str
             return the long descriptive name of the unit. For example 'kilometers'.
         """
-
+        if value in [None, ""]:
+            return ""
         try:
             unit_object = get_unit_object(value)
             return unit_object.name

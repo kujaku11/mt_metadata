@@ -3,10 +3,8 @@ import json
 import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
-from mt_metadata.timeseries.electric_basemodel import Electric
-from mt_metadata.timeseries.magnetic_basemodel import Magnetic
-from mt_metadata.timeseries.run_basemodel import Run
+from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
+from pydantic import ValidationError
 
 
 @pytest.fixture
@@ -132,7 +130,7 @@ def test_set_channels_fail(run_object, subtests):
         with pytest.raises(TypeError):
             set_channels(10)
     with subtests.test("fail from mixed input"):
-        with pytest.raises(TypeError):
+        with pytest.raises(ValidationError):
             set_channels([Run(), Electric()])
 
 
@@ -200,6 +198,24 @@ def test_add_channel(run_object, subtests):
     with subtests.test("Add auxiliary channel"):
         run_object.add_channel(Auxiliary(component="temperature"))
         assert "temperature" in run_object.channels_recorded_auxiliary
+
+    with subtests.test("Add channel from string electric"):
+        run_object.add_channel("ex")
+        assert "ex" in run_object.channels_recorded_electric
+        assert "ex" in run_object.channels_recorded_all
+        assert "ex" in run_object.channels.keys()
+
+    with subtests.test("Add channel from string magnetic"):
+        run_object.add_channel("hx")
+        assert "hx" in run_object.channels_recorded_magnetic
+        assert "hx" in run_object.channels_recorded_all
+        assert "hx" in run_object.channels.keys()
+
+    with subtests.test("Add channel from string auxiliary"):
+        run_object.add_channel("temperature")
+        assert "temperature" in run_object.channels_recorded_auxiliary
+        assert "temperature" in run_object.channels_recorded_all
+        assert "temperature" in run_object.channels.keys()
 
 
 def test_remove_channel(populated_run, subtests):
