@@ -1,6 +1,6 @@
 import pytest
-from mt_metadata.timeseries.battery_basemodel import Battery
-from mt_metadata.timeseries.range_basemodel import StartEndRange
+from mt_metadata.timeseries import Battery
+from mt_metadata.common import StartEndRange
 from pydantic import ValidationError
 
 

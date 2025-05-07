@@ -226,6 +226,24 @@ class Experiment(MetadataBase):
             logger.warning(f"Could not find survey {survey_id}")
             return None
 
+    def remove_survey(self, survey_id: str, update: bool = True) -> None:
+        """
+        Remove a survey from the experiment
+
+        :param survey_id: DESCRIPTION
+        :type survey_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if self.has_survey(survey_id):
+            self.surveys.remove(survey_id)
+            logger.debug(f"Removed survey {survey_id} from experiment")
+
+        else:
+            logger.warning(f"Could not find survey {survey_id} to remove")
+
     def to_dict(self, nested: bool = False, required: bool = True) -> dict:
         """
         create a dictionary for the experiment object.
@@ -516,15 +534,15 @@ class Experiment(MetadataBase):
         """
         pass
 
-    def validate_experiment(self):
-        """
-        Validate experiment is legal
+    # def validate_experiment(self):
+    #     """
+    #     Validate experiment is legal
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+    #     :return: DESCRIPTION
+    #     :rtype: TYPE
 
-        """
-        pass
+    #     """
+    #     pass
 
     def _read_filter_dict(self, filters_dict: dict | None) -> ListDict:
         """

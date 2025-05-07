@@ -2,9 +2,7 @@ import pytest
 import json
 import pandas as pd
 from collections import OrderedDict
-from mt_metadata.timeseries.station_basemodel import Station
-from mt_metadata.timeseries.run_basemodel import Run
-from pydantic import ValidationError
+from mt_metadata.timeseries import Station, Run
 
 
 @pytest.fixture

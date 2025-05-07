@@ -92,7 +92,7 @@ def test_invalid_calibration_date(default_filter, subtests):
 
     with subtests.test("Invalid type"):
         with pytest.raises(TypeError):
-            default_filter.calibration_date = {"date": "2023-01-01"}
+            default_filter.calibration_date = []
 
 
 def test_units_validation(default_filter, subtests):

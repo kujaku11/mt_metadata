@@ -1,6 +1,5 @@
 import pytest
-from mt_metadata.timeseries.auxiliary_basemodel import Auxiliary
-from mt_metadata.timeseries.channel_basemodel import Channel
+from mt_metadata.timeseries import Auxiliary, Channel
 
 # File: mt_metadata/timeseries/test_auxiliary_basemodel.py
 
