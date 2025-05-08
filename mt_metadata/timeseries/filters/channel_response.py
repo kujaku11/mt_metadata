@@ -29,6 +29,7 @@ from mt_metadata.timeseries.filters import (
 
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
+
 try:
     from obspy.core import inventory
 except ImportError:
@@ -100,7 +101,9 @@ class ChannelResponse(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._frequencies = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -150,9 +153,7 @@ class ChannelResponse(Base):
             if is_supported_filter(item):
                 return_list.append(item)
             else:
-                fails.append(
-                    f"Item is not a supported filter type, {type(item)}"
-                )
+                fails.append(f"Item is not a supported filter type, {type(item)}")
 
         if fails:
             raise TypeError(", ".join(fails))
@@ -202,9 +203,7 @@ class ChannelResponse(Base):
         :return: all the non-time_delay filters as a list
 
         """
-        non_delay_filters = [
-            x for x in self.filters_list if x.type != "time delay"
-        ]
+        non_delay_filters = [x for x in self.filters_list if x.type != "time delay"]
         return non_delay_filters
 
     @property
@@ -304,8 +303,7 @@ class ChannelResponse(Base):
                 "Filters list not provided, building list assuming all are applied"
             )
             filters_list = self.get_list_of_filters_to_remove(
-                include_decimation=include_decimation,
-                include_delay=include_delay,
+                include_decimation=include_decimation, include_delay=include_delay
             )
 
         if len(filters_list) == 0:
@@ -323,9 +321,7 @@ class ChannelResponse(Base):
             result /= np.max(np.abs(result))
         return result
 
-    def compute_instrument_sensitivity(
-        self, normalization_frequency=None, sig_figs=6
-    ):
+    def compute_instrument_sensitivity(self, normalization_frequency=None, sig_figs=16):
         """
         Compute the StationXML instrument sensitivity for the given normalization frequency
 
@@ -339,18 +335,41 @@ class ChannelResponse(Base):
             self.normalization_frequency = normalization_frequency
         sensitivity = 1.0
         for mt_filter in self.filters_list:
-            complex_response = mt_filter.complex_response(
-                self.normalization_frequency
-            )
+            complex_response = mt_filter.complex_response(self.normalization_frequency)
             sensitivity *= complex_response.astype(complex)
         try:
             sensitivity = np.abs(sensitivity[0])
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
-        return round(
-            sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity))))
-        )
+        return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
+
+    def compute_total_gain(self, sig_figs=16):
+        """
+        Computing the total sensitivity seems to be different than just adding all the gains together.
+        Overall the total sensitivity is useless for MT cause they don't have the ability to use the units.
+        So if a person downloads data from the DMC, they will simply use the filters provided.
+
+        Parameters
+        ----------
+        sig_figs : int, optional
+            _description_, by default 6
+
+        Returns
+        -------
+        _type_
+            _description_
+
+        Raises
+        ------
+        ValueError
+            _description_
+        """
+        total_gain = 1
+        for mt_filter in self.filters_list:
+            total_gain *= mt_filter.gain
+
+        return round(total_gain, sig_figs - int(np.floor(np.log10(abs(total_gain)))))
 
     @property
     def units_in(self):
@@ -404,6 +423,13 @@ class ChannelResponse(Base):
 
         """
         total_sensitivity = self.compute_instrument_sensitivity()
+        total_gain = self.compute_total_gain()
+
+        if total_sensitivity != total_gain:
+            self.logger.info(
+                f"total sensitivity {total_sensitivity} != total gain {total_gain}. Using total_gain."
+            )
+            total_sensitivity = total_gain
 
         units_in_obj = get_unit_object(self.units_in)
         units_out_obj = get_unit_object(self.units_out)
@@ -421,9 +447,7 @@ class ChannelResponse(Base):
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
                 if f.units_out not in ["count"]:
-                    self.logger.debug(
-                        f"converting CoefficientFilter {f.name} to PZ"
-                    )
+                    self.logger.debug(f"converting CoefficientFilter {f.name} to PZ")
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
                     pz.units_in = f.units_in
@@ -501,8 +525,7 @@ class ChannelResponse(Base):
 
         # get response of individual filters
         cr_list = [
-            f.complex_response(self.frequencies, **cr_kwargs)
-            for f in filters_list
+            f.complex_response(self.frequencies, **cr_kwargs) for f in filters_list
         ]
 
         # compute total response
