@@ -409,6 +409,12 @@ class ChannelResponse(FilterBase):
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
+        if sensitivity == 0.0:
+            logger.warning(
+                "Sensitivity is zero, cannot compute instrument sensitivity. "
+                "Returning 1.0"
+            )
+            return 1.0
         return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
 
     @requires(obspy=inventory)
@@ -432,8 +438,8 @@ class ChannelResponse(FilterBase):
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
             total_sensitivity,
             self.normalization_frequency,
-            units_in_obj.abbreviation,
-            units_out_obj.abbreviation,
+            units_in_obj.symbol,
+            units_out_obj.symbol,
             input_units_description=units_in_obj.name,
             output_units_description=units_out_obj.name,
         )

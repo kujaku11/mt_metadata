@@ -22,8 +22,7 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
 )
 
 
-from mt_metadata.timeseries import Electric, Magnetic, Auxiliary
-from mt_metadata.timeseries.filtered import Filter, AppliedFilter
+from mt_metadata.timeseries import Electric, Magnetic, Auxiliary, AppliedFilter
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
@@ -129,7 +128,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # fill channel filters
         for filter_name, mt_filter in mt_filters.items():
-            mt_channel.filter.filter_list.append(
+            mt_channel.filtered.filter_list.append(
                 AppliedFilter(
                     name=filter_name,
                     applied=True,
@@ -224,6 +223,10 @@ class XMLChannelMTChannel(BaseTranslator):
 
             elif xml_key in ["dip"]:
                 xml_channel.dip = mt_channel.measurement_tilt % 360
+
+            elif "time_period" in mt_key:
+                value = mt_channel.get_attr_from_name(mt_key).time_stamp
+                setattr(xml_channel, xml_key, value)
 
             else:
                 setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
@@ -446,7 +449,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         """
         comments = []
-        clist = mt_comment.split("run_ids:")
+        clist = mt_comment.value.split("run_ids:")
         for item in clist:
             if ":" in item:
                 k, v = item.split(":")
@@ -586,7 +589,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         unit_obj = get_unit_object(mt_channel_response.units_in)
 
-        xml_channel.calibration_units = unit_obj.abbreviation
+        xml_channel.calibration_units = unit_obj.symbol
         xml_channel.calibration_units_description = unit_obj.name
 
         return xml_channel

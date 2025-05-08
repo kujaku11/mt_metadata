@@ -20,23 +20,23 @@ from mt_metadata.common import LicenseEnum
 
 # =============================================================================
 
-release_dict = {
-    "CC-0": "open",
-    "CC-BY": "open",
-    "CC-BY-SA": "partial",
-    "CC-BY-ND": "partial",
-    "CC-BY-NC-SA": "partial",
-    "CC-BY-NC-NC": "closed",
-    None: "open",
-    "CC 0": "open",
-    "CC BY": "open",
-    "CC BY-SA": "partial",
-    "CC BY-ND": "partial",
-    "CC BY-NC-SA": "partial",
-    "CC BY-NC-NC": "closed",
-}
+# release_dict = {
+#     "CC-0": "open",
+#     "CC-BY": "open",
+#     "CC-BY-SA": "partial",
+#     "CC-BY-ND": "partial",
+#     "CC-BY-NC-SA": "partial",
+#     "CC-BY-NC-NC": "closed",
+#     None: "open",
+#     "CC 0": "open",
+#     "CC BY": "open",
+#     "CC BY-SA": "partial",
+#     "CC BY-ND": "partial",
+#     "CC BY-NC-SA": "partial",
+#     "CC BY-NC-NC": "closed",
+# }
 
-release_dict = {}
+release_dict = {None: "open"}
 for key in LicenseEnum.__members__.keys():
     if key.startswith("CC"):
         if "SA" in key or "NA" in key or "ND" in key or "NC" in key:

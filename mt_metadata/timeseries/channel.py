@@ -14,8 +14,7 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries import AppliedFilter, Filtered
-from mt_metadata.utils.list_dict import ListDict
+from mt_metadata.timeseries import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices, PrivateAttr
 from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters import ChannelResponse
@@ -307,13 +306,13 @@ class ChannelBase(MetadataBase):
         """
 
         mt_filter_list = []
-        for name in self.filter.name:
+        for applied in self.filtered.filter_list:
             try:
-                mt_filter = filters_dict[name]
+                mt_filter = filters_dict[applied.name]
                 mt_filter_list.append(mt_filter)
             except KeyError:
-                msg = f"Could not find {name} in filters dictionary, skipping"
-                self.logger.error(msg)
+                msg = f"Could not find {applied.name} in filters dictionary, skipping"
+                logger.error(msg)
                 continue
         # compute instrument sensitivity and units in/out
         return ChannelResponse(filters_list=mt_filter_list)
