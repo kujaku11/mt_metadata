@@ -201,6 +201,8 @@ class BaseTranslator:
                 for part in key[comment_key]:
                     info = part.split(".")[-1]
                     value = mt_element.get_attr_from_name(part)
+                    if hasattr(value, "value"):
+                        value = value.value
                     if value:
                         values.append(f"{info}: {value}")
                 value = ", ".join(values)

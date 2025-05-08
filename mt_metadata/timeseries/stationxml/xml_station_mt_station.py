@@ -123,9 +123,9 @@ class XMLStationMTStation(BaseTranslator):
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:
                         if mt_station.comments:
-                            mt_station.comments += value
+                            mt_station.comments.value += value
                         else:
-                            mt_station.comments = value
+                            mt_station.comments.value = value
                     else:
                         mt_station.update_attribute(key, value)
 
