@@ -4,10 +4,7 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 
-from mt_metadata.timeseries import (
-    Channel,
-    ChannelBase,
-)
+from mt_metadata.timeseries import Channel, ChannelBase, Filtered
 from mt_metadata.common import (
     Comment,
     Instrument,
@@ -16,7 +13,6 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries import Filter
 
 
 @pytest.fixture
@@ -33,8 +29,8 @@ def meta_dict():
             "data_quality.rating.method": "ml",
             "data_quality.rating.value": 4,
             "data_quality.warnings": "No warnings",
-            "filter.comments": "test",
-            "filter.filter_list": [
+            "filtered.comments": "test",
+            "filtered.filter_list": [
                 {
                     "applied_filter": OrderedDict(
                         [
@@ -196,7 +192,7 @@ def test_channel_default_values(default_channel):
     """
     channel = default_channel
 
-    assert channel.channel_number is None
+    assert channel.channel_number == 0
     assert channel.channel_id is None
     assert isinstance(channel.comments, Comment)
     assert channel.comments.value is None
@@ -209,7 +205,7 @@ def test_channel_default_values(default_channel):
     assert channel.type == "base"
     assert channel.units == ""
     assert isinstance(channel.data_quality, DataQuality)
-    assert isinstance(channel.filter, Filter)
+    assert isinstance(channel.filtered, Filtered)
     assert isinstance(channel.time_period, TimePeriod)
     assert isinstance(channel.sensor, Instrument)
     assert isinstance(channel.fdsn, Fdsn)
@@ -249,7 +245,7 @@ def test_channel_base_default_values(default_channel_base):
     """
     channel_base = default_channel_base
 
-    assert channel_base.channel_number is None
+    assert channel_base.channel_number == 0
     assert channel_base.channel_id is None
     assert isinstance(channel_base.comments, Comment)
     assert channel_base.comments.value is None
@@ -262,7 +258,7 @@ def test_channel_base_default_values(default_channel_base):
     assert channel_base.type == "base"
     assert channel_base.units == ""
     assert isinstance(channel_base.data_quality, DataQuality)
-    assert isinstance(channel_base.filter, Filter)
+    assert isinstance(channel_base.filtered, Filtered)
     assert isinstance(channel_base.time_period, TimePeriod)
     assert isinstance(channel_base.fdsn, Fdsn)
 

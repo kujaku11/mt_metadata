@@ -13,16 +13,12 @@ Created on Wed Sep 30 11:47:01 2020
 # =============================================================================
 # Imports
 # =============================================================================
-import logging
+from loguru import logger
 import numpy as np
 
-from mt_metadata.timeseries import Copyright
+from mt_metadata.common import LicenseEnum
 
 # =============================================================================
-logger = logging.getLogger(__name__)
-
-c = Copyright()
-keys = c._attr_dict["release_license"]["options"]
 
 release_dict = {
     "CC-0": "open",
@@ -40,7 +36,8 @@ release_dict = {
     "CC BY-NC-NC": "closed",
 }
 
-for key in keys:
+release_dict = {}
+for key in LicenseEnum.__members__.keys():
     if key.startswith("CC"):
         if "SA" in key or "NA" in key or "ND" in key or "NC" in key:
             if key.count("NC") > 1:
@@ -89,9 +86,7 @@ measurement_code_dict = {
     "wind": "W",
 }
 
-measurement_code_dict_reverse = dict(
-    [(v, k) for k, v in measurement_code_dict.items()]
-)
+measurement_code_dict_reverse = dict([(v, k) for k, v in measurement_code_dict.items()])
 # measurement_code_dict_reverse["T"] = measurement_code_dict_reverse["F"] #HACK
 
 
@@ -184,9 +179,7 @@ def get_measurement_code(measurement):
     return sensor_code
 
 
-def get_orientation_code(
-    azimuth=None, direction=None, orientation="horizontal"
-):
+def get_orientation_code(azimuth=None, direction=None, orientation="horizontal"):
     """
     Get orientation code given angle and orientation.  This is a general
     code and the true azimuth is stored in channel
@@ -229,9 +222,7 @@ def get_orientation_code(
             )
 
 
-def make_channel_code(
-    sample_rate, measurement_type, azimuth, orientation="horizontal"
-):
+def make_channel_code(sample_rate, measurement_type, azimuth, orientation="horizontal"):
     """
 
     Make channel code from given parameters
@@ -250,9 +241,7 @@ def make_channel_code(
     period_code = get_period_code(sample_rate)
     sensor_code = get_measurement_code(measurement_type)
     if isinstance(azimuth, (float, int)):
-        orientation_code = get_orientation_code(
-            azimuth, orientation=orientation
-        )
+        orientation_code = get_orientation_code(azimuth, orientation=orientation)
     elif isinstance(azimuth, (str)):
         orientation_code = get_orientation_code(direction=azimuth)
 
@@ -273,9 +262,7 @@ def read_channel_code(channel_code):
     """
 
     if len(channel_code) != 3:
-        msg = (
-            "Input FDSN channel code is not proper format, should be 3 letters"
-        )
+        msg = "Input FDSN channel code is not proper format, should be 3 letters"
         logger.error(msg)
         raise ValueError(msg)
 
@@ -332,8 +319,10 @@ def create_mt_component(channel_code):
     """
     code_dict = read_channel_code(channel_code)
     if code_dict["measurement"] == "tide":
-        msg = ("Channel code indicates tidal data -- Some historial MT data (PKD, "
-               "SAO) used 'T' as the code for feedback coil magnetometers")
+        msg = (
+            "Channel code indicates tidal data -- Some historial MT data (PKD, "
+            "SAO) used 'T' as the code for feedback coil magnetometers"
+        )
         logger.warning(msg)
         code_dict = read_channel_code(channel_code.replace("T", "F"))
 

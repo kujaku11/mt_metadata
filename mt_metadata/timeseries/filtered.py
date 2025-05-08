@@ -57,7 +57,7 @@ class AppliedFilter(MetadataBase):
     ]
 
 
-class Filter(MetadataBase):
+class Filtered(MetadataBase):
     _objects_included = PrivateAttr({"applied_filter": AppliedFilter})
 
     filter_list: Annotated[
