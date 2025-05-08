@@ -37,6 +37,9 @@ class DataTypeEnum(StrEnumerationBase):
     LPMT = "LPMT"
     ULPMT = "ULPMT"
     MT = "MT"
+    LP = "LP"
+    BB = "BB"
+    WB = "WB"
     other = "other"
 
 
