@@ -63,9 +63,7 @@ class TestReadXMLStation01(unittest.TestCase):
             self.assertEqual(self.mt_station.location.elevation, 329.3875)
 
     def test_geographic_name(self):
-        self.assertEqual(
-            self.mt_station.geographic_name, "Corral Hollow, CA, USA"
-        )
+        self.assertEqual(self.mt_station.geographic_name, "Corral Hollow, CA, USA")
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, [])
@@ -99,9 +97,7 @@ class TestMTStationToXML01(unittest.TestCase):
 
     def test_code(self):
         with self.subTest("station code"):
-            self.assertEqual(
-                self.base_xml_station.code, self.test_xml_station.code
-            )
+            self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
         with self.subTest("alternate code"):
             # the original file does not have an alternate code
             self.assertNotEqual(
@@ -166,16 +162,12 @@ class TestReadXMLStation02(unittest.TestCase):
         with self.subTest("latitude"):
             self.assertEqual(self.mt_station.location.latitude, 35.1469128125)
         with self.subTest("longitude"):
-            self.assertEqual(
-                self.mt_station.location.longitude, -117.160798541667
-            )
+            self.assertEqual(self.mt_station.location.longitude, -117.160798541667)
         with self.subTest("elevation"):
             self.assertEqual(self.mt_station.location.elevation, 887.775)
 
     def test_geographic_name(self):
-        self.assertEqual(
-            self.mt_station.geographic_name, "Opal Mountain, CA, USA"
-        )
+        self.assertEqual(self.mt_station.geographic_name, "Opal Mountain, CA, USA")
 
     def test_provenance(self):
         with self.subTest("author"):
@@ -188,20 +180,16 @@ class TestReadXMLStation02(unittest.TestCase):
                 self.mt_station.provenance.software.name, "mth5_metadata.m"
             )
         with self.subTest("software version"):
-            self.assertEqual(
-                self.mt_station.provenance.software.version, "2021-02-01"
-            )
+            self.assertEqual(self.mt_station.provenance.software.version, "2021-02-01")
 
     def test_declination(self):
         with self.subTest("value"):
             self.assertEqual(self.mt_station.location.declination.value, -666)
         with self.subTest("model"):
-            self.assertEqual(
-                self.mt_station.location.declination.model, "IGRF-13"
-            )
+            self.assertEqual(self.mt_station.location.declination.model, "IGRF-13")
         with self.subTest("comments"):
             self.assertEqual(
-                self.mt_station.location.declination.comments,
+                self.mt_station.location.declination.comments.value,
                 "igrf.m by Drew Compston",
             )
 
@@ -209,9 +197,7 @@ class TestReadXMLStation02(unittest.TestCase):
         with self.subTest("method"):
             self.assertEqual(self.mt_station.orientation.method, "compass")
         with self.subTest("reference frame"):
-            self.assertEqual(
-                self.mt_station.orientation.reference_frame, "geographic"
-            )
+            self.assertEqual(self.mt_station.orientation.reference_frame, "geographic")
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, ["a", "b", "c", "d", "e"])
@@ -463,9 +449,7 @@ class TestMTStationToXML02(unittest.TestCase):
 
     def test_code(self):
         with self.subTest("fdsn code"):
-            self.assertEqual(
-                self.base_xml_station.code, self.test_xml_station.code
-            )
+            self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
         with self.subTest("alternate code"):
             self.assertEqual(
                 self.base_xml_station.alternate_code,

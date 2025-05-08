@@ -2,7 +2,7 @@
 """
 Created on Tue Feb 16 10:33:27 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -10,6 +10,7 @@ Created on Tue Feb 16 10:33:27 2021
 """
 from loguru import logger
 from obspy.core.inventory import Comment
+
 
 # =============================================================================
 # Translate between metadata and inventory: mapping dictionaries
@@ -97,12 +98,12 @@ class BaseTranslator:
             'a: b, b2, c: d:e' -> {'a': 'b:c', 'd':'e'}
 
             """
+            if hasattr(comment, "value"):
+                comment_string = comment.value
             if "author:" in comment_string and "comments:" in comment_string:
                 author, comments = [
                     s.strip()
-                    for s in comment_string.split("author:", 1)[1].split(
-                        "comments:", 1
-                    )
+                    for s in comment_string.split("author:", 1)[1].split("comments:", 1)
                 ]
 
                 if author.endswith(","):
@@ -178,9 +179,7 @@ class BaseTranslator:
             if comment.subject == subject:
                 return comment
 
-        self.logger.info(
-            f"Could not find {subject} in the given list of comments."
-        )
+        self.logger.info(f"Could not find {subject} in the given list of comments.")
         return None
 
     def make_mt_comments(self, mt_element, mt_key_base="mt"):

@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 18 12:49:13 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -16,12 +16,17 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
 from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
+from mt_metadata.base.helpers import requires
 
-from obspy.core import inventory
+try:
+    from obspy.core import inventory
+except ImportError:
+    inventory = None
 
 # =============================================================================
 
 
+@requires(obspy=inventory)
 class XMLStationMTStation(BaseTranslator):
     """
     translate back and forth between StationXML Station and MT Station
@@ -70,11 +75,11 @@ class XMLStationMTStation(BaseTranslator):
             "orientation.reference_frame",
             "location.declination.value",
             "location.declination.model",
-            "location.declination.comments",
+            "location.declination.comments.value",
             "provenance.software.author",
             "provenance.software.name",
             "provenance.software.version",
-            "provenance.comments",
+            "provenance.comments.value",
             "data_type",
         ]
 
@@ -122,7 +127,7 @@ class XMLStationMTStation(BaseTranslator):
                         else:
                             mt_station.comments = value
                     else:
-                        mt_station.set_attr_from_name(key, value)
+                        mt_station.update_attribute(key, value)
 
             else:
                 value = getattr(xml_station, xml_key)
@@ -130,21 +135,19 @@ class XMLStationMTStation(BaseTranslator):
                     continue
                 if isinstance(value, (list, tuple)):
                     for k, v in zip(mt_key, value):
-                        mt_station.set_attr_from_name(k, v)
+                        mt_station.update_attribute(k, v)
                 else:
                     if xml_key == "restricted_status":
                         value = self.flip_dict(release_dict)[value]
 
-                mt_station.set_attr_from_name(mt_key, value)
+                mt_station.update_attribute(mt_key, value)
 
         if mt_station.id is None:
             if mt_station.fdsn.id is not None:
                 mt_station.id = mt_station.fdsn.id
 
         # read in equipment information
-        mt_station = self._equipments_to_runs(
-            xml_station.equipments, mt_station
-        )
+        mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
         mt_station = self._add_run_comments(run_comments, mt_station)
 
         return mt_station
@@ -198,9 +201,7 @@ class XMLStationMTStation(BaseTranslator):
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
-                    person = inventory.Person(
-                        names=[mt_station.acquired_by.name]
-                    )
+                    person = inventory.Person(names=[mt_station.acquired_by.name])
                     operator.contacts = [person]
                     xml_station.operators = [operator]
 
@@ -209,16 +210,17 @@ class XMLStationMTStation(BaseTranslator):
 
             elif xml_key == "comments":
                 if mt_station.comments is not None:
-                    comment = inventory.Comment(mt_station.comments)
+                    comment = inventory.Comment(mt_station.comments.value)
                     xml_station.comments.append(comment)
             elif xml_key == "restricted_status":
                 xml_station.restricted_status = release_dict[
                     xml_station.restricted_status
                 ]
+            elif "time_period" in mt_key:
+                value = mt_station.get_attr_from_name(mt_key).time_stamp
+                setattr(xml_station, xml_key, value)
             else:
-                setattr(
-                    xml_station, xml_key, mt_station.get_attr_from_name(mt_key)
-                )
+                setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
 
         # add mt comments
         xml_station.comments = self.make_mt_comments(mt_station, "mt.station")
@@ -283,18 +285,16 @@ class XMLStationMTStation(BaseTranslator):
                                 try:
                                     station_obj.runs[
                                         run_index
-                                    ].comments += f", {value}"
+                                    ].comments.value += f", {value}"
                                 except TypeError:
-                                    station_obj.runs[run_index].comments = value
+                                    station_obj.runs[run_index].comments.value = value
                             else:
                                 c_attr = f"{run_attr}.{ckey}"
 
-                                station_obj.runs[run_index].set_attr_from_name(
+                                station_obj.runs[run_index].update_attribute(
                                     c_attr, cvalue
                                 )
                         else:
-                            station_obj.runs[run_index].set_attr_from_name(
-                                ckey, cvalue
-                            )
+                            station_obj.runs[run_index].update_attribute(ckey, cvalue)
 
         return station_obj
