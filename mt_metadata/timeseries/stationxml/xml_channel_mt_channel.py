@@ -13,6 +13,7 @@ import copy
 # =============================================================================
 # Imports
 # =============================================================================
+from collections import OrderedDict
 from mt_metadata.timeseries.stationxml.fdsn_tools import (
     release_dict,
     read_channel_code,
@@ -20,17 +21,24 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     create_mt_component,
 )
 
-from mt_metadata import timeseries as metadata
+
+from mt_metadata.timeseries import Electric, Magnetic, Auxiliary, AppliedFilter
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
+from mt_metadata.base.helpers import requires
 
-from obspy.core import inventory
-from obspy import UTCDateTime
+try:
+    from obspy.core import inventory
+    from obspy import UTCDateTime
+except ImportError as error:
+    inventory = None
+    UTCDateTime = None
 
 # =============================================================================
 
 
+@requires(obspy=inventory)
 class XMLChannelMTChannel(BaseTranslator):
     """
     translate back and forth between StationXML Channel and MT Channel
@@ -97,11 +105,11 @@ class XMLChannelMTChannel(BaseTranslator):
 
         ch_dict = read_channel_code(xml_channel.code)
         if ch_dict["measurement"] in ["electric"]:
-            mt_channel = metadata.Electric(type="electric")
+            mt_channel = Electric()
         elif ch_dict["measurement"] in ["magnetic"]:
-            mt_channel = metadata.Magnetic(type="magnetic")
+            mt_channel = Magnetic()
         else:
-            mt_channel = metadata.Auxiliary(type=ch_dict["measurement"])
+            mt_channel = Auxiliary(type=ch_dict["measurement"])
 
         mt_channel = self._get_mt_position(xml_channel, mt_channel)
         mt_channel = self._parse_xml_comments(xml_channel.comments, mt_channel)
@@ -115,14 +123,22 @@ class XMLChannelMTChannel(BaseTranslator):
                 if value:
                     mt_channel.update_attribute(mt_key, value)
 
-        if mt_channel.component is None:
+        if mt_channel.component in [None, ""]:
             mt_channel.component = create_mt_component(xml_channel.code)
 
         # fill channel filters
-        mt_channel.filter.name = list(mt_filters.keys())
-        mt_channel.filter.applied = [True] * len(list(mt_filters.keys()))
-        if UTCDateTime(mt_channel.time_period.end) < UTCDateTime(
-            mt_channel.time_period.start
+        for filter_name, mt_filter in mt_filters.items():
+            mt_channel.filtered.filter_list.append(
+                AppliedFilter(
+                    name=filter_name,
+                    applied=True,
+                    comments=mt_filter.comments,
+                    stage=mt_filter.sequence_number,
+                )
+            )
+
+        if UTCDateTime(mt_channel.time_period.end.time_stamp) < UTCDateTime(
+            mt_channel.time_period.start.time_stamp
         ):
             mt_channel.time_period.end = "2200-01-01T00:00:00+00:00"
         return mt_channel, mt_filters
@@ -142,7 +158,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if not isinstance(
             mt_channel,
-            (metadata.Electric, metadata.Magnetic, metadata.Auxiliary),
+            (Electric, Magnetic, Auxiliary),
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
             self.logger.error(msg)
@@ -194,6 +210,8 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
         xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
         xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
+        xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
+        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -207,6 +225,10 @@ class XMLChannelMTChannel(BaseTranslator):
 
             elif xml_key in ["dip"]:
                 xml_channel.dip = mt_channel.measurement_tilt % 360
+
+            elif "time_period" in mt_key:
+                value = mt_channel.get_attr_from_name(mt_key).time_stamp
+                setattr(xml_channel, xml_key, value)
 
             else:
                 setattr(xml_channel, xml_key, mt_channel.get_attr_from_name(mt_key))
@@ -232,7 +254,7 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
 
         if sensor.type.lower() in ["magnetometer", "induction coil", "coil"]:
-            if not isinstance(mt_channel, metadata.Magnetic):
+            if not isinstance(mt_channel, Magnetic):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -248,7 +270,7 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
 
         elif sensor.type.lower() in ["dipole", "electrode"]:
-            if not isinstance(mt_channel, metadata.Electric):
+            if not isinstance(mt_channel, Electric):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -273,7 +295,7 @@ class XMLChannelMTChannel(BaseTranslator):
             return mt_channel
 
         else:
-            if not isinstance(mt_channel, metadata.Auxiliary):
+            if not isinstance(mt_channel, Auxiliary):
                 msg = (
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
@@ -405,14 +427,14 @@ class XMLChannelMTChannel(BaseTranslator):
             if k == "mt.run.id":
                 runs.append(v)
             else:
-                if mt_channel.comments:
-                    mt_channel.comments += f", {k}: {v}"
+                if mt_channel.comments.value:
+                    mt_channel.comments.value += f", {k}: {v}"
                 else:
-                    mt_channel.comments = f", {k}: {v}"
-        if mt_channel.comments:
-            mt_channel.comments += f", run_ids: [{','.join(runs)}]"
+                    mt_channel.comments.value = f", {k}: {v}"
+        if mt_channel.comments.value:
+            mt_channel.comments.value += f", run_ids: [{','.join(runs)}]"
         else:
-            mt_channel.comments = f"run_ids: [{','.join(runs)}]"
+            mt_channel.comments.value = f"run_ids: [{','.join(runs)}]"
 
         self.run_list = runs
 
@@ -428,8 +450,9 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
+
         comments = []
-        clist = mt_comment.split("run_ids:")
+        clist = mt_comment.value.split("run_ids:")
         for item in clist:
             if ":" in item:
                 k, v = item.split(":")
@@ -474,6 +497,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """ """
         name = xml_channel.response.response_stages[-1].output_units
         description = xml_channel.response.response_stages[-1].output_units_description
+        description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
                 mt_channel.units = description
@@ -492,7 +516,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         parse the filters from obspy into mt filters
         """
-        ch_filter_dict = {}
+        ch_filter_dict = OrderedDict()
         for i_stage, stage in enumerate(xml_channel.response.response_stages):
             new_and_unnamed = False
             mt_filter = create_filter_from_stage(stage)
@@ -540,6 +564,9 @@ class XMLChannelMTChannel(BaseTranslator):
             last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
                 -1
             ]
+            last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
+                -1
+            ]
         except IndexError:
             return f"{mt_filter.type}_{0:02}", True
         try:
@@ -569,7 +596,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         unit_obj = get_unit_object(mt_channel_response.units_in)
 
-        xml_channel.calibration_units = unit_obj.abbreviation
+        xml_channel.calibration_units = unit_obj.symbol
         xml_channel.calibration_units_description = unit_obj.name
 
         return xml_channel
@@ -600,6 +627,9 @@ class XMLChannelMTChannel(BaseTranslator):
         if sensor_type.lower() in self.understood_sensor_types:
             return sensor_type
         else:
+            self.logger.warning(
+                f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
+            )
             self.logger.warning(
                 f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
             )

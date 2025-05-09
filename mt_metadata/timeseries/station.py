@@ -19,6 +19,7 @@ from mt_metadata.common import (
     TimePeriod,
     Person,
     Orientation,
+    Fdsn,
 )
 from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.timeseries import Run
@@ -80,6 +81,20 @@ class Station(MetadataBase):
             json_schema_extra={
                 "units": None,
                 "required": True,
+            },
+        ),
+    ]
+
+    fdsn: Annotated[
+        Fdsn,
+        Field(
+            default_factory=Fdsn,
+            description="FDSN information for the station.",
+            examples="",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
             },
         ),
     ]
@@ -270,6 +285,17 @@ class Station(MetadataBase):
                 self.update_channels_recorded()
         return self
 
+    @model_validator(mode="after")
+    def validate_station_id(self) -> Self:
+        """
+        Validate that the value is a list of strings.
+        """
+        if self.id in [None, "None", "none", "NONE", "null", ""]:
+            if self.fdsn.id is not None:
+                self.id = self.fdsn.id
+
+        return self
+
     @field_validator("runs", mode="before")
     @classmethod
     def validate_runs(cls, value, info: ValidationInfo) -> ListDict:
@@ -346,6 +372,21 @@ class Station(MetadataBase):
         if run_id in self.run_list:
             return True
         return False
+
+    def run_index(self, run_id):
+        """
+        Get the index of the run_id
+
+        :param run_id: run id verbatim
+        :type run_id: string
+        :return: index of the run
+        :rtype: integer
+
+        """
+
+        if self.has_run(run_id):
+            return self.run_list.index(run_id)
+        return None
 
     def _empty_channels_recorded(self):
         """

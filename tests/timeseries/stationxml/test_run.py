@@ -28,9 +28,7 @@ class TestRunFromXML(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.xml_equipment = (
-            self.inventory.networks[0].stations[0].equipments[0]
-        )
+        self.xml_equipment = self.inventory.networks[0].stations[0].equipments[0]
 
         self.converter = XMLEquipmentMTRun()
         self.mt_run = self.converter.xml_to_mt(self.xml_equipment)
@@ -45,15 +43,11 @@ class TestRunFromXML(unittest.TestCase):
         with self.subTest("gps"):
             self.assertEqual(self.mt_run.data_logger.timing_system.type, "GPS")
         with self.subTest("firmware author"):
-            self.assertEqual(
-                self.mt_run.data_logger.firmware.author, "Barry Narod"
-            )
+            self.assertEqual(self.mt_run.data_logger.firmware.author, "Barry Narod")
         with self.subTest("firmware version"):
-            self.assertEqual(self.mt_run.data_logger.firmware.version, None)
+            self.assertEqual(self.mt_run.data_logger.firmware.version, "")
         with self.subTest("power source"):
-            self.assertEqual(
-                self.mt_run.data_logger.power_source.type, "battery"
-            )
+            self.assertEqual(self.mt_run.data_logger.power_source.type, "battery")
         with self.subTest("data logger model"):
             self.assertEqual(self.mt_run.data_logger.model, "NIMS")
         with self.subTest("data logger id"):
@@ -61,13 +55,9 @@ class TestRunFromXML(unittest.TestCase):
 
     def test_time_period(self):
         with self.subTest("start"):
-            self.assertEqual(
-                self.mt_run.time_period.start, "2020-06-08T22:57:13+00:00"
-            )
+            self.assertEqual(self.mt_run.time_period.start, "2020-06-08T22:57:13+00:00")
         with self.subTest("end"):
-            self.assertEqual(
-                self.mt_run.time_period.end, "2020-06-08T23:54:50+00:00"
-            )
+            self.assertEqual(self.mt_run.time_period.end, "2020-06-08T23:54:50+00:00")
 
 
 class TestEquipmemtXMLFromMT(unittest.TestCase):
@@ -78,9 +68,7 @@ class TestEquipmemtXMLFromMT(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.inventory = read_inventory(STATIONXML_02.as_posix())
-        self.base_xml_equipment = (
-            self.inventory.networks[0].stations[0].equipments[0]
-        )
+        self.base_xml_equipment = self.inventory.networks[0].stations[0].equipments[0]
 
         self.converter = XMLEquipmentMTRun()
         self.mt_run = self.converter.xml_to_mt(self.base_xml_equipment)
@@ -93,9 +81,7 @@ class TestEquipmemtXMLFromMT(unittest.TestCase):
         )
 
     def test_type(self):
-        self.assertEqual(
-            self.base_xml_equipment.type, self.test_xml_equipment.type
-        )
+        self.assertEqual(self.base_xml_equipment.type, self.test_xml_equipment.type)
 
     def test_description(self):
         self.assertNotEqual(
@@ -118,9 +104,7 @@ class TestEquipmemtXMLFromMT(unittest.TestCase):
         )
 
     def test_model(self):
-        self.assertEqual(
-            self.base_xml_equipment.model, self.test_xml_equipment.model
-        )
+        self.assertEqual(self.base_xml_equipment.model, self.test_xml_equipment.model)
 
     def test_serial_number(self):
         self.assertEqual(

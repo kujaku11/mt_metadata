@@ -365,6 +365,14 @@ def get_unit_object(unit: str, allow_none=True) -> Unit:
     # but is used in the metadata. It is a placeholder for the unit of digital counts
     if unit in ["digital counts"]:
         return get_unit_from_df("digital counts", allow_none=allow_none)
+    if unit in [None, ""]:
+        return Unit(
+            name="unknown",
+            description="unknown",
+            symbol="unknown",
+            plot_label="Unknown",
+        )
+
     units_parts = parse_unit_string(unit)
     if len(units_parts) == 1:
         return get_unit_from_df(units_parts[0]["name"], allow_none=allow_none)

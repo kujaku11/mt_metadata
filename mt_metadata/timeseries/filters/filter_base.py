@@ -43,6 +43,7 @@ def get_base_obspy_mapping():
     mapping["stage_gain"] = "gain"
     mapping["input_units"] = "units_in"
     mapping["output_units"] = "units_out"
+    mapping["stage_sequence_number"] = "sequence_number"
     return mapping
 
 
@@ -141,6 +142,21 @@ class FilterBase(MetadataBase):
             examples="1.0",
             alias=None,
             gt=0.0,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    sequence_number: Annotated[
+        int,
+        Field(
+            default=0,
+            description="Sequence number of the filter in the processing chain.",
+            examples=1,
+            alias=None,
+            ge=0,
             json_schema_extra={
                 "units": None,
                 "required": True,

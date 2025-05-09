@@ -63,9 +63,7 @@ class TestReadXMLStation01(unittest.TestCase):
             self.assertEqual(self.mt_station.location.elevation, 329.3875)
 
     def test_geographic_name(self):
-        self.assertEqual(
-            self.mt_station.geographic_name, "Corral Hollow, CA, USA"
-        )
+        self.assertEqual(self.mt_station.geographic_name, "Corral Hollow, CA, USA")
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, [])
@@ -99,9 +97,7 @@ class TestMTStationToXML01(unittest.TestCase):
 
     def test_code(self):
         with self.subTest("station code"):
-            self.assertEqual(
-                self.base_xml_station.code, self.test_xml_station.code
-            )
+            self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
         with self.subTest("alternate code"):
             # the original file does not have an alternate code
             self.assertNotEqual(
@@ -166,16 +162,12 @@ class TestReadXMLStation02(unittest.TestCase):
         with self.subTest("latitude"):
             self.assertEqual(self.mt_station.location.latitude, 35.1469128125)
         with self.subTest("longitude"):
-            self.assertEqual(
-                self.mt_station.location.longitude, -117.160798541667
-            )
+            self.assertEqual(self.mt_station.location.longitude, -117.160798541667)
         with self.subTest("elevation"):
             self.assertEqual(self.mt_station.location.elevation, 887.775)
 
     def test_geographic_name(self):
-        self.assertEqual(
-            self.mt_station.geographic_name, "Opal Mountain, CA, USA"
-        )
+        self.assertEqual(self.mt_station.geographic_name, "Opal Mountain, CA, USA")
 
     def test_provenance(self):
         with self.subTest("author"):
@@ -188,20 +180,16 @@ class TestReadXMLStation02(unittest.TestCase):
                 self.mt_station.provenance.software.name, "mth5_metadata.m"
             )
         with self.subTest("software version"):
-            self.assertEqual(
-                self.mt_station.provenance.software.version, "2021-02-01"
-            )
+            self.assertEqual(self.mt_station.provenance.software.version, "2021-02-01")
 
     def test_declination(self):
         with self.subTest("value"):
             self.assertEqual(self.mt_station.location.declination.value, -666)
         with self.subTest("model"):
-            self.assertEqual(
-                self.mt_station.location.declination.model, "IGRF-13"
-            )
+            self.assertEqual(self.mt_station.location.declination.model, "IGRF-13")
         with self.subTest("comments"):
             self.assertEqual(
-                self.mt_station.location.declination.comments,
+                self.mt_station.location.declination.comments.value,
                 "igrf.m by Drew Compston",
             )
 
@@ -209,9 +197,7 @@ class TestReadXMLStation02(unittest.TestCase):
         with self.subTest("method"):
             self.assertEqual(self.mt_station.orientation.method, "compass")
         with self.subTest("reference frame"):
-            self.assertEqual(
-                self.mt_station.orientation.reference_frame, "geographic"
-            )
+            self.assertEqual(self.mt_station.orientation.reference_frame, "geographic")
 
     def test_run_list(self):
         self.assertEqual(self.mt_station.run_list, ["a", "b", "c", "d", "e"])
@@ -223,32 +209,38 @@ class TestReadXMLStation02(unittest.TestCase):
         base_run_a = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", "Kristin Pratscher"),
                     (
                         "acquired_by.comments",
-                        (
-                            "X array at 0 and 90 degrees. Site i rocky drainage basin proximal "
-                            "to basalt lava flows. Ln"
-                        ),
+                        "X array at 0 and 90 degrees. Site i rocky drainage basin proximal to basalt lava flows. Ln",
                     ),
+                    ("acquired_by.name", "Kristin Pratscher"),
                     ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", []),
                     ("channels_recorded_magnetic", []),
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
-                    ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", None),
+                    ("data_logger.firmware.name", ""),
+                    ("data_logger.firmware.version", ""),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
+                    ("data_logger.power_source.voltage.end", 0.0),
+                    ("data_logger.power_source.voltage.start", 0.0),
                     ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
                     ("data_logger.timing_system.uncertainty", 0.0),
-                    ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "a"),
-                    ("metadata_by.author", "Jade Crosbie"),
+                    ("metadata_by.comments", ""),
+                    ("metadata_by.name", "Jade Crosbie"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
                     ("sample_rate", 0.0),
                     ("time_period.end", "2020-06-08T23:54:50+00:00"),
                     ("time_period.start", "2020-06-08T22:57:13+00:00"),
@@ -262,47 +254,44 @@ class TestReadXMLStation02(unittest.TestCase):
         base_run_b = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", "Kristin Pratscher"),
                     (
                         "acquired_by.comments",
-                        (
-                            "X array a 0 and 90 degreest. Site in rocky drainage basin proximal "
-                            "to basalt lava flows. L"
-                        ),
+                        "X array a 0 and 90 degreest. Site in rocky drainage basin proximal to basalt lava flows. L",
                     ),
+                    ("acquired_by.name", "Kristin Pratscher"),
                     ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", []),
                     ("channels_recorded_magnetic", []),
                     (
                         "comments",
-                        (
-                            "author: machine generated, comments: A.Kelbert:Gap and a spike"
-                            " 726 secs into the run. Poor quality data after this event. "
-                            "However, timing before and after the gap verified against CAV09."
-                        ),
+                        "author: machine generated, comments: A.Kelbert:Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.",
                     ),
                     ("data_logger.firmware.author", "Barry Narod"),
-                    ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", None),
+                    ("data_logger.firmware.name", ""),
+                    ("data_logger.firmware.version", ""),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
+                    ("data_logger.power_source.voltage.end", 0.0),
+                    ("data_logger.power_source.voltage.start", 0.0),
                     ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
                     ("data_logger.timing_system.uncertainty", 0.0),
-                    ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "b"),
-                    ("metadata_by.author", "Jade Crosbie; Anna Kelbert"),
                     (
                         "metadata_by.comments",
-                        (
-                            "A.Kelbert- Gap and a spike 726 secs into the run. Poor quality "
-                            "data after this event. However, timing before and after the gap "
-                            "verified against CAV09."
-                        ),
+                        "A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.",
                     ),
+                    ("metadata_by.name", "Jade Crosbie; Anna Kelbert"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
                     ("sample_rate", 0.0),
                     ("time_period.end", "2020-06-25T17:57:40+00:00"),
                     ("time_period.start", "2020-06-09T00:08:03+00:00"),
@@ -317,32 +306,38 @@ class TestReadXMLStation02(unittest.TestCase):
         base_run_c = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", "Kristin Pratscher"),
                     (
                         "acquired_by.comments",
-                        (
-                            "X array at 0 and 90 degrees. Site in rocky drainage basin proximal"
-                            " to basalt lava flows. Li"
-                        ),
+                        "X array at 0 and 90 degrees. Site in rocky drainage basin proximal to basalt lava flows. Li",
                     ),
+                    ("acquired_by.name", "Kristin Pratscher"),
                     ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", []),
                     ("channels_recorded_magnetic", []),
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
-                    ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", None),
+                    ("data_logger.firmware.name", ""),
+                    ("data_logger.firmware.version", ""),
                     ("data_logger.id", "2612-09"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
+                    ("data_logger.power_source.voltage.end", 0.0),
+                    ("data_logger.power_source.voltage.start", 0.0),
                     ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
                     ("data_logger.timing_system.uncertainty", 0.0),
-                    ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "c"),
-                    ("metadata_by.author", "Jade Crosbie"),
+                    ("metadata_by.comments", ""),
+                    ("metadata_by.name", "Jade Crosbie"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
                     ("sample_rate", 0.0),
                     ("time_period.end", "2020-07-04T01:16:15+00:00"),
                     ("time_period.start", "2020-06-25T19:57:57+00:00"),
@@ -357,32 +352,38 @@ class TestReadXMLStation02(unittest.TestCase):
         base_run_d = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", "Kristin Pratscher"),
                     (
                         "acquired_by.comments",
-                        (
-                            "Replaced mag cable & NIMS. X array at 0 and 90 degrees. Site in"
-                            " rocky drainage basin proxim"
-                        ),
+                        "Replaced mag cable & NIMS. X array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                     ),
+                    ("acquired_by.name", "Kristin Pratscher"),
                     ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", []),
                     ("channels_recorded_magnetic", []),
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
-                    ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", None),
+                    ("data_logger.firmware.name", ""),
+                    ("data_logger.firmware.version", ""),
                     ("data_logger.id", "2485"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
+                    ("data_logger.power_source.voltage.end", 0.0),
+                    ("data_logger.power_source.voltage.start", 0.0),
                     ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
                     ("data_logger.timing_system.uncertainty", 0.0),
-                    ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "d"),
-                    ("metadata_by.author", "Jade Crosbie"),
+                    ("metadata_by.comments", ""),
+                    ("metadata_by.name", "Jade Crosbie"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
                     ("sample_rate", 0.0),
                     ("time_period.end", "2020-07-04T03:07:30+00:00"),
                     ("time_period.start", "2020-07-04T02:59:02+00:00"),
@@ -397,32 +398,38 @@ class TestReadXMLStation02(unittest.TestCase):
         base_run_e = {
             "run": OrderedDict(
                 [
-                    ("acquired_by.author", "Kristin Pratscher"),
                     (
                         "acquired_by.comments",
-                        (
-                            "Replaced mag cable & NIMS. MX array at 0 and 90 degrees. Site "
-                            "in rocky drainage basin proxim"
-                        ),
+                        "Replaced mag cable & NIMS. MX array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                     ),
+                    ("acquired_by.name", "Kristin Pratscher"),
                     ("channels_recorded_auxiliary", []),
                     ("channels_recorded_electric", []),
                     ("channels_recorded_magnetic", []),
                     ("comments", "author: machine generated, comments: "),
                     ("data_logger.firmware.author", "Barry Narod"),
-                    ("data_logger.firmware.name", None),
-                    ("data_logger.firmware.version", None),
+                    ("data_logger.firmware.name", ""),
+                    ("data_logger.firmware.version", ""),
                     ("data_logger.id", "2485"),
                     ("data_logger.manufacturer", "Barry Narod"),
                     ("data_logger.model", "NIMS"),
                     ("data_logger.power_source.type", "battery"),
+                    ("data_logger.power_source.voltage.end", 0.0),
+                    ("data_logger.power_source.voltage.start", 0.0),
                     ("data_logger.timing_system.drift", 0.0),
                     ("data_logger.timing_system.type", "GPS"),
                     ("data_logger.timing_system.uncertainty", 0.0),
-                    ("data_logger.type", None),
                     ("data_type", "LP"),
                     ("id", "e"),
-                    ("metadata_by.author", "Jade Crosbie"),
+                    ("metadata_by.comments", ""),
+                    ("metadata_by.name", "Jade Crosbie"),
+                    ("provenance.archive.name", ""),
+                    ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
+                    ("provenance.creator.name", ""),
+                    ("provenance.software.author", ""),
+                    ("provenance.software.name", ""),
+                    ("provenance.software.version", ""),
+                    ("provenance.submitter.name", ""),
                     ("sample_rate", 0.0),
                     ("time_period.end", "2020-07-17T21:15:32+00:00"),
                     ("time_period.start", "2020-07-04T03:28:45+00:00"),
@@ -463,9 +470,7 @@ class TestMTStationToXML02(unittest.TestCase):
 
     def test_code(self):
         with self.subTest("fdsn code"):
-            self.assertEqual(
-                self.base_xml_station.code, self.test_xml_station.code
-            )
+            self.assertEqual(self.base_xml_station.code, self.test_xml_station.code)
         with self.subTest("alternate code"):
             self.assertEqual(
                 self.base_xml_station.alternate_code,

@@ -54,7 +54,7 @@ from .diagnostic import Diagnostic
 from .battery import Battery
 from .electrode import Electrode
 from .timing_system import TimingSystem
-from .filtered import Filter, AppliedFilter
+from .filtered import Filtered, AppliedFilter
 from .filters.filter_base import FilterBase
 from .data_logger import DataLogger
 from .channel import Channel, ChannelBase
@@ -88,7 +88,7 @@ __all__ = [
     "TimePeriod",
     "Orientation",
     "Software",
-    "Filter",
+    "Filtered",
     "AppliedFilter",
     "FilterBase",
     "DataLogger",

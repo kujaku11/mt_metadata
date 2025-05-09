@@ -14,7 +14,7 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries import Filter
+from mt_metadata.timeseries import Filtered
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices, PrivateAttr
 from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters import ChannelResponse
@@ -27,9 +27,9 @@ from mt_metadata.timeseries.filters import ChannelResponse
 class ChannelBase(MetadataBase):
     _channel_type: str = PrivateAttr("base")
     channel_number: Annotated[
-        int | None,
+        int,
         Field(
-            default=None,
+            default=0,
             description="Channel number on the data logger.",
             examples="1",
             alias=None,
@@ -202,12 +202,12 @@ class ChannelBase(MetadataBase):
         ),
     ]
 
-    filter: Annotated[
-        Filter,
+    filtered: Annotated[
+        Filtered,
         Field(
-            default_factory=Filter,
+            default_factory=Filtered,
             description="Filtered data for the channel.",
-            examples="Filter()",
+            examples="Filtered()",
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -306,13 +306,13 @@ class ChannelBase(MetadataBase):
         """
 
         mt_filter_list = []
-        for name in self.filter.name:
+        for applied in self.filtered.filter_list:
             try:
-                mt_filter = filters_dict[name]
+                mt_filter = filters_dict[applied.name]
                 mt_filter_list.append(mt_filter)
             except KeyError:
-                msg = f"Could not find {name} in filters dictionary, skipping"
-                self.logger.error(msg)
+                msg = f"Could not find {applied.name} in filters dictionary, skipping"
+                logger.error(msg)
                 continue
         # compute instrument sensitivity and units in/out
         return ChannelResponse(filters_list=mt_filter_list)

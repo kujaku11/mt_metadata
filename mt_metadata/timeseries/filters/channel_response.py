@@ -409,7 +409,40 @@ class ChannelResponse(FilterBase):
         except (IndexError, TypeError):
             sensitivity = np.abs(sensitivity)
 
+        if sensitivity == 0.0:
+            logger.warning(
+                "Sensitivity is zero, cannot compute instrument sensitivity. "
+                "Returning 1.0"
+            )
+            return 1.0
         return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
+
+    def compute_total_gain(self, sig_figs=16):
+        """
+        Computing the total sensitivity seems to be different than just adding all the gains together.
+        Overall the total sensitivity is useless for MT cause they don't have the ability to use the units.
+        So if a person downloads data from the DMC, they will simply use the filters provided.
+
+        Parameters
+        ----------
+        sig_figs : int, optional
+            _description_, by default 6
+
+        Returns
+        -------
+        _type_
+            _description_
+
+        Raises
+        ------
+        ValueError
+            _description_
+        """
+        total_gain = 1
+        for mt_filter in self.filters_list:
+            total_gain *= mt_filter.gain
+
+        return round(total_gain, sig_figs - int(np.floor(np.log10(abs(total_gain)))))
 
     @requires(obspy=inventory)
     def to_obspy(self, sample_rate=1):
@@ -424,6 +457,13 @@ class ChannelResponse(FilterBase):
 
         """
         total_sensitivity = self.compute_instrument_sensitivity()
+        total_gain = self.compute_total_gain()
+
+        if total_sensitivity != total_gain:
+            logger.info(
+                f"total sensitivity {total_sensitivity} != total gain {total_gain}. Using total_gain."
+            )
+            total_sensitivity = total_gain
 
         units_in_obj = get_unit_object(self.units_in)
         units_out_obj = get_unit_object(self.units_out)
@@ -432,8 +472,8 @@ class ChannelResponse(FilterBase):
         total_response.instrument_sensitivity = inventory.InstrumentSensitivity(
             total_sensitivity,
             self.normalization_frequency,
-            units_in_obj.abbreviation,
-            units_out_obj.abbreviation,
+            units_in_obj.symbol,
+            units_out_obj.symbol,
             input_units_description=units_in_obj.name,
             output_units_description=units_out_obj.name,
         )
