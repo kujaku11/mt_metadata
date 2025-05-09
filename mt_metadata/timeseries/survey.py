@@ -43,7 +43,7 @@ class Survey(MetadataBase):
             description="Alpha numeric ID that will be unique for archiving.",
             examples="EMT20",
             alias=None,
-            pattern="^[a-zA-Z0-9_]*$",
+            pattern="^[a-zA-Z0-9_\- ]+$",
             json_schema_extra={
                 "units": None,
                 "required": True,

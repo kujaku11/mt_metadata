@@ -167,7 +167,9 @@ class BaseTranslator:
         :rtype: TYPE
 
         """
-        return ", ".join([ii.strip().split("DOI:")[1] for ii in identifiers])
+        return ", ".join(
+            [ii.strip().replace("DOI:", r"https://doi.org/") for ii in identifiers]
+        )
 
     def get_comment(self, comments, subject):
         """
