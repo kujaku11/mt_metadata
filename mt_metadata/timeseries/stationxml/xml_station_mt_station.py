@@ -34,6 +34,12 @@ class XMLStationMTStation(BaseTranslator):
     """
 
     def __init__(self):
+        """
+        Initialize the XMLStationMTStation converter.
+
+        Sets up translation dictionaries between StationXML and MT metadata
+        attributes, and defines which MT attributes should be stored as comments.
+        """
         super().__init__()
 
         self.xml_translator.update(
@@ -84,13 +90,24 @@ class XMLStationMTStation(BaseTranslator):
             "data_type",
         ]
 
-    def xml_to_mt(self, xml_station):
+    def xml_to_mt(self, xml_station) -> metadata.Station:
         """
-        Translate a StationXML station object to MT Survey object
+        Translate a StationXML station object to MT Station object.
 
-        :param station: StationXML station element
-        :type station: :class:`obspy.core.inventory.station`
+        Parameters
+        ----------
+        xml_station : obspy.core.inventory.Station
+            StationXML station element to convert.
 
+        Returns
+        -------
+        mt_metadata.timeseries.Station
+            MT Station object with attributes populated from the XML station.
+
+        Raises
+        ------
+        ValueError
+            If input is not an obspy.core.inventory.Station object.
         """
 
         if not isinstance(xml_station, inventory.Station):
@@ -154,13 +171,31 @@ class XMLStationMTStation(BaseTranslator):
 
         return mt_station
 
-    def mt_to_xml(self, mt_station):
+    def mt_to_xml(self, mt_station: metadata.Station):
         """
-        Convert MT Survey to Obspy Network
+        Convert MT Station to ObsPy StationXML Station object.
 
-        .. note:: For now the default code is ZU which is an IRIS catch-all network
+        Parameters
+        ----------
+        mt_station : mt_metadata.timeseries.Station
+            MT Station object to convert.
 
+        Returns
+        -------
+        obspy.core.inventory.Station
+            StationXML Station object with attributes populated from MT Station.
+
+        Raises
+        ------
+        ValueError
+            If input is not an mt_metadata.timeseries.Station object,
+            or if both id and fdsn.id attributes are None.
+
+        Notes
+        -----
+        Station code is set to uppercase in the resulting StationXML object.
         """
+
         if not isinstance(mt_station, metadata.Station):
             msg = f"Input must be mt_metadata.timeseries.Station object not {type(mt_station)}"
             self.logger.error(msg)
@@ -250,9 +285,28 @@ class XMLStationMTStation(BaseTranslator):
 
         return xml_station
 
-    def _equipments_to_runs(self, equipments, station_obj):
+    def _equipments_to_runs(
+        self, equipments, station_obj: metadata.Station
+    ) -> metadata.Station:
         """
-        Read in equipment and put into station runs
+        Convert equipment list to station runs.
+
+        Parameters
+        ----------
+        equipments : list
+            List of StationXML Equipment objects. (inventory.Equipement)
+        station_obj : mt_metadata.timeseries.Station
+            MT Station object to add runs to.
+
+        Returns
+        -------
+        mt_metadata.timeseries.Station
+            Updated MT Station object with runs added.
+
+        Raises
+        ------
+        TypeError
+            If equipments parameter is not a list.
         """
         if not isinstance(equipments, list):
             msg = f"Input must be a list not {type(equipments)}"
@@ -270,17 +324,31 @@ class XMLStationMTStation(BaseTranslator):
 
         return station_obj
 
-    def _add_run_comments(self, run_comments, station_obj):
+    def _add_run_comments(
+        self, run_comments: list[dict], station_obj: metadata.Station
+    ) -> metadata.Station:
         """
-        Add comments to runs
+        Add StationXML comments to MT Station run objects.
 
-        :param run_comments: DESCRIPTION
-        :type run_comments: TYPE
-        :param station_obj: DESCRIPTION
-        :type station_obj: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        run_comments : list of dict
+            List of dictionaries containing run comments.
+            Each dict should be in the format {key: value} where key
+            includes the run ID and attribute name.
+        station_obj : mt_metadata.timeseries.Station
+            MT Station object with runs to update.
 
+        Returns
+        -------
+        mt_metadata.timeseries.Station
+            Updated MT Station object with comments added to runs.
+
+        Notes
+        -----
+        Comment keys should be in the format "mt.run:run_id" or
+        "mt.run:run_id.attribute" to specify which run and attribute
+        to update.
         """
         for comment in run_comments:
 
