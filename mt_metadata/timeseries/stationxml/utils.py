@@ -81,7 +81,7 @@ class BaseTranslator:
         else:
             key = "mt"
 
-        def parse(comment_string, filled={}):
+        def parse(comment_string, filled=None, depth=0):
             """
             Recursively parse a comment string trying to adhere to the
             original syntax of the comment.  Expecting a dictionary type
@@ -98,8 +98,15 @@ class BaseTranslator:
             'a: b, b2, c: d:e' -> {'a': 'b:c', 'd':'e'}
 
             """
-            if hasattr(comment, "value"):
-                comment_string = comment.value
+            if filled is None:
+                filled = {}
+
+            # Add recursion depth limit
+            if depth > 20:  # Arbitrary limit to prevent stack overflow
+                return filled
+
+            if hasattr(comment_string, "value"):
+                comment_string = comment_string.value
             if "author:" in comment_string and "comments:" in comment_string:
                 author, comments = [
                     s.strip()
@@ -122,14 +129,14 @@ class BaseTranslator:
                                 value, *maybe = other.split(",", 1)
                                 filled[key] = value.strip().replace(":", "--")
                                 if maybe:
-                                    filled = parse(maybe[0].strip(), filled)
+                                    filled = parse(maybe[0].strip(), filled, depth + 1)
                             else:
                                 filled[key] = other.replace(":", "--").strip()
                         else:
                             value, *maybe = other.split(",", 1)
                             filled[key] = value.strip()
                             if maybe:
-                                filled = parse(maybe[0].strip(), filled)
+                                filled = parse(maybe[0].strip(), filled, depth + 1)
                     elif other.find(":") > 0:
                         value, *maybe = other.split(":", 1)
                         filled[key] = value.strip()
@@ -210,6 +217,8 @@ class BaseTranslator:
                 comments.append(comment)
             else:
                 value = mt_element.get_attr_from_name(key)
+                if hasattr(value, "value"):
+                    value = value.value
                 if value:
                     if isinstance(value, (list, tuple)):
                         value = ", ".join(value)

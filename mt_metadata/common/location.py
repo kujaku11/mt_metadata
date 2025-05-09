@@ -22,7 +22,7 @@ class BasicLocationNoDatum(MetadataBase):
     latitude: Annotated[
         float | None,
         Field(
-            default=None,
+            default=0.0,
             description="Latitude of the location.",
             examples="12.324",
             alias=None,
@@ -36,7 +36,7 @@ class BasicLocationNoDatum(MetadataBase):
     longitude: Annotated[
         float | None,
         Field(
-            default=None,
+            default=0.0,
             description="Longitude of the location.",
             examples="12.324",
             alias=None,
@@ -57,7 +57,7 @@ class BasicLocation(BasicLocationNoDatum):
     elevation: Annotated[
         float | None,
         Field(
-            default=None,
+            default=0.0,
             description="Elevation of the location.",
             examples="1234.0",
             alias=None,

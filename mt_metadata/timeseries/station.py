@@ -285,6 +285,17 @@ class Station(MetadataBase):
                 self.update_channels_recorded()
         return self
 
+    @model_validator(mode="after")
+    def validate_station_id(self) -> Self:
+        """
+        Validate that the value is a list of strings.
+        """
+        if self.id in [None, "None", "none", "NONE", "null", ""]:
+            if self.fdsn.id is not None:
+                self.id = self.fdsn.id
+
+        return self
+
     @field_validator("runs", mode="before")
     @classmethod
     def validate_runs(cls, value, info: ValidationInfo) -> ListDict:
