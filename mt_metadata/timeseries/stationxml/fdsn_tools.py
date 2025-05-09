@@ -36,7 +36,7 @@ from mt_metadata.common import LicenseEnum
 #     "CC BY-NC-NC": "closed",
 # }
 
-release_dict = {None: "open"}
+release_dict = {None: "open", "open": "open", "closed": "closed", "partial": "partial"}
 for key in LicenseEnum.__members__.keys():
     if key.startswith("CC"):
         if "SA" in key or "NA" in key or "ND" in key or "NC" in key:

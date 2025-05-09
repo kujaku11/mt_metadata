@@ -50,7 +50,7 @@ class XMLChannelMTChannel(BaseTranslator):
         "induction coil",
         "coil",
         "dipole",
-        "electrode",,
+        "electrode",
     ]
 
     def __init__(self):
@@ -644,13 +644,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 if ("bf-4" in sensor_description.lower()) & (
                     "schlumberger" in sensor_description.lower()
                 ):  # BSL-NCEDC
-                if ("bf-4" in sensor_description.lower()) & (
-                    "schlumberger" in sensor_description.lower()
-                ):  # BSL-NCEDC
                     sensor_type = "magnetometer"
-                elif ("electric" in sensor_description.lower()) & (
-                    "dipole" in sensor_description.lower()
-                ):  # BSL-NCEDC
                 elif ("electric" in sensor_description.lower()) & (
                     "dipole" in sensor_description.lower()
                 ):  # BSL-NCEDC
