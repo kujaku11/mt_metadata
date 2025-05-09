@@ -50,7 +50,7 @@ class XMLChannelMTChannel(BaseTranslator):
         "induction coil",
         "coil",
         "dipole",
-        "electrode",
+        "electrode",,
     ]
 
     def __init__(self):
@@ -208,6 +208,8 @@ class XMLChannelMTChannel(BaseTranslator):
         xml_channel.types = ["geophysical".upper()]
         xml_channel.sensor = self._mt_to_sensor(mt_channel)
         xml_channel.comments = self._make_xml_comments(mt_channel.comments)
+        xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
+        xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
         xml_channel.restricted_status = release_dict[xml_channel.restricted_status]
         xml_channel = self._mt_to_xml_response(mt_channel, filters_dict, xml_channel)
 
@@ -448,6 +450,7 @@ class XMLChannelMTChannel(BaseTranslator):
         :rtype: TYPE
 
         """
+
         comments = []
         clist = mt_comment.value.split("run_ids:")
         for item in clist:
@@ -493,6 +496,7 @@ class XMLChannelMTChannel(BaseTranslator):
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
         name = xml_channel.response.response_stages[-1].output_units
+        description = xml_channel.response.response_stages[-1].output_units_description
         description = xml_channel.response.response_stages[-1].output_units_description
         if description and name:
             if len(description) > len(name):
@@ -560,6 +564,9 @@ class XMLChannelMTChannel(BaseTranslator):
             last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
                 -1
             ]
+            last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
+                -1
+            ]
         except IndexError:
             return f"{mt_filter.type}_{0:02}", True
         try:
@@ -623,6 +630,9 @@ class XMLChannelMTChannel(BaseTranslator):
             self.logger.warning(
                 f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
             )
+            self.logger.warning(
+                f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
+            )
 
         #  Try handling Bartington FGM at Earthscope ... this is a place holder for handling non-standard cases
         if sensor_type.lower() == "bartington":
@@ -634,7 +644,13 @@ class XMLChannelMTChannel(BaseTranslator):
                 if ("bf-4" in sensor_description.lower()) & (
                     "schlumberger" in sensor_description.lower()
                 ):  # BSL-NCEDC
+                if ("bf-4" in sensor_description.lower()) & (
+                    "schlumberger" in sensor_description.lower()
+                ):  # BSL-NCEDC
                     sensor_type = "magnetometer"
+                elif ("electric" in sensor_description.lower()) & (
+                    "dipole" in sensor_description.lower()
+                ):  # BSL-NCEDC
                 elif ("electric" in sensor_description.lower()) & (
                     "dipole" in sensor_description.lower()
                 ):  # BSL-NCEDC
