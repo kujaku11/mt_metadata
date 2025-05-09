@@ -24,7 +24,7 @@
     "feature_weight_specs": {
         "type": "integer",
         "required": true,
-        "style": "name list",
+        "style": "number list",
         "units": null,
         "description": "List of feature weighting schemes to use for TF processing.",
         "options": [],
