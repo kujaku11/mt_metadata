@@ -192,11 +192,8 @@ def test_network_02_description(survey_02):
 
 def test_reconverted_time_period(network_02, reconverted_network):
     """Test time period from reconverted network"""
-    assert (
-        reconverted_network.start_date
-        == network_02.start_date.isoformat().split("T")[0]
-    )
-    assert reconverted_network.end_date == network_02.end_date.isoformat().split("T")[0]
+    assert reconverted_network.start_date == network_02.start_date.date.isoformat()
+    assert reconverted_network.end_date == network_02.end_date.date.isoformat()
 
 
 def test_reconverted_comment_id(network_02, reconverted_network, converter):
