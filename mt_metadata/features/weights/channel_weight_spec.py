@@ -1,38 +1,38 @@
 """
 candidate data structure:
     {
-                            "channel_weight_spec": {
-                                "output_channels": [
-                                    "ex"
-                                ],
-                                "combination_style": "multiplication",
-                                "features": [
-                                    {
-                                        "feature_name": "coherence",
-                                        "feature_params": {
-                                            "ch1": "ex",
-                                            "ch2": "hy"
-                                        },
-                                        "window_style": "threshold",
-                                        "window_params": {
-                                            "min": 0.8,
-                                            "max": "+inf"
-                                        }
-                                    },
-                                    {
-                                        "feature_name": "multiple_coherence",
-                                        "feature_params": {
-                                            "output_channel": "ex"
-                                        },
-                                        "window_style": "threshold",
-                                        "window_params": {
-                                            "min": 0.9,
-                                            "max": 1.1
-                                        }
-                                    }
-                                ]
-                            }
-                        }
+        "channel_weight_spec": {
+            "output_channels": [
+                "ex"
+            ],
+        "combination_style": "multiplication",
+        "features_weight_specs": [
+            {
+                "feature_name": "coherence",
+                "feature_params": {
+                    "ch1": "ex",
+                    "ch2": "hy"
+                },
+                "window_style": "threshold",
+                "window_params": {
+                    "min": 0.8,
+                    "max": "+inf"
+                }
+            },
+            {
+                "feature_name": "multiple_coherence",
+                "feature_params": {
+                    "output_channel": "ex"
+                },
+                "window_style": "threshold",
+                "window_params": {
+                    "min": 0.9,
+                    "max": 1.1
+                }
+            }
+        ]
+    }
+}
 
 Candidate names: processing_weights, feature_weights, channel_weights_spec
 
@@ -97,6 +97,7 @@ from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
 from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
 from typing import List, Union
+
 attr_dict = get_schema("channel_weight_spec", SCHEMA_FN_PATHS)
 
 class ChannelWeightSpec(Base):
