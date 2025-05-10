@@ -1,30 +1,104 @@
+"""
+    Unit test for FeatureWeightSpec class
+"""
+import unittest
+import numpy as np
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
+from mt_metadata.features.weights.feature_weight_spec import _unpack_weight_kernels
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
 
-def test_feature_weight_spec():
-    example_feature_dict = {
-        "feature_name": "coherence",
-        "feature_params": {"ch1": "ex", "ch2": "hy"},
-        "weight_kernels": [
-            {
-                "threshold": "low cut",
-                "half_window_style": "hann",
-                "transition_lower_bound": 0.3,
-                "transition_upper_bound": 0.8
-            }
+
+class TestFeatureWeightSpec(unittest.TestCase):
+
+    def setUp(self):
+        """
+        Set up a FeatureWeightSpec instance for testing.
+        """
+        self.kernel1 = MonotonicWeightKernel(
+            transition_lower_bound=0.2,
+            transition_upper_bound=0.5,
+            half_window_style="hann",
+            threshold="low cut",
+        )
+        self.kernel2 = MonotonicWeightKernel(
+            transition_lower_bound=0.6,
+            transition_upper_bound=0.9,
+            half_window_style="hann",
+            threshold="high cut",
+        )
+        self.feature_weight_spec = FeatureWeightSpec(
+            feature_params={"param1": "value1"},
+            weight_kernels=[self.kernel1, self.kernel2],
+        )
+
+    def test_feature_params(self):
+        """
+        Test the feature_params property.
+        """
+        self.assertEqual(self.feature_weight_spec.feature_params, {"param1": "value1"})
+
+    def test_weight_kernels(self):
+        """
+        Test the weight_kernels property.
+        """
+        self.assertEqual(len(self.feature_weight_spec.weight_kernels), 2)
+        self.assertIsInstance(self.feature_weight_spec.weight_kernels[0], MonotonicWeightKernel)
+
+    def test_evaluate(self):
+        """
+        Test the evaluate method.
+        """
+        feature_values = np.array([0.1, 0.3, 0.7, 1.0])
+        combined_weights = self.feature_weight_spec.evaluate(feature_values)
+
+        # Ensure the output is the correct shape
+        self.assertEqual(combined_weights.shape, feature_values.shape)
+
+        # Check specific values (example assertions)
+        self.assertAlmostEqual(combined_weights[0], 0.0, places=5)
+        self.assertGreater(combined_weights[2], 0.0)
+
+    def test_unpack_weight_kernels(self):
+        """
+        Test the _unpack_weight_kernels function.
+        """
+        weight_kernels = [
+            {"transition_lower_bound": 0.1, "transition_upper_bound": 0.4},
+            self.kernel1,
         ]
-    }
-    feature = FeatureWeightSpec()
-    feature.from_dict(example_feature_dict)
-#    feature = FeatureWeightSpec(**example_feature_dict)
+        unpacked_kernels = _unpack_weight_kernels(weight_kernels)
+        self.assertEqual(len(unpacked_kernels), 2)
+        self.assertIsInstance(unpacked_kernels[0], MonotonicWeightKernel)
 
-    # Check if the attributes are correctly populated
-    assert feature.feature_name == "coherence"
-    assert feature.feature_params == {"ch1": "ex", "ch2": "hy"}
-    assert len(feature.weight_kernels) == 1
-    assert feature.weight_kernels[0]["threshold"] == "low cut"
-    assert feature.weight_kernels[0]["half_window_style"] == "hann"
-
-    print("FeatureWeightSpec test passed!")
 
 if __name__ == "__main__":
-    test_feature_weight_spec()
+    unittest.main()
+
+# def test_feature_weight_spec():
+#     example_feature_dict = {
+#         "feature_name": "coherence",
+#         "feature_params": {"ch1": "ex", "ch2": "hy"},
+#         "weight_kernels": [
+#             {
+#                 "threshold": "low cut",
+#                 "half_window_style": "hann",
+#                 "transition_lower_bound": 0.3,
+#                 "transition_upper_bound": 0.8
+#             }
+#         ]
+#     }
+#     feature = FeatureWeightSpec()
+#     feature.from_dict(example_feature_dict)
+# #    feature = FeatureWeightSpec(**example_feature_dict)
+
+#     # Check if the attributes are correctly populated
+#     assert feature.feature_name == "coherence"
+#     assert feature.feature_params == {"ch1": "ex", "ch2": "hy"}
+#     assert len(feature.weight_kernels) == 1
+#     assert feature.weight_kernels[0]["threshold"] == "low cut"
+#     assert feature.weight_kernels[0]["half_window_style"] == "hann"
+
+#     print("FeatureWeightSpec test passed!")
+
+# if __name__ == "__main__":
+#     test_feature_weight_spec()
