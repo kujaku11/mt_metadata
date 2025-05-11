@@ -3,6 +3,7 @@
 """
 import unittest
 import numpy as np
+from mt_metadata.features.coherence import Coherence
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.feature_weight_spec import _unpack_weight_kernels
 from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
@@ -26,16 +27,31 @@ class TestFeatureWeightSpec(unittest.TestCase):
             half_window_style="hann",
             threshold="high cut",
         )
+        self.feature = Coherence(
+            channel1="ex",
+            channel2="hy",
+        )  # Use coherence   as the feature
         self.feature_weight_spec = FeatureWeightSpec(
-            feature_params={"param1": "value1"},
-            weight_kernels=[self.kernel1, self.kernel2],
-        )
+        feature=self.feature,  # Pass the coherence feature
+        weight_kernels=[self.kernel1, self.kernel2],
+    )
+        
+        # self.feature_weight_spec = FeatureWeightSpec(
+        #     feature_params={"param1": "value1"},
+        #     weight_kernels=[self.kernel1, self.kernel2],
+        # )
 
-    def test_feature_params(self):
+    def test_features(self):
         """
-        Test the feature_params property.
+        Test the features property.
         """
-        self.assertEqual(self.feature_weight_spec.feature_params, {"param1": "value1"})
+        self.assertEqual(self.feature_weight_spec.feature, self.feature)
+
+    # def test_feature_params(self):
+    #     """
+    #     Test the feature_params property.
+    #     """
+    #     self.assertEqual(self.feature_weight_spec.feature_params, {"param1": "value1"})
 
     def test_weight_kernels(self):
         """

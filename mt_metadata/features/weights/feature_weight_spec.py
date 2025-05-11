@@ -1,7 +1,8 @@
 """
 FeatureWeightSpec is the next key layer of abstraction after WeightKernels.
 
-It ties together a feature, its parameterization, and one or more weighting kernels (like MonotonicWeightKernel).
+It ties together a feature (including its parameterization),
+and one or more weighting kernels (like MonotonicWeightKernel).
 
 This will let you do things like:
 
@@ -15,12 +16,14 @@ Plug this into a higher-level channel weighting model
 
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.features.feature import Feature
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
+from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
 import numpy as np
 
 attr_dict = get_schema("base", SCHEMA_FN_PATHS)
-
-from .monotonic_weight_kernel import MonotonicWeightKernel
+# no need to add to attr dict if we have lists of mtmetadata objs.
+# attr_dict.add_dict(Feature()._attr_dict, "feature")
 
 class FeatureWeightSpec(Base):
     """
@@ -33,19 +36,27 @@ class FeatureWeightSpec(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+
+        # self._feature_params = None
+        self.feature = Feature()
+        #self.weight_kernels = Feature()
+        # if "feature_name" in kwargs.keys():
+        #     feature = SUPPORTED_FEATURE_DICT[kwargs.pop("feature_name")]
+        #     feature_obj = feature()
+        #     feature_obj.from_dict(kwargs.pop("feature_params"))
         super().__init__(attr_dict=attr_dict, **kwargs)
-        self.feature_params = kwargs.get("feature_params", {})
+        # self.feature_params = kwargs.get("feature_params", {})
 
         weight_kernels = kwargs.get("weight_kernels", [])
         self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
 
     @property
-    def feature_params(self):
-        return self._feature_params
+    def feature(self):
+        return self._feature
 
-    @feature_params.setter
-    def feature_params(self, value):
-        self._feature_params = value
+    @feature.setter
+    def feature(self, value):
+        self._feature = value
 
     @property
     def weight_kernels(self):
@@ -121,3 +132,10 @@ def _unpack_weight_kernels(weight_kernels):
         MonotonicWeightKernel(**wk) if isinstance(wk, dict) else wk
         for wk in weight_kernels
     ]
+
+
+def tst_init():
+    fws = FeatureWeightSpec()
+
+if __name__ == "__main__":
+    tst_init()
