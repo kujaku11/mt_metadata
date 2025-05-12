@@ -47,10 +47,10 @@ class XMLStationMTStation(BaseTranslator):
                 "alternate_code": "id",
                 "channels": None,
                 "code": "fdsn.id",
-                "comments": "provenance.comments",
+                "comments": "provenance.comments.value",
                 "creation_date": "time_period.start",
                 "data_availability": None,
-                "description": "comments",
+                "description": "comments.value",
                 "elevation": "location.elevation",
                 "end_date": "time_period.end",
                 "equipments": None,
@@ -72,7 +72,7 @@ class XMLStationMTStation(BaseTranslator):
         # StationXML to MT Survey
         self.mt_translator = self.flip_dict(self.xml_translator)
         self.mt_translator["geographic_name"] = "site"
-        self.mt_translator["provenance.comments"] = None
+        self.mt_translator["provenance.comments.value"] = None
         self.mt_translator["time_period.start"] = "start_date"
         self.mt_translator["time_period.end"] = "end_date"
 
@@ -140,7 +140,7 @@ class XMLStationMTStation(BaseTranslator):
                     if "summary" in key:
                         key = key.replace("summary", "comments")
                     if key in ["comments"]:
-                        if mt_station.comments:
+                        if mt_station.comments.value:
                             mt_station.comments.value += value
                         else:
                             mt_station.comments.value = value

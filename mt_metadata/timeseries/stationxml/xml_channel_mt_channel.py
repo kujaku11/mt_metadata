@@ -497,6 +497,8 @@ class XMLChannelMTChannel(BaseTranslator):
 
     def _get_mt_units(self, xml_channel, mt_channel):
         """ """
+        if len(xml_channel.response.response_stages) == 0:
+            return mt_channel
         name = xml_channel.response.response_stages[-1].output_units
         description = xml_channel.response.response_stages[-1].output_units_description
         description = xml_channel.response.response_stages[-1].output_units_description

@@ -10,7 +10,7 @@ from pydantic import Field, AliasChoices
 # =====================================================
 class Instrument(MetadataBase):
     id: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Instrument ID number can be serial number or a designated ID.",
@@ -24,7 +24,7 @@ class Instrument(MetadataBase):
     ]
 
     manufacturer: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Who manufactured the instrument.",
@@ -38,7 +38,7 @@ class Instrument(MetadataBase):
     ]
 
     type: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Description of the instrument type.",

@@ -6,6 +6,7 @@ from loguru import logger
 from collections import OrderedDict
 from typing_extensions import Self
 import re
+import numpy as np
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
@@ -250,6 +251,38 @@ class Run(MetadataBase):
         """
         if isinstance(value, str):
             return Comment(value=value)
+        return value
+
+    @field_validator(
+        "channels_recorded_electric",
+        "channels_recorded_magnetic",
+        "channels_recorded_auxiliary",
+        mode="before",
+    )
+    @classmethod
+    def validate_list_of_strings(
+        cls, value: np.ndarray | list[str] | str, info: ValidationInfo
+    ) -> list[str]:
+        """
+        Validate that the value is a list of strings.
+        """
+        if value in [None, "None", "none", "NONE", "null"]:
+            return []
+
+        if isinstance(value, np.ndarray):
+            value = value.astype(str).tolist()
+
+        elif isinstance(value, (list, tuple)):
+            value = [str(v) for v in value]
+
+        elif isinstance(value, (str)):
+            value = [v.strip() for v in value.split(",")]
+
+        else:
+            raise TypeError(
+                "'channels_recorded' must be set with a list of strings not "
+                f"{type(value)}."
+            )
         return value
 
     @model_validator(mode="after")

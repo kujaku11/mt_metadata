@@ -71,6 +71,7 @@ def sample_experiment():
     """Create a simple experiment for testing"""
     experiment = Experiment()
     survey = Survey(id="TEST")
+    survey.fdsn.network = "ZZ"
     station = Station(id="STA01")
     run1 = Run(id="001")
     run1.time_period.start = "2020-01-01T00:00:00+00:00"
@@ -169,7 +170,7 @@ def test_mt_to_xml_network_properties(sample_inventory, subtests):
     network = sample_inventory.networks[0]
 
     with subtests.test("code"):
-        assert network.code == "TEST"
+        assert network.code == "ZZ"
 
     with subtests.test("time period"):
         assert network.start_date is not None
@@ -193,8 +194,8 @@ def test_mt_to_xml_channel_properties(sample_inventory, subtests):
     station = sample_inventory.networks[0].stations[0]
 
     # Find electric and magnetic channels
-    electric_channels = station.select(channel="?E?").channels
-    magnetic_channels = station.select(channel="?H?").channels
+    electric_channels = station.select(channel="?Q?").channels
+    magnetic_channels = station.select(channel="?F?").channels
 
     with subtests.test("electric channel exists"):
         assert len(electric_channels) > 0
@@ -203,10 +204,10 @@ def test_mt_to_xml_channel_properties(sample_inventory, subtests):
         assert len(magnetic_channels) > 0
 
     with subtests.test("electric channel code"):
-        assert "E" in electric_channels[0].code
+        assert "Q" in electric_channels[0].code
 
     with subtests.test("magnetic channel code"):
-        assert "H" in magnetic_channels[0].code
+        assert "F" in magnetic_channels[0].code
 
 
 def test_mt_to_xml_run_comments(sample_inventory, subtests):
@@ -256,8 +257,8 @@ def test_xml_to_mt_survey_properties(translator, sample_inventory, subtests):
         assert survey.id == "TEST"
 
     with subtests.test("time period"):
-        assert survey.time_period.start is not None
-        assert survey.time_period.end is not None
+        assert survey.time_period.start_date is not None
+        assert survey.time_period.end_date is not None
 
 
 def test_xml_to_mt_station_properties(translator, sample_inventory, subtests):
@@ -344,11 +345,11 @@ def test_round_trip_survey_properties(translator, sample_experiment, subtests):
         assert converted_survey.id == original_survey.id
 
     with subtests.test("time period"):
-        assert MTime(time_stamp=converted_survey.time_period.start) == MTime(
-            time_stamp=original_survey.time_period.start
+        assert MTime(time_stamp=converted_survey.time_period.start_date) == MTime(
+            time_stamp=original_survey.time_period.start_date
         )
-        assert MTime(time_stamp=converted_survey.time_period.end) == MTime(
-            time_stamp=original_survey.time_period.end
+        assert MTime(time_stamp=converted_survey.time_period.end_date) == MTime(
+            time_stamp=original_survey.time_period.end_date
         )
 
 
@@ -458,7 +459,7 @@ def test_add_run(translator, subtests):
         assert len(result.channels) == 1
 
     with subtests.test("channel code"):
-        assert "E" in result.channels[0].code
+        assert "Q" in result.channels[0].code
 
     # Test adding the same run again
     result = translator.add_run(result, mt_run, filters_dict)
@@ -481,6 +482,9 @@ def test_add_run(translator, subtests):
 
     with subtests.test("second channel added"):
         assert len(result.channels) == 2
+
+    with subtests.test("channel code"):
+        assert "F" in result.channels[1].code
 
 
 # =============================================================================
