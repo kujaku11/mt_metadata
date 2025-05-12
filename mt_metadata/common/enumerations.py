@@ -117,7 +117,16 @@ with open(filename, "r") as fid:
     licenses = json.load(fid)
 
 # Process the license IDs to make them valid Python identifiers
-license_variable_list = []
+license_variable_list = [
+    {"license_key": "CC_0", "license_value": "CC0"},
+    {"license_key": "CC0", "license_value": "CC0"},
+    {"license_key": "CC_BY", "license_value": "CC BY"},
+    {"license_key": "CC_BY_SA", "license_value": "CC BY-SA"},
+    {"license_key": "CC_BY_NC", "license_value": "CC BY-NC"},
+    {"license_key": "CC_BY_NA_SA", "license_value": "CC BY-NC-SA"},
+    {"license_key": "CC_BY_ND", "license_value": "CC BY-ND"},
+    {"license_key": "CC_BY_NC_ND", "license_value": "CC BY-NC-ND"},
+]
 for license in licenses["licenses"]:
     item = {}
     item["license_key"] = (

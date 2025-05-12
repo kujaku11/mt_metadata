@@ -803,7 +803,9 @@ def object_to_array(value, dtype=float):
         The converted numpy array.
 
     """
-    if isinstance(value, (list, tuple)):
+    if value is None:
+        return np.empty(0)
+    elif isinstance(value, (list, tuple)):
         return np.array(value, dtype=dtype)
     elif isinstance(value, np.ndarray):
         return value.astype(dtype)

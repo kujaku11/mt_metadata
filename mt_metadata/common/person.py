@@ -14,6 +14,7 @@ from pydantic import (
     ValidationInfo,
     AliasChoices,
     model_validator,
+    computed_field,
 )
 
 
@@ -88,6 +89,12 @@ class Person(MetadataBase):
             },
         ),
     ]
+
+    @computed_field
+    @property
+    def author(self) -> str:
+        """alias for name"""
+        return self.name
 
     @field_validator("comments", mode="before")
     @classmethod

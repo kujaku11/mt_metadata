@@ -14,7 +14,7 @@ from mt_metadata.common import (
     Fdsn,
     BasicLocation,
 )
-from mt_metadata.timeseries import Filtered
+from mt_metadata.timeseries import Filter
 from pydantic import Field, field_validator, ValidationInfo, AliasChoices, PrivateAttr
 from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters import ChannelResponse
@@ -202,12 +202,12 @@ class ChannelBase(MetadataBase):
         ),
     ]
 
-    filtered: Annotated[
-        Filtered,
+    filter: Annotated[
+        Filter,
         Field(
-            default_factory=Filtered,
-            description="Filtered data for the channel.",
-            examples="Filtered()",
+            default_factory=Filter,
+            description="Filter data for the channel.",
+            examples="Filter()",
             alias=None,
             json_schema_extra={
                 "units": None,
