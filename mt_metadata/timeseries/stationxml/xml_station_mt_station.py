@@ -82,11 +82,10 @@ class XMLStationMTStation(BaseTranslator):
             "orientation.reference_frame",
             "location.declination.value",
             "location.declination.model",
-            "location.declination.comments.value",
+            "location.declination.comments",
             "provenance.software.author",
             "provenance.software.name",
             "provenance.software.version",
-            "provenance.comments.value",
             "data_type",
         ]
 
@@ -116,7 +115,29 @@ class XMLStationMTStation(BaseTranslator):
             raise ValueError(msg)
 
         mt_station = metadata.Station()
+
+        ## read comments
         run_comments = []
+        for comment in xml_station.comments:
+            key, value = self.read_xml_comment(comment)
+            if "mt.run" in key:
+                run_comments.append({key: value})
+                continue
+
+            try:
+                key = key.split("mt.station.")[1]
+            except IndexError:
+                pass
+
+            if "summary" in key:
+                key = key.replace("summary", "comments")
+            if key in ["comments"]:
+                if mt_station.comments.value:
+                    mt_station.comments.value += value
+                else:
+                    mt_station.comments.value = value
+            else:
+                mt_station.update_attribute(key, value)
 
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
@@ -124,29 +145,6 @@ class XMLStationMTStation(BaseTranslator):
             if xml_key in ["site"]:
                 site = xml_station.site
                 mt_station.geographic_name = site.name
-
-            elif mt_key in ["comments"]:
-                for comment in xml_station.comments:
-                    key, value = self.read_xml_comment(comment)
-                    if "mt.run" in key:
-                        run_comments.append({key: value})
-                        continue
-
-                    try:
-                        key = key.split("mt.station.")[1]
-                    except IndexError:
-                        pass
-
-                    if "summary" in key:
-                        key = key.replace("summary", "comments")
-                    if key in ["comments"]:
-                        if mt_station.comments.value:
-                            mt_station.comments.value += value
-                        else:
-                            mt_station.comments.value = value
-                    else:
-                        mt_station.update_attribute(key, value)
-
             else:
                 value = getattr(xml_station, xml_key)
                 if value is None:

@@ -165,6 +165,8 @@ all_units = [
 ]
 for prefix_name, prefix_symbol in prefixes.items():
     for unit_name, unit_details in {**base_units, **derived_units}.items():
+        if unit_details["symbol"].isupper():
+            unit_name = unit_name.capitalize()
         all_units.append(
             {
                 "name": f"{prefix_name}{unit_name}",
