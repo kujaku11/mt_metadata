@@ -40,7 +40,7 @@ release_dict = {None: "open", "open": "open", "closed": "closed", "partial": "pa
 for key in LicenseEnum.__members__.keys():
     if key.startswith("CC"):
         if "SA" in key or "NA" in key or "ND" in key or "NC" in key:
-            if key.count("NC") > 1:
+            if key.count("NC") > 1 or "ND" in key:
                 release_dict[key] = "closed"
             else:
                 release_dict[key] = "partial"

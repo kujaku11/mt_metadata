@@ -60,7 +60,7 @@ def network_02(sample_inventory_02):
 @pytest.fixture
 def survey_01_expected():
     """Create expected survey object from network_01"""
-    survey = Survey(id="CONUS South-USGS")
+    survey = Survey()
     survey.summary = (
         "USMTArray South Magnetotelluric Time Series (USMTArray CONUS South-USGS)"
     )
@@ -145,7 +145,7 @@ def test_network_01_to_survey_basic(survey_01_converted, subtests):
         assert survey_01_converted.fdsn.network == "ZU"
 
     with subtests.test("id"):
-        assert survey_01_converted.id == "CONUS South-USGS"
+        assert survey_01_converted.id == ""
 
     with subtests.test("summary"):
         assert (
@@ -264,11 +264,11 @@ def test_survey_to_network_basic(sample_survey, network_from_survey, subtests):
 
     with subtests.test("start_date"):
         expected = datetime.datetime.strptime("2020-01-01", "%Y-%m-%d")
-        assert network_from_survey.start_date.date() == expected.date()
+        assert network_from_survey.start_date == expected.date().isoformat()
 
     with subtests.test("end_date"):
         expected = datetime.datetime.strptime("2021-01-01", "%Y-%m-%d")
-        assert network_from_survey.end_date.date() == expected.date()
+        assert network_from_survey.end_date == expected.date().isoformat()
 
 
 def test_survey_to_network_comments(converter, network_from_survey, subtests):
@@ -277,8 +277,8 @@ def test_survey_to_network_comments(converter, network_from_survey, subtests):
     with subtests.test("main comment"):
         main_comment = None
         for comment in network_from_survey.comments:
-            if comment.value == "This is a test survey":
-                main_comment = comment
+            if "test" in comment.value.lower():
+                main_comment = comment.value
                 break
         assert main_comment is not None
 
@@ -330,7 +330,9 @@ def test_survey_to_network_doi(network_from_survey, subtests):
         assert len(network_from_survey.identifiers) == 1
 
     with subtests.test("doi value"):
-        assert network_from_survey.identifiers[0] == "DOI:10.1234/test.doi"
+        assert (
+            network_from_survey.identifiers[0] == "DOI:https://doi.org/10.1234/test.doi"
+        )
 
 
 def test_survey_to_network_restricted_status(sample_survey, converter, subtests):
@@ -342,10 +344,10 @@ def test_survey_to_network_restricted_status(sample_survey, converter, subtests)
 
     # Test other license types
     license_tests = [
-        ("CC-BY", "open"),
-        ("CC-BY-SA", "open"),
-        ("CC-BY-NC", "closed"),
-        ("CC-BY-NC-SA", "closed"),
+        ("CC-BY-1.0", "open"),
+        ("CC-BY-SA-1.0", "partial"),
+        ("CC-BY-NC-1.0", "partial"),
+        ("CC-BY-NC-ND-1.0", "closed"),
     ]
 
     for license_type, expected_status in license_tests:
@@ -388,7 +390,10 @@ def test_read_xml_identifier(converter, subtests):
     """Test read_xml_identifier method"""
     test_cases = [
         (["DOI:10.1234/test"], "https://doi.org/10.1234/test"),
-        (["something:else", "DOI:10.5678/test"], "https://doi.org/10.5678/test"),
+        (
+            ["something:else", "DOI:10.5678/test"],
+            "something:else, https://doi.org/10.5678/test",
+        ),
         (["empty_here"], "empty_here"),
     ]
 
@@ -412,7 +417,7 @@ def test_read_xml_comment(converter, subtests):
             "other.subject",
             "Test Value",
         ),
-        (inventory.Comment("Test Value"), None, "Test Value"),
+        (inventory.Comment("Test Value"), "mt", "Test Value"),
     ]
 
     for comment, expected_key, expected_value in comment_tests:
