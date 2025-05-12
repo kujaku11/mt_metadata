@@ -214,7 +214,7 @@ class TestXMLChannelTwoChannels:
                     ("component", "hy"),
                     ("data_quality.rating.value", None),
                     (
-                        "filtered.filter_list",
+                        "filter.filter_list",
                         [
                             {
                                 "applied_filter": OrderedDict(
@@ -293,7 +293,7 @@ class TestXMLChannelTwoChannels:
                     ("dc.start", 0.0),
                     ("dipole_length", 92.0),
                     (
-                        "filtered.filter_list",
+                        "filter.filter_list",
                         [
                             {
                                 "applied_filter": OrderedDict(
@@ -357,7 +357,6 @@ class TestXMLChannelTwoChannels:
                             },
                         ],
                     ),
-                    ("location.datum", "WGS 84"),
                     ("measurement_azimuth", 103.2),
                     ("measurement_tilt", 0.0),
                     ("negative.datum", "WGS 84"),

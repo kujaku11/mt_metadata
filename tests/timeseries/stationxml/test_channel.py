@@ -111,7 +111,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("component", "hy"),
                         ("data_quality.rating.value", None),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -189,7 +189,7 @@ class TestXMLChannelTwoChannels(unittest.TestCase):
                         ("dc.start", 0.0),
                         ("dipole_length", 92.0),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -319,10 +319,10 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                     [
                         ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
-                        ("component", "Hx"),
+                        ("component", "hx"),
                         ("data_quality.rating.value", None),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -391,10 +391,10 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                     [
                         ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
-                        ("component", "Hy"),
+                        ("component", "hy"),
                         ("data_quality.rating.value", None),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -463,10 +463,10 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                     [
                         ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
-                        ("component", "Hz"),
+                        ("component", "hz"),
                         ("data_quality.rating.value", None),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -536,7 +536,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("ac.start", 0.0),
                         ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
-                        ("component", "Ex"),
+                        ("component", "ex"),
                         ("contact_resistance.end", 0.0),
                         ("contact_resistance.start", 0.0),
                         ("data_quality.rating.value", None),
@@ -544,7 +544,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("dc.start", 0.0),
                         ("dipole_length", 94.0),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(
@@ -648,7 +648,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("ac.start", 0.0),
                         ("channel_number", 0),
                         ("comments", "run_ids: [a,b]"),
-                        ("component", "Ey"),
+                        ("component", "ey"),
                         ("contact_resistance.end", 0.0),
                         ("contact_resistance.start", 0.0),
                         ("data_quality.rating.value", None),
@@ -656,7 +656,7 @@ class TestXMLChannelSingleStation(unittest.TestCase):
                         ("dc.start", 0.0),
                         ("dipole_length", 94.0),
                         (
-                            "filtered.filter_list",
+                            "filter.filter_list",
                             [
                                 {
                                     "applied_filter": OrderedDict(

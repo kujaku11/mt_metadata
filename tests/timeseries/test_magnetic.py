@@ -39,8 +39,8 @@ def meta_dict():
             "data_quality.rating.value": 4,
             "data_quality.warnings": "No warnings",
             "location.elevation": 1230.9,
-            "filtered.comments": "filter comments",
-            "filtered.filter_list": [
+            "filter.comments": "filter comments",
+            "filter.filter_list": [
                 {
                     "applied_filter": OrderedDict(
                         [
@@ -245,13 +245,13 @@ def test_magnetic_filters(populated_magnetic, subtests):
     mag = populated_magnetic
 
     with subtests.test("filter.applied is set correctly"):
-        assert mag.filtered.filter_list[0].applied is False
+        assert mag.filter.filter_list[0].applied is False
 
     with subtests.test("filter.name is set correctly"):
-        assert mag.filtered.filter_list[0].name == "counts2mv"
+        assert mag.filter.filter_list[0].name == "counts2mv"
 
     with subtests.test("filter.comments is set correctly"):
-        assert mag.filtered.comments.value == "filter comments"
+        assert mag.filter.comments.value == "filter comments"
 
 
 def test_magnetic_with_kwargs(subtests):

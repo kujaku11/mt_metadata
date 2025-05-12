@@ -4,7 +4,7 @@ import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 
-from mt_metadata.timeseries import Channel, ChannelBase, Filtered
+from mt_metadata.timeseries import Channel, ChannelBase, Filter
 from mt_metadata.common import (
     Comment,
     Instrument,
@@ -205,7 +205,7 @@ def test_channel_default_values(default_channel):
     assert channel.type == "base"
     assert channel.units == ""
     assert isinstance(channel.data_quality, DataQuality)
-    assert isinstance(channel.filtered, Filtered)
+    assert isinstance(channel.filtered, Filter)
     assert isinstance(channel.time_period, TimePeriod)
     assert isinstance(channel.sensor, Instrument)
     assert isinstance(channel.fdsn, Fdsn)
@@ -258,7 +258,7 @@ def test_channel_base_default_values(default_channel_base):
     assert channel_base.type == "base"
     assert channel_base.units == ""
     assert isinstance(channel_base.data_quality, DataQuality)
-    assert isinstance(channel_base.filtered, Filtered)
+    assert isinstance(channel_base.filtered, Filter)
     assert isinstance(channel_base.time_period, TimePeriod)
     assert isinstance(channel_base.fdsn, Fdsn)
 

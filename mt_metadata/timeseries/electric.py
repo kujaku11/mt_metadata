@@ -6,11 +6,11 @@ from typing import Annotated
 from pydantic import Field, PrivateAttr
 
 from mt_metadata.common import StartEndRange
-from mt_metadata.timeseries import Channel, Electrode
+from mt_metadata.timeseries import ChannelBase, Electrode
 
 
 # =====================================================
-class Electric(Channel):
+class Electric(ChannelBase):
     _channel_type: str = PrivateAttr("electric")
 
     component: Annotated[

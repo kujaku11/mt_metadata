@@ -128,7 +128,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # fill channel filters
         for filter_name, mt_filter in mt_filters.items():
-            mt_channel.filtered.filter_list.append(
+            mt_channel.filter.filter_list.append(
                 AppliedFilter(
                     name=filter_name,
                     applied=True,
