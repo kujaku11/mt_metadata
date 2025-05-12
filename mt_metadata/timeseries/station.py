@@ -17,7 +17,7 @@ from mt_metadata.common import (
     StationLocation,
     Provenance,
     TimePeriod,
-    Person,
+    AuthorPerson,
     Orientation,
     Fdsn,
 )
@@ -172,9 +172,9 @@ class Station(MetadataBase):
     ]
 
     acquired_by: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,
+            default_factory=AuthorPerson,
             description="Group or person who acquired the data.",
             examples="Person()",
             alias=None,

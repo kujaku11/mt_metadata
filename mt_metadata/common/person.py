@@ -13,27 +13,11 @@ from pydantic import (
     field_validator,
     ValidationInfo,
     AliasChoices,
-    model_validator,
-    computed_field,
 )
 
 
 # =====================================================
-class Person(MetadataBase):
-    name: Annotated[
-        str,
-        Field(
-            default="",
-            description="Persons name, should be full first and last name.",
-            examples="person name",
-            validation_alias=AliasChoices("name", "author"),
-            json_schema_extra={
-                "units": None,
-                "required": True,
-            },
-        ),
-    ]
-
+class GenericPerson(MetadataBase):
     organization: Annotated[
         str | None,
         Field(
@@ -90,12 +74,6 @@ class Person(MetadataBase):
         ),
     ]
 
-    @computed_field
-    @property
-    def author(self) -> str:
-        """alias for name"""
-        return self.name
-
     @field_validator("comments", mode="before")
     @classmethod
     def validate_comments(cls, value, info: ValidationInfo) -> Comment:
@@ -106,12 +84,39 @@ class Person(MetadataBase):
             return Comment(value=value)
         return value
 
-    @model_validator(mode="after")
-    def validate_author(self) -> Self:
-        """
-        Validate that the author is not empty.
-        """
-        if hasattr(self, "author"):
-            if self.author != self.name:
-                self.name = self.author
-        return self
+
+class Person(GenericPerson):
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Persons name, should be full first and last name.",
+            examples="person name",
+            validation_alias=AliasChoices("name", "author"),
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+
+## Its too complicated to have an alias for name, because there is no getter for author
+## and with serialization it becomes complicates, easiest solution is to make a different
+## object with a field for author instead of name.
+
+
+class AuthorPerson(GenericPerson):
+    author: Annotated[
+        str,
+        Field(
+            default="",
+            description="Persons name, should be full first and last name.",
+            examples="person name",
+            validation_alias=AliasChoices("author", "name"),
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]

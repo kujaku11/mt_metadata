@@ -12,7 +12,7 @@ from mt_metadata.common import (
     Comment,
     Fdsn,
     TimePeriod,
-    Person,
+    AuthorPerson,
     Provenance,
     DataTypeEnum,
 )
@@ -144,9 +144,9 @@ class Run(MetadataBase):
     ]
 
     acquired_by: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,
+            default_factory=AuthorPerson,
             description="Information about the group that collected the data.",
             examples="Person()",
             alias=None,
@@ -158,9 +158,9 @@ class Run(MetadataBase):
     ]
 
     metadata_by: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,
+            default_factory=AuthorPerson,
             description="Information about the group that collected the metadata.",
             examples="Person()",
             alias=None,

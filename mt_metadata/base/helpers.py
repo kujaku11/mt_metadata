@@ -440,6 +440,41 @@ def recursive_split_dict(key, value, remainder, sep="."):
         remainder[key] = value
 
 
+def get_by_alias(model, alias_name):
+    # Find the field name that corresponds to the given alias
+    for field_name, field_info in model.model_fields.items():
+        if field_info.alias == alias_name:
+            return getattr(model, field_name)
+    return None
+
+
+# def get_alias_key(model, key: str) -> str:
+#     """
+#     Try to find an alias for a field name in a Pydantic BaseModel
+
+#     Parameters
+#     ----------
+#     model : BaseModel
+#         The Pydantic model to search for the field
+#     key : str
+#         The field name to find the alias for
+
+#     Returns
+#     -------
+#     str or None
+#         The alias name if found, None otherwise
+#     """
+#     try:
+#         field_info = model.model_fields.get(key)
+#         if field_info.validation_alias:
+
+#         if field_info and field_info.alias:
+#             return field_info.alias
+#         return key  # Return the original key if no alias found
+#     except (AttributeError, KeyError):
+#         return key  # Return the original key if any errors occur
+
+
 def recursive_split_getattr(base_object, name, sep="."):
     key, *other = name.split(sep, 1)
 
@@ -447,6 +482,9 @@ def recursive_split_getattr(base_object, name, sep="."):
         base_object = getattr(base_object, key)
         value, prop = recursive_split_getattr(base_object, other[0])
     else:
+        # with Pydantic, if the attribute does not exist an attribute error
+        # will be raised, which is desired. The only issue will be if the
+        # attribute is an alias, then TODO create a get from alias method.
         value = getattr(base_object, key)
         try:
             if isinstance(getattr(type(base_object), key), property):

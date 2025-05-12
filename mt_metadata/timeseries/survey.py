@@ -13,7 +13,7 @@ from pyproj import CRS
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
     Comment,
-    Person,
+    AuthorPerson,
     Citation,
     Copyright,
     BasicLocationNoDatum,
@@ -192,9 +192,9 @@ class Survey(MetadataBase):
     ]
 
     acquired_by: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,
+            default_factory=AuthorPerson,
             description="Person or group that acquired the data.",
             examples="Person()",
             alias=None,
@@ -304,9 +304,9 @@ class Survey(MetadataBase):
     ]
 
     project_lead: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,
+            default_factory=AuthorPerson,
             description="Person or group that led the project.",
             examples="Person()",
             alias=None,

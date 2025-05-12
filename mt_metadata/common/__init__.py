@@ -45,7 +45,7 @@ from .rating import Rating
 from .data_quality import DataQuality
 from .citation import Citation
 from .copyright import Copyright
-from .person import Person
+from .person import Person, AuthorPerson
 from .funding_source import FundingSource
 from .software import Software
 from .time_period import TimePeriod, TimePeriodDate
@@ -76,6 +76,7 @@ __all__ = [
     "Citation",
     "Copyright",
     "Person",
+    "AuthorPerson",
     "FundingSource",
     "Software",
     "TimePeriod",
