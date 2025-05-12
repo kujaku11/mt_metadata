@@ -452,6 +452,8 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         comments = []
+        if mt_comment.value is None:
+            return comments
         clist = mt_comment.value.split("run_ids:")
         for item in clist:
             if ":" in item:

@@ -244,6 +244,15 @@ class ChannelBase(MetadataBase):
         ),
     ]
 
+    @field_validator("component", mode="before")
+    @classmethod
+    def validate_component(cls, value: str) -> str:
+        """make sure the value is all lower case"""
+        if not isinstance(value, str):
+            raise TypeError(f"Component must be a string not {type(value)}")
+
+        return value.lower()
+
     @field_validator("comments", mode="before")
     @classmethod
     def validate_comments(cls, value, info: ValidationInfo) -> Comment:
@@ -306,7 +315,7 @@ class ChannelBase(MetadataBase):
         """
 
         mt_filter_list = []
-        for applied in self.filtered.filter_list:
+        for applied in self.filter.filter_list:
             try:
                 mt_filter = filters_dict[applied.name]
                 mt_filter_list.append(mt_filter)

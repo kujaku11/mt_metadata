@@ -387,7 +387,7 @@ class Run(MetadataBase):
 
         """
 
-        if component in self.channels_recorded_all:
+        if component in [cc for cc in self.channels_recorded_all]:
             return True
         return False
 

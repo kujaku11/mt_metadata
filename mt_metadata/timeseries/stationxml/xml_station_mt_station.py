@@ -236,14 +236,14 @@ class XMLStationMTStation(BaseTranslator):
                 xml_station.alternate_code = mt_station.id.upper()
 
             elif xml_key == "operators":
-                if mt_station.acquired_by.name:
+                if mt_station.acquired_by.author:
                     if mt_station.acquired_by.organization is None:
                         mt_station.acquired_by.organization = " "
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
-                    person = inventory.Person(names=[mt_station.acquired_by.name])
-                    person = inventory.Person(names=[mt_station.acquired_by.name])
+                    person = inventory.Person(names=[mt_station.acquired_by.author])
+                    person = inventory.Person(names=[mt_station.acquired_by.author])
                     operator.contacts = [person]
                     xml_station.operators = [operator]
 
