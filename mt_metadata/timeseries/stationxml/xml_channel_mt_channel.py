@@ -8,29 +8,30 @@ Created on Fri Feb 19 16:14:41 2021
 :license: MIT
 
 """
-import copy
+
 
 # =============================================================================
 # Imports
 # =============================================================================
+import copy
 from collections import OrderedDict
-from mt_metadata.timeseries.stationxml.fdsn_tools import (
-    release_dict,
-    read_channel_code,
-    make_channel_code,
-    create_mt_component,
-)
 
-
-from mt_metadata.timeseries import Electric, Magnetic, Auxiliary, AppliedFilter
+from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries import AppliedFilter, Auxiliary, Electric, Magnetic
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
+from mt_metadata.timeseries.stationxml.fdsn_tools import (
+    create_mt_component,
+    make_channel_code,
+    read_channel_code,
+    release_dict,
+)
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.utils.units import get_unit_object
-from mt_metadata.base.helpers import requires
+
 
 try:
-    from obspy.core import inventory
     from obspy import UTCDateTime
+    from obspy.core import inventory
 except ImportError as error:
     inventory = None
     UTCDateTime = None
@@ -316,7 +317,6 @@ class XMLChannelMTChannel(BaseTranslator):
         """
         s = inventory.Equipment()
         if mt_channel.type in ["electric"]:
-
             s.type = "dipole"
             s.description = f"{mt_channel.dipole_length} meters"
             if mt_channel.positive.manufacturer:
@@ -561,7 +561,6 @@ class XMLChannelMTChannel(BaseTranslator):
                 if round(abs(f_obj.complex_response([1])[0])) == round(
                     abs(mt_filter.complex_response([1])[0])
                 ):
-
                     return f_obj.name, False
 
         try:
