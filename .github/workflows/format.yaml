@@ -1,0 +1,41 @@
+name: Format Python code
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black isort autoflake
+
+    - name: Format with autoflake, isort, and black
+      run: |
+        find . -name "*.py" -type f -not -path "*/\.*" | xargs autoflake --remove-all-unused-imports --expand-star-imports --ignore-init-module-imports --in-place
+        find . -name "*.py" -type f -not -path "*/\.*" | xargs isort --profile black --force-alphabetical-sort-within-sections --order-by-type --lines-after-imports=2
+        find . -name "*.py" -type f -not -path "*/\.*" | xargs black
+
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Auto-format code with black and isort"
+        file_pattern: "*.py"
