@@ -7,7 +7,7 @@
   <Network code="XX" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
     <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
     <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
-    <Comment subject="mt.survey.acquired_by.name">
+    <Comment subject="mt.survey.acquired_by.author">
       <Value>Bedrosian, P. A.</Value>
     </Comment>
     <Comment subject="mt.survey.citation_journal.doi">

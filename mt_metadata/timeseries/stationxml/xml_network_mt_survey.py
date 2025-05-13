@@ -41,7 +41,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                 "start_date": "time_period.start_date",
                 "end_date": "time_period.end_date",
                 "restricted_status": "release_license",
-                "operators": "special",
+                "operators": "project_lead",
                 "code": "fdsn.network",
                 "identifiers": "citation_dataset.doi",
                 "alternate_code": "id",
@@ -91,7 +91,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                         name.append(", ".join(person.names))
                         email.append(", ".join(person.emails))
                 if name:
-                    mt_survey.update_attribute("project_lead.name", ", ".join(name))
+                    mt_survey.update_attribute("project_lead.author", ", ".join(name))
                 if email:
                     mt_survey.update_attribute("project_lead.email", ", ".join(email))
                 if org:
@@ -108,7 +108,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     if "doi" in key:
                         # need to make a doi a proper web location.
                         if not value.startswith("http"):
-                            if "doi" in value:
+                            if "doi" not in value:
                                 value = f"https://doi.org/{value}"
                             else:
                                 value = f"https://{value}"

@@ -168,7 +168,7 @@ class BaseTranslator:
 
         """
         return ", ".join(
-            [ii.strip().replace("DOI:", r"https://doi.org/") for ii in identifiers]
+            [ii.strip().replace("DOI:", "https://doi.org/") for ii in identifiers]
         )
 
     def get_comment(self, comments, subject):
