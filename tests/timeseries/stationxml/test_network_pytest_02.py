@@ -6,20 +6,20 @@ Tests for XMLNetworkMTSurvey class
     Jared Peacock (jpeacock@usgs.gov)
 :license: MIT
 """
-import pytest
-from pathlib import Path
 import datetime
 
+import pytest
+
+
 try:
-    from obspy.core import inventory
     from obspy import read_inventory
+    from obspy.core import inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries.stationxml import xml_network_mt_survey
-from mt_metadata.timeseries import Survey
 from mt_metadata import STATIONXML_01, STATIONXML_02
-from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
+from mt_metadata.timeseries import Survey
+from mt_metadata.timeseries.stationxml import xml_network_mt_survey
 
 
 # =============================================================================
@@ -27,37 +27,37 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
 # =============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def converter():
     """Create an XMLNetworkMTSurvey converter"""
     return xml_network_mt_survey.XMLNetworkMTSurvey()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def sample_inventory_01():
     """Read sample inventory file 01"""
     return read_inventory(STATIONXML_01.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def sample_inventory_02():
     """Read sample inventory file 02"""
     return read_inventory(STATIONXML_02.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def network_01(sample_inventory_01):
     """Get network from sample inventory 01"""
     return sample_inventory_01.networks[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def network_02(sample_inventory_02):
     """Get network from sample inventory 02"""
     return sample_inventory_02.networks[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_01_expected():
     """Create expected survey object from network_01"""
     survey = Survey()
@@ -71,7 +71,7 @@ def survey_01_expected():
     return survey
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_02_expected():
     """Create expected survey object from network_02"""
     survey = Survey(id="CONUS South-USGS")
@@ -93,19 +93,19 @@ def survey_02_expected():
     return survey
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_01_converted(converter, network_01):
     """Convert network_01 to Survey"""
     return converter.xml_to_mt(network_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_02_converted(converter, network_02):
     """Convert network_02 to Survey"""
     return converter.xml_to_mt(network_02)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def sample_survey():
     """Create a sample survey for testing mt_to_xml"""
     survey = Survey(id="Test Survey")
@@ -128,7 +128,7 @@ def sample_survey():
     return survey
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def network_from_survey(converter, sample_survey):
     """Convert sample_survey to Network"""
     return converter.mt_to_xml(sample_survey)

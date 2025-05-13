@@ -10,40 +10,41 @@ Tests for converting between StationXML Equipment and MT Run objects using pytes
 
 import pytest
 
+
 try:
     from obspy import read_inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
 from mt_metadata import STATIONXML_02
+from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory():
     """Load StationXML inventory."""
     return read_inventory(STATIONXML_02.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def xml_equipment(inventory):
     """Get the first equipment from the inventory."""
     return inventory.networks[0].stations[0].equipments[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def converter():
     """Create an XMLEquipmentMTRun converter."""
     return XMLEquipmentMTRun()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mt_run(converter, xml_equipment):
     """Convert XML equipment to MT run."""
     return converter.xml_to_mt(xml_equipment)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def test_xml_equipment(converter, mt_run):
     """Convert MT run back to XML equipment."""
     return converter.mt_to_xml(mt_run)
@@ -152,7 +153,7 @@ class TestEquipmentXMLFromMT:
 
 
 # Additional fixture needed for TestEquipmentXMLFromMT
-@pytest.fixture
+@pytest.fixture(scope="module")
 def base_xml_equipment(xml_equipment):
     """Provide the base XML equipment fixture."""
     return xml_equipment

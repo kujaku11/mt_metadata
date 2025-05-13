@@ -7,75 +7,78 @@ Tests for converting between StationXML Station and MT Station objects using pyt
 
 :license: MIT
 """
+from collections import OrderedDict
+
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
-from collections import OrderedDict
+
 
 try:
     from obspy import read_inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries.stationxml import XMLStationMTStation
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries import Station
+from mt_metadata.timeseries.stationxml import XMLStationMTStation
+
 
 # =============================================================================
 # Fixtures
 # =============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_01():
     """Load first StationXML inventory."""
     return read_inventory(STATIONXML_01.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_02():
     """Load second StationXML inventory."""
     return read_inventory(STATIONXML_02.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def xml_station_01(inventory_01):
     """Get station from first inventory."""
     return inventory_01.networks[0].stations[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def xml_station_02(inventory_02):
     """Get station from second inventory."""
     return inventory_02.networks[0].stations[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def converter():
     """Create an XMLStationMTStation converter."""
     return XMLStationMTStation()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mt_station_01(converter, xml_station_01):
     """Convert first XML station to MT station."""
     return converter.xml_to_mt(xml_station_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mt_station_02(converter, xml_station_02):
     """Convert second XML station to MT station."""
     return converter.xml_to_mt(xml_station_02)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def test_xml_station_01(converter, mt_station_01):
     """Convert first MT station back to XML station."""
     return converter.mt_to_xml(mt_station_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def test_xml_station_02(converter, mt_station_02):
     """Convert second MT station back to XML station."""
     return converter.mt_to_xml(mt_station_02)
@@ -249,7 +252,7 @@ class TestReadXMLStation02:
             assert mt_station_02.data_type == "MT"
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def run_test_data():
     """Fixture providing expected run data dictionaries."""
     base_run_a = {
@@ -492,7 +495,7 @@ class TestMTStationToXML02:
     Test converting second MT station back to StationXML station
     """
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(scope="module")(autouse=True)
     def setup(self, xml_station_02, converter, mt_station_02):
         """Set up test data."""
         # Create test_xml_station directly in the test class to ensure it's recreated for each test
@@ -584,7 +587,7 @@ class TestMTStationToXML02:
                                 assert bv == tv
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def example_inventories():
     """Load both example StationXML inventories."""
     return {
@@ -593,7 +596,7 @@ def example_inventories():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def example_xml_stations(example_inventories):
     """Extract stations from example inventories."""
     return {
@@ -602,7 +605,7 @@ def example_xml_stations(example_inventories):
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def example_mt_station():
     """Create a sample MT station with basic attributes."""
     station = Station(
@@ -778,7 +781,7 @@ class TestMTToXMLConversion:
 class TestXMLCommentHandling:
     """Test reading and writing XML comments."""
 
-    @pytest.fixture
+    @pytest.fixture(scope="module")
     def sample_comment(self):
         """Create a sample ObsPy Comment object with metadata."""
         from obspy.core.inventory import Comment

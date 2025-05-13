@@ -11,12 +11,13 @@ Created on Tue Feb 16 11:58:11 2021
 
 import pytest
 
+
 try:
     from obspy import read_inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
-from mt_metadata.timeseries.stationxml import xml_network_mt_survey
 from mt_metadata import STATIONXML_01, STATIONXML_02
+from mt_metadata.timeseries.stationxml import xml_network_mt_survey
 
 
 # =============================================================================
@@ -24,7 +25,7 @@ from mt_metadata import STATIONXML_01, STATIONXML_02
 # =============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def network_01():
     """
     Get the first network from STATIONXML_01
@@ -33,7 +34,7 @@ def network_01():
     return inventory.networks[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def network_02():
     """
     Get the first network from STATIONXML_02
@@ -42,7 +43,7 @@ def network_02():
     return inventory.networks[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def converter():
     """
     Create an XMLNetworkMTSurvey converter
@@ -50,7 +51,7 @@ def converter():
     return xml_network_mt_survey.XMLNetworkMTSurvey()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_01(network_01, converter):
     """
     Convert network_01 to MT survey
@@ -58,7 +59,7 @@ def survey_01(network_01, converter):
     return converter.xml_to_mt(network_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_02(network_02, converter):
     """
     Convert network_02 to MT survey
@@ -66,7 +67,7 @@ def survey_02(network_02, converter):
     return converter.xml_to_mt(network_02)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def reconverted_network(survey_02, converter):
     """
     Convert survey_02 back to a network for testing round trip conversion

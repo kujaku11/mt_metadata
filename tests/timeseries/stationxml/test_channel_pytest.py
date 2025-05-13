@@ -7,55 +7,56 @@ Tests for converting between XML Channel and MT Channel formats using pytest
 
 :license: MIT
 """
+from collections import OrderedDict
+
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
-from collections import OrderedDict
+
 
 try:
     from obspy import read_inventory
-    from mt_metadata.timeseries.filters.obspy_stages import (
-        create_filter_from_stage,
-    )
+
+    from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
 from mt_metadata import STATIONXML_01, STATIONXML_02
+from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def converter():
     """Create an XMLChannelMTChannel converter."""
     return XMLChannelMTChannel()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_01():
     """Load first stationxml inventory."""
     return read_inventory(STATIONXML_01.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_02():
     """Load second stationxml inventory."""
     return read_inventory(STATIONXML_02.as_posix())
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def hy_channel_01(inventory_01):
     """Get HY channel from first inventory."""
     return inventory_01.networks[0].stations[0].channels[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def ey_channel_01(inventory_01):
     """Get EY channel from first inventory."""
     return inventory_01.networks[0].stations[0].channels[1]
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_02_channels(inventory_02):
     """Get all channels from second inventory."""
     station = inventory_02.networks[0].stations[0]
@@ -68,7 +69,7 @@ def inventory_02_channels(inventory_02):
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mt_channel_and_filters(converter, request, inventory_01, inventory_02_channels):
     """Convert an XML channel to MT channel and filters."""
     # Handle different ways the parameter might be passed
@@ -102,7 +103,7 @@ def mt_channel_and_filters(converter, request, inventory_01, inventory_02_channe
 class TestParseSerialID:
     """Test parsing a string that holds the electrode serial ID numbers."""
 
-    @pytest.fixture
+    @pytest.fixture(scope="module")
     def setup(self, converter):
         """Set up test data."""
         pid = "2004007"
@@ -158,7 +159,7 @@ class TestParseSerialID:
 class TestParseDipole:
     """Test parsing a dipole length string."""
 
-    @pytest.fixture
+    @pytest.fixture(scope="module")
     def setup(self, converter):
         """Set up test data."""
         dipole_length = 100.0
@@ -181,7 +182,7 @@ class TestParseDipole:
 class TestXMLChannelTwoChannels:
     """Test reading XML channel to MT Channel."""
 
-    @pytest.fixture
+    @pytest.fixture(scope="module")
     def setup(self, converter, inventory_01):
         """Set up test data."""
         xml_hy = inventory_01.networks[0].stations[0].channels[0]
