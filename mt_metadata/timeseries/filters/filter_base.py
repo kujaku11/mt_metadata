@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, Union
+from typing import Annotated
 
 import numpy as np
 import pandas as pd
@@ -14,6 +14,7 @@ from mt_metadata.common import Comment
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object, Unit
+
 
 try:
     from obspy.core.inventory.response import ResponseListResponseStage, ResponseStage
@@ -311,7 +312,7 @@ class FilterBase(MetadataBase):
 
         if mapping is None:
             mapping = cls().make_obspy_mapping()
-        kwargs = {}
+        kwargs = {"name": ""}
 
         if not isinstance(stage, (ResponseListResponseStage, ResponseStage)):
             msg = f"Expected a ResponseStage and got a {type(stage)}"
@@ -343,6 +344,8 @@ class FilterBase(MetadataBase):
                     logger.warning(
                         f"Attribute {obspy_label} not found in stage object, skipping."
                     )
+            if kwargs.get("name") is None:
+                kwargs["name"] = ""
         return cls(**kwargs)
 
     def complex_response(self, frqs):
