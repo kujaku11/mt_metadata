@@ -219,4 +219,5 @@ History
 * Units have been updated to be more compliant with SI standards.  All unit names must be singular for example volts must be `volt`. Unit validation returns the long name in lowercase. "mV/km" will be returned as "millivolt per kilometer".  There is also a `Unit` object in `mt_metadata.utils.units` that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
 * Filters type can only be a set value for the filter.  For example for an `FIRFilter` the type must be `FIR`.  The filter type is now a property of the filter object.  The filter type is not a property of the filter class.  This allows for more flexibility in the future.
 * Added ability to initiate a metadata object with a dictionary as in `Person(**kwargs)`.
+* Added `AuthorPerson` object to `mt_metadata.common` which is more in the style of the MT metadata.  You can still instantiate with `AuthorPerson(name="John Doe")` which will populate the `author` field.  However, you cannot get `name`, similarly with `Person(author="jon do")`.  
 * Changed `Filtered` to `Filter` 
