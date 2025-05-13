@@ -8,14 +8,15 @@ Created on Tue Feb 16 10:18:29 2021
 :license: MIT
 
 """
+from mt_metadata import timeseries as metadata
+from mt_metadata.base.helpers import requires
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
-
-from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
-from mt_metadata.base.helpers import requires
+
 
 try:
     from obspy.core import inventory
@@ -108,7 +109,7 @@ class XMLNetworkMTSurvey(BaseTranslator):
                     if "doi" in key:
                         # need to make a doi a proper web location.
                         if not value.startswith("http"):
-                            if "doi" not in value:
+                            if "doi.org" not in value:
                                 value = f"https://doi.org/{value}"
                             else:
                                 value = f"https://{value}"
