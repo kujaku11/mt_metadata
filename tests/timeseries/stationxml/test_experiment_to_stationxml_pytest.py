@@ -15,21 +15,20 @@ import pytest
 from mt_metadata.timeseries import Experiment
 from mt_metadata.utils.mttime import MTime
 
+
 try:
     from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
-from mt_metadata import (
-    MT_EXPERIMENT_MULTIPLE_RUNS,
-    MT_EXPERIMENT_MULTIPLE_RUNS_02,
-)
+from mt_metadata import MT_EXPERIMENT_MULTIPLE_RUNS, MT_EXPERIMENT_MULTIPLE_RUNS_02
+
 
 # =============================================================================
 # Fixtures
 # =============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def experiment_01():
     """Load the first experiment from XML file"""
     experiment = Experiment()
@@ -37,7 +36,7 @@ def experiment_01():
     return experiment
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def experiment_02():
     """Load the second experiment from XML file"""
     experiment = Experiment()
@@ -45,19 +44,19 @@ def experiment_02():
     return experiment
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def translator():
     """Create an XMLInventoryMTExperiment translator"""
     return XMLInventoryMTExperiment()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_01(experiment_01, translator):
     """Convert experiment_01 to StationXML inventory"""
     return translator.mt_to_xml(experiment_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_02(experiment_02, translator):
     """Convert experiment_02 to StationXML inventory"""
     return translator.mt_to_xml(experiment_02)

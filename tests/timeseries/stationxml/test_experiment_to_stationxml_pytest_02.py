@@ -7,38 +7,36 @@ Tests for XMLInventoryMTExperiment class
 
 :license: MIT
 """
-import pytest
-from pathlib import Path
 import tempfile
-import datetime
+from pathlib import Path
+
+import pytest
+
 
 try:
-    from obspy.core import inventory
     from obspy import read_inventory
+    from obspy.core import inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries import Experiment, Survey, Station, Run, Electric, Magnetic
-from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
+from mt_metadata import MT_EXPERIMENT_MULTIPLE_RUNS, MT_EXPERIMENT_MULTIPLE_RUNS_02
+from mt_metadata.timeseries import Electric, Experiment, Magnetic, Run, Station, Survey
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 from mt_metadata.utils.mttime import MTime
-from mt_metadata import (
-    MT_EXPERIMENT_MULTIPLE_RUNS,
-    MT_EXPERIMENT_MULTIPLE_RUNS_02,
-)
+
 
 # =============================================================================
 # Fixtures
 # =============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def translator():
     """Create an XMLInventoryMTExperiment translator"""
     return XMLInventoryMTExperiment()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def experiment_01():
     """Load experiment with multiple runs"""
     experiment = Experiment()
@@ -46,7 +44,7 @@ def experiment_01():
     return experiment
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def experiment_02():
     """Load experiment with multiple runs (version 2)"""
     experiment = Experiment()
@@ -54,19 +52,19 @@ def experiment_02():
     return experiment
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_01(translator, experiment_01):
     """Convert experiment_01 to StationXML inventory"""
     return translator.mt_to_xml(experiment_01)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def inventory_02(translator, experiment_02):
     """Convert experiment_02 to StationXML inventory"""
     return translator.mt_to_xml(experiment_02)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def sample_experiment():
     """Create a simple experiment for testing"""
     experiment = Experiment()
@@ -121,13 +119,13 @@ def sample_experiment():
     return experiment
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def sample_inventory(translator, sample_experiment):
     """Convert sample_experiment to inventory"""
     return translator.mt_to_xml(sample_experiment)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def temp_xml_file():
     """Create a temporary file for StationXML output"""
     with tempfile.NamedTemporaryFile(suffix=".xml", delete=False) as tmp:
@@ -136,7 +134,7 @@ def temp_xml_file():
     tmp_path.unlink(missing_ok=True)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def temp_mt_file():
     """Create a temporary file for MT XML output"""
     with tempfile.NamedTemporaryFile(suffix=".xml", delete=False) as tmp:
