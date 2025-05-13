@@ -395,12 +395,6 @@ def test_response_stages(response_0, response_1):
             attr_0 = getattr(stage_0, key)
             attr_1 = getattr(stage_1, key)
 
-            # # Normalize string attributes
-            # if isinstance(attr_0, str):
-            #     attr_0 = attr_0.lower().replace("/", " per ")
-            #     attr_1 = attr_1.lower().replace("/", " per ")
-            if attr_0 != attr_1:
-                print(key, attr_0, attr_1)
             assert attr_0 == attr_1
 
 
