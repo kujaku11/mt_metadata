@@ -97,7 +97,10 @@ class TestNetworkTranslation:
             assert network_0.restricted_status == network_1.restricted_status
 
         with subtests.test("identifiers"):
-            assert network_0.identifiers == network_1.identifiers
+            assert (
+                network_0.identifiers[0].replace("DOI:", "DOI:https://doi.org/")
+                == network_1.identifiers[0]
+            )
 
     def test_end_date(self, network_pair):
         """Test network end date (original doesn't have an end date)."""
@@ -113,6 +116,9 @@ class TestNetworkTranslation:
         original_comment_dict = {
             c.subject: c.value for c in network_0.comments if c.value not in [None, ""]
         }
+        original_comment_dict["mt.survey.citation_journal.doi"] = (
+            f"https://doi.org/{original_comment_dict['mt.survey.citation_journal.doi']}"
+        )
 
         new_comment_dict = {
             c.subject: c.value for c in network_1.comments if c.value not in [None, ""]

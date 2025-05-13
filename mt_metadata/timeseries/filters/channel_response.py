@@ -480,7 +480,7 @@ class ChannelResponse(FilterBase):
 
         for ii, f in enumerate(self.filters_list, 1):
             if f.type in ["coefficient"]:
-                if f.units_out not in ["count"]:
+                if f.units_out not in ["count", "digital counts"]:
                     logger.debug(f"converting CoefficientFilter {f.name} to PZ")
                     pz = PoleZeroFilter()
                     pz.gain = f.gain
