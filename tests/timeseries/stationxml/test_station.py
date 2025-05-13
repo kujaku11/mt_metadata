@@ -255,14 +255,15 @@ class TestReadXMLStation02:
 @pytest.fixture(scope="module")
 def run_test_data():
     """Fixture providing expected run data dictionaries."""
+
     base_run_a = {
         "run": OrderedDict(
             [
+                ("acquired_by.author", "Kristin Pratscher"),
                 (
                     "acquired_by.comments",
                     "X array at 0 and 90 degrees. Site i rocky drainage basin proximal to basalt lava flows. Ln",
                 ),
-                ("acquired_by.name", "Kristin Pratscher"),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
@@ -281,15 +282,15 @@ def run_test_data():
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_type", "LP"),
                 ("id", "a"),
+                ("metadata_by.author", "Jade Crosbie"),
                 ("metadata_by.comments", ""),
-                ("metadata_by.name", "Jade Crosbie"),
                 ("provenance.archive.name", ""),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 0.0),
                 ("time_period.end", "2020-06-08T23:54:50+00:00"),
                 ("time_period.start", "2020-06-08T22:57:13+00:00"),
@@ -300,11 +301,11 @@ def run_test_data():
     base_run_b = {
         "run": OrderedDict(
             [
+                ("acquired_by.author", "Kristin Pratscher"),
                 (
                     "acquired_by.comments",
                     "X array a 0 and 90 degreest. Site in rocky drainage basin proximal to basalt lava flows. L",
                 ),
-                ("acquired_by.name", "Kristin Pratscher"),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
@@ -326,18 +327,18 @@ def run_test_data():
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_type", "LP"),
                 ("id", "b"),
+                ("metadata_by.author", "Jade Crosbie; Anna Kelbert"),
                 (
                     "metadata_by.comments",
                     "A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.",
                 ),
-                ("metadata_by.name", "Jade Crosbie; Anna Kelbert"),
                 ("provenance.archive.name", ""),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 0.0),
                 ("time_period.end", "2020-06-25T17:57:40+00:00"),
                 ("time_period.start", "2020-06-09T00:08:03+00:00"),
@@ -348,11 +349,11 @@ def run_test_data():
     base_run_c = {
         "run": OrderedDict(
             [
+                ("acquired_by.author", "Kristin Pratscher"),
                 (
                     "acquired_by.comments",
                     "X array at 0 and 90 degrees. Site in rocky drainage basin proximal to basalt lava flows. Li",
                 ),
-                ("acquired_by.name", "Kristin Pratscher"),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
@@ -371,15 +372,15 @@ def run_test_data():
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_type", "LP"),
                 ("id", "c"),
+                ("metadata_by.author", "Jade Crosbie"),
                 ("metadata_by.comments", ""),
-                ("metadata_by.name", "Jade Crosbie"),
                 ("provenance.archive.name", ""),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 0.0),
                 ("time_period.end", "2020-07-04T01:16:15+00:00"),
                 ("time_period.start", "2020-06-25T19:57:57+00:00"),
@@ -390,11 +391,11 @@ def run_test_data():
     base_run_d = {
         "run": OrderedDict(
             [
+                ("acquired_by.author", "Kristin Pratscher"),
                 (
                     "acquired_by.comments",
                     "Replaced mag cable & NIMS. X array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                 ),
-                ("acquired_by.name", "Kristin Pratscher"),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
@@ -413,15 +414,15 @@ def run_test_data():
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_type", "LP"),
                 ("id", "d"),
+                ("metadata_by.author", "Jade Crosbie"),
                 ("metadata_by.comments", ""),
-                ("metadata_by.name", "Jade Crosbie"),
                 ("provenance.archive.name", ""),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 0.0),
                 ("time_period.end", "2020-07-04T03:07:30+00:00"),
                 ("time_period.start", "2020-07-04T02:59:02+00:00"),
@@ -432,11 +433,11 @@ def run_test_data():
     base_run_e = {
         "run": OrderedDict(
             [
+                ("acquired_by.author", "Kristin Pratscher"),
                 (
                     "acquired_by.comments",
                     "Replaced mag cable & NIMS. MX array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                 ),
-                ("acquired_by.name", "Kristin Pratscher"),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
@@ -455,15 +456,15 @@ def run_test_data():
                 ("data_logger.timing_system.uncertainty", 0.0),
                 ("data_type", "LP"),
                 ("id", "e"),
+                ("metadata_by.author", "Jade Crosbie"),
                 ("metadata_by.comments", ""),
-                ("metadata_by.name", "Jade Crosbie"),
                 ("provenance.archive.name", ""),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 0.0),
                 ("time_period.end", "2020-07-17T21:15:32+00:00"),
                 ("time_period.start", "2020-07-04T03:28:45+00:00"),
@@ -495,7 +496,7 @@ class TestMTStationToXML02:
     Test converting second MT station back to StationXML station
     """
 
-    @pytest.fixture(scope="module")(autouse=True)
+    @pytest.fixture(autouse=True)
     def setup(self, xml_station_02, converter, mt_station_02):
         """Set up test data."""
         # Create test_xml_station directly in the test class to ensure it's recreated for each test
@@ -716,8 +717,8 @@ class TestXMLToMTConversion:
             assert run_a.time_period.start == "2020-06-08T22:57:13+00:00"
             assert run_a.time_period.end == "2020-06-08T23:54:50+00:00"
 
-        with subtests.test("acquired_by.name is correctly set"):
-            assert run_a.acquired_by.name == "Kristin Pratscher"
+        with subtests.test("acquired_by.author is correctly set"):
+            assert run_a.acquired_by.author == "Kristin Pratscher"
 
 
 class TestMTToXMLConversion:

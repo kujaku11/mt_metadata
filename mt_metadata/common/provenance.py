@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.mttime import MTime
-from mt_metadata.common import AuthorPerson, Comment, Software
+from mt_metadata.common import AuthorPerson, Person, Comment, Software
 from pydantic import Field, field_validator, ValidationInfo
 
 
@@ -87,9 +87,9 @@ class Provenance(MetadataBase):
     ]
 
     archive: Annotated[
-        AuthorPerson,
+        Person,
         Field(
-            default_factory=AuthorPerson,
+            default_factory=Person,
             description="Archive from which the data was downloaded from.",
             examples="Person(name=archive_name, url=https://archive.url)",
             alias=None,
