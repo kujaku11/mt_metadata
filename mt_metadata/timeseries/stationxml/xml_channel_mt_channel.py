@@ -556,7 +556,7 @@ class XMLChannelMTChannel(BaseTranslator):
         """
 
         # check for existing filters
-        for f_key, f_obj in existing_filters.items():
+        for f_obj in existing_filters.values():
             if f_obj.type == mt_filter.type:
                 if round(abs(f_obj.complex_response([1])[0])) == round(
                     abs(mt_filter.complex_response([1])[0])
@@ -564,9 +564,6 @@ class XMLChannelMTChannel(BaseTranslator):
                     return f_obj.name, False
 
         try:
-            last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
-                -1
-            ]
             last = sorted([k for k in existing_filters.keys() if mt_filter.type in k])[
                 -1
             ]
