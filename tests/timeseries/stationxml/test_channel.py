@@ -24,6 +24,7 @@ except ImportError:
 
 from mt_metadata import STATIONXML_01, STATIONXML_02
 from mt_metadata.timeseries.stationxml import XMLChannelMTChannel
+from mt_metadata.utils.units import get_unit_object
 
 
 @pytest.fixture(scope="module")
@@ -477,7 +478,8 @@ class TestMTChannelToXML01HY:
 
         with subtests.test("calibration_units_description matches"):
             assert (
-                base.calibration_units_description == test.calibration_units_description
+                get_unit_object(base.calibration_units_description).name
+                == test.calibration_units_description
             )
 
     def test_sample_rate(self, mt_channel_and_filters, subtests):
@@ -683,7 +685,7 @@ def create_channel_test_class(channel_name):
 
             with subtests.test("calibration_units_description matches"):
                 assert (
-                    base.calibration_units_description
+                    get_unit_object(base.calibration_units_description).name
                     == test.calibration_units_description
                 )
 
