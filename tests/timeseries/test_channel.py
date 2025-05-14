@@ -1,21 +1,35 @@
-import pytest
+# -*- coding: utf-8 -*-
+"""
+Tests for the Channel models.
+
+This module tests the Channel and ChannelBase classes including
+serialization, defaults, and custom values.
+"""
+
 import json
-import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
 
-from mt_metadata.timeseries import Channel, ChannelBase, Filter
+import pandas as pd
+import pytest
+
 from mt_metadata.common import (
-    Comment,
-    Instrument,
-    DataQuality,
-    TimePeriod,
-    Fdsn,
     BasicLocation,
+    Comment,
+    DataQuality,
+    Fdsn,
+    Instrument,
+    TimePeriod,
 )
+from mt_metadata.timeseries import Channel, ChannelBase, Filter
 
 
-@pytest.fixture
+# =============================================================================
+# Fixtures
+# =============================================================================
+
+
+@pytest.fixture(scope="module")
 def meta_dict():
     """
     Fixture to provide a sample metadata dictionary for testing.
@@ -29,8 +43,8 @@ def meta_dict():
             "data_quality.rating.method": "ml",
             "data_quality.rating.value": 4,
             "data_quality.warnings": "No warnings",
-            "filtered.comments": "test",
-            "filtered.filter_list": [
+            "filter.comments": "test",
+            "filter.filter_list": [
                 {
                     "applied_filter": OrderedDict(
                         [
@@ -75,7 +89,7 @@ def meta_dict():
     return meta_dict
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def channel_object():
     """
     Fixture to provide a Channel object for testing.
@@ -83,37 +97,7 @@ def channel_object():
     return Channel()
 
 
-def test_in_out_dict(channel_object, meta_dict):
-    """
-    Test the from_dict and to_dict methods of the Channel class.
-    """
-    channel_object.from_dict(meta_dict)
-    assert meta_dict == channel_object.to_dict()
-
-
-def test_in_out_series(channel_object, meta_dict):
-    """
-    Test the from_series and to_dict methods of the Channel class.
-    """
-    channel_series = pd.Series(meta_dict["channel"])
-    channel_object.from_series(channel_series)
-    assert meta_dict == channel_object.to_dict()
-
-
-def test_in_out_json(channel_object, meta_dict):
-    """
-    Test the from_json and to_json methods of the Channel class.
-    """
-    survey_json = json.dumps(meta_dict)
-    channel_object.from_json(survey_json)
-    assert meta_dict == channel_object.to_dict()
-
-    survey_json = channel_object.to_json(nested=True)
-    channel_object.from_json(survey_json)
-    assert meta_dict == channel_object.to_dict()
-
-
-@pytest.fixture
+@pytest.fixture(scope="module")
 def default_channel():
     """
     Fixture to provide a default Channel object.
@@ -121,7 +105,7 @@ def default_channel():
     return Channel()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def custom_channel():
     """
     Fixture to provide a Channel object with custom values.
@@ -137,28 +121,12 @@ def custom_channel():
         translated_azimuth=50.0,
         translated_tilt=5.0,
         type="base",
-        units="volt",
+        units="Volt",
         location=BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0),
     )
 
 
-@pytest.fixture
-def default_basic_location():
-    """
-    Fixture to provide a default BasicLocation object.
-    """
-    return BasicLocation()
-
-
-@pytest.fixture
-def custom_basic_location():
-    """
-    Fixture to provide a BasicLocation object with custom values.
-    """
-    return BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0)
-
-
-@pytest.fixture
+@pytest.fixture(scope="module")
 def default_channel_base():
     """
     Fixture to provide a default ChannelBase object.
@@ -166,7 +134,7 @@ def default_channel_base():
     return ChannelBase()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def custom_channel_base():
     """
     Fixture to provide a ChannelBase object with custom values.
@@ -182,102 +150,257 @@ def custom_channel_base():
         translated_azimuth=50.0,
         translated_tilt=5.0,
         type="base",
-        units="volt",
+        units="Volt",
     )
 
 
-def test_channel_default_values(default_channel):
-    """
-    Test the default values of the Channel model.
-    """
-    channel = default_channel
-
-    assert channel.channel_number == 0
-    assert channel.channel_id is None
-    assert isinstance(channel.comments, Comment)
-    assert channel.comments.value is None
-    assert channel.component == ""
-    assert channel.measurement_azimuth == 0.0
-    assert channel.measurement_tilt == 0.0
-    assert channel.sample_rate == 0.0
-    assert channel.translated_azimuth is None
-    assert channel.translated_tilt is None
-    assert channel.type == "base"
-    assert channel.units == ""
-    assert isinstance(channel.data_quality, DataQuality)
-    assert isinstance(channel.filtered, Filter)
-    assert isinstance(channel.time_period, TimePeriod)
-    assert isinstance(channel.sensor, Instrument)
-    assert isinstance(channel.fdsn, Fdsn)
-    assert isinstance(channel.location, BasicLocation)
-    assert channel.location.latitude is None
-    assert channel.location.longitude is None
-    assert channel.location.elevation is None
+# =============================================================================
+# Serialization Tests
+# =============================================================================
 
 
-def test_channel_custom_values(custom_channel):
-    """
-    Test the Channel model with custom values.
-    """
-    channel = custom_channel
+class TestSerialization:
+    """Test serialization methods of the Channel class."""
 
-    assert channel.channel_number == 1
-    assert channel.channel_id == "1001.11"
-    assert isinstance(channel.comments, Comment)
-    assert channel.comments.value == "Test comment"
-    assert channel.component == "ex"
-    assert channel.measurement_azimuth == 45.0
-    assert channel.measurement_tilt == 10.0
-    assert channel.sample_rate == 8.0
-    assert channel.translated_azimuth == 50.0
-    assert channel.translated_tilt == 5.0
-    assert channel.type == "base"
-    assert channel.units == "volt"
-    assert isinstance(channel.location, BasicLocation)
-    assert channel.location.latitude == 45.0
-    assert channel.location.longitude == -120.0
-    assert channel.location.elevation == 500.0
+    def test_in_out_dict(self, channel_object, meta_dict):
+        """Test the from_dict and to_dict methods."""
+        channel_object.from_dict(meta_dict)
+        assert meta_dict == channel_object.to_dict()
 
+    def test_in_out_series(self, channel_object, meta_dict):
+        """Test the from_series and to_dict methods."""
+        channel_series = pd.Series(meta_dict["channel"])
+        channel_object.from_series(channel_series)
+        assert meta_dict == channel_object.to_dict()
 
-def test_channel_base_default_values(default_channel_base):
-    """
-    Test the default values of the ChannelBase model.
-    """
-    channel_base = default_channel_base
+    def test_in_out_json(self, channel_object, meta_dict):
+        """Test the from_json and to_json methods."""
+        # Test regular JSON
+        survey_json = json.dumps(meta_dict)
+        channel_object.from_json(survey_json)
+        assert meta_dict == channel_object.to_dict()
 
-    assert channel_base.channel_number == 0
-    assert channel_base.channel_id is None
-    assert isinstance(channel_base.comments, Comment)
-    assert channel_base.comments.value is None
-    assert channel_base.component == ""
-    assert channel_base.measurement_azimuth == 0.0
-    assert channel_base.measurement_tilt == 0.0
-    assert channel_base.sample_rate == 0.0
-    assert channel_base.translated_azimuth is None
-    assert channel_base.translated_tilt is None
-    assert channel_base.type == "base"
-    assert channel_base.units == ""
-    assert isinstance(channel_base.data_quality, DataQuality)
-    assert isinstance(channel_base.filtered, Filter)
-    assert isinstance(channel_base.time_period, TimePeriod)
-    assert isinstance(channel_base.fdsn, Fdsn)
+        # Test nested JSON
+        survey_json = channel_object.to_json(nested=True)
+        channel_object.from_json(survey_json)
+        assert meta_dict == channel_object.to_dict()
 
 
-def test_channel_base_custom_values(custom_channel_base):
-    """
-    Test the ChannelBase model with custom values.
-    """
-    channel_base = custom_channel_base
+# =============================================================================
+# Default Value Tests
+# =============================================================================
 
-    assert channel_base.channel_number == 1
-    assert channel_base.channel_id == "1001.11"
-    assert isinstance(channel_base.comments, Comment)
-    assert channel_base.comments.value == "Test comment"
-    assert channel_base.component == "ex"
-    assert channel_base.measurement_azimuth == 45.0
-    assert channel_base.measurement_tilt == 10.0
-    assert channel_base.sample_rate == 8.0
-    assert channel_base.translated_azimuth == 50.0
-    assert channel_base.translated_tilt == 5.0
-    assert channel_base.type == "base"
-    assert channel_base.units == "volt"
+
+def test_channel_default_values(default_channel, subtests):
+    """Test the default values of the Channel model."""
+
+    # Test scalar attributes
+    scalar_attrs = {
+        "channel_number": 0,
+        "channel_id": None,
+        "component": "",
+        "measurement_azimuth": 0.0,
+        "measurement_tilt": 0.0,
+        "sample_rate": 0.0,
+        "translated_azimuth": None,
+        "translated_tilt": None,
+        "type": "base",
+        "units": "",
+    }
+
+    for attr, expected in scalar_attrs.items():
+        with subtests.test(f"default {attr}"):
+            assert getattr(default_channel, attr) == expected
+
+    # Test object attributes
+    obj_attrs = {
+        "comments": (Comment, lambda x: x.value is None),
+        "data_quality": (DataQuality, None),
+        "filter": (Filter, None),
+        "time_period": (TimePeriod, None),
+        "sensor": (Instrument, None),
+        "fdsn": (Fdsn, None),
+        "location": (BasicLocation, None),
+    }
+
+    for attr, (cls, check_func) in obj_attrs.items():
+        with subtests.test(f"default {attr} type"):
+            obj = getattr(default_channel, attr)
+            assert isinstance(obj, cls)
+
+            if check_func:
+                with subtests.test(f"default {attr} value"):
+                    assert check_func(obj)
+
+    # Test location values specifically
+    location_attrs = {
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "elevation": 0.0,
+    }
+
+    for attr, expected in location_attrs.items():
+        with subtests.test(f"default location.{attr}"):
+            assert getattr(default_channel.location, attr) == expected
+
+
+def test_channel_custom_values(custom_channel, subtests):
+    """Test the Channel model with custom values."""
+
+    # Test scalar attributes
+    scalar_attrs = {
+        "channel_number": 1,
+        "channel_id": "1001.11",
+        "component": "ex",
+        "measurement_azimuth": 45.0,
+        "measurement_tilt": 10.0,
+        "sample_rate": 8.0,
+        "translated_azimuth": 50.0,
+        "translated_tilt": 5.0,
+        "type": "base",
+        "units": "Volt",
+    }
+
+    for attr, expected in scalar_attrs.items():
+        with subtests.test(f"custom {attr}"):
+            assert getattr(custom_channel, attr) == expected
+
+    # Test object attributes
+    obj_attrs = {
+        "comments": (Comment, lambda x: x.value == "Test comment"),
+        "location": (BasicLocation, None),
+    }
+
+    for attr, (cls, check_func) in obj_attrs.items():
+        with subtests.test(f"custom {attr} type"):
+            obj = getattr(custom_channel, attr)
+            assert isinstance(obj, cls)
+
+            if check_func:
+                with subtests.test(f"custom {attr} value"):
+                    assert check_func(obj)
+
+    # Test location values specifically
+    location_attrs = {
+        "latitude": 45.0,
+        "longitude": -120.0,
+        "elevation": 500.0,
+    }
+
+    for attr, expected in location_attrs.items():
+        with subtests.test(f"custom location.{attr}"):
+            assert getattr(custom_channel.location, attr) == expected
+
+
+def test_channel_base_default_values(default_channel_base, subtests):
+    """Test the default values of the ChannelBase model."""
+
+    # Test scalar attributes
+    scalar_attrs = {
+        "channel_number": 0,
+        "channel_id": None,
+        "component": "",
+        "measurement_azimuth": 0.0,
+        "measurement_tilt": 0.0,
+        "sample_rate": 0.0,
+        "translated_azimuth": None,
+        "translated_tilt": None,
+        "type": "base",
+        "units": "",
+    }
+
+    for attr, expected in scalar_attrs.items():
+        with subtests.test(f"default base {attr}"):
+            assert getattr(default_channel_base, attr) == expected
+
+    # Test object attributes
+    obj_attrs = {
+        "comments": (Comment, lambda x: x.value is None),
+        "data_quality": (DataQuality, None),
+        "filter": (Filter, None),
+        "time_period": (TimePeriod, None),
+        "fdsn": (Fdsn, None),
+    }
+
+    for attr, (cls, check_func) in obj_attrs.items():
+        with subtests.test(f"default base {attr} type"):
+            obj = getattr(default_channel_base, attr)
+            assert isinstance(obj, cls)
+
+            if check_func:
+                with subtests.test(f"default base {attr} value"):
+                    assert check_func(obj)
+
+
+def test_channel_base_custom_values(custom_channel_base, subtests):
+    """Test the ChannelBase model with custom values."""
+
+    # Test scalar attributes
+    scalar_attrs = {
+        "channel_number": 1,
+        "channel_id": "1001.11",
+        "component": "ex",
+        "measurement_azimuth": 45.0,
+        "measurement_tilt": 10.0,
+        "sample_rate": 8.0,
+        "translated_azimuth": 50.0,
+        "translated_tilt": 5.0,
+        "type": "base",
+        "units": "Volt",
+    }
+
+    for attr, expected in scalar_attrs.items():
+        with subtests.test(f"custom base {attr}"):
+            assert getattr(custom_channel_base, attr) == expected
+
+    # Test object attributes
+    with subtests.test("custom base comments"):
+        assert isinstance(custom_channel_base.comments, Comment)
+        assert custom_channel_base.comments.value == "Test comment"
+
+
+# =============================================================================
+# Mutation Tests
+# =============================================================================
+
+
+def test_channel_attribute_updates(default_channel, subtests):
+    """Test updating channel attributes."""
+
+    updates = {
+        "channel_number": 5,
+        "channel_id": "5001.22",
+        "component": "ey",
+        "measurement_azimuth": 90.0,
+        "measurement_tilt": 15.0,
+        "sample_rate": 16.0,
+        "translated_azimuth": 95.0,
+        "translated_tilt": 10.0,
+        "type": "base",
+        "units": "milliVolt",
+    }
+
+    # Apply updates
+    for attr, value in updates.items():
+        setattr(default_channel, attr, value)
+
+    # Verify updates
+    for attr, expected in updates.items():
+        with subtests.test(f"updated {attr}"):
+            assert getattr(default_channel, attr) == expected
+
+    # Update location
+    default_channel.location.latitude = 30.0
+    default_channel.location.longitude = -100.0
+    default_channel.location.elevation = 200.0
+
+    # Verify location updates
+    location_updates = {
+        "latitude": 30.0,
+        "longitude": -100.0,
+        "elevation": 200.0,
+    }
+
+    for attr, expected in location_updates.items():
+        with subtests.test(f"updated location.{attr}"):
+            assert getattr(default_channel.location, attr) == expected
