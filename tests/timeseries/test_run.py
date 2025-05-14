@@ -1,19 +1,21 @@
-import pytest
 import json
-import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
-from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
+
+import pandas as pd
+import pytest
 from pydantic import ValidationError
 
+from mt_metadata.timeseries import Auxiliary, Electric, Magnetic, Run
 
-@pytest.fixture
+
+@pytest.fixture(scope="module")
 def meta_dict():
     meta = {
         "run": OrderedDict(
             [
                 ("acquired_by.comments", "lazy"),
-                ("acquired_by.name", "MT guru"),
+                ("acquired_by.author", "MT guru"),
                 ("channels_recorded_auxiliary", ["temperature"]),
                 ("channels_recorded_electric", ["ex", "ey"]),
                 ("channels_recorded_magnetic", ["hx", "hy", "hz"]),
@@ -37,16 +39,16 @@ def meta_dict():
                 ("data_type", "mt"),
                 ("id", "mt01a"),
                 ("metadata_by.comments", "lazy"),
-                ("metadata_by.name", "x"),
+                ("metadata_by.author", "x"),
                 ("provenance.archive.name", ""),
                 ("provenance.comments", "provenance comments"),
                 ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", ""),
+                ("provenance.creator.author", ""),
                 ("provenance.log", "provenance log"),
                 ("provenance.software.author", ""),
                 ("provenance.software.name", ""),
                 ("provenance.software.version", ""),
-                ("provenance.submitter.name", ""),
+                ("provenance.submitter.author", ""),
                 ("sample_rate", 256.0),
                 ("time_period.end", "1980-01-01T00:00:00+00:00"),
                 ("time_period.start", "1980-01-01T00:00:00+00:00"),
@@ -282,5 +284,5 @@ def test_invalid_channel_addition(run_object, subtests):
             run_object.add_channel([])
 
     with subtests.test("Missing component for non-auxiliary channel"):
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             run_object.add_channel(Electric(component=None))
