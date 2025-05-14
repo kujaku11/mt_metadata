@@ -1,9 +1,9 @@
+import numpy as np
 import pytest
 from pydantic import ValidationError
+
 from mt_metadata.timeseries.filters import CoefficientFilter
-import numpy as np
 from mt_metadata.timeseries.filters.helper_functions import MT2SI_MAGNETIC_FIELD_FILTER
-from mt_metadata.utils.exceptions import MTSchemaError
 
 
 @pytest.fixture
@@ -163,4 +163,4 @@ def test_to_obspy_stage(default_coefficient_filter_with_units, subtests):
 def test_helper_functions(subtests):
     """Test helper functions related to CoefficientFilter."""
     with subtests.test("MT2SI_MAGNETIC_FIELD_FILTER units_in"):
-        assert MT2SI_MAGNETIC_FIELD_FILTER.units_in == "nanotesla"
+        assert MT2SI_MAGNETIC_FIELD_FILTER.units_in == "nanoTesla"

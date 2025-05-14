@@ -1,10 +1,10 @@
-import pytest
 import numpy as np
-import pandas as pd
-from mt_metadata.timeseries.filters import FilterBase
-from mt_metadata.common import Comment, FilterTypeEnum
-from mt_metadata.utils.mttime import MTime
+import pytest
 from pydantic import ValidationError
+
+from mt_metadata.common import Comment, FilterTypeEnum
+from mt_metadata.timeseries.filters import FilterBase
+from mt_metadata.utils.mttime import MTime
 
 
 @pytest.fixture
@@ -71,10 +71,10 @@ def test_custom_filter(custom_filter, subtests):
         assert custom_filter.type == "base"
 
     with subtests.test("Custom units_in"):
-        assert custom_filter.units_in == "volt"
+        assert custom_filter.units_in == "Volt"
 
     with subtests.test("Custom units_out"):
-        assert custom_filter.units_out == "ampere"
+        assert custom_filter.units_out == "Ampere"
 
     with subtests.test("Custom calibration_date"):
         assert isinstance(custom_filter.calibration_date, MTime)
@@ -99,11 +99,11 @@ def test_units_validation(default_filter, subtests):
     """Test validation of units_in and units_out."""
     with subtests.test("Valid units_in"):
         default_filter.units_in = "volt"
-        assert default_filter.units_in == "volt"
+        assert default_filter.units_in == "Volt"
 
     with subtests.test("Valid units_out"):
         default_filter.units_out = "ampere"
-        assert default_filter.units_out == "ampere"
+        assert default_filter.units_out == "Ampere"
 
     with subtests.test("Invalid units_in"):
         with pytest.raises(KeyError):

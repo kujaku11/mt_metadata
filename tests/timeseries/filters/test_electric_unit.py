@@ -12,21 +12,22 @@ Notes:
 """
 
 import pytest
-import numpy as np
+
 
 try:
     from obspy.core import inventory
+
     from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 except ImportError:
     pytest.skip("obspy is not installed.", allow_module_level=True)
 
+from mt_metadata import STATIONXML_ELECTRIC
 from mt_metadata.timeseries.filters import (
     ChannelResponse,
-    PoleZeroFilter,
     CoefficientFilter,
+    PoleZeroFilter,
     TimeDelayFilter,
 )
-from mt_metadata import STATIONXML_ELECTRIC
 
 
 @pytest.fixture
@@ -90,10 +91,10 @@ def test_stage_01(stages, subtests):
         assert f1.type == "zpk"
 
     with subtests.test("units in"):
-        assert f1.units_in == "millivolt per kilometer"
+        assert f1.units_in == "milliVolt per kilometer"
 
     with subtests.test("units out"):
-        assert f1.units_out == "millivolt per kilometer"
+        assert f1.units_out == "milliVolt per kilometer"
 
     with subtests.test("number of poles"):
         assert f1.n_poles == 5
@@ -166,10 +167,10 @@ def test_stage_03(stages, subtests):
         assert pytest.approx(f3.gain, abs=0.000001) == 1e-6
 
     with subtests.test("units in"):
-        assert f3.units_in == "millivolt per kilometer"
+        assert f3.units_in == "milliVolt per kilometer"
 
     with subtests.test("units out"):
-        assert f3.units_out == "volt per meter"
+        assert f3.units_out == "Volt per meter"
 
 
 def test_stage_04(stages, subtests):
@@ -189,10 +190,10 @@ def test_stage_04(stages, subtests):
         assert pytest.approx(f4.gain, abs=0.01) == 84.5
 
     with subtests.test("units in"):
-        assert f4.units_in == "volt per meter"
+        assert f4.units_in == "Volt per meter"
 
     with subtests.test("units out"):
-        assert f4.units_out == "volt"
+        assert f4.units_out == "Volt"
 
 
 def test_stage_05(stages, subtests):
@@ -212,7 +213,7 @@ def test_stage_05(stages, subtests):
         assert f5.gain == 484733700000000.0
 
     with subtests.test("units in"):
-        assert f5.units_in == "volt"
+        assert f5.units_in == "Volt"
 
     with subtests.test("units out"):
         assert f5.units_out == "digital counts"

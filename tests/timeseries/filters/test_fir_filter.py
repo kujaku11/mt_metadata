@@ -1,7 +1,9 @@
-import pytest
 import numpy as np
-from mt_metadata.timeseries.filters import FIRFilter
+import pytest
+
 from mt_metadata.common import SymmetryEnum
+from mt_metadata.timeseries.filters import FIRFilter
+
 
 try:
     from obspy.core.inventory.response import FIRResponseStage
@@ -344,7 +346,7 @@ def test_from_obspy_stage_with_custom_parameters(subtests):
         assert filter_from_stage.gain_frequency == 0.25
 
     with subtests.test("test units in"):
-        assert filter_from_stage.units_in == "volt"
+        assert filter_from_stage.units_in == "Volt"
 
     with subtests.test("test units out"):
         assert filter_from_stage.units_out == "digital counts"

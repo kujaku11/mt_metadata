@@ -1,7 +1,9 @@
-import pytest
 import numpy as np
-from mt_metadata.timeseries.filters import PoleZeroFilter
+import pytest
 from pydantic import ValidationError
+
+from mt_metadata.timeseries.filters import PoleZeroFilter
+
 
 try:
     from obspy.core.inventory.response import PolesZerosResponseStage
@@ -51,10 +53,10 @@ def test_default_pole_zero_filter(pole_zero_filter_default, subtests):
         assert pole_zero_filter_default.normalization_factor == 1.0
 
     with subtests.test("test units in"):
-        assert pole_zero_filter_default.units_in == "volt"
+        assert pole_zero_filter_default.units_in == "Volt"
 
     with subtests.test("test units out"):
-        assert pole_zero_filter_default.units_out == "nanotesla"
+        assert pole_zero_filter_default.units_out == "nanoTesla"
 
     with subtests.test("test name"):
         assert pole_zero_filter_default.name == "example_zpk_response"
@@ -78,10 +80,10 @@ def test_pole_zero_filter_with_data(pole_zero_filter_with_data, subtests):
         assert pole_zero_filter_with_data.normalization_factor == 2002.269
 
     with subtests.test("test units in"):
-        assert pole_zero_filter_with_data.units_in == "volt"
+        assert pole_zero_filter_with_data.units_in == "Volt"
 
     with subtests.test("test units out"):
-        assert pole_zero_filter_with_data.units_out == "nanotesla"
+        assert pole_zero_filter_with_data.units_out == "nanoTesla"
 
     with subtests.test("test type"):
         assert pole_zero_filter_with_data.type == "zpk"
@@ -289,7 +291,7 @@ def test_from_obspy_stage_with_different_params(subtests):
         assert filter_from_stage.normalization_frequency() != 0.5
 
     with subtests.test("test units in"):
-        assert filter_from_stage.units_in == "volt"
+        assert filter_from_stage.units_in == "Volt"
 
     with subtests.test("test units out"):
         assert filter_from_stage.units_out == "digital counts"

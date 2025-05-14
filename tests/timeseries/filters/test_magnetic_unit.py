@@ -12,21 +12,22 @@ Notes:
 """
 
 import pytest
-import numpy as np
+
 
 try:
     from obspy.core import inventory
+
     from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 except ImportError:
     pytest.skip("obspy is not installed.", allow_module_level=True)
 
+from mt_metadata import STATIONXML_MAGNETIC
 from mt_metadata.timeseries.filters import (
     ChannelResponse,
-    PoleZeroFilter,
     CoefficientFilter,
+    PoleZeroFilter,
     TimeDelayFilter,
 )
-from mt_metadata import STATIONXML_MAGNETIC
 
 
 @pytest.fixture
@@ -90,10 +91,10 @@ def test_stage_01(stages, subtests):
         assert f1.type == "zpk"
 
     with subtests.test("units in"):
-        assert f1.units_in == "nanotesla"
+        assert f1.units_in == "nanoTesla"
 
     with subtests.test("units out"):
-        assert f1.units_out == "volt"
+        assert f1.units_out == "Volt"
 
     with subtests.test("number of poles"):
         assert f1.n_poles == 3
@@ -132,7 +133,7 @@ def test_stage_02(stages, subtests):
         assert f2.gain == 100
 
     with subtests.test("units in"):
-        assert f2.units_in == "volt"
+        assert f2.units_in == "Volt"
 
     with subtests.test("units out"):
         assert f2.units_out == "digital counts"

@@ -1,7 +1,9 @@
-import pytest
 import numpy as np
-from mt_metadata.timeseries.filters import TimeDelayFilter
+import pytest
 from pydantic import ValidationError
+
+from mt_metadata.timeseries.filters import TimeDelayFilter
+
 
 try:
     from obspy.core.inventory.response import CoefficientsTypeResponseStage
@@ -30,8 +32,8 @@ def frequencies():
 def test_default_time_delay_filter(time_delay_filter_default):
     """Test the default TimeDelayFilter instance."""
     assert time_delay_filter_default.delay == 0.0
-    assert time_delay_filter_default.units_in == "volt"
-    assert time_delay_filter_default.units_out == "volt"
+    assert time_delay_filter_default.units_in == "Volt"
+    assert time_delay_filter_default.units_out == "Volt"
     assert time_delay_filter_default.name == "time delay"
     assert time_delay_filter_default.type == "time delay"
 
@@ -39,8 +41,8 @@ def test_default_time_delay_filter(time_delay_filter_default):
 def test_time_delay_filter_with_data(time_delay_filter_with_data):
     """Test the TimeDelayFilter instance with sample data."""
     assert time_delay_filter_with_data.delay == -0.250
-    assert time_delay_filter_with_data.units_in == "volt"
-    assert time_delay_filter_with_data.units_out == "volt"
+    assert time_delay_filter_with_data.units_in == "Volt"
+    assert time_delay_filter_with_data.units_out == "Volt"
     assert time_delay_filter_with_data.name == "time delay"
     assert time_delay_filter_with_data.type == "time delay"
 
@@ -212,7 +214,7 @@ def test_from_obspy_stage_with_custom_parameters(subtests):
         assert filter_from_stage.gain == 2.5
 
     with subtests.test("test units in"):
-        assert filter_from_stage.units_in == "volt"
+        assert filter_from_stage.units_in == "Volt"
 
     with subtests.test("test units out"):
         assert filter_from_stage.units_out == "digital counts"

@@ -1,11 +1,14 @@
 import pathlib
+
 import numpy as np
 import pytest
 from pydantic import ValidationError
+
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.filters.helper_functions import (
     make_frequency_response_table_filter,
 )
+
 
 try:
     from obspy.core.inventory.response import ResponseListResponseStage
@@ -338,8 +341,8 @@ def fap_filter_basic():
         amplitudes=np.array([1e-3, 1e-2, 1e-1, 1.0, 10.0]),
         phases=np.array([-90, -45, 0, 45, 90]),
         instrument_type="example_instrument",
-        units_in="volt",
-        units_out="nanotesla",
+        units_in="Volt",
+        units_out="nanoTesla",
         name="example_fap",
         description="example description",
     )
@@ -539,10 +542,10 @@ def test_from_obspy_stage_custom_parameters(subtests):
         assert filter_from_stage.gain == 2.5
 
     with subtests.test("test units in"):
-        assert filter_from_stage.units_in == "volt"
+        assert filter_from_stage.units_in == "Volt"
 
     with subtests.test("test units out"):
-        assert filter_from_stage.units_out == "nanotesla"
+        assert filter_from_stage.units_out == "nanoTesla"
 
     with subtests.test("test description"):
         assert filter_from_stage.comments.value == "Test FAP filter from obspy stage"
