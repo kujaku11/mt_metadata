@@ -2,17 +2,18 @@
 # Imports
 # =====================================================
 from typing import Annotated
-from typing_extensions import Self
+
+import numpy as np
+import pandas as pd
+from loguru import logger
 from pydantic import (
     Field,
     field_validator,
-    ValidationInfo,
-    ValidationError,
     model_validator,
+    ValidationError,
+    ValidationInfo,
 )
-from loguru import logger
-import numpy as np
-import pandas as pd
+from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.mttime import MTime
@@ -107,6 +108,8 @@ class Comment(MetadataBase):
         bool
             True if the objects are equal, False otherwise.
         """
+        if other is None:
+            return Comment(value=None)
         if isinstance(other, str):
             other = Comment(value=other)
         elif isinstance(other, dict):
