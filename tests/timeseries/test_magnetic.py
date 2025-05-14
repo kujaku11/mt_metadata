@@ -9,10 +9,11 @@ Tests for the Magnetic class in mt_metadata.timeseries using pytest
 """
 
 import json
-import pytest
-import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
+
+import pandas as pd
+import pytest
 
 from mt_metadata.timeseries import Magnetic
 
@@ -23,7 +24,7 @@ def magnetic_object():
     return Magnetic()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def meta_dict():
     """
     Create a dictionary with typical Magnetic metadata.
@@ -65,7 +66,7 @@ def meta_dict():
             "sensor.type": "induction coil",
             "sensor.model": "ant4",
             "type": "magnetic",
-            "units": "millivolt",
+            "units": "milliVolt",
             "time_period.start": "1980-01-01T00:00:00+00:00",
             "time_period.end": "1980-01-01T00:00:00+00:00",
             "translated_azimuth": 0.0,
@@ -135,7 +136,7 @@ def test_magnetic_initialization(subtests):
         mag = Magnetic(component="hz", sample_rate=128.0, units="nT")
         assert mag.component == "hz"
         assert mag.sample_rate == 128.0
-        assert mag.units == "nanotesla"
+        assert mag.units == "nanoTesla"
 
 
 def test_magnetic_properties(populated_magnetic, subtests):
@@ -149,7 +150,7 @@ def test_magnetic_properties(populated_magnetic, subtests):
         assert mag.type == "magnetic"
 
     with subtests.test("units are set correctly"):
-        assert mag.units == "millivolt"
+        assert mag.units == "milliVolt"
 
     with subtests.test("sample_rate is set correctly"):
         assert mag.sample_rate == 256.0
