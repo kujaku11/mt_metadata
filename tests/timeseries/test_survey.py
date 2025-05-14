@@ -9,22 +9,23 @@ Tests for the Survey class in mt_metadata.timeseries
 """
 
 import json
-import pytest
-import pandas as pd
 from collections import OrderedDict
 from operator import itemgetter
+
+import pandas as pd
+import pytest
 
 from mt_metadata.timeseries import Station, Survey
 from mt_metadata.utils.mttime import MDate
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def survey_dict():
     """Create a dictionary with survey metadata."""
     meta_dict = {
         "survey": {
             "acquired_by.comments": "tired",
-            "acquired_by.name": "MT",
+            "acquired_by.author": "MT",
             "id": "MT001",
             "fdsn.network": "EM",
             "citation_dataset.doi": "http://doi/####",
@@ -41,7 +42,7 @@ def survey_dict():
             "northwest_corner.longitude": 179.9,
             "project": "EM-EARTH",
             "project_lead.email": "mt@mt.org",
-            "project_lead.name": "T. Lurric",
+            "project_lead.author": "T. Lurric",
             "project_lead.organization": "mt rules",
             "release_license": "CC-BY-1.0",
             "southeast_corner.latitude": -80.0,
@@ -65,7 +66,7 @@ def survey_object():
     return Survey()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def station_01():
     """Create a first station for testing."""
     station = Station()
@@ -77,7 +78,7 @@ def station_01():
     return station
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def station_02():
     """Create a second station for testing."""
     station = Station()
@@ -199,7 +200,7 @@ def test_acquired_by(survey_object, survey_dict, subtests):
     """Test acquired_by handling."""
     with subtests.test("name is set correctly"):
         survey_object.from_dict(survey_dict)
-        assert survey_object.acquired_by.name == "MT"
+        assert survey_object.acquired_by.author == "MT"
 
 
 def test_add_station(survey_object, subtests):
@@ -536,8 +537,8 @@ def test_survey_update(survey_object, survey_dict, subtests):
         assert survey_object.name == "New Survey Name"
 
     with subtests.test("update_attribute works with nested attributes"):
-        survey_object.set_attr_from_name("project_lead.name", "New Lead Name")
-        assert survey_object.project_lead.name == "New Lead Name"
+        survey_object.set_attr_from_name("project_lead.author", "New Lead Name")
+        assert survey_object.project_lead.author == "New Lead Name"
 
 
 # TODO: Uncomment figure out if this is the correct test.

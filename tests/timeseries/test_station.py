@@ -1,8 +1,10 @@
-import pytest
 import json
-import pandas as pd
 from collections import OrderedDict
-from mt_metadata.timeseries import Station, Run
+
+import pandas as pd
+import pytest
+
+from mt_metadata.timeseries import Run, Station
 
 
 @pytest.fixture
@@ -11,7 +13,7 @@ def station_object():
     return Station()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def meta_dict():
     """Fixture to provide metadata for testing."""
     return OrderedDict(
