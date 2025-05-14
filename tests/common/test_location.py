@@ -1,9 +1,10 @@
 import pytest
 from pydantic import ValidationError
+
 from mt_metadata.common import BasicLocation, Location, StationLocation
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def default_basic_location():
     """
     Fixture to provide a default BasicLocation object.
@@ -11,7 +12,7 @@ def default_basic_location():
     return BasicLocation()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def custom_basic_location():
     """
     Fixture to provide a BasicLocation object with custom values.
@@ -19,7 +20,7 @@ def custom_basic_location():
     return BasicLocation(latitude=45.0, longitude=-120.0, elevation=500.0)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def default_location():
     """
     Fixture to provide a default Location object.
@@ -27,7 +28,7 @@ def default_location():
     return Location()
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def default_station_location():
     """
     Fixture to provide a default StationLocation object.
@@ -41,14 +42,14 @@ def test_basic_location_default_values(default_basic_location, subtests):
     """
     location = default_basic_location
 
-    with subtests.test("latitude default is None"):
-        assert location.latitude is None
+    with subtests.test("latitude default is 0.0"):
+        assert location.latitude == 0.0
 
-    with subtests.test("longitude default is None"):
-        assert location.longitude is None
+    with subtests.test("longitude default is 0.0"):
+        assert location.longitude == 0.0
 
-    with subtests.test("elevation default is None"):
-        assert location.elevation is None
+    with subtests.test("elevation default is 0.0"):
+        assert location.elevation == 0.0
 
 
 def test_basic_location_custom_values(custom_basic_location, subtests):
@@ -91,14 +92,14 @@ def test_location_default_values(default_location, subtests):
     """
     location = default_location
 
-    with subtests.test("latitude default is None"):
-        assert location.latitude == None
+    with subtests.test("latitude default is 0.0"):
+        assert location.latitude == 0.0
 
-    with subtests.test("longitude default is None"):
-        assert location.longitude == None
+    with subtests.test("longitude default is 0.0"):
+        assert location.longitude == 0.0
 
-    with subtests.test("elevation default is None"):
-        assert location.elevation == None
+    with subtests.test("elevation default is 0.0"):
+        assert location.elevation == 0.0
 
     with subtests.test("latitude_uncertainty default is None"):
         assert location.latitude_uncertainty is None
@@ -109,8 +110,8 @@ def test_location_default_values(default_location, subtests):
     with subtests.test("elevation_uncertainty default is None"):
         assert location.elevation_uncertainty is None
 
-    with subtests.test("datum default is WGS84"):
-        assert location.datum == "WGS84"
+    with subtests.test("datum default is WGS 84"):
+        assert location.datum == "WGS 84"
 
     with subtests.test("x default is None"):
         assert location.x is None
@@ -289,10 +290,10 @@ def test_location_partial_values(subtests):
         assert location.longitude == -120.0
 
     with subtests.test("elevation has default value"):
-        assert location.elevation == None
+        assert location.elevation == 0.0
 
     with subtests.test("datum has default value"):
-        assert location.datum == "WGS84"
+        assert location.datum == "WGS 84"
 
     with subtests.test("latitude_uncertainty is None"):
         assert location.latitude_uncertainty is None
@@ -323,17 +324,17 @@ def test_station_location_default_values(default_station_location, subtests):
     """
     location = default_station_location
 
-    with subtests.test("latitude default is None"):
-        assert location.latitude == None
+    with subtests.test("latitude default is 0.0"):
+        assert location.latitude == 0.0
 
-    with subtests.test("longitude default is None"):
-        assert location.longitude == None
+    with subtests.test("longitude default is 0.0"):
+        assert location.longitude == 0.0
 
-    with subtests.test("elevation default is None"):
-        assert location.elevation == None
+    with subtests.test("elevation default is 0.0"):
+        assert location.elevation == 0.0
 
     with subtests.test("datum default is WGS 84"):
-        assert location.datum == "WGS84"
+        assert location.datum == "WGS 84"
 
     with subtests.test("declination default is 0.0"):
         assert location.declination.value == 0.0
