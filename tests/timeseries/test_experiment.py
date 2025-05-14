@@ -8,21 +8,20 @@ Tests for the Experiment class in mt_metadata.timeseries using pytest
 :license: MIT
 """
 
-import pytest
 import copy
+
+import pytest
 
 from mt_metadata.timeseries import (
     Auxiliary,
     Electric,
+    Experiment,
     Magnetic,
     Run,
     Station,
     Survey,
-    Experiment,
 )
-
 from mt_metadata.utils.mttime import MDate
-from pydantic import ValidationError
 
 
 @pytest.fixture
@@ -78,7 +77,7 @@ def test_set_surveys(experiment, sample_survey, subtests):
     """Test setting surveys directly."""
     with subtests.test("setting surveys list works"):
         experiment.surveys = [sample_survey]
-        assert len(experiment.surveys) == 1
+        assert experiment.n_surveys == 1
 
 
 def test_set_surveys_fail(experiment, subtests):
@@ -98,7 +97,7 @@ def test_add_survey(experiment, subtests):
     experiment.add_survey(survey_input)
 
     with subtests.test("length"):
-        assert len(experiment.surveys) == 1
+        assert experiment.n_surveys == 1
 
     with subtests.test("survey names"):
         assert experiment.survey_names == ["one"]
@@ -250,7 +249,7 @@ def test_from_empty_dict(experiment, subtests):
 
 
 # Additional pytest tests for Experiment
-@pytest.fixture
+@pytest.fixture(scope="module")
 def example_experiment():
     """Create an example experiment with minimal structure."""
     experiment = Experiment(id="EX01")

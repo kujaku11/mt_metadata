@@ -14,27 +14,31 @@ Created on Mon Feb  8 21:25:40 2021
 :license: MIT
 
 """
+import json
+
 # =============================================================================
 # Imports
 # =============================================================================
 from collections import OrderedDict
-from typing import Annotated
-from pydantic import Field, field_validator, computed_field
 from pathlib import Path
+from typing import Annotated
 from xml.etree import cElementTree as et
-import json
+
 from loguru import logger
+from pydantic import computed_field, Field, field_validator
+
+from mt_metadata.base import helpers, MetadataBase
+from mt_metadata.utils.list_dict import ListDict
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (
-    PoleZeroFilter,
     CoefficientFilter,
-    TimeDelayFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
 )
-from mt_metadata.base import MetadataBase, helpers
-from mt_metadata.utils.list_dict import ListDict
+
 
 # =============================================================================
 
@@ -64,7 +68,7 @@ class Experiment(MetadataBase):
             lines.append(f"Number of Surveys: {len(self.surveys)}")
             for survey in self.surveys:
                 lines.append(f"  Survey ID: {survey.id}")
-                lines.append(f"  Number of Stations: {len(survey)}")
+                lines.append(f"  Number of Stations: {survey.n_stations}")
                 lines.append(f"  Number of Filters: {len(survey.filters.keys())}")
                 lines.append(f"  {'-' * 20}")
                 for f_key, f_object in survey.filters.items():
@@ -73,11 +77,11 @@ class Experiment(MetadataBase):
                     lines.append(f"    {'-' * 20}")
                 for station in survey.stations:
                     lines.append(f"    Station ID: {station.id}")
-                    lines.append(f"    Number of Runs: {len(station)}")
+                    lines.append(f"    Number of Runs: {station.n_runs}")
                     lines.append(f"    {'-' * 20}")
                     for run in station.runs:
                         lines.append(f"      Run ID: {run.id}")
-                        lines.append(f"      Number of Channels: {len(run)}")
+                        lines.append(f"      Number of Channels: {run.n_channels}")
                         lines.append(
                             "      Recorded Channels: "
                             + ", ".join(run.channels_recorded_all)
@@ -138,7 +142,6 @@ class Experiment(MetadataBase):
             value_list = value
 
         for ii, survey in enumerate(value_list):
-
             if isinstance(survey, (dict, OrderedDict)):
                 s = Survey()
                 s.from_dict(survey)
@@ -520,7 +523,6 @@ class Experiment(MetadataBase):
         :rtype: TYPE
 
         """
-        pass
 
     def from_pickle(self, fn: str | Path = None) -> None:
         """
@@ -532,7 +534,6 @@ class Experiment(MetadataBase):
         :rtype: TYPE
 
         """
-        pass
 
     # def validate_experiment(self):
     #     """
