@@ -1,29 +1,15 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
+from mt_metadata.common import ChannelLayoutEnum, Comment, DataTypeEnum
 
 
 # =====================================================
-class ChannelLayoutEnum(str, Enum):
-    L = "L"
-    X = "X"
-    other = "other"
-
-
-class DataTypeEnum(str, Enum):
-    RMT = "RMT"
-    AMT = "AMT"
-    BBMT = "BBMT"
-    LPMT = "LPMT"
-    ULPMT = "ULPMT"
-    other = "other"
 
 
 class Station(MetadataBase):
