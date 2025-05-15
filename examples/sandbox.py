@@ -15,7 +15,12 @@
 #     }
 # }
 
-from mt_metadata.timeseries.survey_basemodel import Survey
+from pathlib import Path
 
-s = Survey()
-s.to_json()
+from mt_metadata.utils import converters
+
+
+p = Path(
+    r"C:/Users/peaco/OneDrive/Documents/GitHub/mt_metadata/mt_metadata/standards/transfer_functions/tf/transfer_function.json"
+)
+code_str = converters.generate_pydantic_basemodel(p)
