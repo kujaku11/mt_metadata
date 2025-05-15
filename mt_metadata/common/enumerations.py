@@ -1,17 +1,18 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
-from pydantic import GetCoreSchemaHandler
-from pydantic_core import CoreSchema, core_schema
-from pathlib import Path
 import json
+from enum import Enum
+from pathlib import Path
+
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import core_schema, CoreSchema
+
 
 # =====================================================
 
 
 class StrEnumerationBase(str, Enum):
-
     @classmethod
     def __get_pydantic_core_schema__(
         cls, source_type: type[Enum], handler: GetCoreSchemaHandler
@@ -149,3 +150,8 @@ LicenseEnum = Enum(
         entry["license_key"]: entry["license_value"] for entry in license_variable_list
     },  # Members
 )
+
+
+class SignConventionEnum(str, Enum):
+    plus = "+"
+    minus = "-"
