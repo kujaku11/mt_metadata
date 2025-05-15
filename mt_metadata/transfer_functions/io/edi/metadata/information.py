@@ -25,7 +25,6 @@ class Information(Base):
     """
 
     def __init__(self, fn=None, edi_lines=None):
-
         self.info_list = []
         self.info_dict = {}
         self._phoenix_col_width = 38
@@ -160,9 +159,7 @@ class Information(Base):
                     self._empower_file = True
                 if self._phoenix_file and len(line) > self._phoenix_col_width:
                     info_list.append(line[0 : self._phoenix_col_width].strip())
-                    phoenix_list_02.append(
-                        line[self._phoenix_col_width :].strip()
-                    )
+                    phoenix_list_02.append(line[self._phoenix_col_width :].strip())
                 else:
                     line = line.strip()
                     if len(line) > 1:
@@ -188,20 +185,14 @@ class Information(Base):
         self.info_dict = {}
         self.info_list = self.get_info_list(edi_lines)
         if self._empower_file:
-            self.info_dict, self.info_list = self._read_empower_info(
-                self.info_list
-            )
+            self.info_dict, self.info_list = self._read_empower_info(self.info_list)
         else:
             # make info items attributes of Information
             for ll in self.info_list:
                 l_list = [None, ""]
                 # phoenix has lat an lon information in the notes but separated by
                 # a space instead of an = or :
-                if (
-                    "lat" in ll.lower()
-                    or "lon" in ll.lower()
-                    or "lng" in ll.lower()
-                ):
+                if "lat" in ll.lower() or "lon" in ll.lower() or "lng" in ll.lower():
                     l_list = ll.split()
                     if len(l_list) == 2:
                         self.info_dict[l_list[0]] = l_list[1]
@@ -304,9 +295,7 @@ class Information(Base):
                     if "comments" in l_key:
                         og_key = validate_name(og_key.lower())
                         try:
-                            info_dict[
-                                f"{comp}.{l_key}"
-                            ] += f",{og_key}={l_value}"
+                            info_dict[f"{comp}.{l_key}"] += f",{og_key}={l_value}"
                         except KeyError:
                             info_dict[f"{comp}.{l_key}"] = f"{og_key}={l_value}"
 
@@ -359,11 +348,7 @@ class Information(Base):
                     else:
                         l_sep = None
                     if l_sep:
-                        l_value = (
-                            l_value.replace("[", "")
-                            .replace("[", "")
-                            .split(l_sep)
-                        )
+                        l_value = l_value.replace("[", "").replace("[", "").split(l_sep)
                 return l_key, l_value
             else:
                 return l_key, ""
@@ -430,9 +415,7 @@ class Information(Base):
                     values = value.split(",")
                     if len(values) == len(new_key):
                         for vkey, item in zip(new_key, values):
-                            item_value = (
-                                item.lower().split("=")[1].replace("mv", "")
-                            )
+                            item_value = item.lower().split("=")[1].replace("mv", "")
                             new_dict[vkey] = item_value
                     else:
                         self.logger.warning(f"Could not parse line {value}")
@@ -445,9 +428,9 @@ class Information(Base):
                             new_dict[new_key] = value.split()[0]
                         elif key.lower().endswith("sen"):
                             comp = key.lower().split()[0]
-                            new_dict[f"{comp}.sensor.manufacturer"] = (
-                                "Phoenix Geophysics"
-                            )
+                            new_dict[
+                                f"{comp}.sensor.manufacturer"
+                            ] = "Phoenix Geophysics"
                             new_dict[f"{comp}.sensor.type"] = "Induction Coil"
                             new_dict[new_key] = value
                         elif new_key in [
@@ -468,8 +451,6 @@ class Information(Base):
                 new_dict[key] = value
 
         if processing_parameters != []:
-            new_dict["transfer_function.processing_parameters"] = (
-                processing_parameters
-            )
+            new_dict["transfer_function.processing_parameters"] = processing_parameters
 
         self.info_dict = new_dict

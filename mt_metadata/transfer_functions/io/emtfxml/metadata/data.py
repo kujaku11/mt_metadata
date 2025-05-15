@@ -4,14 +4,16 @@ Created on Mon Sep  6 13:53:55 2021
 
 @author: jpeacock
 """
+from xml.etree import cElementTree as et
+
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
-from xml.etree import cElementTree as et
 
 from mt_metadata.base import Base
 from mt_metadata.base.helpers import element_to_string
+
 
 # =============================================================================
 
@@ -22,7 +24,6 @@ class TransferFunction(Base):
     """
 
     def __init__(self):
-
         self.index_dict = {"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0}
         self.dtype_dict = {
             "complex": complex,
@@ -121,7 +122,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._period = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -142,7 +145,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -163,7 +168,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_var = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -184,7 +191,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_invsigcov = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -205,7 +214,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._z_residcov = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -226,7 +237,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -247,7 +260,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_var = np.array(value, dtype=float)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -268,7 +283,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_invsigcov = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -289,7 +306,9 @@ class TransferFunction(Base):
         elif isinstance(value, (list, tuple, np.ndarray)):
             self._t_residcov = np.array(value, dtype=complex)
         else:
-            msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
             self.logger.error(msg)
             raise TypeError(msg)
 
@@ -442,9 +461,7 @@ class TransferFunction(Base):
                     ch_in = idx_dict["in"][jj]
                     a_dict = {}
                     try:
-                        a_dict["name"] = self.name_dict[
-                            ch_out + ch_in
-                        ].capitalize()
+                        a_dict["name"] = self.name_dict[ch_out + ch_in].capitalize()
                     except KeyError:
                         pass
                     a_dict["output"] = ch_out.capitalize()

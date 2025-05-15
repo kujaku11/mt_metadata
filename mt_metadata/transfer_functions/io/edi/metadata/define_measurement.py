@@ -8,12 +8,13 @@ Created on Sat Dec  4 17:25:11 2021
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import Location
+from mt_metadata.base import Base, get_schema
 from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
-from . import HMeasurement, EMeasurement
+from mt_metadata.transfer_functions.tf import Location
+
+from . import EMeasurement, HMeasurement
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("define_measurement", SCHEMA_FN_PATHS)
@@ -342,9 +343,7 @@ class DefineMeasurement(Base):
                         value = float(value)
 
                     except TypeError:
-                        self.logger.warning(
-                            f"{key}.id cannot be converted to float"
-                        )
+                        self.logger.warning(f"{key}.id cannot be converted to float")
                         value = count
                         count += 1
                 elif isinstance(value, (float, int)):

@@ -9,12 +9,14 @@ Created on Sat Dec  4 12:09:13 2021
 # Imports
 # =============================================================================
 
-from mt_metadata.base import get_schema
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import Location
-from mt_metadata.utils.mttime import MTime, get_now_utc
 from mt_metadata import __version__
+from mt_metadata.base import get_schema
 from mt_metadata.base.helpers import validate_name
+from mt_metadata.transfer_functions.tf import Location
+from mt_metadata.utils.mttime import get_now_utc, MTime
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("header", SCHEMA_FN_PATHS)
@@ -24,7 +26,6 @@ attr_dict.add_dict(Location()._attr_dict.copy())
 
 class Header(Location):
     def __init__(self, **kwargs):
-
         self._acqdate = MTime()
         self._enddate = MTime()
         self._filedate = MTime()

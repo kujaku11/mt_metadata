@@ -4,12 +4,13 @@ and then to pydantic basemodel with types.
 
 """
 
+import json
+
 # =====================================================
 # Imports
 # =====================================================
 from pathlib import Path
 from typing import Any, Dict, Union
-import json
 
 import black
 import isort
@@ -109,7 +110,7 @@ def get_default_value(
         if default_value is None:
             return ""
         else:
-            return str(default_value)
+            return f"'{str(default_value)}'"
     elif data_type in ["int"]:
         if default_value is None:
             return 0
@@ -234,7 +235,6 @@ def to_json_schema(filename: str | Path) -> Path:
     new["required"] = []
     new["description"] = object_name
     for key, value in old.items():
-
         new["properties"][key] = {}
 
         # map type to JSON schema type
@@ -383,10 +383,13 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     datetime_keys = []
     enum_lines = []
     has_comment = False
+    has_units = False
     # Create field definitions
     for field_name, field_attrs in properties.items():
+        if field_name in ["units", "unit"]:
+            has_units = True
         # Check if the field is a comment
-        if field_name in ["comments", "comment"]:
+        elif field_name in ["comments", "comment"]:
             has_comment = True
             field_type = "Comment"
             imports.append("from mt_metadata.common import Comment")
@@ -426,7 +429,9 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
             # Convert enum list to a string representation
             enum_lines.append(f"class {snake_to_camel(field_name)}Enum(str, Enum):")
             for enum_value in field_attrs["enum"]:
-                enum_lines.append(f"{TAB}{enum_value} = '{enum_value}'")
+                enum_lines.append(
+                    f"{TAB}{enum_value.replace(' ', '_')} = '{enum_value}'"
+                )
             imports.append("from enum import Enum")
             field_type = f"{snake_to_camel(field_name)}Enum"
 
@@ -519,6 +524,24 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
 
         imports.append("from pydantic import field_validator, ValidationInfo")
 
+    if has_units:
+        print(f"adding units to {new_filename}")
+        class_definitions.append(
+            f"{TAB}@field_validator('units', mode='before')\n"
+            f"{TAB}@classmethod\n"
+            f"{TAB}def validate_units(cls, value: str) -> str:\n"
+            f"{TAB*2}if value in [None, '']:\n"
+            f"{TAB*3}return ''\n"
+            f"{TAB*2}try:\n"
+            f"{TAB*3}unit_object = get_unit_object(value)\n"
+            f"{TAB*3}return unit_object.name\n"
+            f"{TAB*2}except ValueError as error:\n"
+            f"{TAB*3}raise KeyError(error)\n"
+            f"{TAB*2}except KeyError as error:\n"
+            f"{TAB*3}raise KeyError(error)\n"
+        )
+        imports.append("from mt_metadata.utils.units import get_unit_object")
+
     # Generate the class definition, dont need config dict as that is
     # already initiated in MetadataBase.
     class_code = [
@@ -540,29 +563,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     lines += class_code
     line = "\n".join(lines)
 
-    # Format the code using black
-    # This will format the code according to PEP 8 style guide
-    try:
-        line = black.format_str(line, mode=black.FileMode())
-    except Exception as error:
-        logger.warning(
-            f"{json_schema_filename.name} Error formatting code using black: {error}"
-        )
-
-    # format using isort
-    try:
-        line = isort.code(line)
-    except Exception as error:
-        logger.warning(
-            f"{json_schema_filename.name} Error formatting code using isort: {error}"
-        )
-
-    # Write to output file
-    with open(new_filename, "w") as f:
-        f.write(line)
-
-    logger.info(f"Saved to {new_filename}")
-    return new_filename
+    return clean_and_format_code(line, new_filename)
 
 
 def clean_and_format_code(code_str, filename=None):
@@ -628,6 +629,10 @@ def clean_and_format_code(code_str, filename=None):
         else:
             logger.warning(f"Error formatting code using black: {error}")
 
+    # Write the formatted code back to the file
+    with open(filename, "w") as f:
+        f.write(code_str)
+
     return code_str
 
 
@@ -648,8 +653,4 @@ def reformat(filename: str | Path) -> None:
         code_str = f.read()
 
     # Clean and format the code
-    formatted_code = clean_and_format_code(code_str, filename)
-
-    # Write the formatted code back to the file
-    with open(filename, "w") as f:
-        f.write(formatted_code)
+    return clean_and_format_code(code_str, filename)

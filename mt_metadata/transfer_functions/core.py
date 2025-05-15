@@ -6,37 +6,24 @@
 .. moduleauthor:: Jared Peacock <jpeacock@usgs.gov>
 """
 
+from collections import OrderedDict
+from copy import deepcopy
+
 # ==============================================================================
 from pathlib import Path
-from copy import deepcopy
-from collections import OrderedDict
 
 import numpy as np
 import xarray as xr
-
 from loguru import logger
 
-from mt_metadata.timeseries import Survey as TSSurvey
-from mt_metadata.transfer_functions.tf import (
-    Survey,
-    Station,
-    Run,
-    Electric,
-    Magnetic,
-)
-from mt_metadata.transfer_functions.io import (
-    EDI,
-    EMTFXML,
-    ZMM,
-    JFile,
-    ZongeMTAvg,
-)
-from mt_metadata.transfer_functions.io.zfiles.metadata import (
-    Channel as ZChannel,
-)
-from mt_metadata.base.helpers import validate_name
-from mt_metadata.utils.list_dict import ListDict
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata.base.helpers import validate_name
+from mt_metadata.timeseries import Survey as TSSurvey
+from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTAvg
+from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
+from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
+from mt_metadata.utils.list_dict import ListDict
+
 
 # =============================================================================
 
@@ -99,9 +86,7 @@ class TF:
         tf_set = False
         try:
             period = kwargs.pop("period")
-            self._transfer_function = self._initialize_transfer_function(
-                periods=period
-            )
+            self._transfer_function = self._initialize_transfer_function(periods=period)
             tf_set = True
         except KeyError:
             try:
@@ -112,7 +97,6 @@ class TF:
                 tf_set = True
             except KeyError:
                 pass
-            pass
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -134,9 +118,7 @@ class TF:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
-        lines.append(
-            f"\tAcquired by:       {self.station_metadata.acquired_by.author}"
-        )
+        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
         lines.append(
             f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
         )
@@ -194,10 +176,7 @@ class TF:
             if not self.transfer_function.equals(other.transfer_function):
                 self.logger.info("TF is not equal")
                 is_equal = False
-        elif (
-            not self.has_transfer_function()
-            and not other.has_transfer_function()
-        ):
+        elif not self.has_transfer_function() and not other.has_transfer_function():
             pass
         else:
             self.logger.info("TF is not equal")
@@ -220,9 +199,7 @@ class TF:
     def copy(self):
         return deepcopy(self)
 
-    def _add_channels(
-        self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]
-    ):
+    def _add_channels(self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]):
         """
         add channels to a run
 
@@ -283,9 +260,7 @@ class TF:
 
         if not isinstance(station_metadata, Station):
             if isinstance(station_metadata, dict):
-                if "station" not in [
-                    cc.lower() for cc in station_metadata.keys()
-                ]:
+                if "station" not in [cc.lower() for cc in station_metadata.keys()]:
                     station_metadata = {"Station": station_metadata}
                 st_metadata = Station()
                 st_metadata.from_dict(station_metadata)
@@ -313,9 +288,7 @@ class TF:
                 survey_metadata = sm
 
             elif isinstance(survey_metadata, dict):
-                if "survey" not in [
-                    cc.lower() for cc in survey_metadata.keys()
-                ]:
+                if "survey" not in [cc.lower() for cc in survey_metadata.keys()]:
                     survey_metadata = {"Survey": survey_metadata}
                 sv_metadata = Survey()
                 sv_metadata.from_dict(survey_metadata)
@@ -420,16 +393,12 @@ class TF:
 
                 channels.append(self.station_metadata.runs[0].channels[key])
                 # add existing channels
-                channels.extend(
-                    self.run_metadata.channels, skip_keys=[key, "0"]
-                )
+                channels.extend(self.run_metadata.channels, skip_keys=[key, "0"])
             # add channels from input metadata
             channels.extend(run_metadata.channels)
 
             runs[0].channels = channels
-            runs.extend(
-                self.station_metadata.runs, skip_keys=[run_metadata.id, "0"]
-            )
+            runs.extend(self.station_metadata.runs, skip_keys=[run_metadata.id, "0"])
 
             self._survey_metadata.stations[0].runs = runs
 
@@ -759,13 +728,10 @@ class TF:
             and not self.has_tipper()
             and not self.has_impedance()
         ):
-            self._transfer_function = self._initialize_transfer_function(
-                da.period
-            )
+            self._transfer_function = self._initialize_transfer_function(da.period)
             return da
         elif (
-            self._transfer_function.transfer_function.data.shape[0]
-            == da.data.shape[0]
+            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
         ):
             return da
         else:
@@ -1347,27 +1313,19 @@ class TF:
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hx], output=[self.hx])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         z_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hy], output=[self.hy])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
         z_err[:, 1, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hx], output=[self.hx])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         z_err[:, 1, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hy], output=[self.hy])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
@@ -1388,9 +1346,7 @@ class TF:
         :rtype: TYPE
 
         """
-        sigma_e = self.residual_covariance.loc[
-            dict(input=[self.hz], output=[self.hz])
-        ]
+        sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
         sigma_s = self.inverse_signal_power.loc[
             dict(input=self.hx_hy, output=self.hx_hy)
         ]
@@ -1398,15 +1354,11 @@ class TF:
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hx], output=[self.hx])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
         )
         t_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[
-                dict(input=[self.hy], output=[self.hy])
-            ].data.flatten()
+            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
@@ -1448,9 +1400,7 @@ class TF:
             elif not (self.period == value).all():
                 self.dataset["period"] = value
         else:
-            self._transfer_function = self._initialize_transfer_function(
-                periods=value
-            )
+            self._transfer_function = self._initialize_transfer_function(periods=value)
         return
 
     @property
@@ -1638,9 +1588,7 @@ class TF:
 
             """
             item = validate_dict(item)
-            period_slice = get_slice_dict(
-                item["period_min"], item["period_max"]
-            )
+            period_slice = get_slice_dict(item["period_min"], item["period_max"])
             item["tf"]._transfer_function = sort_by_period(
                 item["tf"]._transfer_function
             )
@@ -1663,14 +1611,8 @@ class TF:
                     and period_slice["period"].stop is not None
                 ):
                     return tf._transfer_function.where(
-                        (
-                            tf._transfer_function.period
-                            >= period_slice["period"].start
-                        )
-                        & (
-                            tf._transfer_function.period
-                            <= period_slice["period"].stop
-                        ),
+                        (tf._transfer_function.period >= period_slice["period"].start)
+                        & (tf._transfer_function.period <= period_slice["period"].stop),
                         drop=True,
                     )
                 elif (
@@ -1678,10 +1620,7 @@ class TF:
                     and period_slice["period"].stop is not None
                 ):
                     return tf._transfer_function.where(
-                        (
-                            tf._transfer_function.period
-                            <= period_slice["period"].stop
-                        ),
+                        (tf._transfer_function.period <= period_slice["period"].stop),
                         drop=True,
                     )
                 elif (
@@ -1689,10 +1628,7 @@ class TF:
                     and period_slice["period"].stop is None
                 ):
                     return tf._transfer_function.where(
-                        (
-                            tf._transfer_function.period
-                            >= period_slice["period"].start
-                        ),
+                        (tf._transfer_function.period >= period_slice["period"].start),
                         drop=True,
                     )
 
@@ -1774,9 +1710,7 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename = fn_basename.with_name(
-                    f"{fn_basename.name}.{file_type}"
-                )
+                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
@@ -1873,9 +1807,7 @@ class TF:
         edi_obj.frequency = 1.0 / self.period
 
         if isinstance(self._rotation_angle, (int, float)):
-            edi_obj.rotation_angle = np.repeat(
-                self._rotation_angle, self.period.size
-            )
+            edi_obj.rotation_angle = np.repeat(self._rotation_angle, self.period.size)
         else:
             edi_obj.rotation_angle = self._rotation_angle
 
@@ -1903,9 +1835,7 @@ class TF:
                 )
         edi_obj.Data.read_data(edi_obj.Data.write_data())
 
-        edi_obj.Measurement.read_measurement(
-            edi_obj.Measurement.write_measurement()
-        )
+        edi_obj.Measurement.read_measurement(edi_obj.Measurement.write_measurement())
 
         return edi_obj
 
@@ -2048,9 +1978,7 @@ class TF:
             emtfxml_obj = EMTFXML(**kwargs)
             emtfxml_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(emtfxml_obj, EMTFXML):
-            raise TypeError(
-                f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
-            )
+            raise TypeError(f"Input must be a EMTFXML object not {type(emtfxml_obj)}")
         self.survey_metadata = emtfxml_obj.survey_metadata
         self.station_metadata = self.survey_metadata.stations[0]
 
@@ -2169,9 +2097,7 @@ class TF:
         """
         zmm_kwargs = {}
         zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
-        zmm_kwargs["inverse_channel_nomenclature"] = (
-            self.inverse_channel_nomenclature
-        )
+        zmm_kwargs["inverse_channel_nomenclature"] = self.inverse_channel_nomenclature
         if hasattr(self, "decimation_dict"):
             zmm_kwargs["decimation_dict"] = self.decimation_dict
         zmm_obj = ZMM(**zmm_kwargs)

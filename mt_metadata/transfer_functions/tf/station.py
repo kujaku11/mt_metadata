@@ -2,45 +2,44 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+import copy
+from collections import OrderedDict
+
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
-import copy
-from collections import OrderedDict
+
+from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.timeseries.standards import (
-    SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
-)
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
+from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.utils.validators import validate_value_type
+
 from . import (
     Fdsn,
+    Location,
     Orientation,
     Person,
     Provenance,
-    Location,
-    TimePeriod,
     Run,
+    TimePeriod,
     TransferFunction,
 )
+from .standards import SCHEMA_FN_PATHS
 
-from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 attr_dict = get_schema("station", SCHEMA_FN_PATHS)
 attr_dict.add_dict(get_schema("fdsn", TS_SCHEMA_FN_PATHS), "fdsn")
 location_dict = get_schema("location", TS_SCHEMA_FN_PATHS)
-location_dict.add_dict(
-    get_schema("declination", TS_SCHEMA_FN_PATHS), "declination"
-)
+location_dict.add_dict(get_schema("declination", TS_SCHEMA_FN_PATHS), "declination")
 location_dict.add_dict(
     get_schema("geographic_location", TS_SCHEMA_FN_PATHS),
     None,
@@ -58,14 +57,10 @@ attr_dict.add_dict(
 )
 
 attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
-attr_dict.add_dict(
-    copy.deepcopy(TransferFunction()._attr_dict), "transfer_function"
-)
+attr_dict.add_dict(copy.deepcopy(TransferFunction()._attr_dict), "transfer_function")
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
-attr_dict.add_dict(
-    get_schema("citation", TS_SCHEMA_FN_PATHS), None, keys=["doi"]
-)
+attr_dict.add_dict(get_schema("citation", TS_SCHEMA_FN_PATHS), None, keys=["doi"])
 attr_dict["doi"]["required"] = False
 
 
@@ -74,7 +69,6 @@ class Station(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.fdsn = Fdsn()
         self._channels_recorded = []
         self.orientation = Orientation()
@@ -149,8 +143,7 @@ class Station(Base):
 
         else:
             raise TypeError(
-                "'channels_recorded' must be set with a list not "
-                f"{type(value)}."
+                "'channels_recorded' must be set with a list not " f"{type(value)}."
             )
 
     def has_run(self, run_id):
@@ -198,9 +191,7 @@ class Station(Base):
 
         if self.has_run(run_obj.id):
             self.runs[run_obj.id].update(run_obj)
-            self.logger.debug(
-                f"Station {run_obj.id} already exists, updating metadata"
-            )
+            self.logger.debug(f"Station {run_obj.id} already exists, updating metadata")
         else:
             self.runs.append(run_obj)
 
@@ -263,7 +254,6 @@ class Station(Base):
             value_list = value
 
         for ii, run in enumerate(value_list):
-
             if isinstance(run, (dict, OrderedDict)):
                 r = Run()
                 r.from_dict(run)

@@ -2,26 +2,25 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+from mt_metadata import __version__
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import (
-    write_lines,
-    dict_to_xml,
-    element_to_string,
-)
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import Person
+from mt_metadata.base.helpers import dict_to_xml, element_to_string, write_lines
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.mttime import MTime, get_now_utc
-from mt_metadata import __version__
+from mt_metadata.utils.mttime import get_now_utc, MTime
+
+from . import Person
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
@@ -46,7 +45,6 @@ class Provenance(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self._creation_dt = MTime()
         self.submitter = Person()
         self.creator = Person()

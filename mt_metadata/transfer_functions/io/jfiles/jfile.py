@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 .. py:module:: JFile
-    :synopsis: Deal with J-Files of the format propsed by Alan Jones 
+    :synopsis: Deal with J-Files of the format propsed by Alan Jones
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
 
@@ -9,19 +9,15 @@
 
 # ==============================================================================
 from pathlib import Path
+
 import numpy as np
 from loguru import logger
 
-from mt_metadata.transfer_functions.tf import (
-    Survey,
-    Station,
-    Run,
-    Electric,
-    Magnetic,
-)
-from mt_metadata.utils.mttime import MTime
-from .metadata import Header
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
+from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
+from mt_metadata.utils.mttime import MTime
+
+from .metadata import Header
 
 
 # ==============================================================================
@@ -55,21 +51,11 @@ class JFile:
         lines = [f"Station: {self.header.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(
-            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
-        )
-        lines.append(
-            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
-        )
-        lines.append(
-            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
-        )
-        lines.append(
-            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
-        )
-        lines.append(
-            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
-        )
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
         if self.z is not None:
             if (self.z == 0).all():
                 lines.append("\tImpedance:     False")
@@ -190,9 +176,7 @@ class JFile:
         self.header.read_metadata(j_line_list)
 
         data_lines = [
-            j_line
-            for j_line in j_line_list
-            if not ">" in j_line and not "#" in j_line
+            j_line for j_line in j_line_list if not ">" in j_line and not "#" in j_line
         ][:]
 
         self.header.station = data_lines[0].strip()
@@ -211,9 +195,7 @@ class JFile:
             if "z" in d_line.lower():
                 d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif (
-                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
-            ):
+            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
                 continue
             elif "r" in d_line.lower():
                 break
@@ -283,9 +265,7 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = (
-                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
-                    )
+                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
@@ -296,15 +276,11 @@ class JFile:
                     kk = t_index_dict[t_key][0]
                     ll = t_index_dict[t_key][1]
                     try:
-                        t_value = (
-                            t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
-                        )
+                        t_value = t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
                         self.t[p_index, kk, ll] = t_value
                         self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
-                        self.logger.debug(
-                            f"No value found for period {per:.4g}"
-                        )
+                        self.logger.debug(f"No value found for period {per:.4g}")
                         self.logger.debug(f"For component {t_key}")
 
         # put the results into mtpy objects
@@ -353,17 +329,11 @@ class JFile:
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
         sm.transfer_function.id = self.header.station
-        sm.transfer_function.processed_date = MTime(
-            self.fn.stat().st_ctime
-        ).iso_str
+        sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
         sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
-        for key, value in self.header.birrp_parameters.to_dict(
-            single=True
-        ).items():
-            sm.transfer_function.processing_parameters.append(
-                f"{key} = {value}"
-            )
+        for key, value in self.header.birrp_parameters.to_dict(single=True).items():
+            sm.transfer_function.processing_parameters.append(f"{key} = {value}")
 
         return sm
 

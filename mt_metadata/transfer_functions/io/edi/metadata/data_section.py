@@ -8,12 +8,15 @@ Created on Sat Dec  4 18:52:52 2021
 # Imports
 # =============================================================================
 
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import validate_name
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("data_section", SCHEMA_FN_PATHS)
+
 
 # ==============================================================================
 # data section
@@ -190,7 +193,6 @@ class DataSection(Base):
             data_lines = ["\n>spectrasect\n".upper()]
 
         for key in self._kw_list[0:4]:
-
             data_lines.append(f"{' '*4}{key.upper()}={getattr(self, key)}\n")
 
         # need to sort the list so it is descending order by channel number

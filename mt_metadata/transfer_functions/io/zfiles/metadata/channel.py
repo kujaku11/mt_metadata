@@ -8,12 +8,15 @@ Created on Sat Dec  4 18:52:52 2021
 # Imports
 # =============================================================================
 
-from mt_metadata.base import get_schema, Base
+from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
+
 from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
+
 
 # ==============================================================================
 # data section

@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -13,10 +13,12 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import element_to_string, write_lines
+
 from .estimate import Estimate
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("statistical_estimates", SCHEMA_FN_PATHS)
@@ -27,7 +29,6 @@ class StatisticalEstimates(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self._estimates_list = []
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -57,9 +58,7 @@ class StatisticalEstimates(Base):
         """
 
         try:
-            self.estimates_list = input_dict["statistical_estimates"][
-                "estimate"
-            ]
+            self.estimates_list = input_dict["statistical_estimates"]["estimate"]
         except KeyError:
             self.logger.warning("Could not statistical estimates")
 

@@ -5,15 +5,19 @@ Created on Sat Dec  4 16:21:06 2021
 @author: jpeacock
 """
 
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
+
 from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("hmeasurement", SCHEMA_FN_PATHS)
+
 
 # ==============================================================================
 # magnetic measurements
@@ -22,7 +26,6 @@ class HMeasurement(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self._fmt_dict = {
             "id": "<",
             "chtype": "<",
@@ -37,9 +40,7 @@ class HMeasurement(Base):
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def __str__(self):
-        return "\n".join(
-            [f"{k} = {v}" for k, v in self.to_dict(single=True).items()]
-        )
+        return "\n".join([f"{k} = {v}" for k, v in self.to_dict(single=True).items()])
 
     def __repr__(self):
         return self.__str__()
@@ -49,9 +50,7 @@ class HMeasurement(Base):
         if self.acqchan != None:
             if not isinstance(self.acqchan, (int, float)):
                 try:
-                    return [
-                        int("".join(i for i in self.acqchan if i.isdigit()))
-                    ][0]
+                    return [int("".join(i for i in self.acqchan if i.isdigit()))][0]
                 except (IndexError, ValueError):
                     return 0
             return self.acqchan

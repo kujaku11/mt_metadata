@@ -2,24 +2,25 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.timeseries.standards import (
-    SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
-)
-from mt_metadata.utils.mttime import MTime
-from . import Person, Software, DataQuality
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.processing import aurora
+from mt_metadata.utils.mttime import MTime
+
+from . import DataQuality, Person, Software
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("transfer_function", SCHEMA_FN_PATHS)
@@ -70,9 +71,7 @@ class TransferFunction(Base):
                         key = key.replace(f"{default_key}.", "")
                         processing_dict[key] = value
                 self._processing_config = aurora.Processing()
-                self._processing_config.from_dict(
-                    {"processing": processing_dict}
-                )
+                self._processing_config.from_dict({"processing": processing_dict})
 
         return self._processing_config
 
@@ -105,13 +104,9 @@ class TransferFunction(Base):
                             else:
                                 self._dict_to_params(item, f"{base_key}.{key}")
                     else:
-                        self.processing_parameters.append(
-                            f"{base_key}.{key}={value}"
-                        )
+                        self.processing_parameters.append(f"{base_key}.{key}={value}")
                 else:
-                    self.processing_parameters.append(
-                        f"{base_key}.{key}={value}"
-                    )
+                    self.processing_parameters.append(f"{base_key}.{key}={value}")
 
             elif isinstance(value, dict):
                 self._dict_to_params(value, f"{base_key}.{key}")
