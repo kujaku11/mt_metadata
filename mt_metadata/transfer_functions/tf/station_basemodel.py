@@ -3,11 +3,10 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import Field
 
 from mt_metadata.timeseries import Station as TSStation
 from mt_metadata.transfer_functions.tf import TransferFunction
-from mt_metadata.common import ChannelLayoutEnum, Comment, DataTypeEnum, StationLocation
 
 
 # =====================================================

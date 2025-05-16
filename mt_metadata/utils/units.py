@@ -264,7 +264,7 @@ class Unit(BaseModel):
             setattr(self, k, v)
 
 
-def find_separator(unit_string: str) -> str:
+def find_separator(unit_string: str) -> str | None:
     """
     Find the first separator in a unit string.
 
@@ -291,7 +291,7 @@ def find_separator(unit_string: str) -> str:
     return
 
 
-def parse_unit_string(unit_string: str) -> list[dict]:
+def parse_unit_string(unit_string: str) -> list[dict] | None:
     """
     Parse a unit string into a list of units and separators, including nested units and brackets.
 

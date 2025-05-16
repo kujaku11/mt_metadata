@@ -41,20 +41,23 @@ class DataTypeEnum(StrEnumerationBase):
     LP = "LP"
     BB = "BB"
     WB = "WB"
-    other = "other"
+
+
+class ArrayDTypeEnum(str, Enum):
+    real = "real"
+    complex = "complex"
 
 
 class ChannelLayoutEnum(StrEnumerationBase):
     L = "L"
     X = "X"
-    other = "other"
+    plus = "+"
 
 
 class OrientationMethodEnum(StrEnumerationBase):
     compass = "compass"
     GPS = "GPS"
     theodolite = "theodolite"
-    other = "other"
 
 
 class GeographicReferenceFrameEnum(StrEnumerationBase):
@@ -65,7 +68,6 @@ class GeographicReferenceFrameEnum(StrEnumerationBase):
 class ChannelOrientationEnum(StrEnumerationBase):
     orthogonal = "orthogonal"
     station = "station"
-    other = "other"
 
 
 class GeomagneticModelEnum(str, Enum):
@@ -77,7 +79,6 @@ class GeomagneticModelEnum(str, Enum):
     IGRF = "IGRF"
     WMM = "WMM"
     unknown = "unknown"
-    other = "other"
 
     @classmethod
     def __get_pydantic_core_schema__(
@@ -103,7 +104,6 @@ class FilterTypeEnum(StrEnumerationBase):
     time_delay = "time_delay"
     coefficient = "coefficient"
     fir = "fir"
-    other = "other"
 
 
 class SymmetryEnum(StrEnumerationBase):

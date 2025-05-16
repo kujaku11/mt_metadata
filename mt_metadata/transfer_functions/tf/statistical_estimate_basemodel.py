@@ -1,20 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import ArrayDTypeEnum
 from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================
-class DataTypeEnum(str, Enum):
-    real = "real"
-    complex = "complex"
-    other = "other"
 
 
 class StatisticalEstimate(MetadataBase):
@@ -33,7 +29,7 @@ class StatisticalEstimate(MetadataBase):
     ]
 
     data_type: Annotated[
-        DataTypeEnum,
+        ArrayDTypeEnum,
         Field(
             default="complex",
             description="Type of number contained in the estimate",
