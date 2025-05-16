@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import ArrayDTypeEnum
@@ -57,9 +57,9 @@ class StatisticalEstimate(MetadataBase):
     ]
 
     input_channels: Annotated[
-        str,
+        list[str] | str,
         Field(
-            default="[]",
+            default=[],
             items={"type": "string"},
             description="List of input channels (sources)",
             examples="[hx, hy]",
@@ -72,9 +72,9 @@ class StatisticalEstimate(MetadataBase):
     ]
 
     output_channels: Annotated[
-        str,
+        list[str] | str,
         Field(
-            default="[]",
+            default="",
             items={"type": "string"},
             description="List of output channels (response).",
             examples=["ex", "ey", "hz"],
@@ -112,3 +112,18 @@ class StatisticalEstimate(MetadataBase):
             raise KeyError(error)
         except KeyError as error:
             raise KeyError(error)
+
+    @field_validator("input_channels", "output_channels", mode="before")
+    @classmethod
+    def validate_lists(cls, value: list[str] | str) -> list[str]:
+        """
+        validate a list of strings, if a string is input assume that
+        it is comma separated.
+        """
+        if isinstance(value, str):
+            return [v.strip() for v in value.split(",")]
+        elif isinstance(value, list):
+            # make sure return values are strings
+            return [str(v) for v in value]
+        else:
+            raise TypeError(f"Cannot parse type {type(value)} into a list of strings")
