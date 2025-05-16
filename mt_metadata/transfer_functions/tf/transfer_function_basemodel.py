@@ -1,14 +1,20 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
+from typing import Annotated, Any
 
 import numpy as np
 import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import GeographicReferenceFrameEnum, SignConventionEnum
+from mt_metadata.common import (
+    GeographicReferenceFrameEnum,
+    SignConventionEnum,
+    AuthorPerson,
+    Software,
+    DataQuality,
+)
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object
 
@@ -89,6 +95,20 @@ class TransferFunction(MetadataBase):
         ),
     ]
 
+    processed_by: Annotated[
+        AuthorPerson,
+        Field(
+            default_factory=lambda: AuthorPerson(),
+            description="Information about who processed the data",
+            examples="AuthorPerson()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": None,
+            },
+        ),
+    ]
+
     processed_date: Annotated[
         MTime | str | float | int | np.datetime64 | pd.Timestamp,
         Field(
@@ -147,7 +167,7 @@ class TransferFunction(MetadataBase):
     ]
 
     processing_config: Annotated[
-        str | None,
+        str | Any | None,
         Field(
             default=None,
             description="processing configuration",
@@ -160,11 +180,39 @@ class TransferFunction(MetadataBase):
         ),
     ]
 
+    software: Annotated[
+        Software,
+        Field(
+            default_factory=lambda: Software(),
+            description="Information about the software used to estimate transfer function.",
+            examples="Software(author='a', name='mt_example')",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": None,
+            },
+        ),
+    ]
+
+    data_quality: Annotated[
+        DataQuality,
+        Field(
+            default_factory=DataQuality,
+            description="Information about transfer function data quality.",
+            examples="DataQuality()",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": None,
+            },
+        ),
+    ]
+
     @field_validator("processed_date", mode="before")
     @classmethod
     def validate_processed_date(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
-    ):
+    ) -> MTime:
         return MTime(time_stamp=field_value)
 
     @field_validator("units", mode="before")
