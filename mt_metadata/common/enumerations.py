@@ -115,6 +115,7 @@ class SymmetryEnum(StrEnumerationBase):
 class SignConventionEnum(str, Enum):
     plus = "+"
     minus = "-"
+    exp_plus = "exp (+iwt)"
 
 
 ## This is a better way to making an pydantic type of enumeration with a validator
