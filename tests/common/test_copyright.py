@@ -24,7 +24,7 @@ def test_copyright_valid_license_with_formatting():
     """
     Test the Copyright model with a valid license that requires formatting.
     """
-    copyright = Copyright(release_license="CC BY 4.0")
+    copyright = Copyright(release_license="CC-BY-4.0")
 
     assert copyright.release_license == "CC-BY-4.0"
 

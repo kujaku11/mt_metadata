@@ -2,7 +2,7 @@
 # Imports
 # =====================================================
 import json
-from enum import Enum
+from enum import Enum, EnumMeta
 from pathlib import Path
 
 from pydantic import GetCoreSchemaHandler
@@ -112,46 +112,89 @@ class SymmetryEnum(StrEnumerationBase):
     EVEN = "EVEN"
 
 
-# Load the licenses JSON file
-filename = Path(__file__).parent.parent.joinpath("data", "licenses.json")
-with open(filename, "r") as fid:
-    licenses = json.load(fid)
-
-# Process the license IDs to make them valid Python identifiers
-license_variable_list = [
-    {"license_key": "CC_0", "license_value": "CC0"},
-    {"license_key": "CC0", "license_value": "CC0"},
-    {"license_key": "CC_BY", "license_value": "CC BY"},
-    {"license_key": "CC_BY_SA", "license_value": "CC BY-SA"},
-    {"license_key": "CC_BY_NC", "license_value": "CC BY-NC"},
-    {"license_key": "CC_BY_NA_SA", "license_value": "CC BY-NC-SA"},
-    {"license_key": "CC_BY_ND", "license_value": "CC BY-ND"},
-    {"license_key": "CC_BY_NC_ND", "license_value": "CC BY-NC-ND"},
-]
-for license in licenses["licenses"]:
-    item = {}
-    item["license_key"] = (
-        license["licenseId"]
-        .replace("-", "_")
-        .replace(" ", "_")
-        .replace(".", "_")
-        .replace("(", "_")
-        .replace(")", "_")
-        .replace("/", "_")
-        .replace(":", "_")
-    )
-    item["license_value"] = license["licenseId"]
-    license_variable_list.append(item)
-
-# Create an Enum class for the licenses
-LicenseEnum = Enum(
-    "LicenseEnum",  # Name of the Enum
-    {
-        entry["license_key"]: entry["license_value"] for entry in license_variable_list
-    },  # Members
-)
-
-
 class SignConventionEnum(str, Enum):
     plus = "+"
     minus = "-"
+
+
+## This is a better way to making an pydantic type of enumeration with a validator
+class LicenseEnumMeta(EnumMeta):
+    """Metaclass to dynamically load license data when the enum is defined"""
+
+    def __new__(metacls, cls, bases, classdict):
+        # Create the enum class first
+        enum_class = super().__new__(metacls, cls, bases, classdict)
+
+        # Load the licenses JSON file
+        filename = Path(__file__).parent.parent.joinpath("data", "licenses.json")
+        with open(filename, "r") as fid:
+            licenses = json.load(fid)
+
+        # Add base licenses
+        base_licenses = [
+            ("CC_0", "CC0"),
+            ("CC0", "CC0"),
+            ("CC_BY", "CC BY"),
+            ("CC_BY_SA", "CC BY-SA"),
+            ("CC_BY_NC", "CC BY-NC"),
+            ("CC_BY_NA_SA", "CC BY-NC-SA"),
+            ("CC_BY_ND", "CC BY-ND"),
+            ("CC_BY_NC_ND", "CC BY-NC-ND"),
+        ]
+
+        # Create dynamic enum members
+        member_dict = {}
+        for key, value in base_licenses:
+            member_dict[key] = value
+
+        # Add licenses from JSON file
+        for license in licenses["licenses"]:
+            key = (
+                license["licenseId"]
+                .replace("-", "_")
+                .replace(" ", "_")
+                .replace(".", "_")
+                .replace("(", "_")
+                .replace(")", "_")
+                .replace("/", "_")
+                .replace(":", "_")
+            )
+            value = license["licenseId"]
+            member_dict[key] = value
+
+        # Now create the actual enum
+        return Enum(enum_class.__name__, member_dict)
+
+
+class LicenseEnum(str, Enum, metaclass=LicenseEnumMeta):
+    """
+    Enumeration of software licenses.
+    Dynamically loaded from JSON data.
+    """
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: type[Enum], handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        return core_schema.no_info_plain_validator_function(cls._validate)
+
+    @classmethod
+    def _validate(cls, value: str) -> str:
+        if not isinstance(value, str):
+            raise TypeError(f"Expected string, got {type(value)}")
+
+        # Check if the value is a valid license
+        for member in cls:
+            if member.value == value:
+                return value
+
+        # Handle case insensitivity or slight variations
+        value_normalized = value.upper().replace("-", "_").replace(" ", "_")
+        for member in cls:
+            member_normalized = member.value.upper().replace("-", "_").replace(" ", "_")
+            if member_normalized == value_normalized:
+                return member.value
+
+        raise ValueError(
+            f"Invalid license: {value}. Must be one of the valid licenses."
+        )
