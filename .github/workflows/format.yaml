@@ -30,11 +30,14 @@ jobs:
 
     - name: Format with autoflake, isort, and black
       run: |
-        # Exclude __init__.py files from formatting
-        find . -name "*.py" -type f -not -path "*/\.*" -not -name "__init__.py" | xargs autoflake --remove-all-unused-imports --expand-star-imports --ignore-init-module-imports --in-place
-        find . -name "*.py" -type f -not -path "*/\.*" -not -name "__init__.py" | xargs isort --profile black --force-alphabetical-sort-within-sections --order-by-type --lines-after-imports=2
-        find . -name "*.py" -type f -not -path "*/\.*" -not -name "__init__.py" | xargs black
-
+        # Create list of Python files excluding __init__.py files
+        PYTHON_FILES=$(find . -name "*.py" -type f -not -path "*/\.*" -not -name "__init__.py")
+        
+        # Apply formatting to those files only
+        echo "$PYTHON_FILES" | xargs autoflake --remove-all-unused-imports --expand-star-imports --ignore-init-module-imports --in-place
+        echo "$PYTHON_FILES" | xargs isort --profile black --force-alphabetical-sort-within-sections --order-by-type --lines-after-imports=2
+        echo "$PYTHON_FILES" | xargs black
+        
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
