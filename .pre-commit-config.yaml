@@ -17,6 +17,7 @@ repos:
         types: [python]
         files: \.py$
         args: ["--profile", "black",
+               "--skip","__init__.py",
                "--force-alphabetical-sort-within-sections",
                "--order-by-type",
                "--lines-after-imports=2"]
