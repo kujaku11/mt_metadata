@@ -9,15 +9,16 @@ case strings.
 
 """
 
+from collections import OrderedDict
+from typing import Annotated
+
 # =============================================================================
 # Import
 # =============================================================================
 import pandas as pd
-from typing import Annotated
-from collections import OrderedDict
 from loguru import logger
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-from pydantic import BaseModel, Field, ConfigDict, AliasChoices
 
 # =============================================================================
 
@@ -208,7 +209,7 @@ class Unit(BaseModel):
         lines = [
             f"name:         {self.name}",
             f"description:  {self.description}",
-            f"symbol: {self.symbol}",
+            f"symbol:       {self.symbol}",
             f"plot_label:   {self.plot_label}",
         ]
         return "\n".join(lines)
