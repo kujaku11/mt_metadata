@@ -18,10 +18,11 @@ from loguru import logger
 
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
+from mt_metadata.timeseries import Electric, Magnetic, Run, Station
+from mt_metadata.timeseries import Survey
 from mt_metadata.timeseries import Survey as TSSurvey
 from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTAvg
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
-from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
 from mt_metadata.utils.list_dict import ListDict
 
 

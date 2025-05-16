@@ -21,7 +21,7 @@
 
 
 # """
-
+# isort:skip_file
 # fmt: off
 
 # ### !!! DO NOT CHANGE THE ORDER !!!
@@ -29,6 +29,7 @@ from .enumerations import (
     ChannelLayoutEnum,
     ChannelOrientationEnum,
     DataTypeEnum,
+    ArrayDTypeEnum,
     FilterTypeEnum,
     GeographicReferenceFrameEnum,
     GeomagneticModelEnum,
@@ -57,6 +58,7 @@ from .location import BasicLocation, BasicLocationNoDatum, Location, StationLoca
 
 __all__ = [
     "DataTypeEnum",
+    "ArrayDTypeEnum",
     "ChannelLayoutEnum",
     "OrientationMethodEnum",
     "GeographicReferenceFrameEnum",

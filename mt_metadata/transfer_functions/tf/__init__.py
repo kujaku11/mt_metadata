@@ -47,12 +47,12 @@ Created on Sun Apr 24 20:50:41 2020
 
 
 """
-
+# isort:skip_file
 # package file
-from .station import Station
-from .statistical_estimate import StatisticalEstimate
-from .survey import Survey
-from .transfer_function import TransferFunction
+from .statistical_estimate_basemodel import StatisticalEstimate
+from .transfer_function_basemodel import TransferFunction
+from .station_basemodel import Station
+from .survey_basemodel import Survey
 
 
 __all__ = [

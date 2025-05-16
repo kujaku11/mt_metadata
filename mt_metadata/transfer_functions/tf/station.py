@@ -18,20 +18,22 @@ import numpy as np
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
-from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.utils.validators import validate_value_type
-
-from . import (
+from mt_metadata.common import (
     Fdsn,
     Location,
     Orientation,
     Person,
     Provenance,
-    Run,
     TimePeriod,
+)
+from mt_metadata.timeseries import Run
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
+from mt_metadata.transfer_functions.tf.transfer_function_basemodel import (
     TransferFunction,
 )
+from mt_metadata.utils.list_dict import ListDict
+from mt_metadata.utils.validators import validate_value_type
+
 from .standards import SCHEMA_FN_PATHS
 
 
