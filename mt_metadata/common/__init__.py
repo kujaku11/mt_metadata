@@ -22,11 +22,7 @@
 
 # """
 
-from .citation import Citation
-from .comment import Comment
-from .copyright import Copyright
-from .data_quality import DataQuality
-from .declination import Declination
+# fmt: off
 
 # ### !!! DO NOT CHANGE THE ORDER !!!
 from .enumerations import (
@@ -41,19 +37,23 @@ from .enumerations import (
     SignConventionEnum,
     SymmetryEnum,
 )
-from .fdsn import Fdsn
-from .funding_source import FundingSource
-from .geographic_location import GeographicLocation
-from .instrument import Instrument
-from .location import BasicLocation, BasicLocationNoDatum, Location, StationLocation
-from .orientation import Orientation
-from .person import AuthorPerson, Person
-from .provenance import Provenance
+from .comment import Comment
 from .range import MinMaxRange, StartEndRange
+from .declination import Declination
+from .geographic_location import GeographicLocation
+from .orientation import Orientation
+from .instrument import Instrument
+from .fdsn import Fdsn
 from .rating import Rating
+from .data_quality import DataQuality
+from .citation import Citation
+from .copyright import Copyright
+from .person import AuthorPerson, Person
+from .funding_source import FundingSource
 from .software import Software
 from .time_period import TimePeriod, TimePeriodDate
-
+from .provenance import Provenance
+from .location import BasicLocation, BasicLocationNoDatum, Location, StationLocation
 
 __all__ = [
     "DataTypeEnum",
@@ -90,3 +90,5 @@ __all__ = [
     "Location",
     "StationLocation",
 ]
+
+# fmt: on

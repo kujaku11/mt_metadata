@@ -49,36 +49,6 @@ Created on Sun Apr 24 20:50:41 2020
 """
 
 # package file
-
-from mt_metadata.timeseries.auxiliary import Auxiliary
-from mt_metadata.timeseries.battery import Battery
-from mt_metadata.timeseries.channel import Channel
-from mt_metadata.timeseries.citation import Citation
-from mt_metadata.timeseries.copyright import Copyright
-from mt_metadata.timeseries.data_logger import DataLogger
-from mt_metadata.timeseries.data_quality import DataQuality
-
-### !!! DO NOT CHANGE THE ORDER !!!
-from mt_metadata.timeseries.declination import Declination
-from mt_metadata.timeseries.diagnostic import Diagnostic
-from mt_metadata.timeseries.electric import Electric
-from mt_metadata.timeseries.electrode import Electrode
-from mt_metadata.timeseries.fdsn import Fdsn
-from mt_metadata.timeseries.filters.filter_base import FilterBase
-from mt_metadata.timeseries.filters.filtered import Filtered
-from mt_metadata.timeseries.instrument import Instrument
-from mt_metadata.timeseries.location import Location
-from mt_metadata.timeseries.magnetic import Magnetic
-from mt_metadata.timeseries.orientation import Orientation
-from mt_metadata.timeseries.person import Person
-from mt_metadata.timeseries.provenance import Provenance
-from mt_metadata.timeseries.rating import Rating
-from mt_metadata.timeseries.run import Run
-from mt_metadata.timeseries.software import Software
-from mt_metadata.timeseries.time_period import TimePeriod
-from mt_metadata.timeseries.timing_system import TimingSystem
-
-from .comment import Comment
 from .station import Station
 from .statistical_estimate import StatisticalEstimate
 from .survey import Survey
@@ -86,35 +56,8 @@ from .transfer_function import TransferFunction
 
 
 __all__ = [
-    "Standards",
-    "Declination",
-    "Location",
-    "Instrument",
-    "Fdsn",
-    "Rating",
-    "DataQuality",
-    "Citation",
-    "Comment",
-    "Copyright",
-    "Provenance",
-    "Person",
-    "Diagnostic",
-    "Battery",
-    "Electrode",
-    "TimingSystem",
-    "TimePeriod",
-    "Orientation",
-    "Software",
-    "Filtered",
-    "FilterBase",
-    "DataLogger",
     "TransferFunction",
     "Survey",
     "Station",
-    "Run",
-    "Channel",
-    "Auxiliary",
-    "Electric",
-    "Magnetic",
     "StatisticalEstimate",
 ]

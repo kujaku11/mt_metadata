@@ -947,7 +947,7 @@ class MetadataBase(DotNotationBaseModel):
         return self.to_json()
 
     def __eq__(
-        self, other: "MetadataBase" | dict | str | pd.Series | et.Element
+        self, other: Union["MetadataBase", dict, str, pd.Series, et.Element]
     ) -> bool:
         """
            create a self.load that will take in a dict, str, pd.Series, xml, etc
@@ -1396,7 +1396,7 @@ class MetadataBase(DotNotationBaseModel):
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 
         return create_model(
-            name: str,
+            name,
             __base__=MetadataBase,
             **all_fields,
         )
@@ -1481,7 +1481,7 @@ class MetadataBase(DotNotationBaseModel):
             meta_dict = meta_dict[list(meta_dict.keys())[0]]
         return meta_dict
 
-    def from_dict(self, meta_dict: dict, skip_none: bool=False) -> None:
+    def from_dict(self, meta_dict: dict, skip_none: bool = False) -> None:
         """
         fill attributes from a dictionary
 
@@ -1528,7 +1528,9 @@ class MetadataBase(DotNotationBaseModel):
                     continue
             self.update_attribute(name, value)
 
-    def to_json(self, nested: bool=False, indent: str=" " * 4, required: bool=True) -> str:
+    def to_json(
+        self, nested: bool = False, indent: str = " " * 4, required: bool = True
+    ) -> str:
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
@@ -1592,7 +1594,7 @@ class MetadataBase(DotNotationBaseModel):
             key = str(key)
             self.update_attribute(key, value)
 
-    def to_series(self, required: bool=True) -> pd.Series:
+    def to_series(self, required: bool = True) -> pd.Series:
         """
         Convert attribute list to a pandas.Series
 
@@ -1605,7 +1607,7 @@ class MetadataBase(DotNotationBaseModel):
 
         return pd.Series(self.to_dict(single=True, required=required))
 
-    def to_xml(self, string:bool=False, required:bool=True) -> str | et.Element:
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
         make an xml element for the attribute that will add types and
         units.
