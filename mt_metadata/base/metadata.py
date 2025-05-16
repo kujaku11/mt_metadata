@@ -16,7 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
-from typing import List, Dict, Iterable, Union, Any
+from typing import List, Dict, Iterable, Union, Any, Mapping
 from typing_extensions import deprecated
 
 import json
@@ -946,7 +946,9 @@ class MetadataBase(DotNotationBaseModel):
     def __repr__(self) -> str:
         return self.to_json()
 
-    def __eq__(self, other: Union["MetadataBase", Dict, str, pd.Series, et.Element]):
+    def __eq__(
+        self, other: "MetadataBase" | dict | str | pd.Series | et.Element
+    ) -> bool:
         """
            create a self.load that will take in a dict, str, pd.Series, xml, etc
            which will create a MetadataBase object.  Then Pydantic will deal
@@ -1030,12 +1032,12 @@ class MetadataBase(DotNotationBaseModel):
                 if isinstance(value, np.ndarray):
                     if value.size != other_value.size:
                         msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
-                        self.logger.info(msg)
+                        logger.info(msg)
                         fail = True
                         continue
                     if not (value == other_value).all():
                         msg = f"{key}: {value} != {other_value}"
-                        self.logger.info(msg)
+                        logger.info(msg)
                         fail = True
                 elif isinstance(value, (float, int, complex)):
                     if not np.isclose(value, other_value):
@@ -1059,7 +1061,7 @@ class MetadataBase(DotNotationBaseModel):
         return len(self.get_attribute_list())
 
     def load(
-        self, other: Union["MetadataBase", Dict, str, pd.Series, et.Element]
+        self, other: Union["MetadataBase", dict, str, pd.Series, et.Element]
     ) -> None:
         """
         Load in an other object and populate attributes.  The other object
@@ -1100,7 +1102,7 @@ class MetadataBase(DotNotationBaseModel):
             logger.error(msg)
             raise MTSchemaError(msg)
 
-    def update(self, other, match=[]):
+    def update(self, other: "MetadataBase", match: list[str] = []) -> None:
         """
         Update attribute values from another like element, skipping None
 
@@ -1127,61 +1129,21 @@ class MetadataBase(DotNotationBaseModel):
                     self.update_attribute(k, v)
 
     ## cannot override the __deepcopy__ method in pydantic.BaseModel otherwise bad
-    ## things happen.
-    # def __deepcopy__(self, memodict={}):
-    #     """
-    #     Need to skip copying the logger
-    #     need to copy properties as well.
-
-    #     :return: Deep copy
-    #     :rtype: :class:`mt_metadata.base.metadata.Base`
-
-    #     """
-
-    #     try:
-    #         return self.model_copy(deep=True)
-    #     except Exception as exception:
-    #         logger.exception(exception)
-    #         # copied = type(self)()
-    #         # for key in self.to_dict(single=True, required=False).keys():
-    #         #     try:
-
-    #         #         copied.update_attribute(
-    #         #             key, deepcopy(self.get_attr_from_name(key), memodict)
-    #         #         )
-    #         #     # Need the TypeError for objects that have no __reduce__ method
-    #         #     # like H5 references.
-    #         #     except (AttributeError, TypeError) as error:
-    #         #         logger.debug(error)
-    #         #         continue
-    #         # # need to copy and properties
-    #         # for key in self.__dict__.keys():
-    #         #     if key.startswith("_"):
-    #         #         test_property = getattr(self.__class__, key[1:], None)
-    #         #         if isinstance(test_property, property):
-    #         #             value = getattr(self, key[1:])
-    #         #             if hasattr(value, "copy"):
-    #         #                 setattr(copied, key[1:], value.copy())
-    #         #             else:
-    #         #                 setattr(copied, key[1:], value)
-
-    #         # return copied
-
-    # def copy(self):
-    #     """
-    #     Copy object
-
-    #     """
-
-    #     return self.__deepcopy__()
-
-    def copy(self, deep=True) -> "MetadataBase":
+    ## things happen
+    def copy(
+        self, update: Mapping[str, Any] | None = None, deep: bool = True
+    ) -> "MetadataBase":
         """
         Create a copy of the current object.  This is a wrapper around the
         pydantic copy method.
 
         Parameters
         ----------
+        update : Mapping[str, Any]
+            Values to change/add in the new model.
+            Note: the data is not validated before creating the new model.
+            You should trust this data.
+
         deep : bool, optional
             If True, create a deep copy of the object. The default is True.
 
@@ -1191,9 +1153,9 @@ class MetadataBase(DotNotationBaseModel):
             A copy of the current object.
         """
 
-        return self.model_copy(deep=deep)
+        return self.model_copy(update=update, deep=deep)
 
-    def get_all_fields(self) -> Dict:
+    def get_all_fields(self) -> dict:
         """
         Get all field attributes in the Metadata class.  Will
         search recursively and return dotted keys.  For
@@ -1208,7 +1170,7 @@ class MetadataBase(DotNotationBaseModel):
 
         return helpers.flatten_dict(helpers.get_all_fields(self))
 
-    def get_attribute_list(self):
+    def get_attribute_list(self) -> list[str]:
         """
         return a list of the attributes
         """
@@ -1216,7 +1178,7 @@ class MetadataBase(DotNotationBaseModel):
         return sorted(self.get_all_fields().keys())
 
     @property
-    def _required_fields(self) -> List[str]:
+    def _required_fields(self) -> list[str]:
         """
         Get a list of required fields, here required is defined
         from the metadata standards.  There is a difference
@@ -1285,7 +1247,7 @@ class MetadataBase(DotNotationBaseModel):
 
         return "\n".join(line)
 
-    def attribute_information(self, name=None):
+    def attribute_information(self, name: str | None = None) -> None:
         """
         return a descriptive string of the attribute if none returns for all
 
@@ -1312,7 +1274,7 @@ class MetadataBase(DotNotationBaseModel):
                 lines.append("=" * 50)
         print("\n".join(lines))
 
-    def get_attr_from_name(self, name):
+    def get_attr_from_name(self, name: str) -> Any:
         """
         Access attribute from the given name.
 
@@ -1341,7 +1303,7 @@ class MetadataBase(DotNotationBaseModel):
     @deprecated(
         "set_attr_from_name will be deprecated in the future. Use update_attribute."
     )
-    def set_attr_from_name(self, name, value):
+    def set_attr_from_name(self, name: str, value: Any) -> None:
         """
         Helper function to set attribute from the given name.
 
@@ -1425,7 +1387,7 @@ class MetadataBase(DotNotationBaseModel):
             )
 
         existing_basemodel = MetadataBase()
-        new_basemodel = existing_basemodel.add_base_attribute("new_attribute", new_field)
+        new_basemodel = existing_basemodel.add_new_field("new_attribute", new_field)
         new_basemodel_object = new_basemodel()
 
         """
@@ -1434,12 +1396,12 @@ class MetadataBase(DotNotationBaseModel):
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 
         return create_model(
-            name,
+            name: str,
             __base__=MetadataBase,
             **all_fields,
         )
 
-    def to_dict(self, nested=False, single=False, required=True):
+    def to_dict(self, nested=False, single=False, required=True) -> None:
         """
         make a dictionary from attributes, makes dictionary from _attr_list.
 
@@ -1519,7 +1481,7 @@ class MetadataBase(DotNotationBaseModel):
             meta_dict = meta_dict[list(meta_dict.keys())[0]]
         return meta_dict
 
-    def from_dict(self, meta_dict, skip_none=False):
+    def from_dict(self, meta_dict: dict, skip_none: bool=False) -> None:
         """
         fill attributes from a dictionary
 
@@ -1566,7 +1528,7 @@ class MetadataBase(DotNotationBaseModel):
                     continue
             self.update_attribute(name, value)
 
-    def to_json(self, nested=False, indent=" " * 4, required=True):
+    def to_json(self, nested: bool=False, indent: str=" " * 4, required: bool=True) -> str:
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
@@ -1582,7 +1544,7 @@ class MetadataBase(DotNotationBaseModel):
             indent=indent,
         )
 
-    def from_json(self, json_str):
+    def from_json(self, json_str: str | Path) -> None:
         """
         read in a json string and update attributes of an object
 
@@ -1609,7 +1571,7 @@ class MetadataBase(DotNotationBaseModel):
             raise MTSchemaError(msg)
         self.from_dict(json_dict)
 
-    def from_series(self, pd_series):
+    def from_series(self, pd_series: pd.Series) -> None:
         """
         Fill attributes from a Pandas series
 
@@ -1627,9 +1589,10 @@ class MetadataBase(DotNotationBaseModel):
             logger.error(msg)
             raise MTSchemaError(msg)
         for key, value in pd_series.items():
+            key = str(key)
             self.update_attribute(key, value)
 
-    def to_series(self, required=True):
+    def to_series(self, required: bool=True) -> pd.Series:
         """
         Convert attribute list to a pandas.Series
 
@@ -1642,7 +1605,7 @@ class MetadataBase(DotNotationBaseModel):
 
         return pd.Series(self.to_dict(single=True, required=required))
 
-    def to_xml(self, string=False, required=True):
+    def to_xml(self, string:bool=False, required:bool=True) -> str | et.Element:
         """
         make an xml element for the attribute that will add types and
         units.
@@ -1662,7 +1625,7 @@ class MetadataBase(DotNotationBaseModel):
         else:
             return helpers.element_to_string(element)
 
-    def from_xml(self, xml_element):
+    def from_xml(self, xml_element: et.Element) -> None:
         """
 
         :param xml_element: XML element
