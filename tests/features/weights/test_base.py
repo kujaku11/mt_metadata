@@ -14,6 +14,12 @@ class TestBaseWeightKernel(unittest.TestCase):
 
     def test_init(self):
         base_instance = BaseWeightKernel()
+        self.assertIsInstance(base_instance, BaseWeightKernel)
+
+    def test_evaluate_not_implemented(self):
+        base_instance = BaseWeightKernel()
+        with self.assertRaises(NotImplementedError):
+            base_instance.evaluate(np.array([1, 2, 3]))
 
 
 # =============================================================================
