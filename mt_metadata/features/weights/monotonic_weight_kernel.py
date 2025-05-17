@@ -21,9 +21,8 @@ class MonotonicWeightKernel(BaseWeightKernel):
     """
     MonotonicWeightKernel
 
-    A weighting kernel that applies a monotonic taper function between defined
-    lower and upper bounds, based on a given threshold direction. Typically
-    used for soft selection of features like coherence or amplitude ratio.
+    A weighting kernel that applies a monotonic activation/taper function between defined
+    lower and upper bounds, based on a given threshold direction.
     """
     __doc__ = write_lines(attr_dict)
 
@@ -40,7 +39,7 @@ class MonotonicWeightKernel(BaseWeightKernel):
         Parameters
         ----------
         values : float or np.ndarray
-            The input values of the feature (e.g., coherence) to apply the taper to.
+            The input values of the feature (e.g., coherence) to apply the kernel to.
 
         Returns
         -------
@@ -61,6 +60,7 @@ class MonotonicWeightKernel(BaseWeightKernel):
         else:
             raise ValueError(f"Unknown threshold direction: {direction}")
 
+        # Activation/taper functions
         if taper == "rectangle":
             return np.where((x >= 0) & (x <= 1), 1.0, 0.0)
         elif taper == "hann":
@@ -69,6 +69,15 @@ class MonotonicWeightKernel(BaseWeightKernel):
             return 0.54 - 0.46 * np.cos(np.pi * x)
         elif taper == "blackman":
             return 0.42 - 0.5 * np.cos(np.pi * x) + 0.08 * np.cos(2 * np.pi * x)
+        elif taper == "sigmoid":
+            # Steepness can be parameterized if desired
+            return 1 / (1 + np.exp(-10 * (x - 0.5)))
+        elif taper == "hard_sigmoid":
+            return np.clip(0.2 * (x - 0.5) + 0.5, 0, 1)
+        elif taper == "tanh":
+            return 0.5 * (np.tanh(5 * (x - 0.5)) + 1)
+        elif taper == "hard_tanh":
+            return np.clip(x, 0, 1)
         else:
             raise ValueError(f"Unsupported taper style: {taper}")
 

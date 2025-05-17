@@ -15,11 +15,14 @@
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "Tapering function to use between transition bounds.",
-        "options": ["hamming", "hann", "rectangle", "blackman"],
+        "description": "Tapering/activation function to use between transition bounds.",
+        "options": [
+            "hamming", "hann", "rectangle", "blackman",
+            "sigmoid", "hard_sigmoid", "tanh", "hard_tanh"
+        ],
         "alias": [],
         "example": "hann",
-        "default":"rectangle"
+        "default": "rectangle"
     },
     "transition_lower_bound": {
         "type": "float",
