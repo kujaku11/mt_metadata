@@ -1,5 +1,8 @@
 """
     Module for a monotonic_weight_kernel.
+
+    TODO: Ensure the standards JSON defaults are set when not specified.
+
 """
 
 
