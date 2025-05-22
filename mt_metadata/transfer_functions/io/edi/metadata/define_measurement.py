@@ -9,8 +9,8 @@ Created on Sat Dec  4 17:25:11 2021
 # Imports
 # =============================================================================
 from mt_metadata.base import Base, get_schema
+from mt_metadata.common import Location
 from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
-from mt_metadata.transfer_functions.tf import Location
 
 from . import EMeasurement, HMeasurement
 from .standards import SCHEMA_FN_PATHS

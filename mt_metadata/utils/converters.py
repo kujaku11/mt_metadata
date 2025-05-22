@@ -344,7 +344,7 @@ type_imports = {
 }
 
 
-def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
+def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
     """
     Generate a Pydantic model from a JSON schema file and save it to a Python file.
     The generated model will use `Annotated` and `Field` for type annotations.
@@ -481,6 +481,8 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
                 "default_factory",
             ]:
                 continue
+            elif attr_name in ["examples"]:
+                attr_value = [attr_value]
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
 
@@ -566,7 +568,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> Path:
     return clean_and_format_code(line, new_filename)
 
 
-def clean_and_format_code(code_str, filename=None):
+def clean_and_format_code(code_str: str, filename: str | Path | None = None) -> str:
     """
     Clean and format Python code by removing unused imports and formatting with isort and black.
 
@@ -630,13 +632,14 @@ def clean_and_format_code(code_str, filename=None):
             logger.warning(f"Error formatting code using black: {error}")
 
     # Write the formatted code back to the file
-    with open(filename, "w") as f:
-        f.write(code_str)
+    if filename is not None:
+        with open(filename, "w") as f:
+            f.write(code_str)
 
     return code_str
 
 
-def reformat(filename: str | Path) -> None:
+def reformat(filename: str | Path) -> str:
     """
     Reformat a Python file by removing unused imports and formatting with isort and black.
 

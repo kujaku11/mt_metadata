@@ -12,7 +12,7 @@ Created on Sat Dec  4 12:09:13 2021
 from mt_metadata import __version__
 from mt_metadata.base import get_schema
 from mt_metadata.base.helpers import validate_name
-from mt_metadata.transfer_functions.tf import Location
+from mt_metadata.common import Location
 from mt_metadata.utils.mttime import get_now_utc, MTime
 
 from .standards import SCHEMA_FN_PATHS
