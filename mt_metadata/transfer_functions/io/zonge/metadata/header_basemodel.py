@@ -15,7 +15,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Station name",
-            examples="null",
+            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,

@@ -21,7 +21,7 @@ class Orientation(MetadataBase):
         Field(
             default=0.0,
             description="Angle to geographic north of the station orientation",
-            examples=0,
+            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -35,7 +35,7 @@ class Orientation(MetadataBase):
         Field(
             default="orthogonal",
             description="Orientation of channels relative to each other",
-            examples="orthogonal",
+            examples=["orthogonal"],
             alias=None,
             json_schema_extra={
                 "units": None,

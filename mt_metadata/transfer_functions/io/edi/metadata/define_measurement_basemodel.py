@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.units import get_unit_object
@@ -16,7 +16,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="maximum number of channels",
-            examples="16",
+            examples=["16"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -30,7 +30,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="maximum number of runs",
-            examples="999",
+            examples=["999"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -44,7 +44,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="maximum number of measurements",
-            examples="999",
+            examples=["999"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -58,7 +58,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Type of offset from reference center point.",
-            examples="cart",
+            examples=["cart"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -72,7 +72,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Description of location reference center point.",
-            examples="here",
+            examples=["here"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -86,7 +86,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Latitude of reference center point.",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -100,7 +100,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Longitude reference center point.",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -114,7 +114,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Elevation reference center point.",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -128,7 +128,7 @@ class DefineMeasurement(MetadataBase):
         Field(
             default="m",
             description="In the EDI standards this is the elevation units.",
-            examples="m",
+            examples=["m"],
             alias=None,
             json_schema_extra={
                 "units": None,

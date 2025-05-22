@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.units import get_unit_object
@@ -16,7 +16,7 @@ class Channels(MetadataBase):
         Field(
             default="",
             description="reference to the site name",
-            examples="site",
+            examples=["site"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -30,7 +30,7 @@ class Channels(MetadataBase):
         Field(
             default="",
             description="units of the distance coordinates",
-            examples="site",
+            examples=["site"],
             alias=None,
             json_schema_extra={
                 "units": None,

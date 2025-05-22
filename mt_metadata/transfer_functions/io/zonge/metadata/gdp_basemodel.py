@@ -18,7 +18,7 @@ class Gdp(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="start date of the measurement",
-            examples="01/01/2020",
+            examples=["01/01/2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -32,7 +32,7 @@ class Gdp(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="start time of the measurement",
-            examples="12:00:00",
+            examples=["12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,7 +46,7 @@ class Gdp(MetadataBase):
         Field(
             default=None,
             description="Type of GPD",
-            examples="zen",
+            examples=["zen"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -60,7 +60,7 @@ class Gdp(MetadataBase):
         Field(
             default=None,
             description="version of hadware in the GDP",
-            examples=0,
+            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": None,

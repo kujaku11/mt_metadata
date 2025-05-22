@@ -15,7 +15,7 @@ class Header(MetadataBase):
         Field(
             default="",
             description="title of file",
-            examples="BIRRP Version 5 basic mode output",
+            examples=["BIRRP Version 5 basic mode output"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Header(MetadataBase):
         Field(
             default="",
             description="station name",
-            examples="mt001",
+            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,7 +43,7 @@ class Header(MetadataBase):
         Field(
             default=0.0,
             description="rotation of full impedance tensor",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",

@@ -25,7 +25,7 @@ class Electrode(MetadataBase):
         Field(
             default="",
             description="Direction of electrode",
-            examples="N",
+            examples=["N"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -39,7 +39,7 @@ class Electrode(MetadataBase):
         Field(
             default="0",
             description="Electrode ID number",
-            examples="1a",
+            examples=["1a"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -53,7 +53,7 @@ class Electrode(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="comments on the electrode",
-            examples="Ag-AgCl porous pot",
+            examples=["Ag-AgCl porous pot"],
             alias=None,
             json_schema_extra={
                 "units": None,

@@ -15,7 +15,7 @@ class RemoteRef(MetadataBase):
         Field(
             default="",
             description="type of remote referencing",
-            examples="robust multi-station remote referencing",
+            examples=["robust multi-station remote referencing"],
             alias=None,
             json_schema_extra={
                 "units": None,

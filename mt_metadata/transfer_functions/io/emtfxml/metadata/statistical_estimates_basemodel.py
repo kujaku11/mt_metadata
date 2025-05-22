@@ -16,7 +16,7 @@ class StatisticalEstimates(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of statistical estimates",
-            examples="[var cov]",
+            examples=["[var cov]"],
             alias=None,
             json_schema_extra={
                 "units": None,

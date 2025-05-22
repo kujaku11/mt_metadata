@@ -15,7 +15,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="serial number of ad card for local and remote stations",
-            examples="6545BAC6,BE380864",
+            examples=["6545BAC6,BE380864"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="Box number for local and remote stations",
-            examples="18,15",
+            examples=["18,15"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,7 +43,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="station number of local and remote",
-            examples="1,2",
+            examples=["1,2"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -57,7 +57,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="channel number for local and coil number of remote",
-            examples="1, 2284",
+            examples=["1, 2284"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -71,7 +71,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="component of local and remote stations",
-            examples="ex,hy",
+            examples=["ex,hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -85,7 +85,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="contact resistance for local and remote sensors",
-            examples="0,0",
+            examples=["0,0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -99,7 +99,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="azimuth for local and remote sensors",
-            examples="12.1,12.1",
+            examples=["12.1,12.1"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -113,7 +113,7 @@ class Ch(MetadataBase):
         Field(
             default=None,
             description="Inclination ",
-            examples="335754.685:4263553.435:1650.2",
+            examples=["335754.685:4263553.435:1650.2"],
             alias=None,
             json_schema_extra={
                 "units": None,

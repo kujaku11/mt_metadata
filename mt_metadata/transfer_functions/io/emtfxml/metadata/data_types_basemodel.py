@@ -16,7 +16,7 @@ class DataTypes(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of data types",
-            examples="[Z T]",
+            examples=["[Z T]"],
             alias=None,
             json_schema_extra={
                 "units": None,

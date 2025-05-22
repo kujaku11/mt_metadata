@@ -18,7 +18,7 @@ class Software(MetadataBase):
         Field(
             default=None,
             description="Name of the software used for processing",
-            examples="EMTF",
+            examples=["EMTF"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -32,7 +32,7 @@ class Software(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the software was last modified",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,7 +46,7 @@ class Software(MetadataBase):
         Field(
             default=None,
             description="Author of the software used for processing",
-            examples="MT Guru",
+            examples=["MT Guru"],
             alias=None,
             json_schema_extra={
                 "units": None,

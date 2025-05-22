@@ -18,7 +18,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Full title of the citation",
-            examples="Paper Title",
+            examples=["Paper Title"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -32,7 +32,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="author names",
-            examples="M.Tee A. Roura",
+            examples=["M.Tee A. Roura"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,7 +46,7 @@ class Citation(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Year of citation",
-            examples="2020",
+            examples=["2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -60,7 +60,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Journal volume of the citation",
-            examples="12",
+            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -74,7 +74,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Page numbers of the citation",
-            examples="10-15",
+            examples=["10-15"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -88,7 +88,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Journal title of citation",
-            examples="Journal of Geophysical Research",
+            examples=["Journal of Geophysical Research"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -102,7 +102,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="doi number of the citation",
-            examples="###/###",
+            examples=["###/###"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -116,7 +116,7 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="doi number of the survey",
-            examples="###/###",
+            examples=["###/###"],
             alias=None,
             json_schema_extra={
                 "units": None,

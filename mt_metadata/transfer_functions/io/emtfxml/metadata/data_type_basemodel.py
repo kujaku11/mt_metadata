@@ -4,7 +4,7 @@
 from enum import Enum
 from typing import Annotated
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.units import get_unit_object
@@ -40,7 +40,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Name of the statistical estimate",
-            examples="var",
+            examples=["var"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -54,7 +54,7 @@ class DataType(MetadataBase):
         Field(
             default="real",
             description="Type of number contained in the estimate",
-            examples="real",
+            examples=["real"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -68,7 +68,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Description of the statistical estimate",
-            examples="this is an estimate",
+            examples=["this is an estimate"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -82,7 +82,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Full path to external link that has additional information",
-            examples="http://www.iris.edu/dms/products/emtf/variance.html",
+            examples=["http://www.iris.edu/dms/products/emtf/variance.html"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -96,7 +96,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="The intension of the statistical estimate",
-            examples="error estimate",
+            examples=["error estimate"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -110,7 +110,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="A useful tag for the estimate",
-            examples="tipper",
+            examples=["tipper"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -124,7 +124,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Type of output channels in data type",
-            examples="E",
+            examples=["E"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -138,7 +138,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Type of input channels in data type",
-            examples="E",
+            examples=["E"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -152,7 +152,7 @@ class DataType(MetadataBase):
         Field(
             default="",
             description="Units for the data type",
-            examples="[mV/km]/[nT]",
+            examples=["[mV/km]/[nT]"],
             alias=None,
             json_schema_extra={
                 "units": None,

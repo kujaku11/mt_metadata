@@ -15,7 +15,7 @@ class Stn(MetadataBase):
         Field(
             default="",
             description="name of the station",
-            examples="1",
+            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,

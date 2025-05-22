@@ -15,7 +15,7 @@ class DataQualityWarnings(MetadataBase):
         Field(
             default=None,
             description="Flag for data quality",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,

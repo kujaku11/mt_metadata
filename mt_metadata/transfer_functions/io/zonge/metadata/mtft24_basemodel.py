@@ -15,7 +15,7 @@ class Mtft24(MetadataBase):
         Field(
             default="",
             description="Version of MT Edit and date",
-            examples="3.10m applied 2021/01/27",
+            examples=["3.10m applied 2021/01/27"],
             alias=None,
             json_schema_extra={
                 "units": None,

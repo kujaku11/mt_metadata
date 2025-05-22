@@ -15,7 +15,7 @@ class Description(MetadataBase):
         Field(
             default="",
             description="description of what is in the file; default is magnetotelluric transfer functions",
-            examples="Magnetotelluric Transfer Functions",
+            examples=["Magnetotelluric Transfer Functions"],
             alias=None,
             json_schema_extra={
                 "units": None,

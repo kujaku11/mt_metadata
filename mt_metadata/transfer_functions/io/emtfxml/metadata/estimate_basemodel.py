@@ -28,7 +28,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="Name of the statistical estimate",
-            examples="var",
+            examples=["var"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -42,7 +42,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="Type of number contained in the estimate",
-            examples="real",
+            examples=["real"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -56,7 +56,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="Description of the statistical estimate",
-            examples="this is an estimate",
+            examples=["this is an estimate"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -70,7 +70,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="Full path to external link that has additional information",
-            examples="http://www.iris.edu/dms/products/emtf/variance.html",
+            examples=["http://www.iris.edu/dms/products/emtf/variance.html"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -84,7 +84,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="The intension of the statistical estimate",
-            examples="error estimate",
+            examples=["error estimate"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -98,7 +98,7 @@ class Estimate(MetadataBase):
         Field(
             default="",
             description="A useful tag for the estimate",
-            examples="tipper",
+            examples=["tipper"],
             alias=None,
             json_schema_extra={
                 "units": None,

@@ -14,8 +14,9 @@ from mt_metadata.utils.mttime import MTime
 
 # =====================================================
 class SignConventionEnum(str, Enum):
-    exp_plus = "exp(+ i\omega t)"
-    exp_minus = "exp(- i\omega t)"
+    plus = "exp(+ i\omega t)"
+    minus = "exp(- i\omega t)"
+    other = "other"
 
 
 class ProcessingInfo(MetadataBase):
@@ -24,7 +25,7 @@ class ProcessingInfo(MetadataBase):
         Field(
             default="exp(+ i\omega t)",
             description="Sign convention of the processing software output",
-            examples="exp(+ i\\omega t)",
+            examples=["exp(+ i\\omega t)"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -38,7 +39,7 @@ class ProcessingInfo(MetadataBase):
         Field(
             default=None,
             description="Names of people who processed the data",
-            examples="MT Guru",
+            examples=["MT Guru"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -52,7 +53,7 @@ class ProcessingInfo(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the data were processed",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -66,7 +67,7 @@ class ProcessingInfo(MetadataBase):
         Field(
             default=None,
             description="List of remote references",
-            examples="mt001-mt002",
+            examples=["mt001-mt002"],
             alias=None,
             json_schema_extra={
                 "units": None,

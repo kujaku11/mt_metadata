@@ -16,7 +16,7 @@ class SiteLayout(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of input channels for transfer function estimation",
-            examples="[Magnetic(hx), Magnetic(hy)]",
+            examples=["[Magnetic(hx), Magnetic(hy)]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -31,7 +31,7 @@ class SiteLayout(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of output channels for transfer function estimation",
-            examples="[Electric(ex), Electric(ey), Magnetic(hz)]",
+            examples=["[Electric(ex), Electric(ey), Magnetic(hz)]"],
             alias=None,
             json_schema_extra={
                 "units": None,

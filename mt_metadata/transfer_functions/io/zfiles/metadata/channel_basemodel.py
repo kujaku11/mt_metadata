@@ -24,7 +24,7 @@ class Channel(MetadataBase):
         Field(
             default=None,
             description="Channel number",
-            examples="1",
+            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -38,7 +38,7 @@ class Channel(MetadataBase):
         Field(
             default=0.0,
             description="channel azimuth",
-            examples="90",
+            examples=["90"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -52,7 +52,7 @@ class Channel(MetadataBase):
         Field(
             default=0.0,
             description="channel tilt relative to horizontal.",
-            examples="100.0",
+            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -66,7 +66,7 @@ class Channel(MetadataBase):
         Field(
             default=None,
             description="station",
-            examples="mt001",
+            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -80,7 +80,7 @@ class Channel(MetadataBase):
         Field(
             default="",
             description="channel name",
-            examples="hx",
+            examples=["hx"],
             alias=None,
             json_schema_extra={
                 "units": None,

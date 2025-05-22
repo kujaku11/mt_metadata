@@ -22,7 +22,7 @@ class Emtf(MetadataBase):
         Field(
             default="",
             description="description of what is in the file; default is magnetotelluric transfer functions",
-            examples="Magnetotelluric Transfer Functions",
+            examples=["Magnetotelluric Transfer Functions"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -36,7 +36,7 @@ class Emtf(MetadataBase):
         Field(
             default="",
             description="ID given as the archive ID of the station",
-            examples="USMTArray.NVS11.2020",
+            examples=["USMTArray.NVS11.2020"],
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
@@ -51,7 +51,7 @@ class Emtf(MetadataBase):
         Field(
             default="",
             description="tags that help describe the data",
-            examples="impedance, induction vectors",
+            examples=["impedance, induction vectors"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -65,7 +65,7 @@ class Emtf(MetadataBase):
         Field(
             default="MT_TF",
             description="subject data type",
-            examples="MT_TF",
+            examples=["MT_TF"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -79,7 +79,7 @@ class Emtf(MetadataBase):
         Field(
             default=None,
             description="any notes applicable to the user on data present in the file",
-            examples="these are notes",
+            examples=["these are notes"],
             alias=None,
             json_schema_extra={
                 "units": None,

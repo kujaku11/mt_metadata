@@ -22,8 +22,10 @@ class CoordinateSystemEnum(str, Enum):
 
 class StdversEnum(str, Enum):
     SEG_1 = "SEG 1.0"
-    base = "1.0"
-    SEG_11 = "SEG 1.01"
+    one = "1.0"
+    SEG_10 = "SEG_1.0"
+    SEG_101 = "SEG 1.01"
+    SEG_1011 = "SEG_1.01"
 
 
 class Header(MetadataBase):
@@ -32,7 +34,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="person, group, company, university that collected the data",
-            examples="mt experts",
+            examples=["mt experts"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,7 +48,7 @@ class Header(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Start date the time series data were collected",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -60,7 +62,7 @@ class Header(MetadataBase):
         Field(
             default="geographic",
             description="coordinate system the transfer function is currently in. Its preferred the transfer function be in a geographic coordinate system for archiving and sharing.",
-            examples="geopgraphic",
+            examples=["geopgraphic"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -74,7 +76,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Country name where data were collected.",
-            examples="USA",
+            examples=["USA"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -88,7 +90,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="County name where data were collected.",
-            examples="Douglas",
+            examples=["Douglas"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -102,7 +104,7 @@ class Header(MetadataBase):
         Field(
             default="",
             description="station ID.",
-            examples="mt001",
+            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -116,7 +118,7 @@ class Header(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="End date the time series data were collected",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -130,7 +132,7 @@ class Header(MetadataBase):
         Field(
             default=1e32,
             description="null data values, usually a large number",
-            examples="1E+32",
+            examples=["1E+32"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -144,7 +146,7 @@ class Header(MetadataBase):
         Field(
             default="",
             description="person, group, company, university that made the file",
-            examples="mt experts",
+            examples=["mt experts"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -158,7 +160,7 @@ class Header(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the file was made",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -172,7 +174,7 @@ class Header(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date of the most recent update of the program used to make the file",
-            examples="2020-01-01",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -186,7 +188,7 @@ class Header(MetadataBase):
         Field(
             default="mt_metadata",
             description="Name of the program used to make the file.",
-            examples="mt_metadata",
+            examples=["mt_metadata"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -200,7 +202,7 @@ class Header(MetadataBase):
         Field(
             default="0.1.6",
             description="Version of the program used to make the file.",
-            examples="0.1.6",
+            examples=["0.1.6"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -214,7 +216,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Name of the project the data was collected for, usually a short description or acronym of the project name.",
-            examples="iMUSH",
+            examples=["iMUSH"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -228,7 +230,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Name of the prospect the data was collected for, usually a short description of the location",
-            examples="Benton",
+            examples=["Benton"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -242,7 +244,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Usually a short description of the location",
-            examples="Benton, CA",
+            examples=["Benton, CA"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -256,7 +258,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="State where the data were collected.",
-            examples="CA",
+            examples=["CA"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -270,7 +272,7 @@ class Header(MetadataBase):
         Field(
             default="SEG 1.0",
             description="EDI standards version SEG 1.0",
-            examples="SEG 1.0",
+            examples=["SEG 1.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -284,7 +286,7 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Name of the survey",
-            examples="CONUS",
+            examples=["CONUS"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -298,7 +300,7 @@ class Header(MetadataBase):
         Field(
             default="millivolts_per_kilometer_per_nanotesla",
             description="In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
-            examples="millivolts_per_kilometer_per_nanotesla",
+            examples=["millivolts_per_kilometer_per_nanotesla"],
             alias=None,
             json_schema_extra={
                 "units": None,

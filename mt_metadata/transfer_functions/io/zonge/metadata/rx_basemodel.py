@@ -26,7 +26,7 @@ class Rx(MetadataBase):
         Field(
             default="",
             description="Station name",
-            examples="24",
+            examples=["24"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -40,7 +40,7 @@ class Rx(MetadataBase):
         Field(
             default=0.0,
             description="Generic dipole length",
-            examples="100",
+            examples=["100"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -55,7 +55,7 @@ class Rx(MetadataBase):
             default=[],
             items={"type": "number"},
             description="Horizontal, pitch, roll of array",
-            examples="0, 0, 180",
+            examples=["0, 0, 180"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -69,7 +69,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="processed component of impedance or tipper",
-            examples="zxx",
+            examples=["zxx"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -83,7 +83,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="center of the sounding location",
-            examples="335754.685:4263553.435:1650.2 m",
+            examples=["335754.685:4263553.435:1650.2 m"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -97,7 +97,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="xyz of local station",
-            examples="335754.685:4263553.435:1650.2",
+            examples=["335754.685:4263553.435:1650.2"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -111,7 +111,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="xyz of remote station",
-            examples="335754.685:4263553.435:1650.2",
+            examples=["335754.685:4263553.435:1650.2"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -125,7 +125,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="UTM location of local station",
-            examples="335754.685:4263553.435:1650.2",
+            examples=["335754.685:4263553.435:1650.2"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -139,7 +139,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="spacing of lines",
-            examples="100 m",
+            examples=["100 m"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -153,7 +153,7 @@ class Rx(MetadataBase):
         Field(
             default=None,
             description="spacing of stations along the line",
-            examples="100",
+            examples=["100"],
             alias=None,
             json_schema_extra={
                 "units": None,

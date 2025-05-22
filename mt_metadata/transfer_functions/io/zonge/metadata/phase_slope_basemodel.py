@@ -28,7 +28,7 @@ class PhaseSlope(MetadataBase):
         Field(
             default="None",
             description="Type of smoothing for phase slope algorithm",
-            examples="robust",
+            examples=["robust"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -42,7 +42,7 @@ class PhaseSlope(MetadataBase):
         Field(
             default="no",
             description="Was hz used for smoothing for phase slope algorithm",
-            examples="no",
+            examples=["no"],
             alias=None,
             json_schema_extra={
                 "units": None,

@@ -15,7 +15,7 @@ class Magnetic(MetadataBase):
         Field(
             default="",
             description="Name of the channel",
-            examples="hx",
+            examples=["hx"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Magnetic(MetadataBase):
         Field(
             default=0.0,
             description="orientation angle relative to geographic north",
-            examples="11.9",
+            examples=["11.9"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -43,7 +43,7 @@ class Magnetic(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in north direction",
-            examples="100.0",
+            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -57,7 +57,7 @@ class Magnetic(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in east direction",
-            examples="100.0",
+            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -71,7 +71,7 @@ class Magnetic(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in depth",
-            examples="100.0",
+            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",

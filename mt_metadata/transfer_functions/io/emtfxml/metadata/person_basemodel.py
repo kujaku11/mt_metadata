@@ -15,7 +15,7 @@ class Person(MetadataBase):
         Field(
             default="",
             description="author name",
-            examples="person name",
+            examples=["person name"],
             alias=["author"],
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Person(MetadataBase):
         Field(
             default="",
             description="email of the contact person",
-            examples="mt.guru@em.org",
+            examples=["mt.guru@em.org"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,7 +43,7 @@ class Person(MetadataBase):
         Field(
             default="",
             description="organization name",
-            examples="mt gurus",
+            examples=["mt gurus"],
             alias=["organization"],
             json_schema_extra={
                 "units": None,
@@ -57,7 +57,7 @@ class Person(MetadataBase):
         Field(
             default=None,
             description="URL of organization",
-            examples="https://www.mt_gurus.org",
+            examples=["https://www.mt_gurus.org"],
             alias=None,
             json_schema_extra={
                 "units": None,

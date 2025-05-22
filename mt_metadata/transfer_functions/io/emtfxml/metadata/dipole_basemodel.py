@@ -15,7 +15,7 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Name of the manufacturer of the instrument",
-            examples="MT Gurus",
+            examples=["MT Gurus"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Dipole length",
-            examples="10",
+            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -43,7 +43,7 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Azimuth of the dipole relative to coordinate system",
-            examples="90",
+            examples=["90"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -57,7 +57,7 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Name of the dipole",
-            examples="ex",
+            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -71,7 +71,7 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="type of dipole",
-            examples="wire",
+            examples=["wire"],
             alias=None,
             json_schema_extra={
                 "units": None,

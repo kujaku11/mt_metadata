@@ -22,7 +22,7 @@ class Gps(MetadataBase):
         Field(
             default=0.0,
             description="latitude",
-            examples="10.3",
+            examples=["10.3"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -36,7 +36,7 @@ class Gps(MetadataBase):
         Field(
             default=0.0,
             description="longitude",
-            examples="10.3",
+            examples=["10.3"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -50,7 +50,7 @@ class Gps(MetadataBase):
         Field(
             default="WGS84",
             description="Datum of the location",
-            examples="WGS84",
+            examples=["WGS84"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -64,7 +64,7 @@ class Gps(MetadataBase):
         Field(
             default="",
             description="UTM zone of location",
-            examples="12",
+            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,

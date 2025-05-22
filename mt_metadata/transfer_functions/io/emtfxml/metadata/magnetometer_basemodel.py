@@ -15,7 +15,7 @@ class Magnetometer(MetadataBase):
         Field(
             default="",
             description="instrument ID number can be serial number or a designated ID",
-            examples="mt01",
+            examples=["mt01"],
             alias=["serial"],
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Magnetometer(MetadataBase):
         Field(
             default="",
             description="who manufactured the instrument",
-            examples="mt gurus",
+            examples=["mt gurus"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,7 +43,7 @@ class Magnetometer(MetadataBase):
         Field(
             default="",
             description="instrument type",
-            examples="broadband 32-bit",
+            examples=["broadband 32-bit"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -57,7 +57,7 @@ class Magnetometer(MetadataBase):
         Field(
             default=None,
             description="model version of the instrument",
-            examples="falcon5",
+            examples=["falcon5"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -71,7 +71,7 @@ class Magnetometer(MetadataBase):
         Field(
             default=None,
             description="Name of the model of the instrument",
-            examples="falcon5",
+            examples=["falcon5"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -85,7 +85,7 @@ class Magnetometer(MetadataBase):
         Field(
             default=None,
             description="Any settings for the instrument",
-            examples="notch filter applied",
+            examples=["notch filter applied"],
             alias=None,
             json_schema_extra={
                 "units": None,

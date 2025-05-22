@@ -21,7 +21,7 @@ class Auto(MetadataBase):
         Field(
             default="yes",
             description="Was phase automatically flipped in processing",
-            examples="yes",
+            examples=["yes"],
             alias=None,
             json_schema_extra={
                 "units": None,

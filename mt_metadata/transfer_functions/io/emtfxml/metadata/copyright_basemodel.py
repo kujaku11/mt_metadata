@@ -25,7 +25,7 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="Any publications that use this data",
-            examples="my paper",
+            examples=["my paper"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -39,7 +39,7 @@ class Copyright(MetadataBase):
         Field(
             default="Unrestricted Release",
             description="the release status of the data",
-            examples="Unrestricted release",
+            examples=["Unrestricted release"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -53,7 +53,7 @@ class Copyright(MetadataBase):
         Field(
             default="All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided this data set is cited as the reference. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, not IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.",
             description="Any notes on conditions of use",
-            examples="Cite data upon usage.",
+            examples=["Cite data upon usage."],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -67,7 +67,7 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="any acknowledgments the transfer function should have.",
-            examples="This project was funded by x.",
+            examples=["This project was funded by x."],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -81,7 +81,7 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="any additional information about the data.",
-            examples="This purpose of this project is ...",
+            examples=["This purpose of this project is ..."],
             alias=None,
             json_schema_extra={
                 "units": None,

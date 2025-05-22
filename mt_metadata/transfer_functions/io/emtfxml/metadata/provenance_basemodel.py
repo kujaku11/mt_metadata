@@ -18,7 +18,7 @@ class Provenance(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="date and time the file was created",
-            examples="2020-02-08T12:23:40.324600+00:00",
+            examples=["2020-02-08T12:23:40.324600+00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -32,7 +32,7 @@ class Provenance(MetadataBase):
         Field(
             default="mt_metadata",
             description="name of the application that created the XML file",
-            examples="EMTF File Conversion Utilities 4.0",
+            examples=["EMTF File Conversion Utilities 4.0"],
             alias=None,
             json_schema_extra={
                 "units": None,

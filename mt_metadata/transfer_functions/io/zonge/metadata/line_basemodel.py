@@ -15,7 +15,7 @@ class Line(MetadataBase):
         Field(
             default=None,
             description="Name of the line data collected on",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +29,7 @@ class Line(MetadataBase):
         Field(
             default=None,
             description="Line number",
-            examples=0,
+            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": None,

@@ -483,6 +483,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
                 continue
             elif attr_name in ["examples"]:
                 attr_value = [attr_value]
+                field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
 
@@ -543,6 +544,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
             f"{TAB*3}raise KeyError(error)\n"
         )
         imports.append("from mt_metadata.utils.units import get_unit_object")
+        imports.append("from pydantic import field_validator, ValidationInfo")
 
     # Generate the class definition, dont need config dict as that is
     # already initiated in MetadataBase.

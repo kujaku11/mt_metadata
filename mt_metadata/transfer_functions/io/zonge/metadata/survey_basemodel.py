@@ -37,7 +37,7 @@ class Survey(MetadataBase):
         Field(
             default="nsamt",
             description="Type of EM survey",
-            examples="nsamt",
+            examples=["nsamt"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -51,7 +51,7 @@ class Survey(MetadataBase):
         Field(
             default="tensor",
             description="Type of array",
-            examples="tensor",
+            examples=["tensor"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -65,7 +65,7 @@ class Survey(MetadataBase):
         Field(
             default="WGS84",
             description="Datum of the location",
-            examples="WGS84",
+            examples=["WGS84"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -79,7 +79,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="UTM zone of location",
-            examples="12",
+            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -93,7 +93,7 @@ class Survey(MetadataBase):
         Field(
             default="UTM",
             description="Projection of the location coordinates",
-            examples="UTM",
+            examples=["UTM"],
             alias=None,
             json_schema_extra={
                 "units": None,

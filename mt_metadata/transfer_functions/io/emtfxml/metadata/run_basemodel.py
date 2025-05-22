@@ -18,7 +18,7 @@ class Run(MetadataBase):
         Field(
             default=None,
             description="Any field errors",
-            examples="moose ate cables",
+            examples=["moose ate cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -32,7 +32,7 @@ class Run(MetadataBase):
         Field(
             default="",
             description="Run name",
-            examples="mt001a",
+            examples=["mt001a"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,7 +46,7 @@ class Run(MetadataBase):
         Field(
             default=None,
             description="Sample rate of the run",
-            examples="1",
+            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
@@ -60,7 +60,7 @@ class Run(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection started",
-            examples="2020-01-01T12:00:00",
+            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -74,7 +74,7 @@ class Run(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection ended",
-            examples="2020-05-01T12:00:00",
+            examples=["2020-05-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,

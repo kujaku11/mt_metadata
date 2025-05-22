@@ -18,7 +18,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Name of the project",
-            examples="USMTArray",
+            examples=["USMTArray"],
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
@@ -33,7 +33,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Name of the survey",
-            examples="MT 2020",
+            examples=["MT 2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -47,7 +47,7 @@ class Site(MetadataBase):
         Field(
             default=None,
             description="Year data collected",
-            examples="2020",
+            examples=["2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -61,7 +61,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Country where data was collected",
-            examples="USA",
+            examples=["USA"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -75,7 +75,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
-            examples="MT001",
+            examples=["MT001"],
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
@@ -90,7 +90,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="closest geographic name to the station",
-            examples='"Whitehorse, YK"',
+            examples=['"Whitehorse, YK"'],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -104,7 +104,7 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Person or group who collected the data",
-            examples="MT Group",
+            examples=["MT Group"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -118,7 +118,7 @@ class Site(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection started",
-            examples="2020-01-01T12:00:00",
+            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -132,7 +132,7 @@ class Site(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection ended",
-            examples="2020-05-01T12:00:00",
+            examples=["2020-05-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -147,7 +147,7 @@ class Site(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of runs recorded by the station. Should be a summary of all runss recorded",
-            examples='"[ mt001a, mt001b, mt001c ]"',
+            examples=['"[ mt001a, mt001b, mt001c ]"'],
             alias=None,
             json_schema_extra={
                 "units": None,

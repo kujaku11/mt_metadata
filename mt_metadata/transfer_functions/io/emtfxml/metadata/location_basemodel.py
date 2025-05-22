@@ -22,7 +22,7 @@ class Location(MetadataBase):
         Field(
             default=0.0,
             description="latitude of location in datum specified at survey level",
-            examples="23.134",
+            examples=["23.134"],
             alias=["lat"],
             json_schema_extra={
                 "units": "degrees",
@@ -36,7 +36,7 @@ class Location(MetadataBase):
         Field(
             default=0.0,
             description="longitude of location in datum specified at survey level",
-            examples="14.23",
+            examples=["14.23"],
             alias=["lon", "long"],
             json_schema_extra={
                 "units": "degrees",
@@ -50,7 +50,7 @@ class Location(MetadataBase):
         Field(
             default=0.0,
             description="elevation of location in datum specified at survey level",
-            examples="123.4",
+            examples=["123.4"],
             alias=["elev"],
             json_schema_extra={
                 "units": "meters",
@@ -64,7 +64,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in latitude estimation in degrees",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -78,7 +78,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in longitude estimation in degrees",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -92,7 +92,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in elevation estimation",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -106,7 +106,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="Datum of the location values.  Usually a well known datum like WGS84.",
-            examples="WGS84",
+            examples=["WGS84"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -120,7 +120,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=["east", "easting"],
             json_schema_extra={
                 "units": "meters",
@@ -134,7 +134,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=["east", "easting"],
             json_schema_extra={
                 "units": "meters",
@@ -148,7 +148,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=["north", "northing"],
             json_schema_extra={
                 "units": "meters",
@@ -162,7 +162,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=["north", "northing"],
             json_schema_extra={
                 "units": "meters",
@@ -176,7 +176,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative elevation to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -190,7 +190,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="relative elevation to the center of the station",
-            examples="10.0",
+            examples=["10.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -204,7 +204,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in longitude estimation in x-direction",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -218,7 +218,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in longitude estimation in y-direction",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -232,7 +232,7 @@ class Location(MetadataBase):
         Field(
             default=None,
             description="uncertainty in longitude estimation in z-direction",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",

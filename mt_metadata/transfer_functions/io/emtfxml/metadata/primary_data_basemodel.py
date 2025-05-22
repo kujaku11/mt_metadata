@@ -15,7 +15,7 @@ class PrimaryData(MetadataBase):
         Field(
             default="",
             description="file name of the figure file that displays the data",
-            examples="example.png",
+            examples=["example.png"],
             alias=None,
             json_schema_extra={
                 "units": None,

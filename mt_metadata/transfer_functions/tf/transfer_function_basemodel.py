@@ -1,25 +1,35 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, Any
+from enum import Enum
+from typing import Annotated
 
 import numpy as np
 import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import (
-    GeographicReferenceFrameEnum,
-    SignConventionEnum,
-    AuthorPerson,
-    Software,
-    DataQuality,
-)
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================
+class SignConventionEnum(str, Enum):
+    plus = "+"
+    minus = "-"
+    other = "other"
+
+
+class UnitsEnum(str, Enum):
+    millivolts_per_kilometer_per_nanotesla = "millivolts_per_kilometer_per_nanotesla"
+    ohms = "ohms"
+    other = "other"
+
+
+class CoordinateSystemEnum(str, Enum):
+    geographic = "geographic"
+    geomagnetic = "geomagnetic"
+    other = "other"
 
 
 class TransferFunction(MetadataBase):
@@ -28,7 +38,7 @@ class TransferFunction(MetadataBase):
         Field(
             default="",
             description="transfer function id",
-            examples="mt01_256",
+            examples=["mt01_256"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -42,7 +52,7 @@ class TransferFunction(MetadataBase):
         Field(
             default="+",
             description="sign of the transfer function estimates",
-            examples="+",
+            examples=["+"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -52,11 +62,11 @@ class TransferFunction(MetadataBase):
     ]
 
     units: Annotated[
-        str,
+        UnitsEnum,
         Field(
             default="",
             description="units of the impedance tensor estimates",
-            examples="millivolts_per_kilometer_per_nanotesla",
+            examples=["millivolts_per_kilometer_per_nanotesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -71,7 +81,7 @@ class TransferFunction(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of runs used in the processing",
-            examples="[ MT001a MT001c]",
+            examples=["[ MT001a MT001c]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -86,25 +96,11 @@ class TransferFunction(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of remote references",
-            examples="[ MT002b MT002c ]",
+            examples=["[ MT002b MT002c ]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
-            },
-        ),
-    ]
-
-    processed_by: Annotated[
-        AuthorPerson,
-        Field(
-            default_factory=lambda: AuthorPerson(),
-            description="Information about who processed the data",
-            examples="AuthorPerson()",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": None,
             },
         ),
     ]
@@ -114,7 +110,7 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="date the data were processed",
-            examples="2020-01-01T12:00:00",
+            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -124,12 +120,12 @@ class TransferFunction(MetadataBase):
     ]
 
     processing_parameters: Annotated[
-        list[str],
+        str,
         Field(
             default="[]",
             items={"type": "string"},
             description="list of processing parameters with structure name = value",
-            examples="[nfft=4096, n_windows=16]",
+            examples=["[nfft=4096, n_windows=16]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -143,7 +139,7 @@ class TransferFunction(MetadataBase):
         Field(
             default="",
             description="Type of processing",
-            examples="robust remote reference",
+            examples=["robust remote reference"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -153,11 +149,11 @@ class TransferFunction(MetadataBase):
     ]
 
     coordinate_system: Annotated[
-        GeographicReferenceFrameEnum,
+        CoordinateSystemEnum,
         Field(
             default="geopgraphic",
             description="coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
-            examples="geographic",
+            examples=["geographic"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -166,53 +162,11 @@ class TransferFunction(MetadataBase):
         ),
     ]
 
-    processing_config: Annotated[
-        str | Any | None,
-        Field(
-            default=None,
-            description="processing configuration",
-            examples="aurora",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
-    software: Annotated[
-        Software,
-        Field(
-            default_factory=lambda: Software(),
-            description="Information about the software used to estimate transfer function.",
-            examples="Software(author='a', name='mt_example')",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": None,
-            },
-        ),
-    ]
-
-    data_quality: Annotated[
-        DataQuality,
-        Field(
-            default_factory=DataQuality,
-            description="Information about transfer function data quality.",
-            examples="DataQuality()",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": None,
-            },
-        ),
-    ]
-
     @field_validator("processed_date", mode="before")
     @classmethod
     def validate_processed_date(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
-    ) -> MTime:
+    ):
         return MTime(time_stamp=field_value)
 
     @field_validator("units", mode="before")
