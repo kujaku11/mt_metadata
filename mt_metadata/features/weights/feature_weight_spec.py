@@ -23,6 +23,7 @@ from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicW
 from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
 import numpy as np
 
+
 attr_dict = get_schema("base", SCHEMA_FN_PATHS)
 # no need to add to attr dict if we have lists of mtmetadata objs.
 # attr_dict.add_dict(Feature()._attr_dict, "feature")
@@ -38,19 +39,27 @@ class FeatureWeightSpec(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
-        # self._feature_params = None
-        self.feature = Feature()
-        #self.weight_kernels = Feature()
-        # if "feature_name" in kwargs.keys():
-        #     feature = SUPPORTED_FEATURE_DICT[kwargs.pop("feature_name")]
-        #     feature_obj = feature()
-        #     feature_obj.from_dict(kwargs.pop("feature_params"))
+        self._feature = None  # <-- initialize the backing variable directly
         super().__init__(attr_dict=attr_dict, **kwargs)
-        # self.feature_params = kwargs.get("feature_params", {})
-
         weight_kernels = kwargs.get("weight_kernels", [])
         self.weight_kernels = weight_kernels
+
+
+    # Temporary workaround to ensure the setter logic runs
+    def post_from_dict(self):
+        # If feature is a dict, force the setter logic to run
+        if isinstance(self.feature, dict):
+            self.feature = self.feature
+        # Optionally, do the same for weight_kernels if needed
+
+    def from_dict(self, d):
+        # If 'feature' is a dict, convert it to the correct object before base from_dict
+        if "feature" in d and isinstance(d["feature"], dict):
+            self.feature = d["feature"]  # This will use your property setter
+            d["feature"] = self.feature  # Now it's the correct object
+        super().from_dict(d)
+        self.post_from_dict()
+    
 
     @property
     def feature(self):
@@ -58,7 +67,43 @@ class FeatureWeightSpec(Base):
 
     @feature.setter
     def feature(self, value):
-        self._feature = value
+        """
+        Set the feature for this weight spec.
+        If a dict is provided, it will be used to initialize the feature object.
+        If an object is provided, it will be used directly.
+        Unwraps nested 'feature' keys if present.
+
+        
+        Note this is a slightly janky setter because we should be able to use a model like:
+
+        FEATURE_CLASS_MAP = {
+        "coherence": Coherence,
+        # "multiple_coherence": MultipleCoherence,
+        # Add more as needed
+        }
+
+        but that will result in a circular import if we try to import Coherence at the top level.
+
+        """
+        # Unwrap if wrapped in 'feature' repeatedly
+        while isinstance(value, dict) and "feature" in value and isinstance(value["feature"], dict):
+            value = value["feature"]
+        if isinstance(value, dict):
+            feature_name = value.get("name")
+            # Import here to avoid circular import at module level
+            print(f"Feature setter: feature_name={feature_name}, value={value}")  # DEBUG
+            if feature_name == "coherence":
+                from mt_metadata.features.coherence import Coherence
+                feature_cls = Coherence
+            else:
+                from mt_metadata.features.feature import Feature
+                feature_cls = Feature
+            self._feature = feature_cls(**value)
+            print(f"Feature setter: instantiated {self._feature.__class__}")  # DEBUG
+        else:
+            self._feature = value
+            print(f"Feature setter: set directly to {type(value)}")  # DEBUG
+
 
     @property
     def weight_kernels(self):
@@ -89,25 +134,6 @@ class FeatureWeightSpec(Base):
         weights = [kernel.evaluate(feature_values) for kernel in self.weight_kernels]
         return np.prod(weights, axis=0) if weights else 1.0
 
-# TODO: Delete, or revert after mt_metadata pydantic upgrade.
-# def _unpack_weight_kernels(weight_kernels):
-#     """
-#     Unpack weight kernels from a list of dictionaries or objects.
-#     Determines the correct kernel class (Activation or Taper) based on keys.
-#     """
-
-#     result = []
-#     for wk in weight_kernels:
-#         if isinstance(wk, dict):
-#             if "activation_style" in wk or wk.get("style") == "activation":
-#                 result.append(ActivationMonotonicWeightKernel(**wk))
-#             elif "half_window_style" in wk or wk.get("style") == "taper":
-#                 result.append(TaperMonotonicWeightKernel(**wk))
-#             else:
-#                 result.append(BaseMonotonicWeightKernel(**wk))
-#         else:
-#             result.append(wk)
-#     return result
 
 def _unpack_weight_kernels(weight_kernels):
     """
@@ -116,7 +142,7 @@ def _unpack_weight_kernels(weight_kernels):
     """
     result = []
     for wk in weight_kernels:
-        # Unwrap if wrapped in "weight_kernel"
+        # Unwrap if wrapped in "weight_kernel" (TODO: Delete, or revert after mt_metadata pydantic upgrade.)
         if isinstance(wk, dict) and "weight_kernel" in wk:
             wk = wk["weight_kernel"]
         if isinstance(wk, dict):
@@ -129,6 +155,36 @@ def _unpack_weight_kernels(weight_kernels):
         else:
             result.append(wk)
     return result
+
+def unwrap_known_wrappers(obj, known_keys=None):
+    """
+    Recursively unwraps dicts/lists for known single-key wrappers.
+    """
+    if known_keys is None:
+        known_keys = {"feature_weight_spec", "channel_weight_spec", "weight_kernel", "feature"}
+    if isinstance(obj, dict):
+        # If it's a single-key dict and the key is known, unwrap
+        while (
+            len(obj) == 1
+            and next(iter(obj)) in known_keys
+            and isinstance(obj[next(iter(obj))], (dict, list))
+        ):
+            obj = obj[next(iter(obj))]
+        # Recurse into dict values
+        return {k: unwrap_known_wrappers(v, known_keys) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [unwrap_known_wrappers(item, known_keys) for item in obj]
+    else:
+        return obj
+
+# Patch FeatureWeightSpec.from_dict to unwrap wrappers
+orig_from_dict = FeatureWeightSpec.from_dict
+
+def from_dict_unwrap(self, d):
+    d = unwrap_known_wrappers(d)
+    return orig_from_dict(self, d)
+
+FeatureWeightSpec.from_dict = from_dict_unwrap
 
 def tst_init():
     fws = FeatureWeightSpec()
@@ -149,8 +205,35 @@ def tst_init():
             }
         ]
     })
+    print("1", type(fws.feature))
     print(fws)
+     # Force the setter to run on the dict
+    fws.feature = fws.feature
+    print("2", type(fws.feature))
+    print(fws)
+
+def tst_from_json():
+    fws = FeatureWeightSpec()
+    fws.from_dict(
+        {
+            "feature": {
+                "name": "multiple_coherence",
+                "output_channel": "ey"
+            },
+            "weight_kernels": [
+                {
+                    "weight_kernel": {
+                        "half_window_style": "hann",
+                        "transition_lower_bound": 0.4,
+                        "transition_upper_bound": 0.8,
+                        "threshold": "low cut"
+                    }
+                }
+            ]
+        }
+    )
 
 
 if __name__ == "__main__":
     tst_init()
+    tst_from_json()
