@@ -10,41 +10,29 @@
         "example": "low cut",
         "default":"low cut"
     },
-    "half_window_style": {
+    "activation_style": {
         "type": "string",
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
         "description": "Tapering/activation function to use between transition bounds.",
         "options": [
-            "hamming", "hann", "rectangle", "blackman",
             "sigmoid", "hard_sigmoid", "tanh", "hard_tanh"
         ],
         "alias": [],
-        "example": "hann",
-        "default": "rectangle"
+        "example": "tanh",
+        "default": "sigmoid"
     },
-    "transition_lower_bound": {
+    "steepness": {
         "type": "float",
-        "required": true,
+        "required": false,
         "style": "number",
         "units": null,
-        "description": "Start of the taper region (weight begins to change).",
         "options": [],
         "alias": [],
-        "example": "-inf",
-        "default": -1e9
-    },
-    "transition_upper_bound": {
-        "type": "float",
-        "required": true,
-        "style": "number",
-        "units": null,
-        "description": "End of the taper region (weight finishes changing).",
-        "options": [],
-        "alias": [],
-        "example": "+inf",
-        "default": 1e9
-  }
+        "example": "10",
+        "default": 10,
+        "description": "Controls the sharpness of the activation transition."
+    }
 }
 

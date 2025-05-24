@@ -6,7 +6,8 @@ import numpy as np
 from mt_metadata.features.coherence import Coherence
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.feature_weight_spec import _unpack_weight_kernels
-from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import BaseMonotonicWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicWeightKernel
 
 
 class TestFeatureWeightSpec(unittest.TestCase):
@@ -15,13 +16,13 @@ class TestFeatureWeightSpec(unittest.TestCase):
         """
         Set up a FeatureWeightSpec instance for testing.
         """
-        self.kernel1 = MonotonicWeightKernel(
+        self.kernel1 = TaperMonotonicWeightKernel(
             transition_lower_bound=0.2,
             transition_upper_bound=0.5,
             half_window_style="hann",
             threshold="low cut",
         )
-        self.kernel2 = MonotonicWeightKernel(
+        self.kernel2 = TaperMonotonicWeightKernel(
             transition_lower_bound=0.6,
             transition_upper_bound=0.9,
             half_window_style="hann",
@@ -58,7 +59,7 @@ class TestFeatureWeightSpec(unittest.TestCase):
         Test the weight_kernels property.
         """
         self.assertEqual(len(self.feature_weight_spec.weight_kernels), 2)
-        self.assertIsInstance(self.feature_weight_spec.weight_kernels[0], MonotonicWeightKernel)
+        self.assertIsInstance(self.feature_weight_spec.weight_kernels[0], TaperMonotonicWeightKernel)
 
     def test_evaluate(self):
         """
@@ -84,7 +85,7 @@ class TestFeatureWeightSpec(unittest.TestCase):
         ]
         unpacked_kernels = _unpack_weight_kernels(weight_kernels)
         self.assertEqual(len(unpacked_kernels), 2)
-        self.assertIsInstance(unpacked_kernels[0], MonotonicWeightKernel)
+        self.assertIsInstance(unpacked_kernels[0], BaseMonotonicWeightKernel)
 
 
 if __name__ == "__main__":
