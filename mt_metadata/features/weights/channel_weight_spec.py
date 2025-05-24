@@ -179,37 +179,54 @@ class ChannelWeightSpec(Base):
 
 
 def tst_from_json():
-    example_json_dict = {
+
+    example_chws_dict = {
         "combination_style": "multiplication",
-        "features": [
+        "feature_weight_specs": [
             {
-                "feature_name": "coherence",
-                "feature_params": {"ch1": "ex", "ch2": "hy"},
-                "weight_kernels": [
-                    {
-                        "threshold": "low cut",
-                        "half_window_style": "hann",
-                        "transition_lower_bound": 0.3,
-                        "transition_upper_bound": 0.8
-                    }
-                ]
+                "feature_weight_spec": {
+                    "feature":{
+                        "name": "coherence",
+                        "ch1": "ex",
+                        "ch2": "hy"
+                    },
+                    "weight_kernels": [
+                        {
+                            "weight_kernel": {
+                                "style": "taper",
+                                "half_window_style": "hann",
+                                "transition_lower_bound": 0.3,
+                                "transition_upper_bound": 0.8,
+                                "threshold": "low cut"
+                            }
+                        }
+                    ]
+                }
             },
             {
-                "feature_name": "multiple_coherence",
-                "feature_params": {"output_channel": "ex"},
-                "weight_kernels": [
-                    {
-                        "threshold": "low cut",
-                        "half_window_style": "rectangle",
-                        "transition_lower_bound": 0.9,
-                        "transition_upper_bound": 0.9
-                    }
-                ]
+                "feature_weight_spec": {
+                    "feature":{
+                        "name": "multiple_coherence",
+                        "output_channel": "ex"
+                    },
+                    "weight_kernels": [
+                        {
+                            "weight_kernel": {
+                                "style": "taper",
+                                "half_window_style": "hann",
+                                "transition_lower_bound": 0.8,
+                                "transition_upper_bound": 0.9,
+                                "threshold": "low cut"
+                            }
+                        }
+                    ]
+                }
             }
         ]
     }
+
     cws = ChannelWeightSpec()
-    cws.from_dict(example_json_dict)
+    cws.from_dict(example_chws_dict)
     print("OK")
 
 

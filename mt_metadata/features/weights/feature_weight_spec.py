@@ -50,7 +50,7 @@ class FeatureWeightSpec(Base):
         # self.feature_params = kwargs.get("feature_params", {})
 
         weight_kernels = kwargs.get("weight_kernels", [])
-        self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
+        self.weight_kernels = weight_kernels
 
     @property
     def feature(self):
@@ -71,28 +71,6 @@ class FeatureWeightSpec(Base):
         """
         self._weight_kernels = _unpack_weight_kernels(weight_kernels=value)
 
-
-    # def from_dict(self, input_dict):
-    #     """
-    #     Custom from_dict to handle non-schema elements like feature_params and weight_kernels.
-    #     """
-    #     # Filter input_dict to include only keys defined in the schema
-    #     schema_keys = set(self._attr_dict.keys())
-    #     schema_dict = {k: v for k, v in input_dict.items() if k in schema_keys}
-    #
-    #     # Call the base class's from_dict with the filtered dictionary
-    #     super().from_dict(schema_dict)
-    #
-    #     self.feature_params = input_dict.get("feature_params", {})
-    #
-    #     weight_kernels = input_dict.get("weight_kernels", [])
-    #     self.weight_kernels = _unpack_weight_kernels(weight_kernels=weight_kernels)
-    #
-    # def to_dict(self):
-    #     out = super().to_dict()
-    #     out["feature_params"] = self.feature_params
-    #     return out
-
     def evaluate(self, feature_values):
         """
         Evaluate this feature's weighting based on the list of kernels.
@@ -111,17 +89,36 @@ class FeatureWeightSpec(Base):
         weights = [kernel.evaluate(feature_values) for kernel in self.weight_kernels]
         return np.prod(weights, axis=0) if weights else 1.0
 
+# TODO: Delete, or revert after mt_metadata pydantic upgrade.
+# def _unpack_weight_kernels(weight_kernels):
+#     """
+#     Unpack weight kernels from a list of dictionaries or objects.
+#     Determines the correct kernel class (Activation or Taper) based on keys.
+#     """
+
+#     result = []
+#     for wk in weight_kernels:
+#         if isinstance(wk, dict):
+#             if "activation_style" in wk or wk.get("style") == "activation":
+#                 result.append(ActivationMonotonicWeightKernel(**wk))
+#             elif "half_window_style" in wk or wk.get("style") == "taper":
+#                 result.append(TaperMonotonicWeightKernel(**wk))
+#             else:
+#                 result.append(BaseMonotonicWeightKernel(**wk))
+#         else:
+#             result.append(wk)
+#     return result
 
 def _unpack_weight_kernels(weight_kernels):
     """
     Unpack weight kernels from a list of dictionaries or objects.
     Determines the correct kernel class (Activation or Taper) based on keys.
     """
-    from mt_metadata.features.weights.monotonic_weight_kernel import (
-        ActivationMonotonicWeightKernel, TaperMonotonicWeightKernel, BaseMonotonicWeightKernel
-    )
     result = []
     for wk in weight_kernels:
+        # Unwrap if wrapped in "weight_kernel"
+        if isinstance(wk, dict) and "weight_kernel" in wk:
+            wk = wk["weight_kernel"]
         if isinstance(wk, dict):
             if "activation_style" in wk or wk.get("style") == "activation":
                 result.append(ActivationMonotonicWeightKernel(**wk))
@@ -133,9 +130,27 @@ def _unpack_weight_kernels(weight_kernels):
             result.append(wk)
     return result
 
-
 def tst_init():
     fws = FeatureWeightSpec()
+    # Test loading from updated dict for TaperMonotonicWeightKernel
+    fws.from_dict({
+        "feature": {
+            "name": "coherence",
+            "ch1": "ex",
+            "ch2": "hy"
+        },
+        "weight_kernels": [
+            {
+                "style": "taper",
+                "half_window_style": "hann",
+                "transition_lower_bound": 0.3,
+                "transition_upper_bound": 0.8,
+                "threshold": "low cut"
+            }
+        ]
+    })
+    print(fws)
+
 
 if __name__ == "__main__":
     tst_init()
