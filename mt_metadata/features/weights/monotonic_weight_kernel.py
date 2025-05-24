@@ -46,7 +46,7 @@ class BaseMonotonicWeightKernel(BaseWeightKernel):
 #        super().__init__(attr_dict=base_attr_dict, **kwargs)
         #self.weight_type = "monotonic"
         #self._attr_dict.update(MonotonicWeightKernel._attr_dict)
-    
+
 
     def _normalize(self, values):
         lb = float(self.transition_lower_bound)
@@ -107,7 +107,7 @@ class ActivationMonotonicWeightKernel(BaseMonotonicWeightKernel):
         self.steepness = steepness
 
     def evaluate(self, values):
-        
+
         x = self._normalize(values)
         activation_style = self.activation_style
         
@@ -121,6 +121,5 @@ class ActivationMonotonicWeightKernel(BaseMonotonicWeightKernel):
             y = np.clip(x, 0, 1)
         else:
             raise ValueError(f"Unsupported activation style: {activation_style}")
-        
+
         return y
-        
