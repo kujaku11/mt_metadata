@@ -12,6 +12,29 @@ from mt_metadata.features.coherence import Coherence
 
 
 class TestCoherence(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+
+        """
+        Set up the test class, this is run once for the entire test class.
+        """
+        # This is where you would set up any resources needed for the tests
+        # For example, you could create a Coherence instance here if needed
+        cls.coh = Coherence()
+        coh_dict = {
+            # "channel_1": "ex",
+            # "channel_2": "hy",
+            "ch1": "ex",
+            "ch2": "hy",
+            "detrend" : "linear",
+            "window.clock_zero_type": "ignore",
+            "window.normalized": True,
+            "window.num_samples": 512,
+            "window.overlap": 128,
+            "window.type": "hamming"
+        }
+        
     def test_init(self):
         coh = Coherence()
 

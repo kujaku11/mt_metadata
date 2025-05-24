@@ -1,5 +1,5 @@
 {
-    "channel_1": {
+    "ch1": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -10,7 +10,7 @@
         "example": "ex",
         "default": null
     },
-    "channel_2": {
+    "ch2": {
         "type": "string",
         "required": true,
         "style": "free form",
