@@ -4,10 +4,10 @@ Created on Tue Nov  2 10:26:52 2021
 
 @author: jpeacock
 """
-
+import copy
+import numpy as np
 import unittest
 
-import numpy as np
 from mt_metadata.features.coherence import Coherence
 
 
@@ -22,9 +22,7 @@ class TestCoherence(unittest.TestCase):
         # This is where you would set up any resources needed for the tests
         # For example, you could create a Coherence instance here if needed
         cls.coh = Coherence()
-        coh_dict = {
-            # "channel_1": "ex",
-            # "channel_2": "hy",
+        cls.coh_dict = {
             "ch1": "ex",
             "ch2": "hy",
             "detrend" : "linear",
@@ -46,18 +44,9 @@ class TestCoherence(unittest.TestCase):
         """
         window_type = "hamming"
         window_length = 512
-        coh_dict = {
-            # "channel_1": "ex",
-            # "channel_2": "hy",
-            "ch1": "ex",
-            "ch2": "hy",
-            "detrend" : "linear",
-            "window.clock_zero_type": "ignore",
-            "window.normalized": True,
-            "window.num_samples": 512,
-            "window.overlap": 128,
-            "window.type": window_type
-        }
+        coh_dict = copy.deepcopy(self.coh_dict)
+        coh_dict["window.type"] = window_type
+        coh_dict["window.num_samples"] = window_length
         coh = Coherence()
         coh.from_dict(meta_dict=coh_dict)
         assert coh.window.type == window_type
@@ -100,6 +89,57 @@ class TestCoherence(unittest.TestCase):
             ax.set_ylabel("Squared Coherence (Hz)")
             ax.set_title(f"Squared Coherence for random noise with a tone at {frq:.2f}Hz")
             plt.show()
+
+    def test_validate_station_ids(self):
+        # Case 1: Both stations provided, ch1/ch2 are local
+        coh = Coherence()
+        coh.ch1 = "ex"
+        coh.ch2 = "hy"
+        coh.station1 = None
+        coh.station2 = None
+        coh.validate_station_ids("staA", "staB")
+        assert coh.station1 == "staA"
+        assert coh.station2 == "staA"
+
+        # Case 2: ch1 is remote, ch2 is local
+        coh = Coherence()
+        coh.ch1 = "rx"
+        coh.ch2 = "ey"
+        coh.station1 = None
+        coh.station2 = None
+        coh.validate_station_ids("staA", "staB")
+        assert coh.station1 == "staB"
+        assert coh.station2 == "staA"
+
+        # Case 3: station1/station2 set to wrong value, should be reset to None and reassigned
+        coh = Coherence()
+        coh.ch1 = "ex"
+        coh.ch2 = "hy"
+        coh.station1 = "wrong"
+        coh.station2 = "wrong"
+        coh.validate_station_ids("staA", "staB")
+        assert coh.station1 == "staA"
+        assert coh.station2 == "staA"
+
+        # Case 4: Only local station provided
+        coh = Coherence()
+        coh.ch1 = "ex"
+        coh.ch2 = "hy"
+        coh.station1 = None
+        coh.station2 = None
+        coh.validate_station_ids("staA")
+        assert coh.station1 == "staA"
+        assert coh.station2 == "staA"
+
+        # Case 5: ch2 is remote, ch1 is local
+        coh = Coherence()
+        coh.ch1 = "ex"
+        coh.ch2 = "ry"
+        coh.station1 = None
+        coh.station2 = None
+        coh.validate_station_ids("staA", "staB")
+        assert coh.station1 == "staA"
+        assert coh.station2 == "staB"
 # =============================================================================
 # run
 # =============================================================================

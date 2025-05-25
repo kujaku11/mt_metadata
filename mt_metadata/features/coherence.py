@@ -47,17 +47,28 @@ attr_dict.add_dict(BaseFeature()._attr_dict, "base_feature")
     }
 }
 
+Devlopment Notes:
+    To specify a channel in the context of tf processing we need station and channel names.
+    I have been fighting the use of `rx` and `ry` for several reasons, including that the [ex, ey, hx, hy, hz, rx, ry]
+    convention forces the assumption that remote channels are remote magnetics, and are overly specific to the remote
+    reference processing convention.
+    Hoever, for a feature like this, it could seem to be a hassle to update the processing config with the station name all over the
+    feature definations.  So, it seems that we should have a station field, and a channel field.
+    If the user wishes to specify station and channel, fine.  If the user prefers the more general,
+    but less well defined [ex, ey, hx, hy, hz, rx, ry] nomenclature, then we can ddeduce this for them.
+
 """
 
 # =============================================================================
 # Imports
 # =============================================================================
+from loguru import logger
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema
 from mt_metadata.transfer_functions.processing.window import Window
 from .base_feature import BaseFeature
 from .standards import SCHEMA_FN_PATHS
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import scipy.signal as ssig
@@ -104,6 +115,55 @@ class Coherence(BaseFeature):
     def channel_pair_str(self) -> str:
         return f"{self.ch1}, {self.ch2}"
 
+    def validate_station_ids(
+        self,
+        local_station_id: str,
+        remote_station_id: Optional[str] = None
+    ) -> None:
+        """
+        Make sure that ch1, ch2 are unambiguous.
+
+        Ideally the station for each channel is specified, but if not,
+        try deducing the channel.
+
+        Parameters
+        ----------
+        local_station_id: str
+            The name of the local station for a TF calculation
+        remote_station_id: Optional[str]
+            The name of the remote station for a TF calculation
+
+        """
+
+        # validate the station names:
+        active_stations = [local_station_id]
+        if remote_station_id:
+            active_stations.append(remote_station_id)
+
+        # if the feature has a station1, check that it is in the list of active stations
+        if self.station1:  # not "" or None
+            if self.station1 not in active_stations:
+                msg = f"station1 not in expected stations -- setting to None"
+                logger.warning(msg)
+                self.station1 = None
+
+        if self.station2:  # not "" or None
+            if self.station2 not in active_stations:
+                msg = f"station1 not in expected stations -- setting to None"
+                logger.warning(msg)
+                self.station2 = None
+
+        if not self.station1:
+             if self.ch1[0].lower() != "r":
+                  self.station1 = local_station_id
+             else:
+                  self.station1 = remote_station_id
+
+        if not self.station2:
+             if self.ch2[0].lower() != "r":
+                  self.station2 = local_station_id
+             else:
+                  self.station2 = remote_station_id
 
     def compute(
         self,
