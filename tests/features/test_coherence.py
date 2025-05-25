@@ -141,6 +141,58 @@ class TestCoherence(unittest.TestCase):
         coh.validate_station_ids("staA", "staB")
         assert coh.station1 == "staA"
         assert coh.station2 == "staB"
+
+    def test_striding_window_coherence(self):
+        """
+        Test StridingWindowCoherence computes a 2D array of coherence values (window x frequency).
+        Optionally, plot the result as a pcolor plot for visual inspection.
+        """
+        from mt_metadata.features.coherence import StridingWindowCoherence
+
+        np.random.seed(42)
+        n_obs = 4096
+        x = np.random.randn(n_obs)
+        y = np.random.randn(n_obs)
+        # Add a strong common sine wave to both
+        t = np.arange(n_obs)
+        sine = 10 * np.sin(2 * np.pi * 0.1 * t)  # Increase amplitude for higher SNR
+        x += sine
+        y += sine
+
+        swc = StridingWindowCoherence()
+        swc.window.num_samples = 1024
+        swc.set_subwindow_from_window(fraction=0.25)  # subwindow = 256
+        swc.stride = 128
+        f, coh2d = swc.compute(x, y)
+        # Check output shape: (n_windows, n_freqs)
+        assert coh2d.ndim == 2
+        assert coh2d.shape[1] == len(f)
+        # Should have at least a few windows
+        assert coh2d.shape[0] > 1
+        # Coherence at the sine frequency should be high in at least one window
+        sine_idx = np.argmin(np.abs(f - 0.1))
+        assert np.any(coh2d[:, sine_idx] > 0.5)
+
+        # Optional: plot the 2D coherence as a pcolor plot
+        plot = False  # Set to True to enable plotting
+        if plot:
+            import matplotlib.pyplot as plt
+            fig, axs = plt.subplots(2, 1, figsize=(10, 7), sharex=False)
+            # Top panel: time series
+            axs[0].plot(x, label='x', alpha=0.7)
+            axs[0].plot(y, label='y', alpha=0.7)
+            axs[0].set_ylabel('Amplitude')
+            axs[0].set_title('Input Time Series')
+            axs[0].legend()
+            # Bottom panel: coherence spectrogram
+            mesh = axs[1].pcolormesh(np.arange(coh2d.shape[0]), f, coh2d.T, shading='auto', cmap='viridis', vmin=0, vmax=1)
+            cbar = plt.colorbar(mesh, ax=axs[1], label='Coherence')
+            cbar.ax.set_title("[0.00, 1.00]")
+            axs[1].set_xlabel('Window Index')
+            axs[1].set_ylabel('Frequency (Hz)')
+            axs[1].set_title('Striding Window Coherence')
+            plt.tight_layout()
+            plt.show()
 # =============================================================================
 # run
 # =============================================================================

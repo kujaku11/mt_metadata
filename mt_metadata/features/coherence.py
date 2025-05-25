@@ -7,6 +7,8 @@ Created on Fri Jan 31 13:39:39 2025
 This module contains the simplest coherence feature.
 The feature is computed with scipy.signal coherence.
 
+Note that this coherence is one number for the entire time-series (per frequency), i.e.
+
 The Window object is used to taper the time series before FFT.
 
 Development Notes:
@@ -57,6 +59,32 @@ Devlopment Notes:
     If the user wishes to specify station and channel, fine.  If the user prefers the more general,
     but less well defined [ex, ey, hx, hy, hz, rx, ry] nomenclature, then we can ddeduce this for them.
 
+Development Note (2025-05-24):
+    Note that the simple coherence as computed here, just returns one number per frequency.
+    It is the average coherence over the entire run, and is not innately a "per-time-window feature".
+
+    To make it a per-time-window feature, we need to apply the transform on individual windows (not the whole run).
+    i.e. chunk a run into sub-windows, and then compute coherence on each of those individually.  To accomplish this
+    we must shorten the window.num_samples to be smaller than the sub-window size, otherwise, coherence
+    degenerates to 1 everywhere. (Recall coherenc is th average cross-power over average sqrt auto-powers, and having
+    only one spectral estimate means there is no averaging).
+    Selection of an appropriate "window-within-the-sub-window" for spectral esimation comes with some caveats;
+
+    The length of the window-within-the-window must be small enough to get at least a few)
+    spectral estimates, meaning that the frequency content will not mirror that of the FFT
+    That said, we can know our lowest frequency of TF estimation (usually no fewer than 5 cycles),
+    so we could set the window-within-window width to be, say 1/5 the FFT window length, and then we'll get
+    something we can use, although it will be somwhat unrealiable at long period (but so is everything else:/).
+    Note that when we are using long FFT windows (such as for HF data processing) this is not such a concern
+
+    Way Forward: A "StridingWindowCoherence" (effectively a spectrogram of coherence) can be an extension of the
+    Cohernece feature.  It will have the same properties, but will also have a "SubWindow".  The SubWindow will be
+    another window function object, but it can be parameterized, for example, as a fraction of the
+    "Spectrogram Sliding Window".
+
+    The compute function could possibly be done by computing Coherence on each sub-window (kinda elegant
+    but may wind up being a bit slow with all the for-looping)
+
 """
 
 # =============================================================================
@@ -103,7 +131,6 @@ class Coherence(BaseFeature):
                            "directly from scipy.signal.coherence applied to " \
                            "time domain data"
         self.window = DEFAULT_SCIPY_WINDOW
-        # self._attr_dict = attr_dict
 
     @property
     def detrend(self):
@@ -167,6 +194,19 @@ class Coherence(BaseFeature):
              else:
                   self.station2 = remote_station_id
 
+        # by this time, all stations should be set.  Confirm that we do not have a station that is None
+        # TODO Consier returning False if exception encountered here.
+        try:
+            assert self.station1 is not None
+        except Exception as e:
+            msg = "station1 is not set -- perhaps it was set to a remote that does not exist?"
+            logger.error(msg)
+        try:
+            assert self.station2 is not None
+        except Exception as e:
+            msg = "station2 is not set -- perhaps it was set to a remote that does not exist?"
+            logger.error(msg)
+
     def compute(
         self,
         ts_1: np.ndarray,
@@ -194,4 +234,57 @@ class Coherence(BaseFeature):
             detrend=self.detrend,
         )
         return frequencies, coh_squared
+
+
+class StridingWindowCoherence(Coherence):
+    """
+    Computes coherence for each sub-window (FFT window) across the time series.
+    Returns a 2D array: (window index, frequency).
+    """
+    def __init__(self, subwindow=None, stride=None, **kwargs):
+        super().__init__(**kwargs)
+        self.subwindow = subwindow if subwindow is not None else Window()
+        # Ensure stride is always an integer
+        if stride is not None:
+            self.stride = int(stride)
+        else:
+            self.stride = int(self.subwindow.num_samples // 2)
+
+    def set_subwindow_from_window(self, fraction=0.2):
+        """
+        Set the subwindow as a fraction of the main window.
+        """
+        self.subwindow = Window()
+        self.subwindow.type = self.window.type
+        self.subwindow.num_samples = int(self.window.num_samples * fraction)
+        self.subwindow.overlap = int(self.subwindow.num_samples // 2)
+        # Update stride to be int if it was set as a string elsewhere
+        self.stride = int(self.stride)
+
+    def compute(self, ts_1: np.ndarray, ts_2: np.ndarray):
+        """
+        For each main window (length self.window.num_samples, stride self.stride),
+        compute coherence using the subwindow parameters (self.subwindow) within that main window.
+        Returns:
+            frequencies: 1D array of frequencies
+            coherences: 2D array (n_main_windows, n_frequencies)
+        """
+        n = len(ts_1)
+        main_win_len = self.window.num_samples
+        main_stride = int(self.stride)
+        results = []
+        for start in range(0, n - main_win_len + 1, main_stride):
+            end = start + main_win_len
+            seg1 = ts_1[start:end]
+            seg2 = ts_2[start:end]
+            f, coh = ssig.coherence(
+                seg1,
+                seg2,
+                window=self.subwindow.type,
+                nperseg=self.subwindow.num_samples,
+                noverlap=self.subwindow.overlap,
+                detrend=self.detrend,
+            )
+            results.append(coh)
+        return f, np.array(results)
 
