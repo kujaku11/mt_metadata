@@ -45,7 +45,6 @@ class FeatureWeightSpec(Base):
         self.weight_kernels = weight_kernels
 
 
-    # Temporary workaround to ensure the setter logic runs
     def post_from_dict(self):
         # If feature is a dict, force the setter logic to run
         if isinstance(self.feature, dict):
@@ -134,6 +133,25 @@ class FeatureWeightSpec(Base):
         weights = [kernel.evaluate(feature_values) for kernel in self.weight_kernels]
         return np.prod(weights, axis=0) if weights else 1.0
 
+# TODO: Delete, or revert after mt_metadata pydantic upgrade.
+# def _unpack_weight_kernels(weight_kernels):
+#     """
+#     Unpack weight kernels from a list of dictionaries or objects.
+#     Determines the correct kernel class (Activation or Taper) based on keys.
+#     """
+
+#     result = []
+#     for wk in weight_kernels:
+#         if isinstance(wk, dict):
+#             if "activation_style" in wk or wk.get("style") == "activation":
+#                 result.append(ActivationMonotonicWeightKernel(**wk))
+#             elif "half_window_style" in wk or wk.get("style") == "taper":
+#                 result.append(TaperMonotonicWeightKernel(**wk))
+#             else:
+#                 result.append(BaseMonotonicWeightKernel(**wk))
+#         else:
+#             result.append(wk)
+#     return result
 
 def _unpack_weight_kernels(weight_kernels):
     """

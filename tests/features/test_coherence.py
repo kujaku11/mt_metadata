@@ -52,6 +52,7 @@ class TestCoherence(unittest.TestCase):
         assert coh.window.type == window_type
         assert coh.window.num_samples == window_length
         assert coh.channel_pair_str == "ex, hy"
+        print(coh.station1, coh.station2)
 
     def test_calculate_coherence(self, plot: bool = False):
         """

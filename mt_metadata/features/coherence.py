@@ -93,6 +93,8 @@ class Coherence(BaseFeature):
     def __init__(self, **kwargs):
         self.window = Window()
         self._detrend = None
+        self.station1 = ""
+        self.station2 = ""
         BaseFeature.__init__(self, **kwargs)  # attr_dict=attr_dict,
         self._attr_dict = attr_dict
         self.name = "coherence"
