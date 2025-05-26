@@ -20,8 +20,10 @@ from mt_metadata.features.base_feature import BaseFeature
 def _make_supported_features_dict():
     # TODO Import all supported fetaures here
     from mt_metadata.features.coherence import Coherence
+    from mt_metadata.features.coherence import StridingWindowCoherence
     SUPPORTED_FEATURE_DICT = {}
     SUPPORTED_FEATURE_DICT["coherence"] = Coherence
+    SUPPORTED_FEATURE_DICT["striding_window_coherence"] = StridingWindowCoherence
     return SUPPORTED_FEATURE_DICT
 
 # =============================================================================
@@ -36,6 +38,7 @@ class Feature(BaseFeature):
     def from_dict(self, input_dict):
         if "name" not in input_dict.keys():
             msg = f"Features must have an ID (name), supported features are {SUPPORTED_FEATURE_DICT.keys()}"
+            print(msg)
 
         feature = SUPPORTED_FEATURE_DICT[input_dict.pop("feature_name")]
         feature_obj = feature()

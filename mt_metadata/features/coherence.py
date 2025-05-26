@@ -242,13 +242,27 @@ class StridingWindowCoherence(Coherence):
     Returns a 2D array: (window index, frequency).
     """
     def __init__(self, subwindow=None, stride=None, **kwargs):
+        """
+        Parameters
+        ----------
+        subwindow : Window, optional
+            The window object used for the subwindow (the window used for the coherence calculation within each main window).
+            If not provided, a default Window is used.
+        stride : int, optional [DEPRECATED]
+            (Deprecated; use self.window.num_samples_advance instead.)
+            The stride (in samples) between the start of each main window (of length self.window.num_samples) as the main window
+            slides across the time series. If not provided, defaults to self.window.num_samples_advance.
+        kwargs : dict
+            Additional keyword arguments passed to the Coherence base class.
+        """
         super().__init__(**kwargs)
+        self.name = "striding_window_coherence"
         self.subwindow = subwindow if subwindow is not None else Window()
-        # Ensure stride is always an integer
+        # Use window.num_samples_advance for main window stride
         if stride is not None:
-            self.stride = int(stride)
+            self._main_stride = int(stride)
         else:
-            self.stride = int(self.subwindow.num_samples // 2)
+            self._main_stride = self.window.num_samples_advance
 
     def set_subwindow_from_window(self, fraction=0.2):
         """
@@ -258,12 +272,11 @@ class StridingWindowCoherence(Coherence):
         self.subwindow.type = self.window.type
         self.subwindow.num_samples = int(self.window.num_samples * fraction)
         self.subwindow.overlap = int(self.subwindow.num_samples // 2)
-        # Update stride to be int if it was set as a string elsewhere
-        self.stride = int(self.stride)
+        # No need to update stride; main window stride is set by self.window.num_samples_advance
 
     def compute(self, ts_1: np.ndarray, ts_2: np.ndarray):
         """
-        For each main window (length self.window.num_samples, stride self.stride),
+        For each main window (length self.window.num_samples, stride self.window.num_samples_advance),
         compute coherence using the subwindow parameters (self.subwindow) within that main window.
         Returns:
             frequencies: 1D array of frequencies
@@ -271,7 +284,7 @@ class StridingWindowCoherence(Coherence):
         """
         n = len(ts_1)
         main_win_len = self.window.num_samples
-        main_stride = int(self.stride)
+        main_stride = self.window.num_samples_advance if hasattr(self.window, 'num_samples_advance') else main_win_len
         results = []
         for start in range(0, n - main_win_len + 1, main_stride):
             end = start + main_win_len
