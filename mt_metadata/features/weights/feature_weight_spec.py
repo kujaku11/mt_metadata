@@ -58,7 +58,7 @@ class FeatureWeightSpec(Base):
             d["feature"] = self.feature  # Now it's the correct object
         super().from_dict(d)
         self.post_from_dict()
-    
+
 
     @property
     def feature(self):
@@ -72,7 +72,7 @@ class FeatureWeightSpec(Base):
         If an object is provided, it will be used directly.
         Unwraps nested 'feature' keys if present.
 
-        
+
         Note this is a slightly janky setter because we should be able to use a model like:
 
         FEATURE_CLASS_MAP = {
@@ -94,7 +94,11 @@ class FeatureWeightSpec(Base):
             if feature_name == "coherence":
                 from mt_metadata.features.coherence import Coherence
                 feature_cls = Coherence
+            elif feature_name == "striding_window_coherence":
+                from mt_metadata.features.coherence import StridingWindowCoherence
+                feature_cls = StridingWindowCoherence
             else:
+                msg = f"feature_name {feature_name} not recognized -- resorting to base class"
                 from mt_metadata.features.feature import Feature
                 feature_cls = Feature
             self._feature = feature_cls(**value)
