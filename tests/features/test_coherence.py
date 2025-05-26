@@ -174,7 +174,7 @@ class TestCoherence(unittest.TestCase):
         assert np.any(coh2d[:, sine_idx] > 0.5)
 
         # Optional: plot the 2D coherence as a pcolor plot
-        plot = True  # Set to True to enable plotting
+        plot = False  # Set to True to enable plotting
         if plot:
             import matplotlib.pyplot as plt
             fig, axs = plt.subplots(2, 1, figsize=(10, 7), sharex=False)
