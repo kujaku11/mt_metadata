@@ -258,6 +258,7 @@ class StridingWindowCoherence(Coherence):
         super().__init__(**kwargs)
         self.name = "striding_window_coherence"
         self.subwindow = subwindow if subwindow is not None else Window()
+        self.data = None
         # Use window.num_samples_advance for main window stride
         if stride is not None:
             self._main_stride = int(stride)
