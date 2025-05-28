@@ -113,7 +113,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for EX",
-            examples="1",
+            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -127,7 +127,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for EY",
-            examples="2",
+            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -141,7 +141,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HX",
-            examples="3",
+            examples=["3"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -155,7 +155,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HY",
-            examples="4",
+            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -169,7 +169,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HZ",
-            examples="5",
+            examples=["5"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -183,7 +183,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for RRHX",
-            examples="6",
+            examples=["6"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -197,7 +197,7 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for RRHY",
-            examples="7",
+            examples=["7"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -268,14 +268,14 @@ class DataSection(MetadataBase):
                     data_list.append(line.strip())
         return data_list
 
-    def read_data(self, edi_lines: str) -> list[str]:
+    def read_data(self, edi_lines: str) -> None:
         """
         Read data section
         """
         data_list = self.get_data(edi_lines)
 
         channels = False
-        self.channel_ids = []
+        self._channel_ids = []
         for d_line in data_list:
             d_list = d_line.split("=")
             if len(d_list) > 1:
@@ -295,17 +295,17 @@ class DataSection(MetadataBase):
                     continue
                 if channels:
                     if len(d_line) > 10:
-                        self.channel_ids += d_line.strip().split()
+                        self._channel_ids += d_line.strip().split()
                     else:
-                        self.channel_ids.append(d_line)
-        if self.channel_ids == []:
+                        self._channel_ids.append(d_line)
+        if self._channel_ids == []:
             for comp in self._kw_list[4:]:
                 ch_id = getattr(self, comp)
                 if ch_id is not None:
-                    self.channel_ids.append(ch_id)
+                    self._channel_ids.append(ch_id)
 
     def write_data(
-        self, data_list: list[str] = None, over_dict: dict = None
+        self, data_list: list[str] | None = None, over_dict: dict | None = None
     ) -> list[str]:
         """
         Write the data section to a list of strings.
@@ -352,7 +352,7 @@ class DataSection(MetadataBase):
 
         return data_lines
 
-    def match_channels(self, ch_ids: list[str]) -> None:
+    def match_channels(self, ch_ids: dict[str, str]) -> None:
         """
         Match the channels in the data section with the provided channel IDs.
         This method updates the channel IDs based on the provided list.
