@@ -6,6 +6,7 @@ from typing import Annotated
 from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
 from mt_metadata.utils.location_helpers import validate_position
 from mt_metadata.utils.units import get_unit_object
 
@@ -244,3 +245,275 @@ class DefineMeasurement(MetadataBase):
                 continue
 
         return ch_ids
+
+    def get_measurement_lists(self, edi_lines: str):
+        """
+        get measurement list including measurement setup
+        """
+
+        self.measurement_list = []
+        meas_find = False
+        count = 0
+
+        for line in edi_lines:
+            if ">=" in line and "definemeas" in line.lower():
+                meas_find = True
+            elif ">=" in line:
+                if meas_find is True:
+                    return
+            elif meas_find is True and ">" not in line:
+                line = line.strip()
+                if len(line) > 2:
+                    if count > 0:
+                        line_list = _validate_str_with_equals(line)
+                        for ll in line_list:
+                            ll_list = ll.split("=")
+                            key = ll_list[0].lower()
+                            value = ll_list[1]
+                            self.measurement_list[-1][key] = value
+                    else:
+                        self.measurement_list.append(line.strip())
+
+            # look for the >XMEAS parts
+            elif ">" in line and meas_find:
+                if line.find("!") > 0:
+                    pass
+                elif "meas" in line.lower():
+                    count += 1
+                    line_list = _validate_str_with_equals(line)
+                    m_dict = {}
+                    for ll in line_list:
+                        ll_list = ll.split("=")
+                        key = ll_list[0].lower()
+                        value = ll_list[1]
+                        m_dict[key] = value
+                    self.measurement_list.append(m_dict)
+                else:
+                    return
+
+    def read_measurement(self, edi_lines):
+        """
+        read the define measurment section of the edi file
+
+        should be a list with lines for:
+
+            - maxchan
+            - maxmeas
+            - maxrun
+            - refelev
+            - reflat
+            - reflon
+            - reftype
+            - units
+            - dictionaries for >XMEAS with keys:
+
+                - id
+                - chtype
+                - x
+                - y
+                - axm
+                - acqchn
+
+        """
+        self.get_measurement_lists(edi_lines)
+
+        for line in self.measurement_list:
+            if isinstance(line, str):
+                line_list = line.split("=")
+                key = line_list[0].lower()
+                value = line_list[1].strip()
+                if key in "reflatitude":
+                    key = "reflat"
+                    value = value
+                elif key in "reflongitude":
+                    key = "reflon"
+                    value = value
+                elif key in "refelevation":
+                    key = "refelev"
+                    value = value
+                elif key in "maxchannels":
+                    key = "maxchan"
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = 0
+                elif key in "maxmeasurements":
+                    key = "maxmeas"
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = 0
+                elif key in "maxruns":
+                    key = "maxrun"
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = 0
+                setattr(self, key, value)
+
+            elif isinstance(line, dict):
+                ch_type = line["chtype"].lower()
+                key = f"meas_{ch_type}"
+                if ch_type.find("h") >= 0:
+                    value = HMeasurement(**line)
+                elif ch_type.find("e") >= 0:
+                    value = EMeasurement(**line)
+                    if value.azm == 0:
+                        value.azm = value.azimuth
+                if hasattr(self, key):
+                    existing_ch = getattr(self, key)
+                    existing_line = existing_ch.write_meas_line()
+                    value_line = value.write_meas_line()
+                    if existing_line != value_line:
+                        value.chtype = f"rr{ch_type}".upper()
+                        key = f"meas_rr{ch_type}"
+                    else:
+                        continue
+                setattr(self, key, value)
+
+    def write_measurement(
+        self, measurement_list=None, longitude_format="LON", latlon_format="dd"
+    ):
+        """
+        write the define measurement block as a list of strings
+        """
+
+        measurement_lines = ["\n>=DEFINEMEAS\n"]
+        for key in self._define_meas_keys:
+            value = getattr(self, key)
+            if key in ["reflat", "reflon", "reflong"]:
+                if latlon_format.lower() == "dd":
+                    value = f"{float(value):.6f}"
+                else:
+                    value = self._location._convert_position_float2str(value)
+            elif key == "refelev":
+                value = value
+            if key.upper() == "REFLON":
+                if longitude_format == "LONG":
+                    key += "G"
+            if value is not None:
+                measurement_lines.append(f"{' '*4}{key.upper()}={value}\n")
+        measurement_lines.append("\n")
+
+        # need to write the >XMEAS type, but sort by channel number
+        m_key_list = []
+        count = 1.0
+        for kk in list(self.__dict__.keys()):
+            if kk.find("meas_") == 0:
+                key = kk.strip()
+                value = self.__dict__[kk].id
+                if value is None:
+                    value = count
+                    count += 1
+                elif isinstance(value, str):
+                    try:
+                        value = float(value)
+
+                    except TypeError:
+                        self.logger.warning(f"{key}.id cannot be converted to float")
+                        value = count
+                        count += 1
+                elif isinstance(value, (float, int)):
+                    value = float(value)
+
+                else:
+                    raise ValueError(f"Could not convert {key}.id to float")
+
+                m_key_list.append((key, value))
+
+        if len(m_key_list) == 0:
+            self.logger.warning("No XMEAS information.")
+        else:
+            # need to sort the dictionary by chanel id
+            for meas in sorted(m_key_list, key=lambda x: x[1]):
+                x_key = meas[0]
+                m_obj = getattr(self, x_key)
+                if m_obj.id is None:
+                    m_obj.id = meas[1]
+                if m_obj.acqchan == "0":
+                    m_obj.acqchan = meas[1]
+
+                measurement_lines.append(m_obj.write_meas_line())
+
+        return measurement_lines
+
+    def get_measurement_dict(self):
+        """
+        get a dictionary for the xmeas parts
+        """
+        meas_dict = {}
+        for key in list(self.__dict__.keys()):
+            if key.find("meas_") == 0:
+                meas_attr = getattr(self, key)
+                meas_key = meas_attr.chtype
+                meas_dict[meas_key] = meas_attr
+
+        return meas_dict
+
+    def from_metadata(self, channel):
+        """
+        create a measurement class from metadata
+
+        :param channel: DESCRIPTION
+        :type channel: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        if channel.component is None:
+            return
+
+        azm = channel.measurement_azimuth
+        if azm != channel.translated_azimuth:
+            azm = channel.translated_azimuth
+        if azm is None:
+            azm = 0.0
+        if "e" in channel.component:
+            for attr in [
+                "negative.x",
+                "negative.y",
+                "positive.x2",
+                "positive.y2",
+                "measurement_azimuth",
+                "translated_azimuth",
+            ]:
+                if channel.get_attr_from_name(attr) is None:
+                    channel.set_attr_from_name(attr, 0)
+            meas = EMeasurement(
+                **{
+                    "x": channel.negative.x,
+                    "x2": channel.positive.x2,
+                    "y": channel.negative.y,
+                    "y2": channel.positive.y2,
+                    "chtype": channel.component,
+                    "id": channel.channel_id,
+                    "azm": azm,
+                    "acqchan": channel.channel_number,
+                }
+            )
+
+            setattr(self, f"meas_{channel.component.lower()}", meas)
+
+        elif "h" in channel.component:
+            for attr in ["location.x", "location.y", "location.z"]:
+                if channel.get_attr_from_name(attr) is None:
+                    channel.set_attr_from_name(attr, 0)
+            meas = HMeasurement(
+                **{
+                    "x": channel.location.x,
+                    "y": channel.location.y,
+                    "azm": azm,
+                    "chtype": channel.component,
+                    "id": channel.channel_id,
+                    "acqchan": channel.channel_number,
+                    "dip": channel.measurement_tilt,
+                }
+            )
+            setattr(self, f"meas_{channel.component.lower()}", meas)
+
+    @property
+    def channels_recorded(self):
+        """Get the channels recorded"""
+
+        return [cc.lower() for cc in self.get_measurement_dict().keys()]

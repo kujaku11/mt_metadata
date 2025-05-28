@@ -8,37 +8,34 @@ Created on Wed Dec 23 20:41:16 2020
 :license: MIT
 
 """
+import json
+from collections import OrderedDict
+
 # =============================================================================
 # Imports
 # =============================================================================
 from copy import deepcopy
-from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
-from loguru import logger
-from typing import List, Dict, Iterable, Union, Any, Mapping
-from typing_extensions import deprecated
-
-import json
-import pandas as pd
-import numpy as np
+from typing import Any, Dict, List, Mapping, Union
 from xml.etree import cElementTree as et
 
-from mt_metadata.utils.validators import (
-    validate_attribute,
-    validate_value_type,
-    validate_name,
-)
-from mt_metadata.utils.exceptions import MTSchemaError
-from . import helpers
+import numpy as np
+import pandas as pd
+from loguru import logger
+from pydantic import BaseModel, ConfigDict, create_model
+from pydantic.fields import FieldInfo, PrivateAttr
+from typing_extensions import deprecated
 
 from mt_metadata.base.helpers import write_lines
-
 from mt_metadata.utils.exceptions import MTSchemaError
-from . import helpers
+from mt_metadata.utils.validators import (
+    validate_attribute,
+    validate_name,
+    validate_value_type,
+)
 
-from pydantic import BaseModel, create_model, ConfigDict
-from pydantic.fields import PrivateAttr, FieldInfo
+from . import helpers
 
 
 attr_dict = {}
@@ -217,7 +214,6 @@ class Base:
         copied = type(self)()
         for key in self.to_dict(single=True, required=False).keys():
             try:
-
                 copied.set_attr_from_name(
                     key, deepcopy(self.get_attr_from_name(key), memodict)
                 )
@@ -1012,7 +1008,6 @@ class MetadataBase(DotNotationBaseModel):
             return False
 
         elif isinstance(other, (dict, str, pd.Series, et.Element)):
-
             other_dict = __class__().load(other).to_dict(single=True, required=False)
 
         elif isinstance(other, MetadataBase):
@@ -1401,7 +1396,7 @@ class MetadataBase(DotNotationBaseModel):
             **all_fields,
         )
 
-    def to_dict(self, nested=False, single=False, required=True) -> None:
+    def to_dict(self, nested=False, single=False, required=True) -> dict[str, Any]:
         """
         make a dictionary from attributes, makes dictionary from _attr_list.
 

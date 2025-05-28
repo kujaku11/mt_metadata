@@ -1,20 +1,14 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import computed_field, Field, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 
 
 # =====================================================
-class ChtypeEnum(str, Enum):
-    hx = "hx"
-    hy = "hy"
-    hz = "hz"
-    other = "other"
 
 
 class Hmeasurement(MetadataBase):
@@ -33,12 +27,13 @@ class Hmeasurement(MetadataBase):
     ]
 
     chtype: Annotated[
-        ChtypeEnum,
+        str,
         Field(
             default="",
             description="channel type, should start with an 'h' or 'b'",
             examples=["hx"],
             alias=None,
+            pattern=r"^[hb][a-zA-Z0-9_]+$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -129,3 +124,53 @@ class Hmeasurement(MetadataBase):
             },
         ),
     ]
+
+    _fmt_dict: dict[str, str] = PrivateAttr(
+        default={
+            "id": "<",
+            "chtype": "<",
+            "x": "<.2f",
+            "y": "<.2f",
+            "z": "<.2f",
+            "azm": "<.2f",
+            "dip": "<.2f",
+            "acqchan": "<",
+        }
+    )
+
+    def __str__(self):
+        return "\n".join([f"{k} = {v}" for k, v in self.to_dict(single=True).items()])
+
+    def __repr__(self):
+        return self.__str__()
+
+    @computed_field
+    @property
+    def channel_number(self) -> int:
+        """Extract channel number from acqchan."""
+        if self.acqchan is not None:
+            if not isinstance(self.acqchan, (int, float)):
+                try:
+                    return int("".join(i for i in self.acqchan if i.isdigit()))
+                except (IndexError, ValueError):
+                    return 0
+            return int(self.acqchan)
+        return 0
+
+    def write_meas_line(self):
+        """
+        write string
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        line = [">hmeas".upper()]
+
+        for mkey, mfmt in self._fmt_dict.items():
+            try:
+                line.append(f"{mkey.upper()}={getattr(self, mkey):{mfmt}}")
+            except (ValueError, TypeError):
+                line.append(f"{mkey.upper()}={0.0:{mfmt}}")
+
+        return f"{' '.join(line)}\n"
