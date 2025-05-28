@@ -70,6 +70,12 @@ class ChannelOrientationEnum(StrEnumerationBase):
     station = "station"
 
 
+class MTUnitsEnum(StrEnumerationBase):
+    mt = "millivolts_per_kilometer_per_nanotesla"
+    ohms = "ohms"
+    mt_symbol = "mV/km/nT"
+
+
 class GeomagneticModelEnum(str, Enum):
     """split by - if needed"""
 
@@ -115,7 +121,8 @@ class SymmetryEnum(StrEnumerationBase):
 class SignConventionEnum(str, Enum):
     plus = "+"
     minus = "-"
-    exp_plus = "exp (+iwt)"
+    exp_plus = "exp(+iwt)"
+    exp_minus = "exp(-iwt)"
 
 
 ## This is a better way to making an pydantic type of enumeration with a validator

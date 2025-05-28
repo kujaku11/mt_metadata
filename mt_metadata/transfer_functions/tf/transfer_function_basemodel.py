@@ -1,7 +1,6 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 import numpy as np
@@ -9,27 +8,16 @@ import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import (
+    GeographicReferenceFrameEnum,
+    MTUnitsEnum,
+    SignConventionEnum,
+)
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================
-class SignConventionEnum(str, Enum):
-    plus = "+"
-    minus = "-"
-    other = "other"
-
-
-class UnitsEnum(str, Enum):
-    millivolts_per_kilometer_per_nanotesla = "millivolts_per_kilometer_per_nanotesla"
-    ohms = "ohms"
-    other = "other"
-
-
-class CoordinateSystemEnum(str, Enum):
-    geographic = "geographic"
-    geomagnetic = "geomagnetic"
-    other = "other"
 
 
 class TransferFunction(MetadataBase):
@@ -62,9 +50,9 @@ class TransferFunction(MetadataBase):
     ]
 
     units: Annotated[
-        UnitsEnum,
+        MTUnitsEnum,
         Field(
-            default="",
+            default="millivolts_per_kilometer_per_nanotesla",
             description="units of the impedance tensor estimates",
             examples=["millivolts_per_kilometer_per_nanotesla"],
             alias=None,
@@ -149,7 +137,7 @@ class TransferFunction(MetadataBase):
     ]
 
     coordinate_system: Annotated[
-        CoordinateSystemEnum,
+        GeographicReferenceFrameEnum,
         Field(
             default="geopgraphic",
             description="coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
