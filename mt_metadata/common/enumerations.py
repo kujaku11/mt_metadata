@@ -70,12 +70,6 @@ class ChannelOrientationEnum(StrEnumerationBase):
     station = "station"
 
 
-class MTUnitsEnum(StrEnumerationBase):
-    mt = "millivolts_per_kilometer_per_nanotesla"
-    ohms = "ohms"
-    mt_symbol = "mV/km/nT"
-
-
 class GeomagneticModelEnum(str, Enum):
     """split by - if needed"""
 

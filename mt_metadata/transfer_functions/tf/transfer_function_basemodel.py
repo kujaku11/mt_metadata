@@ -8,11 +8,7 @@ import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import (
-    GeographicReferenceFrameEnum,
-    MTUnitsEnum,
-    SignConventionEnum,
-)
+from mt_metadata.common import GeographicReferenceFrameEnum, SignConventionEnum
 from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object
 
@@ -50,7 +46,7 @@ class TransferFunction(MetadataBase):
     ]
 
     units: Annotated[
-        MTUnitsEnum,
+        str,
         Field(
             default="millivolts_per_kilometer_per_nanotesla",
             description="units of the impedance tensor estimates",
@@ -108,12 +104,11 @@ class TransferFunction(MetadataBase):
     ]
 
     processing_parameters: Annotated[
-        str,
+        list[str],
         Field(
-            default="[]",
-            items={"type": "string"},
+            default=[],
             description="list of processing parameters with structure name = value",
-            examples=["[nfft=4096, n_windows=16]"],
+            examples=["nfft=4096, n_windows=16"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -146,6 +141,23 @@ class TransferFunction(MetadataBase):
             json_schema_extra={
                 "units": None,
                 "required": True,
+            },
+        ),
+    ]
+
+    # this will evenutally be config objects for the various processing programs
+    # e.g. aurora, razorback, resistics, etc.
+    # for now it is just a string
+    processing_config: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="processing configuration",
+            examples=["aurora.processing"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
             },
         ),
     ]
