@@ -201,7 +201,7 @@ class DefineMeasurement(MetadataBase):
     ]
 
     units: Annotated[
-        float | None,
+        str | None,
         Field(
             default="m",
             description="In the EDI standards this is the elevation units.",
@@ -248,6 +248,8 @@ class DefineMeasurement(MetadataBase):
     def validate_units(cls, value: str) -> str:
         if value in [None, ""]:
             return ""
+        if value.lower() in ["m", "meters"]:
+            value = "m"
         try:
             unit_object = get_unit_object(value)
             return unit_object.name
@@ -277,11 +279,11 @@ class DefineMeasurement(MetadataBase):
         ch_ids = {}
         for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
             try:
-                m = getattr(self, f"meas_{comp}")
+                m = self.measurements[comp]
                 # if there are remote references that are the same as the
                 # h channels skip them.
                 ch_ids[m.chtype] = m.id
-            except AttributeError:
+            except KeyError:
                 continue
 
         return ch_ids
@@ -405,8 +407,8 @@ class DefineMeasurement(MetadataBase):
                     value = EMeasurement(**line)
                     if value.azm == 0:
                         value.azm = value.azimuth
-                if hasattr(self, key):
-                    existing_ch = getattr(self, key)
+                if key in self.measurements.keys():
+                    existing_ch = self.measurements[key]
                     existing_line = existing_ch.write_meas_line()
                     value_line = value.write_meas_line()
                     if existing_line != value_line:

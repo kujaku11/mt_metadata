@@ -40,7 +40,7 @@ def custom_define_measurement():
         reflat=45.123,
         reflon=-120.456,
         refelev=1050.0,
-        units="meters",
+        units="meter",
     )
 
     # Add E measurement
@@ -167,7 +167,7 @@ class TestDefineMeasurementInitialization:
             "reflat": 45.123,
             "reflon": -120.456,
             "refelev": 1050.0,
-            "units": "meters",
+            "units": "meter",
         }
 
         for attr, expected in scalar_attrs.items():
@@ -224,12 +224,15 @@ class TestDefineMeasurementMethods:
         with patch.object(
             custom_define_measurement,
             "write_measurement",
-            return_value=["TEST1", "TEST2"],
+            return_value="\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45.123000\n    REFLON=-120.456000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n",
         ):
             str_rep = str(custom_define_measurement)
 
             # Check that the method uses write_measurement
-            assert str_rep == "TEST1TEST2"
+            assert (
+                str_rep
+                == "\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45.123000\n    REFLON=-120.456000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n"
+            )
 
             # Also check __repr__
             repr_str = repr(custom_define_measurement)
@@ -237,16 +240,16 @@ class TestDefineMeasurementMethods:
 
     def test_get_measurement_dict(self, custom_define_measurement, subtests):
         """Test get_measurement_dict method."""
-        meas_dict = custom_define_measurement.get_measurement_dict()
+        meas_dict = custom_define_measurement.measurements
 
         with subtests.test(msg="dict contains correct keys"):
-            assert "EX" in meas_dict
-            assert "HY" in meas_dict
+            assert "ex" in meas_dict
+            assert "hy" in meas_dict
             assert len(meas_dict) == 2
 
         with subtests.test(msg="dict maps to correct objects"):
-            assert meas_dict["EX"] is custom_define_measurement.measurements["ex"]
-            assert meas_dict["HY"] is custom_define_measurement.measurements["hy"]
+            assert meas_dict["ex"] is custom_define_measurement.measurements["ex"]
+            assert meas_dict["hy"] is custom_define_measurement.measurements["hy"]
 
     def test_write_measurement_content(self, custom_define_measurement, subtests):
         """Test write_measurement method content."""
@@ -266,7 +269,7 @@ class TestDefineMeasurementMethods:
             "REFLAT=45.123",
             "REFLON=-120.456",
             "REFELEV=1050.0",
-            "UNITS=meters",
+            "UNITS=meter",
         ]
 
         for field in required_fields:
@@ -359,7 +362,7 @@ class TestDefineMeasurementReading:
             "reflat": 30.500,
             "reflon": 140.250,
             "refelev": 100,
-            "units": "m",
+            "units": "meter",
         }
 
         for attr, expected in scalar_attrs.items():

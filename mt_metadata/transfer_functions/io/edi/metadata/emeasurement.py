@@ -40,7 +40,7 @@ class EMeasurement(MetadataBase):
             description="channel type, should start with an 'e'",
             examples=["ex"],
             alias=None,
-            pattern=r"^[eE][a-zA-Z0-9_]+$",
+            pattern=r"^(RR|rr|[eE])[a-zA-Z0-9_]+$",
             json_schema_extra={
                 "units": None,
                 "required": True,
