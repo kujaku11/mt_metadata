@@ -4,17 +4,20 @@ Created on Sat Dec  4 14:13:37 2021
 
 @author: jpeacock
 """
+from loguru import logger
+from pydantic import Field, PrivateAttr
+
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base import Base
+from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import validate_name
 
 
 # ==============================================================================
 # Info object
 # ==============================================================================
-class Information(Base):
+class Information(MetadataBase):
     """
     Contain, read, and write info section of .edi file
 
@@ -24,14 +27,19 @@ class Information(Base):
 
     """
 
-    def __init__(self, fn=None, edi_lines=None):
-        self.info_list = []
-        self.info_dict = {}
-        self._phoenix_col_width = 38
-        self._phoenix_file = False
-        self._empower_file = False
-
-        self.phoenix_translation_dict = {
+    info_list: list[str] = Field(
+        default_factory=list,
+        description="List of information lines from the info section",
+    )
+    info_dict: dict[str, str] = Field(
+        default_factory=dict,
+        description="Dictionary of information lines from the info section",
+    )
+    _phoenix_col_width: int = PrivateAttr(default=38)
+    _phoenix_file: bool = PrivateAttr(default=False)
+    _empower_file: bool = PrivateAttr(default=False)
+    phoenix_translation_dict: dict[str, str | list] = PrivateAttr(
+        default_factory=lambda: {
             "survey": "survey.id",
             "company": "station.acquired_by.organization",
             "job": "survey.project",
@@ -52,8 +60,10 @@ class Information(Base):
             "start-up": "station.time_period.start",
             "end-time": "station.time_period.end",
         }
+    )
 
-        self.translation_dict = {
+    translation_dict: dict[str, str] = PrivateAttr(
+        default_factory=lambda: {
             "operator": "run.acquired_by.author",
             "adu_serial": "run.data_logger.id",
             "e_azimuth": "run.ex.measurement_azimuth",
@@ -87,8 +97,9 @@ class Information(Base):
             "remotesite": "transfer_function.remote_references",
             "remoteref": "transfer_function.processing_parameters",
         }
-
-        self.empower_translation_dict = {
+    )
+    empower_translation_dict: dict[str, str] = PrivateAttr(
+        default_factory=lambda: {
             "processingsoftware": "transfer_function.software.name",
             "sitename": "station.geographic_name",
             "year": "survey.time_period.start_date",
@@ -107,8 +118,7 @@ class Information(Base):
             "saturation": "comments",
             "instrument_type": "model",
         }
-
-        super().__init__(attr_dict={})
+    )
 
     def __str__(self):
         return "".join(self.write_info())
@@ -116,15 +126,21 @@ class Information(Base):
     def __repr__(self):
         return self.__str__()
 
-    def get_info_list(self, edi_lines):
+    def get_info_list(self, edi_lines: list[str]) -> list[str]:
         """
-        get a list of lines from the info section
+        get the information section of the edi file
+        This is the section that starts with >info and ends with a line that
+        starts with > or is empty.
 
-        :param edi_lines: DESCRIPTION
-        :type edi_lines: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        edi_lines : list[str]
+            list of lines from the edi file
 
+        Returns
+        -------
+        list[str]
+            list of information lines from the edi file
         """
 
         info_list = []
@@ -177,7 +193,7 @@ class Information(Base):
             info_list = self._validate_info_list(info_list, sort=True)
         return info_list
 
-    def read_info(self, edi_lines):
+    def read_info(self, edi_lines: list[str]) -> None:
         """
         read information section of the .edi file
         """
@@ -216,10 +232,12 @@ class Information(Base):
             self.parse_info()
 
         if self.info_list is None:
-            self.logger.info("Could not read information")
+            logger.info("Could not read information")
             return
 
-    def _read_empower_info(self, info_list):
+    def _read_empower_info(
+        self, info_list: list[str]
+    ) -> tuple[dict[str, str], list[str]]:
         """
         read empower style information block.  Structured as
 
@@ -306,7 +324,7 @@ class Information(Base):
 
         return info_dict, new_list
 
-    def _get_separator(self, line):
+    def _get_separator(self, line: str) -> str | None:
         """
         get separator to split line
 
@@ -331,7 +349,23 @@ class Information(Base):
 
         return sep
 
-    def _read_line(self, line):
+    def _read_line(self, line: str) -> tuple[str, str | list[str] | None]:
+        """
+        read a line from the info section of the edi file and return a key and
+        value.  If the line is not in the correct format, return the line as
+        the key and None as the value.
+
+        Parameters
+        ----------
+        line : str
+            line from the info section of the edi file
+
+        Returns
+        -------
+        tuple[str, str | list[str]]
+            key and value from the line.  If the line is not in the correct
+            format, return the line as the key and None as the value.
+        """
         sep = self._get_separator(line)
         if sep:
             l_list = line.split(sep, 1)
@@ -355,7 +389,7 @@ class Information(Base):
         else:
             return line, None
 
-    def write_info(self, info_list=None):
+    def write_info(self, info_list: list[str] = None) -> list[str]:
         """
         write out information
         """
@@ -369,7 +403,7 @@ class Information(Base):
 
         return info_lines
 
-    def _validate_info_list(self, info_list, sort=True):
+    def _validate_info_list(self, info_list: list[str], sort: bool = True) -> list[str]:
         """
         check to make sure the info list input is valid, really just checking
         for Phoenix format where they put two columns in the file and remove
@@ -393,7 +427,7 @@ class Information(Base):
 
         return new_info_list
 
-    def parse_info(self):
+    def parse_info(self) -> None:
         """
         Try to parse the info section into useful information.
         :return: DESCRIPTION
@@ -418,7 +452,7 @@ class Information(Base):
                             item_value = item.lower().split("=")[1].replace("mv", "")
                             new_dict[vkey] = item_value
                     else:
-                        self.logger.warning(f"Could not parse line {value}")
+                        logger.warning(f"Could not parse line {value}")
                         raise KeyError
                 else:
                     if new_key == "processing_parameter":
