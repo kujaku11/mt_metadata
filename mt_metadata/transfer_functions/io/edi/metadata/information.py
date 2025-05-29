@@ -38,7 +38,7 @@ class Information(MetadataBase):
     _phoenix_col_width: int = PrivateAttr(default=38)
     _phoenix_file: bool = PrivateAttr(default=False)
     _empower_file: bool = PrivateAttr(default=False)
-    phoenix_translation_dict: dict[str, str | list] = PrivateAttr(
+    _phoenix_translation_dict: dict[str, str | list] = PrivateAttr(
         default_factory=lambda: {
             "survey": "survey.id",
             "company": "station.acquired_by.organization",
@@ -62,7 +62,7 @@ class Information(MetadataBase):
         }
     )
 
-    translation_dict: dict[str, str] = PrivateAttr(
+    _translation_dict: dict[str, str] = PrivateAttr(
         default_factory=lambda: {
             "operator": "run.acquired_by.author",
             "adu_serial": "run.data_logger.id",
@@ -98,7 +98,7 @@ class Information(MetadataBase):
             "remoteref": "transfer_function.processing_parameters",
         }
     )
-    empower_translation_dict: dict[str, str] = PrivateAttr(
+    _empower_translation_dict: dict[str, str] = PrivateAttr(
         default_factory=lambda: {
             "processingsoftware": "transfer_function.software.name",
             "sitename": "station.geographic_name",
@@ -293,7 +293,7 @@ class Information(MetadataBase):
                 ]:
                     continue
                 try:
-                    l_key = self.empower_translation_dict[l_key]
+                    l_key = self._empower_translation_dict[l_key]
                 except KeyError:
                     new_list.append(f"{l_key} = {l_value}")
 
@@ -441,9 +441,9 @@ class Information(MetadataBase):
                 continue
             try:
                 if self._phoenix_file:
-                    new_key = self.phoenix_translation_dict[key.lower()]
+                    new_key = self._phoenix_translation_dict[key.lower()]
                 else:
-                    new_key = self.translation_dict[key.lower()]
+                    new_key = self._translation_dict[key.lower()]
 
                 if isinstance(new_key, list):
                     values = value.split(",")
