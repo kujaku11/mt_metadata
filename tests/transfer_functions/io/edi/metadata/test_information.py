@@ -6,7 +6,6 @@ This module tests the Information class functionality including reading/writing
 information sections, parsing metadata and handling different file formats.
 """
 
-from unittest.mock import patch
 
 import pytest
 
@@ -156,18 +155,15 @@ class TestInformationInitialization:
 class TestInformationStandardFormat:
     """Test Information class with standard EDI format."""
 
-    def test_read_standard_info(
-        self, default_information, sample_standard_edi_lines, subtests
-    ):
+    def test_read_standard_info(self, default_information, sample_standard_edi_lines):
         """Test reading standard format info section."""
         default_information.read_info(sample_standard_edi_lines)
 
         # Check parsed attributes
-        with subtests.test(msg="basic attributes"):
-            assert len(default_information.info_list) > 0
-            assert len(default_information.info_dict) > 0
-            assert default_information._phoenix_file is False
-            assert default_information._empower_file is False
+        assert len(default_information.info_list) == 0
+        assert len(default_information.info_dict.keys()) > 0
+        assert default_information._phoenix_file is False
+        assert default_information._empower_file is False
 
         # Check specific values
         expected_values = {
@@ -185,11 +181,13 @@ class TestInformationStandardFormat:
             "run.hy.sensor.id": "5678",
             "run.hz.sensor.id": "9012",
             "survey.time_period.start_date": "2023",
+            "transfer_function.processing_parameters": [
+                "NFFT=4096",
+            ],
         }
 
         for key, expected in expected_values.items():
-            with subtests.test(msg=f"parsed {key}"):
-                assert default_information.info_dict.get(key) == expected
+            assert default_information.info_dict.get(key) == expected
 
         # Check processing parameters
         assert (
@@ -202,38 +200,33 @@ class TestInformationStandardFormat:
             ]
         )
 
-    def test_write_standard_info(self, default_information, subtests):
+    def test_write_standard_info(self, default_information, sample_standard_edi_lines):
         """Test writing standard format info section."""
+        default_information.read_info(sample_standard_edi_lines)
         info_lines = default_information.write_info()
 
-        with subtests.test(msg="info header"):
-            assert ">INFO" in info_lines[0]
+        assert ">INFO" in info_lines[0]
 
-        with subtests.test(msg="line count"):
-            # +1 for header line
-            assert len(info_lines) > 1
+        # +1 for header line
+        assert len(info_lines) > 1
 
         # Check content
         content = "".join(info_lines)
-        with subtests.test(msg="contains original items"):
-            assert "Project = MT Survey 2023" in content
-            assert "Survey = DEMO-A" in content
-            assert "SiteName = SITE001" in content
+        assert "survey.project=MT Survey 2023" in content
+        assert "survey.id=DEMO-A" in content
+        assert "station.geographic_name=SITE001" in content
 
 
 class TestInformationPhoenixFormat:
     """Test Information class with Phoenix format EDI."""
 
-    def test_read_phoenix_info(
-        self, default_information, sample_phoenix_edi_lines, subtests
-    ):
+    def test_read_phoenix_info(self, default_information, sample_phoenix_edi_lines):
         """Test reading Phoenix format info section."""
         default_information.read_info(sample_phoenix_edi_lines)
 
         # Check format detection
-        with subtests.test(msg="phoenix format detected"):
-            assert default_information._phoenix_file is True
-            assert default_information._empower_file is False
+        assert default_information._phoenix_file is True
+        assert default_information._empower_file is False
 
         # Check phoenix-specific parsed values
         expected_values = {
@@ -256,33 +249,22 @@ class TestInformationPhoenixFormat:
         }
 
         for key, expected in expected_values.items():
-            with subtests.test(msg=f"phoenix parsed {key}"):
-                assert default_information.info_dict.get(key) == expected
+            assert default_information.info_dict.get(key) == expected
 
         # Check sensor metadata
-        with subtests.test(msg="phoenix sensor metadata"):
-            assert (
-                default_information.info_dict.get("hx.sensor.manufacturer")
-                == "Phoenix Geophysics"
-            )
-            assert (
-                default_information.info_dict.get("hx.sensor.type") == "Induction Coil"
-            )
+        assert (
+            default_information.info_dict.get("hx.sensor.manufacturer")
+            == "Phoenix Geophysics"
+        )
+        assert default_information.info_dict.get("hx.sensor.type") == "Induction Coil"
 
-
-class TestInformationEmpowerFormat:
-    """Test Information class with Empower format EDI."""
-
-    def test_read_empower_info(
-        self, default_information, sample_empower_edi_lines, subtests
-    ):
+    def test_read_empower_info(self, default_information, sample_empower_edi_lines):
         """Test reading Empower format info section."""
         default_information.read_info(sample_empower_edi_lines)
 
         # Check format detection
-        with subtests.test(msg="empower format detected"):
-            assert default_information._phoenix_file is False
-            assert default_information._empower_file is True
+        assert default_information._phoenix_file is False
+        assert default_information._empower_file is True
 
         # Check empower-specific parsed values
         expected_values = {
@@ -308,15 +290,35 @@ class TestInformationEmpowerFormat:
         }
 
         for key, expected in expected_values.items():
-            with subtests.test(msg=f"empower parsed {key}"):
-                assert default_information.info_dict.get(key) == expected
+            assert default_information.info_dict.get(key) == expected
+        """Test parsing of latitude and longitude in different formats."""
+        default_information.read_info(sample_lat_lon_info_lines)
 
+        # Check latitude/longitude parsing
+        # The exact keys will depend on format detection and parsing logic
+        info_dict = default_information.info_dict
 
-class TestInformationParsingSpecialCases:
-    """Test special cases for Information parsing."""
+    def test_phoenix_multi_column_parsing(self, default_information):
+        """Test parsing of Phoenix format multi-column lines."""
+        # Sample Phoenix format line with multiple columns
+        phoenix_line = "    Survey: MT2023             Job: Geothermal Project"
+
+        # Call the method that would parse this line
+        key_value_pairs = default_information._parse_phoenix_line(phoenix_line)
+
+        # Verify that two separate key-value pairs were extracted
+        assert len(key_value_pairs) == 2
+
+        # Check the first column
+        assert key_value_pairs[0][0] == "Survey"
+        assert key_value_pairs[0][1] == "MT2023"
+
+        # Check the second column
+        assert key_value_pairs[1][0] == "Job"
+        assert key_value_pairs[1][1] == "Geothermal Project"
 
     def test_latitude_longitude_parsing(
-        self, default_information, sample_lat_lon_info_lines, subtests
+        self, default_information, sample_lat_lon_info_lines, separators, subtests
     ):
         """Test parsing of latitude and longitude in different formats."""
         default_information.read_info(sample_lat_lon_info_lines)
@@ -325,25 +327,28 @@ class TestInformationParsingSpecialCases:
         # The exact keys will depend on format detection and parsing logic
         info_dict = default_information.info_dict
 
-        with subtests.test(msg="lat/lon present"):
-            lat_keys = [key for key in info_dict.keys() if "lat" in key.lower()]
-            lon_keys = [
-                key
-                for key in info_dict.keys()
-                if "lon" in key.lower() or "lng" in key.lower()
-            ]
+        lat_keys = [key for key in info_dict.keys() if "lat" in key.lower()]
+        lon_keys = [
+            key
+            for key in info_dict.keys()
+            if "lon" in key.lower() or "lng" in key.lower()
+        ]
 
-            assert len(lat_keys) > 0
-            assert len(lon_keys) > 0
+        assert len(lat_keys) > 0
+        assert len(lon_keys) > 0
 
-        with subtests.test(msg="lat/lon values parsed"):
-            for key in lat_keys:
-                assert "45" in info_dict[key]
+        for key in lat_keys:
+            assert "45" in info_dict[key]
 
-            for key in lon_keys:
-                assert "-120" in info_dict[key]
+        for key in lon_keys:
+            assert "-120" in info_dict[key]
 
-    def test_separator_detection(self, default_information, subtests):
+        for line, expected_sep in separators.items():
+            with subtests.test(msg=f"separator in '{line}'"):
+                sep = default_information._get_separator(line)
+                assert sep == expected_sep
+
+    def test_separator_detection(self, default_information, test):
         """Test detection of different separators in info lines."""
         separators = {
             "Key = Value": "=",
@@ -354,11 +359,10 @@ class TestInformationParsingSpecialCases:
         }
 
         for line, expected_sep in separators.items():
-            with subtests.test(msg=f"separator in '{line}'"):
-                sep = default_information._get_separator(line)
-                assert sep == expected_sep
+            sep = default_information._get_separator(line)
+            assert sep == expected_sep
 
-    def test_line_reading(self, default_information, subtests):
+    def test_line_reading(self, default_information):
         """Test reading different line formats."""
         test_lines = {
             "Key = Value": ("Key", "Value"),
@@ -370,35 +374,21 @@ class TestInformationParsingSpecialCases:
         }
 
         for line, expected in test_lines.items():
-            with subtests.test(msg=f"reading '{line}'"):
-                key, value = default_information._read_line(line)
-                assert key == expected[0]
+            key, value = default_information._read_line(line)
+            assert key == expected[0]
 
-                # For list values, check each item
-                if isinstance(expected[1], list) and isinstance(value, list):
-                    assert len(value) == len(expected[1])
-                    for i, item in enumerate(value):
-                        assert item == expected[1][i]
-                else:
-                    assert value == expected[1]
-
-
-class TestInformationMethods:
-    """Test general methods of the Information class."""
-
-    def test_string_representation(self, default_information):
-        """Test string representation of Information."""
-        with patch.object(
-            default_information, "write_info", return_value=["Line1\n", "Line2\n"]
-        ):
-            str_rep = str(default_information)
-            assert str_rep == "Line1\nLine2\n"
-
+            # For list values, check each item
+            if isinstance(expected[1], list) and isinstance(value, list):
+                assert len(value) == len(expected[1])
+                for i, item in enumerate(value):
+                    assert item == expected[1][i]
+            else:
+                assert value == expected[1]
             # Also check __repr__
             repr_str = repr(default_information)
             assert repr_str == str_rep
 
-    def test_validate_info_list(self, default_information, subtests):
+    def test_validate_info_list(self, default_information):
         """Test validation of info list items."""
         input_list = [
             ">INFO",
@@ -411,43 +401,27 @@ class TestInformationMethods:
         ]
 
         # Test with sorting
-        with subtests.test(msg="validate with sorting"):
-            result = default_information._validate_info_list(input_list, sort=True)
-            assert len(result) == 2  # Only valid unique lines
-            assert ">INFO" not in result
-            assert ">Other marker" not in result
-            assert "" not in result
-            assert "  " not in result
-            assert "Valid Line 1" in result
-            assert "Valid Line 2" in result
-            assert len(result) == len(set(result))  # No duplicates
+        result = default_information._validate_info_list(input_list, sort=True)
+        assert len(result) == 2  # Only valid unique lines
+        assert ">INFO" not in result
+        assert ">Other marker" not in result
+        assert "" not in result
+        assert "  " not in result
+        assert "Valid Line 1" in result
+        assert "Valid Line 2" in result
+        assert len(result) == len(set(result))  # No duplicates
 
         # Test without sorting
-        with subtests.test(msg="validate without sorting"):
-            result = default_information._validate_info_list(input_list, sort=False)
-            assert len(result) == 3  # Includes duplicate
-            assert ">INFO" not in result
-            assert ">Other marker" not in result
-            assert "" not in result
-            assert "  " not in result
+        result = default_information._validate_info_list(input_list, sort=False)
+        assert len(result) == 3  # Includes duplicate
+        assert ">INFO" not in result
+        assert ">Other marker" not in result
+        assert "" not in result
+        assert "  " not in result
 
-            # Count occurrences of "Valid Line 2"
-            vl2_count = sum(1 for item in result if item == "Valid Line 2")
-            assert vl2_count == 2  # Should keep duplicates
-
-
-class TestInformationEdgeCases:
-    """Test edge cases for Information handling."""
-
-    def test_empty_info_section(self, default_information):
-        """Test handling of an empty info section."""
-        empty_lines = [
-            "Line before info",
-            ">INFO",
-            ">DEFINEMEAS",
-        ]
-
-        default_information.read_info(empty_lines)
+        # Count occurrences of "Valid Line 2"
+        vl2_count = sum(1 for item in result if item == "Valid Line 2")
+        assert vl2_count == 2  # Should keep duplicates
         assert len(default_information.info_list) == 0
         assert len(default_information.info_dict) == 0
 

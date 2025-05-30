@@ -4,12 +4,14 @@ Created on Sat Dec  4 14:13:37 2021
 
 @author: jpeacock
 """
-from loguru import logger
-from pydantic import Field, PrivateAttr
-
 # =============================================================================
 # Imports
 # =============================================================================
+import re
+
+from loguru import logger
+from pydantic import Field, PrivateAttr
+
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import validate_name
 
@@ -31,7 +33,7 @@ class Information(MetadataBase):
         default_factory=list,
         description="List of information lines from the info section",
     )
-    info_dict: dict[str, str] = Field(
+    info_dict: dict[str, str | list] = Field(
         default_factory=dict,
         description="Dictionary of information lines from the info section",
     )
@@ -125,6 +127,27 @@ class Information(MetadataBase):
 
     def __repr__(self):
         return self.__str__()
+
+    @staticmethod
+    def identify_phoenix_columns(line):
+        """
+        Identify if a line contains multiple columns using multiple techniques.
+        Returns a tuple of (is_multi_column, first_column, second_column)
+        """
+        # 1. Check for multiple key-value separators
+        separators = line.count(":") + line.count("=")
+
+        if len(separators) < 2:
+            return False
+
+        # 2. Look for large whitespace gap between words
+        # Pattern: word, separator, word, many spaces, word, separator, word
+        pattern = r"(\w+\s*[:=]\s*\w+)\s{3,}(\w+\s*[:=]\s*\w+)"
+
+        if re.search(pattern, line):
+            return True
+
+        return False
 
     def get_info_list(self, edi_lines: list[str]) -> list[str]:
         """
@@ -225,7 +248,7 @@ class Information(MetadataBase):
                 # need to check if there is an = or : seperator, which ever
                 # comes first is assumed to be the delimiter
                 l_key, l_value = self._read_line(ll)
-                if l_key:
+                if l_key and l_value is not None:
                     self.info_dict[l_key] = l_value
 
         if not self._empower_file:
@@ -237,7 +260,7 @@ class Information(MetadataBase):
 
     def _read_empower_info(
         self, info_list: list[str]
-    ) -> tuple[dict[str, str], list[str]]:
+    ) -> tuple[dict[str, str | list], list[str]]:
         """
         read empower style information block.  Structured as
 
@@ -297,13 +320,24 @@ class Information(MetadataBase):
                 except KeyError:
                     new_list.append(f"{l_key} = {l_value}")
 
-                l_value = l_value.encode("ascii", "ignore").decode().lower()
-                if l_value.count("[") >= 1 and l_value.count("]") >= 1:
-                    l_value = l_value.split("[")[0].strip()
-                if l_value.count("%") >= 0:
-                    l_value = l_value.replace("%", "")
-                if l_key in ["component"]:
-                    l_value = ch_key[l_value]
+                if isinstance(l_value, str):
+                    l_value = l_value.encode("ascii", "ignore").decode().lower()
+                    if l_value.count("[") >= 1 and l_value.count("]") >= 1:
+                        l_value = l_value.split("[")[0].strip()
+                    if "%" in l_value:
+                        l_value = l_value.replace("%", "")
+                    if l_key in ["component"]:
+                        l_value = ch_key.get(l_value, l_value)
+                elif isinstance(l_value, list):
+                    l_value = [
+                        (
+                            v.encode("ascii", "ignore").decode().lower()
+                            if isinstance(v, str)
+                            else v
+                        )
+                        for v in l_value
+                    ]
+                # If l_value is None, do nothing
 
                 if comp:
                     if comp in ["run.hx", "run.hy", "run.hz"]:
@@ -385,11 +419,11 @@ class Information(MetadataBase):
                         l_value = l_value.replace("[", "").replace("[", "").split(l_sep)
                 return l_key, l_value
             else:
-                return l_key, ""
+                return l_list[0].strip(), ""
         else:
             return line, None
 
-    def write_info(self, info_list: list[str] = None) -> list[str]:
+    def write_info(self, info_list: list[str] | None = None) -> list[str]:
         """
         write out information
         """
@@ -400,6 +434,15 @@ class Information(MetadataBase):
         info_lines = [">INFO\n"]
         for line in sorted(list(set(self.info_list))):
             info_lines.append(f"{' '*4}{line}\n")
+
+        for key, value in self.info_dict.items():
+            if key is None:
+                continue
+            if isinstance(value, list):
+                value = ",".join(value)
+            if isinstance(value, str):
+                value = value.strip()
+            info_lines.append(f"{' '*4}{key}={value}\n")
 
         return info_lines
 
@@ -471,8 +514,10 @@ class Information(MetadataBase):
                             "survey.time_period.start_date",
                             "survey.time_period.end_date",
                         ]:
-                            if value.count("-") == 1:
+                            if value.count("-") >= 1:
                                 new_dict[new_key] = value.split("-")[0]
+                            else:
+                                new_dict[new_key] = value
                         else:
                             new_dict[new_key] = value
 
