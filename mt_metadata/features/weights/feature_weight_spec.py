@@ -36,14 +36,22 @@ class FeatureWeightSpec(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
+        """
+            Consstuctor.
+        """
         self._feature = None  # <-- initialize the backing variable directly
         super().__init__(attr_dict=attr_dict, **kwargs)
         weight_kernels = kwargs.get("weight_kernels", [])
         self.weight_kernels = weight_kernels
 
-
+    # TODO: Remove this method after mt_metadata pydantic upgrade   
+    # This is a workaround to ensure the setter logic runs when feature is a dict
+    # This is needed because the setter logic is not automatically triggered
+    # when the object is created from a dict.
     def post_from_dict(self):
-        # If feature is a dict, force the setter logic to run
+        """
+            If feature is a dict, force the setter logic to run
+        """
         if isinstance(self.feature, dict):
             self.feature = self.feature
         # Optionally, do the same for weight_kernels if needed
@@ -184,56 +192,3 @@ def from_dict_unwrap(self, d):
     return orig_from_dict(self, d)
 
 FeatureWeightSpec.from_dict = from_dict_unwrap
-
-# --------------- TODO: Move the snippets below into tests/ -----------------
-def tst_init():
-    fws = FeatureWeightSpec()
-    # Test loading from updated dict for TaperMonotonicWeightKernel
-    fws.from_dict({
-        "feature": {
-            "name": "coherence",
-            "ch1": "ex",
-            "ch2": "hy"
-        },
-        "weight_kernels": [
-            {
-                "style": "taper",
-                "half_window_style": "hann",
-                "transition_lower_bound": 0.3,
-                "transition_upper_bound": 0.8,
-                "threshold": "low cut"
-            }
-        ]
-    })
-    print("1", type(fws.feature))
-    print(fws)
-     # Force the setter to run on the dict
-    fws.feature = fws.feature
-    print("2", type(fws.feature))
-    print(fws)
-
-def tst_from_json():
-    fws = FeatureWeightSpec()
-    fws.from_dict(
-        {
-            "feature": {
-                "name": "multiple_coherence",
-                "output_channel": "ey"
-            },
-            "weight_kernels": [
-                {
-                    "weight_kernel": {
-                        "half_window_style": "hann",
-                        "transition_lower_bound": 0.4,
-                        "transition_upper_bound": 0.8,
-                        "threshold": "low cut"
-                    }
-                }
-            ]
-        }
-    )
-
-
-if __name__ == "__main__":
-    tst_init()
-    tst_from_json()

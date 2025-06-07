@@ -12,6 +12,38 @@ from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicW
 
 class TestFeatureWeightSpec(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """
+        Set up the class for testing.
+        This method is called once for the entire test class.
+        """
+        cls.example_feature_dict = {
+            "feature": {
+                "name": "coherence",
+                "ch1": "ex",
+                "ch2": "hy",
+                "detrend": "linear",
+                "window": {
+                    "clock_zero_type": "ignore",
+                    "normalized": True,
+                    "num_samples": 512,
+                    "overlap": 128,
+                    "type": "hamming"
+                }
+            },
+            "weight_kernels": [
+                {
+                    "style": "taper",
+                    "half_window_style": "hann",
+                    "transition_lower_bound": 0.3,
+                    "transition_upper_bound": 0.8,
+                    "threshold": "low cut"
+                }
+            ]
+        }
+
+
     def setUp(self):
         """
         Set up a FeatureWeightSpec instance for testing.
@@ -41,6 +73,10 @@ class TestFeatureWeightSpec(unittest.TestCase):
         #     feature_params={"param1": "value1"},
         #     weight_kernels=[self.kernel1, self.kernel2],
         # )
+
+    def test_init_from_dict(self):
+        feature_weight_spec = FeatureWeightSpec()
+        feature_weight_spec.from_dict(d=self.example_feature_dict)
 
     def test_features(self):
         """
@@ -90,32 +126,3 @@ class TestFeatureWeightSpec(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-# def test_feature_weight_spec():
-#     example_feature_dict = {
-#         "feature_name": "coherence",
-#         "feature_params": {"ch1": "ex", "ch2": "hy"},
-#         "weight_kernels": [
-#             {
-#                 "threshold": "low cut",
-#                 "half_window_style": "hann",
-#                 "transition_lower_bound": 0.3,
-#                 "transition_upper_bound": 0.8
-#             }
-#         ]
-#     }
-#     feature = FeatureWeightSpec()
-#     feature.from_dict(example_feature_dict)
-# #    feature = FeatureWeightSpec(**example_feature_dict)
-
-#     # Check if the attributes are correctly populated
-#     assert feature.feature_name == "coherence"
-#     assert feature.feature_params == {"ch1": "ex", "ch2": "hy"}
-#     assert len(feature.weight_kernels) == 1
-#     assert feature.weight_kernels[0]["threshold"] == "low cut"
-#     assert feature.weight_kernels[0]["half_window_style"] == "hann"
-
-#     print("FeatureWeightSpec test passed!")
-
-# if __name__ == "__main__":
-#     test_feature_weight_spec()
