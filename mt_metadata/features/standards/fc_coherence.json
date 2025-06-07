@@ -1,5 +1,5 @@
 {
-    "ch1": {
+    "channel_1": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -10,7 +10,7 @@
         "example": "ex",
         "default": null
     },
-    "ch2": {
+    "channel_2": {
         "type": "string",
         "required": true,
         "style": "free form",
@@ -21,37 +21,37 @@
         "example": "hy",
         "default": null
     },
-    "detrend": {
+    "minimum_fcs": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "The minimum number of Fourier coefficients needed to compute the feature.",
+        "options": [],
+        "alias": [],
+        "example": "2",
+        "default": "3"
+    },
+    "band_definition_type": {
         "type": "string",
         "required": true,
         "style": "controlled vocabulary",
         "units": null,
-        "description": "How to detrend the data segments before fft.",
-        "options": ["linear", "constant"],
+        "description": "How the feature frequency bands are defined.",
+        "options": ["Q", "fractional bandwidth", "user defined"],
         "alias": [],
-        "example": "constant",
-        "default": "linear"
+        "example": "user defined",
+        "default": "Q"
     },
-    "station1": {
+    "q_radius": {
         "type": "string",
         "required": true,
-        "style": "free form",
+        "style": "controlled vocabulary",
         "units": null,
-        "description": "The station associated with the first channel in the coherence calculation.",
-        "options": [],
+        "description": "How the feature frequency bands are defined.",
+        "options": ["constant Q", "user defined"],
         "alias": [],
-        "example": "PKD",
-        "default": ""
-    },
-    "station2": {
-        "type": "string",
-        "required": true,
-        "style": "free form",
-        "units": null,
-        "description": "The station associated with the second channel in the coherence calculation.",
-        "options": [],
-        "alias": [],
-        "example": "SAO",
-        "default": ""
+        "example": "user defined",
+        "default": "constant Q"
     }
 }

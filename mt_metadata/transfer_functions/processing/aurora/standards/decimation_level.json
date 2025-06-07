@@ -10,6 +10,17 @@
         "example": "[]",
 		"default": null
     },
+    "channel_weight_specs": {
+        "type": "integer",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of weighting schemes to use for TF processing for each output channel",
+        "options": [],
+        "alias": [],
+        "example": "[]",
+		"default": null
+    },
 	"input_channels": {
         "type": "string",
         "required": true,
