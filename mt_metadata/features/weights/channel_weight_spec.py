@@ -156,7 +156,7 @@ class ChannelWeightSpec(Base):
         import numpy as np
 
         weights = []
-        for feature_spec in self.features:
+        for feature_spec in self.feature_weight_specs:
             fname = feature_spec.feature_name
             if fname not in feature_values_dict:
                 raise KeyError(f"Feature values missing for '{fname}'")
@@ -178,63 +178,3 @@ class ChannelWeightSpec(Base):
             return np.max(weights, axis=0)
         else:
             raise ValueError(f"Unknown combination style: {combo}")
-
-
-
-def tst_from_json():
-
-    example_chws_dict = {
-        "combination_style": "multiplication",
-        "feature_weight_specs": [
-            {
-                "feature_weight_spec": {
-                    "feature":{
-                        "name": "coherence",
-                        "ch1": "ex",
-                        "ch2": "hy"
-                    },
-                    "weight_kernels": [
-                        {
-                            "weight_kernel": {
-                                "style": "taper",
-                                "half_window_style": "hann",
-                                "transition_lower_bound": 0.3,
-                                "transition_upper_bound": 0.8,
-                                "threshold": "low cut"
-                            }
-                        }
-                    ]
-                }
-            },
-            {
-                "feature_weight_spec": {
-                    "feature":{
-                        "name": "multiple_coherence",
-                        "output_channel": "ex"
-                    },
-                    "weight_kernels": [
-                        {
-                            "weight_kernel": {
-                                "style": "taper",
-                                "half_window_style": "hann",
-                                "transition_lower_bound": 0.8,
-                                "transition_upper_bound": 0.9,
-                                "threshold": "low cut"
-                            }
-                        }
-                    ]
-                }
-            }
-        ]
-    }
-
-    cws = ChannelWeightSpec()
-    cws.from_dict(example_chws_dict)
-    print("OK")
-
-
-def main():
-    tst_from_json()
-
-if __name__ == "__main__":
-    main()
