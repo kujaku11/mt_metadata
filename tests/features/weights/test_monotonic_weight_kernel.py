@@ -56,7 +56,7 @@ class TestBaseMonotonicWeightKernel(unittest.TestCase):
         self.assertEqual(weights[-1], 1.0)
         self.assertEqual(len(weights), len(test_values))
 
-    def test_activation_monotonic_weight_kernel(self):
+    def test_activation_monotonic_weight_kernel_high_cut(self):
         # test high cut
         kernel_dict = {
             "transition_lower_bound": 0.3,
@@ -71,6 +71,8 @@ class TestBaseMonotonicWeightKernel(unittest.TestCase):
         self.assertAlmostEqual(weights[0], 1.0, places=1)
         self.assertAlmostEqual(weights[-1], 0.0, places=1)
         self.assertEqual(len(weights), len(test_values))
+
+    def test_activation_monotonic_weight_kernel_low_cut(self):
 
         # test low cut
         kernel_dict = {
