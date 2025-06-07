@@ -99,6 +99,7 @@ from .standards import SCHEMA_FN_PATHS
 from typing import Optional, Tuple
 
 import numpy as np
+import xarray as xr
 import scipy.signal as ssig
 
 # =============================================================================
@@ -258,7 +259,7 @@ class StridingWindowCoherence(Coherence):
         super().__init__(**kwargs)
         self.name = "striding_window_coherence"
         self.subwindow = subwindow if subwindow is not None else Window()
-        self.data = None
+        self._data = None  # TODO: Move this to BaseFeature?
         # Use window.num_samples_advance for main window stride
         if stride is not None:
             self._main_stride = int(stride)
@@ -274,6 +275,20 @@ class StridingWindowCoherence(Coherence):
         self.subwindow.num_samples = int(self.window.num_samples * fraction)
         self.subwindow.overlap = int(self.subwindow.num_samples // 2)
         # No need to update stride; main window stride is set by self.window.num_samples_advance
+
+    @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, value):
+        """
+        Set the data for this feature.
+        This is used to store the time series data that will be processed.
+        """
+        if not isinstance(value, (xr.DataArray, xr.Dataset, np.ndarray)):
+            raise TypeError("Data must be a numpy array or xarray.")
+        self._data = value  
 
     def compute(self, ts_1: np.ndarray, ts_2: np.ndarray):
         """
