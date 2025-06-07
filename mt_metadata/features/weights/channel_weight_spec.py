@@ -1,4 +1,7 @@
 """
+    Container for weighting strategy to apply to a single tf estimation
+    having a single output channel (usually one of "ex", "ey", "hz").
+
 candidate data structure:
     {
         "channel_weight_spec": {
@@ -34,7 +37,7 @@ candidate data structure:
     }
 }
 
-Candidate names: processing_weights, feature_weights, channel_weights_spec
+Candidate names: processing_weights, feature_weights, channel_weights_spec, channel_weighting
 
 """
 """
