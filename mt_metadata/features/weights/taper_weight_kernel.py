@@ -5,6 +5,7 @@
 import numpy as np
 from .monotonic_weight_kernel import TaperMonotonicWeightKernel
 from .base import BaseWeightKernel
+from typing import Tuple
 
 class TaperWeightKernel(BaseWeightKernel):
     """
@@ -23,8 +24,8 @@ class TaperWeightKernel(BaseWeightKernel):
     """
     def __init__(
             self, 
-            low_cut: tuple[float, float], 
-            high_cut: tuple[float, float], 
+            low_cut: Tuple[float, float], 
+            high_cut: Tuple[float, float], 
             style: str = "hann", 
             **kwargs
             ):

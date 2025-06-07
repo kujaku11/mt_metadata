@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from mt_metadata.features.weights.taper_weight_kernel import TaperWeightKernel
+from typing import Tuple
 
 class DummyBaseWeightKernel:
     def __init__(self, **kwargs):
@@ -50,8 +51,8 @@ def test_taper_weight_kernel_rectangle():
 
 def test_taper_weight_kernel_typehints():
     # Check type hints and docstring presence
-    assert TaperWeightKernel.__init__.__annotations__["low_cut"] == tuple[float, float]
-    assert TaperWeightKernel.__init__.__annotations__["high_cut"] == tuple[float, float]
+    assert TaperWeightKernel.__init__.__annotations__["low_cut"] == Tuple[float, float]
+    assert TaperWeightKernel.__init__.__annotations__["high_cut"] == Tuple[float, float]
     assert TaperWeightKernel.__init__.__annotations__["style"] == str
     assert TaperWeightKernel.evaluate.__annotations__["values"] == np.ndarray
     assert TaperWeightKernel.evaluate.__annotations__["return"] == np.ndarray

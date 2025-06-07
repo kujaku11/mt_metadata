@@ -5,10 +5,11 @@
 
 """
 
+from .base import BaseWeightKernel
+from .standards import SCHEMA_FN_PATHS
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from .base import BaseWeightKernel
+
 
 import numpy as np
 
