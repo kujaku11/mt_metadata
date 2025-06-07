@@ -156,12 +156,12 @@ class ChannelWeightSpec(Base):
         import numpy as np
 
         weights = []
-        for feature_spec in self.feature_weight_specs:
-            fname = feature_spec.feature_name
+        for feature_weight_spec in self.feature_weight_specs:
+            fname = feature_weight_spec.feature.name
             if fname not in feature_values_dict:
                 raise KeyError(f"Feature values missing for '{fname}'")
 
-            w = feature_spec.evaluate(feature_values_dict[fname])
+            w = feature_weight_spec.evaluate(feature_values_dict[fname])
             weights.append(w)
 
         if not weights:
