@@ -14,7 +14,7 @@ This will let you do things like:
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.features.feature import Feature
-from mt_metadata.features.weights.monotonic_weight_kernel import BaseMonotonicWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
 from mt_metadata.features.weights.monotonic_weight_kernel import ActivationMonotonicWeightKernel
 from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicWeightKernel
 from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
@@ -150,7 +150,7 @@ def _unpack_weight_kernels(weight_kernels):
             elif "half_window_style" in wk or wk.get("style") == "taper":
                 result.append(TaperMonotonicWeightKernel(**wk))
             else:
-                result.append(BaseMonotonicWeightKernel(**wk))
+                result.append(MonotonicWeightKernel(**wk))
         else:
             result.append(wk)
     return result

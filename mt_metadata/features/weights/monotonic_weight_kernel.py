@@ -17,11 +17,11 @@ import numpy as np
 TAPER_STYLES = ["rectangle", "hann", "hamming", "blackman"]
 ACTIVATION_STYLES = ["sigmoid", "hard_sigmoid", "tanh", "hard_tanh"]
 
-base_attr_dict = get_schema("base_monotonic_weight_kernel", SCHEMA_FN_PATHS)
+base_attr_dict = get_schema("monotonic_weight_kernel", SCHEMA_FN_PATHS)
 taper_attr_dict = get_schema("taper_monotonic_weight_kernel", SCHEMA_FN_PATHS)
 activation_attr_dict = get_schema("activation_monotonic_weight_kernel", SCHEMA_FN_PATHS)
 
-class BaseMonotonicWeightKernel(BaseWeightKernel):
+class MonotonicWeightKernel(BaseWeightKernel):
     """
     MonotonicWeightKernel
 
@@ -88,12 +88,12 @@ class BaseMonotonicWeightKernel(BaseWeightKernel):
             values = np.asarray(values)
             return (values - lb) / (ub - lb)
         else:
-            raise ValueError("BaseMonotonicWeightKernel only supports finite transition bounds. "
+            raise ValueError("MonotonicWeightKernel only supports finite transition bounds. "
                             "Override _normalize in subclasses for infinite bounds.")
     
 
 
-class TaperMonotonicWeightKernel(BaseMonotonicWeightKernel):
+class TaperMonotonicWeightKernel(MonotonicWeightKernel):
     """
     Handles taper/window styles: rectangle, hann, hamming, blackman.
     """
@@ -159,7 +159,7 @@ class TaperMonotonicWeightKernel(BaseMonotonicWeightKernel):
         else:
             raise ValueError(f"Unsupported taper style: {taper}")
 
-class ActivationMonotonicWeightKernel(BaseMonotonicWeightKernel):
+class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     """
     Handles activation styles: sigmoid, hard_sigmoid, tanh, hard_tanh.
 

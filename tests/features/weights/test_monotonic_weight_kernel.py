@@ -5,16 +5,16 @@
 import numpy as np
 import unittest
 
-from mt_metadata.features.weights.monotonic_weight_kernel import BaseMonotonicWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
 from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicWeightKernel
 from mt_metadata.features.weights.monotonic_weight_kernel import ActivationMonotonicWeightKernel
 
-class TestBaseMonotonicWeightKernel(unittest.TestCase):
+class TestMonotonicWeightKernel(unittest.TestCase):
 
     def test_init_defaults(self):
         # Should initialize with defaults from schema
-        kernel = BaseMonotonicWeightKernel()
-        self.assertIsInstance(kernel, BaseMonotonicWeightKernel)
+        kernel = MonotonicWeightKernel()
+        self.assertIsInstance(kernel, MonotonicWeightKernel)
 
     def test_base_monotonic_weight_kernel_low_cut(self):
         kernel_dict = {
@@ -22,7 +22,7 @@ class TestBaseMonotonicWeightKernel(unittest.TestCase):
             "transition_upper_bound": 0.8,
             "threshold": "low cut"
         }
-        kernel = BaseMonotonicWeightKernel()
+        kernel = MonotonicWeightKernel()
         kernel.from_dict(kernel_dict)
 
     def test_taper_monotonic_weight_kernel(self):

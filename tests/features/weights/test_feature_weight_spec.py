@@ -6,7 +6,7 @@ import numpy as np
 from mt_metadata.features.coherence import Coherence
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.feature_weight_spec import _unpack_weight_kernels
-from mt_metadata.features.weights.monotonic_weight_kernel import BaseMonotonicWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
 from mt_metadata.features.weights.monotonic_weight_kernel import TaperMonotonicWeightKernel
 
 
@@ -85,7 +85,7 @@ class TestFeatureWeightSpec(unittest.TestCase):
         ]
         unpacked_kernels = _unpack_weight_kernels(weight_kernels)
         self.assertEqual(len(unpacked_kernels), 2)
-        self.assertIsInstance(unpacked_kernels[0], BaseMonotonicWeightKernel)
+        self.assertIsInstance(unpacked_kernels[0], MonotonicWeightKernel)
 
 
 if __name__ == "__main__":
