@@ -5,7 +5,7 @@
 import unittest
 import numpy as np
 
-from mt_metadata.features.weights.threshold_weight_kernel import ThresholdWeightKernel
+from mt_metadata.features.weights.monotonic_weight_kernel import ThresholdWeightKernel
 from mt_metadata.utils.exceptions import MTSchemaError
 
 class TestThresholdWeightKernel(unittest.TestCase):

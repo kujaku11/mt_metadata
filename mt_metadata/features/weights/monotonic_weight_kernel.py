@@ -159,6 +159,7 @@ class TaperMonotonicWeightKernel(MonotonicWeightKernel):
         else:
             raise ValueError(f"Unsupported taper style: {taper}")
 
+
 class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     """
     Handles activation styles: sigmoid, hard_sigmoid, tanh, hard_tanh.
@@ -213,6 +214,33 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
             raise ValueError(f"Unsupported activation style: {activation_style}")
 
         return y
+
+
+class ThresholdWeightKernel(TaperMonotonicWeightKernel):
+    """
+    ThresholdWeightKernel
+
+    A special case of MonotonicWeightKernel where the transition region is a single value,
+    resulting in a hard threshold (step function). This kernel outputs 0 or 1 depending on
+    whether the input is above or below the threshold, according to the threshold_type.
+
+    Parameters
+    ----------
+    threshold : float
+        The threshold value.
+    threshold_type : str, optional
+        "low cut" (default) or "high cut". Determines which side is downweighted.
+    **kwargs :
+        Additional keyword arguments passed to MonotonicWeightKernel.
+    """
+    def __init__(self, threshold, threshold_type="low cut", **kwargs):
+        super().__init__(
+            transition_lower_bound=threshold,
+            transition_upper_bound=threshold,
+            half_window_style="rectangle",
+            threshold=threshold_type,
+            **kwargs
+        )
 
 
 # TODO: Uncomment if needed for testing or future use
