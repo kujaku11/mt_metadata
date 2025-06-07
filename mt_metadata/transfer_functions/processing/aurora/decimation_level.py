@@ -8,11 +8,6 @@ Created on Thu Feb 17 14:15:20 2022
 @author: jpeacock
 
 
-TODO: Make/Import  class ChannelWeightSpec():
-    def __init__(self, **kwargs):
-        pass
-
-- DecimationLevel will have a _channel_weight_specs property, which is the list of ChannelWeightSpec objects
 
 """
 # =============================================================================
@@ -36,8 +31,8 @@ from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
 from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
-from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
-from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
+from mt_metadata.helper_functions import cast_to_class_if_dict
+from mt_metadata.helper_functions import validate_setter_input
 
 # =============================================================================
 attr_dict = get_schema("decimation_level", SCHEMA_FN_PATHS)

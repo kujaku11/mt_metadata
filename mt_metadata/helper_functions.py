@@ -1,5 +1,7 @@
 """
     This module has some general helper functions that it isn't yet clear where they should live.
+
+    These may not be needed at all after the pydantic upgrade is fully integrated.
 """
 
 from typing import Dict, List, Union

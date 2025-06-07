@@ -97,8 +97,8 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.features.weights.standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.processing.helper_functions import cast_to_class_if_dict
-from mt_metadata.transfer_functions.processing.helper_functions import validate_setter_input
+from mt_metadata.helper_functions import cast_to_class_if_dict
+from mt_metadata.helper_functions import validate_setter_input
 from typing import List, Union
 
 attr_dict = get_schema("channel_weight_spec", SCHEMA_FN_PATHS)
