@@ -124,15 +124,13 @@ def sample_empower_edi_lines():
 
 
 @pytest.fixture(scope="module")
-def sample_lat_lon_info_lines():
-    """Return sample EDI lines with different latitude/longitude formats."""
+def sample_multi_column_lines():
+    """Return sample multi-column lines for Phoenix format testing."""
     return [
-        ">INFO",
-        "    Lat 45.123 Long -120.456",
-        "    Lat=45.124 Lng=-120.457",
-        "    Latitude: 45.125 Longitude: -120.458",
-        "    Lat 45 30 30 Lon -120 30 30",
-        ">DEFINEMEAS",
+        "    Survey: MT2023             Job: Geothermal Project",
+        "    Stn Number: SITE001        MTU-Box Serial Number: 2345",
+        "    Hardware: V8               MTUProg Version: v3.16",
+        "    Ex Pot Resist: 0.8 kOhm    Ey Pot Resist: 1.1 kOhm",
     ]
 
 
@@ -146,7 +144,6 @@ class TestInformationInitialization:
 
     def test_default_values(self, default_information):
         """Test default values of Information instance."""
-        assert len(default_information.info_list) == 0
         assert len(default_information.info_dict) == 0
         assert default_information._phoenix_file is False
         assert default_information._empower_file is False
@@ -155,15 +152,17 @@ class TestInformationInitialization:
 class TestInformationStandardFormat:
     """Test Information class with standard EDI format."""
 
-    def test_read_standard_info(self, default_information, sample_standard_edi_lines):
+    def test_read_standard_info(
+        self, default_information, sample_standard_edi_lines, subtests
+    ):
         """Test reading standard format info section."""
         default_information.read_info(sample_standard_edi_lines)
 
         # Check parsed attributes
-        assert len(default_information.info_list) == 0
-        assert len(default_information.info_dict.keys()) > 0
-        assert default_information._phoenix_file is False
-        assert default_information._empower_file is False
+        with subtests.test(msg="basic attributes"):
+            assert len(default_information.info_dict) > 0
+            assert default_information._phoenix_file is False
+            assert default_information._empower_file is False
 
         # Check specific values
         expected_values = {
@@ -181,52 +180,34 @@ class TestInformationStandardFormat:
             "run.hy.sensor.id": "5678",
             "run.hz.sensor.id": "9012",
             "survey.time_period.start_date": "2023",
-            "transfer_function.processing_parameters": [
-                "NFFT=4096",
-            ],
         }
 
         for key, expected in expected_values.items():
-            assert default_information.info_dict.get(key) == expected
+            with subtests.test(msg=f"parsed {key}"):
+                assert default_information.info_dict.get(key) == expected
 
         # Check processing parameters
         assert (
             "transfer_function.processing_parameters" in default_information.info_dict
         )
-        assert any(
-            "NFFT=4096" in param
-            for param in default_information.info_dict[
-                "transfer_function.processing_parameters"
-            ]
-        )
-
-    def test_write_standard_info(self, default_information, sample_standard_edi_lines):
-        """Test writing standard format info section."""
-        default_information.read_info(sample_standard_edi_lines)
-        info_lines = default_information.write_info()
-
-        assert ">INFO" in info_lines[0]
-
-        # +1 for header line
-        assert len(info_lines) > 1
-
-        # Check content
-        content = "".join(info_lines)
-        assert "survey.project=MT Survey 2023" in content
-        assert "survey.id=DEMO-A" in content
-        assert "station.geographic_name=SITE001" in content
+        assert default_information.info_dict[
+            "transfer_function.processing_parameters"
+        ] == ["nfft=4096"]
 
 
 class TestInformationPhoenixFormat:
     """Test Information class with Phoenix format EDI."""
 
-    def test_read_phoenix_info(self, default_information, sample_phoenix_edi_lines):
+    def test_read_phoenix_info(
+        self, default_information, sample_phoenix_edi_lines, subtests
+    ):
         """Test reading Phoenix format info section."""
         default_information.read_info(sample_phoenix_edi_lines)
 
         # Check format detection
-        assert default_information._phoenix_file is True
-        assert default_information._empower_file is False
+        with subtests.test(msg="phoenix format detected"):
+            assert default_information._phoenix_file is True
+            assert default_information._empower_file is False
 
         # Check phoenix-specific parsed values
         expected_values = {
@@ -249,22 +230,33 @@ class TestInformationPhoenixFormat:
         }
 
         for key, expected in expected_values.items():
-            assert default_information.info_dict.get(key) == expected
+            with subtests.test(msg=f"phoenix parsed {key}"):
+                assert default_information.info_dict.get(key) == expected
 
         # Check sensor metadata
-        assert (
-            default_information.info_dict.get("hx.sensor.manufacturer")
-            == "Phoenix Geophysics"
-        )
-        assert default_information.info_dict.get("hx.sensor.type") == "Induction Coil"
+        with subtests.test(msg="phoenix sensor metadata"):
+            assert (
+                default_information.info_dict.get("hx.sensor.manufacturer")
+                == "Phoenix Geophysics"
+            )
+            assert (
+                default_information.info_dict.get("hx.sensor.type") == "Induction Coil"
+            )
 
-    def test_read_empower_info(self, default_information, sample_empower_edi_lines):
+
+class TestInformationEmpowerFormat:
+    """Test Information class with Empower format EDI."""
+
+    def test_read_empower_info(
+        self, default_information, sample_empower_edi_lines, subtests
+    ):
         """Test reading Empower format info section."""
         default_information.read_info(sample_empower_edi_lines)
 
         # Check format detection
-        assert default_information._phoenix_file is False
-        assert default_information._empower_file is True
+        with subtests.test(msg="empower format detected"):
+            assert default_information._phoenix_file is False
+            assert default_information._empower_file is True
 
         # Check empower-specific parsed values
         expected_values = {
@@ -283,173 +275,243 @@ class TestInformationPhoenixFormat:
             "run.ey.dc.end": "0.4",
             "run.ey.contact_resistance.start": "1.4",
             "run.ey.contact_resistance.end": "1.3",
-            "run.hx.sensor.model": "mfs-06e",
+            "run.hx.sensor.model": "MFS-06e",
             "run.hx.measured_azimuth": "0",
             "run.hx.sensor.id": "1234",
-            "run.hx.comments": "cal_name=cal_1234,saturation=0",
+            "run.hx.comments": ["cal_name=cal_1234", "saturation=0%"],
         }
 
         for key, expected in expected_values.items():
-            assert default_information.info_dict.get(key) == expected
-        """Test parsing of latitude and longitude in different formats."""
-        default_information.read_info(sample_lat_lon_info_lines)
+            with subtests.test(msg=f"empower parsed {key}"):
+                assert default_information.info_dict.get(key) == expected
 
-        # Check latitude/longitude parsing
-        # The exact keys will depend on format detection and parsing logic
-        info_dict = default_information.info_dict
 
-    def test_phoenix_multi_column_parsing(self, default_information):
-        """Test parsing of Phoenix format multi-column lines."""
-        # Sample Phoenix format line with multiple columns
-        phoenix_line = "    Survey: MT2023             Job: Geothermal Project"
+class TestInformationHelperMethods:
+    """Test helper methods of Information class."""
 
-        # Call the method that would parse this line
-        key_value_pairs = default_information._parse_phoenix_line(phoenix_line)
-
-        # Verify that two separate key-value pairs were extracted
-        assert len(key_value_pairs) == 2
-
-        # Check the first column
-        assert key_value_pairs[0][0] == "Survey"
-        assert key_value_pairs[0][1] == "MT2023"
-
-        # Check the second column
-        assert key_value_pairs[1][0] == "Job"
-        assert key_value_pairs[1][1] == "Geothermal Project"
-
-    def test_latitude_longitude_parsing(
-        self, default_information, sample_lat_lon_info_lines, separators, subtests
-    ):
-        """Test parsing of latitude and longitude in different formats."""
-        default_information.read_info(sample_lat_lon_info_lines)
-
-        # Check latitude/longitude parsing
-        # The exact keys will depend on format detection and parsing logic
-        info_dict = default_information.info_dict
-
-        lat_keys = [key for key in info_dict.keys() if "lat" in key.lower()]
-        lon_keys = [
-            key
-            for key in info_dict.keys()
-            if "lon" in key.lower() or "lng" in key.lower()
-        ]
-
-        assert len(lat_keys) > 0
-        assert len(lon_keys) > 0
-
-        for key in lat_keys:
-            assert "45" in info_dict[key]
-
-        for key in lon_keys:
-            assert "-120" in info_dict[key]
-
-        for line, expected_sep in separators.items():
-            with subtests.test(msg=f"separator in '{line}'"):
-                sep = default_information._get_separator(line)
-                assert sep == expected_sep
-
-    def test_separator_detection(self, default_information, test):
-        """Test detection of different separators in info lines."""
-        separators = {
+    def test_get_separator(self, default_information, subtests):
+        """Test _get_separator method."""
+        test_lines = {
             "Key = Value": "=",
             "Key: Value": ":",
+            "Key Value": None,
+            "": None,
             "Key = Value: More": "=",  # Should take first separator
             "Key: Value = More": ":",  # Should take first separator
-            "No separator line": None,
-        }
-
-        for line, expected_sep in separators.items():
-            sep = default_information._get_separator(line)
-            assert sep == expected_sep
-
-    def test_line_reading(self, default_information):
-        """Test reading different line formats."""
-        test_lines = {
-            "Key = Value": ("Key", "Value"),
-            "Key: Value": ("Key", "Value"),
-            "Key = [Value1,Value2]": ("Key", ["Value1", "Value2"]),
-            "Key = [Value1;Value2]": ("Key", ["Value1", "Value2"]),
-            "Key = [Value1:Value2]": ("Key", ["Value1", "Value2"]),
-            "No separator line": ("No separator line", None),
         }
 
         for line, expected in test_lines.items():
-            key, value = default_information._read_line(line)
-            assert key == expected[0]
+            with subtests.test(msg=f"separator in '{line}'"):
+                sep = default_information._get_separator(line)
+                assert sep == expected
 
-            # For list values, check each item
-            if isinstance(expected[1], list) and isinstance(value, list):
-                assert len(value) == len(expected[1])
-                for i, item in enumerate(value):
-                    assert item == expected[1][i]
-            else:
-                assert value == expected[1]
-            # Also check __repr__
-            repr_str = repr(default_information)
-            assert repr_str == str_rep
-
-    def test_validate_info_list(self, default_information):
-        """Test validation of info list items."""
-        input_list = [
-            ">INFO",
-            "",
-            "  ",
-            "Valid Line 1",
-            "Valid Line 2",
-            "Valid Line 2",  # Duplicate
-            ">Other marker",
+    def test_split_phoenix_columns(
+        self, default_information, sample_multi_column_lines, subtests
+    ):
+        """Test _split_phoenix_columns method."""
+        expected_splits = [
+            (True, ["Survey: MT2023", "Job: Geothermal Project"]),
+            (True, ["Stn Number: SITE001", "MTU-Box Serial Number: 2345"]),
+            (True, ["Hardware: V8", "MTUProg Version: v3.16"]),
+            (True, ["Ex Pot Resist: 0.8 kOhm", "Ey Pot Resist: 1.1 kOhm"]),
         ]
 
-        # Test with sorting
-        result = default_information._validate_info_list(input_list, sort=True)
-        assert len(result) == 2  # Only valid unique lines
-        assert ">INFO" not in result
-        assert ">Other marker" not in result
-        assert "" not in result
-        assert "  " not in result
-        assert "Valid Line 1" in result
-        assert "Valid Line 2" in result
-        assert len(result) == len(set(result))  # No duplicates
+        for i, line in enumerate(sample_multi_column_lines):
+            with subtests.test(msg=f"splitting: {line}"):
+                is_multi, columns = default_information._split_phoenix_columns(line)
 
-        # Test without sorting
-        result = default_information._validate_info_list(input_list, sort=False)
-        assert len(result) == 3  # Includes duplicate
-        assert ">INFO" not in result
-        assert ">Other marker" not in result
-        assert "" not in result
-        assert "  " not in result
+                # Check if it detected multi-column correctly
+                assert is_multi == expected_splits[i][0]
 
-        # Count occurrences of "Valid Line 2"
-        vl2_count = sum(1 for item in result if item == "Valid Line 2")
-        assert vl2_count == 2  # Should keep duplicates
-        assert len(default_information.info_list) == 0
-        assert len(default_information.info_dict) == 0
+                # Check column content (ignoring extra whitespace)
+                assert [col.strip() for col in columns] == [
+                    col.strip() for col in expected_splits[i][1]
+                ]
 
-    def test_missing_info_section(self, default_information):
-        """Test handling when info section is missing."""
-        no_info_lines = [
-            "Line with no info section",
-            ">DEFINEMEAS",
+    def test_apply_phoenix_translation(self, default_information, subtests):
+        """Test _apply_phoenix_translation method."""
+        # Reset info_dict
+        default_information.info_dict = {}
+
+        # Test cases for translation
+        test_cases = [
+            ("Survey", "MT2023", "survey.id"),
+            ("Hx Sen", "1234", "run.hx.sensor.id"),
+            ("Ex Pot Resist", "0.8 kOhm", "run.ex.contact_resistance.start"),
         ]
 
-        default_information.read_info(no_info_lines)
-        assert len(default_information.info_list) == 0
-        assert len(default_information.info_dict) == 0
+        for key, value, expected_std_key in test_cases:
+            with subtests.test(msg=f"translating {key}"):
+                default_information._apply_phoenix_translation(key, value)
+                assert expected_std_key in default_information.info_dict
 
-    def test_malformed_info_line(self, default_information):
-        """Test handling of malformed info lines."""
-        malformed_lines = [
-            ">INFO",
-            "    Key with no value",
-            "    = Value with no key",
-            "    Multiple = equals = signs",
-            "    : Multiple : colons",
-            ">DEFINEMEAS",
+                # For resistance values, should remove units
+                if "resist" in key.lower():
+                    assert default_information.info_dict[expected_std_key] == "0.8"
+                else:
+                    assert default_information.info_dict[expected_std_key] == value
+
+        # Test voltage with AC/DC components
+        with subtests.test(msg="translating Ex Voltage with AC/DC"):
+            default_information._apply_phoenix_translation(
+                "Ex Voltage", "AC=0.2mV, DC=0.5mV"
+            )
+            assert default_information.info_dict["run.ex.ac.start"] == "0.2"
+            assert default_information.info_dict["run.ex.dc.start"] == "0.5"
+
+    def test_get_empower_std_key(self, default_information, subtests):
+        """Test _get_empower_std_key method."""
+        test_cases = [
+            # section, component, key, expected result
+            ("general", None, "processingsoftware", "transfer_function.software.name"),
+            ("general", None, "unknown_key", None),
+            ("electrics", "e1", "length", "run.ex.dipole_length"),
+            ("electrics", "e2", "ac", "run.ey.ac.end"),
+            ("magnetics", "h1", "sensor_serial", "run.hx.sensor.id"),
+            ("magnetics", "h2", "unknown_key", "run.hy.unknown_key"),
+            ("magnetics", "h3", "cal_name", "run.hz.comments"),
         ]
 
-        default_information.read_info(malformed_lines)
-        # Should not raise exceptions
-        assert len(default_information.info_list) > 0
+        for section, component, key, expected in test_cases:
+            with subtests.test(msg=f"{section}.{component}.{key}"):
+                result = default_information._get_empower_std_key(
+                    section, component, key
+                )
+                assert result == expected
+
+
+class TestInformationNewParsingMethods:
+    """Test the new parsing methods of the Information class."""
+
+    def test_parse_standard_info(self, default_information, subtests):
+        """Test _parse_standard_info method."""
+        # Reset the object
+        default_information.info_dict = {}
+
+        # Standard format test lines
+        standard_lines = [
+            "Project = MT Survey 2023",
+            "Survey = DEMO-A",
+            "SiteName = SITE001",
+            "NFFT = 4096",
+            "RemoteSite = [SITE002, SITE003]",
+            "EmptyKey = ",
+            "NoValueLine",
+        ]
+
+        default_information._parse_standard_info(standard_lines)
+
+        # Check that values were parsed correctly
+        expected_values = {
+            "survey.project": "MT Survey 2023",
+            "survey.id": "DEMO-A",
+            "station.geographic_name": "SITE001",
+        }
+
+        for key, expected in expected_values.items():
+            with subtests.test(msg=f"standard parsed {key}"):
+                assert default_information.info_dict.get(key) == expected
+
+        # Check special handling for processing parameters
+        with subtests.test(msg="processing parameters"):
+            assert (
+                "transfer_function.processing_parameters"
+                in default_information.info_dict
+            )
+            assert (
+                "nfft=4096"
+                in default_information.info_dict[
+                    "transfer_function.processing_parameters"
+                ]
+            )
+
+        # Check list handling
+        with subtests.test(msg="list handling"):
+            assert (
+                "remotesites" not in default_information.info_dict
+            )  # Not in translation_dict
+
+    def test_parse_empower_info(self, default_information, subtests):
+        """Test _parse_empower_info method."""
+        # Reset the object
+        default_information.info_dict = {}
+
+        # Empower format test lines
+        empower_lines = [
+            "EMPower Data",
+            "ProcessingSoftware = EMPower MT Processing",
+            "SiteName = SITE001",
+            "Electrics",
+            "    E1",
+            "        Component = E1",
+            "        Length = 100",
+            "    E2",
+            "        Component = E2",
+            "        Length = 100",
+            "Magnetics",
+            "    H1",
+            "        Sensor_type = MFS-06e",
+            "        Azimuth = 0",
+            "        Sensor_serial = 1234",
+            "    H2",
+            "        Sensor_type = MFS-06e",
+            "        Azimuth = 90",
+        ]
+
+        default_information._parse_empower_info(empower_lines)
+
+        # Check section and component parsing
+        expected_values = {
+            "transfer_function.software.name": "EMPower MT Processing",
+            "station.geographic_name": "SITE001",
+            "run.ex.dipole_length": "100",
+            "run.ey.dipole_length": "100",
+            "run.hx.sensor.model": "MFS-06e",
+            "run.hx.measured_azimuth": "0",
+            "run.hx.sensor.id": "1234",
+            "run.hy.sensor.model": "MFS-06e",
+            "run.hy.measured_azimuth": "90",
+        }
+
+        for key, expected in expected_values.items():
+            with subtests.test(msg=f"empower parsed {key}"):
+                assert default_information.info_dict.get(key) == expected
+
+
+class TestInformationWriteMethod:
+    """Test write method of the Information class."""
+
+    def test_write_info(self, default_information, subtests):
+        """Test write_info method."""
+        # Setup test data
+        default_information.info_dict = {
+            "survey.id": "DEMO-A",
+            "station.geographic_name": "SITE001",
+            "run.ex.dipole_length": "100",
+            "run.hx.sensor.id": "1234",
+            "transfer_function.processing_parameters": ["NFFT=4096", "NDEC=10"],
+            "empty_key": "",
+            "null_key": None,
+        }
+
+        output_lines = default_information.write_info()
+
+        # Check header
+        with subtests.test(msg="info header"):
+            assert output_lines[0] == ">INFO\n"
+
+        # Check content
+        content = "".join(output_lines)
+        with subtests.test(msg="content keys"):
+            assert "survey.id=DEMO-A" in content
+            assert "station.geographic_name=SITE001" in content
+            assert "run.ex.dipole_length=100" in content
+            assert "run.hx.sensor.id=1234" in content
+            assert (
+                "transfer_function.processing_parameters=NFFT=4096,NDEC=10" in content
+            )
+            assert "empty_key" in content
+            assert "null_key" in content  # Should be present but without value
 
 
 if __name__ == "__main__":
