@@ -221,11 +221,15 @@ class Information(MetadataBase):
             if std_key:
                 # Handle special processing parameters
                 if std_key == "processing_parameter":
-                    if "transfer_function.processing_parameters" not in self.info_dict:
-                        self.info_dict["transfer_function.processing_parameters"] = []
-                    self.info_dict["transfer_function.processing_parameters"].append(
-                        f"{key}={value}"
+                    tf_parameters = self.info_dict.get(
+                        "transfer_function.processing_parameters", []
                     )
+                    if not isinstance(tf_parameters, list):
+                        tf_parameters = [tf_parameters]
+                    tf_parameters.append(f"{key}={value}")
+                    self.info_dict[
+                        "transfer_function.processing_parameters"
+                    ] = tf_parameters
                 else:
                     self.info_dict[std_key] = value
             else:
