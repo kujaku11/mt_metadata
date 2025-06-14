@@ -146,7 +146,7 @@ class Base:
                 f"Cannot compare {self._class_name} with {type(other)}"
             )
 
-        # set ignire keys to empty iterable if it was none
+        # set ignore keys to empty iterable if it was none
         if ignore_keys is None:
             ignore_keys = ()
 
@@ -167,6 +167,7 @@ class Base:
                         msg = f"{key}: {value} != {other_value}"
                         self.logger.info(msg)
                         fail = True
+                        # TODO: Add np.allclose here?
                 elif isinstance(value, (float, int, complex)):
                     if not np.isclose(value, other_value):
                         msg = f"{key}: {value} != {other_value}"

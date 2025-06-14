@@ -56,7 +56,8 @@ class TestTFCore(unittest.TestCase):
 
     def test_empty_equals(self):
         other_tf = TF()
-        self.assertEqual(self.tf, other_tf)
+        tfs_are_equal = self.tf.__eq__(other_tf, ignore_station_metadata_keys=["provenance.creation_time"])
+        self.assertTrue(tfs_are_equal)
 
     def test_copy(self):
         other_tf = self.tf.copy()
@@ -88,7 +89,7 @@ class TestTFEqual(unittest.TestCase):
         self.tf_02.tipper_error = t_err
 
     def test_full_tf_equals(self):
-        self.assertTrue(self.tf_01.__eq__(self.tf_02))
+        self.assertTrue(self.tf_01.__eq__(self.tf_02, ignore_station_metadata_keys=["provenance.creation_time"]))
 
     def test_full_tf_not_equals(self):
         self.tf_02.impedance = np.random.randn(3, 2, 2) + 1j * np.random.randn(
