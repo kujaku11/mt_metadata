@@ -32,6 +32,8 @@ class FC(Base):
 
         self.time_period = TimePeriod()
         self.levels = ListDict()
+        self._decimation_levels = []
+        self._channels_estimated = []
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

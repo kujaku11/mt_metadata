@@ -1,6 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from obspy.core.inventory.response import FIRResponseStage
+
+from mt_metadata.base.helpers import requires
+
+try:
+    from obspy.core.inventory.response import FIRResponseStage
+except ImportError:
+    FIRResponseStage = None
 import scipy.signal as signal
 
 from mt_metadata.base import get_schema
@@ -124,6 +130,7 @@ class FIRFilter(FilterBase):
         plt.axis("tight")
         plt.show()
 
+    @requires(obspy=FIRResponseStage)
     def to_obspy(
         self, stage_number=1, normalization_frequency=1, sample_rate=1,
     ):

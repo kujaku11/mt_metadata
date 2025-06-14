@@ -33,7 +33,12 @@ ToDo:
 
 """
 import unittest
-from obspy.core import inventory
+import pytest
+try:
+    from obspy.core import inventory
+    from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
+except ImportError:
+    pytest.skip("obspy is not installed.", allow_module_level=True)
 
 from mt_metadata.timeseries.filters import (
     ChannelResponse,
@@ -42,7 +47,6 @@ from mt_metadata.timeseries.filters import (
     TimeDelayFilter,
 )
 from mt_metadata import STATIONXML_MAGNETIC
-from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 
 
 class TestFilterMagnetic(unittest.TestCase):

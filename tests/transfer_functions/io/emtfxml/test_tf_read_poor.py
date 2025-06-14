@@ -50,7 +50,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
                 ("provenance.archive.comments", "IRIS DMC MetaData"),
-                ("provenance.archive.name", None),
                 ("provenance.archive.url", "http://www.iris.edu/mda/8P/CAS04"),
                 ("provenance.creation_time", "2021-09-23T19:45:02+00:00"),
                 (
@@ -58,10 +57,6 @@ class TestEMTFXML(unittest.TestCase):
                     "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
                 ),
                 ("provenance.creator.email", "pbedrosian@usgs.gov"),
-                (
-                    "provenance.creator.name",
-                    "Jade Crosbie, Paul Bedrosian and Anna Kelbert",
-                ),
                 ("provenance.creator.organization", "U.S. Geological Survey"),
                 (
                     "provenance.creator.url",
@@ -75,7 +70,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("provenance.software.version", None),
                 ("provenance.submitter.author", "Anna Kelbert"),
                 ("provenance.submitter.email", "akelbert@usgs.gov"),
-                ("provenance.submitter.name", "Anna Kelbert"),
                 (
                     "provenance.submitter.organization",
                     "U.S. Geological Survey, Geomagnetism Program",
@@ -91,7 +85,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.rating.value", 4),
                 ("transfer_function.id", "CAS04"),
-                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 (
                     "transfer_function.processing_parameters",

@@ -8,6 +8,7 @@ Created on Thu May 21 14:09:17 2020
 # Imports
 # =============================================================================
 import unittest
+import pytest
 from dateutil import parser as dtparser
 from dateutil import tz
 import datetime
@@ -15,7 +16,10 @@ import pandas as pd
 import numpy as np
 
 from mt_metadata.utils.mttime import MTime
-from obspy import UTCDateTime
+try:
+    from obspy import UTCDateTime
+except ImportError:
+    UTCDateTime = None
 
 
 # =============================================================================
@@ -177,6 +181,7 @@ class TestMTime(unittest.TestCase):
                 self.epoch_seconds, t.epoch_seconds, places=4
             )
 
+    @pytest.mark.skipif(UTCDateTime is None, reason="obspy is not installed.")
     def test_obspy_utcdatetime(self):
         t = MTime(UTCDateTime(self.dt_true))
 
@@ -290,10 +295,12 @@ class TestMTime(unittest.TestCase):
         t1 = MTime("1400-01-01T00:00:00")
         self.assertEqual(t1, pd.Timestamp.min)
 
+    @pytest.mark.skipif(UTCDateTime is None, reason="obspy is not installed.")
     def test_utc_too_large(self):
         t1 = MTime(UTCDateTime("3000-01-01"))
         self.assertEqual(t1, pd.Timestamp.max)
 
+    @pytest.mark.skipif(UTCDateTime is None, reason="obspy is not installed.")
     def test_utc_too_small(self):
         t1 = MTime(UTCDateTime("1400-01-01"))
         self.assertEqual(t1, pd.Timestamp.min)

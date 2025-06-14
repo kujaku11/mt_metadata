@@ -6,7 +6,10 @@ Idea here is to add logic to interrogate stage filters received from StationXML
 # Imports
 # =============================================================================
 import numpy as np
-import obspy
+try:
+    import obspy
+except ImportError:
+    raise ImportError("obspy_stages requires obspy to be installed.")
 from loguru import logger
 
 from mt_metadata.timeseries.filters import (

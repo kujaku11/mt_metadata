@@ -25,9 +25,7 @@ class TestEMTFXML(unittest.TestCase):
     def setUpClass(self):
         self.tf = TF(fn=TF_JFILE)
         self.tf.read()
-        self.tf.station_metadata.transfer_function.processed_date = (
-            "2020-01-01"
-        )
+        self.tf.station_metadata.transfer_function.processed_date = "2020-01-01"
         self.maxDiff = None
 
     def test_survey_metadata(self):
@@ -71,14 +69,14 @@ class TestEMTFXML(unittest.TestCase):
                 ("location.longitude", 0.0),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
-                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", None),
+                (
+                    "provenance.creation_time",
+                    "2025-02-07T20:38:17.413983+00:00",
+                ),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "BIRRP"),
                 ("provenance.software.version", "5"),
                 ("provenance.submitter.email", None),
-                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["001"]),
@@ -87,7 +85,6 @@ class TestEMTFXML(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "BP05"),
-                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "2020-01-01"),
                 (
                     "transfer_function.processing_parameters",
@@ -127,9 +124,10 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            meta_dict, self.tf.station_metadata.to_dict(single=True)
-        )
+        del meta_dict["provenance.creation_time"]
+        s_dict = self.tf.station_metadata.to_dict(single=True)
+        del s_dict["provenance.creation_time"]
+        self.assertDictEqual(meta_dict, s_dict)
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(

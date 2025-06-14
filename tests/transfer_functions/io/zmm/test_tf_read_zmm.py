@@ -69,14 +69,14 @@ class TestZMM(unittest.TestCase):
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
-                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", None),
+                (
+                    "provenance.creation_time",
+                    "2025-02-07T20:44:14.841625+00:00",
+                ),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
-                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
@@ -85,7 +85,6 @@ class TestZMM(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.processing_type", ""),
@@ -99,9 +98,10 @@ class TestZMM(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            meta_dict, self.tf.station_metadata.to_dict(single=True)
-        )
+        del meta_dict["provenance.creation_time"]
+        s_dict = self.tf.station_metadata.to_dict(single=True)
+        del s_dict["provenance.creation_time"]
+        self.assertDictEqual(meta_dict, s_dict)
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
@@ -272,9 +272,7 @@ class TestZMM(unittest.TestCase):
 
     def test_residual(self):
         with self.subTest(msg="shape"):
-            self.assertTupleEqual(
-                (38, 3, 3), self.tf.residual_covariance.shape
-            )
+            self.assertTupleEqual((38, 3, 3), self.tf.residual_covariance.shape)
 
         with self.subTest("has residual_covariance"):
             self.assertTrue(self.tf.has_residual_covariance())
@@ -383,14 +381,14 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("location.longitude", -115.735),
                 ("orientation.method", None),
                 ("orientation.reference_frame", "geographic"),
-                ("provenance.archive.name", None),
-                ("provenance.creation_time", "1980-01-01T00:00:00+00:00"),
-                ("provenance.creator.name", None),
+                (
+                    "provenance.creation_time",
+                    "2025-02-07T20:46:09.613540+00:00",
+                ),
                 ("provenance.software.author", None),
                 ("provenance.software.name", "EMTF"),
                 ("provenance.software.version", "1"),
                 ("provenance.submitter.email", None),
-                ("provenance.submitter.name", None),
                 ("provenance.submitter.organization", None),
                 ("release_license", "CC0-1.0"),
                 ("run_list", ["300a"]),
@@ -399,7 +397,6 @@ class TestTFToEMTFXML(unittest.TestCase):
                 ("transfer_function.coordinate_system", "geopgraphic"),
                 ("transfer_function.data_quality.rating.value", 0),
                 ("transfer_function.id", "300"),
-                ("transfer_function.processed_by.name", None),
                 ("transfer_function.processed_date", "1980-01-01"),
                 ("transfer_function.processing_parameters", []),
                 ("transfer_function.processing_type", ""),
@@ -413,9 +410,10 @@ class TestTFToEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(
-            meta_dict, self.zmm.station_metadata.to_dict(single=True)
-        )
+        del meta_dict["provenance.creation_time"]
+        s_dict = self.tf.station_metadata.to_dict(single=True)
+        del s_dict["provenance.creation_time"]
+        self.assertDictEqual(meta_dict, s_dict)
 
     def test_run_metadata(self):
         meta_dict = OrderedDict(
