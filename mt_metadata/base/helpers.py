@@ -13,14 +13,18 @@ Created on Wed Dec 23 20:37:52 2020
 # =============================================================================
 import textwrap
 import logging
+from loguru import logger
 import json
 import numpy as np
+from typing import Dict, Any
 
 from collections.abc import MutableMapping
 from collections import OrderedDict, defaultdict
 from xml.etree import cElementTree as et
 from xml.dom import minidom
 from operator import itemgetter
+
+from pydantic import BaseModel
 
 # from mt_metadata.utils.units import get_unit_object
 
@@ -32,11 +36,37 @@ filter_descriptions = {
     "fir": "finite impaulse response filter",
     "fap": "frequency amplitude phase lookup table",
     "frequency response table": "frequency amplitude phase lookup table",
+    "base": "base filter",
 }
 
 # =============================================================================
 # write doc strings
 # =============================================================================
+
+
+def get_all_fields(model: BaseModel) -> Dict[str, Any]:
+    """
+    Iteratively get all fields in a BaseModel
+
+    Parameters
+    ----------
+    model : BaseModel
+        metadata basemodel
+
+    Returns
+    -------
+    Dict[str, Any]
+        dictionary keyed by attributes. Will be nested.
+    """
+    fields = {}
+    for field_name, field_value in model.model_fields.items():
+        if hasattr(field_value.annotation, "model_fields"):
+            fields[field_name] = field_value.annotation().get_all_fields()
+        else:
+            if field_value.deprecated is None:
+                fields[field_name] = field_value
+
+    return fields
 
 
 def wrap_description(description, column_width):
@@ -100,9 +130,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
     lines = [
         hline,
-        line.format(
-            "**Metadata Key**", c1, "**Description**", c2, "**Example**", c3
-        ),
+        line.format("**Metadata Key**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
@@ -112,9 +140,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         d_lines = wrap_description(entry["description"], c2)
         e_lines = wrap_description(entry["example"], c3)
         # line 1 is with the entry
-        lines.append(
-            line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3)
-        )
+        lines.append(line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3))
         # line 2 skip an entry in the
         lines.append(line.format("", c1, d_lines[1], c2, e_lines[1], c3))
         # line 3 required
@@ -133,9 +159,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 5 units
         lines.append(
-            line.format(
-                f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3
-            )
+            line.format(f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3)
         )
 
         # line 6 blank
@@ -143,9 +167,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 7 type
         lines.append(
-            line.format(
-                f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3
-            )
+            line.format(f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3)
         )
 
         # line 8 blank
@@ -153,9 +175,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
 
         # line 9 type
         lines.append(
-            line.format(
-                f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3
-            )
+            line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
         )
 
         # line 10 blank
@@ -178,23 +198,17 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         )
 
         # line 10 blank
-        lines.append(
-            line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3)
-        )
+        lines.append(line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3))
 
         # line 9 type
-        lines.append(
-            line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3)
-        )
+        lines.append(line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3))
 
         # line 10 blank
         if len(d_lines) > 11:
             lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
             for index, d_line in enumerate(d_lines[12:], 4):
                 try:
-                    lines.append(
-                        line.format(default[index], c1, d_line, c2, "", c3)
-                    )
+                    lines.append(line.format(default[index], c1, d_line, c2, "", c3))
                 except IndexError:
                     lines.append(line.format("", c1, d_line, c2, "", c3))
 
@@ -203,9 +217,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
             lines.append(line.format(default[3], c1, "", c2, "", c3))
             for index, d_line in enumerate(default[4:], 12):
                 try:
-                    lines.append(
-                        line.format(d_line, c1, d_lines[index], c2, "", c3)
-                    )
+                    lines.append(line.format(d_line, c1, d_lines[index], c2, "", c3))
                 except IndexError:
                     lines.append(line.format(d_line, c1, "", c2, "", c3))
         lines.append(hline)
@@ -252,6 +264,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         f"       :widths: {c1} {c2} {c3}",
         "",
         hline,
+        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
@@ -342,9 +355,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
         for index, d_line in enumerate(d_lines[12:], 4):
             try:
-                lines.append(
-                    line.format(default[index], c1, d_line, c2, "", c3)
-                )
+                lines.append(line.format(default[index], c1, d_line, c2, "", c3))
             except IndexError:
                 lines.append(line.format("", c1, d_line, c2, "", c3))
 
@@ -353,9 +364,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         lines.append(line.format(default[3], c1, "", c2, "", c3))
         for index, d_line in enumerate(default[4:], 12):
             try:
-                lines.append(
-                    line.format(d_line, c1, d_lines[index], c2, "", c3)
-                )
+                lines.append(line.format(d_line, c1, d_lines[index], c2, "", c3))
             except IndexError:
                 lines.append(line.format(d_line, c1, "", c2, "", c3))
 
@@ -431,6 +440,41 @@ def recursive_split_dict(key, value, remainder, sep="."):
         remainder[key] = value
 
 
+def get_by_alias(model, alias_name):
+    # Find the field name that corresponds to the given alias
+    for field_name, field_info in model.model_fields.items():
+        if field_info.alias == alias_name:
+            return getattr(model, field_name)
+    return None
+
+
+# def get_alias_key(model, key: str) -> str:
+#     """
+#     Try to find an alias for a field name in a Pydantic BaseModel
+
+#     Parameters
+#     ----------
+#     model : BaseModel
+#         The Pydantic model to search for the field
+#     key : str
+#         The field name to find the alias for
+
+#     Returns
+#     -------
+#     str or None
+#         The alias name if found, None otherwise
+#     """
+#     try:
+#         field_info = model.model_fields.get(key)
+#         if field_info.validation_alias:
+
+#         if field_info and field_info.alias:
+#             return field_info.alias
+#         return key  # Return the original key if no alias found
+#     except (AttributeError, KeyError):
+#         return key  # Return the original key if any errors occur
+
+
 def recursive_split_getattr(base_object, name, sep="."):
     key, *other = name.split(sep, 1)
 
@@ -438,6 +482,9 @@ def recursive_split_getattr(base_object, name, sep="."):
         base_object = getattr(base_object, key)
         value, prop = recursive_split_getattr(base_object, other[0])
     else:
+        # with Pydantic, if the attribute does not exist an attribute error
+        # will be raised, which is desired. The only issue will be if the
+        # attribute is an alias, then TODO create a get from alias method.
         value = getattr(base_object, key)
         try:
             if isinstance(getattr(type(base_object), key), property):
@@ -447,9 +494,7 @@ def recursive_split_getattr(base_object, name, sep="."):
     return value, prop
 
 
-def recursive_split_setattr(
-    base_object, name, value, sep=".", skip_validation=False
-):
+def recursive_split_setattr(base_object, name, value, sep=".", skip_validation=False):
     """
     Recursively split a name and set the value of the last key. Recursion splits on the separator present in the name.
 
@@ -470,20 +515,29 @@ def recursive_split_setattr(
     """
     key, *other = name.split(sep, 1)
 
-    if skip_validation:
-        if other:
-            base_object = getattr(base_object, key)
-            recursive_split_setattr(
-                base_object, other[0], value, skip_validation=True
-            )
-        else:
-            base_object.setattr_skip_validation(key, value)
+    if other:
+        base_object = getattr(base_object, key)
+        recursive_split_setattr(base_object, other[0], value)
     else:
-        if other:
-            base_object = getattr(base_object, key)
-            recursive_split_setattr(base_object, other[0], value)
-        else:
-            setattr(base_object, key, value)
+        # if the value is a list or dict then we need to add accordingly
+        if isinstance(value, list):
+            if len(value) == 0:
+                value = []
+            elif isinstance(value[0], (dict, OrderedDict)):
+                new_list = []
+                for obj_dict in value:
+                    obj_key = list(obj_dict.keys())[0]
+                    try:
+                        obj = base_object._objects_included[obj_key]()
+                        obj.from_dict(obj_dict)
+                        new_list.append(obj)
+                    except KeyError:
+                        raise KeyError(
+                            f"Could not find {obj_key} in {base_object._objects_included}"
+                        )
+                value = new_list
+
+        setattr(base_object, key, value)
 
 
 def structure_dict(meta_dict, sep="."):
@@ -506,7 +560,7 @@ def structure_dict(meta_dict, sep="."):
 def get_units(name, attr_dict):
     """ """
     try:
-        units = attr_dict[name]["units"]
+        units = attr_dict["json_schema_extra"]["units"]
         if not isinstance(units, str):
             units = "{0}".format(units)
     except KeyError:
@@ -599,9 +653,7 @@ def element_to_dict(element):
             for k, v in dc.items():
                 child_dict[k].append(v)
         meta_dict = {
-            element.tag: {
-                k: v[0] if len(v) == 1 else v for k, v in child_dict.items()
-            }
+            element.tag: {k: v[0] if len(v) == 1 else v for k, v in child_dict.items()}
         }
         if "item" in meta_dict[element.tag].keys():
             meta_dict[element.tag] = meta_dict[element.tag]["item"]
@@ -702,6 +754,8 @@ class NumpyEncoder(json.JSONEncoder):
         # For now turn references into a generic string
         elif "h5" in str(type(obj)):
             return str(obj)
+        elif hasattr(obj, "unicode_string"):
+            return obj.unicode_string()
         return json.JSONEncoder.default(self, obj)
 
 
@@ -762,10 +816,63 @@ def requires(**requirements):
         if not missing:
             return function
         else:
+
             def passer(*args, **kwargs):
-                print(("Missing dependencies: {d}.".format(d=missing)))
-                print(("Not running `{}`.".format(function.__name__)))
+                logger.warning(f"Missing dependencies: {missing}.")
+                logger.warning(f"Not running `{function.__name__}`.")
 
             return passer
 
     return decorated_function
+
+
+def object_to_array(value, dtype=float):
+    """
+    Convert a value to a numpy array.
+
+    Parameters
+    ----------
+    value : any
+        The value to convert.
+
+    Returns
+    -------
+    np.ndarray
+        The converted numpy array.
+
+    """
+    if value is None:
+        return np.empty(0)
+    elif isinstance(value, (list, tuple)):
+        return np.array(value, dtype=dtype)
+    elif isinstance(value, np.ndarray):
+        return value.astype(dtype)
+    elif isinstance(value, str):
+        # Handle string input (e.g., from JSON)
+        try:
+            value = np.fromstring(value, sep=",", dtype=dtype)
+            if len(value) == 0:
+                logger.warning(
+                    "String input is empty or cannot parse properly, returning an empty array."
+                )
+            return value
+        except ValueError:
+            msg = (
+                f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
+            )
+            raise TypeError(msg)
+    elif isinstance(value, (int, float)):
+        # Handle single numeric input
+        return np.array([float(value)], dtype=dtype)
+    elif isinstance(value, bytes):
+        # Handle bytes input (e.g., from binary files)
+        try:
+            return np.frombuffer(value, dtype=dtype)
+        except ValueError:
+            msg = (
+                f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
+            )
+            raise TypeError(msg)
+    else:
+        msg = f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+        raise TypeError(msg)

@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -13,10 +13,11 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
+from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import element_to_string, write_lines
+
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+
 
 # =============================================================================
 attr_dict = get_schema("orientation", SCHEMA_FN_PATHS)
@@ -27,7 +28,6 @@ class Orientation(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):
@@ -41,9 +41,7 @@ class Orientation(Base):
         """
         element_dict = {self._class_name: input_dict[self._class_name]}
         if isinstance(element_dict[self._class_name], str):
-            element_dict[self._class_name] = {
-                "layout": element_dict[self._class_name]
-            }
+            element_dict[self._class_name] = {"layout": element_dict[self._class_name]}
 
         self.from_dict(element_dict)
 
@@ -65,9 +63,7 @@ class Orientation(Base):
                 self.angle_to_geographic_north = 0.0
             root = et.Element(
                 self.__class__.__name__.capitalize(),
-                {
-                    "angle_to_geographic_north": f"{self.angle_to_geographic_north:.3f}"
-                },
+                {"angle_to_geographic_north": f"{self.angle_to_geographic_north:.3f}"},
             )
             root.text = self.layout
         else:

@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -12,32 +12,25 @@ Created on Wed Dec 23 21:30:36 2020
 # Imports
 # =============================================================================
 from collections import OrderedDict
+
+from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.timeseries.standards import (
-    SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS,
-)
-from mt_metadata.timeseries import (
-    Person,
-    Citation,
-    Location,
-    TimePeriod,
-    Fdsn,
-    FundingSource,
-)
+from mt_metadata.timeseries import Citation, Fdsn, FundingSource, Location, Person
 from mt_metadata.timeseries import Station as TSStation
+from mt_metadata.timeseries import TimePeriod
 from mt_metadata.timeseries.filters import (
-    PoleZeroFilter,
     CoefficientFilter,
-    TimeDelayFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
 )
+from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Station
-
-
 from mt_metadata.utils.list_dict import ListDict
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("survey", SCHEMA_FN_PATHS)
@@ -51,12 +44,8 @@ attr_dict.add_dict(
     get_schema("funding_source", TS_SCHEMA_FN_PATHS),
     "funding_source",
 )
-attr_dict.add_dict(
-    get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_dataset"
-)
-attr_dict.add_dict(
-    get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_journal"
-)
+attr_dict.add_dict(get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_dataset")
+attr_dict.add_dict(get_schema("citation", TS_SCHEMA_FN_PATHS), "citation_journal")
 attr_dict.add_dict(
     get_schema("location", TS_SCHEMA_FN_PATHS),
     "northwest_corner",
@@ -81,12 +70,13 @@ attr_dict["project_lead.email"]["required"] = True
 attr_dict["project_lead.organization"]["required"] = True
 
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
+
+
 # =============================================================================
 class Survey(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.acquired_by = Person()
         self.fdsn = Fdsn()
         self.citation_dataset = Citation()
@@ -139,7 +129,6 @@ class Survey(Base):
             value_list = value
 
         for ii, station in enumerate(value_list):
-
             if isinstance(station, Station):
                 self._stations.append(station)
             elif isinstance(station, (dict, OrderedDict)):
@@ -190,7 +179,9 @@ class Survey(Base):
                     for ff in value:
                         f_type = ff["type"]
                         if f_type is None:
-                            msg = "filter type is None do not know how to read the filter"
+                            msg = (
+                                "filter type is None do not know how to read the filter"
+                            )
                             fails.append(msg)
                             self.logger.error(msg)
                         if f_type.lower() in ["zpk"]:
@@ -219,7 +210,6 @@ class Survey(Base):
             self.logger.error(msg)
             raise TypeError(msg)
         else:
-
             for k, v in value.items():
                 if not isinstance(
                     v,

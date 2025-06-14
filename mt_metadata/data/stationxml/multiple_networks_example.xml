@@ -87,7 +87,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -157,7 +157,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -227,7 +227,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -271,7 +271,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -293,7 +293,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -323,7 +323,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -375,7 +375,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -397,7 +397,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -427,7 +427,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -526,7 +526,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -596,7 +596,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -666,7 +666,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -710,7 +710,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -732,7 +732,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -762,7 +762,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -814,7 +814,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -836,7 +836,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -866,7 +866,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -982,7 +982,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1052,7 +1052,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1122,7 +1122,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1166,7 +1166,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -1188,7 +1188,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -1218,7 +1218,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1270,7 +1270,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -1292,7 +1292,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -1322,7 +1322,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1416,7 +1416,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1486,7 +1486,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1556,7 +1556,7 @@
                 <Description>Tesla</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1600,7 +1600,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -1622,7 +1622,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -1652,7 +1652,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
@@ -1704,7 +1704,7 @@
         <SampleRate unit="SAMPLES/S">1.0</SampleRate>
         <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
         <CalibrationUnits>
-          <Name>V/M</Name>
+          <Name>V/m</Name>
           <Description>Volts/Meter</Description>
         </CalibrationUnits>
         <Sensor>
@@ -1726,7 +1726,7 @@
           <Stage number="1">
             <PolesZeros>
               <InputUnits>
-                <Name>V/M</Name>
+                <Name>V/m</Name>
                 <Description>Volts/Meter</Description>
               </InputUnits>
               <OutputUnits>
@@ -1756,7 +1756,7 @@
                 <Description>Volts</Description>
               </InputUnits>
               <OutputUnits>
-                <Name>COUNTS</Name>
+                <Name>counts</Name>
                 <Description>Digital Counts</Description>
               </OutputUnits>
               <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>

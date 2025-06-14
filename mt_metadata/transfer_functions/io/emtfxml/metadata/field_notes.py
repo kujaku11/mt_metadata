@@ -8,6 +8,7 @@ Created on Thu Mar  9 12:25:44 2023
 # Imports
 # =============================================================================
 from mt_metadata.base import Base
+
 from . import Run
 
 
@@ -59,6 +60,4 @@ class FieldNotes(Base):
 
         """
 
-        return [
-            r.to_xml(string=string, required=required) for r in self._run_list
-        ]
+        return [r.to_xml(string=string, required=required) for r in self._run_list]

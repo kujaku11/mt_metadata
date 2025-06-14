@@ -9,13 +9,16 @@ Created on Wed Dec  8 11:00:57 2021
 
 """
 
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
+
+from . import Auto, DPlus, PhaseSlope
 from .standards import SCHEMA_FN_PATHS
-from . import Auto, PhaseSlope, DPlus
+
 
 # =============================================================================
 attr_dict = get_schema("mt_edit", SCHEMA_FN_PATHS)
@@ -29,7 +32,6 @@ class MTEdit(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.auto = Auto()
         self.phase_slope = PhaseSlope()
         self.d_plus = DPlus()

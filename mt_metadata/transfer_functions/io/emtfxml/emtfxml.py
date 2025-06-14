@@ -15,24 +15,25 @@ Created on Sat Sep  4 17:59:53 2021
 import inspect
 from pathlib import Path
 from xml.etree import cElementTree as et
+
 import numpy as np
 from loguru import logger
 
-from . import metadata as emtf_xml
-from mt_metadata.transfer_functions.io.emtfxml.metadata import (
-    helpers as emtf_helpers,
-)
 from mt_metadata.base import helpers
-from mt_metadata.utils.validators import validate_attribute
-from mt_metadata.transfer_functions.tf import (
-    Instrument,
-    Survey,
-    Station,
-    Run,
-    Electric,
-    Magnetic,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers as emtf_helpers
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
+from mt_metadata.transfer_functions.tf import (
+    Electric,
+    Instrument,
+    Magnetic,
+    Run,
+    Station,
+    Survey,
+)
+from mt_metadata.utils.validators import validate_attribute
+
+from . import metadata as emtf_xml
+
 
 meta_classes = dict(
     [
@@ -197,21 +198,11 @@ class EMTFXML(emtf_xml.EMTF):
         lines = [f"Station: {self.station_metadata.id}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(
-            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
-        )
-        lines.append(
-            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
-        )
-        lines.append(
-            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
-        )
-        lines.append(
-            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
-        )
-        lines.append(
-            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
-        )
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
+        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
+        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
         lines.append("\tDeclination:   ")
         lines.append(
             f"\t\tValue:     {self.station_metadata.location.declination.value}"
@@ -247,12 +238,8 @@ class EMTFXML(emtf_xml.EMTF):
         lines = []
         lines.append(f"station='{self.station_metadata.id}'")
         lines.append(f"latitude={self.station_metadata.location.latitude:.2f}")
-        lines.append(
-            f"longitude={self.station_metadata.location.longitude:.2f}"
-        )
-        lines.append(
-            f"elevation={self.station_metadata.location.elevation:.2f}"
-        )
+        lines.append(f"longitude={self.station_metadata.location.longitude:.2f}")
+        lines.append(f"elevation={self.station_metadata.location.elevation:.2f}")
 
         return f"EMTFXML({(', ').join(lines)})"
 
@@ -324,10 +311,7 @@ class EMTFXML(emtf_xml.EMTF):
         self._update_site_layout()
 
         if self.site.location.elevation == 0 and get_elevation:
-            if (
-                self.site.location.latitude != 0
-                and self.site.location.longitude != 0
-            ):
+            if self.site.location.latitude != 0 and self.site.location.longitude != 0:
                 self.site.location.elevation = get_nm_elev(
                     self.site.location.latitude, self.site.location.longitude
                 )
@@ -375,17 +359,11 @@ class EMTFXML(emtf_xml.EMTF):
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
-                        emtf_element.append(
-                            emtf_helpers._convert_tag_to_capwords(item)
-                        )
+                        emtf_element.append(emtf_helpers._convert_tag_to_capwords(item))
                 else:
-                    emtf_element.append(
-                        emtf_helpers._convert_tag_to_capwords(element)
-                    )
+                    emtf_element.append(emtf_helpers._convert_tag_to_capwords(element))
             else:
-                emtf_helpers._write_single(
-                    emtf_element, key, getattr(self, key)
-                )
+                emtf_helpers._write_single(emtf_element, key, getattr(self, key))
 
         emtf_element = emtf_helpers._remove_null_values(emtf_element)
 
@@ -444,15 +422,11 @@ class EMTFXML(emtf_xml.EMTF):
         self.data_types.data_types_list = []
         if self.data.z is not None:
             if not np.all(self.data.z == 0.0):
-                self.data_types.data_types_list.append(
-                    data_types_dict["impedance"]
-                )
+                self.data_types.data_types_list.append(data_types_dict["impedance"])
 
         if self.data.t is not None:
             if not np.all(self.data.t == 0.0):
-                self.data_types.data_types_list.append(
-                    data_types_dict["tipper"]
-                )
+                self.data_types.data_types_list.append(data_types_dict["tipper"])
 
     def _update_site_layout(self):
         """
@@ -593,17 +567,13 @@ class EMTFXML(emtf_xml.EMTF):
             )
         elif fkey in ["x", "x2", "y", "y2", "z", "z2"]:
             if len(self.site_layout.output_channels) == 0:
-                self.site_layout.output_channels.append(
-                    emtf_xml.Electric(name=comp)
-                )
+                self.site_layout.output_channels.append(emtf_xml.Electric(name=comp))
             ch_names = [c.name for c in self.site_layout.output_channels]
             if comp in ch_names:
                 index = ch_names.index(comp)
             else:
                 index = 0
-            self.site_layout.output_channels[index].set_attr_from_name(
-                fkey, value
-            )
+            self.site_layout.output_channels[index].set_attr_from_name(fkey, value)
         return None, None
 
     def _parse_comments_magnetic(self, key, value):
@@ -661,17 +631,13 @@ class EMTFXML(emtf_xml.EMTF):
         elif fkey in ["x", "y", "z"]:
             if comp in ["hx", "hy"]:
                 if len(self.site_layout.output_channels) == 0:
-                    self.site_layout.input_channels.append(
-                        emtf_xml.Magnetic(name=comp)
-                    )
+                    self.site_layout.input_channels.append(emtf_xml.Magnetic(name=comp))
                 ch_names = [c.name for c in self.site_layout.output_channels]
                 if comp in ch_names:
                     index = ch_names.index(comp)
                 else:
                     index = 0
-                self.site_layout.output_channels[index].set_attr_from_name(
-                    fkey, value
-                )
+                self.site_layout.output_channels[index].set_attr_from_name(fkey, value)
             elif comp in ["hz"]:
                 if len(self.site_layout.output_channels) == 0:
                     self.site_layout.output_channels.append(
@@ -683,9 +649,7 @@ class EMTFXML(emtf_xml.EMTF):
                 else:
                     index = 0
 
-                self.site_layout.output_channels[index].set_attr_from_name(
-                    fkey, value
-                )
+                self.site_layout.output_channels[index].set_attr_from_name(fkey, value)
         return None, None
 
     def _parse_comments_processing(self, key, value):
@@ -743,9 +707,7 @@ class EMTFXML(emtf_xml.EMTF):
                 if "datalogger" in key:
                     key, value = self._parse_comments_data_logger(key, value)
                     try:
-                        self.field_notes.run_list[0].set_attr_from_name(
-                            key, value
-                        )
+                        self.field_notes.run_list[0].set_attr_from_name(key, value)
                         key = None
                         value = None
                     except:
@@ -839,9 +801,9 @@ class EMTFXML(emtf_xml.EMTF):
         s = Station()
         # if self._root_dict is not None:
         s.acquired_by.author = self.site.acquired_by
-        s.channels_recorded = [
-            d.name for d in self.site_layout.input_channels
-        ] + [d.name for d in self.site_layout.output_channels]
+        s.channels_recorded = [d.name for d in self.site_layout.input_channels] + [
+            d.name for d in self.site_layout.output_channels
+        ]
         s.data_type = self.sub_type.lower().split("_")[0]
         s.geographic_name = self.site.name
         s.id = self.site.id
@@ -885,12 +847,8 @@ class EMTFXML(emtf_xml.EMTF):
         )
 
         s.transfer_function.id = self.site.id
-        s.transfer_function.sign_convention = (
-            self.processing_info.sign_convention
-        )
-        s.transfer_function.processed_by.author = (
-            self.processing_info.processed_by
-        )
+        s.transfer_function.sign_convention = self.processing_info.sign_convention
+        s.transfer_function.processed_by.author = self.processing_info.processed_by
         s.transfer_function.software.author = (
             self.processing_info.processing_software.author
         )
@@ -915,17 +873,11 @@ class EMTFXML(emtf_xml.EMTF):
                 ]
                 s.transfer_function.remote_references = remotes
         s.transfer_function.runs_processed = self.site.run_list
-        s.transfer_function.processing_type = (
-            self.processing_info.remote_ref.type
-        )
+        s.transfer_function.processing_type = self.processing_info.remote_ref.type
 
         if self.processing_info.remote_info.site.id is not None:
             for key in self.processing_info.remote_info.site._attr_dict.keys():
-                value = (
-                    self.processing_info.remote_info.site.get_attr_from_name(
-                        key
-                    )
-                )
+                value = self.processing_info.remote_info.site.get_attr_from_name(key)
                 if "location" in key:
                     if value == 0.0:
                         continue
@@ -1054,8 +1006,7 @@ class EMTFXML(emtf_xml.EMTF):
                 r.add_channel(c)
 
             for ch in (
-                self.site_layout.input_channels
-                + self.site_layout.output_channels
+                self.site_layout.input_channels + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
                 if c.component in ["hx", "hy", "hz"]:
@@ -1085,8 +1036,7 @@ class EMTFXML(emtf_xml.EMTF):
                 r.channels_recorded_magnetic = ["hx", "hy", "hz"]
 
             for ch in (
-                self.site_layout.input_channels
-                + self.site_layout.output_channels
+                self.site_layout.input_channels + self.site_layout.output_channels
             ):
                 c = getattr(r, ch.name.lower())
                 if c.component in r.channels_recorded_magnetic:
@@ -1153,12 +1103,8 @@ class EMTFXML(emtf_xml.EMTF):
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
 
-        self.processing_info.sign_convention = (
-            sm.transfer_function.sign_convention
-        )
-        self.processing_info.processed_by = (
-            sm.transfer_function.processed_by.author
-        )
+        self.processing_info.sign_convention = sm.transfer_function.sign_convention
+        self.processing_info.processed_by = sm.transfer_function.processed_by.author
         self.processing_info.process_date = sm.transfer_function.processed_date
         self.processing_info.processing_software.author = (
             sm.transfer_function.software.author
@@ -1175,9 +1121,7 @@ class EMTFXML(emtf_xml.EMTF):
         if sm.transfer_function.remote_references is not None:
             tag += sm.transfer_function.remote_references
         self.processing_info.processing_tag = "_".join(tag)
-        self.processing_info.remote_ref.type = (
-            sm.transfer_function.processing_type
-        )
+        self.processing_info.remote_ref.type = sm.transfer_function.processing_type
         for param in sm.transfer_function.processing_parameters:
             if isinstance(param, str):
                 sep = None
@@ -1191,18 +1135,14 @@ class EMTFXML(emtf_xml.EMTF):
                     if "remote_info.field_notes" in key:
                         key = key.replace("remote_info.field_notes.", "")
                         if (
-                            len(
-                                self.processing_info.remote_info.field_notes.run_list
-                            )
+                            len(self.processing_info.remote_info.field_notes.run_list)
                             == 0
                         ):
                             self.processing_info.remote_info.field_notes.run_list.append(
                                 meta_classes["run"]()
                             )
 
-                        run = self.processing_info.remote_info.field_notes.run_list[
-                            0
-                        ]
+                        run = self.processing_info.remote_info.field_notes.run_list[0]
 
                         if "dipole" in key:
                             index = int(key.split("_")[1].split(".")[0])
@@ -1210,9 +1150,7 @@ class EMTFXML(emtf_xml.EMTF):
                             if len(run.dipole) < (index + 1):
                                 run.dipole.append(meta_classes["dipole"]())
                             try:
-                                run.dipole[index].set_attr_from_name(
-                                    key, value
-                                )
+                                run.dipole[index].set_attr_from_name(key, value)
                             except Exception as error:
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
@@ -1222,13 +1160,9 @@ class EMTFXML(emtf_xml.EMTF):
                             index = int(key.split("_")[1].split(".")[0])
                             key = key.split(".", 1)[1:]
                             if len(run.magnetometer) < (index + 1):
-                                run.magnetometer.append(
-                                    meta_classes["magnetometer"]()
-                                )
+                                run.magnetometer.append(meta_classes["magnetometer"]())
                             try:
-                                run.magnetometer[index].set_attr_from_name(
-                                    key, value
-                                )
+                                run.magnetometer[index].set_attr_from_name(key, value)
                             except Exception as error:
                                 self.logger.warning(
                                     f"Cannot set processing info attribute {param}"
@@ -1292,9 +1226,7 @@ class EMTFXML(emtf_xml.EMTF):
                         try:
                             fn.set_attr_from_name(key.strip(), value.strip())
                         except:
-                            raise AttributeError(
-                                f"Cannot set attribute {key}."
-                            )
+                            raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:

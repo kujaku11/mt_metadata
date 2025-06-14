@@ -5,13 +5,14 @@ Created on Mon Sep  6 12:04:35 2021
 @author: jpeacock
 """
 
+from mt_metadata.base import Base, BaseDict
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import Base, BaseDict
-from mt_metadata.transfer_functions.io.emtfxml.metadata import Site, FieldNotes
-from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.transfer_functions.io.emtfxml.metadata import FieldNotes, helpers, Site
+
 
 # =============================================================================
 attr_dict = BaseDict()

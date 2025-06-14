@@ -28,6 +28,7 @@ from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
 
 from loguru import logger
 
+
 # =============================================================================
 # validator functions
 # =============================================================================
@@ -70,6 +71,51 @@ def validate_header(header, attribute=False):
             )
             raise MTValidatorError(msg)
     return header
+
+
+def validate_name(name):
+    """
+    validate the name to conform to the standards
+    name must be:
+
+        * all lower case {a-z; 1-9}
+        * must start with a letter
+        * categories are separated by '.'
+        * words separated by '_'
+
+    {object}.{name_name}
+
+    '/' will be replaced with '.'
+    converted to all lower case
+
+    :param name: name name
+    :type name: string
+    :return: valid name name
+    :rtype: string
+
+    """
+    if not isinstance(name, str):
+        msg = f"Attribute name must be a string, not {type(name)}"
+        raise MTValidatorError(msg)
+
+    original = str(name)
+
+    if re.match("^[0-9]", name):
+        msg = f"Attribute name cannot start with a number, {original}"
+        raise MTValidatorError(msg)
+
+    if "/" in name:
+        name = name.replace("/", ".")
+
+    if re.search("[A-Z].*?", name):
+        name = "_".join(re.findall(".[^A-Z]*", name))
+        name = name.replace("._", ".")
+        name = name.lower()
+
+    if original != name:
+        msg = "input name {0} converted to {1} following MTH5 standards"
+
+    return name
 
 
 def validate_attribute(name):
@@ -176,10 +222,7 @@ def validate_type(value):
             return value
 
         else:
-            msg = (
-                "'type' must be type [ int | float "
-                + f"| str | bool ].  Not {value}"
-            )
+            msg = "'type' must be type [ int | float " + f"| str | bool ].  Not {value}"
             raise MTValidatorError(msg)
     else:
         msg = (
@@ -467,9 +510,7 @@ def validate_value_type(value, v_type, style=None):
                 return value
 
         # if a number convert to appropriate type
-        elif isinstance(
-            value, (int, np.int_, np.int64, np.int32, np.int16, np.int8)
-        ):
+        elif isinstance(value, (int, np.int_, np.int64, np.int32, np.int16, np.int8)):
             if v_type is float:
                 return float(value)
             elif v_type is str:
@@ -477,9 +518,7 @@ def validate_value_type(value, v_type, style=None):
             return int(value)
 
         # if a number convert to appropriate type
-        elif isinstance(
-            value, (float, np.float16, np.float32, np.float64)
-        ):
+        elif isinstance(value, (float, np.float16, np.float32, np.float64)):
             if v_type is int:
                 return int(value)
             elif v_type is str:
@@ -491,9 +530,7 @@ def validate_value_type(value, v_type, style=None):
             if v_type is str:
                 if isinstance(value, np.ndarray):
                     value = value.astype(np.str_)
-                value = [
-                    f"{v}".replace("'", "").replace('"', "") for v in value
-                ]
+                value = [f"{v}".replace("'", "").replace('"', "") for v in value]
             elif v_type is int:
                 value = [int(float(v)) for v in value]
             elif v_type is float:

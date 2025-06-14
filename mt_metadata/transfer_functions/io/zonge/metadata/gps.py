@@ -9,13 +9,16 @@ Created on Wed Dec  8 10:29:50 2021
 
 """
 
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("gps", SCHEMA_FN_PATHS)
@@ -26,7 +29,6 @@ class GPS(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self._location = Location()
         super().__init__(attr_dict=attr_dict, **kwargs)
 

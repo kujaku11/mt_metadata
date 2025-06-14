@@ -1,29 +1,80 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright: 
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import Diagnostic
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("battery", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("diagnostic", SCHEMA_FN_PATHS), "voltage")
-# =============================================================================
-class Battery(Base):
-    __doc__ = write_lines(attr_dict)
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import StartEndRange, Comment
+from pydantic import Field, field_validator, ValidationInfo
 
-    def __init__(self, **kwargs):
 
-        self.voltage = Diagnostic()
-        super().__init__(attr_dict=attr_dict, **kwargs)
+# =====================================================
+class Battery(MetadataBase):
+    type: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Description of battery type.",
+            examples="pb-acid gel cell",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None
+
+    id: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="battery id",
+            examples="battery01",
+            type="string",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ] = None
+
+    voltage: Annotated[
+        StartEndRange,
+        Field(
+            default=StartEndRange(),
+            description="Range of voltages.",
+            examples="Range(minimum=0.0, maximum=1.0)",
+            type="object",
+            alias=None,
+            json_schema_extra={
+                "units": "volts",
+                "required": False,
+            },
+        ),
+    ]
+
+    comments: Annotated[
+        Comment,
+        Field(
+            default_factory=Comment,
+            description="Any comments about the channel.",
+            examples="ambient air temperature was chilly, ice on cables",
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+        """
+        Validate that the value is a valid comment.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)
+        return value

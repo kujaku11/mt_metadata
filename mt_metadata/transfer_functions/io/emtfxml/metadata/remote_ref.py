@@ -10,10 +10,12 @@ Created on Mon Sep  6 12:04:35 2021
 # =============================================================================
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import element_to_string, write_lines
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("remote_ref", SCHEMA_FN_PATHS)
@@ -24,7 +26,6 @@ class RemoteRef(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):

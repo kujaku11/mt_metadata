@@ -5,8 +5,8 @@ zonge
 ====================
     * Tools for interfacing with MTFT24
     * Tools for interfacing with MTEdit
-    
-    
+
+
 Created on Tue Jul 11 10:53:23 2013
 @author: jpeacock-pr
 """
@@ -18,15 +18,10 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from .metadata import Header
-from mt_metadata.transfer_functions.tf import (
-    Survey,
-    Station,
-    Run,
-    Magnetic,
-    Electric,
-)
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
+from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
+
+from .metadata import Header
 
 
 # ==============================================================================
@@ -150,9 +145,7 @@ class ZongeMTAvg:
                 continue
             else:
                 line = line.replace("*", "0.50")
-                values = [comp.lower()] + [
-                    float(ss.strip()) for ss in line.split(",")
-                ]
+                values = [comp.lower()] + [float(ss.strip()) for ss in line.split(",")]
                 entry = dict(
                     [
                         (key.lower(), value)
@@ -168,9 +161,7 @@ class ZongeMTAvg:
         self.n_freq = self.frequency.size
         self.components = self.df.comp.unique()
 
-        self.freq_index_dict = dict(
-            [(ff, ii) for ii, ff in enumerate(self.frequency)]
-        )
+        self.freq_index_dict = dict([(ff, ii) for ii, ff in enumerate(self.frequency)])
 
         self.z, self.z_err = self._fill_z()
         self.t, self.t_err = self._fill_t()
@@ -316,12 +307,8 @@ class ZongeMTAvg:
         ch = Electric(component="ex")
         if self.header._has_channel("zxy"):
             ch.dipole_length = self.header._comp_dict["zxy"]["rx"].length
-            ch.measurement_azimuth = self.header._comp_dict["zxy"][
-                "ch"
-            ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
-                0
-            ]
+            ch.measurement_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[0]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zxy"]["ch"].number[0]
@@ -340,12 +327,8 @@ class ZongeMTAvg:
         ch = Electric(component="ey")
         if self.header._has_channel("zyx"):
             ch.dipole_length = self.header._comp_dict["zyx"]["rx"].length
-            ch.measurement_azimuth = self.header._comp_dict["zyx"][
-                "ch"
-            ].azimuth[0]
-            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
-                0
-            ]
+            ch.measurement_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[0]
+            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[0]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[0]
             ch.channel_id = self.header._comp_dict["zyx"]["ch"].number[0]
@@ -363,12 +346,8 @@ class ZongeMTAvg:
     def hx_metadata(self):
         ch = Magnetic(component="hx")
         if self.header._has_channel("zyx"):
-            ch.measurement_azimuth = self.header._comp_dict["zyx"][
-                "ch"
-            ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[
-                1
-            ]
+            ch.measurement_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zyx"]["ch"].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zyx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zyx"]["ch"].number[1]
@@ -387,12 +366,8 @@ class ZongeMTAvg:
     def hy_metadata(self):
         ch = Magnetic(component="hy")
         if self.header._has_channel("zxy"):
-            ch.measurement_azimuth = self.header._comp_dict["zxy"][
-                "ch"
-            ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[
-                1
-            ]
+            ch.measurement_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["zxy"]["ch"].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["zxy"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["zxy"]["ch"].number[1]
@@ -411,12 +386,8 @@ class ZongeMTAvg:
     def hz_metadata(self):
         ch = Magnetic(component="hz")
         if self.header._has_channel("tzx"):
-            ch.measurement_azimuth = self.header._comp_dict["tzx"][
-                "ch"
-            ].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[
-                1
-            ]
+            ch.measurement_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[1]
+            ch.translated_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[1]
             ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
             ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]
@@ -444,9 +415,7 @@ class ZongeMTAvg:
         sm.transfer_function.id = self.header.station
         sm.transfer_function.software.author = "Zonge International"
         sm.transfer_function.software.name = "MTEdit"
-        sm.transfer_function.software.version = (
-            self.header.m_t_edit.version.split()[0]
-        )
+        sm.transfer_function.software.version = self.header.m_t_edit.version.split()[0]
         sm.transfer_function.software.last_updated = (
             self.header.m_t_edit.version.split()[-1]
         )
@@ -454,9 +423,7 @@ class ZongeMTAvg:
         for key, value in self.header.m_t_edit.to_dict(single=True).items():
             if "version" in key:
                 continue
-            sm.transfer_function.processing_parameters.append(
-                f"mtedit.{key}={value}"
-            )
+            sm.transfer_function.processing_parameters.append(f"mtedit.{key}={value}")
 
         sm.data_type = self.header.survey.type
         sm.add_run(self.run_metadata)

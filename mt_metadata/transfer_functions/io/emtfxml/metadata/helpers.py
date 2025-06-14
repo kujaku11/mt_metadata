@@ -11,16 +11,15 @@ Created on Wed Mar  8 19:53:04 2023
 from collections import OrderedDict
 from xml.etree import cElementTree as et
 
-from mt_metadata.utils.validators import validate_attribute
 from mt_metadata.base.helpers import element_to_string
+from mt_metadata.utils.validators import validate_attribute
+
 
 # =============================================================================
 
 
 def _get_attributes(cls):
-    return [
-        f for f in cls.__dict__.keys() if f[0] != "_" and f not in ["logger"]
-    ]
+    return [f for f in cls.__dict__.keys() if f[0] != "_" and f not in ["logger"]]
 
 
 def _capwords(value):

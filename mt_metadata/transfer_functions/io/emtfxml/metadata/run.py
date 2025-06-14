@@ -2,26 +2,30 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import Dipole, Magnetometer, Comment, Instrument
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.base.helpers import element_to_string, write_lines
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.utils.mttime import MTime
+
+from . import Comment, Dipole, Instrument, Magnetometer
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Instrument()._attr_dict, "instrument")
 attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
+
 
 # =============================================================================
 class Run(Base):
@@ -75,9 +79,7 @@ class Run(Base):
         self.end = input_dict["end"]
         try:
             if isinstance(input_dict["comments"], list):
-                self.comments.from_dict(
-                    {"comments": input_dict["comments"][0]}
-                )
+                self.comments.from_dict({"comments": input_dict["comments"][0]})
             else:
                 self.comments.from_dict({"comments": input_dict["comments"]})
         except KeyError:

@@ -1,0 +1,26 @@
+{
+    "title": "job",
+    "type": "object",
+    "properties": {
+        "name": {
+            "default": null,
+            "description": "name of the job",
+            "title": "name",
+            "examples": "yellowstone",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "for": {
+            "default": null,
+            "description": "who the job is for",
+            "title": "for",
+            "examples": "NSF",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "job"
+}

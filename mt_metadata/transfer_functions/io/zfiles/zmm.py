@@ -10,22 +10,18 @@ Translated from code by B. Murphy.
 # Imports
 # ==============================================================================
 from pathlib import Path
-from loguru import logger
 
 import numpy as np
 import xarray as xr
+from loguru import logger
 
-from mt_metadata.transfer_functions.tf import (
-    Survey,
-    Station,
-    Run,
-    Electric,
-    Magnetic,
-)
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
-from .metadata import Channel
-from mt_metadata.utils.list_dict import ListDict
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
+from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
+from mt_metadata.utils.list_dict import ListDict
+
+from .metadata import Channel
+
 
 # ==============================================================================
 PERIOD_FORMAT = ".10g"
@@ -135,9 +131,7 @@ class ZMMHeader(object):
 
                 line = fid.readline()
         self.station_metadata.comments = ""
-        self.station_metadata.transfer_function.processing_type = header_list[
-            2
-        ].strip()
+        self.station_metadata.transfer_function.processing_type = header_list[2].strip()
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]
@@ -162,9 +156,7 @@ class ZMMHeader(object):
                     lon -= 360
                 self.longitude = lon
 
-                self.station_metadata.location.declination.value = float(
-                    line_list[-1]
-                )
+                self.station_metadata.location.declination.value = float(line_list[-1])
             elif "number" in line:
                 line_list = line.strip().split()
                 self.num_channels = int(line_list[3])
@@ -323,12 +315,8 @@ class ZMM(ZMMHeader):
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(
-            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
-        )
-        lines.append(
-            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
-        )
+        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
         lines.append(f"\tLatitude:      {self.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.longitude:.3f}")
         lines.append(f"\tElevation:     {self.elevation:.3f}")
@@ -569,9 +557,7 @@ class ZMM(ZMMHeader):
         self.station_metadata.transfer_function.software.name = "EMTF"
         self.station_metadata.transfer_function.software.version = "1"
         self.station_metadata.runs[0].sample_rate = np.median(
-            np.array(
-                [d["sample_rate"] for k, d in self.decimation_dict.items()]
-            )
+            np.array([d["sample_rate"] for k, d in self.decimation_dict.items()])
         )
 
         # add information to runs
@@ -702,9 +688,7 @@ class ZMM(ZMMHeader):
         """
 
         period = float(period_block[0].strip().split(":")[1].split()[0].strip())
-        level = int(
-            period_block[0].strip().split("level")[1].split()[0].strip()
-        )
+        level = int(period_block[0].strip().split("level")[1].split()[0].strip())
         bands = (
             int(period_block[0].strip().split("from")[1].split()[0].strip()),
             int(period_block[0].strip().split("to")[1].split()[0].strip()),
@@ -834,21 +818,11 @@ class ZMM(ZMMHeader):
         # build transformation matrix for predicted channels (electric fields)
         ex_index = self.ex.index
         ey_index = self.ey.index
-        v = np.eye(
-            self.transfer_functions.shape[1], self.transfer_functions.shape[1]
-        )
-        v[ex_index - 2, ex_index - 2] = np.cos(
-            np.deg2rad(self.ex.azimuth - angle)
-        )
-        v[ey_index - 2, ex_index - 2] = np.sin(
-            np.deg2rad(self.ex.azimuth - angle)
-        )
-        v[ex_index - 2, ey_index - 2] = np.cos(
-            np.deg2rad(self.ey.azimuth - angle)
-        )
-        v[ey_index - 2, ey_index - 2] = np.sin(
-            np.deg2rad(self.ey.azimuth - angle)
-        )
+        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
+        v[ex_index - 2, ex_index - 2] = np.cos(np.deg2rad(self.ex.azimuth - angle))
+        v[ey_index - 2, ex_index - 2] = np.sin(np.deg2rad(self.ex.azimuth - angle))
+        v[ex_index - 2, ey_index - 2] = np.cos(np.deg2rad(self.ey.azimuth - angle))
+        v[ey_index - 2, ey_index - 2] = np.sin(np.deg2rad(self.ey.azimuth - angle))
 
         # matrix multiplication...
         rotated_transfer_functions = np.matmul(
@@ -859,18 +833,10 @@ class ZMM(ZMMHeader):
 
         # now pull out the impedance tensor
         z = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
-        z[:, 0, 0] = rotated_transfer_functions[
-            :, ex_index - 2, hx_index
-        ]  # Zxx
-        z[:, 0, 1] = rotated_transfer_functions[
-            :, ex_index - 2, hy_index
-        ]  # Zxy
-        z[:, 1, 0] = rotated_transfer_functions[
-            :, ey_index - 2, hx_index
-        ]  # Zyx
-        z[:, 1, 1] = rotated_transfer_functions[
-            :, ey_index - 2, hy_index
-        ]  # Zyy
+        z[:, 0, 0] = rotated_transfer_functions[:, ex_index - 2, hx_index]  # Zxx
+        z[:, 0, 1] = rotated_transfer_functions[:, ex_index - 2, hy_index]  # Zxy
+        z[:, 1, 0] = rotated_transfer_functions[:, ey_index - 2, hx_index]  # Zyx
+        z[:, 1, 1] = rotated_transfer_functions[:, ey_index - 2, hy_index]  # Zyy
 
         # and the variance information
         var = np.zeros((self.num_freq, 2, 2))
@@ -921,9 +887,7 @@ class ZMM(ZMMHeader):
 
         # don't need to transform predicated channels (assuming no tilt in Hz)
         hz_index = self.hz.index
-        v = np.eye(
-            self.transfer_functions.shape[1], self.transfer_functions.shape[1]
-        )
+        v = np.eye(self.transfer_functions.shape[1], self.transfer_functions.shape[1])
 
         # matrix multiplication...
         rotated_transfer_functions = np.matmul(
@@ -934,12 +898,8 @@ class ZMM(ZMMHeader):
 
         # now pull out tipper information
         tipper = np.zeros((self.num_freq, 2), dtype=np.complex64)
-        tipper[:, 0] = rotated_transfer_functions[
-            :, hz_index - 2, hx_index
-        ]  # Tx
-        tipper[:, 1] = rotated_transfer_functions[
-            :, hz_index - 2, hy_index
-        ]  # Ty
+        tipper[:, 0] = rotated_transfer_functions[:, hz_index - 2, hx_index]  # Tx
+        tipper[:, 1] = rotated_transfer_functions[:, hz_index - 2, hy_index]  # Ty
 
         # and the variance/error information
         var = np.zeros((self.num_freq, 2))

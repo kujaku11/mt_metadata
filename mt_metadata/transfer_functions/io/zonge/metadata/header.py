@@ -5,34 +5,24 @@ zonge
 ====================
     * Tools for interfacing with MTFT24
     * Tools for interfacing with MTEdit
-    
-    
+
+
 Created on Tue Jul 11 10:53:23 2013
 @author: jpeacock-pr
 """
+
+from mt_metadata.base import Base, get_schema
 
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
 from mt_metadata.utils.mttime import MTime
-from .standards import SCHEMA_FN_PATHS
-from . import (
-    Survey,
-    Tx,
-    Rx,
-    MTEdit,
-    Unit,
-    GPS,
-    GDP,
-    CH,
-    STN,
-    Line,
-    MTFT24,
-    Job,
-)
 from mt_metadata.utils.validators import validate_attribute
+
+from . import CH, GDP, GPS, Job, Line, MTEdit, MTFT24, Rx, STN, Survey, Tx, Unit
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("header", SCHEMA_FN_PATHS)
@@ -106,10 +96,7 @@ class Header(Base):
             if line.find("=") > 0 and line.find("$") == 0:
                 key, value = line[1:].split("=")
                 key = ".".join(
-                    [
-                        validate_attribute(k)
-                        for k in key.replace(":", ".").split(".")
-                    ]
+                    [validate_attribute(k) for k in key.replace(":", ".").split(".")]
                 )
 
                 value = value.lower().strip()
@@ -129,9 +116,7 @@ class Header(Base):
                 if comp is not None:
                     comp_key, comp_attr = key.split(".")
 
-                    self._comp_dict[comp][comp_key].set_attr_from_name(
-                        comp_attr, value
-                    )
+                    self._comp_dict[comp][comp_key].set_attr_from_name(comp_attr, value)
                 else:
                     self.set_attr_from_name(key, value)
             else:
@@ -190,9 +175,7 @@ class Header(Base):
             location_str = self._comp_dict["zxx"]["rx"].center
             if location_str is None:
                 return None
-            return [
-                float(ss.strip().split()[0]) for ss in location_str.split(":")
-            ]
+            return [float(ss.strip().split()[0]) for ss in location_str.split(":")]
         return None
 
     @property

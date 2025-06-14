@@ -330,7 +330,7 @@
                         <comments>voltage measurements not recorded</comments>
                     </power_source>
                 </data_logger>
-                <data_type>BB, LP</data_type>
+                <data_type>BB</data_type>
                 <fdsn>
                     <new_epoch>True</new_epoch>
                 </fdsn>
@@ -630,7 +630,7 @@
                         <comments>voltage measurements not recorded</comments>
                     </power_source>
                 </data_logger>
-                <data_type>BB, LP</data_type>
+                <data_type>BB</data_type>
                 <fdsn>
                     <new_epoch>False</new_epoch>
                 </fdsn>
@@ -930,7 +930,7 @@
                         <comments>voltage measurements not recorded</comments>
                     </power_source>
                 </data_logger>
-                <data_type>BB, LP</data_type>
+                <data_type>BB</data_type>
                 <fdsn>
                     <new_epoch>False</new_epoch>
                 </fdsn>

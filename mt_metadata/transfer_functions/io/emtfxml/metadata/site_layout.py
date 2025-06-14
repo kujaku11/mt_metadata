@@ -2,7 +2,7 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -13,10 +13,12 @@ Created on Wed Dec 23 21:30:36 2020
 # =============================================================================
 from xml.etree import cElementTree as et
 
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
+from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import element_to_string, write_lines
+
+from . import Electric, Magnetic
 from .standards import SCHEMA_FN_PATHS
-from . import Magnetic, Electric
+
 
 # =============================================================================
 attr_dict = get_schema("site_layout", SCHEMA_FN_PATHS)
@@ -27,7 +29,6 @@ class SiteLayout(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self._input_channels = []
         self._output_channels = []
 
@@ -44,7 +45,6 @@ class SiteLayout(Base):
             value = [value]
 
         for item in value:
-
             if isinstance(item, (Magnetic, Electric)):
                 self._input_channels.append(item)
             elif isinstance(item, dict):

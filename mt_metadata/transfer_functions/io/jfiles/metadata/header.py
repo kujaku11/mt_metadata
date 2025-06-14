@@ -10,9 +10,10 @@ Created on Sat Dec  4 12:09:13 2021
 # =============================================================================
 
 from mt_metadata.base import get_schema
-from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Location
-from . import BirrpParameters, BirrpBlock, BirrpAngles
+
+from . import BirrpAngles, BirrpBlock, BirrpParameters
+from .standards import SCHEMA_FN_PATHS
 
 
 # =============================================================================
@@ -23,7 +24,6 @@ attr_dict.add_dict(Location()._attr_dict.copy())
 
 class Header(Location):
     def __init__(self, **kwargs):
-
         self.birrp_parameters = BirrpParameters()
         self.data_blocks = []
         self.angles = []

@@ -2,24 +2,26 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+from xml.etree import cElementTree as et
+
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
 
-from xml.etree import cElementTree as et
-
-from mt_metadata.base.helpers import write_lines, element_to_string
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from mt_metadata.transfer_functions.tf import Declination
+from mt_metadata.base import Base, get_schema
+from mt_metadata.base.helpers import element_to_string, write_lines
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.transfer_functions.tf import Declination
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
@@ -31,7 +33,6 @@ class Location(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.declination = Declination()
         self._latitude = 0.0
         self._longitude = 0.0
@@ -78,9 +79,7 @@ class Location(Base):
             lat_value = float(latitude)
 
         except TypeError:
-            self.logger.debug(
-                "Could not convert {0} setting to 0".format(latitude)
-            )
+            self.logger.debug("Could not convert {0} setting to 0".format(latitude))
             return 0.0
 
         except ValueError:
@@ -112,9 +111,7 @@ class Location(Base):
             lon_value = float(longitude)
 
         except TypeError:
-            self.logger.debug(
-                "Could not convert {0} setting to 0".format(longitude)
-            )
+            self.logger.debug("Could not convert {0} setting to 0".format(longitude))
             return 0.0
 
         except ValueError:
@@ -142,9 +139,7 @@ class Location(Base):
         try:
             elev_value = float(elevation)
         except (ValueError, TypeError):
-            msg = "Could not convert {0} to a number setting to 0".format(
-                elevation
-            )
+            msg = "Could not convert {0} to a number setting to 0".format(elevation)
             self.logger.debug(msg)
             elev_value = 0.0
 
@@ -202,9 +197,7 @@ class Location(Base):
 
         p_list = position_str.split(":")
         if len(p_list) != 3:
-            msg = "{0} not correct format, should be DD:MM:SS".format(
-                position_str
-            )
+            msg = "{0} not correct format, should be DD:MM:SS".format(position_str)
             self.logger.error(msg)
             raise ValueError(msg)
 
@@ -220,9 +213,7 @@ class Location(Base):
 
         position_value = sign * (abs(deg) + minutes / 60.0 + sec / 3600.0)
 
-        self.logger.debug(
-            "Converted {0} to {1}".format(position_str, position_value)
-        )
+        self.logger.debug("Converted {0} to {1}".format(position_str, position_value))
 
         return position_value
 
@@ -277,18 +268,14 @@ class Location(Base):
         if self.declination.epoch is None:
             self.declination.epoch = "1995"
 
-        root = et.Element(
-            self.__class__.__name__.capitalize(), {"datum": self.datum}
-        )
+        root = et.Element(self.__class__.__name__.capitalize(), {"datum": self.datum})
         lat = et.SubElement(root, "Latitude")
         lat.text = f"{self.latitude:.6f}"
         lon = et.SubElement(root, "Longitude")
         lon.text = f"{self.longitude:.6f}"
         elev = et.SubElement(root, "Elevation", {"units": "meters"})
         elev.text = f"{self.elevation:.3f}"
-        dec = et.SubElement(
-            root, "Declination", {"epoch": self.declination.epoch}
-        )
+        dec = et.SubElement(root, "Declination", {"epoch": self.declination.epoch})
         dec.text = f"{self.declination.value:.3f}"
 
         if not string:

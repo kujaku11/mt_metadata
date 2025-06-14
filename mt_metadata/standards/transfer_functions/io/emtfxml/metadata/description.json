@@ -1,0 +1,19 @@
+{
+    "title": "description",
+    "type": "object",
+    "properties": {
+        "description": {
+            "default": "",
+            "description": "description of what is in the file; default is magnetotelluric transfer functions",
+            "title": "description",
+            "examples": "Magnetotelluric Transfer Functions",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "description"
+    ],
+    "description": "description"
+}

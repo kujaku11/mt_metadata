@@ -2,27 +2,24 @@
 """
 Created on Wed Dec 23 21:30:36 2020
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
+from mt_metadata.base import Base, get_schema
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
-from . import (
-    DataQualityNotes,
-    DataQualityWarnings,
-    Comment,
-    Location,
-    Orientation,
-)
-from mt_metadata.utils.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.utils.mttime import MTime
+
+from . import Comment, DataQualityNotes, DataQualityWarnings, Location, Orientation
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("site", SCHEMA_FN_PATHS)
@@ -31,6 +28,8 @@ attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
 attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
 attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
 attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
+
+
 # =============================================================================
 class Site(Base):
     __doc__ = write_lines(attr_dict)

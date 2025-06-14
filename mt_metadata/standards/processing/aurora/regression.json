@@ -1,0 +1,79 @@
+{
+    "title": "regression",
+    "type": "object",
+    "properties": {
+        "minimum_cycles": {
+            "type": "integer",
+            "default": null,
+            "description": "Minimum number of cycles in the regression",
+            "title": "minimum_cycles",
+            "examples": "10",
+            "alias": null,
+            "units": null
+        },
+        "max_iterations": {
+            "type": "integer",
+            "default": null,
+            "description": "Max iterations of the regression",
+            "title": "max_iterations",
+            "examples": "10",
+            "alias": null,
+            "units": null
+        },
+        "max_redescending_iterations": {
+            "type": "integer",
+            "default": null,
+            "description": "Max redescending iterations of the regression",
+            "title": "max_redescending_iterations",
+            "examples": "2",
+            "alias": null,
+            "units": null
+        },
+        "r0": {
+            "type": "float",
+            "default": 1.5,
+            "description": "The number of standard deviations where the influence function changes from linear to quadratic",
+            "title": "r0",
+            "examples": "1.4",
+            "alias": null,
+            "units": null
+        },
+        "u0": {
+            "type": "float",
+            "default": 2.8,
+            "description": "Control for redescending Huber regression weights.",
+            "title": "u0",
+            "examples": "2.8",
+            "alias": null,
+            "units": null
+        },
+        "tolerance": {
+            "type": "float",
+            "default": 0.005,
+            "description": "Control for convergence of RME algorithm.  Lower means more iterations",
+            "title": "tolerance",
+            "examples": "0.005",
+            "alias": null,
+            "units": null
+        },
+        "verbosity": {
+            "type": "int",
+            "default": 0,
+            "description": "Control for logging messages during regression -- Higher means more messages",
+            "title": "verbosity",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "minimum_cycles",
+        "max_iterations",
+        "max_redescending_iterations",
+        "r0",
+        "u0",
+        "tolerance",
+        "verbosity"
+    ],
+    "description": "regression"
+}

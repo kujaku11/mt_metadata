@@ -1,0 +1,148 @@
+{
+    "title": "decimation",
+    "type": "object",
+    "properties": {
+        "decimation_level": {
+            "type": "integer",
+            "default": null,
+            "description": "Decimation level, must be a non-negative integer starting at 0",
+            "title": "decimation_level",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        },
+        "id": {
+            "type": "string",
+            "default": "",
+            "description": "Decimation level ID",
+            "title": "id",
+            "examples": "1",
+            "alias": null,
+            "units": null
+        },
+        "channels_estimated": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string"
+            },
+            "description": "list of channels",
+            "title": "channels_estimated",
+            "examples": "[ex, hy]",
+            "alias": null,
+            "units": null
+        },
+        "sample_rate_decimation": {
+            "type": "float",
+            "default": 1.0,
+            "description": "Sample rate of the decimation level.",
+            "title": "sample_rate_decimation",
+            "examples": 60,
+            "alias": null,
+            "units": "samples per second"
+        },
+        "decimation_factor": {
+            "type": "integer",
+            "default": null,
+            "description": "Decimation factor between initial sample rate and decimation sample rate.",
+            "title": "decimation_factor",
+            "examples": 4,
+            "alias": null,
+            "units": null
+        },
+        "min_num_stft_windows": {
+            "type": "integer",
+            "default": null,
+            "description": "How many FFT windows must be available for the time series to valid for STFT.",
+            "title": "min_num_stft_windows",
+            "examples": 4,
+            "alias": null,
+            "units": null
+        },
+        "method": {
+            "type": "string",
+            "default": "fft",
+            "description": "Fourier transform method",
+            "title": "method",
+            "examples": "fft",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "fft",
+                "wavelet",
+                "other"
+            ]
+        },
+        "anti_alias_filter": {
+            "type": "string",
+            "default": "default",
+            "description": "Type of anti alias filter for decimation.",
+            "title": "anti_alias_filter",
+            "examples": "default",
+            "alias": null,
+            "units": null
+        },
+        "pre_fft_detrend_type": {
+            "type": "string",
+            "default": "linear",
+            "description": "Type of detrend method before FFT.",
+            "title": "pre_fft_detrend_type",
+            "examples": "linear",
+            "alias": null,
+            "units": null
+        },
+        "prewhitening_type": {
+            "type": "string",
+            "default": "first difference",
+            "description": "Prewhitening method to be applied",
+            "title": "prewhitening_type",
+            "examples": "first difference",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "first difference",
+                "other"
+            ]
+        },
+        "recoloring": {
+            "type": "bool",
+            "default": null,
+            "description": "Whether the data are recolored [True] or not [False].",
+            "title": "recoloring",
+            "examples": true,
+            "alias": null,
+            "units": null
+        },
+        "harmonic_indices": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "integer"
+            },
+            "description": "List of harmonics indices kept, if all use -1",
+            "title": "harmonic_indices",
+            "examples": [
+                0,
+                4,
+                8
+            ],
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "decimation_level",
+        "id",
+        "channels_estimated",
+        "sample_rate_decimation",
+        "decimation_factor",
+        "min_num_stft_windows",
+        "method",
+        "anti_alias_filter",
+        "pre_fft_detrend_type",
+        "prewhitening_type",
+        "recoloring",
+        "harmonic_indices"
+    ],
+    "description": "decimation"
+}
