@@ -63,6 +63,7 @@ class OrientationMethodEnum(StrEnumerationBase):
 class GeographicReferenceFrameEnum(StrEnumerationBase):
     geographic = "geographic"
     geomagnetic = "geomagnetic"
+    station = "station"
 
 
 class ChannelOrientationEnum(StrEnumerationBase):
@@ -117,6 +118,14 @@ class SignConventionEnum(str, Enum):
     minus = "-"
     exp_plus = "exp(+iwt)"
     exp_minus = "exp(-iwt)"
+
+
+class StdEDIversionsEnum(str, Enum):
+    SEG_1 = "SEG 1.0"
+    one = "1.0"
+    SEG_10 = "SEG_1.0"
+    SEG_101 = "SEG 1.01"
+    SEG_1011 = "SEG_1.01"
 
 
 ## This is a better way to making an pydantic type of enumeration with a validator

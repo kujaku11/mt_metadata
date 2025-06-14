@@ -7,17 +7,19 @@ have a look at https://github.com/pydantic/pydantic/discussions/3673.
 
 @author: jpeacock
 """
+import datetime
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
-from copy import deepcopy
-import datetime
-from dateutil.parser import parse as dtparser
+from typing import Annotated, Optional
+
 import numpy as np
 import pandas as pd
-from pandas._libs.tslibs import OutOfBoundsDatetime
-from typing import Optional, Annotated
+from dateutil.parser import parse as dtparser
 from loguru import logger
+from pandas._libs.tslibs import OutOfBoundsDatetime
+
 
 try:
     from obspy.core.utcdatetime import UTCDateTime  # for type hinting
@@ -28,14 +30,13 @@ except ImportError:
 
 from pydantic import (
     BaseModel,
-    Field,
     ConfigDict,
-    ValidationInfo,
+    Field,
     field_validator,
     PrivateAttr,
+    ValidationInfo,
 )
 
-from mt_metadata.base import MetadataBase
 
 # =============================================================================
 #  Get leap seconds
@@ -59,7 +60,7 @@ leap_second_dict = {
     15: {"min": datetime.date(2009, 1, 1), "max": datetime.date(2012, 6, 30)},
     16: {"min": datetime.date(2012, 7, 1), "max": datetime.date(2015, 7, 1)},
     17: {"min": datetime.date(2015, 7, 1), "max": datetime.date(2016, 12, 31)},
-    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2025, 7, 1)},
+    18: {"min": datetime.date(2017, 1, 1), "max": datetime.date(2026, 7, 1)},
 }
 
 
@@ -109,7 +110,10 @@ def calculate_leap_seconds(year: int, month: int, day: int) -> int:
         ):
             return int(leap_key)
 
-    return None
+    raise ValueError(
+        f"Leap seconds not defined for date {year}-{month:02d}-{day:02d}. "
+        "Leap seconds are defined from 1981-07-01 to 2026-01-01."
+    )
 
 
 # =============================================================================
@@ -259,14 +263,6 @@ def parse(
     elif isinstance(dt_str, pd.Timestamp):
         t_min_max, stamp = _check_timestamp(dt_str)
 
-    elif hasattr(dt_str, "isoformat"):
-        try:
-            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str.isoformat()))
-        except OutOfBoundsDatetime:
-            stamp, t_min_max = _fix_out_of_bounds_time_stamp(
-                _parse_string(dt_str.isoformat())
-            )
-
     elif isinstance(dt_str, (float, int)):
         # using 3E8 which is about the start of GPS time
         ratio = dt_str / 3e8
@@ -281,6 +277,13 @@ def parse(
             t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str, unit="ns"))
             logger.debug("Assuming time input is in units of nanoseconds")
 
+    elif hasattr(dt_str, "isoformat"):
+        try:
+            t_min_max, stamp = _check_timestamp(pd.Timestamp(dt_str.isoformat()))
+        except OutOfBoundsDatetime:
+            stamp, t_min_max = _fix_out_of_bounds_time_stamp(
+                _parse_string(dt_str.isoformat())
+            )
     else:
         try:
             if isinstance(dt_str, dict):
@@ -389,12 +392,12 @@ class MTime(BaseModel):
     ] = False
 
     time_stamp: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str,
+        float | int | np.datetime64 | pd.Timestamp | str | None,
         Field(
             default_factory=lambda: pd.Timestamp(MTime._default_time.default),
             # default_factory=lambda: pd.Timestamp("1980-01-01T00:00:00+00:00"),
             description="Time in UTC format",
-            examples="1980-01-01T00:00:00+00:00",
+            examples=["1980-01-01T00:00:00+00:00"],
         ),
     ]
 
@@ -996,7 +999,6 @@ def get_now_utc() -> "MTime":
 
 
 class MDate(MTime):
-
     def __str__(self) -> str:
         """
         Represents the object as a string in ISO format.

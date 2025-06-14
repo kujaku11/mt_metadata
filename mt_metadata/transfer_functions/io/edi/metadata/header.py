@@ -1,136 +1,308 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec  4 12:09:13 2021
-
-@author: jpeacock
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
+
+import numpy as np
+import pandas as pd
+from loguru import logger
+from pydantic import Field, field_validator
 
 from mt_metadata import __version__
-from mt_metadata.base import get_schema
-from mt_metadata.base.helpers import validate_name
-from mt_metadata.common import Location
+from mt_metadata.common import (
+    BasicLocation,
+    Declination,
+    GeographicLocation,
+    GeographicReferenceFrameEnum,
+    StdEDIversionsEnum,
+)
+from mt_metadata.utils.location_helpers import convert_position_float2str
 from mt_metadata.utils.mttime import get_now_utc, MTime
-
-from .standards import SCHEMA_FN_PATHS
-
-
-# =============================================================================
-attr_dict = get_schema("header", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Location()._attr_dict.copy())
-# =============================================================================
+from mt_metadata.utils.units import get_unit_object
+from mt_metadata.utils.validators import validate_name
 
 
-class Header(Location):
-    def __init__(self, **kwargs):
-        self._acqdate = MTime()
-        self._enddate = MTime()
-        self._filedate = MTime()
-        self._progdate = MTime("2020-11-10")
+# =====================================================
 
-        self.phoenix_edi = False
 
-        super().__init__()
-        super(Location, self).__init__(attr_dict=attr_dict)
+class Header(BasicLocation, GeographicLocation):
+    acqby: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="person, group, company, university that collected the data",
+            examples=["mt experts"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-        self.units = "millivolts_per_kilometer_per_nanotesla"
-        self.empty = 1e32
-        self.progvers = __version__
-        self.progname = "mt_metadata"
-        self.datum = "WGS84"
+    acqdate: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Start date the time series data were collected",
+            examples=["2020-01-01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        for k, v in kwargs.items():
-            self.set_attr_from_name(k, v)
+    coordinate_system: Annotated[
+        GeographicReferenceFrameEnum,
+        Field(
+            default="geographic",
+            description="coordinate system the transfer function is currently in. Its preferred the transfer function be in a geographic coordinate system for archiving and sharing.",
+            examples=["geopgraphic"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    dataid: Annotated[
+        str,
+        Field(
+            default="",
+            description="station ID.",
+            examples=["mt001"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    enddate: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="End date the time series data were collected",
+            examples=["2020-01-01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    empty: Annotated[
+        float,
+        Field(
+            default=1e32,
+            description="null data values, usually a large number",
+            examples=["1E+32"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    fileby: Annotated[
+        str,
+        Field(
+            default="",
+            description="person, group, company, university that made the file",
+            examples=["mt experts"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    filedate: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date the file was made",
+            examples=["2020-01-01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    progdate: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date of the most recent update of the program used to make the file",
+            examples=["2020-01-01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    progname: Annotated[
+        str,
+        Field(
+            default="mt_metadata",
+            description="Name of the program used to make the file.",
+            examples=["mt_metadata"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    progvers: Annotated[
+        str,
+        Field(
+            default="0.1.6",
+            description="Version of the program used to make the file.",
+            examples=["0.1.6"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    project: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Name of the project the data was collected for, usually a short description or acronym of the project name.",
+            examples=["iMUSH"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    prospect: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Name of the prospect the data was collected for, usually a short description of the location",
+            examples=["Benton"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    loc: Annotated[
+        float | str | None,
+        Field(
+            default=None,
+            description="Usually a short description of the location",
+            examples=["Benton, CA"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    declination: Annotated[
+        Declination,
+        Field(
+            default_factory=lambda: Declination(value=0.0),
+            description="Declination of the station in degrees",
+            examples=["Declination(10.0)"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
+
+    stdvers: Annotated[
+        StdEDIversionsEnum,
+        Field(
+            default="SEG 1.0",
+            description="EDI standards version SEG 1.0",
+            examples=["SEG 1.0"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    survey: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Name of the survey",
+            examples=["CONUS"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    units: Annotated[
+        str | None,
+        Field(
+            default="millivolts_per_kilometer_per_nanotesla",
+            description="In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
+            examples=["millivolts_per_kilometer_per_nanotesla"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @field_validator("acqdate", "enddate", "filedate", "progdate", mode="before")
+    @classmethod
+    def validate_acqdate(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)
+
+    @field_validator("units", mode="before")
+    @classmethod
+    def validate_units(cls, value: str) -> str:
+        if value in [None, ""]:
+            return ""
+        try:
+            unit_object = get_unit_object(value)
+            return unit_object.name
+        except ValueError as error:
+            raise KeyError(error)
+        except KeyError as error:
+            raise KeyError(error)
 
     def __str__(self):
         return "".join(self.write_header())
 
     def __repr__(self):
         return self.__str__()
-
-    @property
-    def lat(self):
-        return self.latitude
-
-    @lat.setter
-    def lat(self, value):
-        self.latitude = value
-
-    @property
-    def lon(self):
-        return self.longitude
-
-    @lon.setter
-    def lon(self, value):
-        self.longitude = value
-
-    @property
-    def long(self):
-        return self.longitude
-
-    @long.setter
-    def long(self, value):
-        self.longitude = value
-
-    @property
-    def elev(self):
-        return self.elevation
-
-    @elev.setter
-    def elev(self, value):
-        self.elevation = value
-
-    @property
-    def acqdate(self):
-        return self._acqdate.isoformat()
-
-    @acqdate.setter
-    def acqdate(self, value):
-        try:
-            self._acqdate.parse(value)
-        except ValueError as error:
-            msg = f"Cannot set Header.acqdata with {value}. {error}"
-            self.logger.debug(msg)
-
-    @property
-    def enddate(self):
-        if self._enddate is not None:
-            return self._enddate.isoformat()
-
-    @enddate.setter
-    def enddate(self, value):
-        try:
-            self._enddate.parse(value)
-        except ValueError as error:
-            msg = f"Cannot set Header.enddata with {value}. {error}"
-            self.logger.debug(msg)
-
-    @property
-    def filedate(self):
-        return self._filedate.date
-
-    @filedate.setter
-    def filedate(self, value):
-        try:
-            self._filedate.parse(value)
-        except ValueError as error:
-            msg = f"Cannot set Header.filedata with {value}. {error}"
-            self.logger.debug(msg)
-
-    @property
-    def progdate(self):
-        return self._progdate.date
-
-    @progdate.setter
-    def progdate(self, value):
-        try:
-            self._progdate.parse(value)
-        except ValueError as error:
-            msg = f"Cannot set Header.progdata with {value}. {error}"
-            self.logger.debug(msg)
 
     def get_header_list(self, edi_lines):
         """
@@ -205,10 +377,18 @@ class Header(Location):
 
             if key == "declination":
                 setattr(self.declination, "value", value)
+                continue
+            elif key in ["long", "lon", "lonigutde"]:
+                key = "longitude"
+            elif key in ["lat", "latitude"]:
+                key = "latitude"
+            elif key in ["elev", "elevation"]:
+                key = "elevation"
             else:
                 if key in ["dataid"]:
-                    value = validate_name(value)
-                setattr(self, key, value)
+                    value = validate_name(value.lower())
+
+            setattr(self, key, value)
 
     def write_header(
         self,
@@ -259,7 +439,7 @@ class Header(Location):
                 if latlon_format.lower() == "dd":
                     value = f"{value:.6f}"
                 else:
-                    value = self._convert_position_float2str(value)
+                    value = convert_position_float2str(value)
             if key in ["elev"] and value is not None:
                 value = "{0:.3f}".format(value)
             if isinstance(value, list):
@@ -276,7 +456,7 @@ class Header(Location):
         """
 
         if header_list is None:
-            self.logger.info("No header information to read")
+            logger.info("No header information to read")
             return None
         new_header_list = []
         for h_line in header_list:
