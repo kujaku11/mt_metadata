@@ -24,9 +24,11 @@ def _make_supported_features_dict():
     # TODO Import all supported fetaures here
     from mt_metadata.features.coherence import Coherence
     from mt_metadata.features.coherence import StridingWindowCoherence
+    from mt_metadata.features.cross_powers import CrossPowers  # Added stub
     SUPPORTED_FEATURE_DICT = {}
     SUPPORTED_FEATURE_DICT["coherence"] = Coherence
     SUPPORTED_FEATURE_DICT["striding_window_coherence"] = StridingWindowCoherence
+    SUPPORTED_FEATURE_DICT["cross_powers"] = CrossPowers  # Register stub
     return SUPPORTED_FEATURE_DICT
 
 # =============================================================================
