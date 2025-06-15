@@ -13,6 +13,7 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 import xarray as xr
+import numpy as np
 
 # =============================================================================
 # attr_dict = get_schema("feature", SCHEMA_FN_PATHS)
@@ -39,11 +40,14 @@ class Feature(BaseFeature):
         self._supported_features = _make_supported_features_dict()
 
     def from_dict(self, input_dict):
+        """
+        Instantiate a feature from a dictionary. Requires a 'name' key.
+        """
         if "name" not in input_dict.keys():
-            msg = f"Features must have an ID (name), supported features are {SUPPORTED_FEATURE_DICT.keys()}"
+            msg = f"Features must have a name, supported features are {self._supported_features.keys()}"
             self.logger.error(msg)
-
-        feature = SUPPORTED_FEATURE_DICT[input_dict.pop("feature_name")]
+            raise KeyError(msg)
+        feature = self._supported_features[input_dict.pop("name")]
         feature_obj = feature()
         feature_obj.from_dict(input_dict)
 
