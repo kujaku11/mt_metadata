@@ -137,6 +137,13 @@ class TestBase(unittest.TestCase):
         other = NotAllowed()
         self.assertFalse(self.base_object == other)
 
+    def test_eq_with_json_string(self):
+        """Test equality with a JSON string representation of Base."""
+        base_dict = self.base_object.to_dict(single=True, required=False)
+        import json
+        base_json = json.dumps(base_dict)
+        self.assertTrue(self.base_object == base_json)
+
 
 
 
