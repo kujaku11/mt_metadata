@@ -43,11 +43,18 @@ class Feature(BaseFeature):
         """
         Instantiate a feature from a dictionary. Requires a 'name' key.
         """
-        if "name" not in input_dict.keys():
+        if "name" not in input_dict:
             msg = f"Features must have a name, supported features are {self._supported_features.keys()}"
             self.logger.error(msg)
             raise KeyError(msg)
-        feature = self._supported_features[input_dict.pop("name")]
+        
+        feature_name = input_dict.pop("name")
+        if feature_name not in self._supported_features:
+            msg = f"Feature '{feature_name}' is not supported. Supported features are {self._supported_features.keys()}"
+            self.logger.error(msg)
+            raise KeyError(msg)
+
+        feature = self._supported_features[feature_name]
         feature_obj = feature()
         feature_obj.from_dict(input_dict)
 
