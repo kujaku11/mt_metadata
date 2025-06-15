@@ -129,6 +129,13 @@ class TestBase(unittest.TestCase):
 
     def test_equal_str(self):
         self.assertFalse(self.base_object == "None")
+    
+    def test_eq_with_invalid_type(self):
+        """ Test that comparing Base object with an invalid type returns False. """
+        class NotAllowed:
+            pass
+        other = NotAllowed()
+        self.assertFalse(self.base_object == other)
 
 
 
