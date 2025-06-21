@@ -1,0 +1,156 @@
+{
+    "channel_weight_specs": [
+            {
+                "channel_weight_spec": {
+                    "output_channels": [
+                        "ex"
+                    ],
+                    "combination_style": "multiplication",
+                    "feature_weight_specs": [
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "striding_window_coherence",
+                                    "ch1": "ex",
+                                    "ch2": "hy"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.8,
+                                            "transition_upper_bound": 0.9,
+                                            "threshold": "low cut"
+                                        }
+                                    },
+                                    {
+                                        "weight_kernel": {
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.995,
+                                            "transition_upper_bound": 1.01,
+                                            "threshold": "high cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "multiple_coherence",
+                                    "output_channel": "ex"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "activation_style": "sigmoid",
+                                            "transition_lower_bound": 0.8,
+                                            "transition_upper_bound": 1.2,
+                                            "threshold": "low cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "channel_weight_spec": {
+                    "output_channels": [
+                        "ey"
+                    ],
+                    "combination_style": "multiplication",
+                    "feature_weight_specs": [
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "striding_window_coherence",
+                                    "ch1": "ey",
+                                    "ch2": "hx"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.4,
+                                            "transition_upper_bound": 0.77,
+                                            "threshold": "low cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "multiple_coherence",
+                                    "output_channel": "ey"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.4,
+                                            "transition_upper_bound": 0.8,
+                                            "threshold": "low cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "channel_weight_spec": {
+                    "output_channels": [
+                        "hz"
+                    ],
+                    "combination_style": "multiplication",
+                    "feature_weight_specs": [
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "striding_window_coherence",
+                                    "ch1": "hx",
+                                    "ch2": "rx"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "style": "taper",
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.6,
+                                            "transition_upper_bound": 0.9,
+                                            "threshold": "low cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "feature_weight_spec": {
+                                "feature": {
+                                    "name": "striding_window_coherence",
+                                    "ch1": "hy",
+                                    "ch2": "ry"
+                                },
+                                "weight_kernels": [
+                                    {
+                                        "weight_kernel": {
+                                            "style": "taper",
+                                            "half_window_style": "hann",
+                                            "transition_lower_bound": 0.5,
+                                            "transition_upper_bound": 0.9,
+                                            "threshold": "low cut"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+}
