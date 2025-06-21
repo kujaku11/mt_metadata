@@ -47,12 +47,20 @@ class TestCoherence(unittest.TestCase):
         coh_dict = copy.deepcopy(self.coh_dict)
         coh_dict["window.type"] = window_type
         coh_dict["window.num_samples"] = window_length
-        coh = Coherence()
-        coh.from_dict(meta_dict=coh_dict)
+        # Use 'feature_id' for dispatch, 'name' for instance label
+        test_dict = {"feature_id": "coherence", "name": "test_coh", "ch1": "ex", "ch2": "hy"}
+        test_dict.update(coh_dict)
+        from mt_metadata.features.feature import Feature
+        coh = Feature.from_feature_id(test_dict)
         assert coh.window.type == window_type
         assert coh.window.num_samples == window_length
         assert coh.channel_pair_str == "ex, hy"
         print(coh.station1, coh.station2)
+	    # Provide dummy arrays for compute
+        x = np.random.randn(1024)
+        y = np.random.randn(1024)
+        f, coh_values = coh.compute(x, y)
+        assert len(f) == (coh.window.num_samples/2) + 1
 
     def test_calculate_coherence(self, plot: bool = False):
         """

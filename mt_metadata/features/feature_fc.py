@@ -1,6 +1,6 @@
-from mt_metadata.features.base_feature import BaseFeature
+from mt_metadata.features.feature import Feature
 
-class FeatureFC(BaseFeature):
+class FeatureFC(Feature):
     """
     Stub feature class for feature_fc.
     """

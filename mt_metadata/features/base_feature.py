@@ -13,17 +13,8 @@ from mt_metadata.base import get_schema, Base
 from .standards import SCHEMA_FN_PATHS
 
 # =============================================================================
-attr_dict = get_schema("base_feature", SCHEMA_FN_PATHS)
-
-
-
-# =============================================================================
-class BaseFeature(Base):
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
+# This file has been removed as part of the consolidation of BaseFeature into Feature.
+# All feature classes should now inherit from Feature directly.
 
 
 

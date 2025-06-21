@@ -1,25 +1,14 @@
 import pytest
 from mt_metadata.features.feature import Feature
 
-class DummyFeature:
-    def from_dict(self, d):
-        self.called = True
-
-def test_from_dict_success():
-    f = Feature()
-    f._supported_features = {"dummy": DummyFeature}
-    d = {"name": "dummy", "param": 1}
-    f.from_dict(d.copy())  # Use copy to avoid mutation
-
-def test_from_dict_missing_name():
-    f = Feature()
-    f._supported_features = {"dummy": DummyFeature}
-    d = {"param": 1}
-    with pytest.raises(KeyError):
-        f.from_dict(d.copy())
 
 def test_all_supported_features_instantiable():
-    f = Feature()
-    for name, cls in f._supported_features.items():
-        d = {"name": name}
-        f.from_dict(d.copy())
+    for feature_id, cls in Feature._make_supported_features_dict().items():
+        d = {"feature_id": feature_id, "name": f"test_{feature_id}"}
+        # Provide minimal required fields for known features
+        if feature_id in ("coherence", "striding_window_coherence", "cross_powers"):
+            d["ch1"] = "ex"
+            d["ch2"] = "hy"
+        # FeatureTS and FeatureFC only require 'feature_id' and 'name' for now
+        obj = Feature.from_feature_id(d)
+        assert isinstance(obj, cls)

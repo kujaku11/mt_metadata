@@ -1,6 +1,6 @@
-from mt_metadata.features.base_feature import BaseFeature
+from mt_metadata.features.feature import Feature
 
-class FeatureTS(BaseFeature):
+class FeatureTS(Feature):
     """
     Stub feature class for time series features.
     """

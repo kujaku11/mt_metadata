@@ -12,8 +12,8 @@ Note that this coherence is one number for the entire time-series (per frequency
 The Window object is used to taper the time series before FFT.
 
 Development Notes:
-Coherence extends the BaseFeature class.  This means that it should have
-all the attrs that a BaseFeature instance does, as well as its own unique ones.
+Coherence extends the Feature class.  This means that it should have
+all the attrs that a Feature instance does, as well as its own unique ones.
 When setting up the attr_dict, one is confronted with the question of adding
 BaseFeatures attrs one of two ways:
 - To add the features directly, use:
@@ -94,7 +94,7 @@ from loguru import logger
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema
 from mt_metadata.transfer_functions.processing.window import Window
-from .base_feature import BaseFeature
+from mt_metadata.features.feature import Feature
 from .standards import SCHEMA_FN_PATHS
 from typing import Optional, Tuple
 
@@ -103,7 +103,7 @@ import scipy.signal as ssig
 
 # =============================================================================
 attr_dict = get_schema("coherence", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("base_feature", SCHEMA_FN_PATHS))
+# attr_dict.add_dict(get_schema("feature", SCHEMA_FN_PATHS))
 # attr_dict.add_dict(BaseFeature()._attr_dict, "base_feature")
 attr_dict.add_dict(Window()._attr_dict, "window")
 
@@ -115,7 +115,7 @@ DEFAULT_SCIPY_WINDOW.overlap = 128
 
 
 # =============================================================================
-class Coherence(BaseFeature):
+class Coherence(Feature):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -123,7 +123,7 @@ class Coherence(BaseFeature):
         self._detrend = None
         self.station1 = ""
         self.station2 = ""
-        BaseFeature.__init__(self, **kwargs)  # attr_dict=attr_dict,
+        Feature.__init__(self, **kwargs)  # attr_dict=attr_dict,
         self._attr_dict = attr_dict
         self.name = "coherence"
         self.domain = "frequency"
