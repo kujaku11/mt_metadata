@@ -22,6 +22,7 @@ recursive-include mt_metadata/transfer_functions/processing/standards *.json
 recursive-include mt_metadata/transfer_functions/processing/aurora/standards *.json
 recursive-include mt_metadata/transfer_functions/processing/fourier_coefficients/standards *.json
 recursive-include mt_metadata/features/standards *.json
+recursive-include mt_metadata/features/test_helpers *.json
 recursive-include mt_metadata/features/weights/standards *.json
 recursive-include mt_metadata/data/mt_xml *.xml
 recursive-include mt_metadata/data/stationxml *.xml
