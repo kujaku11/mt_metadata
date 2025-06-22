@@ -2,45 +2,9 @@
     Container for weighting strategy to apply to a single tf estimation
     having a single output channel (usually one of "ex", "ey", "hz").
 
-candidate data structure:
-    {
-        "channel_weight_spec": {
-            "output_channels": [
-                "ex"
-            ],
-        "combination_style": "multiplication",
-        "features_weight_specs": [
-            {
-                "feature_name": "coherence",
-                "feature_params": {
-                    "ch1": "ex",
-                    "ch2": "hy"
-                },
-                "window_style": "threshold",
-                "window_params": {
-                    "min": 0.8,
-                    "max": "+inf"
-                }
-            },
-            {
-                "feature_name": "multiple_coherence",
-                "feature_params": {
-                    "output_channel": "ex"
-                },
-                "window_style": "threshold",
-                "window_params": {
-                    "min": 0.9,
-                    "max": 1.1
-                }
-            }
-        ]
-    }
-}
-
-Candidate names: processing_weights, feature_weights, channel_weights_spec, channel_weighting
-
-"""
-"""
+    candidate data structure is stored in test_helpers/channel_weight_specs_example.json
+        
+    Candidate names: processing_weights, feature_weights, channel_weights_spec, channel_weighting
 
     Notes, and doc for weights PR.
 
@@ -101,6 +65,9 @@ from mt_metadata.helper_functions import cast_to_class_if_dict
 from mt_metadata.helper_functions import validate_setter_input
 from typing import List, Union
 
+import numpy as np
+import xarray as xr
+
 attr_dict = get_schema("channel_weight_spec", SCHEMA_FN_PATHS)
 
 class ChannelWeightSpec(Base):
@@ -117,6 +84,7 @@ class ChannelWeightSpec(Base):
 
     def __init__(self, **kwargs):
         super().__init__(attr_dict=attr_dict, **kwargs)
+        self._weights = None
 
     @property
     def feature_weight_specs(self) -> List[FeatureWeightSpec]:
@@ -178,3 +146,64 @@ class ChannelWeightSpec(Base):
             return np.max(weights, axis=0)
         else:
             raise ValueError(f"Unknown combination style: {combo}")
+    
+
+    @property
+    def weights(self):
+        return self._weights
+
+    @weights.setter
+    def weights(self, value):
+        if not isinstance(value, (xr.DataArray, xr.Dataset, np.ndarray, None.__class__)):
+            raise TypeError("Data must be a numpy array or xarray.")
+        self._weights = value
+
+    def get_weights_for_band(self, band):
+        """
+        Extract weights for the frequency bin closest to the band's center frequency.
+        
+        TODO: Add tests.
+        Parameters
+        ----------
+        band : object
+            Should have a .center_frequency attribute (float, Hz).
+
+        Returns
+        -------
+        weights : np.ndarray or xarray.DataArray
+            Weights for the closest frequency bin.
+        """
+        if self.weights is None:
+            raise ValueError("No weights have been set.")
+
+        # Assume weights is an xarray.DataArray or Dataset with a 'frequency' dimension
+        freq_axis = None
+        if hasattr(self.weights, "dims"):
+            # Try to find the frequency dimension
+            for dim in self.weights.dims:
+                if "freq" in dim:
+                    freq_axis = dim
+                    break
+            if freq_axis is None:
+                raise ValueError("Could not find frequency dimension in weights.")
+
+            freqs = self.weights[freq_axis].values
+        elif isinstance(self.weights, np.ndarray):
+            # If it's a plain ndarray, assume first axis is frequency
+            freqs = np.arange(self.weights.shape[0])
+            freq_axis = 0
+        else:
+            raise TypeError("Weights must be an xarray.DataArray, Dataset, or numpy array.")
+
+        # Find index of closest frequency
+        idx = np.argmin(np.abs(freqs - band.center_frequency))
+
+        # Extract weights for that frequency
+        if hasattr(self.weights, "isel"):
+            # xarray: use isel
+            weights_for_band = self.weights.isel({freq_axis: idx})
+        else:
+            # numpy: index along first axis
+            weights_for_band = self.weights[idx]
+
+        return weights_for_band
