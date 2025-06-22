@@ -18,7 +18,7 @@
                                     {
                                         "weight_kernel": {
                                             "half_window_style": "hann",
-                                            "transition_lower_bound": 0.8,
+                                            "transition_lower_bound": 0.6,
                                             "transition_upper_bound": 0.9,
                                             "threshold": "low cut"
                                         }
@@ -26,7 +26,7 @@
                                     {
                                         "weight_kernel": {
                                             "half_window_style": "hann",
-                                            "transition_lower_bound": 0.995,
+                                            "transition_lower_bound": 0.9995,
                                             "transition_upper_bound": 1.01,
                                             "threshold": "high cut"
                                         }
