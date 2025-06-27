@@ -1,0 +1,36 @@
+{
+  "weight_type": {
+    "type": "string",
+    "required": true,
+    "style": "controlled vocabulary",
+    "units": null,
+    "description": "Type of weighting kernel (e.g., monotonic, learned, spatial).",
+    "options": ["monotonic", "learned", "spatial", "custom"],
+    "alias": [],
+    "example": "monotonic",
+    "default": "monotonic"
+  },
+  "description": {
+    "type": "string",
+    "required": false,
+    "style": "free form",
+    "units": null,
+    "description": "Human-readable description of what this kernel is for.",
+    "options": [],
+    "alias": [],
+    "example": "This kernel smoothly transitions between 0 and 1 in a monotonic way",
+    "default": ""
+  },
+  "active": {
+    "type": "boolean",
+    "required": false,
+    "style": "free form",
+    "units": null,
+    "description": "If false, this kernel will be skipped during weighting.",
+    "options": [],
+    "alias": [],
+    "example": "false",
+    "default": true
+  }
+}
+

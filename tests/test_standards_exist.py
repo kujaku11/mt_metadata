@@ -2,7 +2,7 @@
 """
 Created on Thu Jun 17 15:32:48 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -45,7 +45,8 @@ class TestStandards(unittest.TestCase):
             self.manifest_fn = self.home.parent.joinpath("MANIFEST.in")
 
     def test_standards_exist(self):
-        existing_dirs = get_standard_dirs(self.home.joinpath(self.home.name))
+        package_folder = self.home.joinpath(self.home.name)
+        existing_dirs = get_standard_dirs(package_folder)
         manifest_dirs = read_manifest(self.manifest_fn)
         self.assertListEqual(existing_dirs, manifest_dirs)
 
