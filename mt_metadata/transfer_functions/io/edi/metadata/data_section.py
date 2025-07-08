@@ -243,7 +243,7 @@ class DataSection(MetadataBase):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def get_data(self, edi_lines: str) -> list[str]:
+    def get_data(self, edi_lines: list[str]) -> list[str]:
         """
         Read in the data of the file, will detect if reading spectra or
         impedance.
@@ -268,7 +268,7 @@ class DataSection(MetadataBase):
                     data_list.append(line.strip())
         return data_list
 
-    def read_data(self, edi_lines: str) -> None:
+    def read_data(self, edi_lines: list[str]) -> None:
         """
         Read data section
         """

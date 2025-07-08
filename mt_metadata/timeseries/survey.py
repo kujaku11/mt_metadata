@@ -1,35 +1,33 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
 from collections import OrderedDict
-from loguru import logger
+from typing import Annotated
 
-import numpy as np
-import pandas as pd
-from pydantic import Field, ValidationInfo, field_validator, computed_field
+from loguru import logger
+from pydantic import computed_field, Field, field_validator, ValidationInfo
 from pyproj import CRS
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
-    Comment,
     AuthorPerson,
-    Citation,
-    Copyright,
     BasicLocationNoDatum,
+    Citation,
+    Comment,
+    Copyright,
     Fdsn,
     FundingSource,
     TimePeriodDate,
 )
+from mt_metadata.timeseries import Station
 from mt_metadata.timeseries.filters import (
-    PoleZeroFilter,
-    FrequencyResponseTableFilter,
-    TimeDelayFilter,
-    FIRFilter,
     CoefficientFilter,
+    FIRFilter,
+    FrequencyResponseTableFilter,
+    PoleZeroFilter,
+    TimeDelayFilter,
 )
 from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.timeseries import Station
 
 
 # =====================================================
@@ -41,7 +39,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Alpha numeric ID that will be unique for archiving.",
-            examples="EMT20",
+            examples=["EMT20"],
             alias=None,
             pattern="^[a-zA-Z0-9_\- ]+$",
             json_schema_extra={
@@ -56,7 +54,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the survey.",
-            examples="long survey",
+            examples=["long survey"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -70,7 +68,7 @@ class Survey(MetadataBase):
         Field(
             default="WGS 84",
             description="Datum of latitude and longitude coordinates. Should be a well-known datum, such as WGS84, and will be the reference datum for all locations.  This is important for the user, they need to make sure all coordinates in the survey and child items (i.e. stations, channels) are referenced to this datum.",
-            examples="WGS 84",
+            examples=["WGS 84"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -84,7 +82,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Closest geographic reference to survey, usually a city but could be a landmark or some other common geographic reference point.",
-            examples="Yukon",
+            examples=["Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -98,7 +96,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Descriptive name of the survey.",
-            examples="MT Characterization of Yukon Terrane",
+            examples=["MT Characterization of Yukon Terrane"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -112,7 +110,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Alpha numeric name for the project e.g USGS-GEOMAG.",
-            examples="YUTOO",
+            examples=["YUTOO"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -126,7 +124,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of stations recorded in the survey.",
-            examples="ListDict[Station(id=id)]",
+            examples=["ListDict[Station(id=id)]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -140,7 +138,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of filters for channel responses.",
-            examples="ListDict[Filter()]",
+            examples=["ListDict[Filter()]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -154,7 +152,7 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled.",
-            examples="long project of characterizing mineral resources in Yukon",
+            examples=["long project of characterizing mineral resources in Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -168,7 +166,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=TimePeriodDate,
             description="End date of the survey in UTC.",
-            examples="TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')",
+            examples=["TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -182,7 +180,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN web service information.",
-            examples="Fdsn()",
+            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -196,7 +194,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person or group that acquired the data.",
-            examples="Person()",
+            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -210,7 +208,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=FundingSource,
             description="Funding source for the survey.",
-            examples="FundingSource()",
+            examples=["FundingSource()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -224,7 +222,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=Citation,
             description="Citation for the dataset.",
-            examples="Citation()",
+            examples=["Citation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -238,7 +236,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=Citation,
             description="Citation for the journal.",
-            examples="Citation()",
+            examples=["Citation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -252,7 +250,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=BasicLocationNoDatum,
             description="Northwest corner of the survey area.",
-            examples="BasicLocationNoDatum()",
+            examples=["BasicLocationNoDatum()"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -266,7 +264,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=BasicLocationNoDatum,
             description="Southeast corner of the survey area.",
-            examples="BasicLocationNoDatum()",
+            examples=["BasicLocationNoDatum()"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -280,7 +278,7 @@ class Survey(MetadataBase):
         Field(
             default=None,
             description="Country where the survey was conducted.",
-            examples="Canada",
+            examples=["Canada"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -294,7 +292,7 @@ class Survey(MetadataBase):
         Field(
             default=None,
             description="State or province where the survey was conducted.",
-            examples="Yukon",
+            examples=["Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -308,7 +306,7 @@ class Survey(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person or group that led the project.",
-            examples="Person()",
+            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -322,7 +320,7 @@ class Survey(MetadataBase):
         Field(
             default="CC-BY-4.0",
             description="Release license for the data.",
-            examples="CC-BY-4.0",
+            examples=["CC-BY-4.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -395,7 +393,6 @@ class Survey(MetadataBase):
             value_list = value
 
         for ii, station_entry in enumerate(value_list):
-
             if isinstance(station_entry, (dict, OrderedDict)):
                 try:
                     station = Station()

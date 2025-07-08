@@ -1,6 +1,6 @@
 # package file
 
-# from .edi import EDI
+from .edi import EDI
 
 
-# __all__ = ["EDI"]
+__all__ = ["EDI"]

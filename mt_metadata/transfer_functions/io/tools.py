@@ -137,7 +137,7 @@ class index_locator(object):
         return len(self.output_channels)
 
 
-def _validate_edi_lines(edi_lines):
+def _validate_edi_lines(edi_lines) -> list[str]:
     """
     check for carriage returns or hard returns
 

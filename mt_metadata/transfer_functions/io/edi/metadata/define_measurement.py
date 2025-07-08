@@ -288,7 +288,7 @@ class DefineMeasurement(MetadataBase):
 
         return ch_ids
 
-    def get_measurement_lists(self, edi_lines: str) -> None:
+    def get_measurement_lists(self, edi_lines: list[str]) -> None:
         """
         get measurement list including measurement setup
 
@@ -338,7 +338,7 @@ class DefineMeasurement(MetadataBase):
                 else:
                     return
 
-    def read_measurement(self, edi_lines: str) -> None:
+    def read_measurement(self, edi_lines: list[str]) -> None:
         """
         read the define measurment section of the edi file
 
