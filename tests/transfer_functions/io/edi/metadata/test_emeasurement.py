@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Tests for the Emeasurement base model.
+Tests for the EMeasurement base model.
 
-This module tests the Emeasurement class functionality including validation,
+This module tests the EMeasurement class functionality including validation,
 computed properties, and serialization methods.
 """
 
 import numpy as np
 import pytest
 
-from mt_metadata.transfer_functions.io.edi.metadata.emeasurement_basemodel import (
-    Emeasurement,
-)
+from mt_metadata.transfer_functions.io.edi.metadata import EMeasurement
 
 
 # =============================================================================
@@ -21,14 +19,14 @@ from mt_metadata.transfer_functions.io.edi.metadata.emeasurement_basemodel impor
 
 @pytest.fixture(scope="module")
 def default_emeasurement():
-    """Return a Emeasurement instance with default values."""
-    return Emeasurement()
+    """Return a EMeasurement instance with default values."""
+    return EMeasurement()
 
 
 @pytest.fixture(scope="module")
 def custom_emeasurement():
-    """Return a Emeasurement instance with custom values."""
-    return Emeasurement(
+    """Return a EMeasurement instance with custom values."""
+    return EMeasurement(
         id=1.0,
         chtype="ex",
         x=50.0,
@@ -44,8 +42,8 @@ def custom_emeasurement():
 
 @pytest.fixture(scope="module")
 def diagonal_emeasurement():
-    """Return a Emeasurement instance with diagonal electrode layout."""
-    return Emeasurement(
+    """Return a EMeasurement instance with diagonal electrode layout."""
+    return EMeasurement(
         id=2.0,
         chtype="ey",
         x=0.0,
@@ -61,8 +59,8 @@ def diagonal_emeasurement():
 
 @pytest.fixture(scope="module")
 def depth_emeasurement():
-    """Return a Emeasurement instance with depth component."""
-    return Emeasurement(
+    """Return a EMeasurement instance with depth component."""
+    return EMeasurement(
         id=3.0,
         chtype="ez",
         x=0.0,
@@ -78,8 +76,8 @@ def depth_emeasurement():
 
 @pytest.fixture(scope="module")
 def angled_emeasurement():
-    """Return a Emeasurement instance with angled orientation."""
-    return Emeasurement(
+    """Return a EMeasurement instance with angled orientation."""
+    return EMeasurement(
         id=4.0,
         chtype="exy",
         x=10.0,
@@ -99,10 +97,10 @@ def angled_emeasurement():
 
 
 class TestEmeasurementInitialization:
-    """Test initialization of the Emeasurement class."""
+    """Test initialization of the EMeasurement class."""
 
     def test_default_values(self, default_emeasurement, subtests):
-        """Test the default values of Emeasurement attributes."""
+        """Test the default values of EMeasurement attributes."""
         scalar_attrs = {
             "id": 0.0,
             "chtype": "",
@@ -121,7 +119,7 @@ class TestEmeasurementInitialization:
                 assert getattr(default_emeasurement, attr) == expected
 
     def test_custom_values(self, custom_emeasurement, subtests):
-        """Test Emeasurement with custom attribute values."""
+        """Test EMeasurement with custom attribute values."""
         scalar_attrs = {
             "id": 1.0,
             "chtype": "ex",
@@ -141,7 +139,7 @@ class TestEmeasurementInitialization:
 
 
 class TestEmeasurementComputedProperties:
-    """Test computed properties of the Emeasurement class."""
+    """Test computed properties of the EMeasurement class."""
 
     def test_dipole_length_horizontal(self, custom_emeasurement):
         """Test dipole_length calculation for horizontal layout."""
@@ -203,10 +201,10 @@ class TestEmeasurementComputedProperties:
 
 
 class TestEmeasurementMethods:
-    """Test methods of the Emeasurement class."""
+    """Test methods of the EMeasurement class."""
 
     def test_string_representation(self, custom_emeasurement):
-        """Test string representation of Emeasurement."""
+        """Test string representation of EMeasurement."""
         str_rep = str(custom_emeasurement)
 
         # Check that the string contains all attributes
@@ -236,7 +234,7 @@ class TestEmeasurementMethods:
     def test_write_meas_line_error_handling(self):
         """Test error handling in write_meas_line method."""
         # Create an object with a problematic value
-        emeas = Emeasurement()
+        emeas = EMeasurement()
         emeas.__dict__["acqchan"] = None  # This will cause a TypeError
 
         # The method should handle the error and use a default
@@ -270,20 +268,20 @@ class TestEmeasurementMethods:
 
 
 class TestEmeasurementValidation:
-    """Test validation in the Emeasurement class."""
+    """Test validation in the EMeasurement class."""
 
     def test_chtype_pattern_validation(self):
         """Test chtype pattern validation."""
         # Valid chtype (starts with 'e')
-        valid_emeas = Emeasurement(chtype="ex")
+        valid_emeas = EMeasurement(chtype="ex")
         assert valid_emeas.chtype == "ex"
 
         # Invalid chtype (doesn't start with 'e')
         with pytest.raises(ValueError):
-            Emeasurement(chtype="hx")
+            EMeasurement(chtype="hx")
 
     def test_coordinate_validation(self):
-        """Test coordinate validation when creating Emeasurement."""
+        """Test coordinate validation when creating EMeasurement."""
         # All these should be valid
         valid_coordinates = [
             {"x": 0.0, "y": 0.0, "x2": 100.0, "y2": 0.0},
@@ -292,13 +290,13 @@ class TestEmeasurementValidation:
         ]
 
         for coords in valid_coordinates:
-            emeas = Emeasurement(**coords)
+            emeas = EMeasurement(**coords)
             for key, value in coords.items():
                 assert getattr(emeas, key) == value
 
 
 class TestEmeasurementModification:
-    """Test modification of the Emeasurement class."""
+    """Test modification of the EMeasurement class."""
 
     def test_attribute_updates(self, default_emeasurement, subtests):
         """Test updating attributes after initialization."""

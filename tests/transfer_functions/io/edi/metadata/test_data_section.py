@@ -10,9 +10,7 @@ from unittest.mock import patch
 
 import pytest
 
-from mt_metadata.transfer_functions.io.edi.metadata.data_section_basemodel import (
-    DataSection,
-)
+from mt_metadata.transfer_functions.io.edi.metadata import DataSection
 
 
 # =============================================================================
@@ -407,7 +405,7 @@ class TestDataSectionMethods:
 
         # Mock the logger to avoid actual warnings
         with patch(
-            "mt_metadata.transfer_functions.io.edi.metadata.data_section_basemodel.logger.warning"
+            "mt_metadata.transfer_functions.io.edi.metadata.data_section.logger.warning"
         ) as mock_warning:
             default_data_section.match_channels(channel_map)
             # Check that warning was logged

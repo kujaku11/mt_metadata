@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Tests for the Hmeasurement base model.
+Tests for the HMeasurement base model.
 
-This module tests the Hmeasurement class functionality including validation,
+This module tests the HMeasurement class functionality including validation,
 computed properties, and serialization methods.
 """
 
 import pytest
 
-from mt_metadata.transfer_functions.io.edi.metadata.hmeasurement_basemodel import (
-    Hmeasurement,
-)
+from mt_metadata.transfer_functions.io.edi.metadata import HMeasurement
 
 
 # =============================================================================
@@ -20,29 +18,29 @@ from mt_metadata.transfer_functions.io.edi.metadata.hmeasurement_basemodel impor
 
 @pytest.fixture(scope="module")
 def default_hmeasurement():
-    """Return a Hmeasurement instance with default values."""
-    return Hmeasurement()
+    """Return a HMeasurement instance with default values."""
+    return HMeasurement()
 
 
 @pytest.fixture(scope="module")
 def custom_hmeasurement():
-    """Return a Hmeasurement instance with custom values."""
-    return Hmeasurement(
+    """Return a HMeasurement instance with custom values."""
+    return HMeasurement(
         id=1.0, chtype="hx", x=50.0, y=0.0, z=0.0, azm=90.0, dip=0.0, acqchan="channel1"
     )
 
 
 @pytest.fixture(scope="module")
 def angled_hmeasurement():
-    """Return a Hmeasurement instance with non-zero dip."""
-    return Hmeasurement(
+    """Return a HMeasurement instance with non-zero dip."""
+    return HMeasurement(
         id=2.0, chtype="hz", x=0.0, y=0.0, z=1.0, azm=0.0, dip=90.0, acqchan="ch2"
     )
 
 
 @pytest.fixture(scope="module")
 def htype_variations():
-    """Return Hmeasurement instances with different variations of h-type sensors."""
+    """Return HMeasurement instances with different variations of h-type sensors."""
     return [
         ("hx", True),
         ("hy", True),
@@ -65,10 +63,10 @@ def htype_variations():
 
 
 class TestHmeasurementInitialization:
-    """Test initialization of the Hmeasurement class."""
+    """Test initialization of the HMeasurement class."""
 
     def test_default_values(self, default_hmeasurement, subtests):
-        """Test the default values of Hmeasurement attributes."""
+        """Test the default values of HMeasurement attributes."""
         scalar_attrs = {
             "id": 0.0,
             "chtype": "",
@@ -85,7 +83,7 @@ class TestHmeasurementInitialization:
                 assert getattr(default_hmeasurement, attr) == expected
 
     def test_custom_values(self, custom_hmeasurement, subtests):
-        """Test Hmeasurement with custom attribute values."""
+        """Test HMeasurement with custom attribute values."""
         scalar_attrs = {
             "id": 1.0,
             "chtype": "hx",
@@ -103,7 +101,7 @@ class TestHmeasurementInitialization:
 
 
 class TestHmeasurementComputedProperties:
-    """Test computed properties of the Hmeasurement class."""
+    """Test computed properties of the HMeasurement class."""
 
     def test_channel_number_extraction_string(self, custom_hmeasurement):
         """Test channel_number extraction from string acqchan."""
@@ -111,12 +109,12 @@ class TestHmeasurementComputedProperties:
 
     def test_channel_number_extraction_numeric(self):
         """Test channel_number extraction from numeric acqchan."""
-        hmeas = Hmeasurement(acqchan="3")
+        hmeas = HMeasurement(acqchan="3")
         assert hmeas.channel_number == 3
 
     def test_channel_number_extraction_prefix(self):
         """Test channel_number extraction from prefixed acqchan."""
-        hmeas = Hmeasurement(acqchan="ch2")
+        hmeas = HMeasurement(acqchan="ch2")
         assert hmeas.channel_number == 2
 
     def test_channel_number_extraction_default(self, default_hmeasurement):
@@ -134,15 +132,15 @@ class TestHmeasurementComputedProperties:
         ]
 
         for acqchan, expected in test_cases:
-            hmeas = Hmeasurement(acqchan=acqchan)
+            hmeas = HMeasurement(acqchan=acqchan)
             assert hmeas.channel_number == expected
 
 
 class TestHmeasurementMethods:
-    """Test methods of the Hmeasurement class."""
+    """Test methods of the HMeasurement class."""
 
     def test_string_representation(self, custom_hmeasurement):
-        """Test string representation of Hmeasurement."""
+        """Test string representation of HMeasurement."""
         str_rep = str(custom_hmeasurement)
 
         # Check that the string contains all attributes
@@ -186,7 +184,7 @@ class TestHmeasurementMethods:
     def test_write_meas_line_error_handling(self):
         """Test error handling in write_meas_line method."""
         # Create an object with a problematic value
-        hmeas = Hmeasurement()
+        hmeas = HMeasurement()
         hmeas.__dict__["acqchan"] = None  # This will cause a TypeError
 
         # The method should handle the error and use a default
@@ -211,7 +209,7 @@ class TestHmeasurementMethods:
 
 
 class TestHmeasurementValidation:
-    """Test validation in the Hmeasurement class."""
+    """Test validation in the HMeasurement class."""
 
     @pytest.mark.parametrize(
         "chtype,is_valid",
@@ -233,15 +231,15 @@ class TestHmeasurementValidation:
         """Test chtype pattern validation."""
         if is_valid:
             # Valid chtype (starts with 'h' or 'b')
-            hmeas = Hmeasurement(chtype=chtype)
+            hmeas = HMeasurement(chtype=chtype)
             assert hmeas.chtype == chtype
         else:
             # Invalid chtype
             with pytest.raises(ValueError):
-                Hmeasurement(chtype=chtype)
+                HMeasurement(chtype=chtype)
 
     def test_coordinate_validation(self):
-        """Test coordinate validation when creating Hmeasurement."""
+        """Test coordinate validation when creating HMeasurement."""
         # All these should be valid
         valid_coordinates = [
             {"x": 0.0, "y": 0.0, "z": 0.0},
@@ -250,13 +248,13 @@ class TestHmeasurementValidation:
         ]
 
         for coords in valid_coordinates:
-            hmeas = Hmeasurement(chtype="hx", **coords)
+            hmeas = HMeasurement(chtype="hx", **coords)
             for key, value in coords.items():
                 assert getattr(hmeas, key) == value
 
 
 class TestHmeasurementModification:
-    """Test modification of the Hmeasurement class."""
+    """Test modification of the HMeasurement class."""
 
     def test_attribute_updates(self, default_hmeasurement, subtests):
         """Test updating attributes after initialization."""
@@ -282,7 +280,7 @@ class TestHmeasurementModification:
 
     def test_bulk_update_via_dict(self):
         """Test updating multiple attributes via from_dict."""
-        hmeas = Hmeasurement()
+        hmeas = HMeasurement()
         update_dict = {
             "hmeasurement": {
                 "id": 7.0,
@@ -307,21 +305,21 @@ class TestHmeasurementModification:
 
 
 class TestHmeasurementEdgeCases:
-    """Test edge cases and special scenarios for Hmeasurement."""
+    """Test edge cases and special scenarios for HMeasurement."""
 
     def test_empty_acqchan_channel_number(self):
         """Test channel_number with empty acqchan."""
-        hmeas = Hmeasurement(acqchan="")
+        hmeas = HMeasurement(acqchan="")
         assert hmeas.channel_number == 0
 
     def test_float_acqchan_channel_number(self):
         """Test channel_number with float acqchan."""
-        hmeas = Hmeasurement(acqchan=3.14)
+        hmeas = HMeasurement(acqchan=3.14)
         assert hmeas.channel_number == 314
 
     def test_none_acqchan_channel_number(self):
         """Test channel_number with None acqchan."""
-        hmeas = Hmeasurement()
+        hmeas = HMeasurement()
         hmeas.__dict__["acqchan"] = None
         assert hmeas.channel_number == 0
 
