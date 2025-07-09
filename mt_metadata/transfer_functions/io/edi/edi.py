@@ -965,15 +965,19 @@ class EDI:
     @property
     def survey_metadata(self) -> Survey:
         sm = Survey()
-        sm.project = self.Header.project
-        if sm.project is None:
+
+        if self.Header.project is None:
             try:
                 sm.project = self.Header.prospect
             except AttributeError:
                 pass
-        sm.id = self.Header.survey
-        if sm.id is None:
+        else:
+            sm.project = self.Header.project
+
+        if self.Header.survey is None:
             sm.id = "0"
+        else:
+            sm.id = self.Header.survey
         sm.acquired_by.name = self.Header.acqby
         sm.geographic_name = self.Header.loc
         sm.country = self.Header.country

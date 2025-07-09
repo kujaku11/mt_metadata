@@ -4,6 +4,7 @@
 from typing import Annotated
 
 from pydantic import Field, PrivateAttr
+
 from mt_metadata.common import StartEndRange
 from mt_metadata.timeseries import Channel
 
@@ -16,9 +17,9 @@ class Magnetic(Channel):
         Field(
             default="",
             description="Component of the magnetic field.",
-            examples="hx",
+            examples=["hx"],
             alias=None,
-            pattern=r"^[hHbB][a-zA-Z]*$",
+            pattern=r"^[hHbBrR][a-zA-Z]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

@@ -92,7 +92,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "EX"),
                 ("id", 1004.001),
@@ -112,7 +112,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "EY"),
                 ("id", 1005.001),
@@ -132,7 +132,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "HX"),
                 ("dip", 0.0),
@@ -150,7 +150,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 90.0),
                 ("chtype", "HY"),
                 ("dip", 0.0),
@@ -168,7 +168,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "HZ"),
                 ("dip", 0.0),
@@ -186,7 +186,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_rrhx(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "RRHX"),
                 ("dip", 0.0),
@@ -204,7 +204,7 @@ class TestCGGEDI(unittest.TestCase):
     def test_measurement_rrhy(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 90.0),
                 ("chtype", "RRHY"),
                 ("dip", 0.0),
@@ -221,15 +221,16 @@ class TestCGGEDI(unittest.TestCase):
 
     def test_measurement(self):
         m_list = [
-            'REFLOC="TEST01"',
-            "REFLAT=-30:55:49.026",
-            "REFLONG=+127:13:45.228",
-            "REFELEV=175.27",
-            "UNITS=M",
+            '    REFLOC="TEST01"\n',
+            "    REFLAT=-30:55:49.026000\n",
+            "    REFLON=127:13:45.228000\n",
+            "    REFELEV=175.27\n",
+            "    REFTYPE=cartesian\n",
+            "    UNITS=meter\n",
         ]
 
         self.assertListEqual(
-            m_list, list(self.edi_obj.Measurement.measurements.keys())[0 : len(m_list)]
+            m_list, self.edi_obj.Measurement.write_measurement()[4 : 4 + len(m_list)]
         )
 
         with self.subTest("reflat"):

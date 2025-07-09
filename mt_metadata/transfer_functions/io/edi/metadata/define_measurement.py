@@ -235,6 +235,7 @@ class DefineMeasurement(MetadataBase):
             "maxchan",
             "maxrun",
             "maxmeas",
+            "refloc",
             "reflat",
             "reflon",
             "refelev",
@@ -347,6 +348,7 @@ class DefineMeasurement(MetadataBase):
             - maxchan
             - maxmeas
             - maxrun
+            - refloc
             - refelev
             - reflat
             - reflon
@@ -438,7 +440,7 @@ class DefineMeasurement(MetadataBase):
     def write_measurement(
         self,
         longitude_format: str = "LON",
-        latlon_format: str = "dd",
+        latlon_format: str = "degrees",
     ) -> list[str]:
         """
         write_measurement writes the define measurement section of the edi file.
@@ -448,7 +450,7 @@ class DefineMeasurement(MetadataBase):
         longitude_format : str, optional
             longitude format [ "LONG" | "LON" ] , by default "LON"
         latlon_format : str, optional
-            position format [ "dd" | " degrees" ], by default "dd" for decimal degrees
+            position format [ "dd" | " degrees" ], by default "degrees" for decimal degrees
             If you want to write the position in degrees, use " degrees" for the
             latlon_format.  This will write the position in the format of
             HH:MM:SS.ss for the latitude and longitude.  If you want to write

@@ -1,8 +1,9 @@
 # ===============================================================
 # imports
 # ===============================================================
-from loguru import logger
 import numpy as np
+from loguru import logger
+
 
 # ===============================================================
 
@@ -42,7 +43,7 @@ def convert_position_float2str(position: float) -> str:
         deg += 1
         minutes = 0
 
-    position_str = f"{sign * int(deg)}:{int(minutes):02.0f}:{sec:05.2f}"
+    position_str = f"{sign * int(deg)}:{int(minutes):02.0f}:{sec:05.6f}"
     logger.debug(f"Converted {position} to {position_str}")
 
     return position_str
