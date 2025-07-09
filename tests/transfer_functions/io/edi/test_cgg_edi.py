@@ -290,11 +290,11 @@ class TestCGGTF(unittest.TestCase):
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "TEST01",
-            "DATUM": "WGS84",
+            "DATAID": "test01",
+            "DATUM": "WGS 84",
             "ELEV": 175.270,
             "EMPTY": 1.000000e32,
-            "FILEBY": None,
+            "FILEBY": "",
             "LAT": -30.930285,
             "LOC": "Australia",
             "LON": 127.22923,
@@ -302,16 +302,23 @@ class TestCGGTF(unittest.TestCase):
 
         for key, value in head.items():
             with self.subTest(key):
+                if key == "ELEV":
+                    key = "elevation"
+                elif key == "LAT":
+                    key = "latitude"
+                elif key == "LON":
+                    key = "longitude"
+
                 h_value = getattr(self.edi_obj.Header, key.lower())
                 self.assertEqual(h_value, value)
 
         with self.subTest("acquire date"):
-            self.assertEqual(self.edi_obj.Header.acqdate, MTime("06/05/14"))
+            self.assertEqual(self.edi_obj.Header.acqdate, MTime(time_stamp="06/05/14"))
 
         with self.subTest("units"):
             self.assertNotEqual(
                 self.edi_obj.Header.units,
-                "millivolts_per_kilometer_per_nanotesla",
+                "millivolt per kilometer per nanotesla",
             )
 
     def test_info(self):

@@ -1038,6 +1038,8 @@ class EDI:
         sm.location.datum = self.Header.datum
         sm.location.declination.value = self.Header.declination.value
         sm.orientation.reference_frame = self.Header.coordinate_system.split()[0]
+        sm.geographic_name = self.Header.loc
+
         # provenance
         sm.acquired_by.name = self.Header.acqby
         sm.provenance.creation_time = self.Header.filedate

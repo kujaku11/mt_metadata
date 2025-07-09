@@ -267,9 +267,9 @@ class Header(BasicLocation, GeographicLocation):
     units: Annotated[
         str | None,
         Field(
-            default="millivolts_per_kilometer_per_nanotesla",
+            default="millivolt_per_kilometer_per_nanotesla",
             description="In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
-            examples=["millivolts_per_kilometer_per_nanotesla"],
+            examples=["millivolt_per_kilometer_per_nanotesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -374,6 +374,9 @@ class Header(BasicLocation, GeographicLocation):
             elif key in ["stdvers"]:
                 if value in ["N/A", "None", "null"]:
                     value = "SEG 1.0"
+            elif key in ["units"]:
+                if value in ["m", "M"]:
+                    value = "m"
 
             if key == "declination":
                 setattr(self.declination, "value", value)

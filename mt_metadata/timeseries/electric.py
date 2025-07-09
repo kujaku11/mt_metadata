@@ -18,7 +18,7 @@ class Electric(ChannelBase):
         Field(
             default="",
             description="Component of the electric field.",
-            examples="Ex",
+            examples=["Ex"],
             alias=None,
             pattern=r"^[eE][a-zA-Z]*$",
             json_schema_extra={
@@ -33,7 +33,7 @@ class Electric(ChannelBase):
         Field(
             default=0.0,
             description="Length of the dipole as measured in a straight line from electrode to electrode.",
-            examples="55.25",
+            examples=["55.25"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
@@ -47,7 +47,7 @@ class Electric(ChannelBase):
         Field(
             default_factory=Electrode,
             description="Positive electrode.",
-            examples="Electrode()",
+            examples=["Electrode()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -61,7 +61,7 @@ class Electric(ChannelBase):
         Field(
             default_factory=Electrode,
             description="Negative electrode.",
-            examples="Electrode()",
+            examples=["Electrode()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -75,7 +75,7 @@ class Electric(ChannelBase):
         Field(
             default_factory=StartEndRange,
             description="Contact resistance start and end values.",
-            examples="StartEndRange()",
+            examples=["StartEndRange()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -89,7 +89,7 @@ class Electric(ChannelBase):
         Field(
             default_factory=StartEndRange,
             description="AC start and end values.",
-            examples="StartEndRange()",
+            examples=["StartEndRange()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -103,7 +103,7 @@ class Electric(ChannelBase):
         Field(
             default_factory=StartEndRange,
             description="DC start and end values.",
-            examples="StartEndRange()",
+            examples=["StartEndRange()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -117,8 +117,7 @@ class Electric(ChannelBase):
         Field(
             default="electric",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
-            examples="electric",
-            type="string",
+            examples=["electric"],
             alias=None,
             json_schema_extra={
                 "units": None,
