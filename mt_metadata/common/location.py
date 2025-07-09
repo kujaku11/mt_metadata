@@ -82,6 +82,48 @@ class BasicLocation(BasicLocationNoDatum):
         ),
     ]
 
+    x: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="relative distance to the center of the station",
+            examples=["10.0"],
+            validation_alias=AliasChoices("x", "easting", "east"),
+            json_schema_extra={
+                "units": "meters",
+                "required": False,
+            },
+        ),
+    ]
+
+    y: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="relative distance to the center of the station",
+            examples=["10.0"],
+            validation_alias=AliasChoices("y", "north", "northing"),
+            json_schema_extra={
+                "units": "meters",
+                "required": False,
+            },
+        ),
+    ]
+
+    z: Annotated[
+        float | None,
+        Field(
+            default=None,
+            description="relative elevation to the center of the station",
+            examples=["10.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": False,
+            },
+        ),
+    ]
+
     @field_validator("datum", mode="before")
     @classmethod
     def validate_datum(cls, value: str | int) -> str:
@@ -144,20 +186,6 @@ class Location(BasicLocation):
         ),
     ]
 
-    x: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="relative distance to the center of the station",
-            examples=["10.0"],
-            validation_alias=AliasChoices("x", "easting", "east"),
-            json_schema_extra={
-                "units": "meters",
-                "required": False,
-            },
-        ),
-    ]
-
     x2: Annotated[
         float | None,
         Field(
@@ -172,20 +200,6 @@ class Location(BasicLocation):
         ),
     ]
 
-    y: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="relative distance to the center of the station",
-            examples=["10.0"],
-            validation_alias=AliasChoices("y", "north", "northing"),
-            json_schema_extra={
-                "units": "meters",
-                "required": False,
-            },
-        ),
-    ]
-
     y2: Annotated[
         float | None,
         Field(
@@ -193,20 +207,6 @@ class Location(BasicLocation):
             description="relative distance to the center of the station",
             examples=["10.0"],
             validation_alias=AliasChoices("y2", "north", "northing"),
-            json_schema_extra={
-                "units": "meters",
-                "required": False,
-            },
-        ),
-    ]
-
-    z: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="relative elevation to the center of the station",
-            examples=["10.0"],
-            alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,

@@ -3,21 +3,23 @@
 # =====================================================
 
 from typing import Annotated
+
 from loguru import logger
+from pydantic import AliasChoices, Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
+    BasicLocation,
     Comment,
     DataQuality,
-    TimePeriod,
-    Instrument,
     Fdsn,
-    BasicLocation,
+    Instrument,
+    TimePeriod,
 )
 from mt_metadata.timeseries import Filter
-from pydantic import Field, field_validator, ValidationInfo, AliasChoices, PrivateAttr
-from mt_metadata.utils.units import get_unit_object, Unit
 from mt_metadata.timeseries.filters import ChannelResponse
+from mt_metadata.utils.units import get_unit_object, Unit
+
 
 # =====================================================
 
@@ -31,7 +33,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=0,
             description="Channel number on the data logger.",
-            examples="1",
+            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -45,7 +47,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=None,
             description="channel id given by the user or data logger",
-            examples="1001.11",
+            examples=["1001.11"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -59,7 +61,7 @@ class ChannelBase(MetadataBase):
         Field(
             default_factory=Comment,
             description="Any comments about the channel.",
-            examples="ambient air temperature was chilly, ice on cables",
+            examples=["ambient air temperature was chilly, ice on cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -73,7 +75,7 @@ class ChannelBase(MetadataBase):
         Field(
             default="",
             description="Name of the component measured, can be uppercase and/or lowercase.  For now electric channels should start with an 'e' and magnetic channels start with an 'h', followed by the component. If there are multiples of the same channel the name could include an integer.  {type}{component}{number} --> Ex01.",
-            examples="ex",
+            examples=["ex"],
             alias=None,
             pattern=r"\w+",
             json_schema_extra={
@@ -88,8 +90,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=0.0,
             description="Horizontal azimuth of the channel in measurement coordinate system spcified in station.orientation.reference_frame.  Default reference frame is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
-            examples="0",
-            type="number",
+            examples=[0.0],
             validation_alias=AliasChoices("measurement_azimuth", "azimuth"),
             json_schema_extra={
                 "units": "degrees",
@@ -103,8 +104,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=0.0,
             description="Vertical tilt of the channel in measurement coordinate system specified in station.orientation.reference_frame.  Default reference frame is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
-            examples="0",
-            type="number",
+            examples=[0],
             validation_alias=AliasChoices("measurement_tilt", "dip"),
             json_schema_extra={
                 "units": "degrees",
@@ -118,8 +118,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=0.0,
             description="Digital sample rate",
-            examples="8",
-            type="number",
+            examples=[8.0],
             validation_alias=AliasChoices("sample_rate", "sampling_rate"),
             json_schema_extra={
                 "units": "samples per second",
@@ -133,8 +132,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=None,
             description="Horizontal azimuth of the channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data in geomagnetic coordinates and then translated them to geographic coordinates you would set measurement_azimuth=0, translated_azimuth=-12.5 for a declination angle of N12.5E.",
-            examples="0",
-            type="number",
+            examples=[0.0],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -148,8 +146,7 @@ class ChannelBase(MetadataBase):
         Field(
             default=None,
             description="Tilt of channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data using a tripod you would set measurement_tilt=45, translated_tilt=0 for a vertical component.",
-            examples="0",
-            type="number",
+            examples=[0.0],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
@@ -163,8 +160,7 @@ class ChannelBase(MetadataBase):
         Field(
             default="base",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
-            examples="temperature",
-            type="string",
+            examples=["temperature"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -178,7 +174,7 @@ class ChannelBase(MetadataBase):
         Field(
             default="",
             description="Units of the data, should be in SI units and represented as the full name of the unit all lowercase.  If a complex unit use 'per' and '-'.",
-            examples="celsius",
+            examples=["celsius"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -192,8 +188,7 @@ class ChannelBase(MetadataBase):
         Field(
             default_factory=DataQuality,
             description="Data quality for the channel.",
-            examples="",
-            type="object",
+            examples=["DataQuality()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -207,7 +202,7 @@ class ChannelBase(MetadataBase):
         Field(
             default_factory=Filter,
             description="Filter data for the channel.",
-            examples="Filter()",
+            examples=["Filter()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -221,7 +216,7 @@ class ChannelBase(MetadataBase):
         Field(
             default_factory=TimePeriod,
             description="Time period for the channel.",
-            examples="TimePeriod(start='2020-01-01', end='2020-12-31')",
+            examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -235,7 +230,7 @@ class ChannelBase(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN information for the channel.",
-            examples="Fdsn()",
+            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -344,7 +339,6 @@ class ChannelBase(MetadataBase):
 
 # this would be a normal channel that has a single sensor and location.
 class Channel(ChannelBase):
-
     sensor: Annotated[
         Instrument,
         Field(
@@ -364,7 +358,7 @@ class Channel(ChannelBase):
         Field(
             default_factory=BasicLocation,
             description="Location information for the channel.",
-            examples="BasicLocation(latitude=0.0, longitude=0.0, elevation=0.0)",
+            examples=["BasicLocation(latitude=0.0, longitude=0.0, elevation=0.0)"],
             alias=None,
             json_schema_extra={
                 "units": None,

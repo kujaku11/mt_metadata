@@ -32,7 +32,7 @@ class Magnetic(Channel):
         Field(
             default_factory=StartEndRange,
             description="minimum of field strength at the beginning and end",
-            examples="StartEndRange(start=0.01, end=0.02)",
+            examples=["StartEndRange(start=0.01, end=0.02)"],
             alias=None,
             json_schema_extra={
                 "units": "nanotesla",
@@ -46,7 +46,7 @@ class Magnetic(Channel):
         Field(
             default_factory=StartEndRange,
             description="maximum of field strength at the beginning and end",
-            examples="StartEndRange(start=0.1, end=2.0)",
+            examples=["StartEndRange(start=0.1, end=2.0)"],
             alias=None,
             json_schema_extra={
                 "units": "nanotesla",
@@ -60,8 +60,7 @@ class Magnetic(Channel):
         Field(
             default="magnetic",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
-            examples="magnetic",
-            type="string",
+            examples=["magnetic"],
             alias=None,
             json_schema_extra={
                 "units": None,

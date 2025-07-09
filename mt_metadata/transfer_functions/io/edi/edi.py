@@ -1068,10 +1068,20 @@ class EDI:
             elif "transfer_function" in key:
                 key = key.split("transfer_function.")[1]
                 if "processing_parameters" in key:
-                    param = key.split(".")[-1]
-                    sm.transfer_function.processing_parameters.append(
-                        f"{param}={value}"
-                    )
+                    if isinstance(value, list):
+                        for item in value:
+                            if "=" in item:
+                                param, val = item.split("=")
+                                sm.transfer_function.processing_parameters.append(
+                                    f"{param}={val}"
+                                )
+                            else:
+                                sm.transfer_function.processing_parameters.append(item)
+                    else:
+                        param = key.split(".")[-1]
+                        sm.transfer_function.processing_parameters.append(
+                            f"{param}={value}"
+                        )
                 else:
                     sm.transfer_function.update_attribute(key, value)
                     if "runs_processed" in key:
@@ -1183,9 +1193,11 @@ class EDI:
             if not v in [None]:
                 if k in ["processing_parameters"]:
                     for item in v:
+                        param, value = item.split("=", 1)
                         self.Info.info_dict[
-                            f"transfer_function.processing_parameters.{item.replace('=', ' = ')}"
-                        ]
+                            f"transfer_function.processing_parameters.{param}"
+                        ] = value
+
                 else:
                     self.Info.info_dict[f"transfer_function.{k}"] = v
         # write provenance
