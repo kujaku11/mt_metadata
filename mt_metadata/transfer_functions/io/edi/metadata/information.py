@@ -482,8 +482,9 @@ class Information(MetadataBase):
                 continue
             if value in ["", None]:
                 info_lines.append(f"{' '*4}{key}\n")
-            elif isinstance(value, list):
-                value = ",".join(value)
+                continue
+            if isinstance(value, list):
+                value = f"[{', '.join(value)}]"
             elif isinstance(value, str):
                 value = value.strip()
             info_lines.append(f"{' '*4}{key}={value}\n")

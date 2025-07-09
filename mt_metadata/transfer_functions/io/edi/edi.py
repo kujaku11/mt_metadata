@@ -1069,7 +1069,7 @@ class EDI:
                         f"{param}={value}"
                     )
                 else:
-                    sm.transfer_function.set_attr_from_name(key, value)
+                    sm.transfer_function.update_attribute(key, value)
                     if "runs_processed" in key:
                         sm.run_list = sm.transfer_function.runs_processed
 
@@ -1093,9 +1093,9 @@ class EDI:
                         )
                 ch.update_attribute(key, value)
             elif key.startswith("data_logger"):
-                sm.runs[0].set_attr_from_name(key, value)
+                sm.runs[0].update_attribute(key, value)
             elif key.startswith("station."):
-                sm.set_attr_from_name(key.split("station.")[1], value)
+                sm.update_attribute(key.split("station.")[1], value)
             elif "processing." in key:
                 key = key.split("processing.")[1]
                 if key in ["software"]:

@@ -61,15 +61,33 @@ class TestCGGEDI(unittest.TestCase):
             )
 
     def test_info(self):
-        info_list = sorted(
-            [
-                "SITE INFO:",
-                "H_SITE=E_SITE",
-                "PROCESSING PARAMETERS:",
-            ]
-        )
+        info_list = [
+            ">INFO\n",
+            "    maxinfo=31\n",
+            "    /*\n",
+            "    site info\n",
+            "    run.acquired_by.author=Somebody\n",
+            "    run.data_logger.id=222\n",
+            "    run.ex.measurement_azimuth=0.0\n",
+            "    run.ex.dipole_length=100.0\n",
+            "    run.ey.dipole_length=100.0\n",
+            "    run.ex.contact_resistance.start=44479800\n",
+            "    run.ey.contact_resistance.start=41693800\n",
+            "    h_site=E_SITE\n",
+            "    run.hx.measurement_azimuth=0.0\n",
+            "    run.hx.sensor.id=MFS06e-246\n",
+            "    run.hy.sensor.id=MFS06e-249\n",
+            "    run.hz.sensor.id=MFS06e-249\n",
+            "    run.hx.h_field_max.start=169869\n",
+            "    run.hy.h_field_max.start=164154\n",
+            "    run.hz.h_field_max.start=2653\n",
+            "    processing parameters\n",
+            "    transfer_function.software.name=L13ss\n",
+            "    transfer_function.processing_parameters=[ndec=1, nfft=128, ntype=1, rrtype=None, removelargelines=true, rotmaxe=false]\n",
+            "    */\n",
+        ]
 
-        self.assertListEqual(info_list, self.edi_obj.Info.write_info()[1:])
+        self.assertListEqual(info_list, self.edi_obj.Info.write_info())
 
     def test_measurement_ex(self):
         ch = OrderedDict(
