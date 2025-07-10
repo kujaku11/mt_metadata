@@ -55,7 +55,7 @@ class TestSpectraEDI(unittest.TestCase):
 
         with self.subTest("acquire date"):
             self.assertEqual(
-                self.edi_spectra.Header._acqdate, MTime(time_stamp="2004-07-03")
+                self.edi_spectra.Header.acqdate, MTime(time_stamp="2004-07-03")
             )
 
         with self.subTest("units"):
@@ -65,14 +65,14 @@ class TestSpectraEDI(unittest.TestCase):
             )
 
     def test_info(self):
-        info_list = ["MAXLINES=1000"]
+        info_list = [">INFO\n"]
 
         self.assertListEqual(info_list, self.edi_spectra.Info.write_info())
 
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 106.97549946792975),
                 ("chtype", "EX"),
                 ("id", 14.001),
@@ -86,13 +86,13 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_ex.to_dict(single=True)
+            ch, self.edi_spectra.Measurement.measurements["ex"].to_dict(single=True)
         )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", -163.19130837379313),
                 ("chtype", "EY"),
                 ("id", 15.001),
@@ -106,13 +106,13 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_ey.to_dict(single=True)
+            ch, self.edi_spectra.Measurement.measurements["ey"].to_dict(single=True)
         )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 107.0),
                 ("chtype", "HX"),
                 ("dip", 0.0),
@@ -124,13 +124,13 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_hx.to_dict(single=True)
+            ch, self.edi_spectra.Measurement.measurements["hx"].to_dict(single=True)
         )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", -163.0),
                 ("chtype", "HY"),
                 ("dip", 0.0),
@@ -142,13 +142,13 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_hy.to_dict(single=True)
+            ch, self.edi_spectra.Measurement.measurements["hy"].to_dict(single=True)
         )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "HZ"),
                 ("dip", 0.0),
@@ -160,33 +160,36 @@ class TestSpectraEDI(unittest.TestCase):
         )
 
         self.assertDictEqual(
-            ch, self.edi_spectra.Measurement.meas_hz.to_dict(single=True)
+            ch, self.edi_spectra.Measurement.measurements["hz"].to_dict(single=True)
         )
 
     def test_measurement_rrhx(self):
         with self.subTest("spectra"):
-            self.assertFalse(hasattr(self.edi_spectra.Measurement, "rrhx"))
+            self.assertNotIn("rrhx", self.edi_spectra.Measurement.measurements.keys())
         with self.subTest("z"):
-            self.assertFalse(hasattr(self.edi_z.Measurement, "rrhx"))
+            self.assertNotIn("rrhx", self.edi_z.Measurement.measurements.keys())
 
         with self.subTest("spectra"):
-            self.assertFalse(hasattr(self.edi_spectra.Measurement, "rrhy"))
+            self.assertNotIn("rrhy", self.edi_spectra.Measurement.measurements.keys())
         with self.subTest("z"):
-            self.assertFalse(hasattr(self.edi_z.Measurement, "rrhy"))
+            self.assertNotIn("rrhy", self.edi_z.Measurement.measurements.keys())
 
     def test_measurement(self):
         m_list = [
-            "MAXCHAN=7",
-            "MAXRUN=999",
-            "MAXMEAS=99999",
-            "UNITS=M",
-            "REFLAT=35:33:00",
-            "REFLONG=-106:17:00",
+            "\n>=DEFINEMEAS\n",
+            "    MAXCHAN=7\n",
+            "    MAXRUN=999\n",
+            "    MAXMEAS=99999\n",
+            "    REFLAT=35:33:0.000000\n",
+            "    REFLON=-106:17:0.000000\n",
+            "    REFELEV=0\n",
+            "    REFTYPE=cartesian\n",
+            "    UNITS=meter\n",
         ]
 
         self.assertListEqual(
             m_list,
-            self.edi_spectra.Measurement.measurement_list[0 : len(m_list)],
+            self.edi_spectra.Measurement.write_measurement()[0 : len(m_list)],
         )
 
         with self.subTest("reflat"):
@@ -195,23 +198,26 @@ class TestSpectraEDI(unittest.TestCase):
         with self.subTest("reflon"):
             self.assertAlmostEqual(-106.2833, self.edi_spectra.Measurement.reflon, 4)
 
-        with self.subTest("reflong"):
-            self.assertAlmostEqual(-106.2833, self.edi_spectra.Measurement.reflong, 4)
-
         with self.subTest("refelev"):
             self.assertAlmostEqual(0.0, self.edi_spectra.Measurement.refelev, 2)
 
     def test_data_section(self):
         d_list = [
-            "SECTID=Ex",
-            "NCHAN=7",
-            "NFREQ=33",
-            "MAXBLKS=100",
-            "//7",
-            "11.001    12.001    13.001    14.001    15.001    11.001    12.001",
+            "\n>=MTSECT\n",
+            "    NFREQ=33\n",
+            "    SECTID=Ex\n",
+            "    NCHAN=7\n",
+            "    MAXBLOCKS=999\n",
+            "    HX=11.001\n",
+            "    HY=12.001\n",
+            "    HZ=13.001\n",
+            "    EX=14.001\n",
+            "    EY=15.001\n",
         ]
 
-        self.assertListEqual(d_list, self.edi_spectra.Data.data_list)
+        self.assertListEqual(
+            d_list, self.edi_spectra.Data.write_data()[0 : len(d_list)]
+        )
 
     def test_z(self):
         self.assertTrue(np.isclose(self.edi_spectra.z, self.edi_z.z).all())
@@ -228,10 +234,10 @@ class TestSpectraEDI(unittest.TestCase):
 
 class TestToTF(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.edi = EDI(fn=TF_EDI_SPECTRA)
-        self.tf = TF(fn=TF_EDI_SPECTRA)
-        self.tf.read()
+    def setUpClass(cls):
+        cls.edi = EDI(fn=TF_EDI_SPECTRA)
+        cls.tf = TF(fn=TF_EDI_SPECTRA)
+        cls.tf.read()
 
     def test_station_metadata(self):
         edi_st = self.edi.station_metadata.to_dict(single=True)

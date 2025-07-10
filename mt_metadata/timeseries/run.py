@@ -1,32 +1,31 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
-from loguru import logger
 from collections import OrderedDict
-from typing_extensions import Self
-import re
+from typing import Annotated
+
 import numpy as np
+from loguru import logger
+from pydantic import (
+    computed_field,
+    Field,
+    field_validator,
+    model_validator,
+    ValidationInfo,
+)
+from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
-    Comment,
-    Fdsn,
-    TimePeriod,
     AuthorPerson,
-    Provenance,
+    Comment,
     DataTypeEnum,
+    Fdsn,
+    Provenance,
+    TimePeriod,
 )
-
-from mt_metadata.timeseries import DataLogger, Auxiliary, Electric, Magnetic
+from mt_metadata.timeseries import Auxiliary, DataLogger, Electric, Magnetic
 from mt_metadata.utils.list_dict import ListDict
-from pydantic import (
-    Field,
-    field_validator,
-    ValidationInfo,
-    computed_field,
-    model_validator,
-)
 
 
 # =====================================================
@@ -37,9 +36,8 @@ class Run(MetadataBase):
         list[str],
         Field(
             default_factory=list,
-            items={"type": "string"},
             description="List of auxiliary channels recorded",
-            examples="[T]",
+            examples=["[T]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -52,9 +50,8 @@ class Run(MetadataBase):
         list[str],
         Field(
             default_factory=list,
-            items={"type": "string"},
             description="List of electric channels recorded",
-            examples="[Ex , Ey]",
+            examples=["[Ex , Ey]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -66,10 +63,8 @@ class Run(MetadataBase):
     channels_recorded_magnetic: Annotated[
         list[str],
         Field(
-            default_factory=list,
-            items={"type": "string"},
             description="List of magnetic channels recorded",
-            examples='"[Hx , Hy , Hz]"',
+            examples=["[Hx , Hy , Hz]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -106,7 +101,7 @@ class Run(MetadataBase):
         Field(
             default="BBMT",
             description="Type of data recorded for this run.",
-            examples="BBMT",
+            examples=["BBMT"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -120,9 +115,9 @@ class Run(MetadataBase):
         Field(
             default="",
             description="Run ID should be station name followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or {station}001.",
-            examples="001",
+            examples=["001"],
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -135,7 +130,7 @@ class Run(MetadataBase):
         Field(
             default=0.0,
             description="Digital sample rate for the run",
-            examples="100",
+            examples=["100"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
@@ -149,7 +144,7 @@ class Run(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Information about the group that collected the data.",
-            examples="Person()",
+            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -163,7 +158,7 @@ class Run(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Information about the group that collected the metadata.",
-            examples="Person()",
+            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -177,7 +172,7 @@ class Run(MetadataBase):
         Field(
             default_factory=Provenance,
             description="Provenance information about the run.",
-            examples="Provenance()",
+            examples=["Provenance()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -191,7 +186,7 @@ class Run(MetadataBase):
         Field(
             default_factory=TimePeriod,
             description="Time period for the run.",
-            examples="TimePeriod(start='2020-01-01', end='2020-12-31')",
+            examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -205,7 +200,7 @@ class Run(MetadataBase):
         Field(
             default_factory=DataLogger,
             description="Data Logger information used to collect the run.",
-            examples="DataLogger()",
+            examples=["DataLogger()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -219,7 +214,7 @@ class Run(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN information for the run.",
-            examples="Fdsn()",
+            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -233,7 +228,7 @@ class Run(MetadataBase):
         Field(
             default_factory=ListDict,
             description="ListDict of channel objects collected in this run.",
-            examples="ListDict(Electric(), Magnetic(), Auxiliary())",
+            examples=["ListDict(Electric(), Magnetic(), Auxiliary())"],
             alias=None,
             exclude=True,
             json_schema_extra={

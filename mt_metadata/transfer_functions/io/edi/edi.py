@@ -976,10 +976,8 @@ class EDI:
         sm = Survey()
 
         if self.Header.project is None:
-            try:
+            if self.Header.prospect is not None:
                 sm.project = self.Header.prospect
-            except AttributeError:
-                pass
         else:
             sm.project = self.Header.project
 
@@ -987,8 +985,10 @@ class EDI:
             sm.id = "0"
         else:
             sm.id = self.Header.survey
-        sm.acquired_by.name = self.Header.acqby
-        sm.geographic_name = self.Header.loc
+        if self.Header.acqby is not None:
+            sm.acquired_by.author = self.Header.acqby
+        if self.Header.loc is not None:
+            sm.geographic_name = self.Header.loc
         sm.country = self.Header.country
 
         for key, value in self.Info.info_dict.items():
@@ -1037,7 +1037,8 @@ class EDI:
     def station_metadata(self) -> tf.Station:
         sm = tf.Station()
         sm.add_run(Run(id=f"{self.station}a"))
-        sm.id = self.station
+        if self.station is not None:
+            sm.id = self.station
         sm.data_type = "MT"
         sm.channels_recorded = self.Measurement.channels_recorded
         # location
@@ -1047,17 +1048,20 @@ class EDI:
         sm.location.datum = self.Header.datum
         sm.location.declination.value = self.Header.declination.value
         sm.orientation.reference_frame = self.Header.coordinate_system.split()[0]
-        sm.geographic_name = self.Header.loc
+        if self.Header.loc is not None:
+            sm.geographic_name = self.Header.loc
 
         # provenance
-        sm.acquired_by.name = self.Header.acqby
+        if self.Header.acqby is not None:
+            sm.acquired_by.author = self.Header.acqby
         sm.provenance.creation_time = self.Header.filedate
         sm.provenance.submitter.author = self.Header.fileby
         sm.provenance.software.name = self.Header.fileby
         sm.provenance.software.version = self.Header.progvers
         sm.transfer_function.processed_date = self.Header.filedate
         sm.transfer_function.runs_processed = sm.run_list
-        sm.transfer_function.id = self.station
+        if self.station is not None:
+            sm.transfer_function.id = self.station
         # dates
         if self.Header.acqdate is not None:
             sm.time_period.start = self.Header.acqdate

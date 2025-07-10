@@ -209,7 +209,7 @@ class Header(BasicLocation, GeographicLocation):
     ]
 
     loc: Annotated[
-        float | str | None,
+        str | None,
         Field(
             default=None,
             description="Usually a short description of the location",
