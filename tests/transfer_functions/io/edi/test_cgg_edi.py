@@ -5,11 +5,12 @@ Created on Sat Dec  4 17:03:51 2021
 @author: jpeacock
 """
 
+from collections import OrderedDict
+
 # =============================================================================
 #
 # =============================================================================
-import unittest
-from collections import OrderedDict
+import pytest
 
 from mt_metadata import TF_EDI_CGG
 from mt_metadata.transfer_functions.core import TF
@@ -18,15 +19,36 @@ from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================
-# CGG
+# Fixtures
 # =============================================================================
-class TestCGGEDI(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.edi_obj = edi.EDI(fn=TF_EDI_CGG)
-        cls.maxDiff = None
+@pytest.fixture(scope="module")
+def cgg_edi_obj():
+    """Fixture to create EDI object once per module."""
+    return edi.EDI(fn=TF_EDI_CGG)
 
-    def test_header(self):
+
+@pytest.fixture(scope="module")
+def cgg_tf_obj():
+    """Fixture to create TF object once per module."""
+    tf_obj = TF(TF_EDI_CGG)
+    tf_obj.read()
+    return tf_obj
+
+
+@pytest.fixture(scope="module")
+def cgg_tf_edi_obj(cgg_tf_obj):
+    """Fixture to create EDI object from TF object once per module."""
+    return cgg_tf_obj.to_edi()
+
+
+# =============================================================================
+# CGG EDI Tests
+# =============================================================================
+class TestCGGEDI:
+    """Test CGG EDI file parsing."""
+
+    def test_header(self, cgg_edi_obj):
+        """Test header values."""
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
@@ -41,26 +63,27 @@ class TestCGGEDI(unittest.TestCase):
         }
 
         for key, value in head.items():
-            with self.subTest(key):
-                if key == "ELEV":
-                    key = "elevation"
-                elif key == "LAT":
-                    key = "latitude"
-                elif key == "LON":
-                    key = "longitude"
-                h_value = getattr(self.edi_obj.Header, key.lower())
-                self.assertEqual(h_value, value)
+            if key == "ELEV":
+                key = "elevation"
+            elif key == "LAT":
+                key = "latitude"
+            elif key == "LON":
+                key = "longitude"
+            h_value = getattr(cgg_edi_obj.Header, key.lower())
+            assert (
+                h_value == value
+            ), f"Header {key} mismatch: expected {value}, got {h_value}"
 
-        with self.subTest("acquire date"):
-            self.assertEqual(self.edi_obj.Header.acqdate, MTime(time_stamp="06/05/14"))
+    def test_header_acquire_date(self, cgg_edi_obj):
+        """Test acquire date."""
+        assert cgg_edi_obj.Header.acqdate == MTime(time_stamp="06/05/14")
 
-        with self.subTest("units"):
-            self.assertNotEqual(
-                self.edi_obj.Header.units,
-                "milliVolt per kilometer per nanoTesla",
-            )
+    def test_header_units(self, cgg_edi_obj):
+        """Test units."""
+        assert cgg_edi_obj.Header.units != "milliVolt per kilometer per nanoTesla"
 
-    def test_info(self):
+    def test_info(self, cgg_edi_obj):
+        """Test info section."""
         info_list = [
             ">INFO\n",
             "    maxinfo=31\n",
@@ -87,139 +110,130 @@ class TestCGGEDI(unittest.TestCase):
             "    */\n",
         ]
 
-        self.assertListEqual(info_list, self.edi_obj.Info.write_info())
+        assert info_list == cgg_edi_obj.Info.write_info()
 
-    def test_measurement_ex(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 0.0),
-                ("chtype", "EX"),
-                ("id", 1004.001),
-                ("x", 0.0),
-                ("x2", 0.0),
-                ("y", 0.0),
-                ("y2", 0.0),
-                ("z", 0.0),
-                ("z2", 0.0),
-            ]
+    @pytest.mark.parametrize(
+        "channel,expected",
+        [
+            (
+                "ex",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 0.0),
+                        ("chtype", "EX"),
+                        ("id", 1004.001),
+                        ("x", 0.0),
+                        ("x2", 0.0),
+                        ("y", 0.0),
+                        ("y2", 0.0),
+                        ("z", 0.0),
+                        ("z2", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "ey",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 0.0),
+                        ("chtype", "EY"),
+                        ("id", 1005.001),
+                        ("x", 0.0),
+                        ("x2", 0.0),
+                        ("y", 0.0),
+                        ("y2", 0.0),
+                        ("z", 0.0),
+                        ("z2", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hx",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 0.0),
+                        ("chtype", "HX"),
+                        ("dip", 0.0),
+                        ("id", 1001.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hy",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 90.0),
+                        ("chtype", "HY"),
+                        ("dip", 0.0),
+                        ("id", 1002.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hz",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 0.0),
+                        ("chtype", "HZ"),
+                        ("dip", 0.0),
+                        ("id", 1003.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "rrhx",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 0.0),
+                        ("chtype", "RRHX"),
+                        ("dip", 0.0),
+                        ("id", 1006.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "rrhy",
+                OrderedDict(
+                    [
+                        ("acqchan", ""),
+                        ("azm", 90.0),
+                        ("chtype", "RRHY"),
+                        ("dip", 0.0),
+                        ("id", 1007.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+        ],
+    )
+    def test_measurement_channels(self, cgg_edi_obj, channel, expected):
+        """Test measurement channels using parametrize for efficiency."""
+        assert expected == cgg_edi_obj.Measurement.measurements[channel].to_dict(
+            single=True
         )
 
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["ex"].to_dict(single=True)
-        )
-
-    def test_measurement_ey(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 0.0),
-                ("chtype", "EY"),
-                ("id", 1005.001),
-                ("x", 0.0),
-                ("x2", 0.0),
-                ("y", 0.0),
-                ("y2", 0.0),
-                ("z", 0.0),
-                ("z2", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["ey"].to_dict(single=True)
-        )
-
-    def test_measurement_hx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 0.0),
-                ("chtype", "HX"),
-                ("dip", 0.0),
-                ("id", 1001.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hx"].to_dict(single=True)
-        )
-
-    def test_measurement_hy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 90.0),
-                ("chtype", "HY"),
-                ("dip", 0.0),
-                ("id", 1002.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hy"].to_dict(single=True)
-        )
-
-    def test_measurement_hz(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 0.0),
-                ("chtype", "HZ"),
-                ("dip", 0.0),
-                ("id", 1003.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hz"].to_dict(single=True)
-        )
-
-    def test_measurement_rrhx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 0.0),
-                ("chtype", "RRHX"),
-                ("dip", 0.0),
-                ("id", 1006.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["rrhx"].to_dict(single=True)
-        )
-
-    def test_measurement_rrhy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", ""),
-                ("azm", 90.0),
-                ("chtype", "RRHY"),
-                ("dip", 0.0),
-                ("id", 1007.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["rrhy"].to_dict(single=True)
-        )
-
-    def test_measurement(self):
+    def test_measurement_metadata(self, cgg_edi_obj):
+        """Test measurement metadata."""
         m_list = [
             '    REFLOC="TEST01"\n',
             "    REFLAT=-30:55:49.026000\n",
@@ -229,64 +243,60 @@ class TestCGGEDI(unittest.TestCase):
             "    UNITS=meter\n",
         ]
 
-        self.assertListEqual(
-            m_list, self.edi_obj.Measurement.write_measurement()[4 : 4 + len(m_list)]
+        assert (
+            m_list == cgg_edi_obj.Measurement.write_measurement()[4 : 4 + len(m_list)]
         )
 
-        with self.subTest("reflat"):
-            self.assertAlmostEqual(-30.930285, self.edi_obj.Measurement.reflat, 5)
+    @pytest.mark.parametrize(
+        "attr,expected,precision",
+        [
+            ("reflat", -30.930285, 5),
+            ("reflon", 127.22923, 5),
+            ("refelev", 175.27, 2),
+        ],
+    )
+    def test_measurement_coordinates(self, cgg_edi_obj, attr, expected, precision):
+        """Test measurement coordinates with different precisions."""
+        actual = getattr(cgg_edi_obj.Measurement, attr)
+        assert abs(actual - expected) < 10 ** (
+            -precision
+        ), f"{attr} mismatch: expected {expected}, got {actual}"
 
-        with self.subTest("reflon"):
-            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflon, 5)
+    @pytest.mark.parametrize(
+        "array_type,expected_shape",
+        [
+            ("z", (73, 2, 2)),
+            ("z_err", (73, 2, 2)),
+            ("t", (73, 1, 2)),
+            ("t_err", (73, 1, 2)),
+            ("rotation_angle", (73,)),
+        ],
+    )
+    def test_array_shapes(self, cgg_edi_obj, array_type, expected_shape):
+        """Test array shapes."""
+        array = getattr(cgg_edi_obj, array_type)
+        assert array.shape == expected_shape
 
-        with self.subTest("reflong"):
-            self.assertAlmostEqual(127.22923, self.edi_obj.Measurement.reflon, 5)
+    def test_impedance_values(self, cgg_edi_obj):
+        """Test impedance values."""
+        # Test has zero
+        assert cgg_edi_obj.z[0, 0, 0] == 0 + 0j
+        # Test not zero
+        assert cgg_edi_obj.z[1, 0, 0] != 0 + 0j
 
-        with self.subTest("refelev"):
-            self.assertAlmostEqual(175.27, self.edi_obj.Measurement.refelev, 2)
-
-    # def test_data_section(self):
-    #     d_list = ["NFREQ=73"]
-
-    #     self.assertListEqual(d_list, self.edi_obj.Data.get)
-
-    def test_impedance(self):
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.z.shape, (73, 2, 2))
-
-        with self.subTest("err shape"):
-            self.assertTupleEqual(self.edi_obj.z_err.shape, (73, 2, 2))
-
-        with self.subTest("has zero"):
-            self.assertEqual(self.edi_obj.z[0, 0, 0], 0 + 0j)
-
-        with self.subTest("not zero"):
-            self.assertNotEqual(self.edi_obj.z[1, 0, 0], 0 + 0j)
-
-    def test_tipper(self):
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.t.shape, (73, 1, 2))
-        with self.subTest("err shape"):
-            self.assertTupleEqual(self.edi_obj.t_err.shape, (73, 1, 2))
-
-    def test_rotation_angle(self):
-        with self.subTest("all zeros"):
-            self.assertTrue((self.edi_obj.rotation_angle == 0).all())
-
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.rotation_angle.shape, (73,))
+    def test_rotation_angle(self, cgg_edi_obj):
+        """Test rotation angle."""
+        assert (cgg_edi_obj.rotation_angle == 0).all()
 
 
-class TestCGGTF(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.tf_obj = TF(TF_EDI_CGG)
-        cls.tf_obj.read()
+# =============================================================================
+# CGG TF Tests
+# =============================================================================
+class TestCGGTF:
+    """Test CGG TF object functionality."""
 
-        cls.edi_obj = cls.tf_obj.to_edi()
-        cls.maxDiff = None
-
-    def test_header(self):
+    def test_header(self, cgg_tf_edi_obj):
+        """Test header values."""
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
@@ -301,27 +311,28 @@ class TestCGGTF(unittest.TestCase):
         }
 
         for key, value in head.items():
-            with self.subTest(key):
-                if key == "ELEV":
-                    key = "elevation"
-                elif key == "LAT":
-                    key = "latitude"
-                elif key == "LON":
-                    key = "longitude"
+            if key == "ELEV":
+                key = "elevation"
+            elif key == "LAT":
+                key = "latitude"
+            elif key == "LON":
+                key = "longitude"
 
-                h_value = getattr(self.edi_obj.Header, key.lower())
-                self.assertEqual(h_value, value)
+            h_value = getattr(cgg_tf_edi_obj.Header, key.lower())
+            assert (
+                h_value == value
+            ), f"Header {key} mismatch: expected {value}, got {h_value}"
 
-        with self.subTest("acquire date"):
-            self.assertEqual(self.edi_obj.Header.acqdate, MTime(time_stamp="06/05/14"))
+    def test_header_acquire_date(self, cgg_tf_edi_obj):
+        """Test acquire date."""
+        assert cgg_tf_edi_obj.Header.acqdate == MTime(time_stamp="06/05/14")
 
-        with self.subTest("units"):
-            self.assertEqual(
-                self.edi_obj.Header.units,
-                "milliVolt per kilometer per nanoTesla",
-            )
+    def test_header_units(self, cgg_tf_edi_obj):
+        """Test units."""
+        assert cgg_tf_edi_obj.Header.units == "milliVolt per kilometer per nanoTesla"
 
-    def test_info(self):
+    def test_info(self, cgg_tf_edi_obj):
+        """Test info section."""
         info_list = [
             ">INFO\n",
             "    survey.acquired_by.author=GSC_CGG\n",
@@ -453,103 +464,100 @@ class TestCGGTF(unittest.TestCase):
             "    test01a.rrhy.type=auxiliary\n",
         ]
 
-        self.assertListEqual(info_list, self.edi_obj.Info.write_info())
+        assert info_list == cgg_tf_edi_obj.Info.write_info()
 
-    def test_measurement_ex(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", "1004.001"),
-                ("azm", 0.0),
-                ("chtype", "ex"),
-                ("id", 1004.001),
-                ("x", 0.0),
-                ("x2", 0.0),
-                ("y", 0.0),
-                ("y2", 0.0),
-                ("z", 0.0),
-                ("z2", 0.0),
-            ]
+    @pytest.mark.parametrize(
+        "channel,expected",
+        [
+            (
+                "ex",
+                OrderedDict(
+                    [
+                        ("acqchan", "1004.001"),
+                        ("azm", 0.0),
+                        ("chtype", "ex"),
+                        ("id", 1004.001),
+                        ("x", 0.0),
+                        ("x2", 0.0),
+                        ("y", 0.0),
+                        ("y2", 0.0),
+                        ("z", 0.0),
+                        ("z2", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "ey",
+                OrderedDict(
+                    [
+                        ("acqchan", "1005.001"),
+                        ("azm", 0.0),
+                        ("chtype", "ey"),
+                        ("id", 1005.001),
+                        ("x", 0.0),
+                        ("x2", 0.0),
+                        ("y", 0.0),
+                        ("y2", 0.0),
+                        ("z", 0.0),
+                        ("z2", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hx",
+                OrderedDict(
+                    [
+                        ("acqchan", "1001.001"),
+                        ("azm", 0.0),
+                        ("chtype", "hx"),
+                        ("dip", 0.0),
+                        ("id", 1001.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hy",
+                OrderedDict(
+                    [
+                        ("acqchan", "1002.001"),
+                        ("azm", 90.0),
+                        ("chtype", "hy"),
+                        ("dip", 0.0),
+                        ("id", 1002.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+            (
+                "hz",
+                OrderedDict(
+                    [
+                        ("acqchan", "1003.001"),
+                        ("azm", 0.0),
+                        ("chtype", "hz"),
+                        ("dip", 0.0),
+                        ("id", 1003.001),
+                        ("x", 0.0),
+                        ("y", 0.0),
+                        ("z", 0.0),
+                    ]
+                ),
+            ),
+        ],
+    )
+    def test_measurement_channels(self, cgg_tf_edi_obj, channel, expected):
+        """Test measurement channels using parametrize for efficiency."""
+        assert expected == cgg_tf_edi_obj.Measurement.measurements[channel].to_dict(
+            single=True
         )
 
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["ex"].to_dict(single=True)
-        )
-
-    def test_measurement_ey(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", "1005.001"),
-                ("azm", 0.0),
-                ("chtype", "ey"),
-                ("id", 1005.001),
-                ("x", 0.0),
-                ("x2", 0.0),
-                ("y", 0.0),
-                ("y2", 0.0),
-                ("z", 0.0),
-                ("z2", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["ey"].to_dict(single=True)
-        )
-
-    def test_measurement_hx(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", "1001.001"),
-                ("azm", 0.0),
-                ("chtype", "hx"),
-                ("dip", 0.0),
-                ("id", 1001.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hx"].to_dict(single=True)
-        )
-
-    def test_measurement_hy(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", "1002.001"),
-                ("azm", 90.0),
-                ("chtype", "hy"),
-                ("dip", 0.0),
-                ("id", 1002.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hy"].to_dict(single=True)
-        )
-
-    def test_measurement_hz(self):
-        ch = OrderedDict(
-            [
-                ("acqchan", "1003.001"),
-                ("azm", 0.0),
-                ("chtype", "hz"),
-                ("dip", 0.0),
-                ("id", 1003.001),
-                ("x", 0.0),
-                ("y", 0.0),
-                ("z", 0.0),
-            ]
-        )
-
-        self.assertDictEqual(
-            ch, self.edi_obj.Measurement.measurements["hz"].to_dict(single=True)
-        )
-
-    def test_measurement(self):
+    def test_measurement_metadata(self, cgg_tf_edi_obj):
+        """Test measurement metadata."""
         m_dict = OrderedDict(
             [
                 ("maxchan", 7),
@@ -566,15 +574,18 @@ class TestCGGTF(unittest.TestCase):
 
         for key, value in m_dict.items():
             if key in ["reflat", "reflon", "refelev"]:
-                with self.subTest(key):
-                    self.assertAlmostEqual(
-                        value, getattr(self.edi_obj.Measurement, key), 5
-                    )
+                actual = getattr(cgg_tf_edi_obj.Measurement, key)
+                assert (
+                    abs(actual - value) < 1e-5
+                ), f"{key} mismatch: expected {value}, got {actual}"
             else:
-                with self.subTest(key):
-                    self.assertEqual(value, getattr(self.edi_obj.Measurement, key))
+                actual = getattr(cgg_tf_edi_obj.Measurement, key)
+                assert (
+                    value == actual
+                ), f"{key} mismatch: expected {value}, got {actual}"
 
-    def test_data_section(self):
+    def test_data_section(self, cgg_tf_edi_obj):
+        """Test data section."""
         d_list = OrderedDict(
             [
                 ("ex", "1004.001"),
@@ -591,46 +602,40 @@ class TestCGGTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(d_list, self.edi_obj.Data.to_dict(single=True))
+        assert d_list == cgg_tf_edi_obj.Data.to_dict(single=True)
 
-    def test_impedance(self):
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.z.shape, (73, 2, 2))
+    @pytest.mark.parametrize(
+        "array_type,expected_shape",
+        [
+            ("z", (73, 2, 2)),
+            ("z_err", (73, 2, 2)),
+            ("t", (73, 1, 2)),
+            ("t_err", (73, 1, 2)),
+            ("rotation_angle", (73,)),
+        ],
+    )
+    def test_array_shapes(self, cgg_tf_edi_obj, array_type, expected_shape):
+        """Test array shapes."""
+        array = getattr(cgg_tf_edi_obj, array_type)
+        assert array.shape == expected_shape
 
-        with self.subTest("err shape"):
-            self.assertTupleEqual(self.edi_obj.z_err.shape, (73, 2, 2))
+    def test_impedance_values(self, cgg_tf_edi_obj):
+        """Test impedance values."""
+        # Test has zero
+        assert cgg_tf_edi_obj.z[0, 0, 0] == 0 + 0j
+        # Test not zero
+        assert cgg_tf_edi_obj.z[1, 0, 0] != 0 + 0j
 
-        with self.subTest("has zero"):
-            self.assertEqual(self.edi_obj.z[0, 0, 0], 0 + 0j)
+    def test_rotation_angle(self, cgg_tf_edi_obj):
+        """Test rotation angle."""
+        assert (cgg_tf_edi_obj.rotation_angle == 0).all()
 
-        with self.subTest("not zero"):
-            self.assertNotEqual(self.edi_obj.z[1, 0, 0], 0 + 0j)
-
-    def test_tipper(self):
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.t.shape, (73, 1, 2))
-        with self.subTest("err shape"):
-            self.assertTupleEqual(self.edi_obj.t_err.shape, (73, 1, 2))
-
-    def test_rotation_angle(self):
-        with self.subTest("all zeros"):
-            self.assertTrue((self.edi_obj.rotation_angle == 0).all())
-
-        with self.subTest("shape"):
-            self.assertTupleEqual(self.edi_obj.rotation_angle.shape, (73,))
-
-    def test_set_rotation_angle_to_tf(self):
-        a = self.tf_obj.to_edi()
+    def test_set_rotation_angle_to_tf(self, cgg_tf_obj):
+        """Test setting rotation angle to TF."""
+        a = cgg_tf_obj.to_edi()
         a.rotation_angle[:] = 13
 
         tf = TF()
         tf.from_edi(a)
 
-        self.assertTrue((tf._rotation_angle == a.rotation_angle).all())
-
-
-# =============================================================================
-# run
-# =============================================================================
-if __name__ == "__main__":
-    unittest.main()
+        assert (tf._rotation_angle == a.rotation_angle).all()
