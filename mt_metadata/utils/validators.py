@@ -14,19 +14,19 @@ Created on Wed Apr 29 11:11:31 2020
 
 @author: jpeacock
 """
+import re
+
 # =============================================================================
 # Imports
 # =============================================================================
 import sys
-import re
 from collections.abc import Iterable
 
 import numpy as np
+from loguru import logger
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
-from mt_metadata.utils.exceptions import MTValidatorError, MTSchemaError
-
-from loguru import logger
+from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
 
 
 # =============================================================================
@@ -114,6 +114,42 @@ def validate_name(name):
 
     if original != name:
         msg = "input name {0} converted to {1} following MTH5 standards"
+
+    return name
+
+
+def validate_station_name(name: str | int | float) -> str:
+    """
+    validate station name to conform to general standards
+
+    - must be a string
+    - must only contain letters, numbers, and underscores
+
+    Parameters
+    ----------
+    name : str | int | float
+        The station name to validate
+
+    Returns
+    -------
+    str
+        The validated station name
+
+    Raises
+    ------
+    MTValidatorError
+        If name is not a string or contains invalid characters
+    """
+    name = str(name).strip()
+    original = str(name)
+
+    # Replace spaces with underscores
+    name = name.replace(" ", "_")
+
+    # Test if string contains only letters, numbers, and underscores
+    if not re.match(r"^[a-zA-Z0-9_]+$", name):
+        msg = f"Station name '{original}' contains invalid characters. Only letters, numbers, and underscores are allowed."
+        raise MTValidatorError(msg)
 
     return name
 
@@ -406,7 +442,6 @@ def validate_default(value_dict):
                 elif value_dict["type"] in ["h5py_reference"]:
                     value = None
         else:
-
             value = validate_value_type(
                 value_dict["default"], value_dict["type"], value_dict["style"]
             )

@@ -12,7 +12,7 @@ import unittest
 from collections import OrderedDict
 
 from mt_metadata import TF_EDI_EMPOWER
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io import edi
 
 
@@ -21,9 +21,9 @@ from mt_metadata.transfer_functions.io import edi
 # =============================================================================
 class TestEMPOWEREDI(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.edi_obj = edi.EDI(fn=TF_EDI_EMPOWER)
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.edi_obj = edi.EDI(fn=TF_EDI_EMPOWER)
+        cls.maxDiff = None
 
     def test_header(self):
         head = OrderedDict(
@@ -38,7 +38,7 @@ class TestEMPOWEREDI(unittest.TestCase):
                 ("latitude", 40.64811111111111),
                 ("longitude", -106.21241666666667),
                 ("stdvers", "SEG 1.0"),
-                ("units", "millivolts_per_kilometer_per_nanotesla"),
+                ("units", "milliVolts per kilometer per nanoTesla"),
             ]
         )
 

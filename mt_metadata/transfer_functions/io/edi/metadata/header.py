@@ -19,7 +19,7 @@ from mt_metadata.common import (
 from mt_metadata.utils.location_helpers import convert_position_float2str
 from mt_metadata.utils.mttime import get_now_utc, MTime
 from mt_metadata.utils.units import get_unit_object
-from mt_metadata.utils.validators import validate_name
+from mt_metadata.utils.validators import validate_station_name
 
 
 # =====================================================
@@ -391,7 +391,7 @@ class Header(BasicLocation, GeographicLocation):
                 key = "elevation"
             else:
                 if key in ["dataid"]:
-                    value = validate_name(value.lower())
+                    value = validate_station_name(value)
 
             setattr(self, key, value)
 

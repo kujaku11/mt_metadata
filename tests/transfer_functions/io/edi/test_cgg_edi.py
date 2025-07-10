@@ -52,7 +52,7 @@ class TestCGGEDI:
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "TEST01".lower(),
+            "DATAID": "TEST01",
             "DATUM": "WGS 84",
             "ELEV": 175.270,
             "EMPTY": 1.000000e32,
@@ -300,7 +300,7 @@ class TestCGGTF:
         head = {
             "ACQBY": "GSC_CGG",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "test01",
+            "DATAID": "TEST01",
             "DATUM": "WGS 84",
             "ELEV": 175.270,
             "EMPTY": 1.000000e32,
@@ -342,7 +342,7 @@ class TestCGGTF:
             "    survey.project=EGC\n",
             "    survey.release_license=CC-BY-4.0\n",
             "    transfer_function.coordinate_system=geographic\n",
-            "    transfer_function.id=test01\n",
+            "    transfer_function.id=TEST01\n",
             "    transfer_function.processed_date=2014-10-07T00:00:00+00:00\n",
             "    transfer_function.processing_parameters.ndec=1\n",
             "    transfer_function.processing_parameters.nfft=128\n",
@@ -351,7 +351,7 @@ class TestCGGTF:
             "    transfer_function.processing_parameters.removelargelines=true\n",
             "    transfer_function.processing_parameters.rotmaxe=false\n",
             "    transfer_function.remote_references=[]\n",
-            "    transfer_function.runs_processed=[test01a]\n",
+            "    transfer_function.runs_processed=[TEST01a]\n",
             "    transfer_function.sign_convention=+\n",
             "    transfer_function.software.name=L13ss\n",
             "    transfer_function.units=milliVolt per kilometer per nanoTesla\n",
@@ -368,7 +368,7 @@ class TestCGGTF:
             "    test01a.data_logger.timing_system.type=GPS\n",
             "    test01a.data_logger.timing_system.uncertainty=0.0\n",
             "    test01a.data_type=BBMT\n",
-            "    test01a.id=test01a\n",
+            "    test01a.id=TEST01a\n",
             "    test01a.sample_rate=0.0\n",
             "    test01a.time_period.start=2014-06-05T00:00:00+00:00\n",
             "    test01a.hx.channel_id=1001.001\n",
@@ -565,7 +565,7 @@ class TestCGGTF:
                 ("maxrun", 999),
                 ("refelev", 175.27),
                 ("reflat", -30.930285),
-                ("refloc", "test01"),
+                ("refloc", "TEST01"),
                 ("reflon", 127.22923),
                 ("reftype", "cartesian"),
                 ("units", "meter"),
@@ -598,7 +598,7 @@ class TestCGGTF:
                 ("nfreq", 73),
                 ("rrhx", "1006.001"),
                 ("rrhy", "1007.001"),
-                ("sectid", "test01"),
+                ("sectid", "TEST01"),
             ]
         )
 
