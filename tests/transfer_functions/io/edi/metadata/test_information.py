@@ -508,7 +508,8 @@ class TestInformationWriteMethod:
             assert "run.ex.dipole_length=100" in content
             assert "run.hx.sensor.id=1234" in content
             assert (
-                "transfer_function.processing_parameters=NFFT=4096,NDEC=10" in content
+                "transfer_function.processing_parameters=[NFFT=4096, NDEC=10]"
+                in content
             )
             assert "empty_key" in content
             assert "null_key" in content  # Should be present but without value

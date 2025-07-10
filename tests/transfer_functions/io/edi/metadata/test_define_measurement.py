@@ -224,14 +224,14 @@ class TestDefineMeasurementMethods:
         with patch.object(
             custom_define_measurement,
             "write_measurement",
-            return_value="\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45.123000\n    REFLON=-120.456000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n",
+            return_value="\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45:07:22.800000\n    REFLON=-120:27:21.600000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n",
         ):
             str_rep = str(custom_define_measurement)
 
             # Check that the method uses write_measurement
             assert (
                 str_rep
-                == "\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45.123000\n    REFLON=-120.456000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n"
+                == "\n>=DEFINEMEAS\n    MAXCHAN=7\n    MAXRUN=10\n    MAXMEAS=100\n    REFLAT=45:07:22.800000\n    REFLON=-120:27:21.600000\n    REFELEV=1050.0\n    REFTYPE=geographical\n    UNITS=meter\n\n>EMEAS ID=1001.001 CHTYPE=ex X=0.00 Y=0.00 Z=0.00 X2=100.00 Y2=0.00 Z2=0.00 AZM=0.00 ACQCHAN=1\n>HMEAS ID=1002.001 CHTYPE=hy X=0.00 Y=0.00 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=2\n"
             )
 
             # Also check __repr__
@@ -266,8 +266,8 @@ class TestDefineMeasurementMethods:
             "MAXRUN=10",
             "MAXMEAS=100",
             "REFTYPE=geographical",
-            "REFLAT=45.123",
-            "REFLON=-120.456",
+            "REFLAT=45:07:22.800000",
+            "REFLON=-120:27:21.600000",
             "REFELEV=1050.0",
             "UNITS=meter",
         ]

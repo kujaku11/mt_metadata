@@ -172,7 +172,7 @@ class TestHeaderInitialization:
             assert default_header.stdvers == "SEG 1.0"
 
         with subtests.test(msg="units default"):
-            assert default_header.units == "millivolts_per_kilometer_per_nanotesla"
+            assert default_header.units == "milliVolt per kilometer per nanoTesla"
 
         with subtests.test(msg="latitude default"):
             assert default_header.latitude == 0.0
@@ -323,7 +323,7 @@ class TestHeaderReadMethods:
             assert default_header.acqby == "Test Researcher"
 
         with subtests.test(msg="dataid read"):
-            assert default_header.dataid == "mt001"
+            assert default_header.dataid == "MT001"
 
         with subtests.test(msg="project read"):
             assert default_header.project == "TestProject"

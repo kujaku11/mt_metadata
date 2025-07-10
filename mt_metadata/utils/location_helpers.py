@@ -8,13 +8,13 @@ from loguru import logger
 # ===============================================================
 
 
-def convert_position_float2str(position: float) -> str:
+def convert_position_float2str(position: float | int) -> str:
     """
     Convert position float to a string in the format of DD:MM:SS.ms
 
     Parameters
     ----------
-    position : float
+    position : float | int
         decimal degrees of latitude or longitude
 
     Returns
@@ -22,8 +22,10 @@ def convert_position_float2str(position: float) -> str:
     str
         latitude or longitude in format of DD:MM:SS.ms
     """
-
-    assert type(position) is float, "Given value is not a float"
+    if not isinstance(position, (float, int)):
+        msg = f"position must be a float or int, not {type(position)}"
+        logger.error(msg)
+        raise TypeError(msg)
 
     deg = int(position)
     sign = 1
