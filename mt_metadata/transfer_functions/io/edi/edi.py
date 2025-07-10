@@ -39,6 +39,15 @@ from mt_metadata.transfer_functions.io.tools import (
 )
 
 
+null_values = [
+    None,
+    "",
+    "None",
+    "null",
+    "1980-01-01T00:00:00+00:00",
+]
+
+
 # ==============================================================================
 # EDI Class
 # ==============================================================================
@@ -1014,14 +1023,14 @@ class EDI:
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
         self.Header.country = survey.country
-        if survey.summary != None:
+        if survey.summary not in null_values:
             self.Info.info_dict[f"survey.summary"] = survey.summary
 
         for key in survey.to_dict(single=True).keys():
             if "northwest" in key or "southeast" in key or "time_period" in key:
                 continue
             value = survey.get_attr_from_name(key)
-            if value != None:
+            if value not in null_values:
                 self.Info.info_dict[f"survey.{key}"] = value
 
     @property
@@ -1055,10 +1064,6 @@ class EDI:
         if self.Header.enddate is not None:
             sm.time_period.end = self.Header.enddate
 
-        for key, value in self.Info.info_dict.items():
-            if key is None:
-                continue
-
         # processing information
         for key, value in self.Info.info_dict.items():
             if key is None:
@@ -1079,7 +1084,7 @@ class EDI:
                                 )
                             else:
                                 sm.transfer_function.processing_parameters.append(item)
-                    else:
+                    elif value not in null_values:
                         param = key.split(".")[-1]
                         sm.transfer_function.processing_parameters.append(
                             f"{param}={value}"
@@ -1147,9 +1152,9 @@ class EDI:
 
         # add information to runs
         for rr in sm.runs:
-            if rr.time_period.start == "1980-01-01T00:00:00+00:00":
+            if rr.time_period.start in null_values:
                 rr.time_period.start = sm.time_period.start
-            if rr.time_period.end == "1980-01-01T00:00:00+00:00":
+            if rr.time_period.end in null_values:
                 rr.time_period.end = sm.time_period.end
 
             for ch in self.Measurement.channels_recorded:
@@ -1192,7 +1197,7 @@ class EDI:
             self.Info.read_info(sm.comments.split("\n"))
         # write transfer function info first
         for k, v in sm.transfer_function.to_dict(single=True).items():
-            if not v in [None]:
+            if not v in null_values:
                 if k in ["processing_parameters"]:
                     for item in v:
                         param, value = item.split("=", 1)
@@ -1204,36 +1209,33 @@ class EDI:
                     self.Info.info_dict[f"transfer_function.{k}"] = v
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
-            if not v in [None, "None", "null", "1980-01-01T00:00:00+00:00"]:
+            if not v in null_values:
                 self.Info.info_dict[f"provenance.{k}"] = v
         # write field notes
         for run in sm.runs:
             r_dict = run.to_dict(single=True)
             for r_key, r_value in r_dict.items():
-                if r_value in [
-                    None,
-                    "None",
-                    "null",
-                    "1980-01-01T00:00:00+00:00",
-                ]:
+                if r_value in null_values:
                     continue
                 self.Info.info_dict[f"{run.id}.{r_key}"] = r_value
             for ch in run.channels:
                 ch_dict = ch.to_dict(single=True)
                 for ch_key, ch_value in ch_dict.items():
                     if ch_key not in self._channel_skip_list:
-                        if ch_value in [
-                            None,
-                            "None",
-                            "null",
-                            "1980-01-01T00:00:00+00:00",
-                        ]:
+                        if ch_value in null_values:
                             continue
                         self.Info.info_dict[
                             f"{run.id}.{ch.component}.{ch_key}"
                         ] = ch_value
                 # write station information
                 self.Measurement.from_metadata(ch)
+                # add channel id to data section
+                try:
+                    setattr(self.Data, f"{ch.component}", ch.channel_id)
+                except AttributeError:
+                    self.logger.warning(
+                        f"Cannot set {ch.component} channel id, skipping..."
+                    )
 
         ### fill measurement
         self.Measurement.refelev = sm.location.elevation
