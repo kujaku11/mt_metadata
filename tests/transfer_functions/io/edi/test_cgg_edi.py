@@ -57,7 +57,7 @@ class TestCGGEDI(unittest.TestCase):
         with self.subTest("units"):
             self.assertNotEqual(
                 self.edi_obj.Header.units,
-                "millivolts_per_kilometer_per_nanotesla",
+                "milliVolt per kilometer per nanoTesla",
             )
 
     def test_info(self):
@@ -316,14 +316,15 @@ class TestCGGTF(unittest.TestCase):
             self.assertEqual(self.edi_obj.Header.acqdate, MTime(time_stamp="06/05/14"))
 
         with self.subTest("units"):
-            self.assertNotEqual(
+            self.assertEqual(
                 self.edi_obj.Header.units,
-                "millivolt per kilometer per nanotesla",
+                "milliVolt per kilometer per nanoTesla",
             )
 
     def test_info(self):
         info_list = [
             ">INFO\n",
+            "    survey.acquired_by.author=GSC_CGG\n",
             "    survey.datum=WGS 84\n",
             "    survey.geographic_name=Australia\n",
             "    survey.id=0\n",
@@ -338,10 +339,11 @@ class TestCGGTF(unittest.TestCase):
             "    transfer_function.processing_parameters.rrtype=None\n",
             "    transfer_function.processing_parameters.removelargelines=true\n",
             "    transfer_function.processing_parameters.rotmaxe=false\n",
+            "    transfer_function.remote_references=[]\n",
             "    transfer_function.runs_processed=[test01a]\n",
             "    transfer_function.sign_convention=+\n",
             "    transfer_function.software.name=L13ss\n",
-            "    transfer_function.units=millivolts_per_kilometer_per_nanotesla\n",
+            "    transfer_function.units=milliVolt per kilometer per nanoTesla\n",
             "    provenance.creation_time=2014-10-07T00:00:00+00:00\n",
             "    provenance.software.version=Antlr3.Runtime:3.5.0.2;ContourEngine:1.0.41.8272;CoordinateSystemService:1.4.0.8439;DocumentCommon:1.4.0.8465;Fluent:2.1.0.0;GeoApi:1.7.0.0;hasp_net_windows:7.0.1.36183;Launcher:1.4.0.8471;MapDocument:1.4.0.8469;MTDocument:1.4.0.8459;MTDocumentDataProvider:1.4.0.8467;MTInversionCommon:1.4.0.8371;Ookii.Dialogs.Wpf:1.0.0.0;PlotElement:1.4.0.8466;PluginHost:1.4.0.8440;ProjNet:1.2.5085.21309;ShellEngine:1.4.0.8380;System.Windows.Interactivity:4.0.0.0;Utils:1.4.0.8449;Xceed.Wpf.AvalonDock:2.0.0.0;Xceed.Wpf.AvalonDock.Themes.Aero:2.0.0.0;Xceed.Wpf.Toolkit:1.9.0.0;\n",
             "    test01a.acquired_by.author=Somebody\n",
