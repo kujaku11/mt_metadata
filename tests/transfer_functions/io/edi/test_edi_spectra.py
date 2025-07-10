@@ -268,18 +268,18 @@ class TestToTF(unittest.TestCase):
 
 class TestFromTF(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.tf = TF(fn=TF_EDI_SPECTRA)
-        self.tf.read()
+    def setUpClass(cls):
+        cls.tf = TF(fn=TF_EDI_SPECTRA)
+        cls.tf.read()
 
-        self.edi = self.tf.to_edi()
-        self.maxDiff = None
+        cls.edi = cls.tf.to_edi()
+        cls.maxDiff = None
 
     def test_station_metadata(self):
         edi_st = self.edi.station_metadata.to_dict(single=True)
         tf_st = self.tf.station_metadata.to_dict(single=True)
         for edi_key, edi_value in edi_st.items():
-            if edi_key in ["comments", "transfer_function.remote_references"]:
+            if edi_key in ["comments"]:
                 with self.subTest(edi_key):
                     self.assertNotEqual(edi_value, tf_st[edi_key])
             else:

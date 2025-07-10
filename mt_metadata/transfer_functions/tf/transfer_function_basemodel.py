@@ -53,9 +53,9 @@ class TransferFunction(MetadataBase):
     units: Annotated[
         str,
         Field(
-            default="millivolts_per_kilometer_per_nanotesla",
+            default="milliVolt per kilometer per nanoTesla",
             description="units of the impedance tensor estimates",
-            examples=["millivolts_per_kilometer_per_nanotesla"],
+            examples=["milliVolt per kilometer per nanoTesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -81,7 +81,7 @@ class TransferFunction(MetadataBase):
     remote_references: Annotated[
         list[str],
         Field(
-            default=list,
+            default_factory=list,
             description="list of remote references",
             examples=[["MT002b", "MT002c"]],
             alias=None,
@@ -109,7 +109,7 @@ class TransferFunction(MetadataBase):
     processing_parameters: Annotated[
         list[str],
         Field(
-            default=[],
+            default_factory=list,
             description="list of processing parameters with structure name = value",
             examples=[["nfft=4096", "n_windows=16"]],
             alias=None,

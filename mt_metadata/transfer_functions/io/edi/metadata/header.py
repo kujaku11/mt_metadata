@@ -225,7 +225,7 @@ class Header(BasicLocation, GeographicLocation):
     declination: Annotated[
         Declination,
         Field(
-            default_factory=lambda: Declination(value=0.0),
+            default_factory=lambda: Declination(value=0.0),  # type: ignore
             description="Declination of the station in degrees",
             examples=["Declination(10.0)"],
             alias=None,
@@ -267,9 +267,9 @@ class Header(BasicLocation, GeographicLocation):
     units: Annotated[
         str | None,
         Field(
-            default="millivolt_per_kilometer_per_nanotesla",
+            default="milliVolt per kilometer per nanoTesla",
             description="In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
-            examples=["millivolt_per_kilometer_per_nanotesla"],
+            examples=["milliVolt per kilometer per nanoTesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -283,6 +283,8 @@ class Header(BasicLocation, GeographicLocation):
     def validate_acqdate(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
+        if isinstance(field_value, MTime):
+            return field_value
         return MTime(time_stamp=field_value)
 
     @field_validator("units", mode="before")

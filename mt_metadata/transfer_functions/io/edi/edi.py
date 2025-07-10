@@ -1107,10 +1107,10 @@ class EDI:
                     ch = None
                 if ch is None:
                     if comp in ["ex", "ey"]:
-                        ch = Electric(component=comp)
+                        ch = Electric(component=comp)  # type: ignore
                         sm.runs[0].add_channel(ch)
                     elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
-                        ch = Magnetic(component=comp)
+                        ch = Magnetic(component=comp)  # type: ignore
                         sm.runs[0].add_channel(ch)
                     else:
                         self.logger.warning(
@@ -1179,7 +1179,7 @@ class EDI:
         """
 
         ### fill header information from station
-        self.Header.acqby = sm.acquired_by.name
+        self.Header.acqby = sm.acquired_by.author
         self.Header.acqdate = sm.time_period.start
         self.Header.coordinate_system = sm.orientation.reference_frame
         self.Header.dataid = sm.id

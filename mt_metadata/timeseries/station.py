@@ -1,28 +1,29 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
-from typing_extensions import Self
-import numpy as np
 from collections import OrderedDict
-from loguru import logger
+from typing import Annotated
 
-from pydantic import Field, ValidationInfo, field_validator, model_validator
+import numpy as np
+from loguru import logger
+from pydantic import Field, field_validator, model_validator, ValidationInfo
+from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
+    AuthorPerson,
+    ChannelLayoutEnum,
     Comment,
     DataTypeEnum,
-    ChannelLayoutEnum,
-    StationLocation,
-    Provenance,
-    TimePeriod,
-    AuthorPerson,
-    Orientation,
     Fdsn,
+    Orientation,
+    Provenance,
+    StationLocation,
+    TimePeriod,
 )
-from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.timeseries import Run
+from mt_metadata.utils.list_dict import ListDict
+
 
 # =====================================================
 
@@ -33,7 +34,7 @@ class Station(MetadataBase):
         Field(
             default="x",
             description="How the station channels were laid out.",
-            examples="x",
+            examples=["x"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -46,9 +47,8 @@ class Station(MetadataBase):
         list[str],
         Field(
             default_factory=list,
-            items={"type": "string"},
             description="List of components recorded by the station. Should be a summary of all channels recorded. Dropped channels will be recorded in Run metadata.",
-            examples='"[ Ex, Ey, Hx, Hy, Hz, T]"',
+            examples=['"[ Ex, Ey, Hx, Hy, Hz, T]"'],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -60,9 +60,9 @@ class Station(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=Comment,
+            default_factory=Comment,  # type: ignore
             description="Any comments on the station.",
-            examples="cows chewed cables",
+            examples=["cows chewed cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -76,7 +76,7 @@ class Station(MetadataBase):
         Field(
             default="BBMT",
             description="Type of data recorded. If multiple types input as a comma separated list.",
-            examples="BBMT",
+            examples=["BBMT"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -90,7 +90,7 @@ class Station(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN information for the station.",
-            examples="",
+            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -104,7 +104,7 @@ class Station(MetadataBase):
         Field(
             default="",
             description="Closest geographic name to the station, usually a city, but could be another common geographic location.",
-            examples='"Whitehorse, YK"',
+            examples=["Whitehorse, YK"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -118,9 +118,9 @@ class Station(MetadataBase):
         Field(
             default="",
             description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
-            examples="MT001",
+            examples=["MT001"],
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -132,9 +132,8 @@ class Station(MetadataBase):
         list[str],
         Field(
             default_factory=list,
-            items={"type": "string"},
             description="List of runs recorded by the station. Should be a summary of all runs recorded.",
-            examples='"[ mt001a, mt001b, mt001c ]"',
+            examples=["[ mt001a, mt001b, mt001c ]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -146,9 +145,9 @@ class Station(MetadataBase):
     location: Annotated[
         StationLocation,
         Field(
-            default_factory=StationLocation,
+            default_factory=StationLocation,  # type: ignore
             description="Location of the station.",
-            examples="",
+            examples=["StationLocation(latitude=60.0, longitude=-135.0)"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -160,9 +159,9 @@ class Station(MetadataBase):
     orientation: Annotated[
         Orientation,
         Field(
-            default_factory=Orientation,
+            default_factory=Orientation,  # type: ignore
             description="Orientation of the station.",
-            examples="",
+            examples=["Orientation(north=0, east=0, vertical=1)"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -174,9 +173,9 @@ class Station(MetadataBase):
     acquired_by: Annotated[
         AuthorPerson,
         Field(
-            default_factory=AuthorPerson,
+            default_factory=AuthorPerson,  # type: ignore
             description="Group or person who acquired the data.",
-            examples="Person()",
+            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -188,9 +187,9 @@ class Station(MetadataBase):
     provenance: Annotated[
         Provenance,
         Field(
-            default_factory=Provenance,
+            default_factory=Provenance,  # type: ignore
             description="Provenance of the data.",
-            examples="",
+            examples=["Provenance()"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -202,9 +201,9 @@ class Station(MetadataBase):
     time_period: Annotated[
         TimePeriod,
         Field(
-            default_factory=TimePeriod,
+            default_factory=TimePeriod,  # type: ignore
             description="Time period of the data.",
-            examples="",
+            examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -218,7 +217,7 @@ class Station(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of runs recorded by the station.",
-            examples="",
+            examples=["[Run(id='mt001a'), Run(id='mt001b'), Run(id='mt001c')]"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -316,7 +315,6 @@ class Station(MetadataBase):
             value_list = value
 
         for ii, run_entry in enumerate(value_list):
-
             if isinstance(run_entry, (dict, OrderedDict)):
                 try:
                     run = Run()

@@ -63,6 +63,7 @@ class Run(MetadataBase):
     channels_recorded_magnetic: Annotated[
         list[str],
         Field(
+            default_factory=list,
             description="List of magnetic channels recorded",
             examples=["[Hx , Hy , Hz]"],
             alias=None,
@@ -85,9 +86,9 @@ class Run(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=Comment,
+            default_factory=Comment,  # type: ignore
             description="Any comments on the run.",
-            examples="cows chewed cables",
+            examples=["cows chewed cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -142,7 +143,7 @@ class Run(MetadataBase):
     acquired_by: Annotated[
         AuthorPerson,
         Field(
-            default_factory=AuthorPerson,
+            default_factory=AuthorPerson,  # type: ignore
             description="Information about the group that collected the data.",
             examples=["Person()"],
             alias=None,
@@ -156,7 +157,7 @@ class Run(MetadataBase):
     metadata_by: Annotated[
         AuthorPerson,
         Field(
-            default_factory=AuthorPerson,
+            default_factory=AuthorPerson,  # type: ignore
             description="Information about the group that collected the metadata.",
             examples=["Person()"],
             alias=None,
@@ -170,7 +171,7 @@ class Run(MetadataBase):
     provenance: Annotated[
         Provenance,
         Field(
-            default_factory=Provenance,
+            default_factory=Provenance,  # type: ignore
             description="Provenance information about the run.",
             examples=["Provenance()"],
             alias=None,
@@ -184,7 +185,7 @@ class Run(MetadataBase):
     time_period: Annotated[
         TimePeriod,
         Field(
-            default_factory=TimePeriod,
+            default_factory=TimePeriod,  # type: ignore
             description="Time period for the run.",
             examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
@@ -198,7 +199,7 @@ class Run(MetadataBase):
     data_logger: Annotated[
         DataLogger,
         Field(
-            default_factory=DataLogger,
+            default_factory=DataLogger,  # type: ignore
             description="Data Logger information used to collect the run.",
             examples=["DataLogger()"],
             alias=None,
@@ -212,7 +213,7 @@ class Run(MetadataBase):
     fdsn: Annotated[
         Fdsn,
         Field(
-            default_factory=Fdsn,
+            default_factory=Fdsn,  # type: ignore
             description="FDSN information for the run.",
             examples=["Fdsn()"],
             alias=None,
@@ -289,13 +290,13 @@ class Run(MetadataBase):
         # get overwritten with the new channel.
         for electric in list(self.channels_recorded_electric):
             if electric not in self.channels.keys():
-                self.add_channel(Electric(component=electric))
+                self.add_channel(Electric(component=electric))  # type: ignore
         for magnetic in list(self.channels_recorded_magnetic):
             if magnetic not in self.channels.keys():
-                self.add_channel(Magnetic(component=magnetic))
+                self.add_channel(Magnetic(component=magnetic))  # type: ignore
         for auxiliary in list(self.channels_recorded_auxiliary):
             if auxiliary not in self.channels.keys():
-                self.add_channel(Auxiliary(component=auxiliary))
+                self.add_channel(Auxiliary(component=auxiliary))  # type: ignore
         return self
 
     @field_validator("channels", mode="before")
