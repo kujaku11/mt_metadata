@@ -14,7 +14,7 @@ from collections import OrderedDict
 import numpy as np
 
 from mt_metadata import TF_EDI_SPECTRA, TF_EDI_SPECTRA_OUT
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io.edi import EDI
 from mt_metadata.utils.mttime import MTime
 
@@ -24,17 +24,17 @@ from mt_metadata.utils.mttime import MTime
 # =============================================================================
 class TestSpectraEDI(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.edi_spectra = EDI(fn=TF_EDI_SPECTRA)
-        self.edi_z = EDI(fn=TF_EDI_SPECTRA_OUT)
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.edi_spectra = EDI(fn=TF_EDI_SPECTRA)
+        cls.edi_z = EDI(fn=TF_EDI_SPECTRA_OUT)
+        cls.maxDiff = None
 
     def test_header(self):
         head = {
             "ACQBY": "Quantec Consulting",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "SAGE_2005_og",
-            "DATUM": "WGS84",
+            "DATAID": "sage_2005_og",
+            "DATUM": "WGS 84",
             "ELEV": 0,
             "EMPTY": 1e32,
             "FILEBY": "Quantec Consulting",
@@ -44,22 +44,30 @@ class TestSpectraEDI(unittest.TestCase):
 
         for key, value in head.items():
             with self.subTest(key):
+                if key == "LAT":
+                    key = "LATITUDE"
+                elif key == "LON":
+                    key = "LONGITUDE"
+                elif key == "ELEV":
+                    key = "ELEVATION"
                 h_value = getattr(self.edi_spectra.Header, key.lower())
                 self.assertEqual(h_value, value)
 
         with self.subTest("acquire date"):
-            self.assertEqual(self.edi_spectra.Header._acqdate, MTime("2004-07-03"))
+            self.assertEqual(
+                self.edi_spectra.Header._acqdate, MTime(time_stamp="2004-07-03")
+            )
 
         with self.subTest("units"):
             self.assertNotEqual(
                 self.edi_spectra.Header.units,
-                "millivolts_per_kilometer_per_nanotesla",
+                "millivolt per kilometer per nanotesla",
             )
 
     def test_info(self):
         info_list = ["MAXLINES=1000"]
 
-        self.assertListEqual(info_list, self.edi_spectra.Info.info_list)
+        self.assertListEqual(info_list, self.edi_spectra.Info.write_info())
 
     def test_measurement_ex(self):
         ch = OrderedDict(
