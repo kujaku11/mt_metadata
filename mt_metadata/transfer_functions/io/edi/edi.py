@@ -1072,6 +1072,8 @@ class EDI:
         for key, value in self.Info.info_dict.items():
             if key is None:
                 continue
+            if value in null_values:
+                continue
             key = key.lower()
 
             if "provenance" in key:
@@ -1099,8 +1101,12 @@ class EDI:
                         sm.run_list = sm.transfer_function.runs_processed
 
             elif key.startswith("run."):
-                key = key.split("run.")[1]
-                comp, key = key.split(".", 1)
+                try:
+                    key = key.split("run.")[1]
+                    comp, key = key.split(".", 1)
+                except (IndexError, ValueError):
+                    continue
+
                 try:
                     ch = getattr(sm.runs[0], comp)
                 except AttributeError:
@@ -1131,7 +1137,7 @@ class EDI:
                     else:
                         sm.transfer_function.remote_references = value.split()
             elif key in ["processedby", "processed_by"]:
-                sm.transfer_function.processed_by.author = value
+                sm.transfer_function.processed_by.name = value
             elif key in ["runlist", "run_list"]:
                 if value.count(",") > 0:
                     runs = value.split(",")
@@ -1140,7 +1146,7 @@ class EDI:
                 sm.run_list = []
                 for rr in runs:
                     if rr not in sm.runs.keys():
-                        sm.add_run(metadata.Run(id=rr))
+                        sm.add_run(Run(id=rr))
                 sm.transfer_function.runs_processed = runs
             elif key == "sitename":
                 sm.geographic_name = value

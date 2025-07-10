@@ -31,14 +31,14 @@ class TestEMPOWEREDI(unittest.TestCase):
                 ("acqdate", "1980-01-01T00:00:00+00:00"),
                 ("coordinate_system", "geographic"),
                 ("dataid", "701_merged_wrcal"),
-                ("datum", "WGS84"),
+                ("datum", "WGS 84"),
                 ("elevation", 2489.0),
                 ("empty", 1e32),
                 ("fileby", "EMTF FCU"),
                 ("latitude", 40.64811111111111),
                 ("longitude", -106.21241666666667),
                 ("stdvers", "SEG 1.0"),
-                ("units", "milliVolts per kilometer per nanoTesla"),
+                ("units", "milliVolt per kilometer per nanoTesla"),
             ]
         )
 
@@ -48,25 +48,102 @@ class TestEMPOWEREDI(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
         with self.subTest("Declination Model"):
-            self.assertEqual(self.edi_obj.Header.declination.model, "WMM")
+            self.assertEqual(self.edi_obj.Header.declination.model, "IGRF")
         with self.subTest("Declination value"):
             self.assertEqual(self.edi_obj.Header.declination.value, 0.0)
 
     def test_info(self):
         info_list = [
-            "unique_id = {88290cfe-9200-4cc2-a0dd-5ed7cd7f95ea}",
-            "duration = 24h 47m 13s",
-            "comb_filter = 60 HZ",
-            "fine_robust = NONE",
-            "totoal_rejected_crosspowers = 0.0000%",
+            ">INFO\n",
+            "    maxinfo=999\n",
+            "    project\n",
+            "    survey\n",
+            "    survey.time_period.start_date=2023\n",
+            "    processedby\n",
+            "    transfer_function.software.name=EMpower v2.9.0.7\n",
+            "    processingtag\n",
+            "    station.geographic_name=Near Steamboat Springs, US (Mountain Standard Time)\n",
+            "    runlist\n",
+            "    remoteref\n",
+            "    remotesite\n",
+            "    signconvention\n",
+            "    unique id={88290cfe-9200-4cc2-a0dd-5ed7cd7f95ea}\n",
+            "    process date=2023-05-30 16:22\n",
+            "    duration=24h 47m 13s\n",
+            "    station.location.declination.value=0°\n",
+            "    coordinates=40° 38' 53.2\", -106° 12' 44.7\"\n",
+            "    gps (min - max)=8 - 13\n",
+            "    temperature (min - max)=18° - 48°\n",
+            "    comb filter=60 HZ\n",
+            "    fine robust=NONE\n",
+            "    editing_workbench.totoal rejected crosspowers=0.0000%\n",
+            "    run.id=10526_2023-05-19-170246\n",
+            "    run.data_logger.model=MTU-5C\n",
+            "    run.geographic_name=701 Walden South\n",
+            "    run.acquired_by.author\n",
+            "    run.measurement_azimuth=0\n",
+            "    run.ex.component=E1\n",
+            "    run.ex.dipole_length=95.3\n",
+            "    run.ex.ac.end=2.5\n",
+            "    run.ex.dc.end=0.0537872\n",
+            "    run.ex.contact_resistance.start=1558.69\n",
+            "    run.ex.contact_resistance.end=4222.68\n",
+            "    run.ex.comments=[saturation=0.0870754%, min value=-1.25, max value=1.25]\n",
+            "    run.ey.component=E2\n",
+            "    run.ey.dipole_length=99.1\n",
+            "    run.ey.ac.end=2.5\n",
+            "    run.ey.dc.end=0.0120163\n",
+            "    run.ey.contact_resistance.start=2199.7\n",
+            "    run.ey.contact_resistance.end=2230.26\n",
+            "    run.ey.comments=[saturation=0.0379904%, min value=-1.25, max value=1.25]\n",
+            "    run.ey.id=10526_2023-05-19-170246\n",
+            "    run.ey.data_logger.model=MTU-5C\n",
+            "    run.ey.geographic_name=701 Walden South\n",
+            "    run.ey.acquired_by.author\n",
+            "    run.ey.measurement_azimuth=0\n",
+            "    run.hx.component=H1\n",
+            "    run.hx.sensor.model=MTC-155\n",
+            "    run.hx.ac.end=0.00976562\n",
+            "    run.hx.dc.end=-0.0160217\n",
+            "    run.hx.comments=[cal name=57507_646504D8.scal, saturation=0.000280165 %, min value=-0.00488281, max value=0.00488281]\n",
+            "    run.hx.sensor.id=57507\n",
+            "    run.hy.component=H2\n",
+            "    run.hy.sensor.model=MTC-155\n",
+            "    run.hy.ac.end=0.00913765\n",
+            "    run.hy.dc.end=-0.00793457\n",
+            "    run.hy.comments=[cal name=57513_646504D8.scal, saturation=5.60331e-5 %, min value=-0.00488281, max value=0.00425484]\n",
+            "    run.hy.sensor.id=57513\n",
+            "    run.hz.component=H3\n",
+            "    run.hz.sensor.model=MTC-185\n",
+            "    run.hz.ac.end=0.000317973\n",
+            "    run.hz.dc.end=-0.0448608\n",
+            "    run.hz.comments=[cal name=53408_646504D8.scal, saturation=0 %, min value=-0.000170265, max value=0.000147708]\n",
+            "    run.hz.sensor.id=53408\n",
+            "    transfer_function.remote_references.hz.id=10647_2023-05-18-202538\n",
+            "    transfer_function.remote_references.hz.data_logger.model=MTU-5C\n",
+            "    transfer_function.remote_references.hz.geographic_name=706 Red Canyon\n",
+            "    transfer_function.remote_references.hz.acquired_by.author\n",
+            "    transfer_function.remote_references.hz.measurement_azimuth=0\n",
+            "    transfer_function.remote_references.rrhx.component=H1\n",
+            "    transfer_function.remote_references.rrhx.sensor.model=MTC-155\n",
+            "    transfer_function.remote_references.rrhx.ac.end=0.00976562\n",
+            "    transfer_function.remote_references.rrhx.dc.end=0.0205994\n",
+            "    transfer_function.remote_references.rrhx.comments=[cal name=57454_6466657B.scal, saturation=0.00229736 %, min value=-0.00488281, max value=0.00488281]\n",
+            "    transfer_function.remote_references.rrhx.sensor.id=57454\n",
+            "    transfer_function.remote_references.rrhy.component=H2\n",
+            "    transfer_function.remote_references.rrhy.sensor.model=MTC-155\n",
+            "    transfer_function.remote_references.rrhy.ac.end=0.00976562\n",
+            "    transfer_function.remote_references.rrhy.dc.end=0.00549316\n",
+            "    transfer_function.remote_references.rrhy.comments=[cal name=57458_6466657B.scal, saturation=0.00207322 %, min value=-0.00488281, max value=0.00488281]\n",
+            "    transfer_function.remote_references.rrhy.sensor.id=57458\n",
         ]
 
-        self.assertListEqual(info_list, self.edi_obj.Info.info_list)
+        self.assertListEqual(info_list, self.edi_obj.Info.write_info())
 
     def test_measurement_ex(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 90.0),
                 ("chtype", "EX"),
                 ("id", 1004.001),
@@ -79,12 +156,14 @@ class TestEMPOWEREDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["ex"].to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 90.0),
                 ("chtype", "EY"),
                 ("id", 1005.001),
@@ -97,12 +176,14 @@ class TestEMPOWEREDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["ey"].to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "HX"),
                 ("dip", 0.0),
@@ -113,12 +194,14 @@ class TestEMPOWEREDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hx"].to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 90.0),
                 ("chtype", "HY"),
                 ("dip", 0.0),
@@ -129,12 +212,14 @@ class TestEMPOWEREDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hy"].to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
             [
-                ("acqchan", None),
+                ("acqchan", ""),
                 ("azm", 0.0),
                 ("chtype", "HZ"),
                 ("dip", 0.0),
@@ -145,20 +230,30 @@ class TestEMPOWEREDI(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hz"].to_dict(single=True)
+        )
 
     def test_measurement(self):
         m_list = [
-            "MAXCHAN=7",
-            "MAXRUN=999",
-            "MAXMEAS=9999",
-            "UNITS=M",
-            "REFTYPE=CART",
+            "\n>=DEFINEMEAS\n",
+            "    MAXCHAN=7\n",
+            "    MAXRUN=999\n",
+            "    MAXMEAS=9999\n",
+            "    REFLAT=40:38:53.200000\n",
+            "    REFLON=-106:12:44.700000\n",
+            "    REFELEV=2489.0\n",
+            "    REFTYPE=CART\n",
+            "    UNITS=meter\n",
+            "\n",
+            ">HMEAS ID=1001.001 CHTYPE=HX X=8.50 Y=8.50 Z=0.00 AZM=0.00 DIP=0.00 ACQCHAN=\n",
+            ">HMEAS ID=1002.001 CHTYPE=HY X=-8.50 Y=8.50 Z=0.00 AZM=90.00 DIP=0.00 ACQCHAN=\n",
+            ">HMEAS ID=1003.001 CHTYPE=HZ X=21.20 Y=-21.20 Z=0.00 AZM=0.00 DIP=0.00 ACQCHAN=\n",
+            ">EMEAS ID=1004.001 CHTYPE=EX X=0.00 Y=-48.80 Z=0.00 X2=0.00 Y2=46.50 Z2=0.00 AZM=90.00 ACQCHAN=\n",
+            ">EMEAS ID=1005.001 CHTYPE=EY X=-50.60 Y=0.00 Z=0.00 X2=48.50 Y2=0.00 Z2=0.00 AZM=90.00 ACQCHAN=\n",
         ]
 
-        self.assertListEqual(
-            m_list, self.edi_obj.Measurement.measurement_list[0 : len(m_list)]
-        )
+        self.assertListEqual(m_list, self.edi_obj.Measurement.write_measurement())
 
         with self.subTest("reflat"):
             self.assertAlmostEqual(
@@ -170,26 +265,25 @@ class TestEMPOWEREDI(unittest.TestCase):
                 -106.21241666666667, self.edi_obj.Measurement.reflon, 5
             )
 
-        with self.subTest("reflong"):
-            self.assertAlmostEqual(
-                -106.21241666666667, self.edi_obj.Measurement.reflong, 5
-            )
-
         with self.subTest("refelev"):
             self.assertAlmostEqual(2489.0, self.edi_obj.Measurement.refelev, 2)
 
     def test_data_section(self):
         d_list = [
-            'SECTID="701_merged_wrcal"',
-            "NFREQ=98",
-            "HX= 1001.001",
-            "HY= 1002.001",
-            "HZ= 1003.001",
-            "EX= 1004.001",
-            "EY= 1005.001",
+            "\n>=MTSECT\n",
+            "    NFREQ=98\n",
+            "    SECTID=701_merged_wrcal\n",
+            "    NCHAN=0\n",
+            "    MAXBLOCKS=999\n",
+            "    HX=1001.001\n",
+            "    HY=1002.001\n",
+            "    HZ=1003.001\n",
+            "    EX=1004.001\n",
+            "    EY=1005.001\n",
+            "\n",
         ]
 
-        self.assertListEqual(d_list, self.edi_obj.Data.data_list)
+        self.assertListEqual(d_list, self.edi_obj.Data.write_data())
 
     def test_impedance(self):
         with self.subTest("shape"):
@@ -238,12 +332,12 @@ class TestEMPOWEREDI(unittest.TestCase):
 
 class TestEMpowerTF(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.tf_obj = TF(TF_EDI_EMPOWER)
-        self.tf_obj.read()
+    def setUpClass(cls):
+        cls.tf_obj = TF(TF_EDI_EMPOWER)
+        cls.tf_obj.read()
 
-        self.edi_obj = self.tf_obj.to_edi()
-        self.maxDiff = None
+        cls.edi_obj = cls.tf_obj.to_edi()
+        cls.maxDiff = None
 
     def test_header(self):
         head = OrderedDict(
@@ -258,7 +352,7 @@ class TestEMpowerTF(unittest.TestCase):
                 ("latitude", 40.64811111111111),
                 ("longitude", -106.21241666666667),
                 ("stdvers", "SEG 1.0"),
-                ("units", None),
+                ("units", "milliVolt per kilometer per nanoTesla"),
             ]
         )
 

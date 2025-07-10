@@ -11,6 +11,7 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
     DataQuality,
     GeographicReferenceFrameEnum,
+    Person,
     SignConventionEnum,
     Software,
 )
@@ -112,6 +113,20 @@ class TransferFunction(MetadataBase):
             default_factory=list,
             description="list of processing parameters with structure name = value",
             examples=[["nfft=4096", "n_windows=16"]],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    processed_by: Annotated[
+        Person,
+        Field(
+            default_factory=Person,  # type: ignore
+            description="person who processed the data",
+            examples=["Person(name='John Doe', email='john.doe@example.com')"],
             alias=None,
             json_schema_extra={
                 "units": None,

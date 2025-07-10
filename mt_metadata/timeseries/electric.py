@@ -20,7 +20,7 @@ class Electric(ChannelBase):
             description="Component of the electric field.",
             examples=["Ex"],
             alias=None,
-            pattern=r"^[eE][a-zA-Z]*$",
+            pattern=r"^[eE][a-zA-Z1-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

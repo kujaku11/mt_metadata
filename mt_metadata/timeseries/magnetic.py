@@ -19,7 +19,7 @@ class Magnetic(Channel):
             description="Component of the magnetic field.",
             examples=["hx"],
             alias=None,
-            pattern=r"^[hHbBrR][a-zA-Z]*$",
+            pattern=r"^[hHbBrR][a-zA-Z1-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

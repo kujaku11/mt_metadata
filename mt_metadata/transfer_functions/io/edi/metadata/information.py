@@ -105,14 +105,20 @@ class Information(MetadataBase):
             "length": "dipole_length",
             "ac": "ac.end",
             "dc": "dc.end",
-            "negative_res": "contact_resistance.start",
-            "positive_res": "contact_resistance.end",
-            "sensor_type": "sensor.model",
-            "azimuth": "measured_azimuth",
-            "sensor_serial": "sensor.id",
-            "cal_name": "comments",
+            "negative res": "contact_resistance.start",
+            "positive res": "contact_resistance.end",
+            "sensor type": "sensor.model",
+            "detected sensor type": "sensor.model",
+            "azimuth": "measurement_azimuth",
+            "sensor serial": "sensor.id",
+            "cal name": "comments",
             "saturation": "comments",
-            "instrument_type": "model",
+            "instrument type": "data_logger.model",
+            "station name": "geographic_name",
+            "operator": "acquired_by.author",
+            "recording id": "id",
+            "min value": "comments",
+            "max value": "comments",
         }
     )
 
@@ -154,7 +160,11 @@ class Information(MetadataBase):
                 # Detect format while collecting
                 if "run information station" in line.lower():
                     self._phoenix_file = True
-                elif "empower data" in line.lower():
+                elif (
+                    ("empower" in line.lower() and "v" in line.lower())
+                    or "electrics" in line.lower()
+                    or "magnetics" in line.lower()
+                ):
                     self._empower_file = True
 
                 info_section.append(line)
@@ -262,36 +272,68 @@ class Information(MetadataBase):
         Parse Empower format EDI info lines efficiently.
 
         Empower format has a hierarchical structure with sections for
-        general info, electrics, and magnetics.
+        general info, electrics, magnetics, and reference stations.
         """
         section = "general"
         component = None
+        sub_section = None
 
         # Process all lines and handle hierarchical structure
         for line in info_lines:
+            original_line = line
             line = line.strip()
 
             # Skip empty lines
             if not line:
                 continue
 
-            # Check for section headers
-            if line.lower() == "electrics":
-                section = "electrics"
-                continue
-            elif line.lower() == "magnetics":
-                section = "magnetics"
-                continue
+            # Get indentation level to understand hierarchy
+            indent_level = len(original_line) - len(original_line.lstrip())
 
-            # Component-level headers (e.g., "E1", "H1")
-            if section in ["electrics", "magnetics"]:
-                if self._get_separator(line) is None:
-                    component = line.strip().lower()
+            # Check for main section headers (typically at low indentation)
+            line_lower = line.lower()
+            if indent_level <= 5:  # Main sections are usually at low indentation
+                if line_lower == "stations":
+                    section = "stations"
+                    continue
+                elif line_lower == "electrics":
+                    section = "electrics"
+                    sub_section = "electrics"
+                    continue
+                elif line_lower == "magnetics":
+                    section = "magnetics"
+                    sub_section = "magnetics"
+                    continue
+                elif line_lower == "reference":
+                    section = "reference"
+                    sub_section = "reference"
+                    continue
+
+            # Component-level headers (e.g., "EX", "EY", "HX", "HY", etc.)
+            if section in ["electrics", "magnetics", "reference"] or sub_section in [
+                "electrics",
+                "magnetics",
+                "reference",
+            ]:
+                # Check if this is a component header (no separator and matches component pattern)
+                if self._get_separator(line) is None and line_lower in [
+                    "ex",
+                    "ey",
+                    "hx",
+                    "hy",
+                    "hz",
+                    "rx",
+                    "ry",
+                ]:  # Components are typically more indented
+                    component = line_lower
                     continue
 
             # Regular key-value pairs
             sep = self._get_separator(line)
             if not sep:
+                # Handle special cases for lines without separators
+                if line_lower in ["editing workbench", "stations"]:
+                    section = line_lower.replace(" ", "_")
                 continue
 
             parts = line.split(sep, 1)
@@ -301,26 +343,41 @@ class Information(MetadataBase):
             key = parts[0].strip().lower()
             value = parts[1].strip()
 
+            # Clean up value (remove units in brackets and degree symbol)
+            if "[" in value and "]" in value:
+                value = value.split("[")[0].strip()
+            if "°" in value:
+                value = value.replace("°", "").strip()
+
             # Build the key based on section/component context
-            std_key = self._get_empower_std_key(section, component, key)
+            std_key = self._get_empower_std_key(section, component, key, sub_section)
 
             if std_key:
                 if "comments" in std_key:
                     original_value = self.info_dict.get(std_key, [])
                     if not isinstance(original_value, list):
-                        original_value = [original_value]
+                        original_value = [] if not original_value else [original_value]
                     original_value.append(f"{key}={value}")
                     value = original_value
                 self.info_dict[std_key] = value
             else:
                 # For unrecognized keys, store with section prefix
-                context_key = (
-                    f"{section}.{component}.{key}" if component else f"{section}.{key}"
-                )
+                if component:
+                    context_key = f"{section}.{component}.{key}"
+                elif sub_section and sub_section != section:
+                    context_key = f"{sub_section}.{key}"
+                elif section != "general":
+                    context_key = f"{section}.{key}"
+                else:
+                    context_key = key
                 self.info_dict[context_key] = value
 
     def _get_empower_std_key(
-        self, section: str, component: str | None, key: str
+        self,
+        section: str,
+        component: str | None,
+        key: str,
+        sub_section: str | None = None,
     ) -> str | None:
         """
         Get standardized key for Empower format based on section and component context.
@@ -328,11 +385,13 @@ class Information(MetadataBase):
         Parameters
         ----------
         section : str
-            Current section ("general", "electrics", "magnetics")
+            Current section ("general", "electrics", "magnetics", "reference", etc.)
         component : str
-            Current component (e.g., "e1", "h1", None)
+            Current component (e.g., "ex", "ey", "hx", "hy", "hz", "rx", "ry", None)
         key : str
             Original key name
+        sub_section : str, optional
+            Sub-section for additional context
 
         Returns
         -------
@@ -348,11 +407,27 @@ class Information(MetadataBase):
 
         # Handle component-specific keys
         if not component:
+            # Handle section-level keys without component context
+            mapped_key = self._empower_translation_dict.get(key)
+            if mapped_key:
+                if section == "reference":
+                    return f"transfer_function.remote_references.{mapped_key}"
+                elif sub_section:
+                    return f"run.{mapped_key}"
+                else:
+                    return mapped_key
             return None
 
         # Map component names to standard names
         component_map = {
-            "e1": "ex",
+            "ex": "ex",
+            "ey": "ey",
+            "hx": "hx",
+            "hy": "hy",
+            "hz": "hz",
+            "rx": "rrhx",  # Remote reference components
+            "ry": "rrhy",
+            "e1": "ex",  # Alternative naming
             "e2": "ey",
             "h1": "hx",
             "h2": "hy",
@@ -364,30 +439,24 @@ class Information(MetadataBase):
         # Create run-prefixed attribute key
         attribute_key = self._empower_translation_dict.get(key)
         if attribute_key:
-            return f"run.{std_component}.{attribute_key}"
-
-        # Special cases for component key
-        if key == "component" and component.startswith("h"):
-            # Component is handled by return key mapping
-            return None
-        elif key == "component" and component.startswith("e"):
-            return f"run.{std_component}.component"
+            if section == "reference":
+                return f"transfer_function.remote_references.{std_component}.{attribute_key}"
+            else:
+                return f"run.{std_component}.{attribute_key}"
 
         # Handle special cases for comments field
-        if key in ["cal_name", "saturation"]:
+        if key in ["cal name", "saturation", "min value", "max value"]:
             # Append to comments field
-            comments_key = f"run.{std_component}.comments"
-
-            # # If comments already exist, append to them
-            # existing = self.info_dict.get(comments_key, "")
-            # if existing:
-            #     self.info_dict[comments_key] = f"{existing},{key}={value}"
-            #     return None  # Return None to prevent overwriting
-
-            return comments_key
+            if section == "reference":
+                return f"transfer_function.remote_references.{std_component}.comments"
+            else:
+                return f"run.{std_component}.comments"
 
         # Default case: use run.component.key format
-        return f"run.{std_component}.{key}"
+        if section == "reference":
+            return f"transfer_function.remote_references.{std_component}.{key}"
+        else:
+            return f"run.{std_component}.{key}"
 
     def _split_phoenix_columns(self, line: str) -> tuple[bool, list[str]]:
         """
