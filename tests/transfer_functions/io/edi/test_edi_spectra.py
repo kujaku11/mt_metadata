@@ -60,7 +60,7 @@ class TestSpectraEDI:
         head = {
             "ACQBY": "Quantec Consulting",
             "COORDINATE_SYSTEM": "geographic",
-            "DATAID": "sage_2005_og",
+            "DATAID": "SAGE_2005_og",
             "DATUM": "WGS 84",
             "ELEV": 0,
             "EMPTY": 1e32,
