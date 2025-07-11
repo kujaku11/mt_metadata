@@ -2,7 +2,7 @@
 """
 Created on Sat Feb 20 16:23:12 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -10,8 +10,11 @@ Created on Sat Feb 20 16:23:12 2021
 """
 
 import unittest
-
-from mt_metadata.timeseries.stationxml import fdsn_tools
+import pytest
+try:
+    from mt_metadata.timeseries.stationxml import fdsn_tools
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 
 class TestOrientationCode(unittest.TestCase):

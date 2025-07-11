@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 18 12:49:13 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -142,9 +142,7 @@ class XMLStationMTStation(BaseTranslator):
                 mt_station.id = mt_station.fdsn.id
 
         # read in equipment information
-        mt_station = self._equipments_to_runs(
-            xml_station.equipments, mt_station
-        )
+        mt_station = self._equipments_to_runs(xml_station.equipments, mt_station)
         mt_station = self._add_run_comments(run_comments, mt_station)
 
         return mt_station
@@ -175,37 +173,46 @@ class XMLStationMTStation(BaseTranslator):
             mt_station.fdsn.id = mt_station.id
 
         xml_station = inventory.Station(
-            code,
+            code.upper(),
             mt_station.location.latitude,
             mt_station.location.longitude,
             mt_station.location.elevation,
         )
 
         for xml_key, mt_key in self.xml_translator.items():
-            if xml_key in ["alternate_code"]:
-                xml_station.alternate_code = mt_station.id
+            # need to skip code because we just set it above and it needs to be upper.
+
             if mt_key is None:
-                msg = "cannot currently map mt_key.station to inventory.station.{0}".format(
-                    xml_key
+                self.logger.debug(
+                    f"Cannot currently map mt_key.station to inventory.station.{xml_key}"
                 )
-                self.logger.debug(msg)
                 continue
 
-            if xml_key == "operators":
+            if xml_key in ["code"]:
+                continue
+            elif xml_key in ["alternate_code"]:
+                xml_station.alternate_code = mt_station.id.upper()
+
+            elif xml_key == "operators":
                 if mt_station.acquired_by.name:
                     if mt_station.acquired_by.organization is None:
                         mt_station.acquired_by.organization = " "
                     operator = inventory.Operator(
                         agency=mt_station.acquired_by.organization
                     )
-                    person = inventory.Person(
-                        names=[mt_station.acquired_by.name]
-                    )
+                    person = inventory.Person(names=[mt_station.acquired_by.name])
                     operator.contacts = [person]
                     xml_station.operators = [operator]
 
             elif xml_key == "site":
-                xml_station.site.name = mt_station.geographic_name
+                if mt_station.geographic_name is None:
+                    xml_station.site.name = mt_station.id.upper()
+                    self.logger.warning(
+                        f"Station.geographic_name is None, using Station.id = {mt_station.id}."
+                        "Check StationXML site.name."
+                    )
+                else:
+                    xml_station.site.name = mt_station.geographic_name
 
             elif xml_key == "comments":
                 if mt_station.comments is not None:
@@ -216,9 +223,7 @@ class XMLStationMTStation(BaseTranslator):
                     xml_station.restricted_status
                 ]
             else:
-                setattr(
-                    xml_station, xml_key, mt_station.get_attr_from_name(mt_key)
-                )
+                setattr(xml_station, xml_key, mt_station.get_attr_from_name(mt_key))
 
         # add mt comments
         xml_station.comments = self.make_mt_comments(mt_station, "mt.station")
@@ -281,9 +286,7 @@ class XMLStationMTStation(BaseTranslator):
                             if run_attr == "comments":
                                 value = f"{ckey}: {cvalue}"
                                 try:
-                                    station_obj.runs[
-                                        run_index
-                                    ].comments += f", {value}"
+                                    station_obj.runs[run_index].comments += f", {value}"
                                 except TypeError:
                                     station_obj.runs[run_index].comments = value
                             else:
@@ -293,8 +296,6 @@ class XMLStationMTStation(BaseTranslator):
                                     c_attr, cvalue
                                 )
                         else:
-                            station_obj.runs[run_index].set_attr_from_name(
-                                ckey, cvalue
-                            )
+                            station_obj.runs[run_index].set_attr_from_name(ckey, cvalue)
 
         return station_obj

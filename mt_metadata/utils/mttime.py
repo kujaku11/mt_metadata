@@ -13,10 +13,25 @@ from dateutil.parser import parse as dtparser
 import numpy as np
 import pandas as pd
 from pandas._libs.tslibs import OutOfBoundsDatetime
-from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+
 from typing import Optional, Union  # Self is importable in python 3.11+
 
 from loguru import logger
+
+DATETIME_HINT = Union[
+    float,
+    int,
+    np.datetime64,
+    pd.Timestamp,
+    str,
+    datetime.datetime,
+]
+
+try:
+    from obspy.core.utcdatetime import UTCDateTime  # for type hinting
+    DATETIME_HINT = Union[DATETIME_HINT, UTCDateTime]
+except ImportError:
+    pass
 
 # =============================================================================
 #  Get leap seconds
@@ -390,16 +405,7 @@ class MTime:
 
     def parse(
         self,
-        dt_str: Optional[
-            Union[
-                float,
-                int,
-                np.datetime64,
-                pd.Timestamp,
-                str,
-                UTCDateTime
-            ]
-        ] = None
+        dt_str: Optional[DATETIME_HINT] = None
     ) -> None:  # TODO: add Self as s typehint 3.11
         """
         Parse a date-time string using dateutil.parser

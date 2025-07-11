@@ -16,6 +16,7 @@ from collections import OrderedDict
 from operator import itemgetter
 from pathlib import Path
 from loguru import logger
+from typing import Optional, Union
 
 import json
 import pandas as pd
@@ -31,6 +32,8 @@ from . import helpers
 from mt_metadata.base.helpers import write_lines
 
 attr_dict = {}
+
+
 # =============================================================================
 #  Base class that everything else will inherit
 # =============================================================================
@@ -38,9 +41,9 @@ attr_dict = {}
 
 class Base:
     __doc__ = write_lines(attr_dict)
+    _base_attr_loaded = False
 
     def __init__(self, attr_dict={}, **kwargs):
-
         self._changed = False
 
         self._class_name = validate_attribute(self.__class__.__name__)
@@ -48,12 +51,17 @@ class Base:
         self.logger = logger
         self._debug = False
 
-        self._set_attr_dict(attr_dict)
+        # attr_dict from subclass has already been validated on json load, so
+        # we shouldn't need to validate it again re-validation of the attribute
+        # dictionary used to contribute to some slowness in instantiation of
+        # subclasses
+        # self._set_attr_dict(deepcopy(attr_dict), skip_validation=True)
+        self._set_attr_dict(attr_dict, skip_validation=True)
 
         for name, value in kwargs.items():
-            self.set_attr_from_name(name, value)
+            self.set_attr_from_name(name, value, skip_validation=False)
 
-    def _set_attr_dict(self, attr_dict):
+    def _set_attr_dict(self, attr_dict, skip_validation=False):
         """
         Set attribute dictionary and variables.
 
@@ -61,13 +69,15 @@ class Base:
 
         :param attr_dict: attribute dictionary
         :type attr_dict: dict
+        :param skip_validation: skip validation/parse of the attribute dictionary
+        :type skip_validation: bool
 
         """
 
         self._attr_dict = attr_dict
 
         for key, value_dict in attr_dict.items():
-            self.set_attr_from_name(key, value_dict["default"])
+            self.set_attr_from_name(key, value_dict["default"], skip_validation)
 
     def __str__(self):
         """
@@ -85,62 +95,99 @@ class Base:
     def __repr__(self):
         return self.to_json()
 
-    def __eq__(self, other):
-        if other in [None]:
+    def __eq__(
+        self,
+        other: Union["Base", dict, str, pd.Series],
+        ignore_keys: Optional[Union[list, tuple]] = None
+    ) -> bool:
+        """
+
+            Checks for equality between self and input argument `other`.
+
+            Logic:
+             - verify that object is of expected dtype (else return False)
+             - form two dicts, one representing self and one representing other
+             - compare the two dicts
+             - return the outcome of the comparison
+
+            :param other: Another Base object, or it's representation as dict, str, pd.Series
+            :type other: Union["Base", dict, str, pd.Series]
+            :param ignore_keys: An iterable of keys to ignore during the comparison.
+            :type other: Union["Base", dict, str, pd.Series]
+
+            TODO: Once python 3.10 and lower are supported, change "Base" to Self in typehints.
+
+        """
+        # validate dtype
+        allowed_input_dtypes = (Base, dict, str, pd.Series)
+        if not isinstance(other, allowed_input_dtypes):
+            msg = f"Unable to evaluate equality of {type(self)} with {type(other)}"
+            self.logger.info(msg)
             return False
-        elif isinstance(other, (Base, dict, str, pd.Series)):
-            home_dict = self.to_dict(single=True, required=False)
-            if isinstance(other, Base):
-                other_dict = other.to_dict(single=True, required=False)
-            elif isinstance(other, dict):
-                other_dict = other
-            elif isinstance(other, str):
-                if other.lower() in ["none", "null", "unknown"]:
-                    return False
-                other_dict = OrderedDict(
-                    sorted(json.loads(other).items(), key=itemgetter(0))
-                )
-            elif isinstance(other, pd.Series):
-                other_dict = OrderedDict(
-                    sorted(other.to_dict().items(), key=itemgetter(0))
-                )
-            else:
-                raise ValueError(
-                    f"Cannot compare {self._class_name} with {type(other)}"
-                )
-            fail = False
-            for key, value in home_dict.items():
-                try:
-                    other_value = other_dict[key]
-                    if isinstance(value, np.ndarray):
-                        if value.size != other_value.size:
-                            msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
-                            self.logger.info(msg)
-                            fail=True
-                            continue
-                        if not (value == other_value).all():
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    elif isinstance(value, (float, int, complex)):
-                        if not np.isclose(value, other_value):
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                    else:
-                        if value != other_value:
-                            msg = f"{key}: {value} != {other_value}"
-                            self.logger.info(msg)
-                            fail = True
-                except KeyError:
-                    msg = "Cannot find {0} in other".format(key)
-                    self.logger.info(msg)
-            if fail:
+
+        # form two dicts, one for self and one for other
+        home_dict = self.to_dict(single=True, required=False)
+        if isinstance(other, Base):
+            other_dict = other.to_dict(single=True, required=False)
+        elif isinstance(other, dict):
+            other_dict = other
+        elif isinstance(other, str):
+            if other.lower() in ["none", "null", "unknown"]:
                 return False
-            else:
-                return True
+            other_dict = OrderedDict(
+                sorted(json.loads(other).items(), key=itemgetter(0))
+            )
+        elif isinstance(other, pd.Series):
+            other_dict = OrderedDict(
+                sorted(other.to_dict().items(), key=itemgetter(0))
+            )
         else:
+            raise ValueError(
+                f"Cannot compare {self._class_name} with {type(other)}"
+            )
+
+        # set ignore keys to empty iterable if it was none
+        if ignore_keys is None:
+            ignore_keys = ()
+
+        # Compare the two dicts
+        fail = False
+        for key, value in home_dict.items():
+            if key in ignore_keys:
+                continue
+            try:
+                other_value = other_dict[key]
+                if isinstance(value, np.ndarray):
+                    if value.size != other_value.size:
+                        msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
+                        self.logger.info(msg)
+                        fail=True
+                        continue
+                    if not (value == other_value).all():
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                        # TODO: Add np.allclose here?
+                elif isinstance(value, (float, int, complex)):
+                    if not np.isclose(value, other_value):
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+                else:
+                    if value != other_value:
+                        msg = f"{key}: {value} != {other_value}"
+                        self.logger.info(msg)
+                        fail = True
+            except KeyError:
+                msg = f"Cannot find key {key} in other"
+                self.logger.info(msg)
+
+        # return the outcome of the comparison
+        if fail:
             return False
+        else:
+            return True
+
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -329,7 +376,11 @@ class Base:
                 + f" are allowed.  Allowing {option_list} to be set to {value}."
             )
             return True, other_possible, msg
-        return False, other_possible, f"Value '{value}' for metadata field '{name}' not found in options list {option_list}"
+        return (
+            False,
+            other_possible,
+            f"Value '{value}' for metadata field '{name}' not found in options list {option_list}",
+        )
 
     def __setattr__(self, name, value):
         """
@@ -383,9 +434,8 @@ class Base:
             try:
                 test_property = getattr(self.__class__, name, None)
                 if isinstance(test_property, property):
-                    self.logger.debug(
-                        f"Identified {name} as property, using fset"
-                    )
+                    msg = f"Identified {name} as property, using fset"
+                    self.logger.debug(msg)
                     test_property.fset(self, value)
                     return
             except AttributeError:
@@ -399,7 +449,9 @@ class Base:
                 # check options
                 if v_dict["style"] == "controlled vocabulary":
                     options = v_dict["options"]
-                    accept, other, msg = self._validate_option(name, value, options)
+                    accept, other, msg = self._validate_option(
+                        name, value, options
+                    )
                     if not accept:
                         self.logger.error(msg.format(value, options))
                         raise MTSchemaError(msg.format(value, options))
@@ -473,7 +525,20 @@ class Base:
             return value
         return self._validate_type(value, v_type)
 
-    def set_attr_from_name(self, name, value):
+    def setattr_skip_validation(self, name, value):
+        """
+        Set attribute without validation
+
+        :param name: name of attribute
+        :type name: string
+
+        :param value: value of the new attribute
+        :type value: described in value_dict
+
+        """
+        self.__dict__[name] = value
+
+    def set_attr_from_name(self, name, value, skip_validation=False):
         """
         Helper function to set attribute from the given name.
 
@@ -487,6 +552,8 @@ class Base:
         :type name: string
         :param value: attribute value
         :type value: type is defined by the attribute name
+        :param skip_validation: skip validation/parse of the key-value pair
+        :type skip_validation: bool
 
         :Example:
 
@@ -497,7 +564,9 @@ class Base:
         """
         if "." in name:
             try:
-                helpers.recursive_split_setattr(self, name, value)
+                helpers.recursive_split_setattr(
+                    self, name, value, skip_validation=skip_validation
+                )
             except AttributeError as error:
                 msg = (
                     "{0} is not in the current standards.  "
@@ -508,7 +577,10 @@ class Base:
                 self.logger.error(msg.format(name))
                 raise AttributeError(error)
         else:
-            setattr(self, name, value)
+            if skip_validation:
+                self.setattr_skip_validation(name, value)
+            else:
+                setattr(self, name, value)
 
     def add_base_attribute(self, name, value, value_dict):
         """

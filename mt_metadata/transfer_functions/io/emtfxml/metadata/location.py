@@ -24,6 +24,8 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
 attr_dict.add_dict(Declination()._attr_dict, "declination")
+
+
 # =============================================================================
 class Location(Base):
     __doc__ = write_lines(attr_dict)
@@ -31,6 +33,9 @@ class Location(Base):
     def __init__(self, **kwargs):
 
         self.declination = Declination()
+        self._latitude = 0.0
+        self._longitude = 0.0
+        self._elevation = 0.0
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 

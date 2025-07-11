@@ -25,9 +25,20 @@ from mt_metadata import __version__
 
 # =============================================================================
 attr_dict = get_schema("provenance", SCHEMA_FN_PATHS)
-person_dict = get_schema("person", SCHEMA_FN_PATHS)
-attr_dict.add_dict(person_dict, "creator")
-attr_dict.add_dict(person_dict, "submitter")
+person_dict = get_schema(
+    "person",
+    SCHEMA_FN_PATHS,
+)
+attr_dict.add_dict(
+    person_dict,
+    "creator",
+    keys=["name", "comments", "url", "org", "org_url", "email"],
+)
+attr_dict.add_dict(
+    person_dict,
+    "submitter",
+    keys=["name", "comments", "url", "org", "org_url", "email"],
+)
 # =============================================================================
 
 

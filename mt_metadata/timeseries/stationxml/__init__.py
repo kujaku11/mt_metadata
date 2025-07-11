@@ -3,6 +3,11 @@
 Tools to translate StationXML to MT Metadata
 """
 
+try:
+    import obspy
+except ImportError:
+    raise ImportError("StationXML requires obspy to be installed.")
+
 from .xml_network_mt_survey import XMLNetworkMTSurvey
 from .xml_equipment_mt_run import XMLEquipmentMTRun
 from .xml_station_mt_station import XMLStationMTStation
