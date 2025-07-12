@@ -1109,7 +1109,18 @@ class EDI:
                         else:
                             # skip any keys that have remote_references.something_else
                             continue
-
+                    else:
+                        if isinstance(value, list):
+                            sm.transfer_function.remote_references.extend(value)
+                        elif isinstance(value, str):
+                            sm.transfer_function.remote_references.append(value)
+                        elif isinstance(value, (int, float)):
+                            sm.transfer_function.remote_references.append(value)
+                        else:
+                            self.logger.warning(
+                                f"Do not know how to handle remote_references {value}"
+                            )
+                            continue
                 elif "runs_processed" in key:
                     sm.run_list = sm.transfer_function.runs_processed
                 else:

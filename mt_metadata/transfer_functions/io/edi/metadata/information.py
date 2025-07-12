@@ -235,7 +235,7 @@ class Information(MetadataBase):
             # Apply translation dictionary
             std_key = self._translation_dict.get(key)
 
-            if std_key:
+            if std_key is not None:
                 # Handle special processing parameters
                 if std_key == "processing_parameter":
                     tf_parameters = self.info_dict.get(
@@ -351,17 +351,22 @@ class Information(MetadataBase):
             value = parts[1].strip()
 
             # Clean up value (remove units in brackets and degree symbol)
-            if "[" in value and "]" in value:
-                value = value.split("[")[0].strip()
-            if "°" in value:
-                value = value.replace("°", "").strip()
+            if value.find("[") > 2:  # need to avoid values that are lists
+                value = value.replace("[", "").replace("]", "").split(",")
+                if len(value) == 1:
+                    value = value[0].strip()
+                    value = value.split(" ")[0]  # remove units
+                else:
+                    value = ",".join(v.strip() for v in value)
+
+            value = value.replace("°", "").strip()
 
             # Build the key based on section/component context
             std_key = self._get_empower_std_key(section, component, key, sub_section)
 
             # special case handling
             if std_key:
-                if "remote_references" in std_key:
+                if "remote_references." in std_key:
                     # skip these for now
                     if (
                         "acquired_by" in std_key
@@ -393,15 +398,9 @@ class Information(MetadataBase):
                     original_value.append(f"{key}={value}")
                     value = original_value
                 elif "data_logger.model" in std_key:
-                    if not "remote_references" in std_key:
-                        std_key = "run.data_logger.model"
-                    else:
-                        continue
+                    std_key = "run.data_logger.model"
                 elif "id" in std_key:
-                    if "remote_references" in std_key:
-                        std_key = "transfer_function.remote_references.id"
-                    else:
-                        std_key = "run.id"
+                    std_key = "run.id"
                 elif "geographic_name" in std_key:
                     if "remote_references" in std_key:
                         std_key = "transfer_function.remote_references.geographic_name"
