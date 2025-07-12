@@ -521,7 +521,9 @@ class TestEMpowerTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ex.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["ex"].to_dict(single=True)
+        )
 
     def test_measurement_ey(self):
         ch = OrderedDict(
@@ -539,7 +541,9 @@ class TestEMpowerTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_ey.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["ey"].to_dict(single=True)
+        )
 
     def test_measurement_hx(self):
         ch = OrderedDict(
@@ -555,7 +559,9 @@ class TestEMpowerTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hx.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hx"].to_dict(single=True)
+        )
 
     def test_measurement_hy(self):
         ch = OrderedDict(
@@ -571,7 +577,9 @@ class TestEMpowerTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hy.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hy"].to_dict(single=True)
+        )
 
     def test_measurement_hz(self):
         ch = OrderedDict(
@@ -587,20 +595,22 @@ class TestEMpowerTF(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(ch, self.edi_obj.Measurement.meas_hz.to_dict(single=True))
+        self.assertDictEqual(
+            ch, self.edi_obj.Measurement.measurements["hz"].to_dict(single=True)
+        )
 
     def test_measurement(self):
         m_dict = OrderedDict(
             [
                 ("maxchan", 5),
-                ("maxmeas", 999),
+                ("maxmeas", 7),
                 ("maxrun", 999),
                 ("refelev", 2489.0),
                 ("reflat", 40.648111),
                 ("refloc", "701_merged_wrcal"),
                 ("reflon", -106.212417),
                 ("reftype", "cartesian"),
-                ("units", "m"),
+                ("units", "meter"),
             ]
         )
 
@@ -625,8 +635,8 @@ class TestEMpowerTF(unittest.TestCase):
                 ("maxblocks", 999),
                 ("nchan", 5),
                 ("nfreq", 98),
-                ("rrhx", "0"),
-                ("rrhy", "0"),
+                ("rrhx", None),
+                ("rrhy", None),
                 ("sectid", "701_merged_wrcal"),
             ]
         )

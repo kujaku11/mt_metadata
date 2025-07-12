@@ -1212,7 +1212,8 @@ class EDI:
 
             for ch in self.Measurement.channels_recorded:
                 try:
-                    rr.add_channel(getattr(self, f"{ch}_metadata"))
+                    ch_obj = rr.channels[ch]
+                    ch_obj.update(getattr(self, f"{ch}_metadata"))
                 except AttributeError:
                     pass
         return sm

@@ -377,6 +377,8 @@ class Information(MetadataBase):
                 if "azimuth" in std_key:
                     # the azimuth is not understood in its current context.
                     continue
+                if "component" in std_key:
+                    value = component
                 if "hx" in std_key or "hy" in std_key or "hz" in std_key:
                     if "acquired_by" in std_key or "data_logger" in std_key:
                         # Handle author information for Hx/Hy/Hz
