@@ -359,7 +359,7 @@ class Information(MetadataBase):
                 else:
                     value = ",".join(v.strip() for v in value)
 
-            value = value.replace("°", "").strip()
+            value = value.replace("°", "").replace("Â", "").strip()
 
             # Build the key based on section/component context
             std_key = self._get_empower_std_key(section, component, key, sub_section)
