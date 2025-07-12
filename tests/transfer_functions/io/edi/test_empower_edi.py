@@ -345,7 +345,7 @@ class TestEMpowerTF(unittest.TestCase):
                 ("acqdate", "1980-01-01T00:00:00+00:00"),
                 ("coordinate_system", "geographic"),
                 ("dataid", "701_merged_wrcal"),
-                ("datum", "WGS84"),
+                ("datum", "WGS 84"),
                 ("elevation", 2489.0),
                 ("empty", 1e32),
                 ("fileby", "EMTF FCU"),
@@ -362,7 +362,7 @@ class TestEMpowerTF(unittest.TestCase):
                 self.assertEqual(h_value, value)
 
         with self.subTest("Declination Model"):
-            self.assertEqual(self.edi_obj.Header.declination.model, "WMM")
+            self.assertEqual(self.edi_obj.Header.declination.model, "IGRF")
         with self.subTest("Declination value"):
             self.assertEqual(self.edi_obj.Header.declination.value, 0.0)
 

@@ -176,6 +176,13 @@ class Information(MetadataBase):
             self._parse_phoenix_info(info_section)
         else:
             self._parse_standard_info(info_section)
+        self._comments_to_string()
+
+    def _comments_to_string(self) -> None:
+        """Convert list comments to a single string."""
+        for key, value in self.info_dict.items():
+            if "comment" in key and isinstance(value, list):
+                self.info_dict[key] = ",".join(value)
 
     def _get_separator(self, line: str) -> str | None:
         """Find the key-value separator in a line."""
@@ -352,14 +359,58 @@ class Information(MetadataBase):
             # Build the key based on section/component context
             std_key = self._get_empower_std_key(section, component, key, sub_section)
 
+            # special case handling
             if std_key:
+                if "remote_references" in std_key:
+                    # skip these for now
+                    if (
+                        "acquired_by" in std_key
+                        or "data_logger" in std_key
+                        or "author" in std_key
+                    ):
+                        continue
+                if "azimuth" in std_key:
+                    # the azimuth is not understood in its current context.
+                    continue
+                if "hx" in std_key or "hy" in std_key or "hz" in std_key:
+                    if "acquired_by" in std_key or "data_logger" in std_key:
+                        # Handle author information for Hx/Hy/Hz
+                        std_key = (
+                            std_key.replace(".hx.", ".")
+                            .replace(".hy.", ".")
+                            .replace(".hz.", ".")
+                        )
+                    elif "ac" in std_key or "dc" in std_key:
+                        # Handle AC/DC values for Hx/Hy/Hz
+                        std_key = std_key.replace("ac", "comments").replace(
+                            "dc", "comments"
+                        )
+
                 if "comments" in std_key:
                     original_value = self.info_dict.get(std_key, [])
                     if not isinstance(original_value, list):
                         original_value = [] if not original_value else [original_value]
                     original_value.append(f"{key}={value}")
                     value = original_value
+                elif "data_logger.model" in std_key:
+                    if not "remote_references" in std_key:
+                        std_key = "run.data_logger.model"
+                    else:
+                        continue
+                elif "id" in std_key:
+                    if "remote_references" in std_key:
+                        std_key = "transfer_function.remote_references.id"
+                    else:
+                        std_key = "run.id"
+                elif "geographic_name" in std_key:
+                    if "remote_references" in std_key:
+                        std_key = "transfer_function.remote_references.geographic_name"
+                    else:
+                        std_key = "station.geographic_name"
+                elif "author" in std_key:
+                    std_key = "run.acquired_by.author"
                 self.info_dict[std_key] = value
+
             else:
                 # For unrecognized keys, store with section prefix
                 if component:

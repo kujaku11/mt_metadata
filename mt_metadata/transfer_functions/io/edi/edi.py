@@ -1095,34 +1095,66 @@ class EDI:
                         sm.transfer_function.processing_parameters.append(
                             f"{param}={value}"
                         )
+                elif "remote_references" in key:
+                    if key.count(".") > 1:
+                        if key in ["remote_references.id"]:
+                            sm.transfer_function.remote_references.append(value)
+                        elif key in ["remote_references.geographic_name"]:
+                            try:
+                                sm.transfer_function.remote_references[
+                                    -1
+                                ] = f"{value}.{sm.transfer_function.remote_references[-1]}"
+                            except IndexError:
+                                sm.transfer_function.remote_references.append(value)
+                        else:
+                            # skip any keys that have remote_references.something_else
+                            continue
+
+                elif "runs_processed" in key:
+                    sm.run_list = sm.transfer_function.runs_processed
                 else:
                     sm.transfer_function.update_attribute(key, value)
-                    if "runs_processed" in key:
-                        sm.run_list = sm.transfer_function.runs_processed
 
             elif key.startswith("run."):
-                try:
-                    key = key.split("run.")[1]
-                    comp, key = key.split(".", 1)
-                except (IndexError, ValueError):
-                    continue
+                comp = None
+                key = key.split("run.")[1]
+                if "." in key:
+                    # split the key into component and attribute
+                    # e.g. run.mt01a.hx.comments
+                    try:
+                        comp, key = key.split(".", 1)
+                    except (IndexError, ValueError):
+                        continue
+                if comp is not None:
+                    try:
+                        ch = getattr(sm.runs[0], comp)
+                    except AttributeError:
+                        ch = None
+                    if ch is None:
+                        if comp in ["ex", "ey"]:
+                            ch = Electric(component=comp)  # type: ignore
+                            sm.runs[0].add_channel(ch)
+                        elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
+                            ch = Magnetic(component=comp)  # type: ignore
+                            sm.runs[0].add_channel(ch)
+                        else:
+                            self.logger.warning(
+                                f"Do not recognize channel {comp}, skipping..."
+                            )
+                            try:
+                                sm.runs[0].update_attribute(f"{key}.{comp}", value)
 
-                try:
-                    ch = getattr(sm.runs[0], comp)
-                except AttributeError:
-                    ch = None
-                if ch is None:
-                    if comp in ["ex", "ey"]:
-                        ch = Electric(component=comp)  # type: ignore
-                        sm.runs[0].add_channel(ch)
-                    elif comp in ["hx", "hy", "hz", "rrhx", "rrhy"]:
-                        ch = Magnetic(component=comp)  # type: ignore
-                        sm.runs[0].add_channel(ch)
-                    else:
-                        self.logger.warning(
-                            f"Do not recognize channel {comp}, skipping..."
-                        )
-                ch.update_attribute(key, value)
+                            except Exception as e:
+                                self.logger.warning(
+                                    f"Failed to update attribute {key}.{comp}: {e}"
+                                )
+                    if key in ["comments"]:
+                        if isinstance(value, list):
+                            value = ",".join(value)
+                    try:
+                        ch.update_attribute(key, value)
+                    except Exception as e:
+                        self.logger.warning(f"Failed to update attribute {key}: {e}")
             elif key.startswith("data_logger"):
                 sm.runs[0].update_attribute(key, value)
             elif key.startswith("station."):
