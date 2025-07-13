@@ -23,7 +23,7 @@
 # from .attachment import Attachment
 # from .person import Person
 # from .citation import Citation
-# from .comment import Comment
+# from .comment import Comment # from common
 # from .provenance import Provenance
 # from .copyright import Copyright
 # from .data_quality_notes import DataQualityNotes

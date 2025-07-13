@@ -3,9 +3,10 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Rating, Comment
 from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment, Rating
 
 
 # =====================================================
@@ -15,7 +16,7 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="any warnings about the data that should be noted",
-            examples="periodic pipeline noise",
+            examples=["periodic pipeline noise"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -29,7 +30,7 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods larger than this number",
-            examples="0.01",
+            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,7 +44,7 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods smaller than this number",
-            examples="1000",
+            examples=["1000"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -57,7 +58,7 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Flag for data quality",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -69,9 +70,9 @@ class DataQuality(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=Comment,
+            default_factory=Comment,  # type: ignore
             description="any comments about the data quality",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -83,9 +84,9 @@ class DataQuality(MetadataBase):
     rating: Annotated[
         Rating,
         Field(
-            default_factory=Rating,
+            default_factory=Rating,  # type: ignore
             description="rating of the data quality",
-            examples="0",
+            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -101,5 +102,5 @@ class DataQuality(MetadataBase):
         Validate that the value is a valid string.
         """
         if isinstance(value, str):
-            return Comment(value=value)
+            return Comment(value=value)  # type: ignore[return-value]
         return value

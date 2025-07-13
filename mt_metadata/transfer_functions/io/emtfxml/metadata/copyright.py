@@ -16,7 +16,7 @@ from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from . import Citation
+from .citation import Citation
 from .standards import SCHEMA_FN_PATHS
 
 

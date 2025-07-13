@@ -7,6 +7,7 @@ from typing import Annotated
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 from .citation_basemodel import Citation
 
@@ -105,3 +106,38 @@ class Copyright(MetadataBase):
             },
         ),
     ]
+
+    def read_dict(self, input_dict):
+        """
+
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        helpers._read_element(self, input_dict, "copyright")
+
+    def to_xml(self, string=False, required=True):
+        """ """
+        # Create a shallow copy to avoid mutating the original object
+        import copy
+
+        xml_copy = copy.copy(self)
+        # Set the title-cased release_status on the copy using object.__setattr__
+        # to bypass Pydantic validation
+        object.__setattr__(xml_copy, "release_status", self.release_status.title())
+
+        return helpers.to_xml(
+            xml_copy,
+            string=string,
+            required=required,
+            order=[
+                "citation",
+                "selected_publications",
+                "acknowledgement",
+                "release_status",
+                "conditions_of_use",
+                "additional_info",
+            ],
+        )
