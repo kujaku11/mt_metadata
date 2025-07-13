@@ -39,6 +39,34 @@ class Channels(MetadataBase):
         ),
     ]
 
+    inputs: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of input channel names (sources)",
+            examples=[["Hx", "Hy"]],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    outputs: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of output channel names (responses)",
+            examples=[["Ex", "Ey", "Hz"]],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
     @field_validator("units", mode="before")
     @classmethod
     def validate_units(cls, value: str) -> str:
