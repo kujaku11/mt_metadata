@@ -4,7 +4,7 @@ Created on Mon Sep  6 13:53:55 2021
 
 @author: jpeacock
 """
-from typing import Annotated
+from typing import Annotated, ClassVar
 from xml.etree import cElementTree as et
 
 # =============================================================================
@@ -12,7 +12,7 @@ from xml.etree import cElementTree as et
 # =============================================================================
 import numpy as np
 from loguru import logger
-from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
+from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import element_to_string
@@ -26,39 +26,34 @@ class TransferFunction(MetadataBase):
     Deal with the complex XML format
     """
 
-    _index_dict: dict = PrivateAttr({"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0})
-    _dtype_dict: dict = PrivateAttr(
-        {
-            "complex": complex,
-            "real": float,
-            "complex128": "complex",
-            "float64": "real",
-        }
-    )
-    _units_dict: dict = PrivateAttr({"z": "[mV/km]/[nT]", "t": "[]"})
-    _name_dict: dict = PrivateAttr(
-        {
-            "exhx": "zxx",
-            "exhy": "zxy",
-            "eyhx": "zyx",
-            "eyhy": "zyy",
-            "hzhx": "tx",
-            "hzhy": "ty",
-        }
-    )
+    _index_dict: ClassVar[dict] = {"hx": 0, "hy": 1, "ex": 0, "ey": 1, "hz": 0}
+    _dtype_dict: ClassVar[dict] = {
+        "complex": complex,
+        "real": float,
+        "complex128": "complex",
+        "float64": "real",
+    }
+    _units_dict: ClassVar[dict] = {"z": "[mV/km]/[nT]", "t": "[]"}
+    _name_dict: ClassVar[dict] = {
+        "exhx": "zxx",
+        "exhy": "zxy",
+        "eyhx": "zyx",
+        "eyhy": "zyy",
+        "hzhx": "tx",
+        "hzhy": "ty",
+    }
 
-    _array_dtypes_dict: dict = PrivateAttr(
-        {
-            "z": complex,
-            "z_var": float,
-            "z_invsigcov": complex,
-            "z_residcov": complex,
-            "t": complex,
-            "t_var": float,
-            "t_invsigcov": complex,
-            "t_residcov": complex,
-        }
-    )
+    _array_dtypes_dict: ClassVar[dict] = {
+        "period": float,
+        "z": complex,
+        "z_var": float,
+        "z_invsigcov": complex,
+        "z_residcov": complex,
+        "t": complex,
+        "t_var": float,
+        "t_invsigcov": complex,
+        "t_residcov": complex,
+    }
 
     period: Annotated[
         np.typing.NDArray[np.float64] | None,
@@ -78,11 +73,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Estimates of the impedance tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": "[mV/km]/[nT]",
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
@@ -92,11 +86,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Variance estimates for the impedance tensor.",
-            examples=["0.01", "0.1", "1.0"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0.01", "0.1", "1.0"],
             },
         ),
     ]
@@ -106,11 +99,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Inverse of the covariance matrix for the impedance tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
@@ -119,11 +111,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Residual covariance matrix for the impedance tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
@@ -132,11 +123,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Estimates of the tipper tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": "[]",
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
@@ -145,11 +135,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Variance estimates for the tipper tensor.",
-            examples=["0.01", "0.1", "1.0"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0.01", "0.1", "1.0"],
             },
         ),
     ]
@@ -158,11 +147,10 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Inverse of the covariance matrix for the tipper tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
@@ -171,66 +159,61 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="Residual covariance matrix for the tipper tensor.",
-            examples=["1.0+0.0j", "0.5+0.5j"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1.0+0.0j", "0.5+0.5j"],
             },
         ),
     ]
 
-    _write_dict: dict = PrivateAttr(
-        {
-            "z": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
-            "z_var": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
-            "z_invsigcov": {
-                "out": {0: "hx", 1: "hy"},
-                "in": {0: "hx", 1: "hy"},
-            },
-            "z_residcov": {
-                "out": {0: "ex", 1: "ey"},
-                "in": {0: "ex", 1: "ey"},
-            },
-            "t": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
-            "t_var": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
-            "t_invsigcov": {
-                "out": {0: "hx", 1: "hy"},
-                "in": {0: "hx", 1: "hy"},
-            },
-            "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
-        }
-    )
+    _write_dict: ClassVar[dict] = {
+        "z": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
+        "z_var": {"out": {0: "ex", 1: "ey"}, "in": {0: "hx", 1: "hy"}},
+        "z_invsigcov": {
+            "out": {0: "hx", 1: "hy"},
+            "in": {0: "hx", 1: "hy"},
+        },
+        "z_residcov": {
+            "out": {0: "ex", 1: "ey"},
+            "in": {0: "ex", 1: "ey"},
+        },
+        "t": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
+        "t_var": {"out": {0: "hz"}, "in": {0: "hx", 1: "hy"}},
+        "t_invsigcov": {
+            "out": {0: "hx", 1: "hy"},
+            "in": {0: "hx", 1: "hy"},
+        },
+        "t_residcov": {"out": {0: "hz"}, "in": {0: "hz"}},
+    }
 
-    _skip_derived_data: bool = PrivateAttr(True)
-    _derived_keys: list = PrivateAttr(
-        [
-            "rho",
-            "rho_var",
-            "phs",
-            "phs_var",
-            "tipphs",
-            "tipphs_var",
-            "tipmag",
-            "tipmag_var",
-            "zstrike",
-            "zstrike_var",
-            "zskew",
-            "zskew_var",
-            "zellip",
-            "zellip_var",
-            "tstrike",
-            "tstrike_var",
-            "tskew",
-            "tskew_var",
-            "tellip",
-            "tellip_var",
-            "indmag",
-            "indmag_var",
-            "indang",
-            "indang_var",
-        ]
-    )
+    _skip_derived_data: ClassVar[bool] = True
+    _derived_keys: ClassVar[list] = [
+        "rho",
+        "rho_var",
+        "phs",
+        "phs_var",
+        "tipphs",
+        "tipphs_var",
+        "tipmag",
+        "tipmag_var",
+        "zstrike",
+        "zstrike_var",
+        "zskew",
+        "zskew_var",
+        "zellip",
+        "zellip_var",
+        "tstrike",
+        "tstrike_var",
+        "tskew",
+        "tskew_var",
+        "tellip",
+        "tellip_var",
+        "indmag",
+        "indmag_var",
+        "indang",
+        "indang_var",
+    ]
 
     @field_validator(
         "period",
@@ -242,6 +225,7 @@ class TransferFunction(MetadataBase):
         "t_var",
         "t_invsigcov",
         "t_residcov",
+        mode="before",
     )
     @classmethod
     def validate_array(cls, value, info: ValidationInfo) -> np.ndarray | None:
