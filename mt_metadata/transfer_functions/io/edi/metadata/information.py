@@ -158,7 +158,7 @@ class Information(MetadataBase):
             # Collect info lines for processing
             if info_started and line:
                 # Detect format while collecting
-                if "run information station" in line.lower():
+                if "run information" in line.lower():
                     self._phoenix_file = True
                 elif (
                     ("empower" in line.lower() and "v" in line.lower())
