@@ -57,9 +57,9 @@ class DataQualityNotes(MetadataBase):
     ]
 
     comments: Annotated[
-        Comment,
+        Comment | None,
         Field(
-            default=None,
+            default_factory=Comment,  # type: ignore
             description="Comments about the data quality",
             examples=["Data quality is good", "Some issues found"],
             alias=None,
@@ -91,7 +91,7 @@ class DataQualityNotes(MetadataBase):
         """
         try:
             comments_dict = {
-                "comments": input_dict["data_quality_notes"].pop("comments")
+                "comments": input_dict["data_quality_notes"].get("comments", "")
             }
         except KeyError:
             comments_dict = {"comments": ""}
