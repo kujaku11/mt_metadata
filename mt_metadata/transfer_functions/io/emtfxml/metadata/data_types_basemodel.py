@@ -2,10 +2,13 @@
 # Imports
 # =====================================================
 from typing import Annotated
+from xml.etree import cElementTree as et
 
+from loguru import logger
 from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 from .data_type_basemodel import DataType
 
@@ -47,38 +50,40 @@ class DataTypes(MetadataBase):
                 )
         return dt_list
 
-    def read_dict(self, input_dict):
+    def read_dict(self, input_dict: dict) -> None:
         """
         Read in statistical estimate descriptions
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param input_dict: input dictionary containing data types
+        :type input_dict: dict
+        :return: None
+        :rtype: None
 
         """
         try:
             self.data_types_list = input_dict["data_types"]["data_type"]
         except KeyError:
-            self.logger.warning("Could not read Data Types")
+            logger.warning("Could not read Data Types")
 
-    def to_xml(self, string=False, required=True):
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param string: return XML string, defaults to False
+        :type string: bool, optional
+        :param required: include required fields, defaults to True
+        :type required: bool, optional
+        :return: XML representation of the object
+        :rtype: str | et.Element
+        :raises TypeError: if data_types_list is not a list of DataType instances or dictionaries
+        :raises ValueError: if data_types_list is empty
 
         """
 
         root = et.Element(self.__class__.__name__)
 
         for dtype in self.data_types_list:
-            root.append(dtype.to_xml(required=required))
+            root.append(dtype.to_xml(required=required))  # type: ignore return-value
 
         if string:
-            return element_to_string(root)
+            return helpers.element_to_string(root)
         return root
