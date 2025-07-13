@@ -3,10 +3,12 @@
 # =====================================================
 from enum import Enum
 from typing import Annotated
+from xml.etree import cElementTree as et
 
 from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 from mt_metadata.utils.units import get_unit_object
 
 
@@ -173,3 +175,41 @@ class DataType(MetadataBase):
             raise KeyError(error)
         except KeyError as error:
             raise KeyError(error)
+
+    def read_dict(self, input_dict: dict) -> None:
+        """
+
+        :param input_dict: input dictionary to read and populate the model fields.
+        :type input_dict: dict
+        :return: None
+        """
+        helpers._read_element(self, input_dict, "estimate")
+
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+        """
+
+        :param string: return value as a string, defaults to False
+        :type string: bool, optional
+        :param required: include required values only, defaults to True
+        :type required: bool, optional
+        :return: XML representation of the model
+        :rtype: str | et.Element
+
+        """
+
+        element = helpers.to_xml(
+            self,
+            string=string,
+            required=required,
+            order=["description", "external_url", "intention", "tag"],
+        )
+        if not string:
+            element.attrib = {
+                "name": self.name,
+                "type": self.type,
+                "output": self.output,
+                "input": self.input,
+                "units": self.units,
+            }
+
+        return element
