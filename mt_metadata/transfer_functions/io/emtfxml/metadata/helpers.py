@@ -135,7 +135,7 @@ def _remove_null_values(element, replace=""):
     return element
 
 
-def to_xml(cls, string=False, required=True, order=None):
+def to_xml(cls, string=False, required=True, order=None) -> str | et.Element:
     """ """
 
     root = et.Element(cls.__class__.__name__)
