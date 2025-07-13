@@ -17,15 +17,15 @@ import numpy as np
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import element_to_string, write_lines
+from mt_metadata.common import Declination
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.transfer_functions.tf import Declination
 
 from .standards import SCHEMA_FN_PATHS
 
 
 # =============================================================================
 attr_dict = get_schema("location", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Declination()._attr_dict, "declination")
+# attr_dict.add_dict(Declination()._attr_dict, "declination")
 
 
 # =============================================================================

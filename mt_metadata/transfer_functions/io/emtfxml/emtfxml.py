@@ -20,16 +20,11 @@ import numpy as np
 from loguru import logger
 
 from mt_metadata.base import helpers
+from mt_metadata.common import Instrument
+from mt_metadata.timeseries import Electric, Magnetic, Run
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers as emtf_helpers
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
-from mt_metadata.transfer_functions.tf import (
-    Electric,
-    Instrument,
-    Magnetic,
-    Run,
-    Station,
-    Survey,
-)
+from mt_metadata.transfer_functions.tf import Station, Survey
 from mt_metadata.utils.validators import validate_attribute
 
 from . import metadata as emtf_xml
