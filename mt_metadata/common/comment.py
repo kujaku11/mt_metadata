@@ -26,8 +26,7 @@ class Comment(MetadataBase):
         Field(
             default=None,
             description="person who authored the comment",
-            examples="J. Pedantic",
-            type="string",
+            examples=["J. Pedantic"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -41,7 +40,7 @@ class Comment(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp="1980-01-01T00:00:00+00:00"),
             description="Date and time of in UTC of when comment was made.",
-            examples="2020-02-01T09:23:45.453670+00:00",
+            examples=["2020-02-01T09:23:45.453670+00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -55,7 +54,7 @@ class Comment(MetadataBase):
         Field(
             default=None,
             description="comment string",
-            examples="failure at midnight.",
+            examples=["failure at midnight."],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -109,9 +108,9 @@ class Comment(MetadataBase):
             True if the objects are equal, False otherwise.
         """
         if other is None:
-            return Comment(value=None)
+            return Comment(value=None)  # type: ignore
         if isinstance(other, str):
-            other = Comment(value=other)
+            other = Comment(value=other)  # type: ignore
         elif isinstance(other, dict):
             other = Comment(**other)
         return (

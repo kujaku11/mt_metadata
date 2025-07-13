@@ -8,6 +8,8 @@ from pydantic import Field
 
 from mt_metadata.base import MetadataBase
 
+from .citation_basemodel import Citation
+
 
 # =====================================================
 class ReleaseStatusEnum(str, Enum):
@@ -20,6 +22,20 @@ class ReleaseStatusEnum(str, Enum):
 
 
 class Copyright(MetadataBase):
+    citation: Annotated[
+        Citation,
+        Field(
+            description="The citation information for the data",
+            examples=[
+                "Citation(authors='Doe, J.', year='2023', title='Title of the paper', journal='Journal Name', volume='45', pages='123-145')"
+            ],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
     selected_publications: Annotated[
         str | None,
         Field(
