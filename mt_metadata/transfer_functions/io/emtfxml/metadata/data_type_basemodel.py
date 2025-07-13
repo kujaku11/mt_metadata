@@ -150,7 +150,7 @@ class DataType(MetadataBase):
     ]
 
     units: Annotated[
-        InputEnum,
+        str,
         Field(
             default="",
             description="Units for the data type",
