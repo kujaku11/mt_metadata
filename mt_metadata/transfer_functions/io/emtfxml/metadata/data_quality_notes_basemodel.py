@@ -2,12 +2,14 @@
 # Imports
 # =====================================================
 from typing import Annotated
+from xml.etree import cElementTree as et
 
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+
+from .comment_basemodel import Comment
 
 
 # =====================================================
@@ -78,13 +80,13 @@ class DataQualityNotes(MetadataBase):
             return Comment(value=value)  # type: ignore[return-value]
         return value
 
-    def read_dict(self, input_dict):
+    def read_dict(self, input_dict: dict) -> None:
         """
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param input_dict: input dictionary to read and populate the model fields.
+        :type input_dict: dict
+        :return: None
+        :rtype: None
 
         """
         try:
@@ -97,14 +99,16 @@ class DataQualityNotes(MetadataBase):
         self.comments.read_dict(comments_dict)
         helpers._read_element(self, input_dict, "data_quality_notes")
 
-    def to_xml(self, string=False, required=True):
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
+        Convert the DataQualityNotes instance to XML format.
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
+        :param string: If True, return the XML as a string. If False, return an ElementTree Element.
+        :type string: bool, optional
+        :param required: If True, include all required fields in the XML.
+        :type required: bool, optional
+        :return: The XML representation of the DataQualityNotes instance.
+        :rtype: str | et.Element
         :rtype: TYPE
 
         """
