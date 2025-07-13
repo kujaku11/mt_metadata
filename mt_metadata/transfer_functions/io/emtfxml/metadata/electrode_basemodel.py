@@ -3,9 +3,11 @@
 # =====================================================
 from enum import Enum
 from typing import Annotated
+from xml.etree import cElementTree as et
 
 from pydantic import Field, field_validator, ValidationInfo
 
+import mt_metadata.transfer_functions.io.emtfxml.metadata.helpers as helpers
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
 
@@ -16,7 +18,7 @@ class LocationEnum(str, Enum):
     S = "S"
     E = "E"
     W = "W"
-    other = "other"
+    NONE = ""
 
 
 class Electrode(MetadataBase):
@@ -25,11 +27,11 @@ class Electrode(MetadataBase):
         Field(
             default="",
             description="Direction of electrode",
-            examples=["N"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["N", "S", "E", "W"],
             },
         ),
     ]
@@ -39,11 +41,11 @@ class Electrode(MetadataBase):
         Field(
             default="0",
             description="Electrode ID number",
-            examples=["1a"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1a"],
             },
         ),
     ]
@@ -51,13 +53,13 @@ class Electrode(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=lambda: Comment(),
+            default_factory=lambda: Comment(),  # type: ignore[return-value]
             description="comments on the electrode",
-            examples=["Ag-AgCl porous pot"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Ag-AgCl porous pot"],
             },
         ),
     ]
@@ -66,5 +68,21 @@ class Electrode(MetadataBase):
     @classmethod
     def validate_comments(cls, value, info: ValidationInfo) -> Comment:
         if isinstance(value, str):
-            return Comment(value=value)
+            return Comment(value=value)  # type: ignore[return-value]
         return value
+
+    def to_xml(self, string: bool = False, required: bool = False) -> str | et.Element:
+        """ """
+
+        root = et.Element(
+            self.__class__.__name__,
+            {"location": self.location.upper(), "number": self.number},
+        )
+
+        # this might break in the future when to_dict is updated to return a dict
+        # instead of a string, but for now it works.
+        root.text = self.comments.to_dict()
+
+        if string:
+            return helpers.element_to_string(root)
+        return root
