@@ -1,12 +1,12 @@
 name: TestingInConda
 
-on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+#on:
+#  push:
+#    branches:
+#      - '*'
+#  pull_request:
+#    branches:
+#     - '*'
 jobs:
   setup-build:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }}) (${{ matrix.optionals}})
