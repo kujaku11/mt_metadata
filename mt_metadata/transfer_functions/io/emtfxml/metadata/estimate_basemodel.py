@@ -1,25 +1,17 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
+from xml.etree import cElementTree as et
 
 from pydantic import Field, HttpUrl
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ArrayDTypeEnum, EstimateIntentionEnum
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 
 # =====================================================
-class TypeEnum(str, Enum):
-    real = "real"
-    complex = "complex"
-
-
-class IntentionEnum(str, Enum):
-    error_estimate = "error estimate"
-    signal_coherence = "signal coherence"
-    signal_power_estimate = "signal power estimate"
-    primary_data_type = "primary data type"
 
 
 class Estimate(MetadataBase):
@@ -38,7 +30,7 @@ class Estimate(MetadataBase):
     ]
 
     type: Annotated[
-        TypeEnum,
+        ArrayDTypeEnum,
         Field(
             default="",
             description="Type of number contained in the estimate",
@@ -80,7 +72,7 @@ class Estimate(MetadataBase):
     ]
 
     intention: Annotated[
-        IntentionEnum,
+        EstimateIntentionEnum,
         Field(
             default="",
             description="The intension of the statistical estimate",
@@ -106,3 +98,42 @@ class Estimate(MetadataBase):
             },
         ),
     ]
+
+    def read_dict(self, input_dict: dict) -> None:
+        """
+
+        :param input_dict: input dictionary containing estimate data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
+
+        """
+        helpers._read_element(self, input_dict, "estimate")
+
+    def to_xml(self, string: bool = False, required: bool = True):
+        """
+
+        :param string: return string representation, defaults to False
+        :type string: bool, optional
+        :param required: include only required fields, defaults to True
+        :type required: bool, optional
+        :return: XML representation of the estimate
+        :rtype: str | Element
+
+        """
+
+        root = et.Element(
+            self.__class__.__name__.capitalize(),
+            {"name": self.name.upper(), "type": self.type},
+        )
+
+        et.SubElement(root, "Description").text = self.description
+        et.SubElement(root, "ExternalUrl").text = (
+            str(self.external_url) if self.external_url else ""
+        )
+        et.SubElement(root, "Intention").text = self.intention
+        et.SubElement(root, "tag").text = self.tag
+
+        if string:
+            return helpers.element_to_string(root)
+        return root
