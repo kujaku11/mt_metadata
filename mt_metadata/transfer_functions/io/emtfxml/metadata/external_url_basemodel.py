@@ -6,6 +6,7 @@ from typing import Annotated
 from pydantic import Field, HttpUrl
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 
 # =====================================================
@@ -37,3 +38,14 @@ class ExternalUrl(MetadataBase):
             },
         ),
     ]
+
+    def read_dict(self, input_dict: dict) -> None:
+        """
+
+        :param input_dict: input dictionary containing external URL data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
+
+        """
+        helpers._read_element(self, input_dict, "external_url")
