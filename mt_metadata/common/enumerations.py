@@ -72,11 +72,13 @@ class GeographicReferenceFrameEnum(StrEnumerationBase):
     geographic = "geographic"
     geomagnetic = "geomagnetic"
     station = "station"
+    site_layout = "sitelayout"
 
 
 class ChannelOrientationEnum(StrEnumerationBase):
     orthogonal = "orthogonal"
     station = "station"
+    site_layout = "sitelayout"
 
 
 class GeomagneticModelEnum(str, Enum):
