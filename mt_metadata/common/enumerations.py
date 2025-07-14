@@ -48,6 +48,14 @@ class ArrayDTypeEnum(str, Enum):
     complex = "complex"
 
 
+class EstimateIntentionEnum(str, Enum):
+    error_estimate = "error estimate"
+    signal_coherence = "signal coherence"
+    signal_power_estimate = "signal power estimate"
+    primary_data_type = "primary data type"
+    derived_data_type = "derived data type"
+
+
 class ChannelLayoutEnum(StrEnumerationBase):
     L = "L"
     X = "X"

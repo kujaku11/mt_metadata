@@ -8,22 +8,22 @@ from loguru import logger
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 from .electrode_basemodel import Electrode
 
 
 # =====================================================
 class Dipole(MetadataBase):
-    manfacturer: Annotated[
+    manufacturer: Annotated[
         str | None,
         Field(
             default=None,
             description="Name of the manufacturer of the instrument",
-            examples=["MT Gurus"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["MT Gurus"],
             },
         ),
     ]
@@ -33,11 +33,10 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Dipole length",
-            examples=["10"],
-            alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -47,11 +46,10 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Azimuth of the dipole relative to coordinate system",
-            examples=["90"],
-            alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["90"],
             },
         ),
     ]
@@ -61,11 +59,10 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="Name of the dipole",
-            examples=["ex"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["dipole1"],
             },
         ),
     ]
@@ -75,11 +72,10 @@ class Dipole(MetadataBase):
         Field(
             default=None,
             description="type of dipole",
-            examples=["wire"],
-            alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["wire"],
             },
         ),
     ]
@@ -150,5 +146,5 @@ class Dipole(MetadataBase):
             root.append(item.to_xml())
 
         if string:
-            return element_to_string(root)
+            return helpers.element_to_string(root)
         return root

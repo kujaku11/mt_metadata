@@ -8,22 +8,12 @@ from xml.etree import cElementTree as et
 from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ArrayDTypeEnum, EstimateIntentionEnum
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================
-class TypeEnum(str, Enum):
-    real = "real"
-    complex = "complex"
-
-
-class IntentionEnum(str, Enum):
-    error_estimate = "error estimate"
-    signal_coherence = "signal coherence"
-    signal_power_estimate = "signal power estimate"
-    primary_data_type = "primary data type"
-    derived_data_type = "derived data type"
 
 
 class OutputEnum(str, Enum):
@@ -52,7 +42,7 @@ class DataType(MetadataBase):
     ]
 
     type: Annotated[
-        TypeEnum,
+        ArrayDTypeEnum,
         Field(
             default="real",
             description="Type of number contained in the estimate",
@@ -94,7 +84,7 @@ class DataType(MetadataBase):
     ]
 
     intention: Annotated[
-        IntentionEnum,
+        EstimateIntentionEnum,
         Field(
             default="",
             description="The intension of the statistical estimate",
