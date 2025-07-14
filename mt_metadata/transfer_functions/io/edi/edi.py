@@ -22,7 +22,7 @@ from typing import Literal
 import numpy as np
 from loguru import logger
 
-from mt_metadata import __version__
+from mt_metadata import __version__, NULL_VALUES
 from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
 from mt_metadata.transfer_functions import tf
 from mt_metadata.transfer_functions.io.edi.metadata import (
@@ -37,15 +37,6 @@ from mt_metadata.transfer_functions.io.tools import (
     get_nm_elev,
     index_locator,
 )
-
-
-null_values = [
-    None,
-    "",
-    "None",
-    "null",
-    "1980-01-01T00:00:00+00:00",
-]
 
 
 # ==============================================================================
@@ -1023,14 +1014,14 @@ class EDI:
         self.Header.project = survey.project
         self.Header.loc = survey.geographic_name
         self.Header.country = survey.country
-        if survey.summary not in null_values:
+        if survey.summary not in NULL_VALUES:
             self.Info.info_dict[f"survey.summary"] = survey.summary
 
         for key in survey.to_dict(single=True).keys():
             if "northwest" in key or "southeast" in key or "time_period" in key:
                 continue
             value = survey.get_attr_from_name(key)
-            if value not in null_values:
+            if value not in NULL_VALUES:
                 self.Info.info_dict[f"survey.{key}"] = value
 
     @property
@@ -1072,7 +1063,7 @@ class EDI:
         for key, value in self.Info.info_dict.items():
             if key is None:
                 continue
-            if value in null_values:
+            if value in NULL_VALUES:
                 continue
             key = key.lower()
 
@@ -1090,7 +1081,7 @@ class EDI:
                                 )
                             else:
                                 sm.transfer_function.processing_parameters.append(item)
-                    elif value not in null_values:
+                    elif value not in NULL_VALUES:
                         param = key.split(".")[-1]
                         sm.transfer_function.processing_parameters.append(
                             f"{param}={value}"
@@ -1205,9 +1196,9 @@ class EDI:
 
         # add information to runs
         for rr in sm.runs:
-            if rr.time_period.start in null_values:
+            if rr.time_period.start in NULL_VALUES:
                 rr.time_period.start = sm.time_period.start
-            if rr.time_period.end in null_values:
+            if rr.time_period.end in NULL_VALUES:
                 rr.time_period.end = sm.time_period.end
 
             for ch in self.Measurement.channels_recorded:
@@ -1251,7 +1242,7 @@ class EDI:
             self.Info.read_info(sm.comments.split("\n"))
         # write transfer function info first
         for k, v in sm.transfer_function.to_dict(single=True).items():
-            if not v in null_values:
+            if not v in NULL_VALUES:
                 if k in ["processing_parameters"]:
                     for item in v:
                         param, value = item.split("=", 1)
@@ -1263,20 +1254,20 @@ class EDI:
                     self.Info.info_dict[f"transfer_function.{k}"] = v
         # write provenance
         for k, v in sm.provenance.to_dict(single=True).items():
-            if not v in null_values:
+            if not v in NULL_VALUES:
                 self.Info.info_dict[f"provenance.{k}"] = v
         # write field notes
         for run in sm.runs:
             r_dict = run.to_dict(single=True)
             for r_key, r_value in r_dict.items():
-                if r_value in null_values:
+                if r_value in NULL_VALUES:
                     continue
                 self.Info.info_dict[f"{run.id}.{r_key}"] = r_value
             for ch in run.channels:
                 ch_dict = ch.to_dict(single=True)
                 for ch_key, ch_value in ch_dict.items():
                     if ch_key not in self._channel_skip_list:
-                        if ch_value in null_values:
+                        if ch_value in NULL_VALUES:
                             continue
                         self.Info.info_dict[
                             f"{run.id}.{ch.component}.{ch_key}"

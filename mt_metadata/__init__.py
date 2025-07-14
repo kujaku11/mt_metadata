@@ -25,8 +25,8 @@ you should only have to changes these dictionaries.
 
 :copyright:
     Jared Peacock (jpeacock@usgs.gov)
-    
-:license: 
+
+:license:
     MIT
 
 
@@ -90,6 +90,16 @@ DEFAULT_CHANNEL_NOMENCLATURE = {
     "ey": "ey",
 }
 
+NULL_VALUES = [
+    None,
+    "",
+    "null",
+    "None",
+    "NONE",
+    "1980-01-01T00:00:00",
+    "1980-01-01T00:00:00+00:00",
+]
+
 # =============================================================================
 # Initiate loggers
 # =============================================================================
@@ -115,18 +125,10 @@ DATA_DIR = Path(__file__).absolute().parent
 ### Station XML files
 STATIONXML_01 = DATA_DIR.joinpath("data/stationxml/fdsn_no_mt_info.xml")
 STATIONXML_02 = DATA_DIR.joinpath("data/stationxml/mtml_single_station.xml")
-STATIONXML_MAGNETIC = DATA_DIR.joinpath(
-    "data/stationxml/mtml_magnetometer_example.xml"
-)
-STATIONXML_ELECTRIC = DATA_DIR.joinpath(
-    "data/stationxml/mtml_electrode_example.xml"
-)
-STATIONXML_FAP = DATA_DIR.joinpath(
-    "data/stationxml/station_xml_with_fap_example.xml"
-)
-STATIONXML_FIR = DATA_DIR.joinpath(
-    "data/stationxml/station_xml_with_fir_example.xml"
-)
+STATIONXML_MAGNETIC = DATA_DIR.joinpath("data/stationxml/mtml_magnetometer_example.xml")
+STATIONXML_ELECTRIC = DATA_DIR.joinpath("data/stationxml/mtml_electrode_example.xml")
+STATIONXML_FAP = DATA_DIR.joinpath("data/stationxml/station_xml_with_fap_example.xml")
+STATIONXML_FIR = DATA_DIR.joinpath("data/stationxml/station_xml_with_fir_example.xml")
 STATIONXML_MULTIPLE_NETWORKS = DATA_DIR.joinpath(
     "data/stationxml/multiple_networks_example.xml"
 )
@@ -135,9 +137,7 @@ STATIONXML_MULTIPLE_NETWORKS = DATA_DIR.joinpath(
 MT_EXPERIMENT_SINGLE_STATION = DATA_DIR.joinpath(
     "data/mt_xml/single_station_mt_experiment.xml"
 )
-MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath(
-    "data/mt_xml/multi_run_experiment.xml"
-)
+MT_EXPERIMENT_MULTIPLE_RUNS = DATA_DIR.joinpath("data/mt_xml/multi_run_experiment.xml")
 MT_EXPERIMENT_MULTIPLE_RUNS_02 = DATA_DIR.joinpath(
     "data/mt_xml/multi_run_experiment_02.xml"
 )
@@ -162,23 +162,13 @@ TF_XML_MULTIPLE_ATTACHMENTS = DATA_DIR.joinpath(
 )
 TF_EDI_PHOENIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_phoenix.edi")
 TF_EDI_EMPOWER = DATA_DIR.joinpath("data/transfer_functions/tf_edi_empower.edi")
-TF_EDI_METRONIX = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_metronix.edi"
-)
+TF_EDI_METRONIX = DATA_DIR.joinpath("data/transfer_functions/tf_edi_metronix.edi")
 TF_EDI_CGG = DATA_DIR.joinpath("data/transfer_functions/tf_edi_cgg.edi")
 TF_EDI_QUANTEC = DATA_DIR.joinpath("data/transfer_functions/tf_edi_quantec.edi")
-TF_EDI_RHO_ONLY = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_rho_only.edi"
-)
-TF_EDI_SPECTRA = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_spectra_in.edi"
-)
-TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_spectra_out.edi"
-)
-TF_EDI_NO_ERROR = DATA_DIR.joinpath(
-    "data/transfer_functions/tf_edi_no_error.edi"
-)
+TF_EDI_RHO_ONLY = DATA_DIR.joinpath("data/transfer_functions/tf_edi_rho_only.edi")
+TF_EDI_SPECTRA = DATA_DIR.joinpath("data/transfer_functions/tf_edi_spectra_in.edi")
+TF_EDI_SPECTRA_OUT = DATA_DIR.joinpath("data/transfer_functions/tf_edi_spectra_out.edi")
+TF_EDI_NO_ERROR = DATA_DIR.joinpath("data/transfer_functions/tf_edi_no_error.edi")
 TF_AVG = DATA_DIR.joinpath("data/transfer_functions/tf_avg.avg")
 TF_AVG_TIPPER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_tipper.avg")
 TF_AVG_NEWER = DATA_DIR.joinpath("data/transfer_functions/tf_avg_newer.avg")
