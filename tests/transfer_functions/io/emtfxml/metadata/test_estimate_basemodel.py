@@ -413,7 +413,7 @@ class TestEdgeCases:
         "invalid_input",
         [
             None,
-            123,
+            True,
             [],
             {},
         ],
