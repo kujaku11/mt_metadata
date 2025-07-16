@@ -487,7 +487,11 @@ class MTime(BaseModel):
             if equal return True, otherwise False
         """
         if not isinstance(other, MTime):
-            other = MTime(time_stamp=other)
+            try:
+                other = MTime(time_stamp=other)
+            except Exception as e:
+                logger.debug(f"Failed to convert {other} to MTime: {e}")
+                return False
 
         epoch_seconds = bool(self.time_stamp.value == other.time_stamp.value)
 

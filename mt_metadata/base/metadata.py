@@ -1421,7 +1421,14 @@ class MetadataBase(DotNotationBaseModel):
                 name = ".".join(name.split(".")[:-1])
                 if "time_stamp" in name or "author" in name:
                     continue
-                value = self.get_attr_from_name(name).to_dict()
+                try:
+                    value = self.get_attr_from_name(name).to_dict()
+                except AttributeError:
+                    # if the attribute is not a BaseModel, then just get the value
+                    # this is for comments which are not BaseModels.
+                    logger.debug(f"Attribute {name} is not a BaseModel.")
+                    continue
+
                 if value is not None:
                     meta_dict[name] = value
                 continue
@@ -1445,6 +1452,8 @@ class MetadataBase(DotNotationBaseModel):
                     value = v_list
                 elif hasattr(value, "unicode_string"):
                     value = value.unicode_string()
+                elif isinstance(value, (str, int, float, bool)):
+                    value = value
             except AttributeError as error:
                 logger.debug(error)
                 value = None
@@ -1613,7 +1622,7 @@ class MetadataBase(DotNotationBaseModel):
         :return: XML element or string
 
         """
-        attr_dict = attr_dict = self.get_all_fields()
+        attr_dict = self.get_all_fields()
         element = helpers.dict_to_xml(
             self.to_dict(nested=True, required=required), attr_dict
         )

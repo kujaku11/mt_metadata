@@ -7,9 +7,8 @@ from xml.etree import cElementTree as et
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-
-from .comment_basemodel import Comment
 
 
 # =====================================================

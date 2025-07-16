@@ -2,6 +2,7 @@
 # Imports
 # =====================================================
 from typing import Annotated
+from xml.etree import ElementTree as et
 
 import numpy as np
 import pandas as pd
@@ -16,6 +17,7 @@ from pydantic import (
 from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.base.helpers import element_to_string
 from mt_metadata.utils.mttime import MTime
 
 
@@ -176,3 +178,26 @@ class Comment(MetadataBase):
 
         else:
             raise TypeError(f"Cannot parse type {type(value)}")
+
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+        """
+        Convert the Comment instance to XML format.
+
+        :param string: If True, return the XML as a string. If False, return an ElementTree Element.
+        :type string: bool, optional
+        :param required: If True, include all required fields.
+        :type required: bool, optional
+        :return: XML representation of the Comment.
+        :rtype: str | et.Element
+        """
+
+        if self.author is None:
+            self.author = ""
+        root = et.Element(self.__class__.__name__ + "s", {"author": self.author})
+        if self.value is None:
+            self.value = ""
+        root.text = self.value
+
+        if string:
+            return element_to_string(root)
+        return root

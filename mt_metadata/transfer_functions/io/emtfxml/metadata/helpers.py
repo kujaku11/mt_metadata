@@ -11,6 +11,9 @@ Created on Wed Mar  8 19:53:04 2023
 from collections import OrderedDict
 from xml.etree import cElementTree as et
 
+from loguru import logger
+
+from mt_metadata import NULL_VALUES
 from mt_metadata.base.helpers import element_to_string
 from mt_metadata.utils.validators import validate_attribute
 
@@ -64,12 +67,12 @@ def _read_single(cls, root_dict, key):
     try:
         setattr(cls, key, root_dict[key])
     except KeyError:
-        cls.logger.debug("no description in xml")
+        logger.debug("no description in xml")
 
 
 def _write_single(parent, key, value, attributes={}):
     element = et.SubElement(parent, _capwords(key), attributes)
-    if value not in [None, "", "null"]:
+    if value not in NULL_VALUES:
         element.text = str(value)
     return element
 
@@ -80,7 +83,7 @@ def _read_element(cls, root_dict, element_name):
         cls.from_dict(element_dict)
 
     except KeyError:
-        cls.logger.warning(f"No {element_name} in EMTF XML")
+        logger.warning(f"No {element_name} in EMTF XML")
 
 
 def _convert_keys_to_lower_case(root_dict):
@@ -120,13 +123,13 @@ def _remove_null_values(element, replace=""):
 
     """
     for item in element.iter():
-        if item.text in [None, "", "null"]:
+        if item.text in NULL_VALUES:
             if replace == False:
                 element.remove(item)
             else:
                 item.text = replace
         for key, value in item.attrib.items():
-            if value in [None, "", "null"]:
+            if value in NULL_VALUES:
                 if replace == False:
                     element.remove(item)
                 else:
@@ -154,8 +157,21 @@ def to_xml(cls, string=False, required=True, order=None) -> str | et.Element:
             else:
                 root.append(element)
         elif isinstance(c_attr, list):
-            for item in c_attr:
-                root.append(item.to_xml(required=required))
+            if len(c_attr) == 0:
+                continue
+            if hasattr(c_attr[0], "to_xml") and callable(getattr(c_attr[0], "to_xml")):
+                # If the first item has a to_xml method, assume all items do
+                # and call to_xml on each item
+                for item in c_attr:
+                    if isinstance(item, et.Element):
+                        root.append(item)
+                    else:
+                        root.append(item.to_xml(required=required))
+            elif isinstance(c_attr[0], str):
+                # If the first item is a string, write it directly
+                value = " ".join(c_attr)
+                _write_single(root, attr, value)
+
         else:
             _write_single(root, attr, c_attr)
 

@@ -8,23 +8,24 @@ Created on Wed Dec 23 20:37:52 2020
 :license: MIT
 
 """
+import json
+import logging
+
 # =============================================================================
 # Imports
 # =============================================================================
 import textwrap
-import logging
-from loguru import logger
-import json
-import numpy as np
-from typing import Dict, Any
-
+from collections import defaultdict, OrderedDict
 from collections.abc import MutableMapping
-from collections import OrderedDict, defaultdict
-from xml.etree import cElementTree as et
-from xml.dom import minidom
 from operator import itemgetter
+from typing import Any, Dict
+from xml.dom import minidom
+from xml.etree import cElementTree as et
 
+import numpy as np
+from loguru import logger
 from pydantic import BaseModel
+
 
 # from mt_metadata.utils.units import get_unit_object
 
@@ -485,7 +486,11 @@ def recursive_split_getattr(base_object, name, sep="."):
         # with Pydantic, if the attribute does not exist an attribute error
         # will be raised, which is desired. The only issue will be if the
         # attribute is an alias, then TODO create a get from alias method.
-        value = getattr(base_object, key)
+        try:
+            value = getattr(base_object, key)
+        except AttributeError:
+            value = None
+            prop = False
         try:
             if isinstance(getattr(type(base_object), key), property):
                 prop = True
@@ -605,7 +610,6 @@ def recursive_split_xml(element, item, base, name, attr_dict=None):
         else:
             raise ValueError("Value cannot be {0}".format(type(item)))
     if attr_dict:
-
         units = get_units(base, attr_dict)
         if units:
             element.set("units", str(units))
@@ -670,7 +674,6 @@ def element_to_dict(element):
                     pop_units = True
                     continue
             if k in ["type"]:
-
                 if len(element.attrib.keys()) <= 1:
                     if v in [
                         "float",
