@@ -1,7 +1,6 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 import numpy as np
@@ -9,14 +8,11 @@ import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import SignConventionEnum
 from mt_metadata.utils.mttime import MTime
 
 
 # =====================================================
-class SignConventionEnum(str, Enum):
-    plus = "exp(+ i\omega t)"
-    minus = "exp(- i\omega t)"
-    other = "other"
 
 
 class ProcessingInfo(MetadataBase):
