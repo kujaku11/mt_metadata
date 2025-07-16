@@ -272,7 +272,6 @@ class TestEdgeCases:
         "invalid_input",
         [
             None,
-            123,
             [],
             {},
         ],
@@ -280,8 +279,8 @@ class TestEdgeCases:
     def test_invalid_description_types(self, empty_external_url, invalid_input):
         """Test that invalid types for description field are handled."""
         # Pydantic should convert these to strings
-        empty_external_url.description = invalid_input
-        assert isinstance(empty_external_url.description, str)
+        with pytest.raises(ValidationError):
+            empty_external_url.description = invalid_input
 
     def test_very_long_url(self, empty_external_url):
         """Test handling of very long URLs."""

@@ -313,7 +313,7 @@ class TestXMLSerialization:
         # The debug log is only called on AttributeError, not when manufacturer is None
         # So we need to test with an object that doesn't have manufacturer attribute
         with patch(
-            "mt_metadata.transfer_functions.io.emtfxml.metadata.dipole_basemodel.logger"
+            "mt_metadata.transfer_functions.io.emtfxml.metadata.dipole.logger"
         ) as mock_logger:
             # Remove the manufacturer attribute to trigger AttributeError
             delattr(empty_dipole, "manufacturer")
