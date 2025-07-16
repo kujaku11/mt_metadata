@@ -704,7 +704,7 @@ class TestTransferFunctionIntegration:
         assert hasattr(tf, "model_dump")
         assert hasattr(tf, "model_validate")
 
-    @patch("mt_metadata.transfer_functions.io.emtfxml.metadata.data_basemodel.logger")
+    @patch("mt_metadata.transfer_functions.io.emtfxml.metadata.data.logger")
     def test_logging_integration(self, mock_logger):
         """Test integration with logging."""
         tf = TransferFunction()

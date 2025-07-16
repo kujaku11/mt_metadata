@@ -72,6 +72,13 @@ class SiteLayout(MetadataBase):
             if isinstance(item, (Magnetic, Electric)):
                 channels.append(item)
             elif isinstance(item, dict):
+                try:
+                    # Assume the dict has a single key for channel type
+                    ch_type = list(item.keys())[0]
+                except IndexError:
+                    msg = "Channel dict must have a single key for channel type"
+                    logger.error(msg)
+                    raise ValueError(msg)
                 ch_type = list(item.keys())[0]
                 if ch_type in ["magnetic"]:
                     ch = Magnetic()  # type: ignore
@@ -84,15 +91,19 @@ class SiteLayout(MetadataBase):
                 ch.from_dict(item)
                 channels.append(ch)
             elif isinstance(item, str):
-                if item.startswith("e"):
+                if item.lower().startswith("e"):
                     ch = Electric(name=item)  # type: ignore
-                elif item.startswith("b") or item.startswith("h"):
+                elif item.lower().startswith("b") or item.lower().startswith("h"):
                     ch = Magnetic(name=item)  # type: ignore
                 else:
                     msg = f"Channel {item} not supported"
                     logger.error(msg)
                     raise ValueError(msg)
                 channels.append(ch)
+            else:
+                msg = f"Channel {item} not supported"
+                logger.error(msg)
+                raise TypeError(msg)
 
         return channels
 

@@ -376,15 +376,14 @@ class TestReadDictionary:
             }
         }
 
-        # Should raise AttributeError due to missing logger (expected behavior)
-        # The helper function tries to log a warning when key is missing
         initial_min = empty_period_range.min
         initial_max = empty_period_range.max
 
-        with pytest.raises(
-            AttributeError, match="'PeriodRange' object has no attribute 'logger'"
-        ):
-            empty_period_range.read_dict(input_dict)
+        empty_period_range.read_dict(input_dict)
+
+        # Should not change the empty period range
+        assert empty_period_range.min == initial_min
+        assert empty_period_range.max == initial_max
 
     def test_read_dict_partial_data(self, empty_period_range):
         """Test reading dictionary with partial data."""
@@ -407,12 +406,11 @@ class TestReadDictionary:
         initial_min = empty_period_range.min
         initial_max = empty_period_range.max
 
-        # Should raise AttributeError due to missing logger (expected behavior)
-        # The helper function tries to log a warning when key is missing
-        with pytest.raises(
-            AttributeError, match="'PeriodRange' object has no attribute 'logger'"
-        ):
-            empty_period_range.read_dict(input_dict)
+        empty_period_range.read_dict(input_dict)
+
+        # Should not raise any errors
+        assert empty_period_range.min == initial_min
+        assert empty_period_range.max == initial_max
 
 
 # =============================================================================

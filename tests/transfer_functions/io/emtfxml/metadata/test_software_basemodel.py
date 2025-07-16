@@ -233,14 +233,7 @@ class TestXMLSerialization:
 
     def test_to_xml_basic_software(self, basic_software):
         """Test XML serialization of basic software."""
-        # Note: There's a known issue with MTime fields and XML serialization
-        # where the helpers function tries to compare MTime objects to "null" strings
-        # which causes MTime to attempt parsing "null" as a datetime and fail.
-        # This is a limitation of the current implementation.
-
-        # Test that the error occurs as expected (documenting the current behavior)
-        with pytest.raises(Exception):  # Could be ValidationError or other exception
-            basic_software.to_xml()
+        assert isinstance(basic_software.to_xml(), et.Element)
 
     def test_to_xml_minimal_software_works(self):
         """Test XML serialization with minimal software (bypassing MTime issue)."""
@@ -307,17 +300,8 @@ class TestXMLSerialization:
 
     def test_xml_serialization_limitation(self, basic_software):
         """Test that documents the current XML serialization limitation."""
-        # This test documents the known issue with MTime fields in XML serialization
-        with pytest.raises(Exception):  # ValidationError specifically
-            basic_software.to_xml()
 
-    def test_to_xml_mtime_serialization(self):
-        """Test that MTime fields serialize correctly in XML when working."""
-        # Due to the MTime comparison issue, this documents expected behavior
-        # if the issue were fixed
-        pytest.skip(
-            "MTime XML serialization currently broken - would test MTime field serialization"
-        )
+        assert isinstance(basic_software.to_xml(), et.Element)
 
 
 # =============================================================================
@@ -420,13 +404,10 @@ class TestReadDictionary:
             }
         }
 
-        # Should raise AttributeError due to missing logger (expected behavior)
-        # The helper function tries to log a warning when key is missing
-        with pytest.raises(
-            AttributeError,
-            match="'ProcessingSoftware' object has no attribute 'logger'",
-        ):
-            empty_software.read_dict(input_dict)
+        empty_software.read_dict(input_dict)
+
+        assert empty_software.name == ""
+        assert empty_software.author == ""
 
     def test_read_dict_partial_data(self, empty_software):
         """Test reading dictionary with partial data."""
@@ -787,11 +768,10 @@ class TestPerformance:
 
     def test_xml_serialization_performance(self, basic_software):
         """Test XML serialization performance."""
-        # Note: XML serialization is currently broken due to MTime comparison issue
-        # This test documents the expected behavior if it were working
-        pytest.skip(
-            "XML serialization broken due to MTime comparison issue in helpers._write_single"
-        )
+        # Should complete quickly
+        for _ in range(100):
+            xml_element = basic_software.to_xml()
+            assert xml_element.tag == "ProcessingSoftware"
 
     def test_dict_serialization_performance(self, basic_software):
         """Test dictionary serialization performance."""

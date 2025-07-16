@@ -17,7 +17,7 @@ class Electric(MetadataBase):
         Field(
             default="",
             description="Name of the channel",
-            examples=["hx"],
+            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,

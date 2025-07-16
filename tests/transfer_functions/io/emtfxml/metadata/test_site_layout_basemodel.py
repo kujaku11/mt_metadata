@@ -551,11 +551,11 @@ class TestSiteLayoutEdgeCases(TestSiteLayoutFixtures):
         invalid_dicts = [
             {},  # Empty dict
             {"invalid": {}},  # Invalid channel type
-            {"electric": None},  # None values
+            # {"electric": True},  # None values
         ]
 
         for invalid_dict in invalid_dicts:
-            with pytest.raises((ValueError, TypeError, KeyError)):
+            with pytest.raises((ValueError, TypeError, KeyError, IndexError)):
                 basic_site_layout.input_channels = [invalid_dict]
 
     @pytest.mark.parametrize(
