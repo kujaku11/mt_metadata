@@ -128,6 +128,8 @@ class SignConventionEnum(str, Enum):
     minus = "-"
     exp_plus = "exp(+iwt)"
     exp_minus = "exp(-iwt)"
+    exp_plus_iwt = "exp(+ i\\omega t)"
+    exp_minus_iwt = "exp(- i\\omega t)"
 
 
 class StdEDIversionsEnum(str, Enum):
