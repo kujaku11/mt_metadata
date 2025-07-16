@@ -1,19 +1,15 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import DataTypeEnum
 
 
 # =====================================================
-class SubTypeEnum(str, Enum):
-    MT_TF = "MT_TF"
-    LPMT_TF = "LPMT_TF"
-    other = "other"
 
 
 class Emtf(MetadataBase):
@@ -38,7 +34,7 @@ class Emtf(MetadataBase):
             description="ID given as the archive ID of the station",
             examples=["USMTArray.NVS11.2020"],
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9._]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -61,7 +57,7 @@ class Emtf(MetadataBase):
     ]
 
     sub_type: Annotated[
-        SubTypeEnum,
+        DataTypeEnum,
         Field(
             default="MT_TF",
             description="subject data type",

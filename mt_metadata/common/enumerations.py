@@ -41,6 +41,8 @@ class DataTypeEnum(StrEnumerationBase):
     LP = "LP"
     BB = "BB"
     WB = "WB"
+    MT_TF = "MT_TF"
+    LPMT_TF = "LPMT_TF"
 
 
 class ArrayDTypeEnum(str, Enum):
