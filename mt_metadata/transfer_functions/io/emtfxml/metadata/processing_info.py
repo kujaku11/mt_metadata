@@ -1,107 +1,80 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+# =====================================================
+from typing import Annotated
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import SignConventionEnum
 from mt_metadata.utils.mttime import MTime
 
-from . import ProcessingSoftware, RemoteInfo, RemoteRef
-from .standards import SCHEMA_FN_PATHS
+
+# =====================================================
 
 
-# =============================================================================
-attr_dict = get_schema("processing_info", SCHEMA_FN_PATHS)
-attr_dict.add_dict(ProcessingSoftware()._attr_dict, "processing_software")
-attr_dict.add_dict(RemoteRef()._attr_dict, "remote_ref")
-attr_dict.add_dict(RemoteInfo()._attr_dict, "remote_info")
+class ProcessingInfo(MetadataBase):
+    sign_convention: Annotated[
+        SignConventionEnum,
+        Field(
+            default="exp(+ i\omega t)",
+            description="Sign convention of the processing software output",
+            examples=["exp(+ i\\omega t)"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-for key, ad in attr_dict.items():
-    if "remote_info" in key:
-        ad["required"] = False
-# =============================================================================
+    processed_by: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Names of people who processed the data",
+            examples=["MT Guru"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
+    process_date: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date the data were processed",
+            examples=["2020-01-01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-class ProcessingInfo(Base):
-    __doc__ = write_lines(attr_dict)
+    processing_tag: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="List of remote references",
+            examples=["mt001-mt002"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self.remote_ref = RemoteRef()
-        self.processing_software = ProcessingSoftware()
-        self.remote_info = RemoteInfo()
-        self._process_date = MTime()
-        self._order = [
-            "sign_convention",
-            "remote_ref",
-            "remote_info",
-            "processed_by",
-            "process_date",
-            "processing_software",
-            "processing_tag",
-        ]
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
-    @property
-    def process_date(self):
-        return self._process_date.date
-
-    @process_date.setter
-    def process_date(self, value):
-        self._process_date.parse(value)
-
-    def read_dict(self, input_dict):
-        """
-
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        try:
-            processing_dict = input_dict["processing_info"]
-        except KeyError:
-            return
-
-        if "field_notes" in processing_dict.keys():
-            processing_dict.pop("field_notes")
-
-        for key in ["remote_ref", "remote_info", "processing_software"]:
-            try:
-                pop_dict = {key: processing_dict.pop(key)}
-                getattr(self, key).read_dict(pop_dict)
-            except KeyError:
-                self.logger.debug(f"No {key} information in xml.")
-
-        helpers._read_element(self, input_dict, "processing_info")
-
-    def to_xml(self, string=False, required=True):
-        """
-
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-
-        return helpers.to_xml(
-            self,
-            string=string,
-            required=required,
-            order=self._order,
-        )
+    @field_validator("process_date", mode="before")
+    @classmethod
+    def validate_process_date(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)

@@ -1,38 +1,111 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from enum import Enum
+from typing import Annotated
+
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from .citation import Citation
-from .standards import SCHEMA_FN_PATHS
+from .citation_basemodel import Citation
 
 
-# =============================================================================
-attr_dict = get_schema("copyright", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("citation", SCHEMA_FN_PATHS), "citation")
+# =====================================================
+class ReleaseStatusEnum(str, Enum):
+    Unrestricted_release = "Unrestricted release"
+    Restricted_release = "Restricted release"
+    Paper_Citation_Required = "Paper Citation Required"
+    Academic_Use_Only = "Academic Use Only"
+    Conditions_Apply = "Conditions Apply"
+    Data_Citation_Required = "Data Citation Required"
 
 
-# =============================================================================
-class Copyright(Base):
-    __doc__ = write_lines(attr_dict)
+class Copyright(MetadataBase):
+    citation: Annotated[
+        Citation,
+        Field(
+            description="The citation information for the data",
+            examples=[
+                "Citation(authors='Doe, J.', year='2023', title='Title of the paper', journal='Journal Name', volume='45', pages='123-145')"
+            ],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+    selected_publications: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="Any publications that use this data",
+            examples=["my paper"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self.citation = Citation()
+    release_status: Annotated[
+        ReleaseStatusEnum,
+        Field(
+            default="Unrestricted Release",
+            description="the release status of the data",
+            examples=["Unrestricted release"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    conditions_of_use: Annotated[
+        str,
+        Field(
+            default="All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided this data set is cited as the reference. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, not IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.",
+            description="Any notes on conditions of use",
+            examples=["Cite data upon usage."],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    acknowledgement: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="any acknowledgments the transfer function should have.",
+            examples=["This project was funded by x."],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    additional_info: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description="any additional information about the data.",
+            examples=["This purpose of this project is ..."],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
     def read_dict(self, input_dict):
         """
@@ -47,9 +120,16 @@ class Copyright(Base):
 
     def to_xml(self, string=False, required=True):
         """ """
-        self.release_status = self.release_status.title()
+        # Create a shallow copy to avoid mutating the original object
+        import copy
+
+        xml_copy = copy.copy(self)
+        # Set the title-cased release_status on the copy using object.__setattr__
+        # to bypass Pydantic validation
+        object.__setattr__(xml_copy, "release_status", self.release_status.title())
+
         return helpers.to_xml(
-            self,
+            xml_copy,
             string=string,
             required=required,
             order=[

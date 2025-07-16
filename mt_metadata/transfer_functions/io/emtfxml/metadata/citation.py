@@ -1,34 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator, HttpUrl
+
+from mt_metadata.common import Citation as CommonCitation
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-
-from .standards import SCHEMA_FN_PATHS
-
-
-# =============================================================================
-attr_dict = get_schema("citation", SCHEMA_FN_PATHS)
+from mt_metadata.utils.mttime import MTime
 
 
-# =============================================================================
-class Citation(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Citation(CommonCitation):
+    survey_d_o_i: Annotated[
+        HttpUrl | None,
+        Field(
+            default=None,
+            description="doi number of the survey",
+            examples=["###/###"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    @field_validator("year", mode="before")
+    @classmethod
+    def validate_year(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)
 
     def to_xml(self, string=False, required=True):
         """

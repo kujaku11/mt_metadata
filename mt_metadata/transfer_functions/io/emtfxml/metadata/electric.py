@@ -1,44 +1,139 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 from xml.etree import cElementTree as et
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import element_to_string, write_lines
+from pydantic import Field
 
-from .standards import SCHEMA_FN_PATHS
-
-
-# =============================================================================
-attr_dict = get_schema("electric", SCHEMA_FN_PATHS)
-# =============================================================================
+import mt_metadata.transfer_functions.io.emtfxml.metadata.helpers as helpers
+from mt_metadata.base import MetadataBase
 
 
-class Electric(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Electric(MetadataBase):
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the channel",
+            examples=["hx"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    orientation: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="orientation angle relative to geographic north",
+            examples=["11.9"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
 
-    def to_xml(self, string=False, required=True):
+    x: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of negative sensor relative center point in north direction",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    x2: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of positive sensor relative center point in north direction",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    y: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of negative sensor relative center point in east direction",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    y2: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of positive sensor relative center point in east direction",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    z: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of negative sensor relative center point in depth",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    z2: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="location of positive sensor relative center point in depth",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param string: return a string representation of the xml, defaults to False
+        :type string: bool, optional
+        :param required: return a string representation of the xml, defaults to True
+        :type required: bool, optional
+        :type required: bool, optional
+        :return: string or xml element representation of the Electric object
+        :rtype: str | et.Element
 
         """
 
@@ -62,5 +157,5 @@ class Electric(Base):
         )
 
         if string:
-            return element_to_string(root)
+            return helpers.element_to_string(root)
         return root

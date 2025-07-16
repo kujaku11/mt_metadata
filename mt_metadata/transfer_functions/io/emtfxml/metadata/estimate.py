@@ -1,56 +1,124 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 from xml.etree import cElementTree as et
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import element_to_string, write_lines
+from pydantic import Field, HttpUrl
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ArrayDTypeEnum, EstimateIntentionEnum
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from .standards import SCHEMA_FN_PATHS
+
+# =====================================================
 
 
-# =============================================================================
-attr_dict = get_schema("estimate", SCHEMA_FN_PATHS)
-# =============================================================================
+class Estimate(MetadataBase):
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the statistical estimate",
+            examples=["var"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    type: Annotated[
+        ArrayDTypeEnum,
+        Field(
+            default="",
+            description="Type of number contained in the estimate",
+            examples=["real"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-class Estimate(Base):
-    __doc__ = write_lines(attr_dict)
+    description: Annotated[
+        str,
+        Field(
+            default="",
+            description="Description of the statistical estimate",
+            examples=["this is an estimate"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    external_url: Annotated[
+        HttpUrl,
+        Field(
+            default="",
+            description="Full path to external link that has additional information",
+            examples=["http://www.iris.edu/dms/products/emtf/variance.html"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def read_dict(self, input_dict):
+    intention: Annotated[
+        EstimateIntentionEnum,
+        Field(
+            default="",
+            description="The intension of the statistical estimate",
+            examples=["error estimate"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    tag: Annotated[
+        str,
+        Field(
+            default="",
+            description="A useful tag for the estimate",
+            examples=["tipper"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    def read_dict(self, input_dict: dict) -> None:
         """
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param input_dict: input dictionary containing estimate data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
 
         """
         helpers._read_element(self, input_dict, "estimate")
 
-    def to_xml(self, string=False, required=True):
+    def to_xml(self, string: bool = False, required: bool = True):
         """
 
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param string: return string representation, defaults to False
+        :type string: bool, optional
+        :param required: include only required fields, defaults to True
+        :type required: bool, optional
+        :return: XML representation of the estimate
+        :rtype: str | Element
 
         """
 
@@ -60,10 +128,12 @@ class Estimate(Base):
         )
 
         et.SubElement(root, "Description").text = self.description
-        et.SubElement(root, "ExternalUrl").text = self.external_url
+        et.SubElement(root, "ExternalUrl").text = (
+            str(self.external_url) if self.external_url else ""
+        )
         et.SubElement(root, "Intention").text = self.intention
         et.SubElement(root, "tag").text = self.tag
 
         if string:
-            return element_to_string(root)
+            return helpers.element_to_string(root)
         return root

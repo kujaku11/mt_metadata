@@ -1,165 +1,116 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from xml.etree import cElementTree as et
+# =====================================================
+from typing import Annotated
+from xml.etree import ElementTree as et
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import element_to_string, write_lines
+from loguru import logger
+from pydantic import computed_field, Field, field_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.base.helpers import element_to_string
 
 from . import Electric, Magnetic
-from .standards import SCHEMA_FN_PATHS
 
 
-# =============================================================================
-attr_dict = get_schema("site_layout", SCHEMA_FN_PATHS)
-# =============================================================================
+# =====================================================
+class SiteLayout(MetadataBase):
+    input_channels: Annotated[
+        list[Electric | Magnetic | str],
+        Field(
+            default_factory=list,
+            description="list of input channels for transfer function estimation",
+            examples=["[Magnetic(hx), Magnetic(hy)]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    output_channels: Annotated[
+        list[Electric | Magnetic | str],
+        Field(
+            default_factory=list,
+            description="list of output channels for transfer function estimation",
+            examples=["[Electric(ex), Electric(ey), Magnetic(hz)]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-class SiteLayout(Base):
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-        self._input_channels = []
-        self._output_channels = []
-
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
+    @computed_field
     @property
-    def input_channels(self):
-        return self._input_channels
-
-    @input_channels.setter
-    def input_channels(self, value):
-        self._input_channels = []
-        if not isinstance(value, list):
-            value = [value]
-
-        for item in value:
-            if isinstance(item, (Magnetic, Electric)):
-                self._input_channels.append(item)
-            elif isinstance(item, dict):
-                ch_type = list(item.keys())[0]
-                if ch_type in ["magnetic"]:
-                    ch = Magnetic()
-                elif ch_type in ["electric"]:
-                    ch = Electric()
-                else:
-                    msg = f"Channel type {ch_type} not supported"
-                    self.logger.error(msg)
-                    raise ValueError(msg)
-                ch.from_dict(item)
-                self._input_channels.append(ch)
-            elif isinstance(item, str):
-                if item.startswith("e"):
-                    ch = Electric(name=item)
-                elif item.startswith("b") or item.startswith("h"):
-                    ch = Magnetic(name=item)
-                else:
-                    msg = f"Channel {item} not supported"
-                    self.logger.error(msg)
-                    raise ValueError(msg)
-                self._input_channels.append(ch)
-
-    @property
-    def input_channel_names(self):
+    def input_channel_names(self) -> list[str]:
+        """
+        Returns a list of input channel names.
+        """
         return [ch.name.lower() for ch in self.input_channels]
 
+    @computed_field
     @property
-    def output_channels(self):
-        return self._output_channels
+    def output_channel_names(self) -> list[str]:
+        """
+        Returns a list of output channel names.
+        """
+        return [ch.name.lower() for ch in self.output_channels]
 
-    @output_channels.setter
-    def output_channels(self, value):
-        self._output_channels = []
+    @field_validator("input_channels", "output_channels", mode="before")
+    @classmethod
+    def validate_channels(
+        cls, value: list[Electric | Magnetic | str]
+    ) -> list[Electric | Magnetic]:
+        channels = []
         if not isinstance(value, list):
             value = [value]
 
         for item in value:
             if isinstance(item, (Magnetic, Electric)):
-                self._output_channels.append(item)
+                channels.append(item)
             elif isinstance(item, dict):
                 ch_type = list(item.keys())[0]
                 if ch_type in ["magnetic"]:
-                    ch = Magnetic()
+                    ch = Magnetic()  # type: ignore
                 elif ch_type in ["electric"]:
-                    ch = Electric()
+                    ch = Electric()  # type: ignore
                 else:
                     msg = f"Channel type {ch_type} not supported"
-                    self.logger.error(msg)
+                    logger.error(msg)
                     raise ValueError(msg)
                 ch.from_dict(item)
-                self._output_channels.append(ch)
+                channels.append(ch)
             elif isinstance(item, str):
                 if item.startswith("e"):
-                    ch = Electric(name=item)
+                    ch = Electric(name=item)  # type: ignore
                 elif item.startswith("b") or item.startswith("h"):
-                    ch = Magnetic(name=item)
+                    ch = Magnetic(name=item)  # type: ignore
                 else:
-                    msg = "Channel %s not supported"
-                    self.logger.error(msg, item)
-                    raise ValueError(msg % item)
-                self._output_channels.append(ch)
+                    msg = f"Channel {item} not supported"
+                    logger.error(msg)
+                    raise ValueError(msg)
+                channels.append(ch)
 
-    @property
-    def output_channel_names(self):
-        return [ch.name.lower() for ch in self.output_channels]
+        return channels
 
-    def read_dict(self, input_dict):
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
-        read site layout into the proper input/output channels
+        Convert the SiteLayout instance to an XML representation.
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        string : bool, optional
+            Whether to return the XML as a string, by default False
+        required : bool, optional
+            Whether the XML elements are required, by default True
 
-        """
-        # read input channels
-        for ch in ["input_channels", "output_channels"]:
-            ch_list = []
-            try:
-                c_list = input_dict["site_layout"][ch]["magnetic"]
-                if c_list is None:
-                    continue
-                if not isinstance(c_list, list):
-                    c_list = [c_list]
-                ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
-
-            except (KeyError, TypeError):
-                pass
-
-            try:
-                c_list = input_dict["site_layout"][ch]["electric"]
-                if c_list is None:
-                    continue
-                if not isinstance(c_list, list):
-                    c_list = [c_list]
-                ch_list += [{"electric": ch_dict} for ch_dict in c_list]
-            except (KeyError, TypeError):
-                pass
-
-            setattr(self, ch, ch_list)
-
-    def to_xml(self, string=False, required=True):
-        """
-
-        :param string: DESCRIPTION, defaults to False
-        :type string: TYPE, optional
-        :param required: DESCRIPTION, defaults to True
-        :type required: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Returns
+        -------
+        str | et.Element
+            The XML representation of the SiteLayout instance
         """
 
         root = et.Element(self.__class__.__name__)

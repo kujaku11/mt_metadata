@@ -1,104 +1,290 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
+from xml.etree import cElementTree as et
+
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import BasicLocation, Comment
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 from mt_metadata.utils.mttime import MTime
 
-from . import Comment, DataQualityNotes, DataQualityWarnings, Location, Orientation
-from .standards import SCHEMA_FN_PATHS
+from . import DataQualityNotes, DataQualityWarnings, Orientation
 
 
-# =============================================================================
-attr_dict = get_schema("site", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("location", SCHEMA_FN_PATHS), "location")
-attr_dict.add_dict(get_schema("orientation", SCHEMA_FN_PATHS), "orientation")
-attr_dict.add_dict(DataQualityNotes()._attr_dict, "data_quality_notes")
-attr_dict.add_dict(DataQualityWarnings()._attr_dict, "data_quality_warnings")
-attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
+# =====================================================
+class Site(MetadataBase):
+    project: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the project",
+            examples=["USMTArray"],
+            alias=None,
+            pattern="^[a-zA-Z0-9]*$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    survey: Annotated[
+        str,
+        Field(
+            default="",
+            description="Name of the survey",
+            examples=["MT 2020"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-# =============================================================================
-class Site(Base):
-    __doc__ = write_lines(attr_dict)
+    year_collected: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default=None,
+            description="Year data collected",
+            examples=["2020"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self._year_collected = None
-        self.data_quality_notes = DataQualityNotes()
-        self.data_quality_warnings = DataQualityWarnings()
-        self.orientation = Orientation()
-        self.location = Location()
-        self._run_list = []
-        self._start_dt = MTime()
-        self._end_dt = MTime()
-        self.comments = Comment()
+    country: Annotated[
+        str,
+        Field(
+            default="",
+            description="Country where data was collected",
+            examples=["USA"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
+            examples=["MT001"],
+            alias=None,
+            pattern="^[a-zA-Z0-9]*$",
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @property
-    def start(self):
-        return self._start_dt.iso_str
+    name: Annotated[
+        str,
+        Field(
+            default="",
+            description="closest geographic name to the station",
+            examples=['"Whitehorse, YK"'],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @start.setter
-    def start(self, value):
-        self._start_dt.parse(value)
+    acquired_by: Annotated[
+        str,
+        Field(
+            default="",
+            description="Person or group who collected the data",
+            examples=["MT Group"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @property
-    def end(self):
-        return self._end_dt.iso_str
+    start: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date time when the data collection started",
+            examples=["2020-01-01T12:00:00"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @end.setter
-    def end(self, value):
-        self._end_dt.parse(value)
+    end: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Date time when the data collection ended",
+            examples=["2020-05-01T12:00:00"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @property
-    def year_collected(self):
-        if self.start != "1980-01-01T00:00:00+00:00":
-            return self._start_dt.year
-        else:
-            return self._year_collected
+    run_list: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of runs recorded by the station. Should be a summary of all runs recorded",
+            examples=['"[ mt001a, mt001b, mt001c ]"'],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @year_collected.setter
-    def year_collected(self, value):
-        self._year_collected = value
+    data_quality_notes: Annotated[
+        DataQualityNotes,
+        Field(
+            default_factory=DataQualityNotes,  # type: ignore
+            description="Notes on the data quality",
+            examples=["Data quality is good"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    @property
-    def run_list(self):
-        return " ".join(self._run_list)
+    data_quality_warnings: Annotated[
+        DataQualityWarnings,
+        Field(
+            default_factory=DataQualityWarnings,  # type: ignore
+            description="Warnings about the data quality",
+            examples=["Data quality is questionable"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+    orientation: Annotated[
+        Orientation,
+        Field(
+            default_factory=Orientation,  # type: ignore
+            description="Orientation of the site",
+            examples=[
+                "Orientation('layout=orthogonal, angle_to_geographic_north=0.0')"
+            ],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    @run_list.setter
-    def run_list(self, value):
-        if value is None:
-            return
-        if isinstance(value, (str)):
-            if value.count(",") > 0:
-                delimiter = ","
-            else:
-                delimiter = " "
-            value = value.split(delimiter)
+    location: Annotated[
+        BasicLocation,
+        Field(
+            default_factory=BasicLocation,  # type: ignore
+            description="Location of the site",
+            examples=["BasicLocation('latitude=60.0, longitude=-135.0')"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-        self._run_list = value
+    comments: Annotated[
+        Comment | str | None,
+        Field(
+            default_factory=Comment,  # type: ignore
+            description="Comments about the site",
+            examples=["Comment('This is a comment about the site')"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    def read_dict(self, input_dict):
+    @field_validator("start", "end", mode="before")
+    @classmethod
+    def validate_start(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        if isinstance(field_value, MTime):
+            return field_value
+        return MTime(time_stamp=field_value)
+
+    @field_validator("year_collected", mode="before")
+    @classmethod
+    def validate_year_collected(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        if isinstance(field_value, MTime):
+            return field_value.year
+        return MTime(time_stamp=field_value).year
+
+    @field_validator("comments", mode="before")
+    @classmethod
+    def validate_comments(cls, value) -> Comment:
         """
+        Validate that the value is a valid string.
+        """
+        if isinstance(value, str):
+            return Comment(value=value)  # type: ignore[return-value]
+        return value
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+    @field_validator("run_list", mode="before")
+    @classmethod
+    def validate_run_list(cls, value: str | list[str] | None) -> list[str] | None:
+        """
+        Validate that the value is a list of strings.
+        """
+        if value is None:
+            return None
+        if isinstance(value, str):
+            if value.count(",") > 0:
+                return value.split(",")
+            else:
+                return value.split(" ")
 
+        elif isinstance(value, list) and all(isinstance(item, str) for item in value):
+            return value
+        raise ValueError("run_list must be a list of strings.")
+
+    def read_dict(self, input_dict: dict) -> None:
+        """
+        Read the input dictionary and update the object's attributes.
+
+        Parameters
+        ----------
+        input_dict : dict
+            The input dictionary containing the data to read.
         """
         for element in input_dict["site"].keys():
             attr = getattr(self, element)
@@ -107,10 +293,24 @@ class Site(Base):
             else:
                 helpers._read_single(self, input_dict["site"], element)
 
-    def to_xml(self, string=False, required=True):
-        """ """
+    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+        """
+        Convert the object to XML format.
 
-        if self._end_dt < self._start_dt:
+        Parameters
+        ----------
+        string : bool, optional
+            Whether to return the XML as a string, by default False
+        required : bool, optional
+            Whether the XML is required, by default True
+
+        Returns
+        -------
+        str | et.Element
+            The XML representation of the object.
+        """
+
+        if self.end < self.start:  # type: ignore
             self.end = self.start
 
         return helpers.to_xml(

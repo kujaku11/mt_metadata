@@ -1,42 +1,51 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
+
+from pydantic import Field, HttpUrl
+
+from mt_metadata.base import MetadataBase
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from .standards import SCHEMA_FN_PATHS
 
+# =====================================================
+class ExternalUrl(MetadataBase):
+    description: Annotated[
+        str,
+        Field(
+            default="",
+            description="description of where the external URL points towards",
+            examples=["IRIS DMC Metadata"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-# =============================================================================
-attr_dict = get_schema("external_url", SCHEMA_FN_PATHS)
-# =============================================================================
+    url: Annotated[
+        HttpUrl,
+        Field(
+            default="",
+            description="full URL of where the data is stored",
+            examples=["http://www.iris.edu/mda/EM/NVS11"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-
-class ExternalUrl(Base):
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
-    def read_dict(self, input_dict):
+    def read_dict(self, input_dict: dict) -> None:
         """
 
-        :param input_dict: DESCRIPTION
-        :type input_dict: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        :param input_dict: input dictionary containing external URL data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
 
         """
         helpers._read_element(self, input_dict, "external_url")
