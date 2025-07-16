@@ -64,6 +64,14 @@ class ChannelLayoutEnum(StrEnumerationBase):
     plus = "+"
 
 
+class ElectrodeLocationEnum(str, Enum):
+    N = "N"
+    S = "S"
+    E = "E"
+    W = "W"
+    NONE = ""
+
+
 class OrientationMethodEnum(StrEnumerationBase):
     compass = "compass"
     GPS = "GPS"

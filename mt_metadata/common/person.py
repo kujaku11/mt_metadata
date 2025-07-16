@@ -2,18 +2,19 @@
 # Imports
 # =====================================================
 from typing import Annotated
-from typing_extensions import Self
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
 from pydantic import (
+    AliasChoices,
+    AnyUrl,
     EmailStr,
     Field,
-    AnyUrl,
     field_validator,
     ValidationInfo,
-    AliasChoices,
 )
+
+from mt_metadata import NULL_VALUES
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment
 
 
 # =====================================================
@@ -23,7 +24,7 @@ class GenericPerson(MetadataBase):
         Field(
             default=None,
             description="Organization full name",
-            examples="mt gurus",
+            examples=["mt gurus"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -37,7 +38,7 @@ class GenericPerson(MetadataBase):
         Field(
             default=None,
             description="Email of the contact person",
-            examples="mt.guru@em.org",
+            examples=["mt.guru@em.org"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -47,11 +48,11 @@ class GenericPerson(MetadataBase):
     ]
 
     url: Annotated[
-        AnyUrl | None,
+        AnyUrl | None | str,
         Field(
             default=None,
             description="URL of the contact person",
-            examples="https://em.org",
+            examples=["https://em.org"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -63,9 +64,9 @@ class GenericPerson(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=Comment,
+            default_factory=Comment,  # type: ignore[return-value]
             description="Any comments about the person",
-            examples="expert digger",
+            examples=["expert digger"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -81,17 +82,32 @@ class GenericPerson(MetadataBase):
         Validate that the value is a valid comment.
         """
         if isinstance(value, str):
-            return Comment(value=value)
+            return Comment(value=value)  # type: ignore[return-value]
         return value
+
+    @field_validator("url", mode="before")
+    @classmethod
+    def validate_url(cls, value, info: ValidationInfo) -> AnyUrl | None:
+        """
+        Validate that the value is a valid URL.
+        """
+        if isinstance(value, str):
+            if value in NULL_VALUES:
+                return None
+            return AnyUrl(value)
+        elif isinstance(value, AnyUrl):
+            return value
+        elif value is None:
+            return None
 
 
 class Person(GenericPerson):
     name: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Persons name, should be full first and last name.",
-            examples="person name",
+            examples=["person name"],
             validation_alias=AliasChoices("name", "author"),
             json_schema_extra={
                 "units": None,
@@ -108,11 +124,11 @@ class Person(GenericPerson):
 
 class AuthorPerson(GenericPerson):
     author: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Persons name, should be full first and last name.",
-            examples="person name",
+            examples=["person name"],
             validation_alias=AliasChoices("author", "name"),
             json_schema_extra={
                 "units": None,

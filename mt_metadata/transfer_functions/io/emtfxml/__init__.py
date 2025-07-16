@@ -1,6 +1,6 @@
 # package file
 
-# from .emtfxml import EMTFXML
+from .emtfxml import EMTFXML
 
 
-# __all__ = ["EMTFXML"]
+__all__ = ["EMTFXML"]

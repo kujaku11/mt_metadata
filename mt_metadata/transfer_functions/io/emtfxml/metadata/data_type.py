@@ -142,7 +142,7 @@ class DataType(MetadataBase):
     units: Annotated[
         str,
         Field(
-            default="",
+            default="milliVolt per kilometer per nanoTesla",
             description="Units for the data type",
             examples=["[mV/km]/[nT]"],
             alias=None,
@@ -160,7 +160,7 @@ class DataType(MetadataBase):
             return ""
         try:
             unit_object = get_unit_object(value)
-            return unit_object.name
+            return unit_object.symbol
         except ValueError as error:
             raise KeyError(error)
         except KeyError as error:
@@ -193,13 +193,14 @@ class DataType(MetadataBase):
             required=required,
             order=["description", "external_url", "intention", "tag"],
         )
+        xml_unit = get_unit_object(self.units).symbol
         if not string:
             element.attrib = {
                 "name": self.name,
                 "type": self.type,
                 "output": self.output,
                 "input": self.input,
-                "units": self.units,
+                "units": xml_unit,
             }
 
         return element

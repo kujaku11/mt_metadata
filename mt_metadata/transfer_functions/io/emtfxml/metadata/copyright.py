@@ -26,6 +26,7 @@ class Copyright(MetadataBase):
     citation: Annotated[
         Citation,
         Field(
+            default_factory=Citation,  # type: ignore
             description="The citation information for the data",
             examples=[
                 "Citation(authors='Doe, J.', year='2023', title='Title of the paper', journal='Journal Name', volume='45', pages='123-145')"

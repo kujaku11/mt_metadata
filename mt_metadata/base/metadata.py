@@ -27,6 +27,7 @@ from pydantic import BaseModel, ConfigDict, create_model
 from pydantic.fields import FieldInfo, PrivateAttr
 from typing_extensions import deprecated
 
+from mt_metadata import NULL_VALUES
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.utils.exceptions import MTSchemaError
 from mt_metadata.utils.validators import (
@@ -1008,7 +1009,22 @@ class MetadataBase(DotNotationBaseModel):
             return False
 
         elif isinstance(other, (dict, str, pd.Series, et.Element)):
-            other_dict = __class__().load(other).to_dict(single=True, required=False)
+            try:
+                # Attempt to load the other object into a new instance of MetadataBase
+                # This will ensure that the other object has the same attributes as self
+                other_obj = __class__().load(other)
+            except Exception as e:
+                logger.error(
+                    f"Failed to load other object of type {type(other)}: {other}. Error is: {e} "
+                )
+                return False
+            if not other_obj:
+                return False
+
+            if hasattr(other_obj, "to_dict") and callable(other_obj.to_dict):
+                other_dict = other_obj.to_dict(single=True, required=False)
+            else:
+                return False
 
         elif isinstance(other, MetadataBase):
             other_dict = other.to_dict(single=True, required=False)
@@ -1085,7 +1101,7 @@ class MetadataBase(DotNotationBaseModel):
         elif isinstance(other, dict):
             self.from_dict(other)
         elif isinstance(other, str):
-            if other.lower() in ["none", "null", "unknown"]:
+            if other.lower() in NULL_VALUES:
                 return
             self.from_json(other)
         elif isinstance(other, pd.Series):
@@ -1120,7 +1136,11 @@ class MetadataBase(DotNotationBaseModel):
                 if v.size > 0:
                     self.update_attribute(k, v)
             else:
-                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
+                if (
+                    v
+                    not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]
+                    + NULL_VALUES
+                ):
                     self.update_attribute(k, v)
 
     ## cannot override the __deepcopy__ method in pydantic.BaseModel otherwise bad

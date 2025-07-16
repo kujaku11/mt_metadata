@@ -9,6 +9,7 @@ from loguru import logger
 from pydantic import Field, field_validator, model_validator, ValidationInfo
 from typing_extensions import Self
 
+from mt_metadata import NULL_VALUES
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
     AuthorPerson,
@@ -239,7 +240,7 @@ class Station(MetadataBase):
         """
         Validate that the value is a list of strings.
         """
-        if value in [None, "None", "none", "NONE", "null"]:
+        if value in NULL_VALUES:
             return
 
         if isinstance(value, np.ndarray):
@@ -289,9 +290,10 @@ class Station(MetadataBase):
         """
         Validate that the value is a list of strings.
         """
-        if self.id in [None, "None", "none", "NONE", "null", ""]:
+        if self.id in NULL_VALUES:
             if self.fdsn.id is not None:
-                self.id = self.fdsn.id
+                # Use object.__setattr__ to avoid triggering validation recursively
+                object.__setattr__(self, "id", self.fdsn.id)
 
         return self
 

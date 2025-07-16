@@ -9,9 +9,9 @@ from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import (
+    AuthorPerson,
     DataQuality,
     GeographicReferenceFrameEnum,
-    Person,
     SignConventionEnum,
     Software,
 )
@@ -122,9 +122,9 @@ class TransferFunction(MetadataBase):
     ]
 
     processed_by: Annotated[
-        Person,
+        AuthorPerson,
         Field(
-            default_factory=Person,  # type: ignore
+            default_factory=AuthorPerson,  # type: ignore
             description="person who processed the data",
             examples=["Person(name='John Doe', email='john.doe@example.com')"],
             alias=None,
@@ -152,7 +152,7 @@ class TransferFunction(MetadataBase):
     software: Annotated[
         Software,
         Field(
-            default_factory=Software,
+            default_factory=Software,  # type: ignore
             description="software used to process the data",
             examples=["Software(name='Aurora', version='1.0.0')"],
             alias=None,
@@ -166,7 +166,7 @@ class TransferFunction(MetadataBase):
     data_quality: Annotated[
         DataQuality,
         Field(
-            default_factory=DataQuality,
+            default_factory=DataQuality,  # type: ignore
             description="data quality information",
             examples=["DataQuality()"],
             alias=None,

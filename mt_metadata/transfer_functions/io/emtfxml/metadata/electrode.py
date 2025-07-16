@@ -1,7 +1,6 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 from xml.etree import cElementTree as et
 
@@ -10,20 +9,15 @@ from pydantic import Field, field_validator, ValidationInfo
 import mt_metadata.transfer_functions.io.emtfxml.metadata.helpers as helpers
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
+from mt_metadata.common.enumerations import ElectrodeLocationEnum
 
 
 # =====================================================
-class LocationEnum(str, Enum):
-    N = "N"
-    S = "S"
-    E = "E"
-    W = "W"
-    NONE = ""
 
 
 class Electrode(MetadataBase):
     location: Annotated[
-        LocationEnum,
+        ElectrodeLocationEnum,
         Field(
             default="",
             description="Direction of electrode",
