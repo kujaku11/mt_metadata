@@ -349,9 +349,7 @@ class TestCommentXMLGeneration:
         # Both should be the same for Comment class
         assert xml_required.tag == xml_optional.tag
 
-    @patch(
-        "mt_metadata.transfer_functions.io.emtfxml.metadata.helpers.element_to_string"
-    )
+    @patch("mt_metadata.common.comment.element_to_string")
     def test_xml_string_conversion(self, mock_element_to_string, basic_comment):
         """Test that XML string conversion uses helpers.element_to_string."""
         mock_element_to_string.return_value = "<Comments>Test</Comments>"

@@ -1,9 +1,9 @@
 """
-Comprehensive test suite for emtf_basemodel.Emtf class.
+Comprehensive test suite for emtf_basemodel.EMTF class.
 
-This test suite uses fixtures and parametrized tests to comprehensively test the Emtf class,
+This test suite uses fixtures and parametrized tests to comprehensively test the EMTF class,
 which represents EMTF (Electromagnetic Transfer Function) metadata for magnetotelluric data.
-The Emtf class handles validation, field management, and core metadata operations.
+The EMTF class handles validation, field management, and core metadata operations.
 
 Tests cover:
 - Basic instantiation and field validation
@@ -41,14 +41,14 @@ from typing import Any, Dict, List
 import pytest
 
 from mt_metadata.common.enumerations import DataTypeEnum
-from mt_metadata.transfer_functions.io.emtfxml.metadata.emtf_basemodel import Emtf
+from mt_metadata.transfer_functions.io.emtfxml.metadata import EMTF
 
 
 # Module-level fixtures for efficiency
 @pytest.fixture
-def basic_emtf() -> Emtf:
-    """Create a basic Emtf instance with default values."""
-    return Emtf()  # type: ignore
+def basic_emtf() -> EMTF:
+    """Create a basic EMTF instance with default values."""
+    return EMTF()  # type: ignore
 
 
 @pytest.fixture
@@ -64,9 +64,9 @@ def sample_emtf_data() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def populated_emtf(sample_emtf_data) -> Emtf:
-    """Create an Emtf instance with populated data."""
-    return Emtf(**sample_emtf_data)
+def populated_emtf(sample_emtf_data) -> EMTF:
+    """Create an EMTF instance with populated data."""
+    return EMTF(**sample_emtf_data)
 
 
 @pytest.fixture
@@ -151,11 +151,11 @@ def valid_data_type_enum(request) -> DataTypeEnum:
 
 
 class TestEmtfInstantiation:
-    """Test Emtf class instantiation and basic functionality."""
+    """Test EMTF class instantiation and basic functionality."""
 
     def test_basic_instantiation(self, basic_emtf):
-        """Test basic Emtf instantiation with default values."""
-        assert isinstance(basic_emtf, Emtf)
+        """Test basic EMTF instantiation with default values."""
+        assert isinstance(basic_emtf, EMTF)
         assert basic_emtf.description == ""
         assert basic_emtf.product_id == ""
         assert basic_emtf.tags == ""
@@ -163,8 +163,8 @@ class TestEmtfInstantiation:
         assert basic_emtf.notes is None
 
     def test_populated_instantiation(self, populated_emtf, sample_emtf_data):
-        """Test Emtf instantiation with populated data."""
-        assert isinstance(populated_emtf, Emtf)
+        """Test EMTF instantiation with populated data."""
+        assert isinstance(populated_emtf, EMTF)
         assert populated_emtf.description == sample_emtf_data["description"]
         assert populated_emtf.product_id == sample_emtf_data["product_id"]
         assert populated_emtf.tags == sample_emtf_data["tags"]
@@ -172,7 +172,7 @@ class TestEmtfInstantiation:
         assert populated_emtf.notes == sample_emtf_data["notes"]
 
     def test_inheritance_from_metadata_base(self, basic_emtf):
-        """Test that Emtf properly inherits from MetadataBase."""
+        """Test that EMTF properly inherits from MetadataBase."""
         from mt_metadata.base import MetadataBase
 
         assert isinstance(basic_emtf, MetadataBase)
@@ -232,9 +232,9 @@ class TestEmtfInstantiation:
         ],
     )
     def test_parametrized_instantiation(self, emtf_data):
-        """Test Emtf instantiation with various data configurations."""
-        emtf = Emtf(**emtf_data)
-        assert isinstance(emtf, Emtf)
+        """Test EMTF instantiation with various data configurations."""
+        emtf = EMTF(**emtf_data)
+        assert isinstance(emtf, EMTF)
 
         # Check that provided values are set correctly
         for key, value in emtf_data.items():
@@ -242,7 +242,7 @@ class TestEmtfInstantiation:
 
 
 class TestEmtfFieldValidation:
-    """Test Emtf field validation and assignment."""
+    """Test EMTF field validation and assignment."""
 
     def test_description_assignment(self, basic_emtf):
         """Test assignment of description field."""
@@ -260,12 +260,12 @@ class TestEmtfFieldValidation:
 
         if should_be_valid:
             # Should not raise validation error
-            emtf = Emtf(product_id=test_value)  # type: ignore
+            emtf = EMTF(product_id=test_value)  # type: ignore
             assert emtf.product_id == test_value
         else:
             # Should raise validation error for invalid patterns
             with pytest.raises(Exception):  # Pydantic ValidationError
-                Emtf(product_id=test_value)  # type: ignore
+                EMTF(product_id=test_value)  # type: ignore
 
     def test_product_id_valid_patterns(self, basic_emtf):
         """Test valid product_id patterns."""
@@ -296,7 +296,7 @@ class TestEmtfFieldValidation:
 
         for pattern in invalid_patterns:
             with pytest.raises(Exception):  # Pydantic ValidationError
-                Emtf(product_id=pattern)  # type: ignore
+                EMTF(product_id=pattern)  # type: ignore
 
     def test_tags_assignment(self, basic_emtf):
         """Test assignment of tags field."""
@@ -347,7 +347,7 @@ class TestEmtfFieldValidation:
 
         for value in invalid_values:
             with pytest.raises(Exception):  # Pydantic ValidationError
-                Emtf(sub_type=value)  # type: ignore
+                EMTF(sub_type=value)  # type: ignore
 
     def test_notes_optional_field(self, basic_emtf):
         """Test notes field as optional field."""
@@ -381,10 +381,10 @@ class TestEmtfFieldValidation:
 
     def test_field_validator_with_various_inputs(self, various_emtf_data):
         """Test field validators with various input configurations."""
-        emtf = Emtf(**various_emtf_data)
+        emtf = EMTF(**various_emtf_data)
 
         # Should successfully create instance
-        assert isinstance(emtf, Emtf)
+        assert isinstance(emtf, EMTF)
 
         # Verify provided values are set correctly
         for key, value in various_emtf_data.items():
@@ -404,12 +404,12 @@ class TestEmtfFieldValidation:
 
 
 class TestEmtfEdgeCases:
-    """Test Emtf edge cases and error handling."""
+    """Test EMTF edge cases and error handling."""
 
     def test_class_name_attribute(self):
         """Test that class name is correctly set."""
-        emtf = Emtf()  # type: ignore
-        assert emtf.__class__.__name__ == "Emtf"
+        emtf = EMTF()  # type: ignore
+        assert emtf.__class__.__name__ == "EMTF"
 
     def test_field_access_patterns(self, populated_emtf):
         """Test various ways of accessing fields."""
@@ -476,7 +476,7 @@ class TestEmtfEdgeCases:
     def test_none_handling(self):
         """Test handling of None values in fields."""
         # Only notes should accept None
-        emtf = Emtf(notes=None)  # type: ignore
+        emtf = EMTF(notes=None)  # type: ignore
         assert emtf.notes is None
 
         # Other fields should not accept None (will use defaults or raise error)
@@ -484,15 +484,15 @@ class TestEmtfEdgeCases:
 
 
 class TestEmtfPerformance:
-    """Test Emtf performance characteristics."""
+    """Test EMTF performance characteristics."""
 
     def test_instantiation_performance(self, performance_emtf_data):
-        """Test performance of creating Emtf instances."""
+        """Test performance of creating EMTF instances."""
         start_time = time.time()
 
         instances = []
         for data in performance_emtf_data[:50]:  # Test with 50 instances
-            instance = Emtf(**data)
+            instance = EMTF(**data)
             instances.append(instance)
 
         end_time = time.time()
@@ -504,7 +504,7 @@ class TestEmtfPerformance:
 
         # Verify all instances are valid
         for instance in instances:
-            assert isinstance(instance, Emtf)
+            assert isinstance(instance, EMTF)
 
     def test_field_assignment_performance(self, basic_emtf):
         """Test performance of field assignment operations."""
@@ -535,8 +535,8 @@ class TestEmtfPerformance:
                 "sub_type": "MT_TF",
                 "notes": f"Test note {i}" if i % 2 == 0 else None,
             }
-            emtf = Emtf(**data)
-            assert isinstance(emtf, Emtf)
+            emtf = EMTF(**data)
+            assert isinstance(emtf, EMTF)
 
         end_time = time.time()
         duration = end_time - start_time
@@ -546,10 +546,10 @@ class TestEmtfPerformance:
 
 
 class TestEmtfIntegration:
-    """Test Emtf integration with parent classes and framework."""
+    """Test EMTF integration with parent classes and framework."""
 
     def test_metadata_base_inheritance(self, basic_emtf):
-        """Test that Emtf properly inherits from MetadataBase."""
+        """Test that EMTF properly inherits from MetadataBase."""
         from mt_metadata.base import MetadataBase
 
         assert isinstance(basic_emtf, MetadataBase)
@@ -579,7 +579,7 @@ class TestEmtfIntegration:
         # Note: JSON schema generation may not work with all field types
         # This test verifies the model structure is valid for serialization
         try:
-            schema = Emtf.model_json_schema()
+            schema = EMTF.model_json_schema()
             assert isinstance(schema, dict)
             assert "properties" in schema
 
@@ -591,7 +591,7 @@ class TestEmtfIntegration:
         except Exception:
             # If schema generation fails due to complex types,
             # at least verify the model can be serialized to dict
-            emtf = Emtf()  # type: ignore
+            emtf = EMTF()  # type: ignore
             model_dict = emtf.model_dump()
             assert isinstance(model_dict, dict)
             assert "description" in model_dict
@@ -599,7 +599,7 @@ class TestEmtfIntegration:
     def test_field_info_access(self):
         """Test access to field information."""
         # Should be able to access field information
-        fields = Emtf.model_fields
+        fields = EMTF.model_fields
         assert "description" in fields
         assert "product_id" in fields
         assert "tags" in fields
@@ -609,8 +609,8 @@ class TestEmtfIntegration:
     def test_model_validation(self, sample_emtf_data):
         """Test model validation functionality."""
         # Valid data should validate
-        emtf = Emtf.model_validate(sample_emtf_data)
-        assert isinstance(emtf, Emtf)
+        emtf = EMTF.model_validate(sample_emtf_data)
+        assert isinstance(emtf, EMTF)
         assert emtf.description == sample_emtf_data["description"]
         assert emtf.product_id == sample_emtf_data["product_id"]
 
@@ -618,7 +618,7 @@ class TestEmtfIntegration:
         """Test model copy functionality."""
         # Should be able to copy the model
         copied = populated_emtf.model_copy()
-        assert isinstance(copied, Emtf)
+        assert isinstance(copied, EMTF)
         assert copied.description == populated_emtf.description
         assert copied.product_id == populated_emtf.product_id
         assert copied is not populated_emtf
@@ -660,12 +660,12 @@ class TestEmtfIntegration:
 
 
 class TestEmtfSpecialCases:
-    """Test special cases and specific scenarios for Emtf class."""
+    """Test special cases and specific scenarios for EMTF class."""
 
     def test_required_vs_optional_fields(self):
         """Test behavior of required vs optional fields."""
         # All fields except notes have defaults, so empty instantiation should work
-        emtf = Emtf()  # type: ignore
+        emtf = EMTF()  # type: ignore
 
         # Required fields should have defaults
         assert emtf.description == ""
@@ -692,11 +692,11 @@ class TestEmtfSpecialCases:
 
         for test_value, should_be_valid in test_cases:
             if should_be_valid:
-                emtf = Emtf(product_id=test_value)  # type: ignore
+                emtf = EMTF(product_id=test_value)  # type: ignore
                 assert emtf.product_id == test_value
             else:
                 with pytest.raises(Exception):
-                    Emtf(product_id=test_value)  # type: ignore
+                    EMTF(product_id=test_value)  # type: ignore
 
     def test_enum_value_persistence(self, basic_emtf):
         """Test that enum values persist correctly through operations."""

@@ -25,16 +25,12 @@ from xml.etree import ElementTree as ET
 import pytest
 
 from mt_metadata.common import BasicLocation, Comment
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_quality_notes_basemodel import (
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     DataQualityNotes,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_quality_warnings_basemodel import (
     DataQualityWarnings,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.orientation_basemodel import (
     Orientation,
+    Site,
 )
-from mt_metadata.transfer_functions.io.emtfxml.metadata.site_basemodel import Site
 from mt_metadata.utils.mttime import MTime
 
 

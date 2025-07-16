@@ -3,13 +3,10 @@
 # =====================================================
 from typing import Annotated
 
-import numpy as np
-import pandas as pd
-from pydantic import Field, field_validator, HttpUrl
+from pydantic import Field, HttpUrl
 
 from mt_metadata.common import Citation as CommonCitation
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.mttime import MTime
 
 
 # =====================================================
@@ -27,13 +24,6 @@ class Citation(CommonCitation):
             },
         ),
     ]
-
-    @field_validator("year", mode="before")
-    @classmethod
-    def validate_year(
-        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
-    ):
-        return MTime(time_stamp=field_value)
 
     def to_xml(self, string=False, required=True):
         """

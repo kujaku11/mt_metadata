@@ -50,16 +50,14 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.magnetic_basemodel import (
-    Magnetic,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Magnetic
 
 
 # Module-level fixtures for efficiency
 @pytest.fixture
 def basic_magnetic() -> Magnetic:
     """Create a basic Magnetic instance with default values."""
-    return Magnetic()
+    return Magnetic()  # type: ignore
 
 
 @pytest.fixture
@@ -193,7 +191,7 @@ class TestMagneticFixtures:
     @pytest.fixture
     def basic_magnetic(self) -> Magnetic:
         """Create a basic Magnetic instance with default values."""
-        return Magnetic()
+        return Magnetic()  # type: ignore
 
     @pytest.fixture
     def populated_magnetic(self) -> Magnetic:
@@ -556,7 +554,7 @@ class TestMagneticXMLSerialization:
     def test_to_xml_none_value_handling(self):
         """Test XML generation when values are None."""
         # Create a magnetic with basic values first
-        magnetic = Magnetic()
+        magnetic = Magnetic()  # type: ignore
 
         # Test the to_xml method's None handling logic by checking
         # that it properly handles the case when called

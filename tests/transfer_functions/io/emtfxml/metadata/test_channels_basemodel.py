@@ -17,9 +17,7 @@ Created on July 13, 2025
 import pytest
 
 # Import the Channels class directly
-from mt_metadata.transfer_functions.io.emtfxml.metadata.channels_basemodel import (
-    Channels,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Channels
 
 
 # =============================================================================

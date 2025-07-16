@@ -32,9 +32,7 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electric_basemodel import (
-    Electric,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Electric
 
 
 class TestElectricFixtures:
@@ -43,7 +41,7 @@ class TestElectricFixtures:
     @pytest.fixture
     def basic_electric(self) -> Electric:
         """Create a basic Electric instance with default values."""
-        return Electric()
+        return Electric()  # type: ignore
 
     @pytest.fixture
     def populated_electric(self) -> Electric:
@@ -791,7 +789,7 @@ if __name__ == "__main__":
     print("Running Electric class smoke tests...")
 
     # Test basic instantiation
-    electric = Electric()
+    electric = Electric()  # type: ignore
     print(f"✓ Basic instantiation: {type(electric)}")
     print(f"✓ Default name: '{electric.name}', orientation: {electric.orientation}")
     print(f"✓ Default coordinates: x={electric.x}, y={electric.y}, z={electric.z}")

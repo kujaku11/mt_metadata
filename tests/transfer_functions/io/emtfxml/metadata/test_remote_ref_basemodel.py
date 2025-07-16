@@ -40,9 +40,7 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.remote_ref_basemodel import (
-    RemoteRef,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import RemoteRef
 
 
 # Test fixtures - these need to be at module level or in a conftest.py

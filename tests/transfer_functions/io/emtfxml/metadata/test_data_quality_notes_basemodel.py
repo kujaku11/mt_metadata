@@ -11,10 +11,8 @@ from xml.etree import cElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.comment_basemodel import Comment
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_quality_notes_basemodel import (
-    DataQualityNotes,
-)
+from mt_metadata.common import Comment
+from mt_metadata.transfer_functions.io.emtfxml.metadata import DataQualityNotes
 
 
 @pytest.fixture(scope="module")

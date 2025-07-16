@@ -18,9 +18,7 @@ from xml.etree import cElementTree as et
 import pytest
 
 # Import the Attachment class directly to avoid circular imports
-from mt_metadata.transfer_functions.io.emtfxml.metadata.attachment_basemodel import (
-    Attachment,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Attachment
 
 
 # =============================================================================

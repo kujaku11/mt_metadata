@@ -34,14 +34,13 @@ for consistency and maintainability.
 """
 
 import datetime
+from xml.etree import ElementTree as et
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.software_basemodel import (
-    ProcessingSoftware,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import ProcessingSoftware
 from mt_metadata.utils.mttime import MTime
 
 
@@ -446,14 +445,11 @@ class TestReadDictionary:
     def test_read_dict_empty_dict(self, empty_software):
         """Test reading from empty dictionary."""
         input_dict = {}
-
-        # Should raise AttributeError due to missing logger (expected behavior)
-        # The helper function tries to log a warning when key is missing
-        with pytest.raises(
-            AttributeError,
-            match="'ProcessingSoftware' object has no attribute 'logger'",
-        ):
-            empty_software.read_dict(input_dict)
+        empty_software.read_dict(input_dict)
+        # Should retain default values
+        assert empty_software.name == ""
+        assert empty_software.author == ""
+        assert empty_software.version == ""
 
 
 # =============================================================================
@@ -693,8 +689,8 @@ class TestIntegration:
         assert software_dict["processing_software"]["name"] == "WorkflowSoft"
 
         # Document XML limitation
-        with pytest.raises(Exception):  # ValidationError from MTime comparison
-            software.to_xml()
+        # test to xml serialization
+        assert isinstance(software.to_xml(), et.Element)
 
     def test_software_modification_workflow(self, basic_software):
         """Test modifying software after creation."""

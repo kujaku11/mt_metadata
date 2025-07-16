@@ -40,13 +40,11 @@ from typing import Any, Dict, List
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.field_notes_basemodel import (
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     FieldNotes,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.remote_info_basemodel import (
     RemoteInfo,
+    Site,
 )
-from mt_metadata.transfer_functions.io.emtfxml.metadata.site_basemodel import Site
 
 
 # Module-level fixtures for efficiency

@@ -5,9 +5,7 @@ Test suite for Instrument basemodel
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.instrument_basemodel import (
-    Instrument,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Instrument
 
 
 # =============================================================================

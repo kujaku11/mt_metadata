@@ -22,9 +22,7 @@ from xml.etree import cElementTree as et
 import numpy as np
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_basemodel import (
-    TransferFunction,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import TransferFunction
 
 
 class TestTransferFunctionBasic:

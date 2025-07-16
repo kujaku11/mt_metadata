@@ -29,14 +29,12 @@ from typing import Any
 import pytest
 
 from mt_metadata.common import Comment
-from mt_metadata.transfer_functions.io.emtfxml.metadata.dipole_basemodel import Dipole
-from mt_metadata.transfer_functions.io.emtfxml.metadata.instrument_basemodel import (
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
+    Dipole,
     Instrument,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.magnetometer_basemodel import (
     Magnetometer,
+    Run,
 )
-from mt_metadata.transfer_functions.io.emtfxml.metadata.run_basemodel import Run
 from mt_metadata.utils.mttime import MTime
 
 

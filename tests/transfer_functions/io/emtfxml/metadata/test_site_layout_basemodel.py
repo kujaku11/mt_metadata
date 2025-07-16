@@ -31,13 +31,9 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electric_basemodel import (
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     Electric,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.magnetic_basemodel import (
     Magnetic,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.site_layout_basemodel import (
     SiteLayout,
 )
 

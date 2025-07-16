@@ -11,9 +11,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.citation_basemodel import (
-    Citation,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Citation
 
 
 @pytest.fixture(scope="module")
@@ -29,7 +27,7 @@ def complete_citation():
         doi="http://doi.org/10.1234/example.citation",
         authors="John Doe, Jane Smith, Bob Johnson",
         title="Advanced Magnetotelluric Survey Analysis: A Comprehensive Study",
-        # year="2023",  # Skip year field due to validator bug
+        year="2023",
         volume="45",
         pages="123-145",
         journal="Journal of Geophysical Research",
@@ -188,17 +186,17 @@ class TestCitationXMLGeneration:
         xml_result = complete_citation.to_xml(string=True)
 
         assert isinstance(xml_result, str)
-        assert "<title>" in xml_result
-        assert "<authors>" in xml_result
-        assert "<year>" in xml_result
-        assert "<survey_d_o_i>" in xml_result
+        assert "<Title>" in xml_result
+        assert "<Authors>" in xml_result
+        assert "<Year>" in xml_result
+        assert "<SurveyDOI>" in xml_result
 
     def test_xml_generation_minimal(self, minimal_citation):
         """Test XML generation with minimal data."""
         xml_result = minimal_citation.to_xml(string=True)
 
         assert isinstance(xml_result, str)
-        assert "<title>" in xml_result
+        assert "<Title>" in xml_result
 
     def test_xml_generation_parameters(self, complete_citation):
         """Test XML generation with different parameters."""

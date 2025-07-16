@@ -24,9 +24,7 @@ import math
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.period_range_basemodel import (
-    PeriodRange,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import PeriodRange
 
 
 # =============================================================================

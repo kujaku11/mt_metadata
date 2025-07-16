@@ -11,11 +11,8 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.citation_basemodel import (
-    Citation,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.copyright_basemodel import (
-    Copyright,
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Citation, Copyright
+from mt_metadata.transfer_functions.io.emtfxml.metadata.copyright import (
     ReleaseStatusEnum,
 )
 

@@ -12,15 +12,12 @@ from xml.etree import cElementTree as et
 import pytest
 from loguru import logger
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_type_basemodel import (
-    DataType,
+from mt_metadata.transfer_functions.io.emtfxml.metadata import DataType, DataTypes
+from mt_metadata.transfer_functions.io.emtfxml.metadata.data_type import (
+    ArrayDTypeEnum,
+    EstimateIntentionEnum,
     InputEnum,
-    IntentionEnum,
     OutputEnum,
-    TypeEnum,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.data_types_basemodel import (
-    DataTypes,
 )
 
 
@@ -29,10 +26,10 @@ def sample_data_type():
     """Return a sample DataType instance for testing."""
     return DataType(
         name="impedance",
-        type=TypeEnum.complex,
+        type=ArrayDTypeEnum.complex,
         description="Impedance tensor estimate",
         external_url="http://example.com",
-        intention=IntentionEnum.primary_data_type,
+        intention=EstimateIntentionEnum.primary_data_type,
         tag="impedance",
         output=OutputEnum.E,
         input=InputEnum.H,
@@ -45,10 +42,10 @@ def sample_data_type_2():
     """Return a second sample DataType instance for testing."""
     return DataType(
         name="variance",
-        type=TypeEnum.real,
+        type=ArrayDTypeEnum.real,
         description="Variance estimate",
         external_url="http://test.com",
-        intention=IntentionEnum.error_estimate,
+        intention=EstimateIntentionEnum.error_estimate,
         tag="error",
         output=OutputEnum.E,
         input=InputEnum.H,
@@ -61,10 +58,10 @@ def sample_data_type_3():
     """Return a third sample DataType instance for testing."""
     return DataType(
         name="coherence",
-        type=TypeEnum.real,
+        type=ArrayDTypeEnum.real,
         description="Signal coherence estimate",
         external_url="http://coherence.com",
-        intention=IntentionEnum.signal_coherence,
+        intention=EstimateIntentionEnum.signal_coherence,
         tag="coherence",
         output=OutputEnum.H,
         input=InputEnum.E,

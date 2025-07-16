@@ -8,9 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.common.enumerations import ChannelOrientationEnum
-from mt_metadata.transfer_functions.io.emtfxml.metadata.orientation_basemodel import (
-    Orientation,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Orientation
 
 
 # =============================================================================

@@ -29,10 +29,7 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.field_notes_basemodel import (
-    FieldNotes,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.run_basemodel import Run
+from mt_metadata.transfer_functions.io.emtfxml.metadata import FieldNotes, Run
 
 
 class TestFieldNotesFixtures:

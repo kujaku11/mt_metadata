@@ -28,10 +28,10 @@ from .data_quality_notes import DataQualityNotes
 from .data_quality_warnings import DataQualityWarnings
 from .orientation import Orientation
 from .site import Site
+from .instrument import Instrument
 from .electrode import Electrode
 from .dipole import Dipole
 from .magnetometer import Magnetometer
-from .instrument import Instrument
 from .run import Run
 from .field_notes import FieldNotes
 from .software import ProcessingSoftware
@@ -62,10 +62,10 @@ __all__ = [
     "DataQualityWarnings",
     "Orientation",
     "Site",
+    "Instrument",
     "Electrode",
     "Dipole",
     "Magnetometer",
-    "Instrument",
     "Run",
     "FieldNotes",
     "ProcessingSoftware",

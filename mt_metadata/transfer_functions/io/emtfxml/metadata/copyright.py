@@ -9,7 +9,7 @@ from pydantic import Field
 from mt_metadata.base import MetadataBase
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from .citation_basemodel import Citation
+from . import Citation
 
 
 # =====================================================

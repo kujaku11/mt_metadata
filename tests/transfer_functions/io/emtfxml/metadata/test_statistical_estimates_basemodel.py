@@ -40,10 +40,8 @@ from xml.etree import ElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.estimate_basemodel import (
+from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     Estimate,
-)
-from mt_metadata.transfer_functions.io.emtfxml.metadata.statistical_estimates_basemodel import (
     StatisticalEstimates,
 )
 
@@ -52,7 +50,7 @@ from mt_metadata.transfer_functions.io.emtfxml.metadata.statistical_estimates_ba
 @pytest.fixture
 def basic_statistical_estimates() -> StatisticalEstimates:
     """Create a basic StatisticalEstimates instance with default values."""
-    return StatisticalEstimates()
+    return StatisticalEstimates()  # type: ignore
 
 
 @pytest.fixture
@@ -554,7 +552,7 @@ class TestStatisticalEstimatesEdgeCases:
 
     def test_class_name_attribute(self):
         """Test that class name is correctly set."""
-        stat_est = StatisticalEstimates()
+        stat_est = StatisticalEstimates()  # type: ignore
         assert stat_est.__class__.__name__ == "StatisticalEstimates"
 
     def test_field_access_patterns(self, populated_statistical_estimates):

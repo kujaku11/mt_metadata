@@ -179,6 +179,38 @@ class Comment(MetadataBase):
         else:
             raise TypeError(f"Cannot parse type {type(value)}")
 
+    def read_dict(self, input_dict: dict) -> None:
+        """
+
+        can probably use from_dict method instead, but to keep consistency in EMTF XML
+        metadata, this method is used to read the comment from a dictionary.
+
+        :param input_dict: input dictionary containing comment data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
+
+        """
+        key = input_dict["comments"]
+        if isinstance(key, str):
+            self.value = key
+        elif isinstance(key, dict):
+            try:
+                self.value = key["value"]
+            except KeyError:
+                logger.debug("No value in comment")
+
+            try:
+                self.author = key["author"]
+            except KeyError:
+                logger.debug("No author of comment")
+            try:
+                self.time_stamp = key["date"]
+            except KeyError:
+                logger.debug("No date for comment")
+        else:
+            raise TypeError(f"Comment cannot parse type {type(key)}")
+
     def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
         Convert the Comment instance to XML format.

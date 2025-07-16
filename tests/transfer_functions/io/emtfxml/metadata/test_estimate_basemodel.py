@@ -8,9 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.common.enumerations import ArrayDTypeEnum, EstimateIntentionEnum
-from mt_metadata.transfer_functions.io.emtfxml.metadata.estimate_basemodel import (
-    Estimate,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Estimate
 
 
 # =============================================================================

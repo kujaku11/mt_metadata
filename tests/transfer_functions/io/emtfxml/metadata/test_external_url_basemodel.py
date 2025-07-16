@@ -7,9 +7,7 @@ from unittest.mock import patch
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.external_url_basemodel import (
-    ExternalUrl,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import ExternalUrl
 
 
 # =============================================================================

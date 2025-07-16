@@ -20,10 +20,8 @@ from xml.etree import cElementTree as et
 import pytest
 
 from mt_metadata.common import Comment
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode_basemodel import (
-    Electrode,
-    LocationEnum,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Electrode
+from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode import LocationEnum
 
 
 class TestElectrodeBasic:

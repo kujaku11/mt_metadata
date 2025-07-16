@@ -6,11 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.dipole_basemodel import Dipole
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode_basemodel import (
-    Electrode,
-    LocationEnum,
-)
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Dipole, Electrode
+from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode import LocationEnum
 
 
 # =============================================================================
