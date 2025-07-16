@@ -57,7 +57,7 @@ class DataQualityNotes(MetadataBase):
     ]
 
     comments: Annotated[
-        Comment | None,
+        Comment | str | None,
         Field(
             default_factory=Comment,  # type: ignore
             description="Comments about the data quality",
