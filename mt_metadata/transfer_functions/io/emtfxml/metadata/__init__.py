@@ -1,23 +1,23 @@
-# # -*- coding: utf-8 -*-
-# """
-# ==================
-# EMTF XML metadata
-# ==================
+# # # -*- coding: utf-8 -*-
+# # """
+# # ==================
+# # EMTF XML metadata
+# # ==================
 
-# The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__.
+# # The metadata for transfer functions follows those proposed by Anna Kelbert `EMTF XML: New data interchange format and conversion tools for electromagnetic transfer functions <http://mr.crossref.org/iPage?doi=10.1190%2Fgeo2018-0679.1>`__.
 
-# :copyright:
-#     Jared Peacock (jpeacock@usgs.gov)
+# # :copyright:
+# #     Jared Peacock (jpeacock@usgs.gov)
 
-# :license:
-#     MIT
+# # :license:
+# #     MIT
 
 
-# """
+# # """
 
-# # package file
+# # # package file
 
-# ### !!! DO NOT CHANGE THE ORDER !!!
+# # ### !!! DO NOT CHANGE THE ORDER !!!
 # from .external_url import ExternalUrl
 # from .primary_data import PrimaryData
 # from .attachment import Attachment
