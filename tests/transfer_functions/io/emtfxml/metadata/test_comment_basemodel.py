@@ -11,7 +11,7 @@ from xml.etree import cElementTree as et
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata.comment_basemodel import Comment
+from mt_metadata.common import Comment
 from mt_metadata.utils.mttime import MTime
 
 
