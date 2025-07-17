@@ -38,7 +38,7 @@ class Comment(MetadataBase):
     ]
 
     time_stamp: Annotated[
-        float | int | np.datetime64 | pd.Timestamp | str | MTime,
+        float | int | np.datetime64 | pd.Timestamp | str | MTime | None,
         Field(
             default_factory=lambda: MTime(time_stamp="1980-01-01T00:00:00+00:00"),
             description="Date and time of in UTC of when comment was made.",
@@ -163,14 +163,19 @@ class Comment(MetadataBase):
             self.value = value
         elif isinstance(value, dict):
             if len(value.keys()) > 1:
-                for key in ["time_stamp", "author", "value"]:
-                    try:
-                        setattr(self, key, value[key])
-                    except KeyError:
-                        logger.warning(f"Could not find {key} in input dictionary.")
+                self.time_stamp = value.get("time_stamp", None)
+                self.author = value.get("author", None)
+                self.value = value.get("value", None)
+
             elif len(value.keys()) == 1:
                 key = list(value.keys())[0]
-                self.value = value[key]
+                value = value[key]
+                if isinstance(value, dict):
+                    self.time_stamp = value.get("time_stamp", None)
+                    self.author = value.get("author", None)
+                    self.value = value.get("value", None)
+                elif isinstance(value, str):
+                    self.value = value
 
             # this only happens on instance creation, so we can ignore it
             else:

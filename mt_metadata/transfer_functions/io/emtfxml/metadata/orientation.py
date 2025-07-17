@@ -52,11 +52,9 @@ class Orientation(MetadataBase):
         :rtype: TYPE
 
         """
-        element_dict = {self.__class__.__name__: input_dict[self.__class__.__name__]}
-        if isinstance(element_dict[self.__class__.__name__], str):
-            element_dict[self.__class__.__name__] = {
-                "layout": element_dict[self.__class__.__name__]
-            }
+        element_dict = {self._class_name: input_dict[self._class_name]}
+        if isinstance(element_dict[self._class_name], str):
+            element_dict[self._class_name] = {"layout": element_dict[self._class_name]}
 
         self.from_dict(element_dict)
 

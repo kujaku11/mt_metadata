@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.common import Citation as CommonCitation
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
@@ -24,6 +24,29 @@ class Citation(CommonCitation):
             },
         ),
     ]
+
+    @field_validator("survey_d_o_i", mode="before")
+    @classmethod
+    def validate_survey_d_o_i(
+        cls,
+        value: HttpUrl | str | None,
+    ) -> str | None:
+        """
+        Validate the survey DOI.
+
+        Parameters
+        ----------
+        value : str | None
+            The DOI value to validate.
+        info : ValidationInfo
+            Additional validation information.
+
+        Returns
+        -------
+        str | None
+            The validated DOI or None if not provided.
+        """
+        return helpers.validate_doi(value)
 
     def to_xml(self, string=False, required=True):
         """

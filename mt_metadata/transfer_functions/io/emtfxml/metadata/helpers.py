@@ -12,6 +12,7 @@ from collections import OrderedDict
 from xml.etree import cElementTree as et
 
 from loguru import logger
+from pydantic import HttpUrl
 
 from mt_metadata import NULL_VALUES
 from mt_metadata.base.helpers import element_to_string
@@ -205,6 +206,42 @@ def _remove_null_values(element: et.Element, replace: str = "") -> et.Element:
                     item.attrib[key] = replace
 
     return element
+
+
+def validate_doi(value: str) -> str:
+    """
+    Validate a DOI string.
+
+    Parameters
+    ----------
+    value : str
+        The DOI string to validate.
+
+    Returns
+    -------
+    str
+        The validated DOI string.
+
+    Raises
+    ------
+    ValueError
+        If the DOI string is not valid.
+    """
+    if value is None:
+        return None
+    elif isinstance(value, str):
+        if value.startswith("10."):
+            value = f"https://doi.org/{value}"
+        elif value.startswith("doi:"):
+            value = f"https://doi.org/{value.replace('doi:', '')}"
+        elif not value.startswith("https://doi.org/"):
+            raise ValueError(f"Invalid DOI: {value}")
+        value = HttpUrl(value)
+    elif isinstance(value, HttpUrl):
+        if not value.startswith("https://doi.org/"):
+            raise ValueError(f"Invalid DOI: {value}")
+
+    return value
 
 
 def to_xml(cls, string=False, required=True, order=None) -> str | et.Element:

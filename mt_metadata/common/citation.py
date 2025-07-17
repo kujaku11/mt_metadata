@@ -59,7 +59,7 @@ class Citation(MetadataBase):
             description="Year of citation",
             examples=["2020"],
             alias=None,
-            pattern=r"^\d{4}$",
+            pattern=r"^\d{4}(-\d{4})?$",  # Allows for ranges like "2020-2021"
             json_schema_extra={
                 "units": None,
                 "required": False,

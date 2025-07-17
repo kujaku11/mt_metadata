@@ -1,25 +1,18 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ReleaseStatusEnum
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
 from . import Citation
 
 
 # =====================================================
-class ReleaseStatusEnum(str, Enum):
-    Unrestricted_release = "Unrestricted release"
-    Restricted_release = "Restricted release"
-    Paper_Citation_Required = "Paper Citation Required"
-    Academic_Use_Only = "Academic Use Only"
-    Conditions_Apply = "Conditions Apply"
-    Data_Citation_Required = "Data Citation Required"
 
 
 class Copyright(MetadataBase):

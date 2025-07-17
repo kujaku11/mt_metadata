@@ -23,7 +23,7 @@ from xml.etree import cElementTree as et
 import numpy as np
 import pandas as pd
 from loguru import logger
-from pydantic import BaseModel, ConfigDict, create_model
+from pydantic import BaseModel, computed_field, ConfigDict, create_model
 from pydantic.fields import FieldInfo, PrivateAttr
 from typing_extensions import deprecated
 
@@ -920,6 +920,11 @@ class MetadataBase(DotNotationBaseModel):
     )
     _json_extras: List[str] = PrivateAttr(["units", "required"])
 
+    @computed_field
+    @property
+    def _class_name(self) -> str:
+        return validate_attribute(self.__class__.__name__)
+
     # def __init__(self, **kwargs):
     #     """
     #     Initialize the MetadataBase object.  This will take in a dictionary or
@@ -1539,16 +1544,7 @@ class MetadataBase(DotNotationBaseModel):
         # set attributes by key.
         for name, value in meta_dict.items():
             if skip_none:
-                if value in [
-                    None,
-                    "None",
-                    "none",
-                    "NONE",
-                    "null",
-                    "Null",
-                    "NULL",
-                    "1980-01-01T00:00:00+00:00",
-                ]:
+                if value in NULL_VALUES:
                     continue
             self.update_attribute(name, value)
 

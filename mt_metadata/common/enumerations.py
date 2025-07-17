@@ -64,7 +64,7 @@ class ChannelLayoutEnum(StrEnumerationBase):
     plus = "+"
 
 
-class ElectrodeLocationEnum(str, Enum):
+class ElectrodeLocationEnum(StrEnumerationBase):
     N = "N"
     S = "S"
     E = "E"
@@ -148,6 +148,15 @@ class StdEDIversionsEnum(str, Enum):
     SEG_10 = "SEG_1.0"
     SEG_101 = "SEG 1.01"
     SEG_1011 = "SEG_1.01"
+
+
+class ReleaseStatusEnum(StrEnumerationBase):
+    Unrestricted_release = "Unrestricted release"
+    Restricted_release = "Restricted release"
+    Paper_Citation_Required = "Paper Citation Required"
+    Academic_Use_Only = "Academic Use Only"
+    Conditions_Apply = "Conditions Apply"
+    Data_Citation_Required = "Data Citation Required"
 
 
 ## This is a better way to making an pydantic type of enumeration with a validator

@@ -24,9 +24,9 @@ from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
 class TestEMTFXML(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.xml = EMTFXML(fn=TF_XML)
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.xml = EMTFXML(fn=TF_XML)
+        cls.maxDiff = None
 
     def test_basics(self):
         test_dict = OrderedDict(
@@ -116,9 +116,10 @@ class TestEMTFXML(unittest.TestCase):
                     "citation.authors",
                     "Schultz, A., Pellerin, L., Bedrosian, P., Kelbert, A., Crosbie, J.",
                 ),
+                ("citation.doi", None),
                 (
                     "citation.survey_d_o_i",
-                    "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH",
+                    "https://doi.org/10.17611/DP/EMTF/USMTARRAY/SOUTH",
                 ),
                 (
                     "citation.title",

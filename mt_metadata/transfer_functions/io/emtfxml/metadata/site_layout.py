@@ -107,6 +107,42 @@ class SiteLayout(MetadataBase):
 
         return channels
 
+    def read_dict(self, input_dict: dict) -> None:
+        """
+        read site layout into the proper input/output channels
+
+        :param input_dict: input dictionary containing site layout data
+        :type input_dict: dict
+        :return: None
+        :rtype: None
+
+        """
+        # read input channels
+        for ch in ["input_channels", "output_channels"]:
+            ch_list = []
+            try:
+                c_list = input_dict["site_layout"][ch]["magnetic"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"magnetic": ch_dict} for ch_dict in c_list]
+
+            except (KeyError, TypeError):
+                pass
+
+            try:
+                c_list = input_dict["site_layout"][ch]["electric"]
+                if c_list is None:
+                    continue
+                if not isinstance(c_list, list):
+                    c_list = [c_list]
+                ch_list += [{"electric": ch_dict} for ch_dict in c_list]
+            except (KeyError, TypeError):
+                pass
+
+            setattr(self, ch, ch_list)
+
     def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
         """
         Convert the SiteLayout instance to an XML representation.

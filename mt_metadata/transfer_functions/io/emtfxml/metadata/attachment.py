@@ -44,14 +44,14 @@ class Attachment(MetadataBase):
 
     def read_dict(self, input_dict: dict) -> None:
         """Read the input dictionary and populate the model fields."""
-        element_dict = {self.__class__.__name__: input_dict[self.__class__.__name__]}
-        if isinstance(element_dict[self.__class__.__name__], type(None)):
+        element_dict = {self._class_name: input_dict[self._class_name]}
+        if isinstance(element_dict[self._class_name], type(None)):
             return
-        elif isinstance(element_dict[self.__class__.__name__], list):
-            for item in element_dict[self.__class__.__name__]:
+        elif isinstance(element_dict[self._class_name], list):
+            for item in element_dict[self._class_name]:
                 attachment_item = Attachment()  # type: ignore
-                if not self.__class__.__name__ in item.keys():
-                    item = {self.__class__.__name__: item}
+                if not self._class_name in item.keys():
+                    item = {self._class_name: item}
                 attachment_item.from_dict(item)
                 self._attachments.append(attachment_item)
 

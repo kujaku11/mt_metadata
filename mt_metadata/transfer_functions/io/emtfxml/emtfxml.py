@@ -341,8 +341,8 @@ class EMTFXML:
 
         # apparently sometimes the run list will come out as None from an
         # empty emtfxml.
-        if self.site._run_list is None:
-            self.site._run_list = []
+        if self.site.run_list is None:
+            self.site.run_list = []
 
         self._get_statistical_estimates()
         self._get_data_types()
