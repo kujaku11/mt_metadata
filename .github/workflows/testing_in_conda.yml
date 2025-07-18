@@ -31,8 +31,9 @@ jobs:
     - name: Install Env
       run: |
         python --version
-        conda install pytest
-        conda install pytest-cov
+        pip install pytest
+        pip install pytest-cov
+        pip install pytest-subtests
     - name: Install Our Package
       run: |
         pip install -e .
@@ -53,4 +54,3 @@ jobs:
         fail_ci_if_error: false
         verbose: true
         flags: tests
-

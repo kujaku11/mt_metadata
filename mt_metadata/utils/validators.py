@@ -65,9 +65,11 @@ def validate_header(header, attribute=False):
     else:
         required_keys = [key for key in REQUIRED_KEYS if key != "attribute"]
         if sorted(header) != sorted(required_keys):
+            missing_keys = [x for x in required_keys if x not in header]
             msg = (
-                f"Keys is not correct, must include {required_keys}"
-                + f". Currently has {header}"
+                f"Keys is not correct, must include {required_keys}\n"
+                + f". Currently has {header}\n"
+                +  f"Need to add keys: {missing_keys}"
             )
             raise MTValidatorError(msg)
     return header

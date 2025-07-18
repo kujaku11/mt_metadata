@@ -162,12 +162,14 @@ class TF:
 
         return f"TF( {(', ').join(lines)} )"
 
-    def __eq__(self, other):
+    def __eq__(self, other, ignore_station_metadata_keys: Optional[list] = None):
         is_equal = True
         if not isinstance(other, TF):
             self.logger.info(f"Comparing object is not TF, type {type(other)}")
             is_equal = False
-        if self.station_metadata != other.station_metadata:
+        if not self.station_metadata.__eq__(
+            other.station_metadata, ignore_keys=ignore_station_metadata_keys
+        ):
             self.logger.info("Station metadata is not equal")
             is_equal = False
         if self.survey_metadata != other.survey_metadata:

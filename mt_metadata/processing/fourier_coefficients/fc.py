@@ -97,7 +97,7 @@ class FC(Base):
         """list of decimation levels"""
         dl_list = []
         for dl in self.levels:
-            dl_list.append(dl.decimation_level)
+            dl_list.append(dl.decimation.level)
         dl_list = sorted(set([cc for cc in dl_list if cc is not None]))
         if self._decimation_levels == []:
             return dl_list
@@ -199,7 +199,7 @@ class FC(Base):
         if self.has_decimation_level(level):
             return self.levels[str(level)]
 
-    def add_decimation_level(self, decimation_level_obj):
+    def add_decimation_level(self, fc_decimation):
         """
         Add a decimation_level to the list, check if one exists if it does overwrite it
 
@@ -207,21 +207,21 @@ class FC(Base):
         :type decimation_level_obj: :class:`mt_metadata.transfer_functions.processing.fourier_coefficients.decimation_level`
 
         """
-        if not isinstance(decimation_level_obj, (Decimation)):
-            msg = f"Input must be metadata.decimation_level not {type(decimation_level_obj)}"
+        if not isinstance(fc_decimation, (Decimation)):
+            msg = f"Input must be metadata.decimation_level not {type(fc_decimation)}"
             self.logger.error(msg)
             raise ValueError(msg)
 
-        if self.has_decimation_level(decimation_level_obj.decimation_level):
-            self.levels[decimation_level_obj.decimation_level].update(
-                decimation_level_obj
+        if self.has_decimation_level(fc_decimation.decimation.level):
+            self.levels[fc_decimation.decimation.level].update(
+                fc_decimation
             )
             self.logger.debug(
-                f"ch {decimation_level_obj.level} already exists, updating metadata"
+                f"ch {fc_decimation.decimation.level} already exists, updating metadata"
             )
 
         else:
-            self.levels.append(decimation_level_obj)
+            self.levels.append(fc_decimation)
 
         self.update_time_period()
 

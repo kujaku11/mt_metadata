@@ -16,11 +16,14 @@ Created on Tue Apr 28 18:08:40 2020
 # =============================================================================
 
 import unittest
+
+import numpy as np
 from mt_metadata.base import Base
 from mt_metadata.utils.exceptions import MTValidatorError
 import pytest
 from mt_metadata.base.metadata import MetadataBase
 from xml.etree.ElementTree import Element
+
 
 
 # =============================================================================
@@ -84,13 +87,14 @@ class TestBase(unittest.TestCase):
                 self.base_object._validate_type(number_list, int),
             )
         with self.subTest("float"):
+            number_list = [10, "11", 12.6, "13.3", "-inf"]
             self.assertEqual(
-                [10.0, 11.0, 12.6, 13.3],
+                [10.0, 11.0, 12.6, 13.3, -np.inf],
                 self.base_object._validate_type(number_list, float),
             )
         with self.subTest("string"):
             self.assertEqual(
-                ["10", "11", "12.6", "13.3"],
+                ["10", "11", "12.6", "13.3", "-inf"],
                 self.base_object._validate_type(number_list, str),
             )
         with self.subTest("bool"):
@@ -122,7 +126,15 @@ class TestBase(unittest.TestCase):
 
     def test_equal_str(self):
         self.assertFalse(self.base_object == "None")
+    
+    def test_eq_with_invalid_type(self):
+        """ Test that comparing Base object with an invalid type returns False. """
+        class NotAllowed:
+            pass
+        other = NotAllowed()
+        self.assertFalse(self.base_object == other)
 
+<<<<<<< HEAD
     @pytest.fixture
     def metadata_instance():
         """Fixture to create a MetadataBase instance with sample data."""
@@ -150,6 +162,14 @@ class TestBase(unittest.TestCase):
         xml_element = metadata_instance.to_xml(string=False)
         assert isinstance(xml_element, Element)
         assert xml_element.find("test_field").text == "sample_value"
+=======
+    def test_eq_with_json_string(self):
+        """Test equality with a JSON string representation of Base."""
+        base_dict = self.base_object.to_dict(single=True, required=False)
+        import json
+        base_json = json.dumps(base_dict)
+        self.assertTrue(self.base_object == base_json)
+>>>>>>> main
 
 
 # =============================================================================

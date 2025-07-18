@@ -200,7 +200,9 @@ def get_nm_elev(latitude, longitude):
 
     # read the xml response and convert to a float
     try:
+        # unpack the response to a dictionary
         info = json.loads(response.read())
+
     except json.JSONDecodeError:
         logger.error(
             f"Input values (latitude={latitude}, longitude={longitude}) "

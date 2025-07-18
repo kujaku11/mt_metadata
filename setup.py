@@ -51,7 +51,7 @@ setup(
     packages=find_packages(include=["mt_metadata", "mt_metadata.*"]),
     test_suite="tests",
     url="https://github.com/kujaku11/mt_metadata",
-    version="0.3.9",
+    version="0.4.0",
     zip_safe=False,
     package_data={
         "": [

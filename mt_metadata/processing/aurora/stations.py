@@ -4,6 +4,9 @@ Created on Thu Feb 24 13:58:07 2022
 
 @author: jpeacock
 """
+from loguru import logger
+from typing import Union
+
 import pandas as pd
 
 # =============================================================================
@@ -51,15 +54,40 @@ class Stations(Base):
         return return_list
 
     @remote.setter
-    def remote(self, rr_station):
+    def remote(self, rr_station: Union[list, dict]):
+        """
+            Method for unpacking rr_station info into mt_metadata object.
+
+            Developmnent Notes:
+            This function was raising an exception when trying to populate an aurora.Processing object
+            from a json.loads() dict.
+            TODO: add a description of input variable and use cases, ... it seems that we may not want
+            to support multiple rr stations yet.
+
+        Parameters
+        ----------
+        rr_station
+
+        Returns
+        -------
+
+        """
         self._remote = []
         if isinstance(rr_station, list):
             for item in rr_station:
-                if not isinstance(item, Station):
+                if isinstance(item, Station):
+                    self._remote.append(item)
+                elif isinstance(item, dict):
+                    try:
+                        remote = Station()
+                        remote.from_dict(item)
+                        self._remote.append(remote)
+                    except Exception as e:
+                        raise ValueError("could not unpack dict to a Station object")
+                else:
                     raise TypeError(
                         f"list item must be Station object not {type(item)}"
                     )
-                self._remote.append(item)
 
         elif isinstance(rr_station, dict):
             remote = Station()
@@ -71,9 +99,10 @@ class Stations(Base):
             rr_station.remote = True
             self._remote.append(rr_station)
 
-        elif isinstance(rr_station, str):
+        elif isinstance(rr_station, str):  # TODO: Add doc; what is this doing? This does not affect self._remote.
             if len(rr_station) > 4:
                 raise ValueError(f"not sure to do with {type(rr_station)}")
+            # TODO: Add doc explaining what happens when rr_station is str of length 3.
 
         else:
             raise ValueError(f"not sure to do with {type(rr_station)}")
