@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "engine": {
-            "default": "RME_RR",
+            "default": "'RME_RR'",
             "description": "The transfer function estimator engine",
             "title": "engine",
             "examples": "RME_RR",

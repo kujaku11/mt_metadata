@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "ex": {
-            "default": "ex",
+            "default": "'ex'",
             "description": "label for the X electric field channel, X is assumed to be North",
             "title": "ex",
             "examples": "ex",
@@ -19,7 +19,7 @@
             ]
         },
         "ey": {
-            "default": "ey",
+            "default": "'ey'",
             "description": "label for the Y electric field channel, Y is assumed to be East",
             "title": "ey",
             "examples": "ey",
@@ -35,7 +35,7 @@
             ]
         },
         "hx": {
-            "default": "hx",
+            "default": "'hx'",
             "description": "label for the X magnetic field channel, X is assumed to be North",
             "title": "hx",
             "examples": "hx",
@@ -51,7 +51,7 @@
             ]
         },
         "hy": {
-            "default": "hy",
+            "default": "'hy'",
             "description": "label for the Y magnetic field channel, Y is assumed to be East",
             "title": "hy",
             "examples": "hy",
@@ -67,7 +67,7 @@
             ]
         },
         "hz": {
-            "default": "hz",
+            "default": "'hz'",
             "description": "label for the Z magnetic field channel, Z is assumed to be vertical Down",
             "title": "hz",
             "examples": "hz",

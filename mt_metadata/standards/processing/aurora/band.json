@@ -48,7 +48,7 @@
             "units": "Hertz"
         },
         "center_averaging_type": {
-            "default": "geometric",
+            "default": "'geometric'",
             "description": "type of average to apply when computing the band center",
             "title": "center_averaging_type",
             "examples": "geometric",
@@ -61,7 +61,7 @@
             ]
         },
         "closed": {
-            "default": "left",
+            "default": "'left'",
             "description": "whether interval is open or closed",
             "title": "closed",
             "examples": "left",

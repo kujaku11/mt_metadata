@@ -45,7 +45,7 @@
             "units": "samples per second"
         },
         "method": {
-            "default": "fft",
+            "default": "'fft'",
             "description": "Fourier transform method",
             "title": "method",
             "examples": "fft",

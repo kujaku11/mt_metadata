@@ -4,9 +4,8 @@
 from enum import Enum
 from typing import Annotated, Any, List
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -47,9 +46,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default="default",
             description="Name of anti alias filter to be applied",
-            examples="default",
             alias=None,
             json_schema_extra={
+                "examples": "['default']",
                 "units": None,
                 "required": True,
             },
@@ -61,9 +60,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default=None,
             description="Whether the data are recolored [True] or not [False].",
-            examples=True,
             alias=None,
             json_schema_extra={
+                "examples": "[True]",
                 "units": None,
                 "required": True,
             },
@@ -75,9 +74,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default=None,
             description="How many FFT windows must be available for the time series to valid for STFT.",
-            examples=4,
             alias=None,
             json_schema_extra={
+                "examples": "[4]",
                 "units": None,
                 "required": True,
             },
@@ -89,9 +88,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default="fft",
             description="Fourier transform method",
-            examples="fft",
             alias=None,
             json_schema_extra={
+                "examples": "['fft']",
                 "units": None,
                 "required": True,
             },
@@ -103,9 +102,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default="first difference",
             description="Prewhitening method to be applied",
-            examples="first difference",
             alias=None,
             json_schema_extra={
+                "examples": "['first difference']",
                 "units": None,
                 "required": True,
             },
@@ -117,9 +116,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default="linear",
             description="Extra Pre FFT detrend method to be applied",
-            examples="linear",
             alias=None,
             json_schema_extra={
+                "examples": "['linear']",
                 "units": None,
                 "required": True,
             },
@@ -131,9 +130,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default="linear",
             description="Pre FFT detrend method to be applied",
-            examples="linear",
             alias=None,
             json_schema_extra={
+                "examples": "['linear']",
                 "units": None,
                 "required": True,
             },
@@ -146,9 +145,9 @@ class DecimationLevel(MetadataBase):
             default=None,
             items={"type": "integer"},
             description="List of bands",
-            examples="[]",
             alias=None,
             json_schema_extra={
+                "examples": "['[]']",
                 "units": None,
                 "required": True,
             },
@@ -161,9 +160,9 @@ class DecimationLevel(MetadataBase):
             default=None,
             items={"type": "string"},
             description="list of input channels (sources)",
-            examples="hx, hy",
             alias=None,
             json_schema_extra={
+                "examples": "['hx, hy']",
                 "units": None,
                 "required": True,
             },
@@ -176,9 +175,9 @@ class DecimationLevel(MetadataBase):
             default=None,
             items={"type": "string"},
             description="list of output channels (responses)",
-            examples="ex, ey, hz",
             alias=None,
             json_schema_extra={
+                "examples": "['ex, ey, hz']",
                 "units": None,
                 "required": True,
             },
@@ -191,9 +190,9 @@ class DecimationLevel(MetadataBase):
             default=None,
             items={"type": "string"},
             description="list of reference channels (remote sources)",
-            examples="hx, hy",
             alias=None,
             json_schema_extra={
+                "examples": "['hx, hy']",
                 "units": None,
                 "required": True,
             },
@@ -205,9 +204,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default=None,
             description="Whether the Fourier coefficients are saved [True] or not [False].",
-            examples=True,
             alias=None,
             json_schema_extra={
+                "examples": "[True]",
                 "units": None,
                 "required": True,
             },
@@ -219,9 +218,9 @@ class DecimationLevel(MetadataBase):
         Field(
             default=None,
             description="Format to use for fc storage",
-            examples="h5",
             alias=None,
             json_schema_extra={
+                "examples": "['h5']",
                 "units": None,
                 "required": False,
             },

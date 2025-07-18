@@ -3,9 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -15,9 +14,9 @@ class Config(MetadataBase):
         Field(
             default="",
             description="ID of the configuration setup. ",
-            examples="CAS04-01",
             alias=None,
             json_schema_extra={
+                "examples": "['CAS04-01']",
                 "units": None,
                 "required": True,
             },
@@ -29,9 +28,9 @@ class Config(MetadataBase):
         Field(
             default=0.0,
             description="Longitude of location in datum specified at survey level.",
-            examples="14.23",
             alias=["lon", "long"],
             json_schema_extra={
+                "examples": "['14.23']",
                 "units": "degrees",
                 "required": True,
             },
@@ -43,9 +42,9 @@ class Config(MetadataBase):
         Field(
             default=0.0,
             description="Elevation of location in datum specified at survey level.",
-            examples="123.4",
             alias=["elev"],
             json_schema_extra={
+                "examples": "['123.4']",
                 "units": "meters",
                 "required": True,
             },

@@ -1,11 +1,11 @@
 {
-    "title": "fc_channel",
+    "title": "feature_decimation_channel",
     "type": "object",
     "properties": {
-        "component": {
+        "name": {
             "default": "",
             "description": "Name of channel",
-            "title": "component",
+            "title": "name",
             "examples": "ex",
             "type": "string",
             "alias": null,
@@ -58,12 +58,12 @@
         }
     },
     "required": [
-        "component",
+        "name",
         "frequency_max",
         "frequency_min",
         "sample_rate_decimation_level",
         "sample_rate_window_step",
         "units"
     ],
-    "description": "fc_channel"
+    "description": "feature_decimation_channel"
 }

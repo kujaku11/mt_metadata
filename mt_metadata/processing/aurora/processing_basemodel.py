@@ -4,9 +4,8 @@
 from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -22,9 +21,9 @@ class Processing(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="decimation levels",
-            examples="0",
             alias=None,
             json_schema_extra={
+                "examples": "['0']",
                 "units": None,
                 "required": True,
             },
@@ -36,9 +35,9 @@ class Processing(MetadataBase):
         Field(
             default=None,
             description="describes how bands were sourced",
-            examples="EMTF",
             alias=None,
             json_schema_extra={
+                "examples": "['EMTF']",
                 "units": None,
                 "required": False,
             },
@@ -50,9 +49,9 @@ class Processing(MetadataBase):
         Field(
             default=None,
             description="the band setup file used to define bands",
-            examples="/home/user/bs_test.cfg",
             alias=None,
             json_schema_extra={
+                "examples": "['/home/user/bs_test.cfg']",
                 "units": None,
                 "required": False,
             },
@@ -64,9 +63,9 @@ class Processing(MetadataBase):
         Field(
             default="",
             description="Configuration ID",
-            examples="0",
             alias=None,
             json_schema_extra={
+                "examples": "['0']",
                 "units": None,
                 "required": True,
             },

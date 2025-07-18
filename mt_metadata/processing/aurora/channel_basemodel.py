@@ -3,9 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -15,9 +14,9 @@ class Channel(MetadataBase):
         Field(
             default="",
             description="channel ID",
-            examples="mt001",
             alias=None,
             json_schema_extra={
+                "examples": "['mt001']",
                 "units": None,
                 "required": True,
             },
@@ -29,9 +28,9 @@ class Channel(MetadataBase):
         Field(
             default=1.0,
             description="scale factor of the channel",
-            examples="10.0",
             alias=None,
             json_schema_extra={
+                "examples": "['10.0']",
                 "units": None,
                 "required": True,
             },

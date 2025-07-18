@@ -3,9 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -16,9 +15,9 @@ class Stations(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="list of remote sites",
-            examples="10",
             alias=None,
             json_schema_extra={
+                "examples": "['10']",
                 "units": None,
                 "required": True,
             },

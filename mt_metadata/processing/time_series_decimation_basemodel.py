@@ -12,7 +12,7 @@ from pydantic import Field
 class MethodEnum(str, Enum):
     default = 'default'
     other = 'other'
-class Decimation(MetadataBase):
+class TimeSeriesDecimation(MetadataBase):
     level: Annotated[int, Field(
     default=None,
     description='Decimation level, must be a non-negative integer starting at 0',

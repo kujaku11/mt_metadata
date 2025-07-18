@@ -3,9 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -15,9 +14,9 @@ class Run(MetadataBase):
         Field(
             default="",
             description="run ID",
-            examples="001",
             alias=None,
             json_schema_extra={
+                "examples": "['001']",
                 "units": None,
                 "required": True,
             },
@@ -30,9 +29,9 @@ class Run(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="List of input channels (source)",
-            examples="hx, hy",
             alias=None,
             json_schema_extra={
+                "examples": "['hx, hy']",
                 "units": None,
                 "required": True,
             },
@@ -45,9 +44,9 @@ class Run(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="List of output channels (response)",
-            examples="ex, ey, hz",
             alias=None,
             json_schema_extra={
+                "examples": "['ex, ey, hz']",
                 "units": None,
                 "required": True,
             },
@@ -60,9 +59,9 @@ class Run(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="List of time periods to process",
-            examples="",
             alias=None,
             json_schema_extra={
+                "examples": "['']",
                 "units": None,
                 "required": True,
             },
@@ -74,9 +73,9 @@ class Run(MetadataBase):
         Field(
             default=1.0,
             description="sample rate of the run",
-            examples="1",
             alias=None,
             json_schema_extra={
+                "examples": "['1']",
                 "units": "samples per second",
                 "required": True,
             },

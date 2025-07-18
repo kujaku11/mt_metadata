@@ -9,8 +9,8 @@ from pydantic import Field, field_validator, ValidationInfo
 
 
 #=====================================================
-class FcChannel(MetadataBase):
-    component: Annotated[str, Field(
+class FeatureDecimationChannel(MetadataBase):
+    name: Annotated[str, Field(
     default='',
     description='Name of channel',
     alias=None,

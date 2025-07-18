@@ -3,9 +3,8 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import Field
-
 from mt_metadata.base import MetadataBase
+from pydantic import Field
 
 
 # =====================================================
@@ -15,9 +14,9 @@ class Station(MetadataBase):
         Field(
             default="",
             description="Station ID",
-            examples="mt001",
             alias=None,
             json_schema_extra={
+                "examples": "['mt001']",
                 "units": None,
                 "required": True,
             },
@@ -29,9 +28,9 @@ class Station(MetadataBase):
         Field(
             default="",
             description="full path to MTH5 file where the station data is contained",
-            examples="/home/mt/experiment_01.h5",
             alias=None,
             json_schema_extra={
+                "examples": "['/home/mt/experiment_01.h5']",
                 "units": None,
                 "required": True,
             },
@@ -43,9 +42,9 @@ class Station(MetadataBase):
         Field(
             default=False,
             description="remote station (True) or local station (False)",
-            examples="False",
             alias=None,
             json_schema_extra={
+                "examples": "['False']",
                 "units": None,
                 "required": True,
             },
@@ -58,9 +57,9 @@ class Station(MetadataBase):
             default="[]",
             items={"type": "string"},
             description="List of runs to process",
-            examples="001",
             alias=None,
             json_schema_extra={
+                "examples": "['001']",
                 "units": None,
                 "required": True,
             },
