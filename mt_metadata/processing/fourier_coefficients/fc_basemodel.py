@@ -18,16 +18,18 @@ class Fc(MetadataBase):
     default='[]',
     items={'type': 'string'},
     description='List of decimation levels',
+    examples=['[1, 2, 3]'],
     alias=None,
-    json_schema_extra={'examples':"['[1, 2, 3]']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]
 
     id: Annotated[str, Field(
-    default='',
+    default=",
     description='ID given to the FC group',
+    examples=['aurora_01'],
     alias=None,
-    json_schema_extra={'examples':"['aurora_01']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]
 
@@ -35,23 +37,26 @@ class Fc(MetadataBase):
     default='[]',
     items={'type': 'string'},
     description='list of channels estimated',
+    examples=['[ex, hy]'],
     alias=None,
-    json_schema_extra={'examples':"['[ex, hy]']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]
 
     starting_sample_rate: Annotated[float, Field(
     default=1.0,
     description='Starting sample rate of the time series used to estimate FCs.',
+    examples=[60],
     alias=None,
-    json_schema_extra={'examples':'[60]','units':'samples per second','required':True,},
+    json_schema_extra={'units':'samples per second','required':True,},
 
     )]
 
     method: Annotated[MethodEnum, Field(
-    default=''fft'',
+    default="fft",
     description='Fourier transform method',
+    examples=['fft'],
     alias=None,
-    json_schema_extra={'examples':"['fft']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]

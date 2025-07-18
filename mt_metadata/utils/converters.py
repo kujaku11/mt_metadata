@@ -456,6 +456,10 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
         # "" is skipped by pydantic need to set it at "''"
         if field_default in [""]:
             field_default = "''"
+        elif isinstance(field_default, str) and "''" in field_default:
+            field_default = field_default.replace("''", '"')
+            if field_default == '"':
+                field_default = '""'
 
         # Use Annotated with Field
         field_definition = f"{TAB}{field_name}: Annotated[{field_type}, Field("
@@ -483,7 +487,8 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
                 continue
             elif attr_name in ["examples"]:
                 attr_value = [attr_value]
-                json_schema_extra["examples"] = repr(attr_value)
+                field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+                # json_schema_extra["examples"] = repr(attr_value)
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
 

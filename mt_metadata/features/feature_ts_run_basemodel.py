@@ -15,10 +15,10 @@ class FeatureTsRun(MetadataBase):
         Field(
             default="",
             description="Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001. Should be the same as the time series run ID.",
+            examples=["001"],
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
-                "examples": "['001']",
                 "units": None,
                 "required": True,
             },
@@ -30,9 +30,9 @@ class FeatureTsRun(MetadataBase):
         Field(
             default=0.0,
             description="Digital sample rate for the run",
+            examples=["100"],
             alias=None,
             json_schema_extra={
-                "examples": "['100']",
                 "units": "samples per second",
                 "required": True,
             },
@@ -44,9 +44,9 @@ class FeatureTsRun(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the feature",
+            examples=["estimated using hilburt transform."],
             alias=None,
             json_schema_extra={
-                "examples": "['estimated using hilburt transform.']",
                 "units": None,
                 "required": False,
             },

@@ -11,50 +11,56 @@ from pydantic import Field, field_validator, ValidationInfo
 #=====================================================
 class FcChannel(MetadataBase):
     component: Annotated[str, Field(
-    default='',
+    default=",
     description='Name of channel',
+    examples=['ex'],
     alias=None,
-    json_schema_extra={'examples':"['ex']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]
 
     frequency_max: Annotated[float, Field(
     default=0.0,
     description='Highest frequency present in the sprectrogam data.',
+    examples=[77.0],
     alias=None,
-    json_schema_extra={'examples':'[77.0]','units':'samples per second','required':True,},
+    json_schema_extra={'units':'samples per second','required':True,},
 
     )]
 
     frequency_min: Annotated[float, Field(
     default=0.0,
     description='Lowest frequency present in the sprectrogam data.',
+    examples=[99.0],
     alias=None,
-    json_schema_extra={'examples':'[99.0]','units':'samples per second','required':True,},
+    json_schema_extra={'units':'samples per second','required':True,},
 
     )]
 
     sample_rate_decimation_level: Annotated[float, Field(
     default=1.0,
     description='Sample rate of the time series that was Fourier transformed to generate the FC decimation level.',
+    examples=[60],
     alias=None,
-    json_schema_extra={'examples':'[60]','units':'samples per second','required':True,},
+    json_schema_extra={'units':'samples per second','required':True,},
 
     )]
 
     sample_rate_window_step: Annotated[float, Field(
     default=1.0,
     description='Sample rate of the windows.',
+    examples=[4],
     alias=None,
-    json_schema_extra={'examples':'[4]','units':'samples per second','required':True,},
+    json_schema_extra={'units':'samples per second','required':True,},
 
     )]
 
     units: Annotated[float, Field(
-    default=''counts'',
+    default="counts",
     description='Units of the channel',
+    examples=['millivolts'],
     alias=None,
-    json_schema_extra={'examples':"['millivolts']",'units':None,'required':True,},
+    json_schema_extra={'units':None,'required':True,},
 
     )]
 

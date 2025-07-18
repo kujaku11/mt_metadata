@@ -42,9 +42,9 @@ class Window(MetadataBase):
         Field(
             default=None,
             description="Number of samples in a single window",
+            examples=["256"],
             alias=None,
             json_schema_extra={
-                "examples": "['256']",
                 "units": "samples",
                 "required": True,
             },
@@ -56,9 +56,9 @@ class Window(MetadataBase):
         Field(
             default=None,
             description="Number of samples overlapped by adjacent windows",
+            examples=["32"],
             alias=None,
             json_schema_extra={
-                "examples": "['32']",
                 "units": "samples",
                 "required": True,
             },
@@ -70,9 +70,9 @@ class Window(MetadataBase):
         Field(
             default="boxcar",
             description="name of the window type",
+            examples=["hamming"],
             alias=None,
             json_schema_extra={
-                "examples": "['hamming']",
                 "units": None,
                 "required": True,
             },
@@ -84,9 +84,9 @@ class Window(MetadataBase):
         Field(
             default="ignore",
             description="how the clock-zero is specified",
+            examples=["user specified"],
             alias=None,
             json_schema_extra={
-                "examples": "['user specified']",
                 "units": None,
                 "required": True,
             },
@@ -98,9 +98,9 @@ class Window(MetadataBase):
         Field(
             default=None,
             description="Start date and time of the first data window",
+            examples=["2020-02-01T09:23:45.453670+00:00"],
             alias=None,
             json_schema_extra={
-                "examples": "['2020-02-01T09:23:45.453670+00:00']",
                 "units": None,
                 "required": False,
             },
