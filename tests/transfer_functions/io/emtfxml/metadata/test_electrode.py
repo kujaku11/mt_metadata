@@ -4,7 +4,7 @@ Comprehensive pytest test suite for Electrode basemodel.
 
 Tests cover:
 - Basic instantiation and validation
-- LocationEnum validation and behavior
+- ElectrodeLocationEnum validation and behavior
 - Comments field validation and string conversion
 - XML generation (to_xml)
 - Edge cases and error handling
@@ -21,7 +21,7 @@ import pytest
 
 from mt_metadata.common import Comment
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Electrode
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode import LocationEnum
+from mt_metadata.common.enumerations import ElectrodeLocationEnum
 
 
 class TestElectrodeBasic:
@@ -30,35 +30,35 @@ class TestElectrodeBasic:
     def test_default_initialization(self):
         """Test Electrode can be created with defaults."""
         electrode = Electrode()
-        assert electrode.location == LocationEnum.NONE  # Default ""
+        assert electrode.location == ElectrodeLocationEnum.NONE  # Default ""
         assert electrode.number == "0"
         assert isinstance(electrode.comments, Comment)
 
     def test_initialization_with_parameters(self):
         """Test Electrode initialization with explicit parameters."""
         electrode = Electrode(location="N", number="1a", comments="Ag-AgCl porous pot")
-        assert electrode.location == LocationEnum.N
+        assert electrode.location == ElectrodeLocationEnum.N
         assert electrode.number == "1a"
         assert isinstance(electrode.comments, Comment)
 
     def test_location_enum_values(self):
-        """Test LocationEnum has expected values."""
-        assert LocationEnum.N == "N"
-        assert LocationEnum.S == "S"
-        assert LocationEnum.E == "E"
-        assert LocationEnum.W == "W"
-        assert LocationEnum.NONE == ""
+        """Test ElectrodeLocationEnum has expected values."""
+        assert ElectrodeLocationEnum.N == "N"
+        assert ElectrodeLocationEnum.S == "S"
+        assert ElectrodeLocationEnum.E == "E"
+        assert ElectrodeLocationEnum.W == "W"
+        assert ElectrodeLocationEnum.NONE == ""
 
     def test_location_enum_assignment(self):
         """Test location field accepts enum values."""
-        electrode = Electrode(location=LocationEnum.E)
-        assert electrode.location == LocationEnum.E
+        electrode = Electrode(location=ElectrodeLocationEnum.E)
+        assert electrode.location == ElectrodeLocationEnum.E
         assert electrode.location == "E"
 
     def test_location_string_assignment(self):
         """Test location field accepts string values."""
         electrode = Electrode(location="W")
-        assert electrode.location == LocationEnum.W
+        assert electrode.location == ElectrodeLocationEnum.W
         assert electrode.location == "W"
 
     def test_number_field_assignment(self):
@@ -79,16 +79,16 @@ class TestElectrodeBasic:
 
 
 class TestElectrodeLocationEnum:
-    """Test LocationEnum functionality."""
+    """Test ElectrodeLocationEnum functionality."""
 
     @pytest.mark.parametrize(
         "location_value,expected",
         [
-            ("N", LocationEnum.N),
-            ("S", LocationEnum.S),
-            ("E", LocationEnum.E),
-            ("W", LocationEnum.W),
-            ("", LocationEnum.NONE),
+            ("N", ElectrodeLocationEnum.N),
+            ("S", ElectrodeLocationEnum.S),
+            ("E", ElectrodeLocationEnum.E),
+            ("W", ElectrodeLocationEnum.W),
+            ("", ElectrodeLocationEnum.NONE),
         ],
     )
     def test_location_enum_conversion(self, location_value, expected):
@@ -102,19 +102,19 @@ class TestElectrodeLocationEnum:
             Electrode(location="INVALID")
 
     def test_location_enum_string_methods(self):
-        """Test LocationEnum string methods work correctly."""
-        # LocationEnum string representation includes the class name
-        assert str(LocationEnum.N) == "LocationEnum.N"
-        assert repr(LocationEnum.N) == "<LocationEnum.N: 'N'>"
+        """Test ElectrodeLocationEnum string methods work correctly."""
+        # ElectrodeLocationEnum string representation includes the class name
+        assert str(ElectrodeLocationEnum.N) == "ElectrodeLocationEnum.N"
+        assert repr(ElectrodeLocationEnum.N) == "<ElectrodeLocationEnum.N: 'N'>"
         # But the value attribute gives the actual string value
-        assert LocationEnum.N.value == "N"
+        assert ElectrodeLocationEnum.N.value == "N"
         # And equality with string value still works
-        assert LocationEnum.N == "N"
+        assert ElectrodeLocationEnum.N == "N"
 
     def test_location_enum_in_list(self):
-        """Test LocationEnum works in list operations."""
-        valid_locations = list(LocationEnum)
-        assert LocationEnum.N in valid_locations
+        """Test ElectrodeLocationEnum works in list operations."""
+        valid_locations = list(ElectrodeLocationEnum)
+        assert ElectrodeLocationEnum.N in valid_locations
         assert len(valid_locations) == 5  # N, S, E, W, NONE
 
 
@@ -248,7 +248,7 @@ class TestElectrodeEdgeCases:
         """Test Pydantic model_validate functionality."""
         data = {"location": "S", "number": "3", "comments": "test electrode"}
         electrode = Electrode.model_validate(data)
-        assert electrode.location == LocationEnum.S
+        assert electrode.location == ElectrodeLocationEnum.S
         assert electrode.number == "3"
         assert isinstance(electrode.comments, Comment)
 
@@ -289,7 +289,7 @@ class TestElectrodeIntegration:
         )
 
         # Verify creation
-        assert electrode.location == LocationEnum.W
+        assert electrode.location == ElectrodeLocationEnum.W
         assert electrode.number == "west_1"
         assert isinstance(electrode.comments, Comment)
 

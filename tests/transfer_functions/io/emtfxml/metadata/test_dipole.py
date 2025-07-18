@@ -7,7 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Dipole, Electrode
-from mt_metadata.transfer_functions.io.emtfxml.metadata.electrode import LocationEnum
+from mt_metadata.common.enumerations import ElectrodeLocationEnum
 
 
 # =============================================================================
@@ -121,8 +121,12 @@ class TestDipoleInstantiation:
 
     def test_dipole_with_electrode_objects(self):
         """Test creating dipole with Electrode objects."""
-        electrode1 = Electrode(number="1", location=LocationEnum.N, comments="test1")
-        electrode2 = Electrode(number="2", location=LocationEnum.S, comments="test2")
+        electrode1 = Electrode(
+            number="1", location=ElectrodeLocationEnum.N, comments="test1"
+        )
+        electrode2 = Electrode(
+            number="2", location=ElectrodeLocationEnum.S, comments="test2"
+        )
 
         dipole = Dipole(name="test_dipole", electrode=[electrode1, electrode2])
 
@@ -163,8 +167,8 @@ class TestElectrodeValidation:
     def test_electrode_validator_with_list_of_objects(self, empty_dipole):
         """Test electrode validator with list of Electrode objects."""
         electrodes = [
-            Electrode(number="1", location=LocationEnum.N, comments="test1"),
-            Electrode(number="2", location=LocationEnum.S, comments="test2"),
+            Electrode(number="1", location=ElectrodeLocationEnum.N, comments="test1"),
+            Electrode(number="2", location=ElectrodeLocationEnum.S, comments="test2"),
         ]
 
         empty_dipole.electrode = electrodes
@@ -184,7 +188,9 @@ class TestElectrodeValidation:
 
     def test_electrode_validator_with_single_object(self, empty_dipole):
         """Test electrode validator with single Electrode object."""
-        electrode = Electrode(number="1", location=LocationEnum.N, comments="test")
+        electrode = Electrode(
+            number="1", location=ElectrodeLocationEnum.N, comments="test"
+        )
 
         empty_dipole.electrode = electrode
 
@@ -201,7 +207,9 @@ class TestElectrodeValidation:
 
     def test_electrode_validator_with_mixed_types(self, empty_dipole):
         """Test electrode validator with mixed valid types."""
-        electrode_obj = Electrode(number="1", location=LocationEnum.N, comments="test1")
+        electrode_obj = Electrode(
+            number="1", location=ElectrodeLocationEnum.N, comments="test1"
+        )
         electrode_dict = {"number": "2", "location": "S"}
 
         empty_dipole.electrode = [electrode_obj, electrode_dict]
@@ -409,7 +417,9 @@ class TestEdgeCases:
         """Test modification of electrode list after creation."""
         original_count = len(dipole_with_electrodes.electrode)
 
-        new_electrode = Electrode(number="3", location=LocationEnum.E, comments="test")
+        new_electrode = Electrode(
+            number="3", location=ElectrodeLocationEnum.E, comments="test"
+        )
         dipole_with_electrodes.electrode.append(new_electrode)
 
         assert len(dipole_with_electrodes.electrode) == original_count + 1
@@ -507,10 +517,10 @@ class TestIntegration:
         """Test complex dipole with multiple electrodes XML generation."""
         # Create electrodes with different configurations
         electrode1 = Electrode(
-            number="1", location=LocationEnum.N, comments="Northern electrode"
+            number="1", location=ElectrodeLocationEnum.N, comments="Northern electrode"
         )
         electrode2 = Electrode(
-            number="2", location=LocationEnum.S, comments="Southern electrode"
+            number="2", location=ElectrodeLocationEnum.S, comments="Southern electrode"
         )
 
         # Create dipole
