@@ -24,14 +24,14 @@ def basic_citation():
 def complete_citation():
     """Return a Citation instance with all fields populated."""
     return Citation(
-        doi="http://doi.org/10.1234/example.citation",
+        doi="https://doi.org/10.1234/example.citation",
         authors="John Doe, Jane Smith, Bob Johnson",
         title="Advanced Magnetotelluric Survey Analysis: A Comprehensive Study",
         year="2023",
         volume="45",
         pages="123-145",
         journal="Journal of Geophysical Research",
-        survey_d_o_i="http://doi.org/10.5678/survey.data",
+        survey_d_o_i="https://doi.org/10.5678/survey.data",
     )
 
 
@@ -39,7 +39,7 @@ def complete_citation():
 def minimal_citation():
     """Return a Citation instance with minimal values."""
     return Citation(
-        doi="http://doi.org/10.1111/minimal",
+        doi="https://doi.org/10.1111/minimal",
         title="Minimal Citation Example",
     )
 
@@ -47,9 +47,9 @@ def minimal_citation():
 @pytest.fixture(
     params=[
         # Valid DOI formats
-        "http://doi.org/10.1234/example",
+        "https://doi.org/10.1234/example",
         "https://doi.org/10.5678/test.data",
-        "http://dx.doi.org/10.9999/complex.citation.2023",
+        "https://dx.doi.org/10.9999/complex.citation.2023",
     ]
 )
 def valid_doi_inputs(request):
@@ -94,14 +94,14 @@ class TestCitationBasicFunctionality:
     def test_complete_initialization(self, complete_citation):
         """Test Citation with all fields populated."""
         expected_values = {
-            "doi": "http://doi.org/10.1234/example.citation",
+            "doi": "https://doi.org/10.1234/example.citation",
             "authors": "John Doe, Jane Smith, Bob Johnson",
             "title": "Advanced Magnetotelluric Survey Analysis: A Comprehensive Study",
             # "year": "2023",  # Skip year field due to validator bug
             "volume": "45",
             "pages": "123-145",
             "journal": "Journal of Geophysical Research",
-            "survey_d_o_i": "http://doi.org/10.5678/survey.data",
+            "survey_d_o_i": "https://doi.org/10.5678/survey.data",
         }
 
         for field, expected in expected_values.items():
@@ -113,7 +113,9 @@ class TestCitationBasicFunctionality:
     def test_minimal_initialization(self, minimal_citation):
         """Test Citation with minimal values."""
         # Test that DOI is set correctly
-        assert minimal_citation.doi.unicode_string() == "http://doi.org/10.1111/minimal"
+        assert (
+            minimal_citation.doi.unicode_string() == "https://doi.org/10.1111/minimal"
+        )
         # Test that title is set correctly
         assert minimal_citation.title == "Minimal Citation Example"
         # Test that other fields are None
@@ -277,7 +279,7 @@ class TestCitationPerformance:
         citations = []
         for i in range(100):
             citation = Citation(
-                doi=f"http://doi.org/10.1234/example.{i}",
+                doi=f"https://doi.org/10.1234/example.{i}",
                 title=f"Test Citation {i}",
                 year="2023",
                 authors=f"Author {i}",
@@ -323,15 +325,16 @@ class TestCitationIntegration:
 
     def test_doi_assignment(self, basic_citation):
         """Test DOI field assignment."""
-        basic_citation.doi = "http://doi.org/10.1234/new.citation"
+        basic_citation.doi = "https://doi.org/10.1234/new.citation"
         assert (
-            basic_citation.doi.unicode_string() == "http://doi.org/10.1234/new.citation"
+            basic_citation.doi.unicode_string()
+            == "https://doi.org/10.1234/new.citation"
         )
 
-        basic_citation.survey_d_o_i = "http://doi.org/10.5678/new.survey"
+        basic_citation.survey_d_o_i = "https://doi.org/10.5678/new.survey"
         assert (
             basic_citation.survey_d_o_i.unicode_string()
-            == "http://doi.org/10.5678/new.survey"
+            == "https://doi.org/10.5678/new.survey"
         )
 
 
@@ -360,17 +363,20 @@ class TestCitationInheritance:
 
     def test_survey_doi_specific_functionality(self):
         """Test survey_d_o_i specific functionality."""
-        citation = Citation(survey_d_o_i="http://doi.org/10.1234/survey")
-        assert citation.survey_d_o_i.unicode_string() == "http://doi.org/10.1234/survey"
+        citation = Citation(survey_d_o_i="https://doi.org/10.1234/survey")
+        assert (
+            citation.survey_d_o_i.unicode_string() == "https://doi.org/10.1234/survey"
+        )
 
         # Test that it's separate from regular DOI
         citation_both = Citation(
-            doi="http://doi.org/10.1111/paper",
-            survey_d_o_i="http://doi.org/10.2222/data",
+            doi="https://doi.org/10.1111/paper",
+            survey_d_o_i="https://doi.org/10.2222/data",
         )
-        assert citation_both.doi.unicode_string() == "http://doi.org/10.1111/paper"
+        assert citation_both.doi.unicode_string() == "https://doi.org/10.1111/paper"
         assert (
-            citation_both.survey_d_o_i.unicode_string() == "http://doi.org/10.2222/data"
+            citation_both.survey_d_o_i.unicode_string()
+            == "https://doi.org/10.2222/data"
         )
 
 

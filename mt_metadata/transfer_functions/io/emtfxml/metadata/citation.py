@@ -7,12 +7,13 @@ from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.common import Citation as CommonCitation
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
+from mt_metadata.utils.validators import validate_doi
 
 
 # =====================================================
 class Citation(CommonCitation):
     survey_d_o_i: Annotated[
-        HttpUrl | None,
+        HttpUrl | str | None,
         Field(
             default=None,
             description="doi number of the survey",
@@ -30,7 +31,7 @@ class Citation(CommonCitation):
     def validate_survey_d_o_i(
         cls,
         value: HttpUrl | str | None,
-    ) -> str | None:
+    ) -> HttpUrl | None:
         """
         Validate the survey DOI.
 
@@ -46,7 +47,7 @@ class Citation(CommonCitation):
         str | None
             The validated DOI or None if not provided.
         """
-        return helpers.validate_doi(value)
+        return validate_doi(value)
 
     def to_xml(self, string=False, required=True):
         """

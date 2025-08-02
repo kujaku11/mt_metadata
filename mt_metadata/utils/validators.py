@@ -24,6 +24,7 @@ from collections.abc import Iterable
 
 import numpy as np
 from loguru import logger
+from pydantic import HttpUrl
 
 from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
 from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
@@ -32,6 +33,45 @@ from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
 # =============================================================================
 # validator functions
 # =============================================================================
+
+
+def validate_doi(value: str | HttpUrl | None) -> HttpUrl | None:
+    """
+    Validate a DOI string.
+
+    Parameters
+    ----------
+    value : str
+        The DOI string to validate.
+
+    Returns
+    -------
+    str
+        The validated DOI string.
+
+    Raises
+    ------
+    ValueError
+        If the DOI string is not valid.
+    """
+    if value is None:
+        return None
+    elif isinstance(value, str):
+        if value.startswith("10."):
+            value = f"https://doi.org/{value}"
+        elif value.startswith("doi:"):
+            value = f"https://doi.org/{value.replace('doi:', '')}"
+        value = HttpUrl(value)
+    elif isinstance(value, HttpUrl):
+        pass
+    # Check if the URL starts with a valid DOI prefix
+    if not value.unicode_string().startswith("https://doi.org/"):
+        if not value.unicode_string().startswith("https://dx.doi.org/"):
+            raise ValueError(f"Invalid DOI: {value}")
+
+    return value
+
+
 def validate_header(header, attribute=False):
     """
     validate header to make sure it includes the required keys:
@@ -69,7 +109,7 @@ def validate_header(header, attribute=False):
             msg = (
                 f"Keys is not correct, must include {required_keys}\n"
                 + f". Currently has {header}\n"
-                +  f"Need to add keys: {missing_keys}"
+                + f"Need to add keys: {missing_keys}"
             )
             raise MTValidatorError(msg)
     return header

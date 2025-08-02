@@ -3,15 +3,16 @@
 # =====================================================
 from typing import Annotated
 
-from pydantic import AliasChoices, Field, HttpUrl
+from pydantic import AliasChoices, Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.utils.validators import validate_doi
 
 
 # =====================================================
 class Citation(MetadataBase):
     doi: Annotated[
-        HttpUrl | None,
+        HttpUrl | str | None,
         Field(
             default=None,
             description="full url of the doi number",
@@ -108,3 +109,26 @@ class Citation(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("doi", mode="before")
+    @classmethod
+    def validate_doi(
+        cls,
+        value: HttpUrl | str | None,
+    ) -> HttpUrl | None:
+        """
+        Validate the DOI.
+
+        Parameters
+        ----------
+        value : str | None
+            The DOI value to validate.
+        info : ValidationInfo
+            Additional validation information.
+
+        Returns
+        -------
+        str | None
+            The validated DOI or None if not provided.
+        """
+        return validate_doi(value)
