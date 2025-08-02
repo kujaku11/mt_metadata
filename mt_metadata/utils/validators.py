@@ -30,6 +30,9 @@ from mt_metadata import ACCEPTED_STYLES, REQUIRED_KEYS
 from mt_metadata.utils.exceptions import MTSchemaError, MTValidatorError
 
 
+# from mt_metadata.common.comment import Comment
+
+
 # =============================================================================
 # validator functions
 # =============================================================================
@@ -70,6 +73,25 @@ def validate_doi(value: str | HttpUrl | None) -> HttpUrl | None:
             raise ValueError(f"Invalid DOI: {value}")
 
     return value
+
+
+# def validate_comments(comments: str | Comment | None) -> Comment | None:
+#     """
+#     Validate comments string.
+
+#     Parameters
+#     ----------
+#     comments : str | None
+#         The comments to validate.
+
+#     Returns
+#     -------
+#     str | None
+#         The validated comments string or None if empty.
+#     """
+#     if isinstance(comments, str):
+#         return Comment(value=comments)  # type: ignore
+#     return comments
 
 
 def validate_header(header, attribute=False):

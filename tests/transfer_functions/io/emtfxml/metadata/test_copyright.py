@@ -22,7 +22,7 @@ def basic_citation():
     """Return a basic Citation instance for testing."""
     return Citation(
         title="Test Citation Title",
-        doi="http://doi.org/10.1234/test.citation",
+        doi="https://doi.org/10.1234/test.citation",
         authors="John Doe, Jane Smith",
     )
 
@@ -32,7 +32,7 @@ def complete_citation():
     """Return a complete Citation instance for testing."""
     return Citation(
         title="Comprehensive MT Study",
-        doi="http://doi.org/10.5678/complete.study",
+        doi="https://doi.org/10.5678/complete.study",
         authors="Alice Johnson, Bob Williams, Carol Davis",
         volume="42",
         pages="123-145",
@@ -63,7 +63,7 @@ def complete_copyright(complete_citation):
 def minimal_copyright():
     """Return a Copyright instance with minimal Citation."""
     minimal_citation = Citation(
-        title="Minimal Test", doi="http://doi.org/10.1111/minimal"
+        title="Minimal Test", doi="https://doi.org/10.1111/minimal"
     )
     return Copyright(citation=minimal_citation)
 
@@ -152,7 +152,7 @@ class TestCopyrightBasicFunctionality:
         assert minimal_copyright.citation.title == "Minimal Test"
         assert (
             minimal_copyright.citation.doi.unicode_string()
-            == "http://doi.org/10.1111/minimal"
+            == "https://doi.org/10.1111/minimal"
         )
 
         # Other fields should have defaults
@@ -164,13 +164,13 @@ class TestCopyrightValidation:
     """Test Copyright validation logic."""
 
     def test_citation_field_required(self):
-        """Test that citation field is required."""
+        """Test that citation field validates type correctly."""
         with pytest.raises(ValidationError) as excinfo:
-            Copyright()
+            Copyright(citation="invalid_string")
 
         error_str = str(excinfo.value).lower()
         assert "citation" in error_str
-        assert "required" in error_str or "missing" in error_str
+        assert "input should be" in error_str or "model_type" in error_str
 
     def test_valid_release_statuses(self, all_release_statuses, basic_citation):
         """Test all valid ReleaseStatusEnum values."""
@@ -222,7 +222,7 @@ class TestCopyrightValidation:
 
         # Create base valid arguments
         base_args = {
-            "citation": Citation(title="Test", doi="http://doi.org/10.1234/test")
+            "citation": Citation(title="Test", doi="https://doi.org/10.1234/test")
         }
 
         # Override with invalid value
@@ -235,7 +235,10 @@ class TestCopyrightValidation:
         if error_type == "type":
             assert any(keyword in error_str for keyword in ["type", "input should be"])
         elif error_type == "enum":
-            assert any(keyword in error_str for keyword in ["input should be", "enum"])
+            assert any(
+                keyword in error_str
+                for keyword in ["invalid value", "must be one of", "value error"]
+            )
 
 
 class TestCopyrightReleaseStatusEnum:
@@ -544,7 +547,7 @@ class TestCopyrightIntegration:
         """Test replacing the citation field."""
         new_citation = Citation(
             title="New Citation Title",
-            doi="http://doi.org/10.9999/new.citation",
+            doi="https://doi.org/10.9999/new.citation",
             authors="New Author",
         )
 

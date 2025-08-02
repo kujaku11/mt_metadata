@@ -255,7 +255,7 @@ class TestDictionaryOperations:
     def test_read_dict_with_full_data(self, empty_orientation):
         """Test read_dict with complete orientation data."""
         test_dict = {
-            "Orientation": {"angle_to_geographic_north": 135.0, "layout": "station"}
+            "orientation": {"angle_to_geographic_north": 135.0, "layout": "station"}
         }
 
         empty_orientation.read_dict(test_dict)
@@ -265,7 +265,7 @@ class TestDictionaryOperations:
 
     def test_read_dict_with_string_layout(self, empty_orientation):
         """Test read_dict when layout is provided as string."""
-        test_dict = {"Orientation": "sitelayout"}
+        test_dict = {"orientation": "sitelayout"}
 
         empty_orientation.read_dict(test_dict)
 
@@ -275,14 +275,14 @@ class TestDictionaryOperations:
     def test_read_dict_conversion_logic(self, empty_orientation):
         """Test the string conversion logic in read_dict."""
         # Test with string value
-        string_dict = {"Orientation": "orthogonal"}
+        string_dict = {"orientation": "orthogonal"}
         empty_orientation.read_dict(string_dict)
         assert empty_orientation.layout == "orthogonal"
 
         # Reset and test with dict value
         empty_orientation2 = Orientation()
         dict_dict = {
-            "Orientation": {"angle_to_geographic_north": 45.0, "layout": "station"}
+            "orientation": {"angle_to_geographic_north": 45.0, "layout": "station"}
         }
         empty_orientation2.read_dict(dict_dict)
         assert empty_orientation2.angle_to_geographic_north == 45.0
@@ -473,7 +473,7 @@ class TestIntegration:
 
         # Create new instance and load from dict
         new_orientation = Orientation()
-        new_orientation.read_dict({"Orientation": orientation_dict["orientation"]})
+        new_orientation.read_dict({"orientation": orientation_dict["orientation"]})
 
         # Verify they match
         assert (
