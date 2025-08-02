@@ -56,7 +56,7 @@ class TransferFunction(MetadataBase):
     }
 
     period: Annotated[
-        np.typing.NDArray[np.float64],
+        np.typing.NDArray[np.float64] | None,
         Field(
             default_factory=lambda: np.empty((0,), dtype=np.float64),
             description="periods for estimates",
@@ -69,7 +69,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     z: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 2, 2), dtype=np.complex128),
             description="Estimates of the impedance tensor.",
@@ -82,7 +82,7 @@ class TransferFunction(MetadataBase):
     ]
 
     z_var: Annotated[
-        np.typing.NDArray[np.float64],
+        np.typing.NDArray[np.float64] | None,
         Field(
             default_factory=lambda: np.empty((0, 2, 2), dtype=np.float64),
             description="Variance estimates for the impedance tensor.",
@@ -95,7 +95,7 @@ class TransferFunction(MetadataBase):
     ]
 
     z_invsigcov: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 2, 2), dtype=np.complex128),
             description="Inverse of the covariance matrix for the impedance tensor.",
@@ -107,7 +107,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     z_residcov: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 2, 2), dtype=np.complex128),
             description="Residual covariance matrix for the impedance tensor.",
@@ -119,7 +119,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     t: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 1, 2), dtype=np.complex128),
             description="Estimates of the tipper tensor.",
@@ -131,7 +131,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     t_var: Annotated[
-        np.typing.NDArray[np.float64],
+        np.typing.NDArray[np.float64] | None,
         Field(
             default_factory=lambda: np.empty((0, 1, 2), dtype=np.float64),
             description="Variance estimates for the tipper tensor.",
@@ -143,7 +143,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     t_invsigcov: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 2, 2), dtype=np.complex128),
             description="Inverse of the covariance matrix for the tipper tensor.",
@@ -155,7 +155,7 @@ class TransferFunction(MetadataBase):
         ),
     ]
     t_residcov: Annotated[
-        np.typing.NDArray[np.complex128],
+        np.typing.NDArray[np.complex128] | None,
         Field(
             default_factory=lambda: np.empty((0, 1, 1), dtype=np.complex128),
             description="Residual covariance matrix for the tipper tensor.",

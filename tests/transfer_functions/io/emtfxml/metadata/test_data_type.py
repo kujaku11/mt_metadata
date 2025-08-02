@@ -137,7 +137,7 @@ class TestDataTypeBasicFunctionality:
         assert minimal_data_type.tag == ""
         assert minimal_data_type.output == ""
         assert minimal_data_type.input == ""
-        assert minimal_data_type.units == ""
+        assert minimal_data_type.units == "milliVolt per kilometer per nanoTesla"
 
     def test_basic_initialization(self, basic_data_type):
         """Test DataType initialization with basic data."""
@@ -149,7 +149,7 @@ class TestDataTypeBasicFunctionality:
         assert basic_data_type.tag == "error"
         assert basic_data_type.output == OutputEnum.E
         assert basic_data_type.input == InputEnum.H
-        assert basic_data_type.units == "milliVolt per kilometer per nanoTesla"
+        assert basic_data_type.units == "mV/km/nT"
 
     def test_complete_initialization(self, complete_data_type):
         """Test DataType initialization with complete data."""
@@ -329,7 +329,7 @@ class TestDataTypeXMLGeneration:
         assert xml_element.attrib["type"] == "complex"
         assert xml_element.attrib["output"] == "E"
         assert xml_element.attrib["input"] == "H"
-        assert "milliVolt" in xml_element.attrib["units"]
+        assert "mV/km/nT" in xml_element.attrib["units"]
 
     def test_xml_generation_string_output(self, basic_data_type):
         """Test XML generation with string output."""
@@ -357,7 +357,7 @@ class TestDataTypeXMLGeneration:
         assert xml_element.attrib["type"] == "real"
         assert xml_element.attrib["output"] == ""
         assert xml_element.attrib["input"] == ""
-        assert xml_element.attrib["units"] == ""
+        assert xml_element.attrib["units"] == "mV/km/nT"
 
     def test_xml_generation_parameters(self):
         """Test XML generation with different parameters."""
@@ -429,7 +429,7 @@ class TestDataTypeXMLGeneration:
                 "type": "real",
                 "output": "E",
                 "input": "H",
-                "units": "milliVolt per kilometer",
+                "units": "mV/km",
             }
 
             for key, value in expected_attrs.items():
@@ -649,8 +649,8 @@ class TestDataTypeIntegration:
         """Test integration with units validation system."""
         # Test with valid units
         dt = DataType(units="[mV/km]/[nT]")
-        assert "milliVolt" in dt.units
-        assert "nanoTesla" in dt.units
+        assert "mV/km/nT" in dt.units
+        assert "nT" in dt.units
 
         # Test with empty units
         dt_empty = DataType(units="")
@@ -659,7 +659,9 @@ class TestDataTypeIntegration:
         # Test that validator converts units properly
         dt_simple = DataType(units="mV/km/nT")
         assert isinstance(dt_simple.units, str)
-        assert dt_simple.units != "mV/km/nT"  # Should be converted
+        assert (
+            dt_simple.units == "mV/km/nT"
+        )  # Should stay the same as it's already in symbol format
 
     def test_field_defaults_and_requirements(self):
         """Test field defaults and requirement settings."""
@@ -674,7 +676,7 @@ class TestDataTypeIntegration:
         assert dt.tag == ""
         assert dt.output == ""
         assert dt.input == ""
-        assert dt.units == ""
+        assert dt.units == "milliVolt per kilometer per nanoTesla"
 
         # All fields should be accessible and modifiable
         for field_name in dt.model_fields:

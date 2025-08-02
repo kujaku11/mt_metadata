@@ -31,15 +31,24 @@ class TestTransferFunctionBasic:
     def test_default_initialization(self):
         """Test TransferFunction can be created with defaults."""
         tf = TransferFunction()
-        assert tf.period is None
-        assert tf.z is None
-        assert tf.z_var is None
-        assert tf.z_invsigcov is None
-        assert tf.z_residcov is None
-        assert tf.t is None
-        assert tf.t_var is None
-        assert tf.t_invsigcov is None
-        assert tf.t_residcov is None
+        assert isinstance(tf.period, np.ndarray)
+        assert tf.period.size == 0
+        assert isinstance(tf.z, np.ndarray)
+        assert tf.z.shape == (0, 2, 2)
+        assert isinstance(tf.z_var, np.ndarray)
+        assert tf.z_var.shape == (0, 2, 2)
+        assert isinstance(tf.z_invsigcov, np.ndarray)
+        assert tf.z_invsigcov.shape == (0, 2, 2)
+        assert isinstance(tf.z_residcov, np.ndarray)
+        assert tf.z_residcov.shape == (0, 2, 2)
+        assert isinstance(tf.t, np.ndarray)
+        assert tf.t.shape == (0, 1, 2)
+        assert isinstance(tf.t_var, np.ndarray)
+        assert tf.t_var.shape == (0, 1, 2)
+        assert isinstance(tf.t_invsigcov, np.ndarray)
+        assert tf.t_invsigcov.shape == (0, 2, 2)
+        assert isinstance(tf.t_residcov, np.ndarray)
+        assert tf.t_residcov.shape == (0, 1, 1)
 
     def test_private_attributes_set(self):
         """Test that private attributes are properly initialized."""
@@ -264,7 +273,9 @@ class TestTransferFunctionComputedFields:
         array_dict = tf_with_data.array_dict
         assert np.array_equal(array_dict["z"], tf_with_data.z)
         assert np.array_equal(array_dict["t"], tf_with_data.t)
-        assert array_dict["z_var"] is None  # Not set in fixture
+        # z_var not explicitly set in fixture, so it defaults to empty array
+        assert isinstance(array_dict["z_var"], np.ndarray)
+        assert array_dict["z_var"].shape == (0, 2, 2)
 
 
 class TestTransferFunctionInitializeArrays:
