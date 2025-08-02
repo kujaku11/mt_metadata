@@ -91,7 +91,7 @@ def complex_attachment(complex_attachment_data):
 def attachment_dict_single():
     """Single attachment dictionary for read_dict testing."""
     return {
-        "Attachment": {
+        "attachment": {
             "filename": "single_file.zmm",
             "description": "Single attachment test data",
         }
@@ -102,7 +102,7 @@ def attachment_dict_single():
 def attachment_dict_list():
     """Multiple attachments dictionary for read_dict testing."""
     return {
-        "Attachment": [
+        "attachment": [
             {"filename": "file1.zmm", "description": "First attachment"},
             {"filename": "file2.edi", "description": "Second attachment"},
             {"filename": "file3.dat", "description": "Third attachment"},
@@ -113,7 +113,7 @@ def attachment_dict_list():
 @pytest.fixture(scope="session")
 def attachment_dict_none():
     """None attachment dictionary for edge case testing."""
-    return {"Attachment": None}
+    return {"attachment": None}
 
 
 # =============================================================================
@@ -226,7 +226,7 @@ class TestAttachmentReadDict:
         attachment = Attachment(filename="", description="")
         attachment.read_dict(attachment_dict_single)
 
-        expected = attachment_dict_single["Attachment"]
+        expected = attachment_dict_single["attachment"]
         assert attachment.filename == expected["filename"]
         assert attachment.description == expected["description"]
 
@@ -236,7 +236,7 @@ class TestAttachmentReadDict:
         attachment.read_dict(attachment_dict_list)
 
         # Should populate _attachments list
-        expected_list = attachment_dict_list["Attachment"]
+        expected_list = attachment_dict_list["attachment"]
         assert len(attachment._attachments) == len(expected_list)
 
         for i, expected in enumerate(expected_list):
