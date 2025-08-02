@@ -1,0 +1,35 @@
+{
+	"id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001. Should be the same as the time series run ID.",
+        "options": [],
+        "alias": [],
+        "example": "001",
+		"default": null
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Digital sample rate for the run",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": 0.0
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any comments about the feature",
+        "options": [],
+        "alias": [],
+        "example": "estimated using hilburt transform.",
+		"default": null
+    }
+}

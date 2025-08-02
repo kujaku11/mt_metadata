@@ -6,15 +6,17 @@ Created on Sat Nov 20 17:13:27 2021
 """
 
 import unittest
+import pytest
+try:
+    import obspy
+except ImportError:
+    obspy = None
 
 import numpy as np
 
 from mt_metadata.timeseries.filters import CoefficientFilter
-from mt_metadata.timeseries.filters.helper_functions import MT2SI_ELECTRIC_FIELD_FILTER
 from mt_metadata.timeseries.filters.helper_functions import MT2SI_MAGNETIC_FIELD_FILTER
 from mt_metadata.utils.exceptions import MTSchemaError
-
-from obspy.core.inventory.response import CoefficientsTypeResponseStage
 
 
 class TestCoefficientFilter(unittest.TestCase):
@@ -60,6 +62,7 @@ class TestCoefficientFilter(unittest.TestCase):
             phase = np.repeat(0, self.f.size)
             self.assertTrue(np.isclose(cr_phase, phase).all() == True)
 
+    @pytest.mark.skipif(obspy is None, reason="obspy is not installed.")
     def test_to_obspy_stage(self):
         stage = self.cf.to_obspy(2, sample_rate=10, normalization_frequency=1)
 

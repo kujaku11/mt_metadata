@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 18 18:36:41 2021
 
-:copyright: 
+:copyright:
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -10,8 +10,12 @@ Created on Thu Feb 18 18:36:41 2021
 """
 
 import unittest
+import pytest
 
-from obspy import read_inventory
+try:
+    from obspy import read_inventory
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
 from mt_metadata import STATIONXML_02
 

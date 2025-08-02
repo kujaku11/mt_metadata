@@ -12,6 +12,7 @@ Created on Wed Dec 23 21:30:36 2020
 # Imports
 # =============================================================================
 import numpy as np
+import copy
 from collections import OrderedDict
 from mt_metadata.base.helpers import write_lines
 from mt_metadata.base import get_schema, Base
@@ -30,6 +31,7 @@ from . import (
     Run,
     TransferFunction,
 )
+
 from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
@@ -56,13 +58,17 @@ attr_dict.add_dict(
 )
 
 attr_dict.add_dict(get_schema("time_period", TS_SCHEMA_FN_PATHS), "time_period")
-attr_dict.add_dict(TransferFunction()._attr_dict, "transfer_function")
+attr_dict.add_dict(
+    copy.deepcopy(TransferFunction()._attr_dict), "transfer_function"
+)
 attr_dict.add_dict(get_schema("copyright", TS_SCHEMA_FN_PATHS), None)
 attr_dict["release_license"]["required"] = False
 attr_dict.add_dict(
     get_schema("citation", TS_SCHEMA_FN_PATHS), None, keys=["doi"]
 )
 attr_dict["doi"]["required"] = False
+
+
 # =============================================================================
 class Station(Base):
     __doc__ = write_lines(attr_dict)
@@ -78,7 +84,17 @@ class Station(Base):
         self.time_period = TimePeriod()
         self.transfer_function = TransferFunction()
         self.runs = ListDict()
+
         super().__init__(attr_dict=attr_dict, **kwargs)
+        # for now this is a hack.  Somewhere processing paramters is being
+        # set globally.  This will reset to default of empty list
+        self.transfer_function.processing_parameters = []
+        try:
+            self.transfer_function.processing_parameters = kwargs[
+                "transfer_function.processing_parameters"
+            ]
+        except KeyError:
+            pass
 
     def __add__(self, other):
         if isinstance(other, Station):

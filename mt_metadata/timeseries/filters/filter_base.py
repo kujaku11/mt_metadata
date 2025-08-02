@@ -41,8 +41,6 @@ of the filter in frequency domain.  It is very similar to an "obspy filter stage
 # =============================================================================
 # Imports
 # =============================================================================
-import copy
-import obspy
 import numpy as np
 
 from mt_metadata.base.helpers import write_lines
@@ -57,6 +55,7 @@ from mt_metadata.utils.mttime import MTime
 # =============================================================================
 attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
 # =============================================================================
+
 
 def get_base_obspy_mapping():
     """
@@ -87,6 +86,7 @@ class FilterBase(Base):
     it may find more application in future.
 
     """
+
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -98,6 +98,7 @@ class FilterBase(Base):
         self.comments = None
         self._obspy_mapping = None
         self.gain = 1.0
+        self._name = None
 
         super().__init__(attr_dict=attr_dict, **kwargs)
 
@@ -156,7 +157,6 @@ class FilterBase(Base):
             self._name = str(value).lower().replace("/", " per ")
         else:
             self._name = None
-
 
     @property
     def calibration_date(self):
@@ -261,20 +261,17 @@ class FilterBase(Base):
 
         """
 
-        if not isinstance(stage, obspy.core.inventory.response.ResponseStage):
-            msg = f"Expected a Stage and got a {type(stage)}"
-            cls().logger.error(msg)
-            raise TypeError(msg)
-
         if mapping is None:
             mapping = cls().make_obspy_mapping()
         kwargs = {}
-        for obspy_label, mth5_label in mapping.items():
-            try:
-                kwargs[mth5_label] = stage.__dict__[obspy_label]
-            except KeyError:
-                print(f"Key {obspy_label} not found in stage object")
-                raise Exception
+
+        try:
+            for obspy_label, mth5_label in mapping.items():
+                    kwargs[mth5_label] = getattr(stage, obspy_label)
+        except AttributeError:
+            msg = f"Expected a Stage and got a {type(stage)}"
+            cls().logger.error(msg)
+            raise TypeError(msg)
         return cls(**kwargs)
 
     def complex_response(self, frqs):
@@ -403,4 +400,3 @@ class FilterBase(Base):
             if self.decimation_factor != 1.0:
                 return True
         return False
-

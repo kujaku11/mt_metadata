@@ -1,5 +1,3 @@
-import obspy
-
 from loguru import logger
 from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
 from mt_metadata.timeseries.filters.frequency_response_table_filter import (

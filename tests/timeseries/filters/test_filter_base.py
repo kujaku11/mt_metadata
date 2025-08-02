@@ -6,6 +6,11 @@ Created on Fri Nov 19 18:45:48 2021
 """
 
 import unittest
+import pytest
+try:
+    import obspy
+except ImportError:
+    obspy = None
 from mt_metadata.timeseries.filters.filter_base import FilterBase
 
 
@@ -61,6 +66,7 @@ class TestFilterBase(unittest.TestCase):
             fb = FilterBase(gain=0.0)
             self.assertEqual(1, fb.gain)
 
+    @pytest.mark.skipif(obspy is None, reason="obspy is not installed.")
     def test_obspy_map(self):
         default_obspy_map = self.fb.obspy_mapping
         self.assertIsNotNone(default_obspy_map)

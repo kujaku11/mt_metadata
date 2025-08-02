@@ -5,15 +5,20 @@ Test FAP tables
 
 """
 import unittest
+import pytest
 import numpy as np
-from obspy.core import inventory
+
+try:
+    from obspy.core import inventory
+    from mt_metadata.timeseries.filters.obspy_stages import (
+        create_filter_from_stage,
+    )
+except ImportError:
+    pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 from mt_metadata import STATIONXML_FAP
-from mt_metadata.timeseries.filters.obspy_stages import (
-    create_filter_from_stage,
-)
 
 
 class TestFAPFilter(unittest.TestCase):
@@ -36,6 +41,8 @@ class TestFAPFilter(unittest.TestCase):
             .channels[0]
             .response.instrument_sensitivity
         )
+        print(type(self.fir_stage))
+        print(self.fir_stage)
         self.fir = create_filter_from_stage(self.fir_stage)
 
     def test_is_fap_instance(self):
