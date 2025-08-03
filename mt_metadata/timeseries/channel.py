@@ -211,7 +211,7 @@ class ChannelBase(MetadataBase):
             alias=None,
             json_schema_extra={
                 "units": None,
-                "required": False,
+                "required": True,
             },
         ),
     ]
@@ -571,11 +571,26 @@ class ChannelBase(MetadataBase):
             for name, applied in zip(filter_name, filter_applied):
                 self.add_filter(name=name, applied=applied)
 
+        # Handle new format filters separately to combine with old format
+        new_format_filters = meta_dict.pop("filters", None)
+
         for name, value in meta_dict.items():
             if skip_none:
                 if value in NULL_VALUES:
                     continue
             self.update_attribute(name, value)
+
+        # Process new format filters after other attributes, adding to existing filters
+        if new_format_filters is not None:
+            for filter_dict in new_format_filters:
+                if isinstance(filter_dict, dict):
+                    # Create AppliedFilter from dict
+                    applied_filter = AppliedFilter(**filter_dict)
+                    self.add_filter(applied_filter=applied_filter)
+                elif isinstance(filter_dict, AppliedFilter):
+                    self.add_filter(applied_filter=filter_dict)
+                else:
+                    logger.warning(f"Unknown filter format: {type(filter_dict)}")
 
 
 # this would be a normal channel that has a single sensor and location.

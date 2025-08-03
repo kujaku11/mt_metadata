@@ -61,6 +61,7 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
         For simple fields, returns the FieldInfo object.
         For BaseModel fields, returns a nested dictionary of their fields.
     """
+    from typing import get_origin
 
     fields = {}
 
@@ -71,6 +72,17 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
             continue
 
         annotation = field_info.annotation
+
+        # Check if this is a list type first
+        origin = get_origin(annotation)
+        if origin is not None and (
+            origin is list
+            or (hasattr(origin, "__name__") and origin.__name__ == "list")
+        ):
+            # For list fields (like list[AppliedFilter]), don't expand the element type fields
+            # Just treat it as a simple field
+            fields[field_name] = field_info
+            continue
 
         # Handle different annotation types
         field_type = _extract_base_type(annotation)
