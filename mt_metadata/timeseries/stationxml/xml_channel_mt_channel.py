@@ -16,6 +16,8 @@ Created on Fri Feb 19 16:14:41 2021
 import copy
 from collections import OrderedDict
 
+from loguru import logger
+
 from mt_metadata.base.helpers import requires
 from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries import AppliedFilter, Auxiliary, Electric, Magnetic
@@ -101,7 +103,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         if not isinstance(xml_channel, inventory.Channel):
             msg = f"Input must be obspy.core.inventory.Channel object not {type(xml_channel)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         ch_dict = read_channel_code(xml_channel.code)
@@ -129,7 +131,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         # fill channel filters
         for filter_name, mt_filter in mt_filters.items():
-            mt_channel.filter.filter_list.append(
+            mt_channel.add_filter(
                 AppliedFilter(
                     name=filter_name,
                     applied=True,
@@ -162,7 +164,7 @@ class XMLChannelMTChannel(BaseTranslator):
             (Electric, Magnetic, Auxiliary),
         ):
             msg = f"Input must be mt_metadata.timeseries.Channel object not {type(mt_channel)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
         # location_code = get_location_code(mt_channel)
@@ -217,7 +219,7 @@ class XMLChannelMTChannel(BaseTranslator):
         for mt_key, xml_key in self.mt_translator.items():
             if xml_key is None:
                 msg = f"Cannot currently map {mt_key} to inventory.station.{xml_key}"
-                self.logger.debug(msg)
+                logger.debug(msg)
                 continue
 
             # obspy only allows angles (0, 360)
@@ -260,7 +262,7 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
             mt_channel.sensor.id = sensor.serial_number
             mt_channel.sensor.manufacturer = sensor.manufacturer
@@ -276,7 +278,7 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
             if sensor.serial_number:
                 pid, nid = self._parse_electrode_ids(sensor.serial_number)
@@ -301,7 +303,7 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Cannot put sensor of type {sensor.type} into an "
                     f"MT Channel of {type(mt_channel)}."
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
 
             mt_channel.sensor.type = sensor.type
@@ -367,7 +369,7 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Cannot parse electrode ids from {serial_numbers}. Must "
                     "have format 'positive: pid, negative: nid'"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
 
             pid, nid = [ss.split(":")[1].strip() for ss in serial_list]
@@ -380,13 +382,13 @@ class XMLChannelMTChannel(BaseTranslator):
                     f"Cannot parse electrode ids from {serial_numbers}. Must "
                     "have format 'positive: pid, negative: nid'"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise ValueError(msg)
 
             pid, nid = [ss.strip() for ss in serial_list]
             return pid, nid
         else:
-            self.logger.warning(
+            logger.warning(
                 "Electrod IDs are not properly formatted assigning"
                 f" {serial_numbers} to both positive and negative. "
                 "Accepted format is 'positive: pid, negative: nid'"
@@ -405,7 +407,7 @@ class XMLChannelMTChannel(BaseTranslator):
 
         except ValueError as error:
             msg = f"Could not get dipole length from {description} got ValueError({error})"
-            self.logger.warning(msg)
+            logger.warning(msg)
             return 0.0
 
     def _parse_xml_comments(self, xml_comments, mt_channel):
@@ -512,7 +514,7 @@ class XMLChannelMTChannel(BaseTranslator):
         elif name:
             mt_channel.units = name
         else:
-            self.logger.debug("Did not find any units descriptions in XML")
+            logger.debug("Did not find any units descriptions in XML")
 
         return mt_channel
 
@@ -535,9 +537,7 @@ class XMLChannelMTChannel(BaseTranslator):
                 mt_filter.name += f"_{mt_filter.decimation_input_sample_rate}"
 
             if new_and_unnamed:
-                self.logger.info(
-                    f"Found an unnamed filter, named it: '{mt_filter.name}'"
-                )
+                logger.info(f"Found an unnamed filter, named it: '{mt_filter.name}'")
                 existing_filters[filter_name] = mt_filter
 
             ch_filter_dict[mt_filter.name.lower()] = mt_filter
@@ -615,7 +615,7 @@ class XMLChannelMTChannel(BaseTranslator):
         if original_sensor_type is None:
             sensor_type = ""  # make a string
             msg = f"Sensor {sensor} does not have field type attr"
-            self.logger.debug(msg)
+            logger.debug(msg)
         else:
             sensor_type = copy.deepcopy(original_sensor_type)
 
@@ -627,10 +627,10 @@ class XMLChannelMTChannel(BaseTranslator):
         if sensor_type.lower() in self.understood_sensor_types:
             return sensor_type
         else:
-            self.logger.warning(
+            logger.warning(
                 f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
             )
-            self.logger.warning(
+            logger.warning(
                 f" sensor {sensor} type {sensor.type} not in {self.understood_sensor_types}"
             )
 
@@ -653,6 +653,6 @@ class XMLChannelMTChannel(BaseTranslator):
         # reset sensor_type to None it it was not handled
         if not sensor_type:
             sensor_type = original_sensor_type
-            self.logger.error("sensor type could not be resolved")
+            logger.error("sensor type could not be resolved")
 
         return sensor_type

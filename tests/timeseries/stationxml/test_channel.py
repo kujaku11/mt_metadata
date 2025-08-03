@@ -212,16 +212,17 @@ class TestXMLChannelTwoChannels:
             "magnetic": OrderedDict(
                 [
                     ("channel_number", 0),
-                    ("comments", "run_ids: []"),
+                    ("comments.value", "run_ids: []"),
                     ("component", "hy"),
                     ("data_quality.rating.value", None),
                     (
-                        "filter.filter_list",
+                        "filters",
                         [
                             {
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        ("comments.value", "butterworth filter"),
                                         (
                                             "name",
                                             "magnetic field 3 pole butterworth low-pass",
@@ -234,6 +235,10 @@ class TestXMLChannelTwoChannels:
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        (
+                                            "comments.value",
+                                            "analog to digital conversion",
+                                        ),
                                         ("name", "v to counts (magnetic)"),
                                         ("stage", 2),
                                     ]
@@ -243,6 +248,7 @@ class TestXMLChannelTwoChannels:
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        ("comments.value", "time correction"),
                                         ("name", "hy time offset"),
                                         ("stage", 3),
                                     ]
@@ -286,7 +292,7 @@ class TestXMLChannelTwoChannels:
                     ("ac.end", 0.0),
                     ("ac.start", 0.0),
                     ("channel_number", 0),
-                    ("comments", "run_ids: []"),
+                    ("comments.value", "run_ids: []"),
                     ("component", "ey"),
                     ("contact_resistance.end", 0.0),
                     ("contact_resistance.start", 0.0),
@@ -295,12 +301,13 @@ class TestXMLChannelTwoChannels:
                     ("dc.start", 0.0),
                     ("dipole_length", 92.0),
                     (
-                        "filter.filter_list",
+                        "filters",
                         [
                             {
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        ("comments.value", "butterworth filter"),
                                         (
                                             "name",
                                             "electric field 5 pole butterworth low-pass",
@@ -313,6 +320,7 @@ class TestXMLChannelTwoChannels:
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        ("comments.value", "butterworth filter"),
                                         (
                                             "name",
                                             "electric field 1 pole butterworth high-pass",
@@ -323,17 +331,22 @@ class TestXMLChannelTwoChannels:
                             },
                             {
                                 "applied_filter": OrderedDict(
-                                    [
-                                        ("applied", True),
-                                        ("name", "mv/km to v/m"),
-                                        ("stage", 3),
-                                    ]
-                                )
+                                    {
+                                        "applied": True,
+                                        "comments.value": "unit conversion",
+                                        "name": "mv/km to v/m",
+                                        "stage": 3,
+                                    }
+                                ),
                             },
                             {
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        (
+                                            "comments.value",
+                                            "electric dipole",
+                                        ),
                                         ("name", "v/m to v"),
                                         ("stage", 4),
                                     ]
@@ -343,6 +356,10 @@ class TestXMLChannelTwoChannels:
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        (
+                                            "comments.value",
+                                            "analog to digital conversion",
+                                        ),
                                         ("name", "v to counts (electric)"),
                                         ("stage", 5),
                                     ]
@@ -352,6 +369,7 @@ class TestXMLChannelTwoChannels:
                                 "applied_filter": OrderedDict(
                                     [
                                         ("applied", True),
+                                        ("comments.value", "time correction"),
                                         ("name", "electric time offset"),
                                         ("stage", 6),
                                     ]
