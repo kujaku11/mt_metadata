@@ -17,18 +17,31 @@ class StrEnumerationBase(str, Enum):
     def __get_pydantic_core_schema__(
         cls, source_type: type[Enum], handler: GetCoreSchemaHandler
     ) -> CoreSchema:
-        # Define a schema that validates and converts input to lowercase
-        return core_schema.no_info_plain_validator_function(cls._validate_lowercase)
+        # Create a case-insensitive enum schema that returns enum instances
+        # Use the before validator to handle case conversion, then enum schema for validation
+        return core_schema.no_info_before_validator_function(
+            cls._normalize_case, core_schema.enum_schema(cls, list(cls))
+        )
 
     @classmethod
-    def _validate_lowercase(cls, value: str) -> str:
+    def _normalize_case(cls, value):
+        """Convert input to the proper enum member for validation."""
+        if isinstance(value, cls):
+            return value  # Already the correct enum type
+
         if not isinstance(value, str):
             raise TypeError(f"Expected string, got {type(value)}")
-        value_lower = value.lower()
-        valid_values = [member.value.lower() for member in cls]
-        if value_lower not in valid_values:
-            raise ValueError(f"Invalid value: {value}. Must be one of {valid_values}.")
-        return value
+
+        # For each enum member, check if the lowercase input matches the lowercase enum value
+        for member in cls:
+            if value.lower() == member.value.lower():
+                return member  # Return the enum member, not just the string value
+
+        # If no match found, raise an error with valid options
+        valid_values = [member.value for member in cls]
+        raise ValueError(
+            f"Invalid value: {value}. Must be one of {valid_values} (case-insensitive)."
+        )
 
 
 class DataTypeEnum(StrEnumerationBase):

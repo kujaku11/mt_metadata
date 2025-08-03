@@ -80,7 +80,7 @@ class Comment(MetadataBase):
         Validate that the value is a valid string or list.
         """
         if isinstance(value, str):
-            return value.strip()
+            return value
         elif isinstance(value, list):
             return ",".join([v.strip() for v in value if isinstance(v, str)])
         elif value is None:
