@@ -177,8 +177,7 @@ class Information(MetadataBase):
         # 2. Parse lines based on detected format
         if self._empower_file:
             self._parse_empower_info(info_section)
-            # Don't convert comments to string for Empower format
-            # as tests expect them to remain as lists
+            self._comments_to_string()
         elif self._phoenix_file:
             self._parse_phoenix_info(info_section)
             self._comments_to_string()

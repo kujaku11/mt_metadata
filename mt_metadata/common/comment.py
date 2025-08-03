@@ -52,7 +52,7 @@ class Comment(MetadataBase):
     ]
 
     value: Annotated[
-        str | None,
+        str | list | None,
         Field(
             default=None,
             description="comment string",
@@ -72,6 +72,21 @@ class Comment(MetadataBase):
         Validate that the value is a valid time.
         """
         return MTime(time_stamp=value)
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def validate_value(cls, value, info: ValidationInfo) -> str | list | None:
+        """
+        Validate that the value is a valid string or list.
+        """
+        if isinstance(value, str):
+            return value.strip()
+        elif isinstance(value, list):
+            return ",".join([v.strip() for v in value if isinstance(v, str)])
+        elif value is None:
+            return None
+        else:
+            raise TypeError(f"Invalid type for value: {type(value)}")
 
     @model_validator(mode="after")
     def set_variables(self) -> Self:

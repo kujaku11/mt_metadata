@@ -254,7 +254,7 @@ class ChannelBase(MetadataBase):
         """
         Validate that the value is a valid comment.
         """
-        if isinstance(value, str):
+        if isinstance(value, (str, list)):
             return Comment(value=value)
         return value
 

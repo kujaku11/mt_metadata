@@ -278,7 +278,7 @@ class TestInformationEmpowerFormat:
             "run.hx.sensor.model": "MFS-06e",
             "run.hx.measured_azimuth": "0",
             "run.hx.sensor.id": "1234",
-            "run.hx.comments": ["cal_name=cal_1234", "saturation=0%"],
+            "run.hx.comments": "cal_name=cal_1234,saturation=0%",
         }
 
         for key, expected in expected_values.items():
