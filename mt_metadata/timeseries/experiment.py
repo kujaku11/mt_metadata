@@ -28,7 +28,7 @@ from loguru import logger
 from pydantic import computed_field, Field, field_validator
 
 from mt_metadata.base import helpers, MetadataBase
-from mt_metadata.utils.list_dict import ListDict
+from mt_metadata.common.list_dict import ListDict
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (

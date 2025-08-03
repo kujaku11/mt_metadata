@@ -24,8 +24,8 @@ from mt_metadata.common import (
     Provenance,
     TimePeriod,
 )
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Auxiliary, DataLogger, Electric, Magnetic
-from mt_metadata.utils.list_dict import ListDict
 
 
 # =====================================================

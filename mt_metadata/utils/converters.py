@@ -548,7 +548,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
             f"{TAB*2}except KeyError as error:\n"
             f"{TAB*3}raise KeyError(error)\n"
         )
-        imports.append("from mt_metadata.utils.units import get_unit_object")
+        imports.append("from mt_metadata.common.units import get_unit_object")
         imports.append("from pydantic import field_validator, ValidationInfo")
 
     # Generate the class definition, dont need config dict as that is

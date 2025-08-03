@@ -15,6 +15,7 @@ from collections import OrderedDict
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Citation, Fdsn, FundingSource, Location, Person
 from mt_metadata.timeseries import Station as TSStation
 from mt_metadata.timeseries import TimePeriod
@@ -27,7 +28,6 @@ from mt_metadata.timeseries.filters import (
 )
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf import Station
-from mt_metadata.utils.list_dict import ListDict
 
 from .standards import SCHEMA_FN_PATHS
 

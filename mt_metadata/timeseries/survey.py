@@ -19,6 +19,7 @@ from mt_metadata.common import (
     FundingSource,
     TimePeriodDate,
 )
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Station
 from mt_metadata.timeseries.filters import (
     CoefficientFilter,
@@ -27,7 +28,6 @@ from mt_metadata.timeseries.filters import (
     PoleZeroFilter,
     TimeDelayFilter,
 )
-from mt_metadata.utils.list_dict import ListDict
 
 
 # =====================================================

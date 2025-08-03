@@ -1,10 +1,11 @@
 import pytest
-from mt_metadata.utils.units import (
-    Unit,
+
+from mt_metadata.common.units import (
     find_separator,
-    parse_unit_string,
-    get_unit_object,
     get_unit_from_df,
+    get_unit_object,
+    parse_unit_string,
+    Unit,
     UNITS_DF,
 )
 

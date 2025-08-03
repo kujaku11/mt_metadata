@@ -18,7 +18,7 @@ def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwarg
         one of "digital counts", "millivolts", etc.
         A complete list of units can be found in mt_metadata/mt_metadata/util/units.py
         and is accessible as a table via:
-        from mt_metadata.utils.units import UNITS_DF
+        from mt_metadata.common.units import UNITS_DF
 
     Returns
     -------

@@ -1,72 +1,51 @@
 # -*- coding: utf-8 -*-
 """
-    This module contains the Decimation Metadata class.  This class interacts with a decimation JSON.
-    It contains the metadata to specify a transformation from time series to a Spectrogram, including
-    cascadng decimation info.
+This module contains the Decimation Metadata class.  This class interacts with a decimation JSON.
+It contains the metadata to specify a transformation from time series to a Spectrogram, including
+cascadng decimation info.
 
-    There are two main use cases for this class.  On the one hand, this can be used to specify a
-    set of processing parameters to create an FCDecimation, which can then be stored in an MTH5 archive.
-    On the other hand, this metadata gets stored along with Spectrograms in an MTH5 archive and can
-    be used to access the parameters associated with the spectrograms creation.
+There are two main use cases for this class.  On the one hand, this can be used to specify a
+set of processing parameters to create an FCDecimation, which can then be stored in an MTH5 archive.
+On the other hand, this metadata gets stored along with Spectrograms in an MTH5 archive and can
+be used to access the parameters associated with the spectrograms creation.
 
-    TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
-    or FCDecimationLevel to make it
-    Also see notes in mt_metadata issue 235.
+TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
+or FCDecimationLevel to make it
+Also see notes in mt_metadata issue 235.
 
-    Created on Fri Feb 25 15:20:59 2022
+Created on Fri Feb 25 15:20:59 2022
 
-    @author: jpeacock
+@author: jpeacock
 """
 # =============================================================================
 # Imports
 # =============================================================================
 from collections import OrderedDict
-<<<<<<< HEAD:mt_metadata/processing/fourier_coefficients/decimation.py
 
 from mt_metadata.base import Base, get_schema
-=======
-from loguru import logger
-from typing import List, Optional
-
-from .standards import SCHEMA_FN_PATHS
->>>>>>> main:mt_metadata/transfer_functions/processing/fourier_coefficients/decimation.py
 from mt_metadata.base.helpers import write_lines
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import TimePeriod
-<<<<<<< HEAD:mt_metadata/processing/fourier_coefficients/decimation.py
-from mt_metadata.transfer_functions.processing.aurora import Window
-from mt_metadata.transfer_functions.processing.aurora.decimation_level import (
-    get_fft_harmonics,
-)
-from mt_metadata.transfer_functions.processing.fourier_coefficients import Channel
-from mt_metadata.utils.list_dict import ListDict
 
 from .standards import SCHEMA_FN_PATHS
 
 
-=======
-from mt_metadata.transfer_functions.processing.short_time_fourier_transform import ShortTimeFourierTransform
-from mt_metadata.transfer_functions.processing.time_series_decimation import TimeSeriesDecimation
-# from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Channel as FCChannel
-)
-from mt_metadata.utils.list_dict import ListDict
-
-import numpy as np
->>>>>>> main:mt_metadata/transfer_functions/processing/fourier_coefficients/decimation.py
 # =============================================================================
 attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
 attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
-attr_dict.add_dict(ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform")
+attr_dict.add_dict(
+    ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform"
+)
 attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
 
 
 # =============================================================================
 class Decimation(Base):
     """
-        TODO: the name of this class could be changed to something more appropriate.
-        TODO: consider adding an attr decimation to access TimeSeriesDecimation more briefly.
+    TODO: the name of this class could be changed to something more appropriate.
+    TODO: consider adding an attr decimation to access TimeSeriesDecimation more briefly.
     """
+
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
@@ -106,12 +85,12 @@ class Decimation(Base):
             self.logger.error(msg)
             raise TypeError(msg)
 
-    #----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
+    # ----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     @property
     def decimation(self) -> TimeSeriesDecimation:
         """
-            Passthrough method to access self.time_series_decimation
+        Passthrough method to access self.time_series_decimation
         """
         return self.time_series_decimation
 
@@ -119,7 +98,7 @@ class Decimation(Base):
     def stft(self):
         return self.short_time_fourier_transform
 
-    #----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
+    # ----- End (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
 
     def update(self, other, match=[]):
         """
@@ -335,15 +314,15 @@ class Decimation(Base):
                 if self.time_period.end < max(end):
                     self.time_period.end = max(end)
 
-
     def is_valid_for_time_series_length(self, n_samples_ts: int) -> bool:
         """
-            Given a time series of len n_samples_ts, checks if there are sufficient samples to STFT.
+        Given a time series of len n_samples_ts, checks if there are sufficient samples to STFT.
 
         """
         required_num_samples = (
             self.stft.window.num_samples
-            + (self.stft.min_num_stft_windows - 1) * self.stft.window.num_samples_advance
+            + (self.stft.min_num_stft_windows - 1)
+            * self.stft.window.num_samples_advance
         )
         if n_samples_ts < required_num_samples:
             msg = (
@@ -358,52 +337,42 @@ class Decimation(Base):
 
     @property
     def fft_frequencies(self) -> np.ndarray:
-        """ Returns the one-sided fft frequencies (without Nyquist)"""
+        """Returns the one-sided fft frequencies (without Nyquist)"""
         return self.stft.window.fft_harmonics(self.decimation.sample_rate)
 
-<<<<<<< HEAD:mt_metadata/processing/fourier_coefficients/decimation.py
     def has_fcs_for_aurora_processing(self, decimation_level, remote):
         """
-=======
 
-def fc_decimations_creator(
-    initial_sample_rate: float,
-    decimation_factors: Optional[list] = None,
-    max_levels: Optional[int] = 6,
-    time_period: Optional[TimePeriod] = None,
-) -> List[Decimation]:
-    """
->>>>>>> main:mt_metadata/transfer_functions/processing/fourier_coefficients/decimation.py
+        Creates mt_metadata FCDecimation objects that parameterize Fourier coefficient decimation levels.
 
-    Creates mt_metadata FCDecimation objects that parameterize Fourier coefficient decimation levels.
+        Note 1:  This does not yet work through the assignment of which bands to keep.  Refer to
+        mt_metadata.transfer_functions.processing.Processing.assign_bands() to see how this was done in the past
 
-    Note 1:  This does not yet work through the assignment of which bands to keep.  Refer to
-    mt_metadata.transfer_functions.processing.Processing.assign_bands() to see how this was done in the past
+        Parameters
+        ----------
+        initial_sample_rate: float
+            Sample rate of the "level0" data -- usually the sample rate during field acquisition.
+        decimation_factors: Optional[list]
+            The decimation factors that will be applied at each FC decimation level
+        max_levels: Optional[int]
+            The maximum number of decimation levels to allow
+        time_period: Optional[TimePeriod]
+            Provides the start and end times
 
-    Parameters
-    ----------
-    initial_sample_rate: float
-        Sample rate of the "level0" data -- usually the sample rate during field acquisition.
-    decimation_factors: Optional[list]
-        The decimation factors that will be applied at each FC decimation level
-    max_levels: Optional[int]
-        The maximum number of decimation levels to allow
-    time_period: Optional[TimePeriod]
-        Provides the start and end times
+        Returns
+        -------
+        fc_decimations: list
+            Each element of the list is an object of type
+            mt_metadata.transfer_functions.processing.fourier_coefficients.Decimation,
+            (a.k.a. FCDecimation).
 
-    Returns
-    -------
-    fc_decimations: list
-        Each element of the list is an object of type
-        mt_metadata.transfer_functions.processing.fourier_coefficients.Decimation,
-        (a.k.a. FCDecimation).
+            The order of the list corresponds the order of the cascading decimation
+              - No decimation levels are omitted.
+              - This could be changed in future by using a dict instead of a list,
+              - e.g. decimation_factors = dict(zip(np.arange(max_levels), decimation_factors))
 
-        The order of the list corresponds the order of the cascading decimation
-          - No decimation levels are omitted.
-          - This could be changed in future by using a dict instead of a list,
-          - e.g. decimation_factors = dict(zip(np.arange(max_levels), decimation_factors))
+        """
 
-    """
     if not decimation_factors:
         # msg = "No decimation factors given, set default values to EMTF default values [1, 4, 4, 4, ..., 4]")
         # logger.info(msg)
@@ -434,7 +403,6 @@ def fc_decimations_creator(
                 logger.info(msg)
                 raise NotImplementedError(msg)
 
-<<<<<<< HEAD:mt_metadata/processing/fourier_coefficients/decimation.py
         # sample_rate
         try:
             assert (
@@ -447,54 +415,40 @@ def fc_decimations_creator(
             )
             self.logger.info(msg)
             return False
-=======
-        fc_decimations.append(fc_dec)
->>>>>>> main:mt_metadata/transfer_functions/processing/fourier_coefficients/decimation.py
 
     return fc_decimations
 
+
 def get_degenerate_fc_decimation(sample_rate: float) -> list:
     """
-        WIP
+    WIP
 
-        Makes a default fc_decimation list.
-        This "degenerate" config will only operate on the first decimation level.
-        This is useful for testing.  It could also be used in future on an MTH5 stored
-        time series in decimation levels already as separate runs.
+    Makes a default fc_decimation list.
+    This "degenerate" config will only operate on the first decimation level.
+    This is useful for testing.  It could also be used in future on an MTH5 stored
+    time series in decimation levels already as separate runs.
 
-<<<<<<< HEAD:mt_metadata/processing/fourier_coefficients/decimation.py
-        # pre_fft_detrend_type
-        try:
-            assert self.pre_fft_detrend_type == decimation_level.pre_fft_detrend_type
-        except AssertionError:
-            msg = (
-                "pre_fft_detrend_type does not agree "
-                f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
-            )
-            self.logger.info(msg)
-            return False
+    # pre_fft_detrend_type
+    try:
+        assert self.pre_fft_detrend_type == decimation_level.pre_fft_detrend_type
+    except AssertionError:
+        msg = (
+            "pre_fft_detrend_type does not agree "
+            f"{self.pre_fft_detrend_type} != {decimation_level.pre_fft_detrend_type}"
+        )
+        self.logger.info(msg)
+        return False
 
-        # min_num_stft_windows
-        try:
-            assert self.min_num_stft_windows == decimation_level.min_num_stft_windows
-        except AssertionError:
-            msg = (
-                "min_num_stft_windows do not agree "
-                f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
-            )
-            self.logger.info(msg)
-            return False
-=======
-    Parameters
-    ----------
-    sample_rate: float
-        The sample rate associated with the time-series to convert to spectrogram
-
-    Returns
-    -------
-    output: list
-        List has only one element which is of type FCDecimation, aka.
->>>>>>> main:mt_metadata/transfer_functions/processing/fourier_coefficients/decimation.py
+    # min_num_stft_windows
+    try:
+        assert self.min_num_stft_windows == decimation_level.min_num_stft_windows
+    except AssertionError:
+        msg = (
+            "min_num_stft_windows do not agree "
+            f"{self.min_num_stft_windows} != {decimation_level.min_num_stft_windows}"
+        )
+        self.logger.info(msg)
+        return False
 
     """
     output = fc_decimations_creator(
@@ -505,4 +459,3 @@ def get_degenerate_fc_decimation(sample_rate: float) -> list:
         max_levels=1,
     )
     return output
-

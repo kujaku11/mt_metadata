@@ -17,9 +17,9 @@ except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata import STATIONXML_FAP
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils.units import get_unit_object
 
 
 # --- Fixtures ---

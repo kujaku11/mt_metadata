@@ -17,6 +17,7 @@ import copy
 from collections import OrderedDict
 
 from mt_metadata.base.helpers import requires
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries import AppliedFilter, Auxiliary, Electric, Magnetic
 from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 from mt_metadata.timeseries.stationxml.fdsn_tools import (
@@ -26,7 +27,6 @@ from mt_metadata.timeseries.stationxml.fdsn_tools import (
     release_dict,
 )
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
-from mt_metadata.utils.units import get_unit_object
 
 
 try:

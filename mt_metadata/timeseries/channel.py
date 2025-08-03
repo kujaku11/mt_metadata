@@ -16,9 +16,9 @@ from mt_metadata.common import (
     Instrument,
     TimePeriod,
 )
+from mt_metadata.common.units import get_unit_object, Unit
 from mt_metadata.timeseries import Filter
 from mt_metadata.timeseries.filters import ChannelResponse
-from mt_metadata.utils.units import get_unit_object, Unit
 
 
 # =====================================================

@@ -12,10 +12,10 @@ from typing import Any, Dict
 import pytest
 
 from mt_metadata.common import ArrayDTypeEnum
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.transfer_functions.tf.statistical_estimate_basemodel import (
     StatisticalEstimate,
 )
-from mt_metadata.utils.units import get_unit_object
 
 
 # =============================================================================

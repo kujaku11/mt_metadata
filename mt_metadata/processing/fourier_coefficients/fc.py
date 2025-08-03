@@ -13,9 +13,9 @@ import numpy as np
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import TimePeriod
 from mt_metadata.transfer_functions.processing.fourier_coefficients import Decimation
-from mt_metadata.utils.list_dict import ListDict
 
 from .standards import SCHEMA_FN_PATHS
 
@@ -213,9 +213,7 @@ class FC(Base):
             raise ValueError(msg)
 
         if self.has_decimation_level(fc_decimation.decimation.level):
-            self.levels[fc_decimation.decimation.level].update(
-                fc_decimation
-            )
+            self.levels[fc_decimation.decimation.level].update(fc_decimation)
             self.logger.debug(
                 f"ch {fc_decimation.decimation.level} already exists, updating metadata"
             )

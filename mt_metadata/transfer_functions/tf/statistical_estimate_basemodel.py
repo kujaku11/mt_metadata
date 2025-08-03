@@ -7,7 +7,7 @@ from typing import Annotated
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.units import get_unit_object
+from mt_metadata.common.units import get_unit_object
 
 
 # =====================================================

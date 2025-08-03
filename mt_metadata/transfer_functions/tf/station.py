@@ -26,12 +26,12 @@ from mt_metadata.common import (
     Provenance,
     TimePeriod,
 )
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Run
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.tf.transfer_function_basemodel import (
     TransferFunction,
 )
-from mt_metadata.utils.list_dict import ListDict
 from mt_metadata.utils.validators import validate_value_type
 
 from .standards import SCHEMA_FN_PATHS

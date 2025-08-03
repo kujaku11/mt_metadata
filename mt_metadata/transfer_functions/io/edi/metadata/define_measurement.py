@@ -7,13 +7,13 @@ from loguru import logger
 from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries import Auxiliary, Electric, Magnetic  # noqa: F401
 from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
 from mt_metadata.utils.location_helpers import (
     convert_position_float2str,
     validate_position,
 )
-from mt_metadata.utils.units import get_unit_object
 
 from . import EMeasurement, HMeasurement
 

@@ -8,8 +8,10 @@ Created on Wed Nov 16 12:22:08 2022
 # Imports
 # =============================================================================
 import unittest
-from mt_metadata.utils.list_dict import ListDict
-from mt_metadata.timeseries import Survey, Station, Run, Channel
+
+from mt_metadata.common.list_dict import ListDict
+from mt_metadata.timeseries import Channel, Run, Station, Survey
+
 
 # =============================================================================
 
@@ -268,9 +270,7 @@ class TestListDictSlice(unittest.TestCase):
     def test_get_index_slice_from_slice_fail_bad_keys(self):
         self.assertRaises(
             TypeError,
-            self.ld._get_index_slice_from_slice(
-                None, slice(False, False, False)
-            ),
+            self.ld._get_index_slice_from_slice(None, slice(False, False, False)),
         )
 
     def test_getitem_fail(self):
@@ -280,9 +280,7 @@ class TestListDictSlice(unittest.TestCase):
         self.assertRaises(TypeError, self.ld.__getitem__, 10.0)
 
     def test_setitem_fail(self):
-        self.assertRaises(
-            NotImplementedError, self.ld.__setitem__, slice(0, 1), None
-        )
+        self.assertRaises(NotImplementedError, self.ld.__setitem__, slice(0, 1), None)
 
     def test_remove_fail(self):
         self.assertRaises(KeyError, self.ld.remove, "z")

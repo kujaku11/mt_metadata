@@ -9,8 +9,8 @@ from pydantic import Field, field_validator, HttpUrl
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import ArrayDTypeEnum, EstimateIntentionEnum
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.units import get_unit_object
 
 
 # =====================================================

@@ -22,8 +22,8 @@ from mt_metadata.common import (
     StationLocation,
     TimePeriod,
 )
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Run
-from mt_metadata.utils.list_dict import ListDict
 
 
 # =====================================================

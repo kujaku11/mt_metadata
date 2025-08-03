@@ -16,10 +16,10 @@ import xarray as xr
 from loguru import logger
 
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata.common.list_dict import ListDict
 from mt_metadata.timeseries import Electric, Magnetic, Run
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
 from mt_metadata.transfer_functions.tf import Station, Survey
-from mt_metadata.utils.list_dict import ListDict
 
 from .metadata import Channel
 

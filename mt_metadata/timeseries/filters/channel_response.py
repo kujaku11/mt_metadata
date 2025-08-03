@@ -16,6 +16,7 @@ from pydantic import (
 )
 
 from mt_metadata.base.helpers import object_to_array, requires
+from mt_metadata.common.units import get_unit_object
 from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     FilterBase,
@@ -25,7 +26,6 @@ from mt_metadata.timeseries.filters import (
     TimeDelayFilter,
 )
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from mt_metadata.utils.units import get_unit_object
 
 
 try:
