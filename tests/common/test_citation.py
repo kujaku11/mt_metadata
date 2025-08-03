@@ -22,7 +22,7 @@ def default_citation():
 def custom_citation():
     """Return a Citation instance with custom values."""
     return Citation(
-        doi="http://doi.org/10.1234/example",
+        doi="https://doi.org/10.1234/example",
         authors="M.Tee A. Roura",
         title="A Study on Geophysical Phenomena",
         year="2020",
@@ -36,7 +36,7 @@ def custom_citation():
 def partial_citation():
     """Return a Citation instance with partial values."""
     return Citation(
-        doi="http://doi.org/10.5678/example",
+        doi="https://doi.org/10.5678/example",
         title="Partial Citation Test",
     )
 
@@ -74,7 +74,7 @@ def test_citation_custom_values(custom_citation, subtests):
     """Test the Citation model with custom values."""
 
     test_cases = [
-        ("doi.unicode_string()", "http://doi.org/10.1234/example"),
+        ("doi.unicode_string()", "https://doi.org/10.1234/example"),
         ("authors", "M.Tee A. Roura"),
         ("title", "A Study on Geophysical Phenomena"),
         ("year", "2020"),
@@ -106,7 +106,7 @@ def test_citation_partial_values(partial_citation, subtests):
     """Test the Citation model with partial values."""
 
     test_cases = [
-        ("doi.unicode_string()", "http://doi.org/10.5678/example"),
+        ("doi.unicode_string()", "https://doi.org/10.5678/example"),
         ("authors", None),
         ("title", "Partial Citation Test"),
         ("year", None),
