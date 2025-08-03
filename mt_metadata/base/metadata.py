@@ -1434,25 +1434,25 @@ class MetadataBase(DotNotationBaseModel):
 
         meta_dict = {}
         for name in self.get_attribute_list():
-            if "comments" in name:
-                # this is a hack to get around the fact that comments are not
-                # in the standard.  Need to remove the last part of the name
-                # to get the attribute name.
-                # will change in the future.
-                name = ".".join(name.split(".")[:-1])
-                if "time_stamp" in name or "author" in name:
-                    continue
-                try:
-                    value = self.get_attr_from_name(name).to_dict()
-                except AttributeError:
-                    # if the attribute is not a BaseModel, then just get the value
-                    # this is for comments which are not BaseModels.
-                    logger.debug(f"Attribute {name} is not a BaseModel.")
-                    continue
+            # if "comments" in name:
+            #     # this is a hack to get around the fact that comments are not
+            #     # in the standard.  Need to remove the last part of the name
+            #     # to get the attribute name.
+            #     # will change in the future.
+            #     name = ".".join(name.split(".")[:-1])
+            #     if "time_stamp" in name or "author" in name:
+            #         continue
+            #     try:
+            #         value = self.get_attr_from_name(name).to_dict()
+            #     except AttributeError:
+            #         # if the attribute is not a BaseModel, then just get the value
+            #         # this is for comments which are not BaseModels.
+            #         logger.debug(f"Attribute {name} is not a BaseModel.")
+            #         continue
 
-                if value is not None:
-                    meta_dict[name] = value
-                continue
+            #     if value is not None:
+            #         meta_dict[name] = value
+            #     continue
             try:
                 value = self.get_attr_from_name(name)
                 if hasattr(value, "to_dict"):

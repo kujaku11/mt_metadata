@@ -76,6 +76,11 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
         field_type = _extract_base_type(annotation)
 
         if field_type and _is_basemodel_subclass(field_type):
+            # special case for MTime, which is a Basemodel, but we only want the value not all
+            # the fields.
+            if "MTime" == field_type.__name__:
+                fields[field_name] = field_info
+                continue
             # It's a BaseModel, recursively get its fields
             try:
                 nested_instance = field_type()

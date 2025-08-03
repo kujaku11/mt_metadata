@@ -388,6 +388,12 @@ class MTime(BaseModel):
         bool,
         Field(
             description="Defines if the time give in GPS time [True] or UTC [False]",
+            default=False,
+            examples=[True, False],
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
         ),
     ] = False
 

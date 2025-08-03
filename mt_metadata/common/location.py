@@ -48,13 +48,6 @@ class BasicLocationNoDatum(MetadataBase):
         ),
     ]
 
-    @field_validator("latitude", "longitude", mode="before")
-    @classmethod
-    def validate_position(cls, value, info: ValidationInfo):
-        return validate_position(value, info.field_name)
-
-
-class BasicLocation(BasicLocationNoDatum):
     elevation: Annotated[
         float,
         Field(
@@ -68,6 +61,14 @@ class BasicLocation(BasicLocationNoDatum):
             },
         ),
     ]
+
+    @field_validator("latitude", "longitude", mode="before")
+    @classmethod
+    def validate_position(cls, value, info: ValidationInfo):
+        return validate_position(value, info.field_name)
+
+
+class BasicLocation(BasicLocationNoDatum):
     datum: Annotated[
         str | int,
         Field(

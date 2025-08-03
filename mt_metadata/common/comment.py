@@ -46,7 +46,7 @@ class Comment(MetadataBase):
             alias=None,
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
         ),
     ]
@@ -136,12 +136,9 @@ class Comment(MetadataBase):
             and self.value == other.value
         )
 
-    def to_dict(self, nested=False, single=False, required=True) -> str:
+    def as_string(self) -> str:
         """
         Returns the comment as "{time_stamp} | {author} | {comment}"
-
-        TODO: in the future this should return an actual dictionary to
-         comply with all other objects.
 
         Returns
         -------
@@ -149,7 +146,7 @@ class Comment(MetadataBase):
             formatted comment
         """
         if self.value is None:
-            return None
+            return ""
 
         if self.time_stamp == "1980-01-01T00:00:00+00:00":
             if self.author in [None, ""]:

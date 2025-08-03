@@ -20,7 +20,7 @@ class Citation(MetadataBase):
             validation_alias=AliasChoices("doi", "survey_doi"),
             json_schema_extra={
                 "units": None,
-                "required": True,
+                "required": False,
             },
         ),
     ]
