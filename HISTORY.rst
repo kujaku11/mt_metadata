@@ -220,4 +220,8 @@ History
 * Filters type can only be a set value for the filter.  For example for an `FIRFilter` the type must be `FIR`.  The filter type is now a property of the filter object.  The filter type is not a property of the filter class.  This allows for more flexibility in the future.
 * Added ability to initiate a metadata object with a dictionary as in `Person(**kwargs)`.
 * Added `AuthorPerson` object to `mt_metadata.common` which is more in the style of the MT metadata.  You can still instantiate with `AuthorPerson(name="John Doe")` which will populate the `author` field.  However, you cannot get `name`, similarly with `Person(author="jon do")`.  
-* Changed `Filtered` to `Filter` 
+* Changed `Filtered` to `Filter`
+* Added `MTime` object to `mt_metadata.common.mttime` which is a Pydantic Basemodel that can be used to access other representations of time, like ISO format, datetime, and pandas Timestamp.
+* Updated `get_now_utc` to return an `MTime` object.
+* Moved `listdict` to `mt_metadata.common.listdict` and added a `pop` method to it.
+* Moved `units` to `mt_metadata.common.units` and added a `Unit` object that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.

@@ -1,17 +1,9 @@
 # =====================================================
 # Imports
 # =====================================================
-from collections import OrderedDict
 from typing import Annotated
-from typing_extensions import Self, deprecated
-from loguru import logger
-from pydantic import (
-    Field,
-    field_validator,
-    model_validator,
-    ValidationInfo,
-    PrivateAttr,
-)
+
+from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.comment import Comment
@@ -31,7 +23,7 @@ class AppliedFilter(MetadataBase):
         Field(
             default=None,
             description="Name of the filter.",
-            examples="low pass",
+            examples=["low pass"],
             json_schema_extra={"units": None, "required": True},
         ),
     ]
@@ -41,7 +33,7 @@ class AppliedFilter(MetadataBase):
         Field(
             default=True,
             description="Whether the filter has been applied.",
-            examples=True,
+            examples=["True"],
             json_schema_extra={"units": None, "required": True},
         ),
     ]
@@ -51,70 +43,17 @@ class AppliedFilter(MetadataBase):
         Field(
             default=None,
             description="Stage of the filter in the processing chain.",
-            examples=1,
+            examples=[1],
             json_schema_extra={"units": None, "required": False},
-        ),
-    ]
-
-
-class Filter(MetadataBase):
-    _objects_included = PrivateAttr({"applied_filter": AppliedFilter})
-
-    filter_list: Annotated[
-        list[AppliedFilter],
-        Field(
-            default_factory=list,
-            description="List of AppliedFilter() objects.",
-            examples=("[AppliedFilter(name='filter_name', applied=True, stage=1)]"),
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
-    applied: Annotated[
-        list[bool],
-        Field(
-            default_factory=list,
-            description="List of booleans indicating if the filter has been applied.",
-            examples=[True, False],
-            alias=None,
-            deprecated=deprecated(
-                "'applied' will be deprecated in the future use an AppliedFilter object."
-            ),
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
-        ),
-    ]
-
-    name: Annotated[
-        list[str],
-        Field(
-            default_factory=list,
-            description="List of filter names.",
-            examples=["low pass", "high pass"],
-            alias=None,
-            deprecated=deprecated(
-                "'name' will be deprecated in the future use an AppliedFilter object."
-            ),
-            json_schema_extra={
-                "units": None,
-                "required": False,
-            },
         ),
     ]
 
     comments: Annotated[
         Comment,
         Field(
-            default_factory=Comment,
+            default_factory=lambda: Comment(),  # type: ignore
             description="Any comments on filters.",
-            examples="low pass is not calibrated",
-            type="string",
+            examples=["low pass is not calibrated"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -133,111 +72,189 @@ class Filter(MetadataBase):
             return Comment(value=value)
         return value
 
-    @model_validator(mode="after")
-    def validate_applied_and_names(self) -> Self:
-        """
-        Validate the applied_list to ensure it contains only AppliedFilter objects.
-        """
-        if self.name != [] or self.applied != []:
-            logger.warning(
-                "'applied' and 'name' will be deprecated in the future append an "
-                "AppliedFilter(name='name', applied=True) to 'filter_list'."
-            )
 
-        if len(self.name) != len(self.applied):
-            diff = len(self.name) - len(self.applied)
-            if diff > 0:
-                self.applied.extend([True] * diff)
-            else:
-                self.name.extend(["unknown"] * abs(diff))
+# class Filter(MetadataBase):
+#     _objects_included: dict = PrivateAttr(
+#         default_factory=lambda: {"applied_filter": AppliedFilter}
+#     )
 
-        if len(self.name) != len(self.filter_list):
-            for name, applied, index in zip(
-                self.name, self.applied, range(len(self.name))
-            ):
-                self.filter_list.append(
-                    AppliedFilter(name=name, applied=applied, stage=index + 1)
-                )
+#     filter_list: Annotated[
+#         list[AppliedFilter],
+#         Field(
+#             default_factory=list,
+#             description="List of AppliedFilter() objects.",
+#             examples=["[AppliedFilter(name='filter_name', applied=True, stage=1)]"],
+#             alias=None,
+#             json_schema_extra={
+#                 "units": None,
+#                 "required": False,
+#             },
+#         ),
+#     ]
 
-        return self
+#     applied: Annotated[
+#         list[bool],
+#         Field(
+#             default_factory=list,
+#             description="List of booleans indicating if the filter has been applied.",
+#             examples=[True, False],
+#             alias=None,
+#             deprecated=deprecated(
+#                 "'applied' will be deprecated in the future use an AppliedFilter object."
+#             ),
+#             json_schema_extra={
+#                 "units": None,
+#                 "required": False,
+#             },
+#         ),
+#     ]
 
-    # def to_dict(
-    #     self, single: bool = False, nested: bool = False, required: bool = True
-    # ) -> dict:
-    #     """
-    #     Convert the object to a dictionary. To be compliant with older versions
-    #     of the metadata, use name and applied as lists
+#     name: Annotated[
+#         list[str],
+#         Field(
+#             default_factory=list,
+#             description="List of filter names.",
+#             examples=["low pass", "high pass"],
+#             alias=None,
+#             deprecated=deprecated(
+#                 "'name' will be deprecated in the future use an AppliedFilter object."
+#             ),
+#             json_schema_extra={
+#                 "units": None,
+#                 "required": False,
+#             },
+#         ),
+#     ]
 
-    #     Parameters
-    #     ----------
-    #     single : bool, optional
-    #         Whether to return a single dictionary or a list of dictionaries,
-    #         by default False.
+#     comments: Annotated[
+#         Comment,
+#         Field(
+#             default_factory=Comment,
+#             description="Any comments on filters.",
+#             examples=["low pass is not calibrated"],
+#             alias=None,
+#             json_schema_extra={
+#                 "units": None,
+#                 "required": False,
+#             },
+#         ),
+#     ]
 
-    #     Returns
-    #     -------
-    #     dict
-    #         Dictionary representation of the object.
-    #     """
-    #     d = OrderedDict()
-    #     d["name"] = self.name
-    #     d["applied"] = self.applied
-    #     d["comments"] = self.comments.to_dict(single=single, nested=nested)
-    #     return d
+#     @field_validator("comments", mode="before")
+#     @classmethod
+#     def validate_comments(cls, value, info: ValidationInfo) -> Comment:
+#         """
+#         Validate that the value is a valid comment.
+#         """
+#         if isinstance(value, str):
+#             return Comment(value=value)
+#         return value
 
-    def add_filter(
-        self,
-        applied_filter: AppliedFilter = None,
-        name: str = None,
-        applied: bool = True,
-        stage: int | None = None,
-    ) -> None:
-        """
-        Add a filter to the filter list.
+#     @model_validator(mode="after")
+#     def validate_applied_and_names(self) -> Self:
+#         """
+#         Validate the applied_list to ensure it contains only AppliedFilter objects.
+#         """
+#         if self.name != [] or self.applied != []:
+#             logger.warning(
+#                 "'applied' and 'name' will be deprecated in the future append an "
+#                 "AppliedFilter(name='name', applied=True) to 'filter_list'."
+#             )
 
-        Parameters
-        ----------
-        name : str
-            Name of the filter.
-        applied : bool, optional
-            Whether the filter has been applied, by default True.
-        stage : int | None, optional
-            Stage of the filter in the processing chain, by default None.
-        """
-        if applied_filter is not None:
-            if not isinstance(applied_filter, AppliedFilter):
-                raise TypeError("applied_filter must be an instance of AppliedFilter")
-            if applied_filter.stage is None:
-                applied_filter.stage = len(self.filter_list) + 1
-            self.filter_list.append(applied_filter)
-        else:
-            if name is None:
-                raise ValueError("name must be provided if applied_filter is None")
-            if not isinstance(name, str):
-                raise TypeError("name must be a string")
-            if stage is None:
-                stage = len(self.filter_list) + 1
-            self.filter_list.append(
-                AppliedFilter(name=name, applied=applied, stage=stage)
-            )
+#         if len(self.name) != len(self.applied):
+#             diff = len(self.name) - len(self.applied)
+#             if diff > 0:
+#                 self.applied.extend([True] * diff)
+#             else:
+#                 self.name.extend(["unknown"] * abs(diff))
 
-    def remove_filter(self, name: str, reset_stages: bool = True) -> None:
-        """
-        Remove a filter from the filter list.
+#         if len(self.name) != len(self.filter_list):
+#             for name, applied, index in zip(
+#                 self.name, self.applied, range(len(self.name))
+#             ):
+#                 self.filter_list.append(
+#                     AppliedFilter(name=name, applied=applied, stage=index + 1)
+#                 )
 
-        Parameters
-        ----------
-        name : str
-            Name of the filter to remove.
-        reset_stages : bool, optional
-            Whether to reset the stages of the remaining filters, by default True.
-        """
+#         return self
 
-        new_list = []
-        for f in self.filter_list:
-            if f.name == name:
-                continue
-            if reset_stages:
-                f.stage = len(new_list) + 1
-            new_list.append(f)
-        self.filter_list = new_list
+#     def to_dict(
+#         self, single: bool = False, nested: bool = False, required: bool = True
+#     ) -> dict:
+#         """
+#         Convert the object to a dictionary. To be compliant with older versions
+#         of the metadata, use name and applied as lists
+
+#         Parameters
+#         ----------
+#         single : bool, optional
+#             Whether to return a single dictionary or a list of dictionaries,
+#             by default False.
+
+#         Returns
+#         -------
+#         dict
+#             Dictionary representation of the object.
+#         """
+#         d = OrderedDict()
+#         d["name"] = self.name
+#         d["applied"] = self.applied
+#         d["comments"] = self.comments.to_dict(single=single, nested=nested)
+#         return d
+
+#     def add_filter(
+#         self,
+#         applied_filter: AppliedFilter = None,
+#         name: str = None,
+#         applied: bool = True,
+#         stage: int | None = None,
+#     ) -> None:
+#         """
+#         Add a filter to the filter list.
+
+#         Parameters
+#         ----------
+#         name : str
+#             Name of the filter.
+#         applied : bool, optional
+#             Whether the filter has been applied, by default True.
+#         stage : int | None, optional
+#             Stage of the filter in the processing chain, by default None.
+#         """
+#         if applied_filter is not None:
+#             if not isinstance(applied_filter, AppliedFilter):
+#                 raise TypeError("applied_filter must be an instance of AppliedFilter")
+#             if applied_filter.stage is None:
+#                 applied_filter.stage = len(self.filter_list) + 1
+#             self.filter_list.append(applied_filter)
+#         else:
+#             if name is None:
+#                 raise ValueError("name must be provided if applied_filter is None")
+#             if not isinstance(name, str):
+#                 raise TypeError("name must be a string")
+#             if stage is None:
+#                 stage = len(self.filter_list) + 1
+#             self.filter_list.append(
+#                 AppliedFilter(name=name, applied=applied, stage=stage)
+#             )
+
+#     def remove_filter(self, name: str, reset_stages: bool = True) -> None:
+#         """
+#         Remove a filter from the filter list.
+
+#         Parameters
+#         ----------
+#         name : str
+#             Name of the filter to remove.
+#         reset_stages : bool, optional
+#             Whether to reset the stages of the remaining filters, by default True.
+#         """
+
+#         new_list = []
+#         for f in self.filter_list:
+#             if f.name == name:
+#                 continue
+#             if reset_stages:
+#                 f.stage = len(new_list) + 1
+#             new_list.append(f)
+#         self.filter_list = new_list
