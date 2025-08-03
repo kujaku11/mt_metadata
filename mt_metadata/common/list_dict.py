@@ -9,6 +9,7 @@ Created on Wed Nov 16 11:08:25 2022
 # =============================================================================
 from collections import OrderedDict
 
+
 # =============================================================================
 
 
@@ -23,7 +24,6 @@ class ListDict:
     """
 
     def __init__(self, values={}):
-
         self._home = OrderedDict(values)
 
     def __str__(self):
@@ -128,7 +128,6 @@ class ListDict:
         return slice(start, stop, key_slice.step)
 
     def __getitem__(self, value):
-
         if isinstance(value, str):
             try:
                 return self._home[value]
@@ -150,7 +149,6 @@ class ListDict:
             raise TypeError("Index must be a string or integer value.")
 
     def __setitem__(self, index, value):
-
         if isinstance(index, str):
             self._home[index] = value
 

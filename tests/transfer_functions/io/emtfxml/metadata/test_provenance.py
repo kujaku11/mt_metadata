@@ -25,8 +25,8 @@ import pytest
 
 from mt_metadata import __version__
 from mt_metadata.common import Person
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import Provenance
-from mt_metadata.utils.mttime import MTime
 
 
 # ====================================

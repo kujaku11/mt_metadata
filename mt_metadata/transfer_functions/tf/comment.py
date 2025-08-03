@@ -14,7 +14,7 @@ from mt_metadata.base import Base, get_schema
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 from .standards import SCHEMA_FN_PATHS
 

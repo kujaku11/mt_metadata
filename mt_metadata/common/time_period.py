@@ -2,12 +2,13 @@
 # Imports
 # =====================================================
 from typing import Annotated
-from pydantic import Field, field_validator, ValidationInfo
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.mttime import MTime, MDate
+from mt_metadata.common.mttime import MDate, MTime
 
 
 # =====================================================

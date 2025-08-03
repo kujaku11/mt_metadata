@@ -4,28 +4,30 @@ time test
 Created on Thu May 21 14:09:17 2020
 @author: jpeacock
 """
+import datetime
+
+import numpy as np
+import pandas as pd
+
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
 from dateutil import parser as dtparser
 from dateutil import tz
-import datetime
-import pandas as pd
-import numpy as np
+from obspy import UTCDateTime
 
-from mt_metadata.utils.mttime import (
-    MTime,
-    MDate,
-    parse,
-    _localize_utc,
+from mt_metadata.common.mttime import (
     _check_timestamp,
     _fix_out_of_bounds_time_stamp,
-    TMIN,
-    TMAX,
+    _localize_utc,
     calculate_leap_seconds,
+    MDate,
+    MTime,
+    parse,
+    TMAX,
+    TMIN,
 )
-from obspy import UTCDateTime
 
 
 # =============================================================================

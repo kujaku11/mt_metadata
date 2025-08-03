@@ -12,7 +12,7 @@ from xml.etree import cElementTree as et
 import pytest
 
 from mt_metadata.common import Comment
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 
 @pytest.fixture(scope="module")

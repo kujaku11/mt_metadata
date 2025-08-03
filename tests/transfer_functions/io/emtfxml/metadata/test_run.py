@@ -29,13 +29,13 @@ from typing import Any
 import pytest
 
 from mt_metadata.common import Comment
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     Dipole,
     Instrument,
     Magnetometer,
     Run,
 )
-from mt_metadata.utils.mttime import MTime
 
 
 class TestRunFixtures:

@@ -411,7 +411,7 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
             field_type = "MTime | str | float | int | np.datetime64 | pd.Timestamp"
             imports.append("import numpy as np")
             imports.append("import pandas as pd")
-            imports.append("from mt_metadata.utils.mttime import MTime")
+            imports.append("from mt_metadata.common.mttime import MTime")
             field_attrs["default_factory"] = "lambda: MTime(time_stamp=None)"
             datetime_keys.append(field_name)
 

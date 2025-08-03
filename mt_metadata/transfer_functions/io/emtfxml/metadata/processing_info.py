@@ -11,7 +11,7 @@ from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import SignConventionEnum
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 from . import helpers, ProcessingSoftware, RemoteInfo, RemoteRef
 

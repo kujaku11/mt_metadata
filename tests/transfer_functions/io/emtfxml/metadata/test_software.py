@@ -40,8 +40,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import ProcessingSoftware
-from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================

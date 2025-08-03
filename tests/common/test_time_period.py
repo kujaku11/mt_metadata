@@ -1,8 +1,8 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pytest
+
 from mt_metadata.common import TimePeriod
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 
 def test_time_period_default_values():

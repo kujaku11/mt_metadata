@@ -15,7 +15,7 @@ from mt_metadata.common import (
     SignConventionEnum,
     Software,
 )
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 from mt_metadata.utils.units import get_unit_object
 
 

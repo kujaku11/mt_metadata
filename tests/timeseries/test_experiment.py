@@ -12,6 +12,7 @@ import copy
 
 import pytest
 
+from mt_metadata.common.mttime import MDate
 from mt_metadata.timeseries import (
     Auxiliary,
     Electric,
@@ -21,7 +22,6 @@ from mt_metadata.timeseries import (
     Station,
     Survey,
 )
-from mt_metadata.utils.mttime import MDate
 
 
 @pytest.fixture

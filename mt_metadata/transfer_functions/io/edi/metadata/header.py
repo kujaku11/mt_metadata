@@ -16,8 +16,8 @@ from mt_metadata.common import (
     GeographicReferenceFrameEnum,
     StdEDIversionsEnum,
 )
+from mt_metadata.common.mttime import get_now_utc, MTime
 from mt_metadata.utils.location_helpers import convert_position_float2str
-from mt_metadata.utils.mttime import get_now_utc, MTime
 from mt_metadata.utils.units import get_unit_object
 from mt_metadata.utils.validators import validate_station_name
 

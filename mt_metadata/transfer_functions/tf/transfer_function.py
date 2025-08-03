@@ -14,9 +14,9 @@ from mt_metadata.base import Base, get_schema
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
+from mt_metadata.common.mttime import MTime
 from mt_metadata.timeseries.standards import SCHEMA_FN_PATHS as TS_SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.processing import aurora
-from mt_metadata.utils.mttime import MTime
 
 from . import DataQuality, Person, Software
 from .standards import SCHEMA_FN_PATHS

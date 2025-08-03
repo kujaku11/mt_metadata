@@ -1,10 +1,11 @@
 from pathlib import Path
 
-from mt_metadata.utils.mttime import MTime
-
 from datamodel_code_generator import DataModelType, PythonVersion
 from datamodel_code_generator.model import get_data_model_types
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+
+from mt_metadata.common.mttime import MTime
+
 
 filename: Path = Path(
     r"C:\Users\jpeacock\OneDrive - DOI\Documents\GitHub\mt_metadata\mt_metadata\standards\timeseries\person_schema.json"

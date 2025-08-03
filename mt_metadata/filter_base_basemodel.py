@@ -4,6 +4,7 @@
 import numpy as np
 import pandas as pd
 
+
 try:
     from obspy.core.utcdatetime import UTCDateTime  # for type hinting
 
@@ -11,14 +12,12 @@ try:
 except ImportError:
     from_obspy = False
 
-from pydantic import (
-    Field,
-    field_validator,
-)
-from typing import Annotated, Any
+from typing import Annotated
+
+from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 
 # =====================================================

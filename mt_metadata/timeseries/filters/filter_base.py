@@ -11,8 +11,8 @@ from pydantic import computed_field, Field, field_validator, PrivateAttr, Valida
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import filter_descriptions, requires
 from mt_metadata.common import Comment
+from mt_metadata.common.mttime import MTime
 from mt_metadata.timeseries.filters.plotting_helpers import plot_response
-from mt_metadata.utils.mttime import MTime
 from mt_metadata.utils.units import get_unit_object, Unit
 
 

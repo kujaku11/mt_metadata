@@ -18,7 +18,7 @@ from typing_extensions import Self
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.base.helpers import element_to_string
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 
 # =====================================================

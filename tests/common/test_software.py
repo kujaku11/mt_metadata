@@ -1,8 +1,9 @@
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from mt_metadata.common import Software
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 
 def test_software_default_values():

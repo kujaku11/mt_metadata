@@ -10,8 +10,8 @@ from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import BasicLocationNoDatum, Comment
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.mttime import MTime
 
 from . import DataQualityNotes, DataQualityWarnings, Orientation
 

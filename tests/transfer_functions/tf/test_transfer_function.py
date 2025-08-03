@@ -14,10 +14,10 @@ import pandas as pd
 import pytest
 from pydantic import ValidationError
 
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.tf.transfer_function_basemodel import (
     TransferFunction,
 )
-from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================

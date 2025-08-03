@@ -12,21 +12,21 @@ Tests for converting Experiment to StationXML
 # =============================================================================
 import tempfile
 from pathlib import Path
-from functools import lru_cache
-from loguru import logger
 
 import pytest
 
+
 try:
-    from obspy.core import inventory
     from obspy import read_inventory
+    from obspy.core import inventory
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
-from mt_metadata.timeseries import Experiment, Electric, Magnetic, Run, Station, Survey
-from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
-from mt_metadata.utils.mttime import MTime
 from mt_metadata import MT_EXPERIMENT_MULTIPLE_RUNS, MT_EXPERIMENT_MULTIPLE_RUNS_02
+from mt_metadata.common.mttime import MTime
+from mt_metadata.timeseries import Electric, Experiment, Magnetic, Run, Station, Survey
+from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
+
 
 # =============================================================================
 # Fixtures

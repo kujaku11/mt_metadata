@@ -13,9 +13,9 @@ from collections import OrderedDict
 import pytest
 
 from mt_metadata import TF_EDI_METRONIX
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io import edi
-from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================

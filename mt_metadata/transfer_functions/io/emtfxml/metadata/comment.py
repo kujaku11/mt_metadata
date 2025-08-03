@@ -15,7 +15,7 @@ from xml.etree import cElementTree as et
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import element_to_string, write_lines
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 
 from .standards import SCHEMA_FN_PATHS
 

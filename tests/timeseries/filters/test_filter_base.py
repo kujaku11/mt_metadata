@@ -3,8 +3,8 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.common import Comment, FilterTypeEnum
+from mt_metadata.common.mttime import MTime
 from mt_metadata.timeseries.filters import FilterBase
-from mt_metadata.utils.mttime import MTime
 
 
 @pytest.fixture

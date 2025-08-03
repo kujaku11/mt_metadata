@@ -5,9 +5,10 @@ from typing import Annotated
 
 import numpy as np
 import pandas as pd
-from mt_metadata.base import MetadataBase
-from mt_metadata.utils.mttime import MTime
 from pydantic import Field, field_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.mttime import MTime
 
 
 # =====================================================

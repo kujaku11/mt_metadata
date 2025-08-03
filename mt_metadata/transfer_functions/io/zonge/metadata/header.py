@@ -17,7 +17,7 @@ from mt_metadata.base import Base, get_schema
 # Imports
 # =============================================================================
 from mt_metadata.base.helpers import write_lines
-from mt_metadata.utils.mttime import MTime
+from mt_metadata.common.mttime import MTime
 from mt_metadata.utils.validators import validate_attribute
 
 from . import CH, GDP, GPS, Job, Line, MTEdit, MTFT24, Rx, STN, Survey, Tx, Unit

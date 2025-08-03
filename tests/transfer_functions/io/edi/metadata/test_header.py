@@ -14,8 +14,8 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.common import GeographicReferenceFrameEnum, StdEDIversionsEnum
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.edi.metadata import Header
-from mt_metadata.utils.mttime import MTime
 
 
 # =============================================================================

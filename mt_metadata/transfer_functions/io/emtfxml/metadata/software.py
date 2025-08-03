@@ -9,8 +9,8 @@ import pandas as pd
 from pydantic import Field, field_validator
 
 from mt_metadata.common import Software
+from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
-from mt_metadata.utils.mttime import MTime
 
 
 # =====================================================

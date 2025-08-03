@@ -15,8 +15,8 @@ from operator import itemgetter
 import pandas as pd
 import pytest
 
+from mt_metadata.common.mttime import MDate
 from mt_metadata.timeseries import Station, Survey
-from mt_metadata.utils.mttime import MDate
 
 
 @pytest.fixture(scope="module")
