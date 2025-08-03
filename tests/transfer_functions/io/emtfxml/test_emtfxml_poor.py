@@ -24,9 +24,9 @@ from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
 class TestEMTFXML(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.xml = EMTFXML(fn=TF_POOR_XML)
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.xml = EMTFXML(fn=TF_POOR_XML)
+        cls.maxDiff = None
 
     def test_basics(self):
         test_dict = OrderedDict(
@@ -38,7 +38,7 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.to_dict(single=True))
+        self.assertDictEqual(test_dict, self.xml.emtf.to_dict(single=True))
 
     def test_attachments(self):
         test_dict = OrderedDict(
@@ -125,7 +125,7 @@ class TestEMTFXML(unittest.TestCase):
                 ),
                 (
                     "citation.survey_d_o_i",
-                    "doi:10.17611/DP/EMTF/USMTARRAY/SOUTH",
+                    "https://doi.org/10.17611/DP/EMTF/USMTARRAY/SOUTH",
                 ),
                 (
                     "citation.title",

@@ -47,7 +47,7 @@ filter_descriptions = {
 
 def get_all_fields(model: BaseModel) -> Dict[str, Any]:
     """
-    Iteratively get all fields in a BaseModel
+    Recursively get all fields in a BaseModel, including nested BaseModel fields.
 
     Parameters
     ----------
@@ -57,17 +57,108 @@ def get_all_fields(model: BaseModel) -> Dict[str, Any]:
     Returns
     -------
     Dict[str, Any]
-        dictionary keyed by attributes. Will be nested.
+        dictionary keyed by attributes. Will be nested for BaseModel fields.
+        For simple fields, returns the FieldInfo object.
+        For BaseModel fields, returns a nested dictionary of their fields.
     """
+
     fields = {}
-    for field_name, field_value in model.model_fields.items():
-        if hasattr(field_value.annotation, "model_fields"):
-            fields[field_name] = field_value.annotation().get_all_fields()
+
+    # Use __pydantic_fields__ instead of model_fields (which is deprecated)
+    for field_name, field_info in model.__pydantic_fields__.items():
+        # Skip deprecated fields
+        if field_info.deprecated is not None:
+            continue
+
+        annotation = field_info.annotation
+
+        # Handle different annotation types
+        field_type = _extract_base_type(annotation)
+
+        if field_type and _is_basemodel_subclass(field_type):
+            # It's a BaseModel, recursively get its fields
+            try:
+                nested_instance = field_type()
+                fields[field_name] = get_all_fields(nested_instance)
+            except Exception:
+                # If we can't instantiate it, just include the field info
+                fields[field_name] = field_info
         else:
-            if field_value.deprecated is None:
-                fields[field_name] = field_value
+            # It's a simple field, include the field info
+            fields[field_name] = field_info
 
     return fields
+
+
+def _extract_base_type(annotation):
+    """
+    Extract the base type from a complex annotation like Union, Optional, List, etc.
+
+    Parameters
+    ----------
+    annotation : type
+        The type annotation to extract from
+
+    Returns
+    -------
+    type or None
+        The base type if found, None otherwise
+    """
+    from typing import get_args, get_origin
+
+    # First check for generic types (Union, List, etc.)
+    origin = get_origin(annotation)
+    args = get_args(annotation)
+
+    if origin is not None:
+        if origin is list or (
+            hasattr(origin, "__name__") and origin.__name__ == "list"
+        ):
+            # For List types, get the element type
+            if args:
+                return _extract_base_type(args[0])
+        elif hasattr(origin, "__name__") and origin.__name__ in ["UnionType", "Union"]:
+            # For Union types, find the first non-None type
+            for arg in args:
+                if arg != type(None):
+                    return _extract_base_type(arg)
+        elif hasattr(origin, "__name__") and origin.__name__ in ["dict", "Dict"]:
+            # For Dict types, we don't recurse into them
+            return None
+
+    # Handle direct types (only if not a generic type)
+    if hasattr(annotation, "__mro__") and annotation != type(None):
+        return annotation
+
+    return None
+
+
+def _is_basemodel_subclass(cls):
+    """
+    Check if a class is a subclass of BaseModel.
+
+    Parameters
+    ----------
+    cls : type
+        The class to check
+
+    Returns
+    -------
+    bool
+        True if cls is a BaseModel subclass, False otherwise
+    """
+    import inspect
+
+    try:
+        from pydantic import BaseModel
+
+        return (
+            inspect.isclass(cls)
+            and issubclass(cls, BaseModel)
+            and hasattr(cls, "__pydantic_fields__")
+        )
+    except (TypeError, AttributeError):
+        return False
 
 
 def wrap_description(description, column_width):
@@ -443,7 +534,8 @@ def recursive_split_dict(key, value, remainder, sep="."):
 
 def get_by_alias(model, alias_name):
     # Find the field name that corresponds to the given alias
-    for field_name, field_info in model.model_fields.items():
+    # Use __pydantic_fields__ instead of model_fields (which is deprecated)
+    for field_name, field_info in model.__pydantic_fields__.items():
         if field_info.alias == alias_name:
             return getattr(model, field_name)
     return None
@@ -466,7 +558,7 @@ def get_by_alias(model, alias_name):
 #         The alias name if found, None otherwise
 #     """
 #     try:
-#         field_info = model.model_fields.get(key)
+#         field_info = model.__pydantic_fields__.get(key)
 #         if field_info.validation_alias:
 
 #         if field_info and field_info.alias:

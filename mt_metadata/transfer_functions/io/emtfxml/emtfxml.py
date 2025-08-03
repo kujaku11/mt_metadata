@@ -140,11 +140,13 @@ class EMTFXML:
     This is meant to follow Anna's XML schema for transfer functions
 
     [Kelbert2019](https://doi.org/10.1190/geo2018-0679.1).
+
+    making this a MetadataBase object is complicated because of station
+    and survey metadata, so we are going to leave this as just an object.
     """
 
     def __init__(self, fn=None, **kwargs):
         self._root_dict = None
-        self.logger = logger
         self.emtf = emtf_xml.EMTF()  # type: ignore
         self.external_url = emtf_xml.ExternalUrl()  # type: ignore
         self.primary_data = emtf_xml.PrimaryData()  # type: ignore
@@ -384,7 +386,7 @@ class EMTFXML:
                         try:
                             value.remote_info._order.remove("field_notes")
                         except ValueError:
-                            self.logger.debug("No field notes to skip.")
+                            logger.debug("No field notes to skip.")
                     if value.remote_info.site.id in [
                         None,
                         "",
@@ -394,7 +396,7 @@ class EMTFXML:
                         try:
                             value.remote_info._order.remove("site")
                         except ValueError:
-                            self.logger.debug("No remote field notes to skip.")
+                            logger.debug("No remote field notes to skip.")
                 element = value.to_xml()
                 if isinstance(element, list):
                     for item in element:
@@ -798,7 +800,7 @@ class EMTFXML:
                     try:
                         getattr(self, obj).update_attribute(attr_key, value)
                     except:
-                        self.logger.warning(f"Cannot set attribute {key}.")
+                        logger.warning(f"Cannot set attribute {key}.")
             else:
                 other.append(comment)
         try:
@@ -1219,10 +1221,10 @@ class EMTFXML:
                             try:
                                 run.dipole[index].set_attr_from_name(key, value)
                             except Exception as error:
-                                self.logger.warning(
+                                logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                # self.logger.exception(error)
+                                # logger.exception(error)
                         elif "magnetometer" in key:
                             index = int(key.split("_")[1].split(".")[0])
                             key = key.split(".", 1)[1:]
@@ -1231,26 +1233,26 @@ class EMTFXML:
                             try:
                                 run.magnetometer[index].update_attribute(key, value)
                             except Exception as error:
-                                self.logger.warning(
+                                logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                # self.logger.exception(error)
+                                # logger.exception(error)
                         else:
                             try:
                                 run.update_attribute(key, value)
                             except Exception as error:
-                                self.logger.warning(
+                                logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
-                                # self.logger.exception(error)
+                                # logger.exception(error)
                     else:
                         try:
                             self.processing_info.update_attribute(key, value)
                         except Exception as error:
-                            self.logger.warning(
+                            logger.warning(
                                 f"Cannot set processing info attribute {param}"
                             )
-                            # self.logger.exception(error)
+                            # logger.exception(error)
 
         self.site.run_list = sm.transfer_function.runs_processed
 
@@ -1313,7 +1315,7 @@ class EMTFXML:
                         break
 
                 except AttributeError:
-                    self.logger.debug(
+                    logger.debug(
                         f"Did not find {comp} in run",
                     )
 
@@ -1341,7 +1343,7 @@ class EMTFXML:
                     fn.dipole.append(dp)
 
                 except AttributeError:
-                    self.logger.debug(f"Did not find {comp} in run")
+                    logger.debug(f"Did not find {comp} in run")
 
             self.field_notes._run_list.append(fn)
 
@@ -1368,7 +1370,7 @@ class EMTFXML:
                     else:
                         ch_out_dict[comp] = m_ch
                 except AttributeError:
-                    self.logger.debug(f"Did not find {comp} in run")
+                    logger.debug(f"Did not find {comp} in run")
 
             for comp in ["ex", "ey"]:
                 try:
@@ -1407,7 +1409,7 @@ class EMTFXML:
 
                     ch_out_dict[comp] = ch_out
                 except AttributeError:
-                    self.logger.debug(f"Did not find {comp} in run")
+                    logger.debug(f"Did not find {comp} in run")
 
         self.site_layout.input_channels = list(ch_in_dict.values())
         self.site_layout.output_channels = list(ch_out_dict.values())

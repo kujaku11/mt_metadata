@@ -164,8 +164,8 @@ class StdEDIversionsEnum(str, Enum):
 
 
 class ReleaseStatusEnum(StrEnumerationBase):
-    Unrestricted_release = "Unrestricted release"
-    Restricted_release = "Restricted release"
+    Unrestricted_release = "Unrestricted Release"
+    Restricted_release = "Restricted Release"
     Paper_Citation_Required = "Paper Citation Required"
     Academic_Use_Only = "Academic Use Only"
     Conditions_Apply = "Conditions Apply"

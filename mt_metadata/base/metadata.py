@@ -10,6 +10,7 @@ Created on Wed Dec 23 20:41:16 2020
 """
 import json
 from collections import OrderedDict
+from enum import Enum
 
 # =============================================================================
 # Imports
@@ -1210,8 +1211,8 @@ class MetadataBase(DotNotationBaseModel):
         required_fields = []
         for name, field_info in self.get_all_fields().items():
             if field_info.json_schema_extra is None:
-                print(name, field_info)
-            if field_info.json_schema_extra["required"]:
+                continue
+            if field_info.json_schema_extra.get("required", False):
                 required_fields.append(name)
 
         return required_fields
@@ -1406,7 +1407,7 @@ class MetadataBase(DotNotationBaseModel):
         new_basemodel_object = new_basemodel()
 
         """
-        existing_model_fields = self.model_fields
+        existing_model_fields = self.__pydantic_fields__
         existing_model_fields[name] = new_field_info
         all_fields = {k: (v.annotation, v) for k, v in existing_model_fields.items()}
 
@@ -1460,6 +1461,8 @@ class MetadataBase(DotNotationBaseModel):
                     for key, obj in value.items():
                         if hasattr(obj, "to_dict"):
                             value[key] = obj.to_dict(nested=nested, required=required)
+                        elif isinstance(obj, Enum):
+                            value[key] = obj.value
                         else:
                             value[key] = obj
                 elif isinstance(value, list):
@@ -1467,9 +1470,13 @@ class MetadataBase(DotNotationBaseModel):
                     for obj in value:
                         if hasattr(obj, "to_dict"):
                             v_list.append(obj.to_dict(nested=nested, required=required))
+                        elif isinstance(obj, Enum):
+                            v_list.append(obj.value)
                         else:
                             v_list.append(obj)
                     value = v_list
+                elif isinstance(value, Enum):
+                    value = value.value
                 elif hasattr(value, "unicode_string"):
                     value = value.unicode_string()
                 elif isinstance(value, (str, int, float, bool)):
