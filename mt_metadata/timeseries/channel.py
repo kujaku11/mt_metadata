@@ -584,8 +584,9 @@ class ChannelBase(MetadataBase):
         if new_format_filters is not None:
             for filter_dict in new_format_filters:
                 if isinstance(filter_dict, dict):
-                    # Create AppliedFilter from dict
-                    applied_filter = AppliedFilter(**filter_dict)
+                    # Create AppliedFilter from dict using from_dict method to handle nested attributes
+                    applied_filter = AppliedFilter()
+                    applied_filter.from_dict(filter_dict)
                     self.add_filter(applied_filter=applied_filter)
                 elif isinstance(filter_dict, AppliedFilter):
                     self.add_filter(applied_filter=filter_dict)

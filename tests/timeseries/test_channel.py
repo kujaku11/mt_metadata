@@ -43,6 +43,7 @@ def meta_dict():
             "data_quality.rating.method": "ml",
             "data_quality.rating.value": 4,
             "data_quality.warnings": "No warnings",
+            "filters": [],
             "location.datum": "WGS 84",
             "location.elevation": 1234.0,
             "location.latitude": 12.324,
@@ -686,7 +687,7 @@ class TestAdvancedChannelFilters:
 
     def test_filters_with_complex_workflow(self, subtests):
         """Test a complex workflow with multiple filter operations."""
-        channel = Channel()
+        channel = Channel(component="hx")  # Provide valid component
 
         # Add initial filters
         channel.add_filter(
@@ -731,7 +732,7 @@ class TestAdvancedChannelFilters:
 
     def test_filters_serialization_with_comments(self, subtests):
         """Test serialization/deserialization preserves filter comments."""
-        channel = Channel()
+        channel = Channel(component="hx")  # Provide valid component
 
         # Add filters with various comment types
         channel.add_filter(
@@ -802,7 +803,7 @@ class TestAdvancedChannelFilters:
 
     def test_filters_pandas_integration(self, subtests):
         """Test filters work correctly with pandas Series operations."""
-        channel = Channel()
+        channel = Channel(component="hx")
         channel.add_filter(name="test_filter", applied=True, stage=1, comments="Test")
 
         # Convert to pandas Series
@@ -816,7 +817,7 @@ class TestAdvancedChannelFilters:
             assert isinstance(series, pd.Series)
 
         # Create new channel from series
-        new_channel = Channel()
+        new_channel = Channel()  # Provide valid component
         new_channel.from_series(series)
 
         with subtests.test("pandas series deserialization"):
@@ -826,7 +827,7 @@ class TestAdvancedChannelFilters:
 
     def test_filters_error_handling_comprehensive(self, subtests):
         """Test comprehensive error handling for filters."""
-        channel = Channel()
+        channel = Channel(component="hx")  # Provide valid component
 
         # Test invalid filter operations
         with subtests.test("remove nonexistent filter"):
@@ -909,16 +910,16 @@ class TestAdvancedChannelFilters:
 
     def test_filters_validation_edge_cases(self, subtests):
         """Test filter validation with edge cases."""
-        channel = Channel()
+        channel = Channel(component="hx")  # Provide valid component
 
         # Test empty string names
         with subtests.test("empty string name"):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValueError, match="Filter name cannot be empty"):
                 channel.add_filter(name="", applied=True, stage=1)
 
         # Test whitespace-only names
         with subtests.test("whitespace name"):
-            with pytest.raises(ValueError):
+            with pytest.raises(ValueError, match="Filter name cannot be empty"):
                 channel.add_filter(name="   ", applied=True, stage=1)
 
         # Test very long names
@@ -961,7 +962,7 @@ class TestAdvancedChannelFilters:
 
     def test_filters_json_edge_cases(self, subtests):
         """Test JSON serialization edge cases."""
-        channel = Channel()
+        channel = Channel(component="hx")  # Provide valid component
 
         # Add filter with complex comments
         complex_comment = 'Filter with "quotes" and \n newlines and special chars: αβγ'

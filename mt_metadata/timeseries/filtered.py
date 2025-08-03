@@ -72,6 +72,17 @@ class AppliedFilter(MetadataBase):
             return Comment(value=value)
         return value
 
+    @field_validator("name", mode="before")
+    @classmethod
+    def validate_name(cls, value, info: ValidationInfo) -> str:
+        """
+        Validate that the name is not empty or whitespace only.
+        """
+        if isinstance(value, str):
+            if not value or value.isspace():
+                raise ValueError("Filter name cannot be empty or whitespace only")
+        return value
+
 
 # class Filter(MetadataBase):
 #     _objects_included: dict = PrivateAttr(
