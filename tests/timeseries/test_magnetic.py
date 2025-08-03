@@ -245,14 +245,17 @@ def test_magnetic_filters(populated_magnetic, subtests):
     """Test filter properties of a Magnetic object."""
     mag = populated_magnetic
 
-    with subtests.test("filter.applied is set correctly"):
-        assert mag.filter.filter_list[0].applied is False
+    with subtests.test("filters length is correct"):
+        assert len(mag.filters) >= 1
 
-    with subtests.test("filter.name is set correctly"):
-        assert mag.filter.filter_list[0].name == "counts2mv"
+    with subtests.test("filters[0].applied is set correctly"):
+        assert mag.filters[0].applied is False
 
-    with subtests.test("filter.comments is set correctly"):
-        assert mag.filter.comments.value == "filter comments"
+    with subtests.test("filters[0].name is set correctly"):
+        assert mag.filters[0].name == "counts2mv"
+
+    with subtests.test("filters[0].comments is set correctly"):
+        assert mag.filters[0].comments.value == "filter comments"
 
 
 def test_magnetic_with_kwargs(subtests):

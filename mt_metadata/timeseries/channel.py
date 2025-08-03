@@ -510,6 +510,36 @@ class ChannelBase(MetadataBase):
             logger.error(msg.format(names, type(names)))
             raise MTSchemaError(msg.format(names, type(names)))
 
+    def _find_filter_keys(self, meta_dict: dict) -> str | None:
+        """
+        Search for filter-related keys in the meta_dict.
+
+        Parameters
+        ----------
+        meta_dict : dict
+            Dictionary to search for filter keys.
+
+        Returns
+        -------
+        str | None
+            Returns 'filter' if any keys start with 'filter',
+            'filtered' if any keys start with 'filtered',
+            or None if no filter-related keys are found.
+        """
+        keys = list(meta_dict.keys())
+
+        # Check for 'filter' keys first (new format)
+        for key in keys:
+            if key.startswith("filter") and not key.startswith("filtered"):
+                return "filter"
+
+        # Check for 'filtered' keys (old format)
+        for key in keys:
+            if key.startswith("filtered"):
+                return "filtered"
+
+        return None
+
     def from_dict(self, meta_dict: dict, skip_none: bool = False) -> None:
         """
         fill attributes from a dictionary but need to make it
@@ -552,24 +582,31 @@ class ChannelBase(MetadataBase):
                 f"Assuming input dictionary is of type {self.__class__.__name__}",
             )
             meta_dict = helpers.flatten_dict(meta_dict)
-        # set attributes by key.
-        filter_applied = self._validate_filtered_applied(
-            meta_dict.pop("filtered.applied", [])
-        )
-        filter_name = self._validate_filtered_name(meta_dict.pop("filtered.name", []))
-        if filter_applied and filter_name:
-            logger.warning(
-                "filtered.applied and filtered.name are deprecated, use filters as a list of AppliedFilter objects instead"
+
+        # Use helper method to detect filter format
+        filter_format = self._find_filter_keys(meta_dict)
+
+        # Handle old format filters (filtered.applied, filtered.name)
+        if filter_format is not None:
+            filter_applied = self._validate_filtered_applied(
+                meta_dict.pop(f"{filter_format}.applied", [])
             )
-            if len(filter_applied) != len(filter_name):
-                msg = (
-                    "filtered.applied and filtered.name must be the same length, "
-                    f"got {len(filter_applied)} and {len(filter_name)}"
+            filter_name = self._validate_filtered_name(
+                meta_dict.pop(f"{filter_format}.name", [])
+            )
+            if filter_applied and filter_name:
+                logger.warning(
+                    f"{filter_format}.applied and {filter_format}.name are deprecated, use filters as a list of AppliedFilter objects instead"
                 )
-                logger.error(msg)
-                raise MTSchemaError(msg)
-            for name, applied in zip(filter_name, filter_applied):
-                self.add_filter(name=name, applied=applied)
+                if len(filter_applied) != len(filter_name):
+                    msg = (
+                        f"{filter_format}.applied and {filter_format}.name must be the same length, "
+                        f"got {len(filter_applied)} and {len(filter_name)}"
+                    )
+                    logger.error(msg)
+                    raise MTSchemaError(msg)
+                for name, applied in zip(filter_name, filter_applied):
+                    self.add_filter(name=name, applied=applied)
 
         # Handle new format filters separately to combine with old format
         new_format_filters = meta_dict.pop("filters", None)
