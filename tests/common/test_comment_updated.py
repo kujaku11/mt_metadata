@@ -235,7 +235,7 @@ def test_comment_to_dict_without_author():
     )
 
     result = comment.to_dict()
-    # Author should not be in the dict when it's None (required=True by default)
+    assert "author" not in result["comment"] or result["comment"]["author"] is None
     assert result["comment"]["time_stamp"] == "2023-05-01T12:00:00+00:00"
     assert result["comment"]["value"] == "This is a test comment."
 
@@ -251,7 +251,7 @@ def test_comment_to_dict_without_time_stamp():
 
     result = comment.to_dict()
     assert result["comment"]["author"] == "J. Pedantic"
-    # Default timestamp should not be included when required=True (default)
+    # Default timestamp should not be included in to_dict when required=True (default)
     assert result["comment"]["value"] == "This is a test comment."
 
 
