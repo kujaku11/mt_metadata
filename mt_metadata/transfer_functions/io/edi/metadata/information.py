@@ -106,12 +106,17 @@ class Information(MetadataBase):
             "ac": "ac.end",
             "dc": "dc.end",
             "negative res": "contact_resistance.start",
+            "negative_res": "contact_resistance.start",
             "positive res": "contact_resistance.end",
+            "positive_res": "contact_resistance.end",
             "sensor type": "sensor.model",
+            "sensor_type": "sensor.model",
             "detected sensor type": "sensor.model",
-            "azimuth": "measurement_azimuth",
+            "azimuth": "measured_azimuth",
             "sensor serial": "sensor.id",
+            "sensor_serial": "sensor.id",
             "cal name": "comments",
+            "cal_name": "comments",
             "saturation": "comments",
             "instrument type": "data_logger.model",
             "station name": "geographic_name",
@@ -172,11 +177,14 @@ class Information(MetadataBase):
         # 2. Parse lines based on detected format
         if self._empower_file:
             self._parse_empower_info(info_section)
+            # Don't convert comments to string for Empower format
+            # as tests expect them to remain as lists
         elif self._phoenix_file:
             self._parse_phoenix_info(info_section)
+            self._comments_to_string()
         else:
             self._parse_standard_info(info_section)
-        self._comments_to_string()
+            self._comments_to_string()
 
     def _comments_to_string(self) -> None:
         """Convert list comments to a single string."""
@@ -331,6 +339,11 @@ class Information(MetadataBase):
                     "hz",
                     "rx",
                     "ry",
+                    "e1",
+                    "e2",
+                    "h1",
+                    "h2",
+                    "h3",
                 ]:  # Components are typically more indented
                     component = line_lower
                     continue
@@ -375,8 +388,9 @@ class Information(MetadataBase):
                     ):
                         continue
                 if "azimuth" in std_key:
-                    # the azimuth is not understood in its current context.
-                    continue
+                    # Only skip azimuth if it's in a problematic context, not for measured_azimuth
+                    if "measured_azimuth" not in std_key:
+                        continue
                 if "component" in std_key:
                     value = component
                 if "hx" in std_key or "hy" in std_key or "hz" in std_key:
@@ -401,7 +415,8 @@ class Information(MetadataBase):
                     value = original_value
                 elif "data_logger.model" in std_key:
                     std_key = "run.data_logger.model"
-                elif "id" in std_key:
+                elif std_key.endswith(".id") and "sensor.id" not in std_key:
+                    # Only map recording IDs, not sensor IDs
                     std_key = "run.id"
                 elif "geographic_name" in std_key:
                     if "remote_references" in std_key:
@@ -497,7 +512,7 @@ class Information(MetadataBase):
                 return f"run.{std_component}.{attribute_key}"
 
         # Handle special cases for comments field
-        if key in ["cal name", "saturation", "min value", "max value"]:
+        if key in ["cal name", "cal_name", "saturation", "min value", "max value"]:
             # Append to comments field
             if section == "reference":
                 return f"transfer_function.remote_references.{std_component}.comments"
