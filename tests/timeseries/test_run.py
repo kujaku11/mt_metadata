@@ -36,7 +36,7 @@ def meta_dict():
                 ("data_logger.timing_system.type", "GPS"),
                 ("data_logger.timing_system.uncertainty", 1e-06),
                 ("data_logger.type", "broadband"),
-                ("data_type", "mt"),
+                ("data_type", "MT"),
                 ("id", "mt01a"),
                 ("metadata_by.comments", "lazy"),
                 ("metadata_by.author", "x"),

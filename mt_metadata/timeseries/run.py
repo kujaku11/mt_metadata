@@ -100,7 +100,7 @@ class Run(MetadataBase):
     data_type: Annotated[
         DataTypeEnum,
         Field(
-            default="BBMT",
+            default=DataTypeEnum.BBMT,
             description="Type of data recorded for this run.",
             examples=["BBMT"],
             alias=None,
