@@ -261,13 +261,13 @@ def run_test_data():
             [
                 ("acquired_by.author", "Kristin Pratscher"),
                 (
-                    "acquired_by.comments.value",
+                    "acquired_by.comments",
                     "X array at 0 and 90 degrees. Site i rocky drainage basin proximal to basalt lava flows. Ln",
                 ),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
-                ("comments.value", "author: machine generated, comments: "),
+                ("comments", "author: machine generated, comments: "),
                 ("data_logger.firmware.author", "Barry Narod"),
                 ("data_logger.firmware.name", ""),
                 ("data_logger.firmware.version", ""),
@@ -302,14 +302,14 @@ def run_test_data():
             [
                 ("acquired_by.author", "Kristin Pratscher"),
                 (
-                    "acquired_by.comments.value",
+                    "acquired_by.comments",
                     "X array a 0 and 90 degreest. Site in rocky drainage basin proximal to basalt lava flows. L",
                 ),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
                 (
-                    "comments.value",
+                    "comments",
                     "author: machine generated, comments: A.Kelbert:Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.",
                 ),
                 ("data_logger.firmware.author", "Barry Narod"),
@@ -328,7 +328,7 @@ def run_test_data():
                 ("id", "b"),
                 ("metadata_by.author", "Jade Crosbie; Anna Kelbert"),
                 (
-                    "metadata_by.comments.value",
+                    "metadata_by.comments",
                     "A.Kelbert- Gap and a spike 726 secs into the run. Poor quality data after this event. However, timing before and after the gap verified against CAV09.",
                 ),
                 ("provenance.archive.name", ""),
@@ -350,13 +350,13 @@ def run_test_data():
             [
                 ("acquired_by.author", "Kristin Pratscher"),
                 (
-                    "acquired_by.comments.value",
+                    "acquired_by.comments",
                     "X array at 0 and 90 degrees. Site in rocky drainage basin proximal to basalt lava flows. Li",
                 ),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
-                ("comments.value", "author: machine generated, comments: "),
+                ("comments", "author: machine generated, comments: "),
                 ("data_logger.firmware.author", "Barry Narod"),
                 ("data_logger.firmware.name", ""),
                 ("data_logger.firmware.version", ""),
@@ -391,13 +391,13 @@ def run_test_data():
             [
                 ("acquired_by.author", "Kristin Pratscher"),
                 (
-                    "acquired_by.comments.value",
+                    "acquired_by.comments",
                     "Replaced mag cable & NIMS. X array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                 ),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
-                ("comments.value", "author: machine generated, comments: "),
+                ("comments", "author: machine generated, comments: "),
                 ("data_logger.firmware.author", "Barry Narod"),
                 ("data_logger.firmware.name", ""),
                 ("data_logger.firmware.version", ""),
@@ -432,13 +432,13 @@ def run_test_data():
             [
                 ("acquired_by.author", "Kristin Pratscher"),
                 (
-                    "acquired_by.comments.value",
+                    "acquired_by.comments",
                     "Replaced mag cable & NIMS. MX array at 0 and 90 degrees. Site in rocky drainage basin proxim",
                 ),
                 ("channels_recorded_auxiliary", []),
                 ("channels_recorded_electric", []),
                 ("channels_recorded_magnetic", []),
-                ("comments.value", "author: machine generated, comments: "),
+                ("comments", "author: machine generated, comments: "),
                 ("data_logger.firmware.author", "Barry Narod"),
                 ("data_logger.firmware.name", ""),
                 ("data_logger.firmware.version", ""),
