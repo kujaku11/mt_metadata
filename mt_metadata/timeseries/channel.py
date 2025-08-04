@@ -586,21 +586,21 @@ class ChannelBase(MetadataBase):
         # Use helper method to detect filter format
         filter_format = self._find_filter_keys(meta_dict)
 
-        # Handle old format filters (filtered.applied, filtered.name)
-        if filter_format is not None:
-            filter_applied = self._validate_filtered_applied(
-                meta_dict.pop(f"{filter_format}.applied", [])
-            )
-            filter_name = self._validate_filtered_name(
-                meta_dict.pop(f"{filter_format}.name", [])
-            )
+        # Handle old format filters (filtered.applied, filtered.name) regardless of new format presence
+        # Check specifically for old format keys
+        old_format_applied = meta_dict.pop("filtered.applied", None)
+        old_format_names = meta_dict.pop("filtered.name", None)
+
+        if old_format_applied is not None and old_format_names is not None:
+            filter_applied = self._validate_filtered_applied(old_format_applied)
+            filter_name = self._validate_filtered_name(old_format_names)
             if filter_applied and filter_name:
                 logger.warning(
-                    f"{filter_format}.applied and {filter_format}.name are deprecated, use filters as a list of AppliedFilter objects instead"
+                    "filtered.applied and filtered.name are deprecated, use filters as a list of AppliedFilter objects instead"
                 )
                 if len(filter_applied) != len(filter_name):
                     msg = (
-                        f"{filter_format}.applied and {filter_format}.name must be the same length, "
+                        f"filtered.applied and filtered.name must be the same length, "
                         f"got {len(filter_applied)} and {len(filter_name)}"
                     )
                     logger.error(msg)

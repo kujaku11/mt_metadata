@@ -36,7 +36,7 @@ def meta_dict():
     """
     meta_dict = {
         "channel": {
-            "comments.value": "great",
+            "comments": "great",
             "component": "temperature",
             "channel_number": 1,
             "data_quality.rating.author": "mt",
