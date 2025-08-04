@@ -3612,7 +3612,7 @@
                     <fdsn>
                         <id>LFN</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -3623,7 +3623,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -3658,7 +3658,7 @@
                     <fdsn>
                         <id>LFE</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -3669,7 +3669,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -3704,7 +3704,7 @@
                     <fdsn>
                         <id>LFZ</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -3715,7 +3715,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -3748,7 +3748,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -3765,7 +3765,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">359.1454</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -3804,7 +3804,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -3821,7 +3821,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">89.1454</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -3913,7 +3913,7 @@
                     <fdsn>
                         <id>LFN</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -3924,7 +3924,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -3959,7 +3959,7 @@
                     <fdsn>
                         <id>LFE</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -3970,7 +3970,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4005,7 +4005,7 @@
                     <fdsn>
                         <id>LFZ</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4016,7 +4016,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4049,7 +4049,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4066,7 +4066,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">359.1454</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -4105,7 +4105,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4122,7 +4122,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">89.1454</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -4214,7 +4214,7 @@
                     <fdsn>
                         <id>LFN</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4225,7 +4225,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4260,7 +4260,7 @@
                     <fdsn>
                         <id>LFE</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4271,7 +4271,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4306,7 +4306,7 @@
                     <fdsn>
                         <id>LFZ</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4317,7 +4317,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4350,7 +4350,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4367,7 +4367,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">359.1427</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -4406,7 +4406,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4423,7 +4423,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">89.1427</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -4515,7 +4515,7 @@
                     <fdsn>
                         <id>LFN</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4526,7 +4526,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4561,7 +4561,7 @@
                     <fdsn>
                         <id>LFE</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4572,7 +4572,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4607,7 +4607,7 @@
                     <fdsn>
                         <id>LFZ</id>
                     </fdsn>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>magnetic_butterworth_low_pass</item>
                             <item>magnetic_analog_to_digital</item>
@@ -4618,7 +4618,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <location>
                         <latitude units="degrees">38.24520275</latitude>
                         <longitude units="degrees">-120.381101</longitude>
@@ -4651,7 +4651,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4668,7 +4668,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">359.1425</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
@@ -4707,7 +4707,7 @@
                         </rating>
                     </data_quality>
                     <dipole_length units="meters">100.0</dipole_length>
-                    <filter>
+                    <filtered>
                         <name>
                             <item>electric_butterworth_low_pass</item>
                             <item>electric_butterworth_high_pass</item>
@@ -4724,7 +4724,7 @@
                             <item>True</item>
                             <item>True</item>
                         </applied>
-                    </filter>
+                    </filtered>
                     <measurement_azimuth units="degrees">89.1425</measurement_azimuth>
                     <measurement_tilt units="degrees">0.0</measurement_tilt>
                     <negative>
