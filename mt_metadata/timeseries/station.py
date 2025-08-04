@@ -33,9 +33,9 @@ class Station(MetadataBase):
     channel_layout: Annotated[
         ChannelLayoutEnum,
         Field(
-            default="x",
+            default=ChannelLayoutEnum.X,
             description="How the station channels were laid out.",
-            examples=["x"],
+            examples=["X"],
             alias=None,
             json_schema_extra={
                 "units": None,
