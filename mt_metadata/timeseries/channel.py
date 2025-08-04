@@ -522,20 +522,22 @@ class ChannelBase(MetadataBase):
         Returns
         -------
         str | None
-            Returns 'filter' if any keys start with 'filter',
-            'filtered' if any keys start with 'filtered',
+            Returns 'filter' if any keys have 'filter' as base (before '.'),
+            'filtered' if any keys have 'filtered' as base (before '.'),
             or None if no filter-related keys are found.
         """
         keys = list(meta_dict.keys())
 
-        # Check for 'filter' keys first (new format)
         for key in keys:
-            if key.startswith("filter") and not key.startswith("filtered"):
+            # Split by '.' and check the base key
+            base_key = key.split(".")[0]
+
+            # Check for 'filter' base (legacy format)
+            if base_key == "filter":
                 return "filter"
 
-        # Check for 'filtered' keys (old format)
-        for key in keys:
-            if key.startswith("filtered"):
+            # Check for 'filtered' base (old format)
+            if base_key == "filtered":
                 return "filtered"
 
         return None
@@ -586,27 +588,36 @@ class ChannelBase(MetadataBase):
         # Use helper method to detect filter format
         filter_format = self._find_filter_keys(meta_dict)
 
-        # Handle old format filters (filtered.applied, filtered.name) regardless of new format presence
-        # Check specifically for old format keys
-        old_format_applied = meta_dict.pop("filtered.applied", None)
-        old_format_names = meta_dict.pop("filtered.name", None)
+        # Handle different filter formats based on detection
+        if filter_format == "filtered":
+            # Handle old format filters using f-string formatting
+            old_format_applied = meta_dict.pop(f"{filter_format}.applied", None)
+            old_format_names = meta_dict.pop(f"{filter_format}.name", None)
 
-        if old_format_applied is not None and old_format_names is not None:
-            filter_applied = self._validate_filtered_applied(old_format_applied)
-            filter_name = self._validate_filtered_name(old_format_names)
-            if filter_applied and filter_name:
-                logger.warning(
-                    "filtered.applied and filtered.name are deprecated, use filters as a list of AppliedFilter objects instead"
-                )
-                if len(filter_applied) != len(filter_name):
-                    msg = (
-                        f"filtered.applied and filtered.name must be the same length, "
-                        f"got {len(filter_applied)} and {len(filter_name)}"
+            if old_format_applied is not None and old_format_names is not None:
+                filter_applied = self._validate_filtered_applied(old_format_applied)
+                filter_name = self._validate_filtered_name(old_format_names)
+                if filter_applied and filter_name:
+                    logger.warning(
+                        f"{filter_format}.applied and {filter_format}.name are deprecated, use filters as a list of AppliedFilter objects instead"
                     )
-                    logger.error(msg)
-                    raise MTSchemaError(msg)
-                for name, applied in zip(filter_name, filter_applied):
-                    self.add_filter(name=name, applied=applied)
+                    if len(filter_applied) != len(filter_name):
+                        msg = (
+                            f"{filter_format}.applied and {filter_format}.name must be the same length, "
+                            f"got {len(filter_applied)} and {len(filter_name)}"
+                        )
+                        logger.error(msg)
+                        raise MTSchemaError(msg)
+                    for name, applied in zip(filter_name, filter_applied):
+                        self.add_filter(name=name, applied=applied)
+
+        elif filter_format == "filter":
+            # Handle legacy single 'filter' attribute - just remove and warn
+            legacy_filter = meta_dict.pop(filter_format, None)
+            if legacy_filter is not None:
+                logger.warning(
+                    f"The '{filter_format}' attribute is deprecated and will be ignored. Use 'filters' as a list of AppliedFilter objects instead."
+                )
 
         # Handle new format filters separately to combine with old format
         new_format_filters = meta_dict.pop("filters", None)
