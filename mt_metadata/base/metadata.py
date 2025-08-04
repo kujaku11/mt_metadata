@@ -1433,7 +1433,75 @@ class MetadataBase(DotNotationBaseModel):
         """
 
         meta_dict = {}
+
+        # Keep track of processed comment attributes to avoid duplication
+        processed_comments = set()
+
         for name in self.get_attribute_list():
+            # Special handling for comment attributes for backwards compatibility
+            if (
+                ".value" in name
+                and name.replace(".value", "") not in processed_comments
+            ):
+                base_attr_name = name.replace(".value", "")
+                # Check if this is a comment attribute
+                try:
+                    comment_obj = self.get_attr_from_name(base_attr_name)
+                    if (
+                        hasattr(comment_obj, "__class__")
+                        and comment_obj.__class__.__name__ == "Comment"
+                    ):
+                        # Check if this is a simple comment (only value set, no author or custom timestamp)
+                        default_timestamp = "1980-01-01T00:00:00+00:00"
+                        is_simple_comment = (
+                            hasattr(comment_obj, "value")
+                            and comment_obj.value is not None
+                            and isinstance(comment_obj.value, str)
+                            and (
+                                not hasattr(comment_obj, "author")
+                                or comment_obj.author is None
+                                or comment_obj.author == ""
+                            )
+                            and (
+                                not hasattr(comment_obj, "time_stamp")
+                                or comment_obj.time_stamp is None
+                                or str(comment_obj.time_stamp) == default_timestamp
+                            )
+                        )
+
+                        if is_simple_comment and not nested:
+                            # Use simple string format for backwards compatibility
+                            if required:
+                                if comment_obj.value not in [
+                                    None,
+                                    "1980-01-01T00:00:00+00:00",
+                                    "1980",
+                                    [],
+                                    "",
+                                ]:
+                                    meta_dict[base_attr_name] = str(comment_obj.value)
+                            else:
+                                meta_dict[base_attr_name] = str(comment_obj.value)
+
+                            # Mark this comment as processed to skip its nested attributes
+                            processed_comments.add(base_attr_name)
+                            continue
+                        else:
+                            # Use nested format - let individual attributes be processed normally
+                            pass
+                except (AttributeError, KeyError):
+                    # Not a comment object or attribute doesn't exist, process normally
+                    pass
+
+            # Skip nested comment attributes if we already processed the base comment
+            skip_attribute = False
+            for processed_comment in processed_comments:
+                if name.startswith(processed_comment + "."):
+                    skip_attribute = True
+                    break
+
+            if skip_attribute:
+                continue
             # if "comments" in name:
             #     # this is a hack to get around the fact that comments are not
             #     # in the standard.  Need to remove the last part of the name
@@ -1455,7 +1523,36 @@ class MetadataBase(DotNotationBaseModel):
             #     continue
             try:
                 value = self.get_attr_from_name(name)
-                if hasattr(value, "to_dict"):
+                # Special handling for Comment objects for backwards compatibility
+                if (
+                    hasattr(value, "__class__")
+                    and value.__class__.__name__ == "Comment"
+                ):
+                    # Check if this is a simple comment (only value set, no author or custom timestamp)
+                    default_timestamp = "1980-01-01T00:00:00+00:00"
+                    is_simple_comment = (
+                        hasattr(value, "value")
+                        and value.value is not None
+                        and isinstance(value.value, str)
+                        and (
+                            not hasattr(value, "author")
+                            or value.author is None
+                            or value.author == ""
+                        )
+                        and (
+                            not hasattr(value, "time_stamp")
+                            or value.time_stamp is None
+                            or str(value.time_stamp) == default_timestamp
+                        )
+                    )
+
+                    if is_simple_comment and not nested:
+                        # Return simple string for backwards compatibility
+                        value = str(value.value)
+                    else:
+                        # Return full nested format
+                        value = value.to_dict(nested=nested, required=required)
+                elif hasattr(value, "to_dict"):
                     value = value.to_dict(nested=nested, required=required)
                 elif isinstance(value, dict):
                     for key, obj in value.items():

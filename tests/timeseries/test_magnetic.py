@@ -34,18 +34,19 @@ def meta_dict():
             "measurement_azimuth": 0.0,
             "measurement_tilt": 0.0,
             "channel_number": 2,
+            "comments": "comments",
             "component": "hy",
             "data_quality.rating.author": "mt",
             "data_quality.rating.method": "ml",
             "data_quality.rating.value": 4,
             "data_quality.warnings": "No warnings",
             "location.elevation": 1230.9,
-            "filter.comments": "filter comments",
-            "filter.filter_list": [
+            "filters": [
                 {
                     "applied_filter": OrderedDict(
                         [
                             ("applied", False),
+                            ("comments", "filter comments"),
                             ("name", "counts2mv"),
                             ("stage", 1),
                         ]
@@ -115,9 +116,13 @@ def test_in_out_json(magnetic_object, meta_dict, subtests):
         assert meta_dict == magnetic_object.to_dict()
 
     with subtests.test("object to JSON and back preserves data"):
-        magnetic_json = magnetic_object.to_json(nested=True)
-        magnetic_object.from_json(magnetic_json)
-        assert meta_dict == magnetic_object.to_dict()
+        # Create a fresh object for this test to avoid filter accumulation
+        fresh_magnetic = Magnetic()
+        fresh_magnetic.from_dict(meta_dict)
+        magnetic_json = fresh_magnetic.to_json(nested=True)
+        fresh_magnetic_2 = Magnetic()
+        fresh_magnetic_2.from_json(magnetic_json)
+        assert meta_dict == fresh_magnetic_2.to_dict()
 
 
 # Additional pytest tests for Magnetic

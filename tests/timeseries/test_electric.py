@@ -93,7 +93,7 @@ def electric_dict():
             "ac.end": 0.3,
             "dc.start": 1.5,
             "dc.end": 2.0,
-            "filter.filter_list": [
+            "filters": [
                 {
                     "applied_filter": OrderedDict(
                         [
