@@ -175,13 +175,13 @@ def run_list_data(request):
         # Pattern validation test cases
         ("project", "test123", True),  # Valid alphanumeric
         ("project", "TEST", True),  # Valid uppercase
-        ("project", "test-123", False),  # Invalid hyphen
-        ("project", "test_123", False),  # Invalid underscore
+        ("project", "test-123", True),  # Valid with hyphen (now allowed)
+        ("project", "test_123", True),  # Valid with underscore (now allowed)
         ("project", "test 123", False),  # Invalid space
         ("id", "MT001", True),  # Valid alphanumeric
         ("id", "abc123", True),  # Valid lowercase
-        ("id", "MT-001", False),  # Invalid hyphen
-        ("id", "MT_001", False),  # Invalid underscore
+        ("id", "MT-001", False),  # Invalid hyphen (still not allowed for id)
+        ("id", "MT_001", False),  # Invalid underscore (still not allowed for id)
         ("id", "MT 001", False),  # Invalid space
     ]
 )
@@ -500,12 +500,12 @@ class TestSiteEdgeCases:
     def test_invalid_pattern_fields(self):
         """Test validation errors for pattern-restricted fields."""
         invalid_patterns = [
-            ("project", "test-name"),  # Hyphen not allowed
-            ("project", "test_name"),  # Underscore not allowed
             ("project", "test name"),  # Space not allowed
             ("project", "test@name"),  # Special char not allowed
-            ("id", "MT-001"),  # Hyphen not allowed
-            ("id", "MT_001"),  # Underscore not allowed
+            ("project", "test/name"),  # Slash not allowed
+            ("project", "test%name"),  # Percent not allowed
+            ("id", "MT-001"),  # Hyphen not allowed for id
+            ("id", "MT_001"),  # Underscore not allowed for id
             ("id", "MT 001"),  # Space not allowed
             ("id", "MT@001"),  # Special char not allowed
         ]

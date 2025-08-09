@@ -545,10 +545,13 @@ class TestEdgeCases:
 
         assert empty_software.name == ""
 
-        # Note: Pydantic string fields with default="" don't accept None values
-        # This is the expected behavior for the current field configuration
+        # Note: author field is str | None so it accepts None values
+        empty_software.author = None
+        assert empty_software.author is None
+
+        # But name field is str only, so None should raise ValidationError
         with pytest.raises(Exception):  # ValidationError
-            empty_software.author = None
+            empty_software.name = None
 
     def test_xml_escaping(self, empty_software):
         """Test that XML special characters are properly escaped."""
@@ -597,14 +600,21 @@ class TestBoundaryValues:
 
     def test_empty_vs_none_string_fields(self, empty_software):
         """Test behavior with empty strings vs None."""
+        # Test fields that should accept empty strings
         fields_to_test = ["name", "author", "version"]
 
         for field in fields_to_test:
-            # Test empty string
+            # Test empty string - all fields should accept empty strings
             setattr(empty_software, field, "")
             assert getattr(empty_software, field) == ""
 
-            # Test None - should raise ValidationError for string fields
+        # Test None handling - only author field accepts None
+        # author field is str | None, so it should accept None
+        empty_software.author = None
+        assert empty_software.author is None
+
+        # name and version fields are str only, so None should raise ValidationError
+        for field in ["name", "version"]:
             with pytest.raises(Exception):  # ValidationError
                 setattr(empty_software, field, None)
 

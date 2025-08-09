@@ -132,7 +132,7 @@ def performance_emtf_data() -> List[Dict[str, Any]]:
         ("test_123", True),  # Valid with underscore
         ("test.123", True),  # Valid with period
         ("USMTArray.NVS11.2020", True),  # Valid example from field definition
-        ("test-123", False),  # Invalid with hyphen
+        ("test-123", True),  # Valid with hyphen (now allowed)
         ("test 123", False),  # Invalid with space
         ("test@123", False),  # Invalid with special character
         ("test/path", False),  # Invalid with slash
@@ -276,6 +276,9 @@ class TestEmtfFieldValidation:
             "123",
             "A1B2C3",
             "",  # Empty string is valid
+            "test-123",  # Hyphen is now allowed
+            "test_123",  # Underscore is allowed
+            "test.123",  # Period is allowed
         ]
 
         for pattern in valid_patterns:
@@ -285,13 +288,14 @@ class TestEmtfFieldValidation:
     def test_product_id_invalid_patterns(self):
         """Test invalid product_id patterns that should fail validation."""
         invalid_patterns = [
-            "test-123",  # Hyphen not allowed
             "test 123",  # Space not allowed
             "test@domain.com",  # Special characters not allowed
             "test/path",  # Slash not allowed
             "test#123",  # Hash not allowed
             "test%123",  # Percent not allowed
             "test&123",  # Ampersand not allowed
+            "test+123",  # Plus not allowed
+            "test=123",  # Equal not allowed
         ]
 
         for pattern in invalid_patterns:
@@ -678,7 +682,7 @@ class TestEmtfSpecialCases:
 
     def test_pattern_validation_comprehensive(self):
         """Test comprehensive pattern validation for product_id."""
-        # Test edge cases for alphanumeric pattern
+        # Test edge cases for allowed pattern: ^[a-zA-Z0-9._-]*$
         test_cases = [
             ("", True),  # Empty string
             ("A", True),  # Single letter
@@ -688,6 +692,13 @@ class TestEmtfSpecialCases:
             ("ABC123DEF456", True),  # Long alphanumeric
             ("123456789", True),  # Long numeric
             ("ABCDEFGHIJ", True),  # Long alphabetic
+            ("test-123", True),  # Hyphen allowed
+            ("test_123", True),  # Underscore allowed
+            ("test.123", True),  # Period allowed
+            ("test.-_123", True),  # Mix of allowed special chars
+            ("test@123", False),  # @ not allowed
+            ("test 123", False),  # Space not allowed
+            ("test/123", False),  # Slash not allowed
         ]
 
         for test_value, should_be_valid in test_cases:
