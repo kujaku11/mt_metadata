@@ -182,8 +182,8 @@ class TestCopyrightValidation:
     def test_release_status_enum_values(self):
         """Test that ReleaseStatusEnum has expected values."""
         expected_values = {
-            "Unrestricted_release": "Unrestricted release",
-            "Restricted_release": "Restricted release",
+            "Unrestricted_release": "Unrestricted Release",
+            "Restricted_release": "Restricted Release",
             "Paper_Citation_Required": "Paper Citation Required",
             "Academic_Use_Only": "Academic Use Only",
             "Conditions_Apply": "Conditions Apply",

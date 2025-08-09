@@ -218,7 +218,7 @@ class TestCommentValidation:
         assert comment1 != comment3
 
         # Test equality with string - Comment equality returns the formatted string representation
-        comment_str = comment1.to_dict()
+        comment_str = comment1.as_string()
         assert "Test" in comment_str
 
         # Test equality with dict
@@ -539,11 +539,11 @@ class TestCommentIntegration:
             time_stamp="2023-01-01T00:00:00+00:00",
         )
 
-        result = comment.to_dict()
-        assert isinstance(result, str)
-        assert "Test comment" in result
-        assert "Test Author" in result
-        assert "2023-01-01T00:00:00+00:00" in result
+        result = comment.to_dict(single=True)
+        assert isinstance(result, dict)
+        assert result["value"] == "Test comment"
+        assert result["author"] == "Test Author"
+        assert result["time_stamp"] == "2023-01-01T00:00:00+00:00"
 
     def test_inheritance_from_common_comment(self):
         """Test that Comment properly inherits from CommonComment."""
