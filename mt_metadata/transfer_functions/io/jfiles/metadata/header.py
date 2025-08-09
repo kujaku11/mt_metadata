@@ -1,42 +1,116 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec  4 12:09:13 2021
-
-@author: jpeacock
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 
-from mt_metadata.base import get_schema
-from mt_metadata.transfer_functions.tf import Location
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 from . import BirrpAngles, BirrpBlock, BirrpParameters
-from .standards import SCHEMA_FN_PATHS
 
 
-# =============================================================================
-attr_dict = get_schema("header", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Location()._attr_dict.copy())
-# =============================================================================
+# =====================================================
+class Header(MetadataBase):
+    title: Annotated[
+        str,
+        Field(
+            default="",
+            description="title of file",
+            examples=["BIRRP Version 5 basic mode output"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    station: Annotated[
+        str,
+        Field(
+            default="",
+            description="station name",
+            examples=["mt001"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-class Header(Location):
-    def __init__(self, **kwargs):
-        self.birrp_parameters = BirrpParameters()
-        self.data_blocks = []
-        self.angles = []
-        super().__init__()
-        super(Location, self).__init__(attr_dict=attr_dict)
+    azimuth: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation of full impedance tensor",
+            examples=["0"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
 
-        for k, v in kwargs.items():
-            self.set_attr_from_name(k, v)
+    birrp_parameters: Annotated[
+        BirrpParameters,
+        Field(
+            default_factory=BirrpParameters,  # type: ignore
+            description="BIRRP parameters",
+            examples=["BirrpParameters(...)"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def _read_header_line(self, line):
+    data_blocks: Annotated[
+        list[BirrpBlock],
+        Field(
+            default_factory=list,
+            description="BIRRP data blocks",
+            examples=["BirrpBlock(...)"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    angles: Annotated[
+        list[BirrpAngles],
+        Field(
+            default_factory=list,
+            description="BIRRP angles",
+            examples=["BirrpAngles(...)"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    def _read_header_line(self, line: str) -> dict:
         """
-        read a header line
+        Parse a single header line from the BIRRP output.
+
+        Parameters
+        ----------
+        line : str
+            A line from the BIRRP header.
+
+        Returns
+        -------
+        dict
+            A dictionary with the parsed key-value pairs.
         """
+
         line = " ".join(line[1:].strip().split())
 
         new_line = ""
@@ -84,17 +158,17 @@ class Header(Location):
                 l_dict[key] = value
         return l_dict
 
-    def read_header(self, j_lines):
+    def read_header(self, j_lines: str) -> None:
         """
         Parsing the header lines of a j-file to extract processing information.
 
-        Input:
-        - j-file as list of lines (output of readlines())
-
-        Output:
-        - Dictionary with all parameters found
+        Parameters
+        ----------
+        j_lines : str
+            The lines of the j-file as a string.
 
         """
+
         self.data_blocks = []
         self.angles = []
 
@@ -119,21 +193,26 @@ class Header(Location):
                         fn_count += 1
                     if len(self.data_blocks) != fn_count + 1:
                         self.data_blocks.append(BirrpBlock())
-                    self.data_blocks[fn_count].set_attr_from_name(key, value)
+                    self.data_blocks[fn_count].update_attribute(key, value)
                 # if its the line of angles, put them all in a list with a unique key
                 elif key in ["theta1", "theta2", "phi"]:
                     if key == "theta1":
                         theta_count += 1
                     if len(self.angles) != theta_count + 1:
                         self.angles.append(BirrpAngles())
-                    self.angles[theta_count].set_attr_from_name(key, value)
+                    self.angles[theta_count].update_attribute(key, value)
                 else:
-                    self.birrp_parameters.set_attr_from_name(key, value)
+                    self.birrp_parameters.update_attribute(key, value)
 
-    def read_metadata(self, j_lines):
+    def read_metadata(self, j_lines: str) -> None:
         """
-        read in the metadata of the station, or information of station
+        Read in the metadata of the station, or information of station
         logistics like: lat, lon, elevation
+
+        Parameters
+        ----------
+        j_lines : str
+            The lines of the j-file as a string.
 
         Not really needed for a birrp output since all values are nan's
         """
@@ -147,4 +226,4 @@ class Header(Location):
                 m_value = float(m_list[0].strip())
             except ValueError:
                 m_value = 0.0
-            self.set_attr_from_name(m_key, m_value)
+            self.update_attribute(m_key, m_value)

@@ -1,30 +1,53 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("birrp_angles", SCHEMA_FN_PATHS)
+from mt_metadata.base import MetadataBase
 
 
-# =============================================================================
-class BirrpAngles(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class BirrpAngles(MetadataBase):
+    theta1: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block x",
+            examples=["0"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    theta2: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block y",
+            examples=["90"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
+
+    phi: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="rotation angle for block",
+            examples=["0"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]

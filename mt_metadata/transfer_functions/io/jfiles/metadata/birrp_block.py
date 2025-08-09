@@ -1,30 +1,81 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 23 21:30:36 2020
-
-:copyright:
-    Jared Peacock (jpeacock@usgs.gov)
-
-:license: MIT
-
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("birrp_block", SCHEMA_FN_PATHS)
+from mt_metadata.base import MetadataBase
 
 
-# =============================================================================
-class BirrpBlock(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class BirrpBlock(MetadataBase):
+    filnam: Annotated[
+        str,
+        Field(
+            default="",
+            description="File name of data block",
+            examples=["hx.dat"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    nskip: Annotated[
+        int,
+        Field(
+            default=None,
+            description="number of points to skip",
+            examples=["0"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    nread: Annotated[
+        int,
+        Field(
+            default=None,
+            description="number of points to read",
+            examples=["10000"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    ncomp: Annotated[
+        list[int],
+        Field(
+            default_factory=list,
+            description="number of components in file",
+            examples=["4"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    indices: Annotated[
+        list[int],
+        Field(
+            default_factory=list,
+            description="index values to use",
+            examples=["[1, 2]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
