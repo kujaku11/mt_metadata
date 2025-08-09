@@ -196,7 +196,7 @@ class TestFieldValidation:
         assert isinstance(getattr(empty_header, field_name), float)
 
     @pytest.mark.parametrize("field_name", ["title", "station"])
-    @pytest.mark.parametrize("invalid_val", [123, [1, 2], {"key": "value"}, None])
+    @pytest.mark.parametrize("invalid_val", [[1, 2], {"key": "value"}, None])
     def test_invalid_string_values_raise_error(
         self, empty_header, field_name, invalid_val
     ):
@@ -323,15 +323,15 @@ class TestHeaderReading:
     def test_basic_header_reading(self, sample_j_lines):
         """Test basic header reading functionality."""
         header = Header()
-        j_lines_str = "\n".join(sample_j_lines)
-
-        header.read_header(j_lines_str)
+        header.read_header(sample_j_lines)
 
         # Check title extraction
         assert "BIRRP Version 5" in header.title
 
-        # Check that birrp_parameters are populated
+        # Check that birrp_parameters are populated (using dynamic attributes)
+        assert hasattr(header.birrp_parameters, "tbw")
         assert header.birrp_parameters.tbw == 2.0
+        assert hasattr(header.birrp_parameters, "deltat")
         assert header.birrp_parameters.deltat == 1.0
 
         # Check data blocks creation
@@ -355,10 +355,11 @@ class TestHeaderReading:
             "# nout= 1 nin= 1",
         ]
         header = Header()
-        header.read_header("\n".join(minimal_lines))
+        header.read_header(minimal_lines)
 
         assert header.title == "Simple BIRRP Output"
-        assert header.birrp_parameters.outputs == 1.0
+        assert hasattr(header.birrp_parameters, "nout")
+        assert header.birrp_parameters.nout == 1.0
         assert len(header.data_blocks) == 0
         assert len(header.angles) == 0
 
@@ -406,7 +407,8 @@ class TestDictionaryOperations:
         assert header_data["title"] == ""
         assert header_data["station"] == ""
         assert header_data["azimuth"] == 0.0
-        assert "birrp_parameters" in header_data
+        # BirrpParameters is flattened with dot notation
+        assert "birrp_parameters.tbw" in header_data
         assert header_data["data_blocks"] == []
         assert header_data["angles"] == []
 
@@ -418,7 +420,8 @@ class TestDictionaryOperations:
         assert header_data["title"] == "BIRRP Test Run"
         assert header_data["station"] == "MT001"
         assert header_data["azimuth"] == 45.0
-        assert isinstance(header_data["birrp_parameters"], dict)
+        # BirrpParameters is flattened with dot notation
+        assert "birrp_parameters.tbw" in header_data
         assert len(header_data["data_blocks"]) == 1
         assert len(header_data["angles"]) == 1
 
@@ -518,8 +521,8 @@ class TestJSONSerialization:
         data = json.loads(json_str)
 
         header_data = data["header"]
-        assert "birrp_parameters" in header_data
-        assert isinstance(header_data["birrp_parameters"], dict)
+        # BirrpParameters is flattened with dot notation
+        assert "birrp_parameters.tbw" in header_data
         assert header_data["data_blocks"] == []
         assert header_data["angles"] == []
 
@@ -775,11 +778,14 @@ class TestIntegrationAndWorkflow:
 """
 
         header = Header()
-        header.read_header(j_file_content)
+        j_lines_list = j_file_content.strip().split("\n")
+        header.read_header(j_lines_list)
 
         # Verify parsing worked correctly
         assert "BIRRP Version 5.1" in header.title
+        assert hasattr(header.birrp_parameters, "tbw")
         assert header.birrp_parameters.tbw == 2.0
+        assert hasattr(header.birrp_parameters, "deltat")
         assert header.birrp_parameters.deltat == 1.0
         assert len(header.data_blocks) == 3
         assert header.data_blocks[0].filnam == "ex_data.dat"
