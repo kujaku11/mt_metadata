@@ -14,12 +14,11 @@ from mt_metadata.common.mttime import MTime
 # =====================================================
 class Software(MetadataBase):
     author: Annotated[
-        str,
+        str | None,
         Field(
             default="",
             description="Author of the software",
-            examples="Neo",
-            type="string",
+            examples=["Neo"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -33,8 +32,7 @@ class Software(MetadataBase):
         Field(
             default="",
             description="Software version",
-            examples="12.01a",
-            type="string",
+            examples=["12.01a"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -48,8 +46,7 @@ class Software(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date the software was updated.  Prefer to use version, but this works for non-versioned software.",
-            examples="2020-01-01",
-            type="string",
+            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -63,8 +60,7 @@ class Software(MetadataBase):
         Field(
             default="",
             description="Software name",
-            examples="mtrules",
-            type="string",
+            examples=["mtrules"],
             alias=None,
             json_schema_extra={
                 "units": None,
