@@ -9,7 +9,7 @@ object interactions, serialization, and edge cases.
 The Site class is the most complex basemodel with:
 - String fields: project, survey, country, id, name, acquired_by
 - MTime fields: start, end, year_collected
-- Complex object fields: location (BasicLocation), orientation (Orientation),
+- Complex object fields: location (BasicLocationNoDatum), orientation (Orientation),
   comments (Comment), data_quality_notes/warnings (DataQuality*)
 - List field: run_list
 - Multiple field validators and custom serialization methods
@@ -24,7 +24,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from mt_metadata.common import BasicLocation, Comment
+from mt_metadata.common import BasicLocationNoDatum, Comment
 from mt_metadata.common.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import (
     DataQualityNotes,
@@ -77,7 +77,7 @@ def full_site():
 @pytest.fixture
 def complex_site():
     """Create a Site instance with complex object fields."""
-    location = BasicLocation()
+    location = BasicLocationNoDatum()
     location.latitude = 60.0
     location.longitude = -135.0
 
@@ -211,7 +211,7 @@ class TestSiteInstantiation:
         assert isinstance(default_site.end, MTime)
         assert default_site.year_collected is None
         assert default_site.run_list == []
-        assert isinstance(default_site.location, BasicLocation)
+        assert isinstance(default_site.location, BasicLocationNoDatum)
         assert isinstance(default_site.orientation, Orientation)
         assert isinstance(default_site.comments, Comment)
         assert isinstance(default_site.data_quality_notes, DataQualityNotes)
@@ -246,7 +246,7 @@ class TestSiteInstantiation:
     def test_complex_instantiation(self, complex_site):
         """Test Site instantiation with complex object fields."""
         assert complex_site.project == "ComplexTest"
-        assert isinstance(complex_site.location, BasicLocation)
+        assert isinstance(complex_site.location, BasicLocationNoDatum)
         assert complex_site.location.latitude == 60.0
         assert complex_site.location.longitude == -135.0
         assert isinstance(complex_site.orientation, Orientation)
@@ -369,22 +369,22 @@ class TestSiteComplexObjects:
     """Test Site complex object field interactions."""
 
     def test_location_integration(self):
-        """Test BasicLocation integration."""
-        # Test with BasicLocation object
-        location = BasicLocation()
+        """Test BasicLocationNoDatum integration."""
+        # Test with BasicLocationNoDatum object
+        location = BasicLocationNoDatum()
         location.latitude = 45.0
         location.longitude = -120.0
         location.elevation = 1000.0
 
         site = Site(location=location)
-        assert isinstance(site.location, BasicLocation)
+        assert isinstance(site.location, BasicLocationNoDatum)
         assert site.location.latitude == 45.0
         assert site.location.longitude == -120.0
         assert site.location.elevation == 1000.0
 
         # Test with default factory
         site_default = Site()
-        assert isinstance(site_default.location, BasicLocation)
+        assert isinstance(site_default.location, BasicLocationNoDatum)
 
     def test_orientation_integration(self):
         """Test Orientation integration."""
@@ -642,7 +642,7 @@ class TestSiteIntegration:
     # )
     def test_site_with_all_dependencies(self):
         """Test Site with all dependency objects populated."""
-        location = BasicLocation()
+        location = BasicLocationNoDatum()
         location.latitude = 45.123
         location.longitude = -120.456
         location.elevation = 1234.5
@@ -677,7 +677,7 @@ class TestSiteIntegration:
 
         # Verify all objects are properly integrated
         assert site.project == "IntegrationTest"
-        assert isinstance(site.location, BasicLocation)
+        assert isinstance(site.location, BasicLocationNoDatum)
         assert site.location.latitude == 45.123
         assert isinstance(site.orientation, Orientation)
         assert site.orientation.angle_to_geographic_north == 45.0
