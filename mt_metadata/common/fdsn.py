@@ -17,7 +17,7 @@ class Fdsn(MetadataBase):
             description="Given FDSN archive ID name.",
             examples=["MT001"],
             alias=None,
-            pattern="^[a-zA-Z0-9.]*$",
+            pattern="^[a-zA-Z0-9._-]*$",
             json_schema_extra={
                 "units": None,
                 "required": False,

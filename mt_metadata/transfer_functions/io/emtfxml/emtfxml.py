@@ -1117,7 +1117,7 @@ class EMTFXML:
             for ch in (
                 self.site_layout.input_channels + self.site_layout.output_channels
             ):
-                c = getattr(r, ch.name.lower())
+                c = r.get_channel(ch.name.lower())
                 if c.component in r.channels_recorded_magnetic:
                     c.location.x = ch.x
                     c.location.y = ch.y

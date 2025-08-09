@@ -25,7 +25,7 @@ class Site(MetadataBase):
             description="Name of the project",
             examples=["USMTArray"],
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9-_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -147,7 +147,7 @@ class Site(MetadataBase):
     ]
 
     run_list: Annotated[
-        list[str],
+        list[str] | None,
         Field(
             default_factory=list,
             description="list of runs recorded by the station. Should be a summary of all runs recorded",

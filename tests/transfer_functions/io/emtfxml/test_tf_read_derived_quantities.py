@@ -14,7 +14,7 @@ from collections import OrderedDict
 import numpy as np
 
 from mt_metadata import TF_XML_WITH_DERIVED_QUANTITIES
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 
 
 # =============================================================================
