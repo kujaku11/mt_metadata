@@ -38,7 +38,7 @@ class TestEMTFXML(unittest.TestCase):
             ]
         )
 
-        self.assertDictEqual(test_dict, self.xml.to_dict(single=True))
+        self.assertDictEqual(test_dict, self.xml.emtf.to_dict(single=True))
 
     def test_attachments(self):
         test_dict = OrderedDict(

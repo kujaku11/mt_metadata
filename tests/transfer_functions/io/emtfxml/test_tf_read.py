@@ -14,7 +14,7 @@ from collections import OrderedDict
 import numpy as np
 
 from mt_metadata import TF_XML
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 
 
 # =============================================================================
@@ -24,10 +24,10 @@ from mt_metadata.transfer_functions import TF
 
 class TestEMTFXML(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.tf = TF(fn=TF_XML)
-        self.tf.read()
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.tf = TF(fn=TF_XML)
+        cls.tf.read()
+        cls.maxDiff = None
 
     def test_station_metadata(self):
         meta_dict = OrderedDict(

@@ -20,10 +20,8 @@ from loguru import logger
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
 from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import Electric, Magnetic, Run, Station
-from mt_metadata.timeseries import Survey
-from mt_metadata.timeseries import Survey as TSSurvey
-from mt_metadata.transfer_functions.io import EDI  # , EMTFXML, JFile, ZMM, ZongeMTAvg
+from mt_metadata.timeseries import Electric, Magnetic, Run, Station, Survey
+from mt_metadata.transfer_functions.io import EDI, EMTFXML  # JFile, ZMM, ZongeMTAvg
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
 
 
@@ -285,13 +283,13 @@ class TF:
         """
 
         if not isinstance(survey_metadata, Survey):
-            if isinstance(survey_metadata, TSSurvey):
-                sm = Survey()
-                sm.from_dict(survey_metadata.to_dict())
-                sm.stations = survey_metadata.stations
-                survey_metadata = sm
+            # if isinstance(survey_metadata, TSSurvey):
+            #     sm = Survey()
+            #     sm.from_dict(survey_metadata.to_dict())
+            #     sm.stations = survey_metadata.stations
+            #     survey_metadata = sm
 
-            elif isinstance(survey_metadata, dict):
+            if isinstance(survey_metadata, dict):
                 if "survey" not in [cc.lower() for cc in survey_metadata.keys()]:
                     survey_metadata = {"Survey": survey_metadata}
                 sv_metadata = Survey()

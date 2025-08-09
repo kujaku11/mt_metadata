@@ -245,9 +245,22 @@ class Site(MetadataBase):
     def validate_year_collected(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
+        if isinstance(field_value, str):
+            if field_value.count("-") == 1:
+                field_value = field_value.split("-")[0]
         if isinstance(field_value, MTime):
             return field_value.year
         return MTime(time_stamp=field_value).year
+
+    @field_validator("id", "project", "survey", "name", "acquired_by", mode="before")
+    @classmethod
+    def validate_string_fields(cls, field_value: str | None) -> str:
+        """
+        Validate string fields, converting None to empty string.
+        """
+        if field_value is None:
+            return ""
+        return str(field_value)
 
     @field_validator("comments", mode="before")
     @classmethod

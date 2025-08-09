@@ -34,7 +34,7 @@ class EMTF(MetadataBase):
             description="ID given as the archive ID of the station",
             examples=["USMTArray.NVS11.2020"],
             alias=None,
-            pattern="^[a-zA-Z0-9._]*$",
+            pattern="^[a-zA-Z0-9._-]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,

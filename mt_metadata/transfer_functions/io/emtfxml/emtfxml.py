@@ -1063,13 +1063,13 @@ class EMTFXML:
                         c.positive.id = pot.number
                         c.positive.type = pot.value
                         c.positive.manufacturer = dp.manufacturer
-                        c.positive.type = pot.comments
+                        c.positive.type = pot.comments.as_string()
 
                     elif pot.location.lower() in ["s", "w"]:
                         c.negative.id = pot.number
                         c.negative.type = pot.value
                         c.negative.manufacturer = dp.manufacturer
-                        c.negative.type = pot.comments
+                        c.negative.type = pot.comments.as_string()
                 c.time_period.start = fn.start
                 c.time_period.end = fn.end
                 r.add_channel(c)
@@ -1077,7 +1077,17 @@ class EMTFXML:
             for ch in (
                 self.site_layout.input_channels + self.site_layout.output_channels
             ):
-                c = getattr(r, ch.name.lower())
+                try:
+                    c = r.get_channel(ch.name.lower())
+                except AttributeError:
+                    # if the channel does not exist, create it.
+                    if ch.name.lower() in ["ex", "ey"]:  # electric channels
+                        c = Electric()
+                    elif ch.name.lower() in ["hx", "hy", "hz"]:  # magnetic channels
+                        c = Magnetic()
+                    c.from_dict(ch.to_dict(single=True))
+                    r.add_channel(c)
+
                 if c.component in ["hx", "hy", "hz"]:
                     c.location.x = ch.x
                     c.location.y = ch.y
