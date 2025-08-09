@@ -817,7 +817,6 @@ class EMTFXML:
         survey_obj.citation_dataset.year = self.copyright.citation.year
         survey_obj.citation_dataset.doi = self.copyright.citation.survey_d_o_i
         survey_obj.country = self.site.country
-        survey_obj.datum = self.site.location.datum
         survey_obj.geographic_name = self.site.survey
         if self.site.survey not in NULL_VALUES:
             survey_obj.id = self.site.survey
@@ -1160,7 +1159,9 @@ class EMTFXML:
         self.site.name = sm.geographic_name
         self.site.id = sm.id
         self.product_id = sm.fdsn.id
-        self.site.location.from_dict(sm.location.to_dict())
+        self.site.location.latitude = sm.location.latitude
+        self.site.location.longitude = sm.location.longitude
+        self.site.location.elevation = sm.location.elevation
         self.site.orientation.angle_to_geographic_north = (
             sm.orientation.angle_to_geographic_north
         )
@@ -1276,7 +1277,7 @@ class EMTFXML:
             sm.transfer_function.data_quality.rating.value
         )
         self.site.data_quality_notes.comments.value = (
-            sm.transfer_function.data_quality.comments
+            sm.transfer_function.data_quality.comments.value
         )
 
         # not sure there is a place to put processing parameters yet
