@@ -1248,24 +1248,38 @@ class EMTFXML:
                         run = self.processing_info.remote_info.field_notes._run_list[0]
 
                         if "dipole" in key:
-                            index = int(key.split("_")[1].split(".")[0])
-                            key = key.split(".", 1)[1]
-                            if len(run.dipole) < (index + 1):
-                                run.dipole.append(meta_classes["dipole"]())
                             try:
+                                index = int(key.split("_")[1].split(".")[0])
+                                key = key.split(".", 1)[1]
+                                if len(run.dipole) < (index + 1):
+                                    run.dipole.append(meta_classes["dipole"]())
                                 run.dipole[index].set_attr_from_name(key, value)
+                            except (IndexError, ValueError) as error:
+                                logger.warning(
+                                    f"Cannot parse dipole processing info attribute {param}: {error}"
+                                )
                             except Exception as error:
                                 logger.warning(
                                     f"Cannot set processing info attribute {param}"
                                 )
                                 # logger.exception(error)
                         elif "magnetometer" in key:
-                            index = int(key.split("_")[1].split(".")[0])
-                            key = key.split(".", 1)[1:]
-                            if len(run.magnetometer) < (index + 1):
-                                run.magnetometer.append(meta_classes["magnetometer"]())
                             try:
-                                run.magnetometer[index].update_attribute(key, value)
+                                index = int(key.split("_")[1].split(".")[0])
+                                key_parts = key.split(".", 1)
+                                if len(key_parts) > 1:
+                                    key_attr = key_parts[1]
+                                    if len(run.magnetometer) < (index + 1):
+                                        run.magnetometer.append(
+                                            meta_classes["magnetometer"]()
+                                        )
+                                    run.magnetometer[index].update_attribute(
+                                        key_attr, value
+                                    )
+                            except (IndexError, ValueError) as error:
+                                logger.warning(
+                                    f"Cannot parse magnetometer processing info attribute {param}: {error}"
+                                )
                             except Exception as error:
                                 logger.warning(
                                     f"Cannot set processing info attribute {param}"

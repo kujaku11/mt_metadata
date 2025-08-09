@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 
 from mt_metadata import TF_XML_COMPLETE_REMOTE_INFO
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
 
