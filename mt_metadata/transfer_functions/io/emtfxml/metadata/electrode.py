@@ -75,7 +75,7 @@ class Electrode(MetadataBase):
 
         # this might break in the future when to_dict is updated to return a dict
         # instead of a string, but for now it works.
-        root.text = self.comments.to_dict()
+        root.text = self.comments.as_string()
 
         if string:
             return helpers.element_to_string(root)
