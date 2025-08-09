@@ -1956,6 +1956,8 @@ class TF:
 
         emtf._get_data_types()
         emtf._get_statistical_estimates()
+        # Update site layout after data is set to populate channels correctly
+        emtf._update_site_layout()
 
         return emtf
 

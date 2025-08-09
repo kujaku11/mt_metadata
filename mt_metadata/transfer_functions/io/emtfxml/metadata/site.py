@@ -250,6 +250,9 @@ class Site(MetadataBase):
                 field_value = field_value.split("-")[0]
         if isinstance(field_value, MTime):
             return field_value.year
+        if isinstance(field_value, int):
+            # If it's already an integer year, return as-is
+            return field_value
         return MTime(time_stamp=field_value).year
 
     @field_validator("id", "project", "survey", "name", "acquired_by", mode="before")
@@ -281,10 +284,18 @@ class Site(MetadataBase):
         if value is None:
             return None
         if isinstance(value, str):
+            if value.count("[") > 0 and value.count("]") > 0:
+                # Handle string representation of a list
+                value = value.strip("[]")
+
             if value.count(",") > 0:
                 return value.split(",")
-            else:
+            elif value.count(" ") > 0:
+                # Split by space if no commas are present
                 return value.split(" ")
+            if value == "":
+                return []
+            return [value]  # Return as a single-item list if no commas or spaces
 
         elif isinstance(value, list) and all(isinstance(item, str) for item in value):
             return value

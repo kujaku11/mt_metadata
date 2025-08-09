@@ -489,14 +489,16 @@ class EMTFXML:
             if input_channels == []:
                 input_channels = ["hx", "hy"]
 
-        if list(sorted(input_channels)) != list(
-            sorted(self.site_layout.input_channel_names)
-        ):
+        # Case-insensitive comparison for channel names
+        current_input_names = [
+            name.lower() for name in self.site_layout.input_channel_names
+        ]
+        if list(sorted(input_channels)) != list(sorted(current_input_names)):
             new_input_channels = []
             for ach in input_channels:
                 find = False
                 for ch in self.site_layout.input_channels:
-                    if ch.name == ach:
+                    if ch.name.lower() == ach.lower():
                         new_input_channels.append(ch)
                         find = True
                 if not find:
@@ -504,14 +506,16 @@ class EMTFXML:
 
             self.site_layout.input_channels = new_input_channels
 
-        if list(sorted(output_channels)) != list(
-            sorted(self.site_layout.output_channel_names)
-        ):
+        # Case-insensitive comparison for output channels
+        current_output_names = [
+            name.lower() for name in self.site_layout.output_channel_names
+        ]
+        if list(sorted(output_channels)) != list(sorted(current_output_names)):
             new_output_channels = []
             for ach in output_channels:
                 find = False
                 for ch in self.site_layout.output_channels:
-                    if ch.name == ach:
+                    if ch.name.lower() == ach.lower():
                         new_output_channels.append(ch)
                         find = True
                 if not find:
@@ -796,11 +800,18 @@ class EMTFXML:
                     key, value = self._parse_comments_processing(key, value)
 
                 if key is not None and value is not None:
-                    obj, attr_key = key.split(".", 1)
-                    try:
-                        getattr(self, obj).update_attribute(attr_key, value)
-                    except:
-                        logger.warning(f"Cannot set attribute {key}.")
+                    if "." in key:
+                        obj, attr_key = key.split(".", 1)
+                        try:
+                            getattr(self, obj).update_attribute(attr_key, value)
+                        except:
+                            logger.warning(f"Cannot set attribute {key}.")
+                    elif key == "description":
+                        # Handle description as direct attribute on the EMTFXML object
+                        self.description = value
+                    else:
+                        # Handle other keys without dots
+                        other.append(f"{key}:{value}")
             else:
                 other.append(comment)
         try:
@@ -1182,6 +1193,18 @@ class EMTFXML:
 
         self.site.start = sm.time_period.start
         self.site.end = sm.time_period.end
+        # Extract year from start date for year_collected
+        if sm.time_period.start:
+            try:
+                # Handle different types of start time (datetime, string, etc.)
+                if hasattr(sm.time_period.start, "year"):
+                    self.site.year_collected = sm.time_period.start.year
+                elif isinstance(sm.time_period.start, str):
+                    # Extract year from ISO date string (YYYY-MM-DD...)
+                    self.site.year_collected = int(sm.time_period.start[:4])
+            except (ValueError, AttributeError, TypeError):
+                # If extraction fails, leave as None
+                pass
 
         self.processing_info.sign_convention = sm.transfer_function.sign_convention
         self.processing_info.processed_by = sm.transfer_function.processed_by.author
@@ -1300,17 +1323,24 @@ class EMTFXML:
             fn.end = r.time_period.end
             fn.run = r.id
             if r.comments is not None:
-                for comment in r.comments.split(";"):
-                    if comment.count(":") >= 1:
-                        key, value = comment.split(":", 1)
-                        try:
-                            fn.set_attr_from_name(key.strip(), value.strip())
-                        except:
-                            raise AttributeError(f"Cannot set attribute {key}.")
+                # Handle both string and Comment object types
+                comments_str = (
+                    r.comments.value
+                    if hasattr(r.comments, "value")
+                    else str(r.comments)
+                )
+                if comments_str:
+                    for comment in comments_str.split(";"):
+                        if comment.count(":") >= 1:
+                            key, value = comment.split(":", 1)
+                            try:
+                                fn.set_attr_from_name(key.strip(), value.strip())
+                            except:
+                                raise AttributeError(f"Cannot set attribute {key}.")
 
             for comp in ["hx", "hy", "hz"]:
                 try:
-                    rch = getattr(r, comp)
+                    rch = r.get_channel(comp)
                     mag = emtf_xml.Magnetometer()  # type: ignore
                     mag.id = rch.sensor.id
                     mag.name = comp
@@ -1332,7 +1362,7 @@ class EMTFXML:
 
             for comp in ["ex", "ey"]:
                 try:
-                    c = getattr(r, comp)
+                    c = r.get_channel(comp)
                     dp = emtf_xml.Dipole()  # type: ignore
                     dp.name = comp.capitalize()
                     dp.azimuth = c.translated_azimuth
@@ -1360,7 +1390,7 @@ class EMTFXML:
 
             for comp in ["hx", "hy", "hz"]:
                 try:
-                    ch = getattr(r, comp)
+                    ch = r.get_channel(comp)
                     m_ch = emtf_xml.Magnetic()  # type: ignore
 
                     for item in ["x", "y", "z"]:
@@ -1385,7 +1415,7 @@ class EMTFXML:
 
             for comp in ["ex", "ey"]:
                 try:
-                    ch = getattr(r, comp)
+                    ch = r.get_channel(comp)
                     ch_out = emtf_xml.Electric()  # type: ignore
                     for item in ["x", "y", "z"]:
                         if getattr(ch.negative, item) is None:
