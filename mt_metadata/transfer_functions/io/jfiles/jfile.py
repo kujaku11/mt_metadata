@@ -14,8 +14,8 @@ import numpy as np
 from loguru import logger
 
 from mt_metadata.common.mttime import MTime
+from mt_metadata.timeseries import Electric, Magnetic, Run, Station, Survey
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
-from mt_metadata.transfer_functions.tf import Electric, Magnetic, Run, Station, Survey
 
 from .metadata import Header
 
