@@ -28,8 +28,7 @@ class JFile:
     be able to read and write a j-file
     """
 
-    def __init__(self, fn=None, **kwargs):
-        self.logger = logger
+    def __init__(self, fn: str | Path | None = None, **kwargs):
         self.header = Header()
 
         self._jfn = None
@@ -113,25 +112,26 @@ class JFile:
             self._jfn = value
         else:
             msg = f"Input file must be a *.j file not {value.suffix}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
     @property
-    def periods(self):
-        return 1.0 / self.frequency
+    def periods(self) -> None | np.typing.NDArray[np.float64]:
+        if self.frequency is not None:
+            return 1.0 / self.frequency
 
-    def _validate_j_file(self):
+    def _validate_j_file(self) -> list[str]:
         """
         change the lat, lon, elev lines to something machine readable,
         if they are not.
         """
+        if self.fn is not None:
+            if not self.fn.exists():
+                msg = f"Could not find {self.fn}, check path"
+                logger.error(msg)
+                raise NameError(msg)
 
-        if not self.fn.exists():
-            msg = f"Could not find {self.fn}, check path"
-            self.logger.error(msg)
-            raise NameError(msg)
-
-        with open(self.fn, "r", errors="replace") as fid:
+        with open(str(self.fn), "r", errors="replace") as fid:
             j_lines = fid.readlines()
 
         for variable in ["lat", "lon", "elev"]:
@@ -142,18 +142,36 @@ class JFile:
                         value = float(line.split("=")[1].strip())
                     except ValueError:
                         value = 0.0
-                        self.logger.debug(f"Changed {name[1:]} to 0.0")
+                        logger.debug(f"Changed {name[1:]} to 0.0")
                     j_lines[ii] = "{0} = {1}\n".format(name, value)
                     break
 
         return j_lines
 
-    def read(self, fn=None, get_elevation=False):
+    def read(self, fn: str | Path | None = None, get_elevation=False):
         """
         Read data from a j file
 
-        :param fn: full path to j-file to read, defaults to None
-        :type fn: string or pathlib.Path, optional
+        parameters
+        ----------
+        fn : str | Path | None
+            full path to j-file to read, defaults to None
+
+        get_elevation : bool, optional
+            if True, will try to get elevation from the NM elevation service,
+            defaults to False
+
+        Raises
+        ------
+        ValueError
+            If the file is not found or cannot be opened.
+        NameError
+            If the file is not a valid j-file.
+
+        Returns
+        -------
+        None
+            Reads the data into the instance variables.
 
         """
         # read data
@@ -168,7 +186,7 @@ class JFile:
         if fn is not None:
             self.fn = fn
 
-        self.logger.debug(f"Reading {self.fn}")
+        logger.debug(f"Reading {self.fn}")
 
         j_line_list = self._validate_j_file()
 
@@ -218,11 +236,11 @@ class JFile:
                         # need to check for masked points represented by
                         # birrp as -999, apparently
                         if d_value == -999 or np.isnan(d_value):
-                            d_value_list[d_index] = 0.0
+                            d_value_list[d_index] = "0.0"
                         else:
-                            d_value_list[d_index] = d_value
+                            d_value_list[d_index] = str(d_value)
                     except ValueError:
-                        d_value_list[d_index] = 0.0
+                        d_value_list[d_index] = "0.0"
 
                 # put the numbers in the correct dictionary as:
                 # key = period, value = [real, imaginary, error]
@@ -240,7 +258,7 @@ class JFile:
                 all_periods.append(f_key)
 
         if len(list(t_dict["tzx"].keys())) == 0:
-            self.logger.debug(f"Could not find any Tipper data in {self.fn}")
+            logger.debug(f"Could not find any Tipper data in {self.fn}")
             find_tipper = False
 
         else:
@@ -269,8 +287,8 @@ class JFile:
                     self.z[p_index, kk, ll] = z_value
                     self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
-                    self.logger.debug(f"No value found for period {per:.4g}")
-                    self.logger.debug(f"For component {z_key}")
+                    logger.debug(f"No value found for period {per:.4g}")
+                    logger.debug(f"For component {z_key}")
             if find_tipper is True:
                 for t_key in sorted(t_index_dict.keys()):
                     kk = t_index_dict[t_key][0]
@@ -280,8 +298,8 @@ class JFile:
                         self.t[p_index, kk, ll] = t_value
                         self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
-                        self.logger.debug(f"No value found for period {per:.4g}")
-                        self.logger.debug(f"For component {t_key}")
+                        logger.debug(f"No value found for period {per:.4g}")
+                        logger.debug(f"For component {t_key}")
 
         # put the results into mtpy objects
         self.frequency = 1.0 / all_periods

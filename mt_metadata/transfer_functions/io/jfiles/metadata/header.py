@@ -5,13 +5,13 @@ from typing import Annotated
 
 from pydantic import Field
 
-from mt_metadata.base import MetadataBase
+from mt_metadata.common import BasicLocation
 
 from . import BirrpAngles, BirrpBlock, BirrpParameters
 
 
 # =====================================================
-class Header(MetadataBase):
+class Header(BasicLocation):
     title: Annotated[
         str,
         Field(
@@ -158,7 +158,7 @@ class Header(MetadataBase):
                 l_dict[key] = value
         return l_dict
 
-    def read_header(self, j_lines: str) -> None:
+    def read_header(self, j_lines: list[str]) -> None:
         """
         Parsing the header lines of a j-file to extract processing information.
 
@@ -204,7 +204,7 @@ class Header(MetadataBase):
                 else:
                     self.birrp_parameters.update_attribute(key, value)
 
-    def read_metadata(self, j_lines: str) -> None:
+    def read_metadata(self, j_lines: list[str]) -> None:
         """
         Read in the metadata of the station, or information of station
         logistics like: lat, lon, elevation

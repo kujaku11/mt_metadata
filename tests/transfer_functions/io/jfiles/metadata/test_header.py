@@ -859,3 +859,129 @@ class TestIntegrationAndWorkflow:
         assert from_dict.title == original.title == from_json.title
         assert from_dict.station == original.station == from_json.station
         assert from_dict.azimuth == original.azimuth == from_json.azimuth
+
+
+class TestLocationInheritance:
+    """Test location fields inherited from BasicLocation."""
+
+    def test_inherited_location_fields_default_values(self):
+        """Test that inherited location fields have correct default values."""
+        header = Header()
+        # Test inherited location fields from BasicLocationNoDatum
+        assert header.latitude == 0.0
+        assert header.longitude == 0.0
+        assert header.elevation == 0.0
+        # Test inherited fields from BasicLocation
+        assert header.datum == "WGS 84"
+        assert header.x is None
+        assert header.y is None
+        assert header.z is None
+
+    @pytest.mark.parametrize(
+        "field_name,test_value",
+        [
+            ("latitude", 40.123),
+            ("longitude", -120.456),
+            ("elevation", 1200.0),
+            ("datum", "NAD83"),
+            ("x", 10.5),
+            ("y", -5.2),
+            ("z", 2.1),
+        ],
+    )
+    def test_inherited_location_field_assignment(self, field_name, test_value):
+        """Test assignment of inherited location fields."""
+        header = Header()
+        setattr(header, field_name, test_value)
+        assert getattr(header, field_name) == test_value
+
+    def test_complete_header_with_location_data(self):
+        """Test Header instantiation with complete location data."""
+        header = Header(
+            title="MT Processing with Location",
+            station="MT_SITE_001",
+            azimuth=15.0,
+            latitude=40.12345,
+            longitude=-120.67890,
+            elevation=1450.0,
+            datum="WGS 84",
+            x=25.5,
+            y=-12.3,
+            z=2.1,
+        )
+
+        # Verify all fields are set correctly
+        assert header.title == "MT Processing with Location"
+        assert header.station == "MT_SITE_001"
+        assert header.azimuth == 15.0
+        assert header.latitude == 40.12345
+        assert header.longitude == -120.67890
+        assert header.elevation == 1450.0
+        assert header.datum == "WGS 84"
+        assert header.x == 25.5
+        assert header.y == -12.3
+        assert header.z == 2.1
+
+    def test_location_fields_in_serialization(self):
+        """Test that location fields are included in serialization methods."""
+        header = Header(
+            latitude=35.678,
+            longitude=-118.123,
+            elevation=800.0,
+            x=5.0,
+            y=-3.2,
+        )
+
+        # Test dictionary serialization includes location fields
+        dict_data = header.to_dict()
+        header_data = dict_data["header"]
+        assert header_data["latitude"] == 35.678
+        assert header_data["longitude"] == -118.123
+        assert header_data["elevation"] == 800.0
+        assert header_data["x"] == 5.0
+        assert header_data["y"] == -3.2
+
+        # Test JSON serialization includes location fields
+        json_str = header.to_json()
+        json_data = json.loads(json_str)
+        header_json = json_data["header"]
+        assert header_json["latitude"] == 35.678
+        assert header_json["longitude"] == -118.123
+        assert header_json["elevation"] == 800.0
+
+    def test_location_field_validation(self):
+        """Test validation of inherited location fields."""
+        header = Header()
+
+        # Test latitude validation
+        header.latitude = "45.123"  # String should be converted to float
+        assert header.latitude == 45.123
+        assert isinstance(header.latitude, float)
+
+        # Test longitude validation
+        header.longitude = "-95.456"
+        assert header.longitude == -95.456
+        assert isinstance(header.longitude, float)
+
+        # Test elevation validation
+        header.elevation = "1500"
+        assert header.elevation == 1500.0
+        assert isinstance(header.elevation, float)
+
+    def test_field_metadata_includes_location_fields(self):
+        """Test that field metadata includes inherited location fields."""
+        header = Header()
+        field_info = header.model_fields
+
+        # Check that inherited location fields are present in metadata
+        assert "latitude" in field_info
+        assert "longitude" in field_info
+        assert "elevation" in field_info
+        assert "datum" in field_info
+        assert "x" in field_info
+        assert "y" in field_info
+        assert "z" in field_info
+
+        # Verify we can access field information
+        lat_field = field_info["latitude"]
+        assert lat_field.default == 0.0
