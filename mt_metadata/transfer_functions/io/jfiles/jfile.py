@@ -97,14 +97,19 @@ class JFile:
         return self._jfn
 
     @fn.setter
-    def fn(self, value):
+    def fn(self, value: str | Path | None) -> None:
         """
-        set file name
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        set the j-file name
 
+        Parameters
+        ----------
+        value : str | Path | None
+            The j-file name to set.
+
+        Raises
+        ------
+        ValueError
+            If the file is not found or cannot be opened.
         """
         if value is None:
             return

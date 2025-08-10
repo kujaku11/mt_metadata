@@ -17,9 +17,9 @@ from loguru import logger
 
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import Electric, Magnetic, Run
+from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
-from mt_metadata.transfer_functions.tf import Station, Survey
+from mt_metadata.transfer_functions.tf import Station
 
 from .metadata import Channel
 
@@ -38,7 +38,6 @@ class ZMMHeader(object):
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = logger
         self.processing_type = None
         self.num_channels = None
         self.num_freq = None
@@ -71,7 +70,7 @@ class ZMMHeader(object):
             self._zfn = value
         else:
             msg = f"Input file must be a *.zmm or *.zrr file not {value.suffix}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
     @property
@@ -114,9 +113,14 @@ class ZMMHeader(object):
     def station(self, value):
         self.station_metadata.id = value
 
-    def read_header(self, fn=None):
+    def read_header(self, fn: str | Path | None = None) -> None:
         """
-        read header information
+        Read the header information from a ZMM file.
+
+        Parameters
+        ----------
+        fn : str | Path | None, optional
+            The file name to read, by default None
         """
 
         if fn is not None:
@@ -131,14 +135,14 @@ class ZMMHeader(object):
                 self._header_count += 1
 
                 line = fid.readline()
-        self.station_metadata.comments = ""
+        self.station_metadata.comments.value = ""
         self.station_metadata.transfer_function.processing_type = header_list[2].strip()
         station = header_list[3].lower().strip()
         if station.count(":") > 0:
             station = station.split(":")[1]
             station = station.strip()
         self.station = station
-        self.station_metadata._runs = ListDict()
+        self.station_metadata.runs = ListDict()
         self.station_metadata.add_run(Run(id=f"{self.station}a"))
         self.station_metadata.transfer_function.id = self.station
 
@@ -189,7 +193,7 @@ class ZMMHeader(object):
 
                 self.station_metadata.runs[0].add_channel(ch)
 
-    def write_header(self):
+    def write_header(self) -> list[str]:
         """
         write a zmm header
 
@@ -206,8 +210,10 @@ class ZMMHeader(object):
            4     0.00     0.00 300  Ex
            5    90.00     0.00 300  Ey
 
-        :return: properly formatted string
-        :rtype: string
+        returns
+        -------
+        list[str]
+            The formatted header lines.
 
         """
         lines = [
@@ -242,12 +248,12 @@ class ZMMHeader(object):
                     )
                 ]
             except (AttributeError, TypeError):
-                self.logger.warning(f"Could not find {ch}")
+                logger.warning(f"Could not find {ch}")
                 continue
         return lines
 
     @property
-    def channel_dict(self):
+    def channel_dict(self) -> dict[str, str]:
         channels = {}
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
             ch = getattr(self, cc)
@@ -256,7 +262,7 @@ class ZMMHeader(object):
         return channels
 
     @property
-    def channels_recorded(self):
+    def channels_recorded(self) -> list[str]:
         channels = {}
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
             ch = getattr(self, cc)
@@ -266,21 +272,21 @@ class ZMMHeader(object):
         return ordered_channels
 
     @property
-    def input_channels(self):
+    def input_channels(self) -> list[str]:
         return self.channels_recorded[0:2]
 
     @property
-    def output_channels(self):
+    def output_channels(self) -> list[str]:
         return self.channels_recorded[2:]
 
     @property
-    def has_tipper(self):
+    def has_tipper(self) -> bool:
         if "hz" in self.channels_recorded:
             return True
         return False
 
     @property
-    def has_impedance(self):
+    def has_impedance(self) -> bool:
         if "ex" in self.channels_recorded and "ey" in self.channels_recorded:
             return True
         return False
@@ -292,7 +298,7 @@ class ZMM(ZMMHeader):
 
     """
 
-    def __init__(self, fn=None, **kwargs):
+    def __init__(self, fn: str | Path | None = None, **kwargs):
         super().__init__()
 
         self.fn = fn
@@ -312,12 +318,14 @@ class ZMM(ZMMHeader):
         if self.fn is not None:
             self.read()
 
-    def __str__(self):
+    def __str__(self) -> str:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(
+            f"\tAcquired date: {self.station_metadata.time_period.start.date()}"
+        )
         lines.append(f"\tLatitude:      {self.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.longitude:.3f}")
         lines.append(f"\tElevation:     {self.elevation:.3f}")
@@ -348,7 +356,7 @@ class ZMM(ZMMHeader):
 
         return f"MT( {(', ').join(lines)} )"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """
         compare equals
 
@@ -367,16 +375,16 @@ class ZMM(ZMMHeader):
             is_equal = False
         if not self.dataset.equals(other.dataset):
             is_equal = False
-            self.logger.info("Datasets are not equal")
+            logger.info("Datasets are not equal")
             print(self.dataset.fillna(0) != other.dataset.fillna(0).all())
         return is_equal
 
     @property
-    def channel_nomenclature(self):
+    def channel_nomenclature(self) -> dict[str, str]:
         return self._channel_nomenclature
 
     @channel_nomenclature.setter
-    def channel_nomenclature(self, ch_dict):
+    def channel_nomenclature(self, ch_dict: dict[str, str]) -> None:
         """
         channel dictionary
         """
@@ -401,7 +409,7 @@ class ZMM(ZMMHeader):
         self._ex_ey_hz = [self._ex, self._ey, self._hz]
 
     @property
-    def _ch_input_dict(self):
+    def _ch_input_dict(self) -> dict[str, list[str]]:
         return {
             "isp": self._hx_hy,
             "res": self._ex_ey_hz,
@@ -411,7 +419,7 @@ class ZMM(ZMMHeader):
         }
 
     @property
-    def _ch_output_dict(self):
+    def _ch_output_dict(self) -> dict[str, list[str]]:
         return {
             "isp": self._hx_hy,
             "res": self._ex_ey_hz,
@@ -420,14 +428,20 @@ class ZMM(ZMMHeader):
             "all": [self._ex, self._ey, self._hz, self._hx, self._hy],
         }
 
-    def _initialize_transfer_function(self, periods=[1]):
+    def _initialize_transfer_function(self, periods: list[float] = [1]) -> None:
         """
         create an empty x array for the data.  For now this accommodates
         a single processed station.
 
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        periods : list[float], optional
+            List of periods to create the transfer function for, defaults to [1].
+
+        Returns
+        -------
+        None
 
         """
         # create an empty array for the transfer function
@@ -491,12 +505,12 @@ class ZMM(ZMMHeader):
         )
 
     @property
-    def frequencies(self):
+    def frequencies(self) -> np.typing.NDArray[np.float64] | None:
         if self.periods is None:
             return None
         return 1.0 / self.periods
 
-    def initialize_arrays(self):
+    def initialize_arrays(self) -> None:
         """
         make initial arrays based on number of frequencies and channels
         """
@@ -520,12 +534,22 @@ class ZMM(ZMMHeader):
         #    this dimension is hard-coded
         self.sigma_s = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
 
-    def read(self, fn=None, get_elevation=False):
+    def read(self, fn: str | Path | None = None, get_elevation: bool = False) -> None:
         """
         Read in Egbert zrr/zmm file
 
-        :param fn: full path to zmm/zrr file
-        :type fn: string or pathlib.Path
+        Parameters
+        ----------
+        fn : str | Path | None, optional
+            The file name to read, by default None
+
+        get_elevation : bool, optional
+            If True, fetch elevation from the National Map, by default False
+
+        Raises
+        ------
+        ZMMError
+            If the file cannot be read or is not in the expected format.
         """
         if fn is not None:
             self.fn = fn
@@ -578,7 +602,9 @@ class ZMM(ZMMHeader):
                     self.longitude,
                 )
 
-    def write(self, fn, decimation_levels=None):
+    def write(
+        self, fn: str | Path | None = None, decimation_levels: dict | None = None
+    ) -> None:
         """
         write a zmm file
 
@@ -591,6 +617,19 @@ class ZMM(ZMMHeader):
             * frequency_band, value = (min, max)
             * n_points, value = int
             * sampling_freq, value = float
+
+        Parameters
+        ----------
+        fn : str | Path | None, optional
+            The file name to write, by default None
+
+        decimation_levels : dict, optional
+            A dictionary containing decimation levels and their properties, by default None.
+
+        Raises
+        ------
+        ZMMError
+            If the file cannot be written or is not in the expected format.
         """
         if fn is not None:
             self.fn = fn
@@ -659,7 +698,7 @@ class ZMM(ZMMHeader):
             fid.write("\n".join(lines))
         return self.fn
 
-    def _get_period_blocks(self):
+    def _get_period_blocks(self) -> list[list[str]]:
         """
         split file into period blocks
         """
@@ -672,7 +711,7 @@ class ZMM(ZMMHeader):
             period_blocks.append(per.split("\n"))
         return period_blocks[1:]
 
-    def _read_period_block(self, period_block):
+    def _read_period_block(self, period_block: list[str]) -> dict:
         """
         read block:
             period :      0.01587    decimation level   1    freq. band from   46 to   80
@@ -723,7 +762,7 @@ class ZMM(ZMMHeader):
             data_dict[key].append(values)
         return data_dict
 
-    def _flatten_list(self, x_list):
+    def _flatten_list(self, x_list: list[list]) -> list:
         """
         flatten = lambda l: [item for sublist in l for item in sublist]
 
@@ -737,7 +776,7 @@ class ZMM(ZMMHeader):
 
         return flat_list
 
-    def _fill_tf_array_from_block(self, tf_block, index):
+    def _fill_tf_array_from_block(self, tf_block: list[complex], index: int) -> None:
         """
         fill tf arrays from data blocks
         """
@@ -746,7 +785,7 @@ class ZMM(ZMMHeader):
             self.transfer_functions[index, kk, 0] = tf_block[jj]
             self.transfer_functions[index, kk, 1] = tf_block[jj + 1]
 
-    def _fill_sig_array_from_block(self, sig_block, index):
+    def _fill_sig_array_from_block(self, sig_block: list[complex], index: int) -> None:
         """
         fill signal array
         """
@@ -756,7 +795,7 @@ class ZMM(ZMMHeader):
         self.sigma_s[index, 0, 1] = sig_block[1].conjugate()
         self.sigma_s[index, 1, 1] = sig_block[2]
 
-    def _fill_res_array_from_block(self, res_block, index):
+    def _fill_res_array_from_block(self, res_block: list[complex], index: int) -> None:
         """
         fill residual covariance array
         """
@@ -769,7 +808,7 @@ class ZMM(ZMMHeader):
                     self.sigma_e[index, jj, kk] = values[kk]
                     self.sigma_e[index, kk, jj] = values[kk].conjugate()
 
-    def _fill_dataset(self):
+    def _fill_dataset(self) -> None:
         """
         fill the dataset
 
@@ -790,9 +829,20 @@ class ZMM(ZMMHeader):
             dict(input=self.output_channels, output=self.output_channels)
         ] = self.sigma_e
 
-    def calculate_impedance(self, angle=0.0):
+    def calculate_impedance(
+        self, angle: float = 0.0
+    ) -> tuple[np.typing.NDArray[np.complex64], np.typing.NDArray[np.float64]]:
         """
         calculate the impedances from the transfer functions
+
+        Parameters
+        ----------
+        angle : float, optional
+            The angle to rotate the impedance tensor.
+
+        Returns
+        -------
+        None
         """
 
         # check to see if there are actually electric fields in the TFs
@@ -802,7 +852,7 @@ class ZMM(ZMMHeader):
                 "data because these TFs do not contain electric "
                 "fields as a predicted channel."
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise ZMMError(msg)
         # transform the TFs first...
         # build transformation matrix for predictor channels
@@ -862,9 +912,21 @@ class ZMM(ZMMHeader):
 
         return z, error
 
-    def calculate_tippers(self, angle=0.0):
+    def calculate_tippers(
+        self, angle: float = 0.0
+    ) -> tuple[np.typing.NDArray[np.complex64], np.typing.NDArray[np.float64]]:
         """
         calculate induction vectors
+
+        Parameters
+        ----------
+        angle : float, optional
+            The angle to rotate the tipper tensor.
+
+        Returns
+        -------
+        tipper : np.ndarray
+            The tipper tensor.
         """
 
         # check to see if there is a vertical magnetic field in the TFs
@@ -926,9 +988,19 @@ class ZMM(ZMMHeader):
 
         return sm
 
-    def _get_electric_metadata(self, comp):
+    def _get_electric_metadata(self, comp: str) -> Electric:
         """
         get electric information from the various metadata
+
+        Parameters
+        ----------
+        comp : str
+            The component name (e.g., "ex", "ey").
+
+        Returns
+        -------
+        Electric
+            The electric metadata for the specified component.
         """
         comp = comp.lower()
         electric = Electric()
@@ -944,22 +1016,27 @@ class ZMM(ZMMHeader):
         return electric
 
     @property
-    def ex_metadata(self):
+    def ex_metadata(self) -> Electric:
         return self._get_electric_metadata("ex")
 
     @property
-    def ey_metadata(self):
+    def ey_metadata(self) -> Electric:
         return self._get_electric_metadata("ey")
 
-    def _get_magnetic_metadata(self, comp):
+    def _get_magnetic_metadata(self, comp: str) -> Magnetic:
         """
 
         get magnetic metadata from the various sources
 
-        :param comp: DESCRIPTION
-        :type comp: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        comp : str
+            The component name (e.g., "hx", "hy", "hz").
+
+        Returns
+        -------
+        Magnetic
+            The magnetic metadata for the specified component.
 
         """
 
@@ -975,13 +1052,13 @@ class ZMM(ZMMHeader):
         return magnetic
 
     @property
-    def hx_metadata(self):
+    def hx_metadata(self) -> Magnetic:
         return self._get_magnetic_metadata("hx")
 
     @property
-    def hy_metadata(self):
+    def hy_metadata(self) -> Magnetic:
         return self._get_magnetic_metadata("hy")
 
     @property
-    def hz_metadata(self):
+    def hz_metadata(self) -> Magnetic:
         return self._get_magnetic_metadata("hz")

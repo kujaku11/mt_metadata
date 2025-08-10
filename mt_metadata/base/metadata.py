@@ -1057,6 +1057,8 @@ class MetadataBase(DotNotationBaseModel):
                         logger.info(msg)
                         equals = False
                 else:
+                    if value in NULL_VALUES and other_value in NULL_VALUES:
+                        continue
                     if value != other_value:
                         msg = f"{key}: {value} != {other_value}"
                         logger.info(msg)

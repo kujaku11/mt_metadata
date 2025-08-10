@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, Any
+from typing import Annotated
 
 from pydantic import Field
 
@@ -28,7 +28,7 @@ class Channel(MetadataBase):
     ]
 
     azimuth: Annotated[
-        Any,
+        float,
         Field(
             default=0.0,
             description="channel azimuth",
@@ -42,7 +42,7 @@ class Channel(MetadataBase):
     ]
 
     tilt: Annotated[
-        Any,
+        float,
         Field(
             default=0.0,
             description="channel tilt relative to horizontal.",
@@ -56,14 +56,14 @@ class Channel(MetadataBase):
     ]
 
     dl: Annotated[
-        Any,
+        float | str,
         Field(
-            default=None,
-            description="station",
-            examples=["mt001"],
+            default=0.0,
+            description="dipole length in meters",
+            examples=["0.0"],
             alias=None,
             json_schema_extra={
-                "units": None,
+                "units": "meters",
                 "required": True,
             },
         ),
@@ -72,7 +72,7 @@ class Channel(MetadataBase):
     channel: Annotated[
         ChannelEnum,
         Field(
-            default="",
+            default=ChannelEnum.null,
             description="channel name",
             examples=["hx"],
             alias=None,
