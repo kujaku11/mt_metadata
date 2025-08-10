@@ -14,8 +14,9 @@ import numpy as np
 from loguru import logger
 
 from mt_metadata.common.mttime import MTime
-from mt_metadata.timeseries import Electric, Magnetic, Run, Station, Survey
+from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
+from mt_metadata.transfer_functions.tf import Station
 
 from .metadata import Header
 
@@ -347,7 +348,8 @@ class JFile:
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
         sm.transfer_function.id = self.header.station
-        sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
+        if self.fn is not None:
+            sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
         sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
         for key, value in self.header.birrp_parameters.to_dict(single=True).items():

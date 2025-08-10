@@ -14,7 +14,7 @@ from collections import OrderedDict
 import numpy as np
 
 from mt_metadata import TF_JFILE
-from mt_metadata.transfer_functions import TF
+from mt_metadata.transfer_functions.core import TF
 
 
 # =============================================================================
@@ -24,11 +24,11 @@ from mt_metadata.transfer_functions import TF
 
 class TestEMTFXML(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
-        self.tf = TF(fn=TF_JFILE)
-        self.tf.read()
-        self.tf.station_metadata.transfer_function.processed_date = "2020-01-01"
-        self.maxDiff = None
+    def setUpClass(cls):
+        cls.tf = TF(fn=TF_JFILE)
+        cls.tf.read()
+        cls.tf.station_metadata.transfer_function.processed_date = "2020-01-01"
+        cls.maxDiff = None
 
     def test_survey_metadata(self):
         meta_dict = OrderedDict(

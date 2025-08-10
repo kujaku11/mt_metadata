@@ -172,6 +172,14 @@ class ReleaseStatusEnum(StrEnumerationBase):
     Data_Citation_Required = "Data Citation Required"
 
 
+class ChannelEnum(StrEnumerationBase):
+    ex = "ex"
+    ey = "ey"
+    hx = "hx"
+    hy = "hy"
+    hz = "hz"
+
+
 ## This is a better way to making an pydantic type of enumeration with a validator
 class LicenseEnumMeta(EnumMeta):
     """Metaclass to dynamically load license data when the enum is defined"""

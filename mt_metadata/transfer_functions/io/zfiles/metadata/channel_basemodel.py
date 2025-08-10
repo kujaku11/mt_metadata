@@ -1,21 +1,15 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated, Any
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ChannelEnum
 
 
 # =====================================================
-class ChannelEnum(str, Enum):
-    ex = "ex"
-    ey = "ey"
-    hx = "hx"
-    hy = "hy"
-    hz = "hz"
 
 
 class Channel(MetadataBase):

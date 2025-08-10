@@ -20,9 +20,10 @@ from loguru import logger
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
 from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import Electric, Magnetic, Run, Station, Survey
-from mt_metadata.transfer_functions.io import EDI, EMTFXML  # JFile, ZMM, ZongeMTAvg
+from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
+from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile  # , ZMM, ZongeMTAvg
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
+from mt_metadata.transfer_functions.tf import Station
 
 
 # =============================================================================
@@ -45,8 +46,6 @@ class TF:
     """
 
     def __init__(self, fn=None, **kwargs):
-        self.logger = logger
-
         # set metadata for the station
         self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
@@ -164,24 +163,24 @@ class TF:
     def __eq__(self, other, ignore_station_metadata_keys: Optional[list] = None):
         is_equal = True
         if not isinstance(other, TF):
-            self.logger.info(f"Comparing object is not TF, type {type(other)}")
+            logger.info(f"Comparing object is not TF, type {type(other)}")
             is_equal = False
         if not self.station_metadata.__eq__(
             other.station_metadata, ignore_keys=ignore_station_metadata_keys
         ):
-            self.logger.info("Station metadata is not equal")
+            logger.info("Station metadata is not equal")
             is_equal = False
         if self.survey_metadata != other.survey_metadata:
-            self.logger.info("Survey Metadata is not equal")
+            logger.info("Survey Metadata is not equal")
             is_equal = False
         if self.has_transfer_function() and other.has_transfer_function():
             if not self.transfer_function.equals(other.transfer_function):
-                self.logger.info("TF is not equal")
+                logger.info("TF is not equal")
                 is_equal = False
         elif not self.has_transfer_function() and not other.has_transfer_function():
             pass
         else:
-            self.logger.info("TF is not equal")
+            logger.info("TF is not equal")
             is_equal = False
 
         return is_equal
@@ -195,7 +194,6 @@ class TF:
                 continue
 
             setattr(result, k, deepcopy(v, memo))
-        result.logger = logger
         return result
 
     def copy(self):
@@ -244,14 +242,14 @@ class TF:
                     run_metadata = {"Run": run_metadata}
                 r_metadata = Run()
                 r_metadata.from_dict(run_metadata)
-                self.logger.debug("Loading from metadata dict")
+                logger.debug("Loading from metadata dict")
                 return r_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.run_metadata)} "
                     f"or dict, not {type(run_metadata)}"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise TypeError(msg)
         return run_metadata
 
@@ -266,14 +264,14 @@ class TF:
                     station_metadata = {"Station": station_metadata}
                 st_metadata = Station()
                 st_metadata.from_dict(station_metadata)
-                self.logger.debug("Loading from metadata dict")
+                logger.debug("Loading from metadata dict")
                 return st_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.station_metadata)}"
                     f" or dict, not {type(station_metadata)}"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise TypeError(msg)
         return station_metadata
 
@@ -294,14 +292,14 @@ class TF:
                     survey_metadata = {"Survey": survey_metadata}
                 sv_metadata = Survey()
                 sv_metadata.from_dict(survey_metadata)
-                self.logger.debug("Loading from metadata dict")
+                logger.debug("Loading from metadata dict")
                 return sv_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.survey_metadata)}"
                     f" or dict, not {type(survey_metadata)}"
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise TypeError(msg)
         return survey_metadata
 
@@ -674,14 +672,14 @@ class TF:
                 f"{atype} must be have shape (n_periods, {shape[0]}, "
                 f"{shape[1]}), not {ndarray.shape}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
         if ndarray.shape[0] != self.period.size:
             msg = (
                 f"New {atype} shape {ndarray.shape} not same as old {shape}, "
                 "suggest creating a new instance."
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
 
     def _validate_input_dataarray(self, da, atype="impedance"):
@@ -703,7 +701,7 @@ class TF:
         # should test for shape
         if "period" not in da.coords.keys() or "input" not in da.coords.keys():
             msg = f"Coordinates must be period, output, input, not {list(da.coords.keys())}"
-            self.logger.error(
+            logger.error(
                 msg,
             )
             raise TFError(msg)
@@ -712,14 +710,14 @@ class TF:
                 f"Output dimensions must be {ch_out} not "
                 f"{da.coords['output'].data.tolist()}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
         if sorted(ch_in) != sorted(da.coords["input"].data.tolist()):
             msg = (
                 f"Input dimensions must be {ch_in} not "
                 f"{da.coords['input'].data.tolist()}"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
         # need to reorder the data array to the expected coordinates
         da = da.reindex(output=ch_out, input=ch_in)
@@ -738,7 +736,7 @@ class TF:
             return da
         else:
             msg = "Reassigning with a different shape is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
 
     def _set_data_array(self, value, atype):
@@ -789,7 +787,7 @@ class TF:
                 f"Data type {type(value)} not supported use a numpy "
                 "array or xarray.DataArray"
             )
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
 
     def has_transfer_function(self):
@@ -1397,7 +1395,7 @@ class TF:
                     f"old ones {self.period.size}, suggest creating a new "
                     "instance of TF."
                 )
-                self.logger.error(msg)
+                logger.error(msg)
                 raise TFError(msg)
             elif not (self.period == value).all():
                 self.dataset["period"] = value
@@ -1473,7 +1471,7 @@ class TF:
             try:
                 ts_station_metadata.set_attr_from_name(key, value)
             except AttributeError:
-                self.logger.debug(f"Attribute {key} could not be set.")
+                logger.debug(f"Attribute {key} could not be set.")
         return ts_station_metadata
 
     def from_ts_station_metadata(self, ts_station_metadata):
@@ -1574,7 +1572,7 @@ class TF:
 
             if accepted_keys != sorted(list(item.keys())):
                 msg = f"Input dictionary must have keys of {accepted_keys}"
-                self.logger.error(msg)
+                logger.error(msg)
                 raise KeyError(msg)
             return item
 
@@ -1646,7 +1644,7 @@ class TF:
                 tf_list.append(is_dict(item))
             else:
                 msg = f"Type {type(item)} not supported"
-                self.logger.error(msg)
+                logger.error(msg)
                 raise TypeError(msg)
 
         new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
@@ -1719,7 +1717,7 @@ class TF:
             file_type = fn_basename.suffix.lower()[1:]
         if file_type not in self._read_write_dict.keys():
             msg = f"File type {file_type} not supported yet."
-            self.logger.error(msg)
+            logger.error(msg)
             raise TFError(msg)
         fn = self.save_dir.joinpath(fn_basename)
 
@@ -1730,10 +1728,10 @@ class TF:
         return obj
 
     def write_tf_file(self, **kwargs):
-        self.logger.error("'write_tf_file' has been deprecated use 'write()'")
+        logger.error("'write_tf_file' has been deprecated use 'write()'")
 
     def read_tf_file(self, **kwargs):
-        self.logger.error("'read_tf_file' has been deprecated use 'read()'")
+        logger.error("'read_tf_file' has been deprecated use 'read()'")
 
     def read(self, fn=None, file_type=None, get_elevation=False, **kwargs):
         """
@@ -2142,7 +2140,7 @@ class TF:
                     c.number = number_dict[c.channel]
                     setattr(zmm_obj, c.channel, c)
                 except KeyError:
-                    self.logger.debug(f"Could not find channel {c.channel}")
+                    logger.debug(f"Could not find channel {c.channel}")
         zmm_obj.survey_metadata.update(self.survey_metadata)
         zmm_obj.num_freq = self.period.size
 
