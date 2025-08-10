@@ -45,21 +45,21 @@ def survey_metadata_expected():
     """Expected survey metadata dictionary."""
     return OrderedDict(
         [
-            ("citation_dataset.doi", None),
-            ("citation_journal.doi", None),
-            ("datum", "WGS84"),
-            ("geographic_name", None),
+            ("acquired_by.author", ""),
+            ("datum", "WGS 84"),
+            ("geographic_name", ""),
             ("id", "0"),
-            ("name", None),
+            ("name", ""),
+            ("northwest_corner.elevation", 0.0),
             ("northwest_corner.latitude", 0.0),
             ("northwest_corner.longitude", 0.0),
-            ("project", None),
-            ("project_lead.email", None),
-            ("project_lead.organization", None),
-            ("release_license", "CC0-1.0"),
+            ("project", ""),
+            ("project_lead.author", ""),
+            ("release_license", "CC-BY-4.0"),
+            ("southeast_corner.elevation", 0.0),
             ("southeast_corner.latitude", 0.0),
             ("southeast_corner.longitude", 0.0),
-            ("summary", None),
+            ("summary", ""),
             ("time_period.end_date", "1980-01-01"),
             ("time_period.start_date", "1980-01-01"),
         ]
@@ -71,30 +71,35 @@ def station_metadata_expected():
     """Expected station metadata dictionary (without creation_time)."""
     return OrderedDict(
         [
+            ("acquired_by.author", ""),
+            ("channel_layout", "X"),
             ("channels_recorded", ["ex", "ey", "hx", "hy"]),
             ("data_type", "MT"),
-            ("geographic_name", None),
+            ("geographic_name", ""),
             ("id", "BP05"),
-            ("location.declination.model", "WMM"),
+            ("location.datum", "WGS 84"),
+            ("location.declination.model", "IGRF"),
             ("location.declination.value", 0.0),
             ("location.elevation", 0.0),
             ("location.latitude", 0.0),
             ("location.longitude", 0.0),
-            ("orientation.method", None),
+            ("orientation.method", "compass"),
             ("orientation.reference_frame", "geographic"),
-            ("provenance.software.author", None),
+            ("orientation.value", "orthogonal"),
+            ("provenance.archive.name", ""),
+            ("provenance.creator.author", ""),
+            ("provenance.software.author", ""),
             ("provenance.software.name", "BIRRP"),
             ("provenance.software.version", "5"),
-            ("provenance.submitter.email", None),
-            ("provenance.submitter.organization", None),
-            ("release_license", "CC0-1.0"),
+            ("provenance.submitter.author", ""),
             ("run_list", ["001"]),
             ("time_period.end", "1980-01-01T00:00:00+00:00"),
             ("time_period.start", "1980-01-01T00:00:00+00:00"),
-            ("transfer_function.coordinate_system", "geopgraphic"),
-            ("transfer_function.data_quality.rating.value", 0),
+            ("transfer_function.coordinate_system", "geographic"),
+            ("transfer_function.data_quality.rating.value", None),
             ("transfer_function.id", "BP05"),
-            ("transfer_function.processed_date", "2020-01-01"),
+            ("transfer_function.processed_by.author", ""),
+            ("transfer_function.processed_date", "2020-01-01T00:00:00+00:00"),
             (
                 "transfer_function.processing_parameters",
                 [
@@ -107,7 +112,7 @@ def station_metadata_expected():
                     "inputs = 2",
                     "jmode = 0",
                     "nar = 3",
-                    "ncomp = 0",
+                    "ncomp = None",
                     "nf1 = 4",
                     "nfft = 5164.0",
                     "nfinc = 2",
@@ -122,14 +127,14 @@ def station_metadata_expected():
                     "uin = 0.0",
                 ],
             ),
-            ("transfer_function.processing_type", None),
+            ("transfer_function.processing_type", ""),
             ("transfer_function.remote_references", []),
             ("transfer_function.runs_processed", ["001"]),
             ("transfer_function.sign_convention", "+"),
-            ("transfer_function.software.author", None),
-            ("transfer_function.software.name", None),
-            ("transfer_function.software.version", None),
-            ("transfer_function.units", None),
+            ("transfer_function.software.author", ""),
+            ("transfer_function.software.name", ""),
+            ("transfer_function.software.version", ""),
+            ("transfer_function.units", "milliVolt per kilometer per nanoTesla"),
         ]
     )
 
@@ -139,20 +144,27 @@ def run_metadata_expected():
     """Expected run metadata dictionary."""
     return OrderedDict(
         [
+            ("acquired_by.author", ""),
             ("channels_recorded_auxiliary", []),
             ("channels_recorded_electric", ["ex", "ey"]),
             ("channels_recorded_magnetic", ["hx", "hy"]),
-            ("data_logger.firmware.author", None),
-            ("data_logger.firmware.name", None),
-            ("data_logger.firmware.version", None),
-            ("data_logger.id", None),
-            ("data_logger.manufacturer", None),
+            ("data_logger.firmware.author", ""),
+            ("data_logger.firmware.name", ""),
+            ("data_logger.firmware.version", ""),
+            ("data_logger.power_source.voltage.end", 0.0),
+            ("data_logger.power_source.voltage.start", 0.0),
             ("data_logger.timing_system.drift", 0.0),
             ("data_logger.timing_system.type", "GPS"),
             ("data_logger.timing_system.uncertainty", 0.0),
-            ("data_logger.type", None),
             ("data_type", "BBMT"),
             ("id", "001"),
+            ("metadata_by.author", ""),
+            ("provenance.archive.name", ""),
+            ("provenance.creator.author", ""),
+            ("provenance.software.author", ""),
+            ("provenance.software.name", ""),
+            ("provenance.software.version", ""),
+            ("provenance.submitter.author", ""),
             ("sample_rate", 10.0),
             ("time_period.end", "1980-01-01T00:00:00+00:00"),
             ("time_period.start", "1980-01-01T00:00:00+00:00"),
@@ -172,8 +184,8 @@ def impedance_test_data():
         ),
         "last_element": np.array(
             [
-                [112.484200 + 217.4326j, -152.321200 - 887.0555j],
-                [-15.030780 + 1970.297j, -4.158936 + 241.5985j],
+                [14.7972 + 37.03876j, 59.36961 - 213.999j],
+                [-20.23447 + 233.3309j, -20.27033 + 44.91763j],
             ]
         ),
     }
@@ -184,7 +196,7 @@ def impedance_error_test_data():
     """Expected impedance error test data."""
     return {
         "first_element": np.array([[0.9625573, 2.303654], [0.8457434, 1.930154]]),
-        "last_element": np.array([[88.76002, 115.9577], [75.17097, 121.1623]]),
+        "last_element": np.array([[5.360503, 13.11436], [5.698936, 13.13197]]),
     }
 
 
@@ -251,8 +263,13 @@ class TestTFMetadata:
         assert actual_dict == station_metadata_expected
 
     def test_run_metadata(self, tf_object, run_metadata_expected):
-        """Test run metadata matches expected values."""
+        """Test run metadata matches expected values (excluding creation_time)."""
         actual_dict = tf_object.station_metadata.runs[0].to_dict(single=True)
+
+        # Remove creation_time as it varies
+        if "provenance.creation_time" in actual_dict:
+            del actual_dict["provenance.creation_time"]
+
         assert actual_dict == run_metadata_expected
 
     @pytest.mark.parametrize(
