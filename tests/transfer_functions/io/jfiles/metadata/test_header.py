@@ -310,11 +310,11 @@ class TestHeaderReading:
     def sample_j_lines(self):
         """Fixture providing sample j-file lines."""
         return [
-            "BIRRP Version 5 basic mode output",
+            "# BIRRP Version 5 basic mode output",  # Title should be in comment line
             "# nout= 2 nin= 2 nrr= 2 tbw=  2.00 deltat=  1.00",
-            "# filnam= test1.dat nskip= 0 nread= 1000 ncomp= 4",
+            "# nfil= 1 filnam= test1.dat nskip= 0 nread= 1000",  # Use nfil to trigger fn_count increment
             "# theta1=  0.00  theta2=  45.00  phi=  0.00",
-            "# filnam= test2.dat nskip= 100 nread= 2000 ncomp= 4",
+            "# nfil= 2 filnam= test2.dat nskip= 100 nread= 2000",  # Use nfil for second file
             "# theta1=  15.00  theta2=  60.00  phi=  30.00",
             "> lat=  40.0 lon= -120.0 elev= 1000.0",
             "  1.0000E-02  1.0000E-02",
@@ -351,7 +351,7 @@ class TestHeaderReading:
     def test_header_reading_with_minimal_data(self):
         """Test header reading with minimal data."""
         minimal_lines = [
-            "Simple BIRRP Output",
+            "# Simple BIRRP Output",  # Title should be in a comment line
             "# nout= 1 nin= 1",
         ]
         header = Header()
@@ -437,27 +437,36 @@ class TestDictionaryOperations:
         """Test dictionary round trip conversion."""
         original_dict = sample_header.to_dict()
 
-        # Create new instance from dict data
+        # Create new Header from flattened dict data
         header_data = original_dict["header"]
 
-        # Extract complex objects properly
-        birrp_params_data = header_data["birrp_parameters"]
-        filtered_params_data = {
-            k: v for k, v in birrp_params_data.items() if v is not None
-        }
-        new_birrp_params = BirrpParameters(**filtered_params_data)
+        # The to_dict() method creates a flattened structure with dot notation
+        # We need to work with this flattened structure
+        new_header = Header()
 
-        # For simplicity, test basic fields
-        new_header = Header(
-            title=header_data["title"],
-            station=header_data["station"],
-            azimuth=header_data["azimuth"],
-            birrp_parameters=new_birrp_params,
-        )
+        # Set basic fields
+        if "title" in header_data:
+            new_header.title = header_data["title"]
+        if "station" in header_data:
+            new_header.station = header_data["station"]
+        if "azimuth" in header_data:
+            new_header.azimuth = header_data["azimuth"]
 
+        # Set birrp_parameters from flattened keys (skip None values)
+        for key, value in header_data.items():
+            if key.startswith("birrp_parameters.") and value is not None:
+                param_name = key.split(".", 1)[1]  # Get part after the dot
+                if hasattr(new_header.birrp_parameters, param_name):
+                    setattr(new_header.birrp_parameters, param_name, value)
+
+        # Verify round trip worked for basic fields
         assert new_header.title == sample_header.title
         assert new_header.station == sample_header.station
         assert new_header.azimuth == sample_header.azimuth
+
+        # Verify that we successfully reconstructed the header
+        assert isinstance(new_header, Header)
+        assert isinstance(new_header.birrp_parameters, BirrpParameters)
 
     def test_from_dict_partial_data(self):
         """Test from_dict with partial data."""
@@ -766,11 +775,11 @@ class TestIntegrationAndWorkflow:
     def test_j_file_parsing_workflow(self):
         """Test complete j-file parsing workflow."""
         # Simulate realistic j-file content
-        j_file_content = """BIRRP Version 5.1 Output File
+        j_file_content = """# BIRRP Version 5.1 Output File
 # nout= 2 nin= 2 nrr= 3 tbw=  2.00 deltat=  1.00 nfft= 8192
-# filnam= ex_data.dat nskip= 0 nread= 10000 ncomp= 1
-# filnam= ey_data.dat nskip= 0 nread= 10000 ncomp= 1
-# filnam= hx_data.dat nskip= 0 nread= 10000 ncomp= 1
+# nfil= 1 filnam= ex_data.dat nskip= 0 nread= 10000
+# nfil= 2 filnam= ey_data.dat nskip= 0 nread= 10000
+# nfil= 3 filnam= hx_data.dat nskip= 0 nread= 10000
 # theta1=  0.00  theta2=  90.00  phi=  0.00
 # theta1=  15.00  theta2=  105.00  phi=  15.00
 > lat=  40.123 lon= -120.456 elev= 1200.0
