@@ -52,7 +52,7 @@ class JFile:
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start_date}")
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start}")
         lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
         lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
@@ -268,7 +268,7 @@ class JFile:
                     all_periods.append(f_key)
             find_tipper = True
 
-        all_periods = np.array(sorted(list(set(all_periods))))
+        all_periods = np.array(sorted(list(set(all_periods))), dtype=float)
         all_periods = all_periods[np.nonzero(all_periods)]
         num_per = len(all_periods)
 
@@ -284,9 +284,10 @@ class JFile:
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
-                    self.z[p_index, kk, ll] = z_value
-                    self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
+                    self.z[p_index, kk, ll] = float(z_dict[z_key][per][0]) + 1j * float(
+                        z_dict[z_key][per][1]
+                    )
+                    self.z_err[p_index, kk, ll] = float(z_dict[z_key][per][2])
                 except KeyError:
                     logger.debug(f"No value found for period {per:.4g}")
                     logger.debug(f"For component {z_key}")
@@ -295,9 +296,10 @@ class JFile:
                     kk = t_index_dict[t_key][0]
                     ll = t_index_dict[t_key][1]
                     try:
-                        t_value = t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
-                        self.t[p_index, kk, ll] = t_value
-                        self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
+                        self.t[p_index, kk, ll] = float(
+                            t_dict[t_key][per][0]
+                        ) + 1j * float(t_dict[t_key][per][1])
+                        self.t_err[p_index, kk, ll] = float(t_dict[t_key][per][2])
                     except KeyError:
                         logger.debug(f"No value found for period {per:.4g}")
                         logger.debug(f"For component {t_key}")
@@ -349,7 +351,9 @@ class JFile:
         sm.provenance.software.version = "5"
         sm.transfer_function.id = self.header.station
         if self.fn is not None:
-            sm.transfer_function.processed_date = MTime(self.fn.stat().st_ctime).iso_str
+            sm.transfer_function.processed_date = MTime(
+                time_stamp=self.fn.stat().st_ctime
+            ).isoformat()
         sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
         for key, value in self.header.birrp_parameters.to_dict(single=True).items():
