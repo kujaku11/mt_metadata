@@ -249,9 +249,6 @@ class TestJFile:
         jfile2 = JFile(fn=Path(TF_JFILE))
         assert jfile2.header.station == "BP05"
 
-    # @pytest.mark.skip(
-    #     reason="String representation has issues with MTime initialization"
-    # )
     def test_jfile_string_representation(self, jfile_obj):
         """Test that JFile has a proper string representation."""
         str_repr = str(jfile_obj)

@@ -11,7 +11,6 @@ from copy import deepcopy
 
 # ==============================================================================
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import xarray as xr
@@ -118,9 +117,7 @@ class TF:
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
-        lines.append(
-            f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
-        )
+        lines.append(f"\tAcquired date:     {self.station_metadata.time_period.start}")
         lines.append(f"\tLatitude:          {self.latitude:.3f}")
         lines.append(f"\tLongitude:         {self.longitude:.3f}")
         lines.append(f"\tElevation:         {self.elevation:.3f}")
@@ -160,14 +157,20 @@ class TF:
 
         return f"TF( {(', ').join(lines)} )"
 
-    def __eq__(self, other, ignore_station_metadata_keys: Optional[list] = None):
+    def __eq__(self, other):
+        """
+        Check if two TF objects are equal.
+
+        :param other: Another TF object to compare with
+        :type other: TF
+        :return: True if equal, False otherwise
+        :rtype: bool
+        """
         is_equal = True
         if not isinstance(other, TF):
             logger.info(f"Comparing object is not TF, type {type(other)}")
             is_equal = False
-        if not self.station_metadata.__eq__(
-            other.station_metadata, ignore_keys=ignore_station_metadata_keys
-        ):
+        if self.station_metadata != other.station_metadata:
             logger.info("Station metadata is not equal")
             is_equal = False
         if self.survey_metadata != other.survey_metadata:
@@ -184,6 +187,9 @@ class TF:
             is_equal = False
 
         return is_equal
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __deepcopy__(self, memo):
         cls = self.__class__

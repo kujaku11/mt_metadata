@@ -1037,7 +1037,7 @@ class MetadataBase(DotNotationBaseModel):
         if home_dict == other_dict:
             return True
 
-        fail = False
+        equals = True
         for key, value in home_dict.items():
             try:
                 other_value = other_dict[key]
@@ -1045,26 +1045,27 @@ class MetadataBase(DotNotationBaseModel):
                     if value.size != other_value.size:
                         msg = f"Array sizes for {key} differ: {value.size} != {other_value.size}"
                         logger.info(msg)
-                        fail = True
+                        equals = False
                         continue
                     if not (value == other_value).all():
                         msg = f"{key}: {value} != {other_value}"
                         logger.info(msg)
-                        fail = True
+                        equals = False
                 elif isinstance(value, (float, int, complex)):
                     if not np.isclose(value, other_value):
                         msg = f"{key}: {value} != {other_value}"
                         logger.info(msg)
-                        fail = True
+                        equals = False
                 else:
                     if value != other_value:
                         msg = f"{key}: {value} != {other_value}"
                         logger.info(msg)
-                        fail = True
+                        equals = False
             except KeyError:
                 msg = "Cannot find {0} in other".format(key)
                 logger.info(msg)
-        return fail
+
+        return equals
 
     def __ne__(self, other):
         return not self.__eq__(other)

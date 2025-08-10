@@ -268,14 +268,10 @@ class TestTFMockUtilities:
 
     def test_string_representation_mock(self, mock_tf_data):
         """Test TF string representation with mock data."""
-        try:
-            tf_str = str(mock_tf_data)
-            assert "Station: BP05" in tf_str
-            assert "Survey: test_survey" in tf_str
-            assert "Impedance: True" in tf_str
-        except AttributeError as e:
-            # Skip test if metadata API has changed
-            pytest.skip(f"Skipping due to metadata API change: {e}")
+        tf_str = str(mock_tf_data)
+        assert "Station: BP05" in tf_str
+        assert "Survey:            test_survey" in tf_str
+        assert "Impedance:         True" in tf_str
 
     def test_repr_mock(self, mock_tf_data):
         """Test TF repr with mock data."""
@@ -424,17 +420,12 @@ class TestTFMockRegression:
     def test_tf_equality_mock(self, mock_tf_data):
         """Test TF equality comparison."""
         tf_copy = mock_tf_data.copy()
+        # Should be equal
+        assert mock_tf_data == tf_copy
 
-        try:
-            # Should be equal
-            assert mock_tf_data == tf_copy
-
-            # Change something and should not be equal
-            tf_copy.station = "different_station"
-            assert mock_tf_data != tf_copy
-        except TypeError as e:
-            # Skip if equality method signature has changed
-            pytest.skip(f"Skipping due to equality method API change: {e}")
+        # Change something and should not be equal
+        tf_copy.station = "different_station"
+        assert mock_tf_data != tf_copy
 
 
 if __name__ == "__main__":

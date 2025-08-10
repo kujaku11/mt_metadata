@@ -208,11 +208,19 @@ class JFile:
         # make empty dictionary that have keys as the component
         z_dict = dict([(z_key, {}) for z_key in list(z_index_dict.keys())])
         t_dict = dict([(t_key, {}) for t_key in list(t_index_dict.keys())])
+
+        # initialize d_key to avoid NameError
+        d_key = None
+
         for d_line in data_lines[1:]:
             # check to see if we are at the beginning of a component block, if so
             # set the dictionary key to that value
-            if "z" in d_line.lower():
-                d_key = d_line.strip().split()[0].lower()
+            line_parts = d_line.strip().split()
+            if line_parts and (
+                line_parts[0].lower().startswith("z")
+                or line_parts[0].lower().startswith("t")
+            ):
+                d_key = line_parts[0].lower()
             # if we are at the number of periods line, skip it
             elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
                 continue
@@ -245,9 +253,9 @@ class JFile:
 
                 # put the numbers in the correct dictionary as:
                 # key = period, value = [real, imaginary, error]
-                if d_key in list(z_index_dict.keys()):
+                if d_key is not None and d_key in list(z_index_dict.keys()):
                     z_dict[d_key][d_value_list[0]] = d_value_list[1:4]
-                elif d_key in list(t_index_dict.keys()):
+                elif d_key is not None and d_key in list(t_index_dict.keys()):
                     t_dict[d_key][d_value_list[0]] = d_value_list[1:4]
 
         # --> now we need to get the set of periods for all components
@@ -280,14 +288,16 @@ class JFile:
         self.t_err = np.zeros((num_per, 1, 2), dtype=float)
 
         for p_index, per in enumerate(all_periods):
+            # Convert float period back to string for dictionary lookup
+            per_key = str(per)
             for z_key in sorted(z_index_dict.keys()):
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    self.z[p_index, kk, ll] = float(z_dict[z_key][per][0]) + 1j * float(
-                        z_dict[z_key][per][1]
-                    )
-                    self.z_err[p_index, kk, ll] = float(z_dict[z_key][per][2])
+                    self.z[p_index, kk, ll] = float(
+                        z_dict[z_key][per_key][0]
+                    ) + 1j * float(z_dict[z_key][per_key][1])
+                    self.z_err[p_index, kk, ll] = float(z_dict[z_key][per_key][2])
                 except KeyError:
                     logger.debug(f"No value found for period {per:.4g}")
                     logger.debug(f"For component {z_key}")
@@ -297,9 +307,9 @@ class JFile:
                     ll = t_index_dict[t_key][1]
                     try:
                         self.t[p_index, kk, ll] = float(
-                            t_dict[t_key][per][0]
-                        ) + 1j * float(t_dict[t_key][per][1])
-                        self.t_err[p_index, kk, ll] = float(t_dict[t_key][per][2])
+                            t_dict[t_key][per_key][0]
+                        ) + 1j * float(t_dict[t_key][per_key][1])
+                        self.t_err[p_index, kk, ll] = float(t_dict[t_key][per_key][2])
                     except KeyError:
                         logger.debug(f"No value found for period {per:.4g}")
                         logger.debug(f"For component {t_key}")
