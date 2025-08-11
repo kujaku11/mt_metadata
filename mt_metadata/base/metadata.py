@@ -832,6 +832,9 @@ class DotNotationBaseModel(BaseModel):
                                 )
                             else:
                                 flat_data[nested_key] = nested_value
+                    else:
+                        # Non-dict value for class name key should be treated as regular field
+                        flat_data[key] = value
                 else:
                     flat_data[key] = value
 

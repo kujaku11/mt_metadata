@@ -14,7 +14,7 @@ from mt_metadata.common.enumerations import ChannelEnum
 
 class Channel(MetadataBase):
     number: Annotated[
-        int,
+        int | None,
         Field(
             default=None,
             description="Channel number",
@@ -87,7 +87,20 @@ class Channel(MetadataBase):
         lines = ["Channel Metadata:"]
         for key in ["channel", "number", "dl", "azimuth", "tilt"]:
             try:
-                lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
+                value = getattr(self, key)
+                # Special formatting for different field types
+                if key == "channel" and hasattr(value, "value"):
+                    # For enums, use the string value
+                    if value.value == "":
+                        display_value = "None"
+                    else:
+                        display_value = value.value
+                elif key == "number" and value is None:
+                    # Skip None number field completely
+                    continue
+                else:
+                    display_value = value
+                lines.append(f"\t{key.capitalize()}: {display_value:<12}")
             except TypeError:
                 pass
         return "\n".join(lines)

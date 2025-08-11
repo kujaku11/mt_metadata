@@ -178,7 +178,7 @@ class ChannelEnum(StrEnumerationBase):
     hx = "hx"
     hy = "hy"
     hz = "hz"
-    null = None
+    null = ""
 
 
 ## This is a better way to making an pydantic type of enumeration with a validator
