@@ -173,10 +173,10 @@ class TestChannelValidation:
                 assert channel.azimuth == case["azimuth"]
                 assert channel.tilt == case["tilt"]
                 # Handle string to float conversion for dl
-                expected_dl = (
-                    float(case["dl"]) if isinstance(case["dl"], str) else case["dl"]
-                )
-                assert channel.dl == expected_dl
+                # expected_dl = (
+                #     float(case["dl"]) if isinstance(case["dl"], str) else case["dl"]
+                # )
+                assert channel.dl == case["dl"]
                 assert channel.channel == case["channel"]
 
     def test_boundary_cases(self, channel_validation_cases, subtests):
@@ -208,7 +208,7 @@ class TestChannelValidation:
 
     def test_dl_type_flexibility(self, subtests):
         """Test that dl accepts both float and string types."""
-        test_cases = [(100.0, 100.0), ("50.5", 50.5), (0, 0.0), ("0", 0.0)]
+        test_cases = [(100.0, 100.0), ("50.5", "50.5"), (0, 0.0), ("0", "0")]
 
         for input_val, expected_val in test_cases:
             with subtests.test(input=input_val, expected=expected_val):

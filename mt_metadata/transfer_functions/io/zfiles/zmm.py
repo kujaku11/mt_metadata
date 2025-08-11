@@ -148,7 +148,12 @@ class ZMMHeader(object):
 
         for ii, line in enumerate(header_list):
             if line.find("**") >= 0:
-                self.station_metadata.comments += line.replace("*", "").strip()
+                if self.station_metadata.comments.value:
+                    self.station_metadata.comments.value += (
+                        "\n" + line.replace("*", "").strip()
+                    )
+                else:
+                    self.station_metadata.comments.value = line.replace("*", "").strip()
             elif ii == 2:
                 self.processing_type = line.lower().strip()
             elif "station" in line:
@@ -178,7 +183,7 @@ class ZMMHeader(object):
                 channel_dict["dl"] = line_list[3]
                 if channel_dict["chn_num"] == 0:
                     channel_dict["chn_num"] = self.num_channels
-                setattr(self, comp, Channel(channel_dict))
+                setattr(self, comp, Channel(**channel_dict))
 
                 if comp in ["ex", "ey"]:
                     ch = Electric()
@@ -323,9 +328,7 @@ class ZMM(ZMMHeader):
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
         lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(
-            f"\tAcquired date: {self.station_metadata.time_period.start.date()}"
-        )
+        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start}")
         lines.append(f"\tLatitude:      {self.latitude:.3f}")
         lines.append(f"\tLongitude:     {self.longitude:.3f}")
         lines.append(f"\tElevation:     {self.elevation:.3f}")

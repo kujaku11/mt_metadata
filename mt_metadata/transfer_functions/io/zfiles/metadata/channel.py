@@ -1,46 +1,106 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec  4 18:52:52 2021
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from typing import Annotated
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import write_lines
+from pydantic import Field
 
-from .standards import SCHEMA_FN_PATHS
-
-
-# =============================================================================
-attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import ChannelEnum
 
 
-# ==============================================================================
-# data section
-# ==============================================================================
-class Channel(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
 
-    def __init__(self, channel_dict=None):
-        self.number = 1
-        self.azimuth = 0
-        self.tilt = 0
-        self.dl = 0
-        self.channel = None
 
-        super().__init__(attr_dict=attr_dict)
+class Channel(MetadataBase):
+    number: Annotated[
+        int | None,
+        Field(
+            default=None,
+            description="Channel number",
+            examples=["1"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        if channel_dict is not None:
-            self.from_dict(channel_dict)
+    azimuth: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="channel azimuth",
+            examples=["90"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
+
+    tilt: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="channel tilt relative to horizontal.",
+            examples=["100.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "degrees",
+                "required": True,
+            },
+        ),
+    ]
+
+    dl: Annotated[
+        float | str,
+        Field(
+            default=0.0,
+            description="dipole length in meters",
+            examples=["0.0"],
+            alias=None,
+            json_schema_extra={
+                "units": "meters",
+                "required": True,
+            },
+        ),
+    ]
+
+    channel: Annotated[
+        ChannelEnum,
+        Field(
+            default=ChannelEnum.null,
+            description="channel name",
+            examples=["hx"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
     def __str__(self):
         lines = ["Channel Metadata:"]
         for key in ["channel", "number", "dl", "azimuth", "tilt"]:
             try:
-                lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
+                value = getattr(self, key)
+                # Special formatting for different field types
+                if key == "channel" and hasattr(value, "value"):
+                    # For enums, use the string value
+                    if value.value == "":
+                        display_value = "None"
+                    else:
+                        display_value = value.value
+                elif key == "number" and value is None:
+                    # Skip None number field completely
+                    continue
+                else:
+                    display_value = value
+                lines.append(f"\t{key.capitalize()}: {display_value:<12}")
             except TypeError:
                 pass
         return "\n".join(lines)
