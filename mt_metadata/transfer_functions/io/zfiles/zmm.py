@@ -177,12 +177,16 @@ class ZMMHeader(object):
                 line_list = line.strip().split()
                 comp = line_list[-1].lower()
                 channel_dict = {"channel": comp}
-                channel_dict["chn_num"] = int(line_list[0])
-                channel_dict["azm"] = float(line_list[1])
+                channel_dict["number"] = int(
+                    line_list[0]
+                )  # Changed from "chn_num" to "number"
+                channel_dict["azimuth"] = float(
+                    line_list[1]
+                )  # Changed from "azm" to "azimuth"
                 channel_dict["tilt"] = float(line_list[2])
                 channel_dict["dl"] = line_list[3]
-                if channel_dict["chn_num"] == 0:
-                    channel_dict["chn_num"] = self.num_channels
+                if channel_dict["number"] == 0:  # Changed from "chn_num" to "number"
+                    channel_dict["number"] = self.num_channels
                 setattr(self, comp, Channel(**channel_dict))
 
                 if comp in ["ex", "ey"]:
@@ -190,11 +194,17 @@ class ZMMHeader(object):
                 elif comp in ["hx", "hy", "hz"]:
                     ch = Magnetic()
                 ch.component = comp
-                ch.measurement_azimuth = channel_dict["azm"]
+                ch.measurement_azimuth = channel_dict[
+                    "azimuth"
+                ]  # Changed from "azm" to "azimuth"
                 ch.measurement_tilt = channel_dict["tilt"]
-                ch.translated_azimuth = channel_dict["azm"]
+                ch.translated_azimuth = channel_dict[
+                    "azimuth"
+                ]  # Changed from "azm" to "azimuth"
                 ch.translated_tilt = channel_dict["tilt"]
-                ch.channel_number = channel_dict["chn_num"]
+                ch.channel_number = channel_dict[
+                    "number"
+                ]  # Changed from "chn_num" to "number"
 
                 self.station_metadata.runs[0].add_channel(ch)
 
@@ -263,7 +273,12 @@ class ZMMHeader(object):
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
             ch = getattr(self, cc)
             if ch is not None:
-                channels[cc] = ch.channel
+                # Ensure channel value is extracted as string from ChannelEnum
+                channel_value = ch.channel
+                if hasattr(channel_value, "value"):
+                    channels[cc] = channel_value.value
+                else:
+                    channels[cc] = str(channel_value)
         return channels
 
     @property
@@ -272,7 +287,12 @@ class ZMMHeader(object):
         for cc in ["ex", "ey", "hx", "hy", "hz"]:
             ch = getattr(self, cc)
             if ch is not None:
-                channels[ch.index] = ch.channel
+                # Ensure channel value is extracted as string from ChannelEnum
+                channel_value = ch.channel
+                if hasattr(channel_value, "value"):
+                    channels[ch.index] = channel_value.value
+                else:
+                    channels[ch.index] = str(channel_value)
         ordered_channels = [channels[k] for k in sorted(channels.keys())]
         return ordered_channels
 

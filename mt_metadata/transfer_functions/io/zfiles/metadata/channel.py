@@ -72,7 +72,7 @@ class Channel(MetadataBase):
     channel: Annotated[
         ChannelEnum,
         Field(
-            default=ChannelEnum.null,
+            default="",
             description="channel name",
             examples=["hx"],
             alias=None,
@@ -82,6 +82,13 @@ class Channel(MetadataBase):
             },
         ),
     ]
+
+    @property
+    def channel_string(self) -> str:
+        """Return the channel name as a string for indexing purposes."""
+        if hasattr(self.channel, "value"):
+            return self.channel.value
+        return str(self.channel)
 
     def __str__(self):
         lines = ["Channel Metadata:"]
