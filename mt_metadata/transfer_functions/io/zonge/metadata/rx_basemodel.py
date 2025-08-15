@@ -14,10 +14,10 @@ class CmpEnum(str, Enum):
     zxx = "zxx"
     zyy = "zyy"
     zyx = "zyx"
-    zxx = "zxx"
+    zxy = "zxy"
     txy = "txy"
     tyx = "tyx"
-    other = "other"
+    null = ""
 
 
 class Rx(MetadataBase):
@@ -50,10 +50,9 @@ class Rx(MetadataBase):
     ]
 
     h_p_r: Annotated[
-        float,
+        list[float],
         Field(
             default=[],
-            items={"type": "number"},
             description="Horizontal, pitch, roll of array",
             examples=["0, 0, 180"],
             alias=None,
@@ -65,9 +64,9 @@ class Rx(MetadataBase):
     ]
 
     cmp: Annotated[
-        CmpEnum | None,
+        CmpEnum,
         Field(
-            default=None,
+            default="",
             description="processed component of impedance or tipper",
             examples=["zxx"],
             alias=None,
