@@ -1,19 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, field_validator, ValidationInfo
+from pyproj import CRS
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.utils import location_helpers
 
 
 # =====================================================
-class DatumEnum(str, Enum):
-    WGS84 = "WGS84"
-    NAD27 = "NAD27"
-    other = "other"
 
 
 class Gps(MetadataBase):
@@ -46,7 +43,7 @@ class Gps(MetadataBase):
     ]
 
     datum: Annotated[
-        DatumEnum,
+        str,
         Field(
             default="WGS84",
             description="Datum of the location",
@@ -60,9 +57,9 @@ class Gps(MetadataBase):
     ]
 
     u_t_m_zone: Annotated[
-        str,
+        int,
         Field(
-            default="",
+            default=0,
             description="UTM zone of location",
             examples=["12"],
             alias=None,
@@ -72,3 +69,26 @@ class Gps(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("datum", mode="before")
+    @classmethod
+    def validate_datum(cls, value: str | int) -> str:
+        """
+        Validate the datum value and convert it to the appropriate enum type.
+        """
+        try:
+            datum_crs = CRS.from_user_input(value)
+            return datum_crs.name
+        except Exception:
+            raise ValueError(
+                f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
+            )
+
+    @field_validator("lat", "lon", mode="before")
+    @classmethod
+    def validate_position(cls, value, info: ValidationInfo):
+        if info.field_name in ["lat"]:
+            field_name = "latitude"
+        elif info.field_name in ["lon"]:
+            field_name = "longitude"
+        return location_helpers.validate_position(value, field_name)

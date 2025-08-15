@@ -7,19 +7,15 @@ from typing import Annotated
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import YesNoEnum
 
 
 # =====================================================
 class SmoothEnum(str, Enum):
     robust = "robust"
     normal = "normal"
-    None = "None"
+    null = "None"
     minimal = "minimal"
-
-
-class ToZMagEnum(str, Enum):
-    no = "no"
-    yes = "yes"
 
 
 class PhaseSlope(MetadataBase):
@@ -38,7 +34,7 @@ class PhaseSlope(MetadataBase):
     ]
 
     to_z_mag: Annotated[
-        ToZMagEnum,
+        YesNoEnum,
         Field(
             default="no",
             description="Was hz used for smoothing for phase slope algorithm",

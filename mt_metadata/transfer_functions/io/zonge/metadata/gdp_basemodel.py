@@ -16,7 +16,7 @@ class Gdp(MetadataBase):
     date: Annotated[
         MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
         Field(
-            default_factory=lambda: MTime(time_stamp=None),
+            default_factory=lambda: MTime(time_stamp=None).date,
             description="start date of the measurement",
             examples=["01/01/2020"],
             alias=None,
@@ -74,11 +74,11 @@ class Gdp(MetadataBase):
     def validate_date(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
-        return MTime(time_stamp=field_value)
+        return MTime(time_stamp=field_value).isodate()
 
     @field_validator("time", mode="before")
     @classmethod
     def validate_time(
         cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
     ):
-        return MTime(time_stamp=field_value)
+        return MTime(time_stamp=field_value).isoformat().split("T")[1]
