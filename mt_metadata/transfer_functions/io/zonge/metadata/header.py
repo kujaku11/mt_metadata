@@ -3,7 +3,7 @@
 # =====================================================
 from typing import Annotated, Any, Dict, Optional
 
-from pydantic import computed_field, Field, field_validator
+from pydantic import computed_field, Field, field_validator, PrivateAttr
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.utils.validators import validate_attribute
@@ -210,11 +210,11 @@ class Header(MetadataBase):
     ]
 
     # Private fields for GPS coordinates (excluded from serialization but used internally)
-    _gps_lat: Annotated[float, Field(default=0.0, exclude=True)]
-    _gps_lon: Annotated[float, Field(default=0.0, exclude=True)]
-    _elevation: Annotated[float, Field(default=0.0, exclude=True)]
+    _gps_lat: float = PrivateAttr(default=0.0)
+    _gps_lon: float = PrivateAttr(default=0.0)
+    _elevation: float = PrivateAttr(default=0.0)
 
-    _comp_dict: Annotated[Dict[str, Any], Field(default_factory=dict, exclude=True)]
+    _comp_dict: Dict[str, Any] = PrivateAttr(default_factory=dict)
 
     _header_keys = [
         "survey.type",
@@ -293,6 +293,18 @@ class Header(MetadataBase):
     @classmethod
     def validate_elevation(cls, v):
         """Validate and convert elevation input."""
+        if v is None:
+            return 0.0
+        if isinstance(v, str):
+            try:
+                return float(v.strip())
+            except ValueError:
+                raise ValueError(f"Cannot convert '{v}' to float")
+        return float(v)
+
+    @classmethod
+    def validate_coordinates(cls, v):
+        """Validate and convert coordinate input."""
         if v is None:
             return 0.0
         if isinstance(v, str):
@@ -482,7 +494,9 @@ class Header(MetadataBase):
         lines = [""]
 
         for key in self._header_keys:
-            value = self.get_attr_from_name(key)
+            # Map g_p_s to gps for attribute access
+            actual_key = key.replace("g_p_s", "gps")
+            value = self.get_attr_from_name(actual_key)
             if isinstance(value, list):
                 value = ",".join([f"{v:.1f}" for v in value])
             elif isinstance(value, (float)):
