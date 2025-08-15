@@ -1,23 +1,20 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import YesNoEnum
 
 
 # =====================================================
-class PhaseFlipEnum(str, Enum):
-    yes = "yes"
-    no = "no"
 
 
 class Auto(MetadataBase):
     phase_flip: Annotated[
-        PhaseFlipEnum,
+        YesNoEnum,
         Field(
             default="yes",
             description="Was phase automatically flipped in processing",

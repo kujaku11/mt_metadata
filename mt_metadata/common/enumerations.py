@@ -44,6 +44,11 @@ class StrEnumerationBase(str, Enum):
         )
 
 
+class YesNoEnum(StrEnumerationBase):
+    yes = "yes"
+    no = "no"
+
+
 class DataTypeEnum(StrEnumerationBase):
     RMT = "RMT"
     AMT = "AMT"
