@@ -1,23 +1,20 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import YesNoEnum
 
 
 # =====================================================
-class UseEnum(str, Enum):
-    no = "no"
-    yes = "yes"
 
 
 class DPlus(MetadataBase):
     use: Annotated[
-        UseEnum,
+        YesNoEnum,
         Field(
             default="no",
             description="Was D+ used to smooth the response",
