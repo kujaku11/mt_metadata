@@ -1,38 +1,69 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 11:00:57 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
+
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 from . import Auto, DPlus, PhaseSlope
-from .standards import SCHEMA_FN_PATHS
 
 
-# =============================================================================
-attr_dict = get_schema("mt_edit", SCHEMA_FN_PATHS)
-attr_dict.add_dict(get_schema("auto", SCHEMA_FN_PATHS), name="auto")
-attr_dict.add_dict(get_schema("phase_slope", SCHEMA_FN_PATHS), name="phase_slope")
-attr_dict.add_dict(get_schema("d_plus", SCHEMA_FN_PATHS), name="d_plus")
-# =============================================================================
+# =====================================================
+class MTEdit(MetadataBase):
+    version: Annotated[
+        str,
+        Field(
+            default="",
+            description="Version of MT Edit and date",
+            examples=["3.10m applied 2021/01/27"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    auto: Annotated[
+        Auto,
+        Field(
+            default_factory=Auto,
+            description="Auto metadata",
+            examples=[{"param1": "value1", "param2": "value2"}],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-class MTEdit(Base):
-    __doc__ = write_lines(attr_dict)
+    d_plus: Annotated[
+        DPlus,
+        Field(
+            default_factory=DPlus,
+            description="DPlus metadata",
+            examples=[{"param1": "value1", "param2": "value2"}],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        self.auto = Auto()
-        self.phase_slope = PhaseSlope()
-        self.d_plus = DPlus()
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    phase_slope: Annotated[
+        PhaseSlope,
+        Field(
+            default_factory=PhaseSlope,
+            description="PhaseSlope metadata",
+            examples=[{"param1": "value1", "param2": "value2"}],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]

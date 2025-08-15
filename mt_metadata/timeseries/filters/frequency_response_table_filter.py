@@ -31,7 +31,7 @@ class FrequencyResponseTableFilter(FilterBase):
         Field(
             default="fap",
             description="Type of filter.  Must be 'fap' or 'frequency amplitude table'",
-            examples="fap",
+            examples=["fap"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -43,9 +43,10 @@ class FrequencyResponseTableFilter(FilterBase):
         np.ndarray | list[float],
         Field(
             default_factory=lambda: np.empty(0, dtype=float),
-            items={"type": "number"},
             description="The frequencies at which a calibration of the filter were performed.",
-            examples='"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"',
+            examples=[
+                '"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"'
+            ],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -58,9 +59,10 @@ class FrequencyResponseTableFilter(FilterBase):
         np.ndarray | list[float],
         Field(
             default_factory=lambda: np.empty(0, dtype=float),
-            items={"type": "number"},
             description="The amplitudes for each calibration frequency.",
-            examples='"[1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0, 1.0, ... 1.0, 1.0, 1.0, 1.0]"',
+            examples=[
+                '"[1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0, 1.0, ... 1.0, 1.0, 1.0, 1.0]"'
+            ],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -73,9 +75,10 @@ class FrequencyResponseTableFilter(FilterBase):
         np.ndarray | list[float],
         Field(
             default_factory=lambda: np.empty(0, dtype=float),
-            items={"type": "number"},
             description="The phases for each calibration frequency.",
-            examples='"[-90, -90, -88, -80, -60, -30, 30, ... 50.0, 90.0, 90.0, 90.0]"',
+            examples=[
+                '"[-90, -90, -88, -80, -60, -30, 30, ... 50.0, 90.0, 90.0, 90.0]"'
+            ],
             alias=None,
             json_schema_extra={
                 "units": "radians",
@@ -88,8 +91,8 @@ class FrequencyResponseTableFilter(FilterBase):
         str,
         Field(
             default="",
-            description="The type of instrument the FAP table is associated with. ",
-            examples="fluxgate magnetometer",
+            description="The type of instrument the FAP table is associated with.",
+            examples=["fluxgate magnetometer"],
             alias=None,
             json_schema_extra={
                 "units": None,

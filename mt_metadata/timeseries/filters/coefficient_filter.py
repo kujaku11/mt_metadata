@@ -24,8 +24,8 @@ class CoefficientFilter(FilterBase):
         str,
         Field(
             default="coefficient",
-            description="Type of filter.  Must be 'coeeficent'",
-            examples="coefficient",
+            description="Type of filter.  Must be 'coefficient'",
+            examples=["coefficient"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -38,7 +38,7 @@ class CoefficientFilter(FilterBase):
         Field(
             default=1.0,
             description="Scale factor for a simple coefficient filter.",
-            examples="100",
+            examples=["100"],
             alias=None,
             gt=0.0,
             json_schema_extra={

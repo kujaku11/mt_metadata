@@ -1,31 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 10:29:50 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("auto", SCHEMA_FN_PATHS)
-# =============================================================================
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import YesNoEnum
 
 
-class Auto(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+
+class Auto(MetadataBase):
+    phase_flip: Annotated[
+        YesNoEnum,
+        Field(
+            default="yes",
+            description="Was phase automatically flipped in processing",
+            examples=["yes"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]

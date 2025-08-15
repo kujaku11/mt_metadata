@@ -1,49 +1,94 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 10:29:50 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.transfer_functions.tf import Location
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field, field_validator, ValidationInfo
+from pyproj import CRS
 
-
-# =============================================================================
-attr_dict = get_schema("gps", SCHEMA_FN_PATHS)
-# =============================================================================
+from mt_metadata.base import MetadataBase
+from mt_metadata.utils import location_helpers
 
 
-class GPS(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
 
-    def __init__(self, **kwargs):
-        self._location = Location()
-        super().__init__(attr_dict=attr_dict, **kwargs)
 
-    @property
-    def lat(self):
-        return self._location.latitude
+class GPS(MetadataBase):
+    lat: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="latitude",
+            examples=["10.3"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @lat.setter
-    def lat(self, value):
-        self._location.latitude = value
+    lon: Annotated[
+        float,
+        Field(
+            default=0.0,
+            description="longitude",
+            examples=["10.3"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @property
-    def lon(self):
-        return self._location.longitude
+    datum: Annotated[
+        str,
+        Field(
+            default="WGS84",
+            description="Datum of the location",
+            examples=["WGS84"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @lon.setter
-    def lon(self, value):
-        self._location.longitude = value
+    u_t_m_zone: Annotated[
+        int,
+        Field(
+            default=0,
+            description="UTM zone of location",
+            examples=["12"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @field_validator("datum", mode="before")
+    @classmethod
+    def validate_datum(cls, value: str | int) -> str:
+        """
+        Validate the datum value and convert it to the appropriate enum type.
+        """
+        try:
+            datum_crs = CRS.from_user_input(value)
+            return datum_crs.name
+        except Exception:
+            raise ValueError(
+                f"Invalid datum value: {value}. Must be a valid CRS string or identifier."
+            )
+
+    @field_validator("lat", "lon", mode="before")
+    @classmethod
+    def validate_position(cls, value, info: ValidationInfo):
+        if info.field_name in ["lat"]:
+            field_name = "latitude"
+        elif info.field_name in ["lon"]:
+            field_name = "longitude"
+        return location_helpers.validate_position(value, field_name)

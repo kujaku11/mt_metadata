@@ -1,31 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-
-Created on Wed Dec  8 10:29:50 2021
-
-:author: Jared Peacock
-
-:license: MIT
-
-"""
-
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from enum import Enum
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("tx", SCHEMA_FN_PATHS)
-# =============================================================================
+from mt_metadata.base import MetadataBase
 
 
-class Tx(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class TypeEnum(str, Enum):
+    natural = "natural"
+    controlled_source = "controlled source"
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+
+class Tx(MetadataBase):
+    type: Annotated[
+        TypeEnum,
+        Field(
+            default="natural",
+            description="Type of EM source",
+            examples=["natural"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
