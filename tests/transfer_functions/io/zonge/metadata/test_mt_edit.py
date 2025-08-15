@@ -42,7 +42,9 @@ class TestMtEditDefault:
                 assert field in fields
 
         with subtests.test("field count"):
-            assert len(fields) == 1
+            assert (
+                len(fields) == 4
+            )  # Updated to reflect actual field count: version, auto, d_plus, phase_slope
 
     def test_required_field_behavior(self, subtests):
         """Test that version field behaves as required with default empty string."""
@@ -502,8 +504,13 @@ class TestMtEditDocumentation:
 
         with subtests.test("model_fields accessible"):
             fields = MTEdit.model_fields
-            assert len(fields) == 1
+            assert (
+                len(fields) == 4
+            )  # Updated to reflect actual field count: version, auto, d_plus, phase_slope
             assert "version" in fields
+            assert "auto" in fields
+            assert "d_plus" in fields
+            assert "phase_slope" in fields
 
     def test_field_requirements(self, subtests):
         """Test field requirement specifications."""
