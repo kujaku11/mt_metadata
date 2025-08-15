@@ -210,7 +210,7 @@ class TestStnSerialization:
 
         with subtests.test("includes class name"):
             assert "_class_name" in dump
-            assert dump["_class_name"] == "stn"
+            assert dump["_class_name"] == "s_t_n"
 
     def test_model_dump_populated(self, populated_stn, subtests):
         """Test model_dump with populated values."""
