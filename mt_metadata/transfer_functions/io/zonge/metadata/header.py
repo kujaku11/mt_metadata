@@ -257,7 +257,15 @@ class Header(MetadataBase):
                     [validate_attribute(k) for k in key.replace(":", ".").split(".")]
                 )
 
-                value = value.lower().strip()
+                value = value.strip()
+                # Don't lowercase enum values that need to maintain case
+                if not (
+                    key.endswith(".proj")
+                    or key.endswith(".type")
+                    or key.endswith(".datum")
+                ):
+                    value = value.lower()
+
                 # Only split on commas for specific fields that should be lists (h_p_r)
                 # Most coordinate and position fields (xyz1, utm1, center) should remain as strings
                 if "," in value and key.endswith(".h_p_r"):

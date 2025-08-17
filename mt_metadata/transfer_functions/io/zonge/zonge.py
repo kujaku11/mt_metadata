@@ -331,7 +331,8 @@ class ZongeMTAvg:
         rm.data_logger.id = self.header.instrument_id
         rm.data_logger.type = self.header.instrument_type
         rm.data_logger.manufacturer = "Zonge International"
-        rm.data_logger.firmware = self.header.firmware
+        if self.header.firmware is not None:
+            rm.data_logger.firmware.version = self.header.firmware
         if self.header.start_time is not None:
             rm.time_period.start = self.header.start_time
 
@@ -428,18 +429,42 @@ class ZongeMTAvg:
     def hz_metadata(self) -> Magnetic:
         ch = Magnetic(component="hz")
         if self.header._has_channel("tzx"):
-            ch.measurement_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[1]
-            ch.translated_azimuth = self.header._comp_dict["tzx"]["ch"].azimuth[1]
-            ch.measurement_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
-            ch.translated_tilt = self.header._comp_dict["tzx"]["ch"].incl[1]
-            ch.sensor.id = self.header._comp_dict["tzx"]["ch"].number[1]
-            ch.channel_id = 3
-            ch.time_period.start = self.header.start_time
+            # Parse comma-separated values safely
+            azimuth_values = self.header._comp_dict["tzx"]["ch"].azimuth
+            incl_values = self.header._comp_dict["tzx"]["ch"].incl
+            number_values = self.header._comp_dict["tzx"]["ch"].number
+
+            # Extract second value from comma-separated strings
+            if azimuth_values and "," in azimuth_values:
+                try:
+                    azimuth_val = float(azimuth_values.split(",")[1].strip())
+                    ch.measurement_azimuth = azimuth_val
+                    ch.translated_azimuth = azimuth_val
+                except (IndexError, ValueError):
+                    pass
+
+            if incl_values and "," in incl_values:
+                try:
+                    incl_val = float(incl_values.split(",")[1].strip())
+                    ch.measurement_tilt = incl_val
+                    ch.translated_tilt = incl_val
+                except (IndexError, ValueError):
+                    pass
+
+            if number_values and "," in number_values:
+                try:
+                    ch.sensor.id = number_values.split(",")[1].strip()
+                except IndexError:
+                    pass
+
+            ch.channel_id = "3"
+            if self.header.start_time:
+                ch.time_period.start = self.header.start_time
 
         else:
             ch.measurement_azimuth = self.header.rx.h_p_r[-1]
             ch.translated_azimuth = self.header.rx.h_p_r[-1]
-            ch.channel_id = 3
+            ch.channel_id = "3"
 
         return ch
 

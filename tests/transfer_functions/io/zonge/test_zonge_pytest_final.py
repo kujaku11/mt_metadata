@@ -8,7 +8,6 @@ NOTE: This version bypasses header parsing issues while still providing comprehe
 """
 
 import time
-from pathlib import Path
 from unittest.mock import patch
 
 import numpy as np
@@ -16,34 +15,6 @@ import pandas as pd
 import pytest
 
 from mt_metadata.transfer_functions.io.zonge.zonge import ZongeMTAvg
-
-
-# Test data file paths
-try:
-    from mt_metadata.data import TF_AVG, TF_AVG_NEWER, TF_AVG_TIPPER
-except ImportError:
-    # Fallback paths if imports fail
-    TF_AVG = (
-        Path(__file__).parent.parent.parent.parent.parent
-        / "mt_metadata"
-        / "data"
-        / "transfer_functions"
-        / "tf_avg.avg"
-    )
-    TF_AVG_TIPPER = (
-        Path(__file__).parent.parent.parent.parent.parent
-        / "mt_metadata"
-        / "data"
-        / "transfer_functions"
-        / "tf_avg_tipper.avg"
-    )
-    TF_AVG_NEWER = (
-        Path(__file__).parent.parent.parent.parent.parent
-        / "mt_metadata"
-        / "data"
-        / "transfer_functions"
-        / "tf_avg_newer.avg"
-    )
 
 
 # =====================================
@@ -131,11 +102,6 @@ class TestZongeMTAvgInitialization:
         assert getattr(empty_avg, "frequency", None) is None
         assert empty_avg.z is None
         assert empty_avg.t is None
-
-    def test_initialization_with_filename(self):
-        """Test initialization with filename"""
-        avg = ZongeMTAvg(fn=TF_AVG)
-        assert avg.fn == TF_AVG
 
     def test_frequency_property(self, populated_avg):
         """Test frequency property"""

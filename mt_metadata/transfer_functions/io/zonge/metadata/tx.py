@@ -1,16 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class TypeEnum(str, Enum):
+class TypeEnum(StrEnumerationBase):
     natural = "natural"
     controlled_source = "controlled source"
 
