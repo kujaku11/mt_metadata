@@ -233,12 +233,18 @@ class Header(MetadataBase):
         "unit.length",
     ]
 
-    def read_header(self, lines):
+    def read_header(self, lines: list[str]) -> list[str]:
         """
         Read the header of an AVG file and fill attributes accordingly
 
-        :param lines: list of lines to read
-        :type lines: list of strings
+        Parameters
+        -----------
+        lines: list[str]
+            list of strings representing the lines of the AVG file
+
+        Returns
+        --------
+        list[str]
 
         """
 
@@ -252,9 +258,11 @@ class Header(MetadataBase):
                 )
 
                 value = value.lower().strip()
-                if "," in value:
-                    value = [v.strip() for v in value.split(",")]
-                if "length" in key:
+                # Only split on commas for specific fields that should be lists (h_p_r)
+                # Most coordinate and position fields (xyz1, utm1, center) should remain as strings
+                if "," in value and key.endswith(".h_p_r"):
+                    value = [float(v.strip()) for v in value.split(",")]
+                if "length" in key and isinstance(value, str):
                     value = value.split()
                     if len(value) > 1:
                         value = value[0]
@@ -262,15 +270,18 @@ class Header(MetadataBase):
                         value = value[0].strip()
 
                 if "rx.cmp" in key:
-                    comp = value
+                    comp = str(value)  # Ensure comp is always a string
                     data_lines.append(line)
                     self._comp_dict[comp] = {"rx": Rx(), "ch": CH()}
                 if comp is not None:
                     comp_key, comp_attr = key.split(".")
 
-                    self._comp_dict[comp][comp_key].set_attr_from_name(comp_attr, value)
+                    self._comp_dict[comp][comp_key].update_attribute(comp_attr, value)
                 else:
-                    self.set_attr_from_name(key, value)
+                    # Map converted snake_case names back to actual attribute names
+                    # This fixes the issue where GPS -> g_p_s but attribute is 'gps'
+                    mapped_key = key.replace("g_p_s", "gps").replace("g_d_p", "gdp")
+                    self.update_attribute(mapped_key, value)
             else:
                 if len(line) > 2:
                     data_lines.append(line)
@@ -424,6 +435,16 @@ class Header(MetadataBase):
         except AttributeError:
             pass
         return None
+
+    @property
+    def g_p_s(self):
+        """Alias for GPS object to maintain backward compatibility."""
+        return self.gps
+
+    @property
+    def g_d_p(self):
+        """Alias for GDP object to maintain backward compatibility."""
+        return self.gdp
 
     # =====================================================
     # Custom setters using __setattr__ override

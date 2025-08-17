@@ -1,6 +1,6 @@
 # package file
 
-# from .zonge import ZongeMTAvg
+from .zonge import ZongeMTAvg
 
 
-# __all__ = ["ZongeMTAvg"]
+__all__ = ["ZongeMTAvg"]
