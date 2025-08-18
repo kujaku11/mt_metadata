@@ -10,12 +10,8 @@ TODO: Add tests for "normalized" attr, showing that true/false windows are scale
 """
 
 import unittest
-<<<<<<<< HEAD:tests/processing/aurora/test_window.py
 
-from mt_metadata.transfer_functions.processing.aurora import Window
-========
-from mt_metadata.transfer_functions.processing import Window
->>>>>>>> main:tests/transfer_functions/processing/test_window.py
+from mt_metadata.processing.window_basemodel import Window
 
 
 class TestWindow(unittest.TestCase):

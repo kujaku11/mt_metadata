@@ -17,9 +17,7 @@ import pytest
 
 from mt_metadata.timeseries import Run
 from mt_metadata.transfer_functions.tf import Station
-from mt_metadata.transfer_functions.tf.transfer_function_basemodel import (
-    TransferFunction,
-)
+from mt_metadata.transfer_functions.tf.transfer_function import TransferFunction
 
 
 class TestStationBasic:

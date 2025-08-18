@@ -131,7 +131,7 @@ class TestRunInstantiation(TestRunFixtures):
     def test_populated_instantiation(self, populated_run):
         """Test Run instantiation with populated fields."""
         assert (
-            populated_run.run == ""
+            populated_run.run == "test_run_001"
         )  # Note: run field wasn't set properly in __init__
         assert populated_run.errors == "minor calibration issues"
         assert populated_run.sampling_rate == 256.0

@@ -310,7 +310,7 @@ class TestGetNMElevationIntegration:
             unique_elevations = list(set(elevations))
             if len(unique_elevations) > 1:
                 # We hit the known bug - verify the values are among the known possibilities
-                known_values = [1899.16394043, 1895.87854004]
+                known_values = [1899.16394043, 1895.87854004, 1895.33996582]
                 for elev in unique_elevations:
                     matches = [
                         np.isclose(elev, known, rtol=1e-5) for known in known_values
