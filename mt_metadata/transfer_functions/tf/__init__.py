@@ -52,12 +52,10 @@ Created on Sun Apr 24 20:50:41 2020
 from .statistical_estimate_basemodel import StatisticalEstimate
 from .transfer_function_basemodel import TransferFunction
 from .station_basemodel import Station
-from .survey_basemodel import Survey
 
 
 __all__ = [
     "TransferFunction",
-    "Survey",
     "Station",
     "StatisticalEstimate",
 ]
