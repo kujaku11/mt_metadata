@@ -1,10 +1,11 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, Any
+from typing import Annotated
+
+from pydantic import Field
 
 from mt_metadata.base import MetadataBase
-from pydantic import Field
 
 
 # =====================================================
@@ -52,7 +53,7 @@ class Regression(MetadataBase):
     ]
 
     r0: Annotated[
-        Any,
+        float,
         Field(
             default=1.5,
             description="The number of standard deviations where the influence function changes from linear to quadratic",
@@ -66,7 +67,7 @@ class Regression(MetadataBase):
     ]
 
     u0: Annotated[
-        Any,
+        float,
         Field(
             default=2.8,
             description="Control for redescending Huber regression weights.",
@@ -80,7 +81,7 @@ class Regression(MetadataBase):
     ]
 
     tolerance: Annotated[
-        Any,
+        float,
         Field(
             default=0.005,
             description="Control for convergence of RME algorithm.  Lower means more iterations",
@@ -94,9 +95,9 @@ class Regression(MetadataBase):
     ]
 
     verbosity: Annotated[
-        Any,
+        int,
         Field(
-            default=0,
+            default=None,
             description="Control for logging messages during regression -- Higher means more messages",
             examples=["1"],
             alias=None,
