@@ -13,9 +13,7 @@ import pytest
 
 from mt_metadata.common import ArrayDTypeEnum
 from mt_metadata.common.units import get_unit_object
-from mt_metadata.transfer_functions.tf.statistical_estimate_basemodel import (
-    StatisticalEstimate,
-)
+from mt_metadata.transfer_functions.tf.statistical_estimate import StatisticalEstimate
 
 
 # =============================================================================
@@ -222,7 +220,7 @@ class TestStatisticalEstimateMethods:
         assert instance.name == "impedance"
         assert instance.input_channels == ["hx", "hy"]  # String converted to list
         assert (
-            instance.units == "millivolts per kilometer per nanotesla"
+            instance.units == "milliVolt per kilometer per nanoTesla"
         )  # Normalized unit
 
 
@@ -236,8 +234,8 @@ class TestStatisticalEstimateEnums:
             "real",
             "integer",
             "float",
-            ArrayDTypeEnum.COMPLEX,
-            ArrayDTypeEnum.REAL,
+            ArrayDTypeEnum.complex,
+            ArrayDTypeEnum.real,
         ],
     )
     def test_valid_data_types(self, dtype):

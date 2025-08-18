@@ -49,13 +49,11 @@ Created on Sun Apr 24 20:50:41 2020
 """
 # isort:skip_file
 # package file
-from .statistical_estimate_basemodel import StatisticalEstimate
-from .transfer_function_basemodel import TransferFunction
-from .station_basemodel import Station
+from .transfer_function import TransferFunction
+from .station import Station
 
 
 __all__ = [
     "TransferFunction",
     "Station",
-    "StatisticalEstimate",
 ]
