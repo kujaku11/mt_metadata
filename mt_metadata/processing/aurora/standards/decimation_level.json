@@ -55,7 +55,7 @@
 		"default": "hx, hy"
     },
      "save_fcs": {
-        "type": "bool",
+        "type": "boolean",
         "required": true,
         "style": "free form",
         "units": null,

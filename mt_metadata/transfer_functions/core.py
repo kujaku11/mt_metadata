@@ -11,6 +11,7 @@ from copy import deepcopy
 
 # ==============================================================================
 from pathlib import Path
+from typing import Any, Self
 
 import numpy as np
 import xarray as xr
@@ -19,7 +20,9 @@ from loguru import logger
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
 from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
+from mt_metadata.timeseries import Electric, Magnetic, Run
+from mt_metadata.timeseries import Station as TSStation
+from mt_metadata.timeseries import Survey
 from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTAvg
 from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
 from mt_metadata.transfer_functions.tf import Station
@@ -44,7 +47,7 @@ class TF:
 
     """
 
-    def __init__(self, fn=None, **kwargs):
+    def __init__(self, fn: str | Path | None = None, **kwargs):
         # set metadata for the station
         self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
@@ -105,14 +108,14 @@ class TF:
         self.fn = fn
 
     @property
-    def inverse_channel_nomenclature(self):
+    def inverse_channel_nomenclature(self) -> dict[str, str]:
         if not self._inverse_channel_nomenclature:
             self._inverse_channel_nomenclature = {
                 v: k for k, v in self.channel_nomenclature.items()
             }
         return self._inverse_channel_nomenclature
 
-    def __str__(self):
+    def __str__(self) -> str:
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
@@ -147,7 +150,7 @@ class TF:
             lines.append(f"\t\tMax:   {1./self.period.min():.5E} Hz")
         return "\n".join(lines)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         lines = []
         lines.append(f"survey='{self.survey}'")
         lines.append(f"station='{self.station}'")
@@ -157,14 +160,19 @@ class TF:
 
         return f"TF( {(', ').join(lines)} )"
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """
         Check if two TF objects are equal.
 
-        :param other: Another TF object to compare with
-        :type other: TF
-        :return: True if equal, False otherwise
-        :rtype: bool
+        Parameters
+        ----------
+        other: object
+            Another object to compare with
+
+        Returns
+        -------
+        bool
+            True if equal, False otherwise
         """
         is_equal = True
         if not isinstance(other, TF):
@@ -188,10 +196,10 @@ class TF:
 
         return is_equal
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: dict[int, Any]) -> Self:
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -202,13 +210,34 @@ class TF:
             setattr(result, k, deepcopy(v, memo))
         return result
 
-    def copy(self):
+    def copy(self) -> Self:
+        """
+        Create a deep copy of the current object.
+
+        Returns
+        -------
+        Self
+            A deep copy of the current object.
+        """
         return deepcopy(self)
 
-    def _add_channels(self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]):
+    def _add_channels(
+        self, run_metadata: Run, default: list[str] = ["ex", "ey", "hx", "hy", "hz"]
+    ) -> Run:
         """
-        add channels to a run
+        Add channels to a run.
 
+        Parameters
+        ----------
+        run_metadata: Run
+            The run metadata to add channels to.
+        default: list[str], optional
+            The default list of channels to add.
+
+        Returns
+        -------
+        Run
+            The updated run metadata.
         """
         for ch in [cc for cc in default if cc.startswith("e")]:
             run_metadata.add_channel(Electric(component=ch))
@@ -217,14 +246,11 @@ class TF:
 
         return run_metadata
 
-    def _initialize_metadata(self):
+    def _initialize_metadata(self) -> Survey:
         """
         Create a single `Survey` object to store all metadata
 
-        :param channel_type: DESCRIPTION
-        :type channel_type: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        This will include all stations and runs.
 
         """
 
@@ -236,9 +262,19 @@ class TF:
 
         return survey_metadata
 
-    def _validate_run_metadata(self, run_metadata):
+    def _validate_run_metadata(self, run_metadata: Run) -> Run:
         """
-        validate run metadata
+        Validate run metadata.
+
+        Parameters
+        ----------
+        run_metadata: Run
+            The run metadata to validate.
+
+        Returns
+        -------
+        Run
+            The validated run metadata.
 
         """
 
@@ -259,9 +295,20 @@ class TF:
                 raise TypeError(msg)
         return run_metadata
 
-    def _validate_station_metadata(self, station_metadata):
+    def _validate_station_metadata(self, station_metadata: Station) -> Station:
         """
-        validate station metadata
+        Validate station metadata.
+
+        Parameters
+        ----------
+        station_metadata: Station
+            The station metadata to validate.
+
+        Returns
+        -------
+        Station
+            The validated station metadata.
+
         """
 
         if not isinstance(station_metadata, Station):
@@ -281,18 +328,22 @@ class TF:
                 raise TypeError(msg)
         return station_metadata
 
-    def _validate_survey_metadata(self, survey_metadata):
+    def _validate_survey_metadata(self, survey_metadata: Survey) -> Survey:
         """
-        validate station metadata
+        Validate survey metadata.
+
+        Parameters
+        ----------
+        survey_metadata: Survey
+            The survey metadata to validate.
+
+        Returns
+        -------
+        Survey
+            The validated survey metadata.
         """
 
         if not isinstance(survey_metadata, Survey):
-            # if isinstance(survey_metadata, TSSurvey):
-            #     sm = Survey()
-            #     sm.from_dict(survey_metadata.to_dict())
-            #     sm.stations = survey_metadata.stations
-            #     survey_metadata = sm
-
             if isinstance(survey_metadata, dict):
                 if "survey" not in [cc.lower() for cc in survey_metadata.keys()]:
                     survey_metadata = {"Survey": survey_metadata}
@@ -311,18 +362,21 @@ class TF:
 
     ### Properties ------------------------------------------------------------
     @property
-    def survey_metadata(self):
+    def survey_metadata(self) -> Survey:
         """
-        survey metadata
+        Survey metadata.
         """
         return self._survey_metadata
 
     @survey_metadata.setter
-    def survey_metadata(self, survey_metadata):
+    def survey_metadata(self, survey_metadata: Survey) -> None:
         """
+        Set survey metadata.
 
-        :param survey_metadata: survey metadata object or dictionary
-        :type survey_metadata: :class:`mt_metadata.timeseries.Survey` or dict
+        Parameters
+        ----------
+        survey_metadata: Survey
+            The survey metadata object or dictionary to set.
 
         """
 
@@ -340,17 +394,22 @@ class TF:
             self._survey_metadata.update_time_period()
 
     @property
-    def station_metadata(self):
+    def station_metadata(self) -> Station:
         """
-        station metadata
+        Station metadata from survey_metadata.stations[0]
         """
 
         return self.survey_metadata.stations[0]
 
     @station_metadata.setter
-    def station_metadata(self, station_metadata):
+    def station_metadata(self, station_metadata: Station | None = None) -> None:
         """
-        set station metadata from a valid input
+        Set station metadata from a valid input.
+
+        Parameters
+        ----------
+        station_metadata: Station | None
+            The station metadata object or dictionary to set.
         """
 
         if station_metadata is not None:
@@ -374,17 +433,22 @@ class TF:
             self._survey_metadata.update_time_period()
 
     @property
-    def run_metadata(self):
+    def run_metadata(self) -> Run:
         """
-        station metadata
+        Run metadata from survey_metadata.stations[0].runs[0]
         """
 
         return self.survey_metadata.stations[0].runs[0]
 
     @run_metadata.setter
-    def run_metadata(self, run_metadata):
+    def run_metadata(self, run_metadata: Run | None = None) -> None:
         """
-        set run metadata from a valid input
+        Set run metadata from a valid input.
+
+        Parameters
+        ----------
+        run_metadata: Run | None
+            The run metadata object or dictionary to set.
         """
 
         # need to make sure the first index is the desired channel
@@ -494,13 +558,24 @@ class TF:
     # Properties
     # ==========================================================================
     @property
-    def channel_nomenclature(self):
+    def channel_nomenclature(self) -> dict:
+        """Channel nomenclature dictionary keyed by channel names.
+
+        For example:
+
+        {'ex': 'ex', 'ey': 'ey', 'hx': 'hx', 'hy': 'hy', 'hz': 'hz'}
+        """
         return self._channel_nomenclature
 
     @channel_nomenclature.setter
-    def channel_nomenclature(self, ch_dict):
+    def channel_nomenclature(self, ch_dict: dict) -> None:
         """
-        channel dictionary
+        Set the channel nomenclature dictionary.
+
+        Parameters
+        ----------
+        ch_dict : dict
+            A dictionary containing channel names and their corresponding labels.
         """
 
         if not isinstance(ch_dict, dict):
@@ -521,7 +596,7 @@ class TF:
         self.ex_ey_hz = [self.ex, self.ey, self.hz]
 
     @property
-    def _ch_input_dict(self):
+    def _ch_input_dict(self) -> dict:
         return {
             "impedance": self.hx_hy,
             "tipper": self.hx_hy,
@@ -537,7 +612,7 @@ class TF:
         }
 
     @property
-    def _ch_output_dict(self):
+    def _ch_output_dict(self) -> dict:
         return {
             "impedance": self.ex_ey,
             "tipper": [self.hz],
@@ -553,37 +628,43 @@ class TF:
         }
 
     @property
-    def index_zxx(self):
+    def index_zxx(self) -> dict:
         return {"input": self.hx, "output": self.ex}
 
     @property
-    def index_zxy(self):
+    def index_zxy(self) -> dict:
         return {"input": self.hy, "output": self.ex}
 
     @property
-    def index_zyx(self):
+    def index_zyx(self) -> dict:
         return {"input": self.hx, "output": self.ey}
 
     @property
-    def index_zyy(self):
+    def index_zyy(self) -> dict:
         return {"input": self.hy, "output": self.ey}
 
     @property
-    def index_tzx(self):
+    def index_tzx(self) -> dict:
         return {"input": self.hx, "output": self.hz}
 
     @property
-    def index_tzy(self):
+    def index_tzy(self) -> dict:
         return {"input": self.hy, "output": self.hz}
 
     @property
-    def fn(self):
+    def fn(self) -> Path:
         """reference to original data file"""
         return self._fn
 
     @fn.setter
-    def fn(self, value):
-        """set file name"""
+    def fn(self, value: Path | str | None) -> None:
+        """set file name
+
+        Parameters
+        ----------
+        value : Path | str | None
+            The file name to set.
+        """
         if value is None:
             self._fn = None
             return
@@ -591,12 +672,12 @@ class TF:
         self.save_dir = self._fn.parent
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         """Latitude"""
         return self.station_metadata.location.latitude
 
     @latitude.setter
-    def latitude(self, latitude):
+    def latitude(self, latitude: float) -> None:
         """
         set latitude making sure the input is in decimal degrees
 
@@ -605,12 +686,12 @@ class TF:
         self.station_metadata.location.latitude = latitude
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         """Longitude"""
         return self.station_metadata.location.longitude
 
     @longitude.setter
-    def longitude(self, longitude):
+    def longitude(self, longitude: float) -> None:
         """
         set longitude making sure the input is in decimal degrees
 
@@ -619,12 +700,12 @@ class TF:
         self.station_metadata.location.longitude = longitude
 
     @property
-    def elevation(self):
+    def elevation(self) -> float:
         """Elevation"""
         return self.station_metadata.location.elevation
 
     @elevation.setter
-    def elevation(self, elevation):
+    def elevation(self, elevation: float) -> None:
         """
         set elevation, should be input as meters
         """
@@ -632,13 +713,14 @@ class TF:
         self.station_metadata.location.elevation = elevation
 
     @property
-    def dataset(self):
+    def dataset(self) -> xr.Dataset:
         """
         This will return an xarray dataset with proper metadata
 
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Returns
+        -------
+        xr.Dataset
+            The xarray dataset with metadata.
         """
 
         for key, mkey in self._dataset_attr_dict.items():
@@ -648,13 +730,18 @@ class TF:
             self._transfer_function.attrs[key] = value
         return self._transfer_function
 
-    def _validate_input_ndarray(self, ndarray, atype="impedance"):
+    def _validate_input_ndarray(
+        self, ndarray: np.ndarray, atype: str = "impedance"
+    ) -> None:
         """
         Validate the input based on array type and component
-        :param atype: DESCRIPTION, defaults to "impedance"
-        :type atype: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+
+        Parameters
+        ----------
+        ndarray : np.ndarray
+            The input array to validate.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
 
         """
         shape_dict = {
@@ -688,16 +775,18 @@ class TF:
             logger.error(msg)
             raise TFError(msg)
 
-    def _validate_input_dataarray(self, da, atype="impedance"):
+    def _validate_input_dataarray(
+        self, da: xr.DataArray, atype: str = "impedance"
+    ) -> xr.DataArray:
         """
         Validate an input data array
 
-        :param da: DESCRIPTION
-        :type da: TYPE
-        :param atype: DESCRIPTION, defaults to "impedance"
-        :type atype: TYPE, optional
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        da : xr.DataArray
+            The input data array to validate.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
 
         """
 
@@ -745,15 +834,17 @@ class TF:
             logger.error(msg)
             raise TFError(msg)
 
-    def _set_data_array(self, value, atype):
+    def _set_data_array(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None, atype: str
+    ) -> None:
         """
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :param atype: DESCRIPTION
-        :type atype: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
 
         """
         if value is None:
@@ -796,13 +887,15 @@ class TF:
             logger.error(msg)
             raise TFError(msg)
 
-    def has_transfer_function(self):
+    def has_transfer_function(self) -> bool:
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        bool
+            True if the transfer function is not 0 and has components, False otherwise.
 
         """
         outputs = self._transfer_function.transfer_function.coords[
@@ -823,11 +916,13 @@ class TF:
         return False
 
     @property
-    def transfer_function(self):
+    def transfer_function(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The transfer function data array or None if not set.
 
         """
         if self.has_transfer_function():
@@ -842,24 +937,28 @@ class TF:
             return ds
 
     @transfer_function.setter
-    def transfer_function(self, value):
+    def transfer_function(self, value: xr.DataArray | np.ndarray | list | tuple | None):
         """
         Set the impedance from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
 
         """
         self._set_data_array(value, "tf")
 
     @property
-    def transfer_function_error(self):
+    def transfer_function_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The transfer function error data array or None if not set.
 
         """
         if self.has_transfer_function():
@@ -874,24 +973,29 @@ class TF:
             return ds
 
     @transfer_function_error.setter
-    def transfer_function_error(self, value):
+    def transfer_function_error(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
         Set the impedance from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
         """
         self._set_data_array(value, "tf_error")
 
     @property
-    def transfer_function_model_error(self):
+    def transfer_function_model_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The transfer function model error data array or None if not set.
 
         """
         if self.has_transfer_function():
@@ -906,25 +1010,30 @@ class TF:
             return ds
 
     @transfer_function_model_error.setter
-    def transfer_function_model_error(self, value):
+    def transfer_function_model_error(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
         Set the impedance from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
+        atype : str
+            The type of the array (e.g. "impedance", "tipper").
         """
         self._set_data_array(value, "tf_model_error")
 
-    def has_impedance(self):
+    def has_impedance(self) -> bool:
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        bool
+            True if the transfer function has impedance components, False otherwise.
 
         """
         outputs = self._transfer_function.transfer_function.coords[
@@ -945,12 +1054,13 @@ class TF:
         return False
 
     @property
-    def impedance(self):
+    def impedance(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Returns
+        -------
+        xr.DataArray | None
+            The impedance data array or None if not set.
         """
         if self.has_impedance():
             z = self.dataset.transfer_function.loc[
@@ -968,24 +1078,25 @@ class TF:
             return z
 
     @impedance.setter
-    def impedance(self, value):
+    def impedance(self, value: xr.DataArray | np.ndarray | list | tuple | None):
         """
         Set the impedance from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
         """
         self._set_data_array(value, "impedance")
 
     @property
-    def impedance_error(self):
+    def impedance_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The impedance error data array or None if not set.
 
         """
         if self.has_impedance():
@@ -1005,24 +1116,25 @@ class TF:
             return z_err
 
     @impedance_error.setter
-    def impedance_error(self, value):
+    def impedance_error(self, value: xr.DataArray | np.ndarray | list | tuple | None):
         """
         Set the impedance from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
         """
         self._set_data_array(value, "impedance_error")
 
     @property
-    def impedance_model_error(self):
+    def impedance_model_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The impedance model error data array or None if not set.
 
         """
         if self.has_impedance():
@@ -1042,26 +1154,28 @@ class TF:
             return z_err
 
     @impedance_model_error.setter
-    def impedance_model_error(self, value):
+    def impedance_model_error(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
         Set the impedance model errors from values
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
         """
         self._set_data_array(value, "impedance_model_error")
 
-    def has_tipper(self):
+    def has_tipper(self) -> bool:
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Returns
+        -------
+        bool
+            True if the transfer function has tipper components, False otherwise.
         """
         outputs = self._transfer_function.transfer_function.coords[
             "output"
@@ -1083,11 +1197,13 @@ class TF:
         return False
 
     @property
-    def tipper(self):
+    def tipper(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The tipper data array or None if not set.
 
         """
         if self.has_tipper():
@@ -1107,25 +1223,28 @@ class TF:
             return t
 
     @tipper.setter
-    def tipper(self, value):
+    def tipper(self, value: xr.DataArray | np.ndarray | list | tuple | None):
         """
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
         """
+
         self._set_data_array(value, "tipper")
 
     @property
-    def tipper_error(self):
+    def tipper_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The tipper error data array or None if not set.
 
         """
+
         if self.has_tipper():
             t = self.dataset.transfer_function_error.loc[
                 dict(
@@ -1142,23 +1261,25 @@ class TF:
             return t
 
     @tipper_error.setter
-    def tipper_error(self, value):
+    def tipper_error(self, value: xr.DataArray | np.ndarray | list | tuple | None):
         """
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
 
         """
         self._set_data_array(value, "tipper_error")
 
     @property
-    def tipper_model_error(self):
+    def tipper_model_error(self) -> xr.DataArray | None:
         """
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        xr.DataArray | None
+            The tipper model error data array or None if not set.
 
         """
         if self.has_tipper():
@@ -1177,24 +1298,28 @@ class TF:
             return t
 
     @tipper_model_error.setter
-    def tipper_model_error(self, value):
+    def tipper_model_error(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
 
         """
         self._set_data_array(value, "tipper_model_error")
 
-    def has_inverse_signal_power(self):
+    def has_inverse_signal_power(self) -> bool:
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        bool
+            True if the inverse signal power is set and not zero, False otherwise.
 
         """
 
@@ -1211,7 +1336,15 @@ class TF:
         return True
 
     @property
-    def inverse_signal_power(self):
+    def inverse_signal_power(self) -> xr.DataArray | None:
+        """
+        Get the inverse signal power data array.
+
+        Returns
+        -------
+        xr.DataArray | None
+            The inverse signal power data array or None if not set.
+        """
         if self.has_inverse_signal_power():
             ds = self.dataset.inverse_signal_power.loc[
                 dict(
@@ -1228,28 +1361,31 @@ class TF:
         return None
 
     @inverse_signal_power.setter
-    def inverse_signal_power(self, value):
+    def inverse_signal_power(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
         Set the inverse signal power
 
-
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
 
         """
         self._set_data_array(value, "isp")
         if self.has_residual_covariance():
             self._compute_error_from_covariance()
 
-    def has_residual_covariance(self):
+    def has_residual_covariance(self) -> bool:
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Returns
+        -------
+        bool
+            True if the residual covariance is set and not zero, False otherwise.
 
         """
 
@@ -1266,7 +1402,15 @@ class TF:
         return True
 
     @property
-    def residual_covariance(self):
+    def residual_covariance(self) -> xr.DataArray | None:
+        """
+        Get the residual covariance data array.
+
+        Returns
+        -------
+        xr.DataArray | None
+            The residual covariance data array or None if not set.
+        """
         if self.has_residual_covariance():
             ds = self.dataset.residual_covariance.loc[
                 dict(
@@ -1283,30 +1427,29 @@ class TF:
         return None
 
     @residual_covariance.setter
-    def residual_covariance(self, value):
+    def residual_covariance(
+        self, value: xr.DataArray | np.ndarray | list | tuple | None
+    ):
         """
         Set the residual covariance
 
-        :param value: DESCRIPTION
-        :type value: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        value : xr.DataArray | np.ndarray | list | tuple | None
+            The data array to set.
 
         """
         self._set_data_array(value, "res")
         if self.has_inverse_signal_power():
             self._compute_error_from_covariance()
 
-    def _compute_impedance_error_from_covariance(self):
+    def _compute_impedance_error_from_covariance(self) -> None:
         """
         Compute transfer function errors from covariance matrices
 
         This will become important when writing edi files.
 
         Translated from code written by Ben Murphy.
-
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
         sigma_e = self.residual_covariance.loc[
@@ -1340,16 +1483,13 @@ class TF:
             dict(input=self.hx_hy, output=self.ex_ey)
         ] = z_err
 
-    def _compute_tipper_error_from_covariance(self):
+    def _compute_tipper_error_from_covariance(self) -> None:
         """
         Compute transfer function errors from covariance matrices
 
         This will become important when writing edi files.
 
         Translated from code written by Ben Murphy.
-
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
         sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
@@ -1373,23 +1513,34 @@ class TF:
             dict(input=self.hx_hy, output=[self.hz])
         ] = t_err
 
-    def _compute_error_from_covariance(self):
+    def _compute_error_from_covariance(self) -> None:
         """
         convenience method to compute errors from covariance
-
-        :return: DESCRIPTION
-        :rtype: TYPE
 
         """
         self._compute_impedance_error_from_covariance()
         self._compute_tipper_error_from_covariance()
 
     @property
-    def period(self):
+    def period(self) -> np.ndarray | None:
+        """Periods of the transfer function"""
         return self.dataset.period.data
 
     @period.setter
-    def period(self, value):
+    def period(self, value: np.ndarray | None):
+        """
+        Set the periods of the transfer function.
+
+        Parameters
+        ----------
+        value : np.ndarray | None
+            The new periods for the transfer function.
+
+        Raises
+        ------
+        TFError
+            If the new periods are not compatible with the existing ones.
+        """
         if self.period is not None:
             if len(self.period) == 1 and (self.period == np.array([1])).all():
                 self._transfer_function = self._initialize_transfer_function(
@@ -1410,22 +1561,23 @@ class TF:
         return
 
     @property
-    def frequency(self):
+    def frequency(self) -> np.ndarray | None:
         if self.period is not None:
             return 1.0 / self.period
         return None
 
     @frequency.setter
-    def frequency(self, value):
-        self.period = 1.0 / value
+    def frequency(self, value: np.ndarray | None):
+        if value is not None:
+            self.period = 1.0 / value
 
     @property
-    def station(self):
+    def station(self) -> str:
         """station name"""
         return self.station_metadata.id
 
     @station.setter
-    def station(self, station_name):
+    def station(self, station_name: str):
         """
         set station name
         """
@@ -1436,14 +1588,14 @@ class TF:
             self.station_metadata.runs.append(r)
 
     @property
-    def survey(self):
+    def survey(self) -> str:
         """
         Survey ID
         """
         return self.survey_metadata.id
 
     @survey.setter
-    def survey(self, survey_id):
+    def survey(self, survey_id: str):
         """
         set survey id
         """
@@ -1452,35 +1604,33 @@ class TF:
         self.survey_metadata.id = validate_name(survey_id)
 
     @property
-    def tf_id(self):
+    def tf_id(self) -> str:
         """transfer function id"""
         return self.station_metadata.transfer_function.id
 
     @tf_id.setter
-    def tf_id(self, value):
+    def tf_id(self, value: str):
         """set transfer function id"""
         self.station_metadata.transfer_function.id = validate_name(value)
 
-    def to_ts_station_metadata(self):
+    def to_ts_station_metadata(self) -> TSStation:
         """
         need a convinience function to translate to ts station metadata
         for MTH5
 
         """
 
-        from mt_metadata.timeseries import Station as TSStation
-
-        ts_station_metadata = TSStation()
+        ts_station_metadata = TSStation()  # type: ignore
         for key, value in self.station_metadata.to_dict(single=True).items():
             if "transfer_function" in key:
                 continue
             try:
-                ts_station_metadata.set_attr_from_name(key, value)
+                ts_station_metadata.update_attribute(key, value)
             except AttributeError:
                 logger.debug(f"Attribute {key} could not be set.")
         return ts_station_metadata
 
-    def from_ts_station_metadata(self, ts_station_metadata):
+    def from_ts_station_metadata(self, ts_station_metadata: TSStation):
         """
         need a convinience function to translate to ts station metadata
         for MTH5
@@ -1489,7 +1639,7 @@ class TF:
 
         for key, value in ts_station_metadata.to_dict(single=True).items():
             try:
-                self.station_metadata.set_attr_from_name(key, value)
+                self.station_metadata.update_attribute(key, value)
             except AttributeError:
                 continue
 

@@ -38,6 +38,7 @@ TYPE_MAPPING = {
     "integer": "int",
     "number": "float",
     "boolean": "bool",
+    "bool": "bool",
     "array": "List[Any]",
     "object": "Dict[str, Any]",
 }

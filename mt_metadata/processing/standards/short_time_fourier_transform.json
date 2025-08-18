@@ -81,7 +81,7 @@
         "default": "first difference"
     },
     "recoloring": {
-        "type": "bool",
+        "type": "boolean",
         "required": true,
         "style": "free form",
         "units": null,
