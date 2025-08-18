@@ -4,8 +4,12 @@
 from enum import Enum
 from typing import Annotated
 
+import numpy as np
+import pandas as pd
+from pydantic import Field, field_validator
+
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from mt_metadata.common.mttime import MTime
 
 
 # =====================================================
@@ -94,9 +98,9 @@ class Window(MetadataBase):
     ]
 
     clock_zero: Annotated[
-        str | None,
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
         Field(
-            default=None,
+            default_factory=lambda: MTime(time_stamp=None),
             description="Start date and time of the first data window",
             examples=["2020-02-01T09:23:45.453670+00:00"],
             alias=None,
@@ -106,3 +110,24 @@ class Window(MetadataBase):
             },
         ),
     ]
+
+    normalized: Annotated[
+        bool,
+        Field(
+            default=True,
+            description="True if the window shall be normalized so the sum of the coefficients is 1",
+            examples=[False],
+            alias=["normalised"],
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @field_validator("clock_zero", mode="before")
+    @classmethod
+    def validate_clock_zero(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)
