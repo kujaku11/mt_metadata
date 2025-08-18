@@ -11,7 +11,7 @@ from copy import deepcopy
 
 # ==============================================================================
 from pathlib import Path
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 import numpy as np
 import xarray as xr
@@ -1643,7 +1643,13 @@ class TF:
             except AttributeError:
                 continue
 
-    def merge(self, other, period_min=None, period_max=None, inplace=False):
+    def merge(
+        self,
+        other: "TF",
+        period_min: float | None = None,
+        period_max: float | None = None,
+        inplace: bool = False,
+    ) -> "TF | None":
         """
         metadata will be assumed to be from self.
 
@@ -1665,51 +1671,68 @@ class TF:
         [{"tf": tf_01, "period_min": .01, "period_max": 100},
          {"tf": tf_02, "period_min": 100.1, "period_max": 1000}]
 
-        :param other: other transfer functions to merge with
-        :type other: TF, list of dicts, list of TF objects, dict
-        :param period_min: minimum period for the original TF
-        :type period_min: float
-        :param period_max: maximum period for the original TF
-        :type period_max: float
-        :return: merged TF object with metadata equal to the original
-         (if inplace=False)
-        :rtype: TF
+        Parameters
+        ----------
+        other: TF, list of dicts, list of TF objects, dict
+            other transfer functions to merge with
+        period_min: float
+            minimum period for the original TF
+        period_max: float
+            maximum period for the original TF
+        inplace: bool
+            whether to modify the original TF or return a new one
+
+        Returns
+        -------
+        TF | None
+            merged transfer function or None if inplace=True
+
 
         """
 
-        def get_slice_dict(period_min, period_max):
+        def get_slice_dict(period_min: float, period_max: float) -> dict[str, slice]:
             """
             Get an the correct dictionary for slicing an xarray.
 
-            :param period_min: minimum period
-            :type period_min: float
-            :param period_max: maximum period
-            :type period_max: float
-            :return: variable to slice an xarray
-            :rtype: dict
+            Parameters
+            ----------
+            period_min: float
+                minimum period
+            period_max: float
+                maximum period
+
+            Returns
+            -------
+            dict[str, slice]
+                variable to slice an xarray
 
             """
             return {"period": slice(period_min, period_max)}
 
-        def sort_by_period(tf):
+        def sort_by_period(tf: xr.Dataset) -> xr.Dataset:
             """
             period needs to be monotonically increasing for slice to work.
             """
             return tf.sortby("period")
 
-        def is_tf(item):
+        def is_tf(item: xr.Dataset) -> xr.Dataset:
             """
             If the item is a transfer function return it sorted by period
 
-            :param item: transfer function
-            :type item: :class:`mt_metadata.transfer_function.core.TF`
-            :return: sorted by period transfer function
-            :rtype: xarray.Dataset
+            Parameters
+            ----------
+            item: transfer function
+            type item: :class:`mt_metadata.transfer_function.core.TF`
+
+            Returns
+            -------
+            sorted by period transfer function
+            rtype: xarray.Dataset
 
             """
             return sort_by_period(item._transfer_function)
 
-        def validate_dict(item):
+        def validate_dict(item: dict[str, Any]) -> dict[str, Any]:
             """
             Make sure input dictionary has proper keys.
 
@@ -1717,11 +1740,20 @@ class TF:
             - **period_min** minumum period (s)
             - **period_max** maximum period (s)
 
-            :param item: dictionary to slice a transfer function
-            :type item: dict
-            :raises KeyError: If keys are not what they should be
-            :return: validated dictionary
-            :rtype: dict
+            Parameters
+            ----------
+            item: dict
+                dictionary to slice a transfer function
+
+            Returns
+            -------
+            validated dictionary
+            rtype: dict
+
+            Raises
+            -------
+            KeyError
+                If keys are not what they should be
 
             """
             accepted_keys = sorted(["tf", "period_min", "period_max"])
@@ -1732,15 +1764,25 @@ class TF:
                 raise KeyError(msg)
             return item
 
-        def is_dict(item):
+        def is_dict(item: dict) -> xr.Dataset:
             """
             If the item is a dictionary then be sure to sort the transfer
             function and then apply the slice.
 
-            :param item: dictionary with keys 'tf', 'period_min', 'period_max'
-            :type item: dict
-            :return: sliced transfer function
-            :rtype: xarray.Dataset
+            Parameters
+            ----------
+            item: dict
+                dictionary with keys 'tf', 'period_min', 'period_max'
+
+            Returns
+            -------
+            sliced transfer function
+            rtype: xarray.Dataset
+
+            Raises
+            ------
+            KeyError
+                If keys are not what they should be
 
             """
             item = validate_dict(item)
@@ -1750,13 +1792,25 @@ class TF:
             )
             return get_slice(item["tf"], period_slice)
 
-        def get_slice(tf, period_slice):
+        def get_slice(tf, period_slice: dict[str, slice]) -> xr.Dataset | None:
             """
-            get slice of a transfer function most of the time we can use .loc
+            Get slice of a transfer function most of the time we can use .loc
             but sometimes a key error occurs if the period index is not
             monotonic (which is should be now after using .sortby('period')),
             but leaving in place just in case.  If .loc does not work, then
             we can use .where(conditions) to slice the transfer function.
+
+            Parameters
+            ----------
+            tf: xarray.Dataset
+                The transfer function to slice.
+            period_slice: dict[str, slice]
+                The slice to apply to the period dimension.
+
+            Returns
+            -------
+            xarray.Dataset
+                The sliced transfer function.
             """
             try:
                 return tf._transfer_function.loc[period_slice]
@@ -1814,41 +1868,43 @@ class TF:
 
     def write(
         self,
-        fn=None,
-        save_dir=None,
-        fn_basename=None,
-        file_type="edi",
+        fn: str | Path | None = None,
+        save_dir: str | Path | None = None,
+        fn_basename: str | None = None,
+        file_type: Literal["edi", "xml", "zmm", "avg", "j"] = "edi",
         **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
 
-        .. todo:: j-files and avg files
+        .. todo:: j-files
 
-        :param fn: full path to file to save to
-        :type fn: :class:`pathlib.Path` or string
+        Parameters
+        ----------
+        fn: str | Path | None
+            Full path to file to save to.
+        save_dir: str | Path | None
+            Full path save directory.
+        fn_basename: str | None
+            Name of file with or without extension.
+        file_type: Literal["edi", "xml", "zmm", "avg", "j"]
+            Type of file to write.
 
-        :param save_dir: full path save directory
-        :type save_dir: string
+        Optional Keyword Arguments
+        ---------------------------
+        longitude_format:  str
+            whether to write longitude as longitude or LONG.
+            options are 'longitude' or 'LONG', default 'longitude'
 
-        :param fn_basename: name of file with or without extension
-        :type fn_basename: string
+        longitude_format:  string
+        latlon_format:  format of latitude and longitude in output edi,
+                       degrees minutes seconds ('dms') or decimal
+                       degrees ('dd')
 
-        :param file_type: [ 'edi' | 'xml' | "zmm" ]
-        :type file_type: string
-
-        keyword arguments include
-
-        :param longitude_format:  whether to write longitude as longitude or LONG.
-                                  options are 'longitude' or 'LONG', default 'longitude'
-        :type longitude_format:  string
-        :param latlon_format:  format of latitude and longitude in output edi,
-                               degrees minutes seconds ('dms') or decimal
-                               degrees ('dd')
-        :type latlon_format:  string
-
-        :returns: full path to file
-        :rtype: string
+        Returns
+        -------
+        str
+            Full path to the written file.
 
         :Example: ::
 
@@ -1889,7 +1945,13 @@ class TF:
     def read_tf_file(self, **kwargs):
         logger.error("'read_tf_file' has been deprecated use 'read()'")
 
-    def read(self, fn=None, file_type=None, get_elevation=False, **kwargs):
+    def read(
+        self,
+        fn: str | Path | None = None,
+        file_type: str | None = None,
+        get_elevation: bool = False,
+        **kwargs,
+    ):
         """
 
         Read an TF response file.
@@ -1897,17 +1959,15 @@ class TF:
         .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
            files are supported
 
-
-
-        :param fn: full path to input file
-        :type fn: string
-
-        :param file_type: ['edi' | 'j' | 'xml' | 'avg' | 'zmm' | 'zrr' | 'zss' | ... ]
-                          if None, automatically detects file type by
-                          the extension.
-        :type file_type: string
-        :param get_elevation: Get elevation from US National Map DEM
-        :type get_elevation: bool
+        Parameters
+        ----------
+        fn: str | Path | None
+            Full path to input file.
+        file_type: str | None
+            Type of file to read. If None, automatically detects file type by
+            the extension. Options are [edi | j | xml | avg | zmm | zrr | zss | ...]
+        get_elevation: bool
+            Whether to get elevation from US National Map DEM
 
         :Example: ::
 
@@ -1932,7 +1992,7 @@ class TF:
         self.survey_metadata.update_bounding_box()
         self.survey_metadata.update_time_period()
 
-    def to_edi(self):
+    def to_edi(self) -> EDI:
         """
 
         Convert the TF object to a
@@ -1940,8 +2000,9 @@ class TF:
         attributes of an EDI object can be manipulated previous to writing
         to a file.
 
-        :return: EDI object
-        :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
+        Returns
+        -------
+            EDI object
 
         >>> from mt_metadata.transfer_functions import TF
         >>> from mt_metadata import TF_XML
@@ -1993,20 +2054,28 @@ class TF:
 
         return edi_obj
 
-    def from_edi(self, edi_obj, get_elevation=False, **kwargs):
+    def from_edi(
+        self, edi_obj: str | Path | EDI, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
         Read in an EDI file or a
-        :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` object
 
-        :param edi_obj: path to edi file or EDI object
-        :type edi_obj: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.edi.EDI`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Key word arguments for an EDI object
-        :type kwargs: dictionary
-        :raises TypeError: If input is incorrect
+        Parameters
+        ----------
+
+        edi_obj: str | Path | EDI
+           Path to EDI file or EDI object
+           If a path is provided, the file will be read from disk.
+           If an EDI object is provided, it will be used directly.
+        get_elevation: bool
+           Try to get elevation from US National Map,
+           defaults to False
+
+        Raises
+        ------
+        TypeError
+            If input is incorrect
 
         """
 
@@ -2045,11 +2114,13 @@ class TF:
         for tf_key, edi_key in k_dict.items():
             setattr(self, tf_key, getattr(edi_obj, edi_key))
 
-    def to_emtfxml(self):
+    def to_emtfxml(self) -> EMTFXML:
         """
         Convert TF to a :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
         object.
 
+        Returns
+        -------
         :return: EMTFXML object
         :rtype: :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
 
@@ -2115,17 +2186,21 @@ class TF:
 
         return emtf
 
-    def from_emtfxml(self, emtfxml_obj, get_elevation=False, **kwargs):
+    def from_emtfxml(
+        self, emtfxml_obj: str | Path | EMTFXML, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
 
-        :param emtfxml_object: path to emtf xml file or EMTFXML object
-        :type emtfxml_object: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for EMTFXML object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        emtfxml_obj: str | Path | EMTFXML
+            The input object to convert from.
+        get_elevation: bool
+            Try to get elevation from US National Map, defaults to True.
+
+        Returns
+        -------
+        None
 
         """
 
@@ -2157,7 +2232,7 @@ class TF:
             dict(input=["hz"], output=["hz"])
         ] = emtfxml_obj.data.t_residcov
 
-    def to_jfile(self):
+    def to_jfile(self) -> None:
         """
 
         Translate TF object ot JFile object.
@@ -2169,19 +2244,23 @@ class TF:
 
         """
 
-        raise IOError("to_jfile not implemented yet.")
+        raise NotImplementedError("to_jfile not implemented yet.")
 
-    def from_jfile(self, j_obj, get_elevation=False, **kwargs):
+    def from_jfile(
+        self, j_obj: str | Path | JFile, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
 
-        :param jfile_obj: path ot .j file or JFile object
-        :type jfile_obj: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.jfile.JFile`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for JFile object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        jfile_obj: str | Path | JFile
+            The input object to convert from.
+        get_elevation: bool
+            Try to get elevation from US National Map, defaults to True.
+
+        Returns
+        -------
+        None
 
         """
         if isinstance(j_obj, (str, Path)):
@@ -2205,16 +2284,17 @@ class TF:
         for tf_key, j_key in k_dict.items():
             setattr(self, tf_key, getattr(j_obj, j_key))
 
-    def make_zmm_run(self, zmm_obj, number_dict):
+    def make_zmm_run(self, zmm_obj: ZMM, number_dict: dict) -> Run:
         """
         Helper function to provide a run for a zmm object to aid writing z-file
 
         Parameters
         ----------
-        :param zmm_obj: a ZMM that will be written to file, that needs a run associated
-        :type zmm_obj:  :class: `mt_metadata.transfer_functions.io.zfiles.zmm.ZMM`
-        :param number_dict: mapping between hexy keys and integers, needed for emtf
-        z-files, e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
+        zmm_obj: ZMM
+            A ZMM that will be written to file, that needs a run associated.
+        number_dict: dict
+            Mapping between hexy keys and integers, needed for emtf z-files,
+            e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
         :type number_dict: dictionary
 
         :return: run
@@ -2234,7 +2314,7 @@ class TF:
                 run.add_channel(rc)
         return run
 
-    def to_zmm(self):
+    def to_zmm(self) -> ZMM:
         """
 
         Translate TF object to ZMM object.
@@ -2302,17 +2382,19 @@ class TF:
 
         return zmm_obj
 
-    def from_zmm(self, zmm_obj, get_elevation=False, **kwargs):
+    def from_zmm(
+        self, zmm_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
 
-        :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for ZMM object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        zmm_obj: str | Path | ZMM
+            Path to .zmm file or ZMM object
+        get_elevation: bool
+            Try to get elevation from US National Map, defaults to True
+        kwargs: dict
+            Keyword arguments for ZMM object
 
         """
 
@@ -2352,7 +2434,7 @@ class TF:
         self._compute_error_from_covariance()
         self._rotation_angle = -1 * zmm_obj.declination
 
-    def to_zrr(self):
+    def to_zrr(self) -> ZMM:
         """
 
         Translate TF object to ZMM object.
@@ -2371,23 +2453,24 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zrr(self, zrr_obj, get_elevation=False, **kwargs):
+    def from_zrr(
+        self, zrr_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
-
-        :param zmm_obj: path ot .zmm file or ZMM object
-        :type zmm_obj: str, :calss:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for ZMM object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        zmm_obj: str | Path | ZMM
+            Path to .zmm file or ZMM object
+        get_elevation: bool
+            Try to get elevation from US National Map, defaults to True
+        kwargs: dict
+            Keyword arguments for ZMM object
 
         """
 
         self.from_zmm(zrr_obj, get_elevation=get_elevation, **kwargs)
 
-    def to_zss(self):
+    def to_zss(self) -> ZMM:
         """
 
         Translate TF object to ZMM object.
@@ -2406,23 +2489,22 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zss(self, zss_obj, get_elevation=False, **kwargs):
+    def from_zss(
+        self, zss_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
-
-        :param zmm_obj: path to .zmm file or ZMM object
-        :type zmm_obj: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for ZMM object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        zss_obj: str | Path | ZMM
+            Path to .zss file or ZMM object
+        get_elevation: bool
+            Try to get elevation from US National Map, defaults to True
 
         """
 
         self.from_zmm(zss_obj, get_elevation=get_elevation, **kwargs)
 
-    def to_avg(self):
+    def to_avg(self) -> ZongeMTAvg:
         """
 
         Translate TF object to ZongeMTAvg object.
@@ -2435,19 +2517,27 @@ class TF:
 
         """
 
-        raise AttributeError("to_avg does not exist yet.")
+        avg_obj = ZongeMTAvg()
+        avg_obj.frequency = self.frequency
+        avg_obj.z = self.impedance
+        avg_obj.z_err = self.impedance_error
+        avg_obj.t = self.tipper
+        avg_obj.t_err = self.tipper_error
 
-    def from_avg(self, avg_obj, get_elevation=False, **kwargs):
+        logger.warning("Metadata is not properly set for a AVG file yet.")
+        return avg_obj
+
+    def from_avg(
+        self, avg_obj: str | Path | ZongeMTAvg, get_elevation: bool = False, **kwargs
+    ) -> None:
         """
 
-        :param avg_obj: path to .avg file or ZongeMTAvg object
-        :type avg_obj: str, :class:`pathlib.Path`,
-         :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
-        :param get_elevation: Try to get elevation from US National Map,
-         defaults to True
-        :type get_elevation: bool
-        :param kwargs: Keyword arguments for ZongeMTAvg object
-        :type kwargs: dictionary
+        Parameters
+        ----------
+        avg_obj: str | Path | ZongeMTAvg
+            Path to .avg file or ZongeMTAvg object
+        get_elevation: bool
+            Try to get elevation from US National Map,   defaults to True
 
         """
         if isinstance(avg_obj, (str, Path)):
