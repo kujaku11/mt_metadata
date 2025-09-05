@@ -111,7 +111,7 @@ class MonotonicWeightKernel(MetadataBase):
         ub = float(self.transition_upper_bound)
         return np.isfinite(lb) and np.isfinite(ub)
 
-    def _normalize(self, values) -> NDArray:
+    def _normalize(self, values: NDArray) -> NDArray:
         """
         Normalize input values to the [0, 1] interval based on finite transition bounds.
 
