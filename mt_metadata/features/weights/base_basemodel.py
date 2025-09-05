@@ -6,10 +6,11 @@ from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from pydantic import Field
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class WeightTypeEnum(str, Enum):
+class WeightTypeEnum(StrEnumerationBase):
     monotonic = "monotonic"
     learned = "learned"
     spatial = "spatial"
@@ -60,3 +61,19 @@ class Base(MetadataBase):
             },
         ),
     ]
+
+    def evaluate(self, values):
+        """
+        Evaluate the kernel on the input feature values.
+
+        Parameters
+        ----------
+        values : np.ndarray or float
+            The feature values to apply the weight kernel to.
+
+        Returns
+        -------
+        weights : np.ndarray or float
+            The resulting weight(s).
+        """
+        raise NotImplementedError("BaseWeightKernel cannot be evaluated directly.")
