@@ -6,14 +6,24 @@ from typing import Annotated
 
 from mt_metadata.base import MetadataBase
 from pydantic import Field
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class HalfWindowStyleEnum(str, Enum):
+class HalfWindowStyleEnum(StrEnumerationBase):
     hamming = "hamming"
     hann = "hann"
     rectangle = "rectangle"
     blackman = "blackman"
+
+
+class ActivationStyleEnum(StrEnumerationBase):
+    linear = "linear"
+    sigmoid = "sigmoid"
+    tanh = "tanh"
+    relu = "relu"
+    hard_tanh = "hard_tanh"
+    hard_sigmoid = "hard_sigmoid"
 
 
 class TaperMonotonicWeightKernel(MetadataBase):
