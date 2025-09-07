@@ -8,6 +8,7 @@ from pydantic import Field
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.processing.aurora.band_basemodel import Band
+from mt_metadata.processing.aurora.estimator_basemodel import Estimator
 from mt_metadata.processing.time_series_decimation_basemodel import (
     TimeSeriesDecimation as Decimation,
 )
@@ -123,6 +124,20 @@ class DecimationLevel(MetadataBase):
             default_factory=Decimation,
             description="Decimation settings",
             examples=["Decimation()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    estimator: Annotated[
+        Estimator,
+        Field(
+            default_factory=Estimator,
+            description="Estimator settings",
+            examples=["Estimator()"],
             alias=None,
             json_schema_extra={
                 "units": None,

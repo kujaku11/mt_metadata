@@ -1,13 +1,14 @@
 """
 Module containing FrequencyBands class representing a collection of Frequency Band objects.
 """
-from typing import Literal, Optional, Generator, Union, List
-import pandas as pd
+
+from typing import Generator, List, Optional, Union
+
 import numpy as np
-import warnings
+import pandas as pd
 from loguru import logger
 
-from . import Band
+from .band_basemodel import Band
 
 
 class FrequencyBands:
@@ -35,7 +36,7 @@ class FrequencyBands:
         if band_edges is not None:
             self.band_edges = band_edges
         else:
-            self._band_edges = pd.DataFrame(columns=['lower_bound', 'upper_bound'])
+            self._band_edges = pd.DataFrame(columns=["lower_bound", "upper_bound"])
 
     def __str__(self) -> str:
         """Returns a Description of frequency bands"""
@@ -64,20 +65,15 @@ class FrequencyBands:
             if value.ndim != 2 or value.shape[1] != 2:
                 raise ValueError("band_edges array must be 2D with shape (n_bands, 2)")
             self._band_edges = pd.DataFrame(
-                value,
-                columns=['lower_bound', 'upper_bound']
+                value, columns=["lower_bound", "upper_bound"]
             )
         elif isinstance(value, pd.DataFrame):
-            required_cols = ['lower_bound', 'upper_bound']
+            required_cols = ["lower_bound", "upper_bound"]
             if not all(col in value.columns for col in required_cols):
-                raise ValueError(
-                    f"DataFrame must contain columns {required_cols}"
-                )
+                raise ValueError(f"DataFrame must contain columns {required_cols}")
             self._band_edges = value[required_cols].copy()
         else:
-            raise TypeError(
-                "band_edges must be numpy array or DataFrame"
-            )
+            raise TypeError("band_edges must be numpy array or DataFrame")
 
         # Reset index to ensure 0-based integer indexing
         self._band_edges.reset_index(drop=True, inplace=True)
@@ -111,7 +107,7 @@ class FrequencyBands:
         elif by == "center_frequency":
             centers = self.band_centers()
             self._band_edges = self._band_edges.iloc[
-                np.argsort(centers)[::(-1 if not ascending else 1)]
+                np.argsort(centers)[:: (-1 if not ascending else 1)]
             ].reset_index(drop=True)
         else:
             raise ValueError(
@@ -123,7 +119,7 @@ class FrequencyBands:
         self,
         direction: str = "increasing_frequency",
         sortby: Optional[str] = None,
-        rtype: str = "list"
+        rtype: str = "list",
     ) -> Union[List[Band], Generator[Band, None, None]]:
         """
         Generate Band objects in specified order.
@@ -153,7 +149,7 @@ class FrequencyBands:
             temp_bands = FrequencyBands(self._band_edges.copy())
             temp_bands.sort(
                 by=sortby or "center_frequency",
-                ascending=(direction == "increasing_frequency")
+                ascending=(direction == "increasing_frequency"),
             )
             bands_to_iterate = temp_bands
         else:
@@ -187,10 +183,7 @@ class FrequencyBands:
             Frequency band object
         """
         row = self._band_edges.iloc[i_band]
-        return Band(
-            frequency_min=row['lower_bound'],
-            frequency_max=row['upper_bound']
-        )
+        return Band(frequency_min=row["lower_bound"], frequency_max=row["upper_bound"])
 
     def band_centers(self, frequency_or_period: str = "frequency") -> np.ndarray:
         """
@@ -206,10 +199,9 @@ class FrequencyBands:
         np.ndarray
             Center frequencies/periods for each band
         """
-        band_centers = np.array([
-            self.band(i).center_frequency
-            for i in range(self.number_of_bands)
-        ])
+        band_centers = np.array(
+            [self.band(i).center_frequency for i in range(self.number_of_bands)]
+        )
 
         if frequency_or_period == "period":
             band_centers = 1.0 / band_centers

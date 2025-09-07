@@ -13,7 +13,7 @@ class Regression(MetadataBase):
     minimum_cycles: Annotated[
         int,
         Field(
-            default=None,
+            default=1,
             description="Minimum number of cycles in the regression",
             examples=["10"],
             alias=None,
@@ -27,7 +27,7 @@ class Regression(MetadataBase):
     max_iterations: Annotated[
         int,
         Field(
-            default=None,
+            default=10,
             description="Max iterations of the regression",
             examples=["10"],
             alias=None,
@@ -41,7 +41,7 @@ class Regression(MetadataBase):
     max_redescending_iterations: Annotated[
         int,
         Field(
-            default=None,
+            default=2,
             description="Max redescending iterations of the regression",
             examples=["2"],
             alias=None,
@@ -97,7 +97,7 @@ class Regression(MetadataBase):
     verbosity: Annotated[
         int,
         Field(
-            default=None,
+            default=1,
             description="Control for logging messages during regression -- Higher means more messages",
             examples=["1"],
             alias=None,
