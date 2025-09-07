@@ -1,22 +1,23 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
+from pydantic import Field, model_validator
+
 from mt_metadata.base import MetadataBase
-from pydantic import Field
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class MethodEnum(str, Enum):
+class MethodEnum(StrEnumerationBase):
     default = "default"
     other = "other"
 
 
 class TimeSeriesDecimation(MetadataBase):
     level: Annotated[
-        int,
+        int | None,
         Field(
             default=None,
             description="Decimation level, must be a non-negative integer starting at 0",
@@ -72,7 +73,7 @@ class TimeSeriesDecimation(MetadataBase):
     ]
 
     anti_alias_filter: Annotated[
-        str,
+        str | None,
         Field(
             default="default",
             description="Type of anti alias filter for decimation.",
@@ -84,3 +85,25 @@ class TimeSeriesDecimation(MetadataBase):
             },
         ),
     ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_level(cls, values):
+        """Check that level is a non-negative integer and set anti_alias_filter for level 0."""
+        # Handle both dict and model instances
+        if isinstance(values, dict):
+            level = values.get("level")
+        else:
+            level = getattr(values, "level", None)
+
+        # Only perform validation if level is an integer or None
+        if level is not None and isinstance(level, int) and level < 0:
+            raise ValueError("Decimation level must be a non-negative integer.")
+        elif level == 0:
+            # Set anti_alias_filter to None for level 0
+            if isinstance(values, dict):
+                values["anti_alias_filter"] = None
+            else:
+                values.anti_alias_filter = None
+
+        return values
