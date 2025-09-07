@@ -1,34 +1,34 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 from pydantic import Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class MethodEnum(str, Enum):
+class MethodEnum(StrEnumerationBase):
     fft = "fft"
     wavelet = "wavelet"
     other = "other"
 
 
-class PerWindowDetrendTypeEnum(str, Enum):
+class PerWindowDetrendTypeEnum(StrEnumerationBase):
     linear = "linear"
     constant = "constant"
     null = ""
 
 
-class PreFftDetrendTypeEnum(str, Enum):
+class PreFftDetrendTypeEnum(StrEnumerationBase):
     linear = "linear"
     other = "other"
     null = ""
 
 
-class PrewhiteningTypeEnum(str, Enum):
+class PrewhiteningTypeEnum(StrEnumerationBase):
     first_difference = "first difference"
     other = "other"
 
@@ -131,3 +131,12 @@ class ShortTimeFourierTransform(MetadataBase):
             },
         ),
     ]
+
+
+# what is the point of this main function?
+def main():
+    stft = ShortTimeFourierTransform()
+
+
+if __name__ == "__main__":
+    main()
