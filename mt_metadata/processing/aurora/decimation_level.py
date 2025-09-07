@@ -18,25 +18,16 @@ import pandas as pd
 
 from mt_metadata.base import Base, get_schema
 from mt_metadata.base.helpers import write_lines
-<<<<<<< HEAD:mt_metadata/processing/aurora/decimation_level.py
-=======
-from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-            Decimation as FCDecimation,
-        )
-from typing import List, Union
->>>>>>> main:mt_metadata/transfer_functions/processing/aurora/decimation_level.py
+from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
+from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 
-from .band import Band
-from ..time_series_decimation import TimeSeriesDecimation as Decimation
 from ..short_time_fourier_transform import ShortTimeFourierTransform as STFT
+from ..time_series_decimation import TimeSeriesDecimation as Decimation
+from .band import Band
 from .estimator import Estimator
 from .frequency_bands import FrequencyBands
 from .regression import Regression
 from .standards import SCHEMA_FN_PATHS
-from mt_metadata.features.weights.channel_weight_spec import ChannelWeightSpec
-from mt_metadata.helper_functions import cast_to_class_if_dict
-from mt_metadata.helper_functions import validate_setter_input
 
 
 # =============================================================================
@@ -54,7 +45,6 @@ class DecimationLevel(Base):
     __doc__ = write_lines(attr_dict)
 
     def __init__(self, **kwargs):
-
         self.decimation = Decimation()
         self.regression = Regression()
         self.estimator = Estimator()
@@ -68,7 +58,7 @@ class DecimationLevel(Base):
     @property
     def bands(self) -> List[Band]:
         """
-            Return bands.
+        Return bands.
 
         """
         return self._bands
@@ -89,7 +79,7 @@ class DecimationLevel(Base):
     @property
     def channel_weight_specs(self) -> List[ChannelWeightSpec]:
         """
-            Return the channel weight spec objects.
+        Return the channel weight spec objects.
 
         """
         return self._channel_weight_specs
@@ -114,9 +104,7 @@ class DecimationLevel(Base):
         """
 
         if not isinstance(band, (Band, dict)):
-            raise TypeError(
-                f"List entry must be a Band object not {type(band)}"
-            )
+            raise TypeError(f"List entry must be a Band object not {type(band)}")
         if isinstance(band, dict):
             obj = Band()
             obj.from_dict(band)
@@ -159,17 +147,17 @@ class DecimationLevel(Base):
     @property
     def frequency_sample_interval(self) -> float:
         """
-            Returns the delta_f in frequency domain df = 1 / (N * dt)
-            Here dt is the sample interval after decimation
+        Returns the delta_f in frequency domain df = 1 / (N * dt)
+        Here dt is the sample interval after decimation
         """
         return self.decimation.sample_rate / self.stft.window.num_samples
 
     @property
     def band_edges(self) -> np.ndarray:
         """
-            Returns the band edges as a numpy array
-            :return band_edges: 2D numpy array, one row per frequency band and two columns
-            :rtype band_edges: np.ndarray
+        Returns the band edges as a numpy array
+        :return band_edges: 2D numpy array, one row per frequency band and two columns
+        :rtype band_edges: np.ndarray
         """
         bands_df = self.bands_dataframe
         band_edges = np.vstack(
@@ -197,10 +185,10 @@ class DecimationLevel(Base):
     @property
     def fft_frequencies(self) -> np.ndarray:
         """
-            Gets the harmonics of the STFT.
+        Gets the harmonics of the STFT.
 
-            :return freqs: The frequencies at which the stft will be available.
-            :rtype freqs: np.ndarray
+        :return freqs: The frequencies at which the stft will be available.
+        :rtype freqs: np.ndarray
         """
         freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
@@ -208,10 +196,10 @@ class DecimationLevel(Base):
     @property
     def harmonic_indices(self) -> List[int]:
         """
-            Loops over all bands and returns a list of the harminic indices.
-            TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
-            :return: list of fc indices (integers)
-            :rtype: List[int]
+        Loops over all bands and returns a list of the harminic indices.
+        TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
+        :return: list of fc indices (integers)
+        :rtype: List[int]
         """
         return_list = []
         for band in self.bands:
@@ -225,9 +213,7 @@ class DecimationLevel(Base):
         return self.input_channels + self.output_channels
 
     def is_consistent_with_archived_fc_parameters(
-        self,
-        fc_decimation: FCDecimation,
-        remote: bool
+        self, fc_decimation: FCDecimation, remote: bool
     ):
         """
             Usage: For an already existing spectrogram stored in an MTH5 archive, this compares the metadata
@@ -278,7 +264,10 @@ class DecimationLevel(Base):
 
         # anti_alias_filter: Check that the data were filtered the same way
         try:
-            assert fc_decimation.time_series_decimation.anti_alias_filter == self.decimation.anti_alias_filter
+            assert (
+                fc_decimation.time_series_decimation.anti_alias_filter
+                == self.decimation.anti_alias_filter
+            )
         except AssertionError:
             cond1 = self.time_series_decimation.anti_alias_filter == "default"
             cond2 = fc_decimation.time_series_decimation.anti_alias_filter is None
@@ -308,7 +297,9 @@ class DecimationLevel(Base):
 
         # transform method (fft, wavelet, etc.)
         try:
-            assert fc_decimation.short_time_fourier_transform.method == self.stft.method  # FFT, Wavelet, etc.
+            assert (
+                fc_decimation.short_time_fourier_transform.method == self.stft.method
+            )  # FFT, Wavelet, etc.
         except AssertionError:
             msg = (
                 "Transform methods do not agree: "
@@ -431,7 +422,9 @@ class DecimationLevel(Base):
         """
 
         fc_dec_obj = FCDecimation()
-        fc_dec_obj.time_series_decimation.anti_alias_filter = self.decimation.anti_alias_filter
+        fc_dec_obj.time_series_decimation.anti_alias_filter = (
+            self.decimation.anti_alias_filter
+        )
         if remote:
             fc_dec_obj.channels_estimated = self.reference_channels
         else:
@@ -494,7 +487,6 @@ def _df_from_bands(band_list: List[Union[Band, dict, None]]) -> pd.DataFrame:
     out_df.sort_values(by="lower_bound_index", inplace=True)
     out_df.reset_index(inplace=True, drop=True)
     return out_df
-<<<<<<< HEAD:mt_metadata/processing/aurora/decimation_level.py
 
 
 def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
@@ -736,5 +728,3 @@ class DecimationLevel(Base):
         fc_dec_obj.window = self.window
 
         return fc_dec_obj
-=======
->>>>>>> main:mt_metadata/transfer_functions/processing/aurora/decimation_level.py
