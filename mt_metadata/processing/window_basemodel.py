@@ -6,17 +6,16 @@ Updated 2025-01-02: kkappler, adding methods to generate taper values.  In futur
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
 import numpy as np
 import pandas as pd
 import scipy.signal as ssig
-from pydantic import Field, field_validator, computed_field
+from pydantic import AliasChoices, computed_field, Field, field_validator, PrivateAttr
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.common.mttime import MTime
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.common.mttime import MTime
 
 
 # =====================================================
@@ -48,6 +47,7 @@ class ClockZeroTypeEnum(StrEnumerationBase):
 
 
 class Window(MetadataBase):
+    _taper: np.ndarray | None = PrivateAttr(None)
     num_samples: Annotated[
         int,
         Field(
@@ -124,7 +124,7 @@ class Window(MetadataBase):
             default=True,
             description="True if the window shall be normalized so the sum of the coefficients is 1",
             examples=[False],
-            alias="normalised",
+            validation_alias=AliasChoices("normalised", "normalized"),
             json_schema_extra={
                 "units": None,
                 "required": True,
