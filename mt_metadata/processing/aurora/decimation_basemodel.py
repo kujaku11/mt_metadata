@@ -1,15 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class MethodEnum(str, Enum):
+class MethodEnum(StrEnumerationBase):
     default = "default"
     other = "other"
 

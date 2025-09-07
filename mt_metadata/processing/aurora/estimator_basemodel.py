@@ -1,15 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class EngineEnum(str, Enum):
+class EngineEnum(StrEnumerationBase):
     RME_RR = "RME_RR"
     RME = "RME"
     other = "other"
