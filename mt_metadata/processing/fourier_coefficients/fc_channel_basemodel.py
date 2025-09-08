@@ -6,11 +6,12 @@ from typing import Annotated
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import TimePeriod
 from mt_metadata.common.units import get_unit_object
 
 
 # =====================================================
-class FcChannel(MetadataBase):
+class FCChannel(MetadataBase):
     component: Annotated[
         str,
         Field(
@@ -82,11 +83,25 @@ class FcChannel(MetadataBase):
     ]
 
     units: Annotated[
-        float,
+        str,
         Field(
             default="counts",
             description="Units of the channel",
             examples=["millivolts"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=TimePeriod,  # type: ignore
+            description="Time period of the channel",
+            examples=[TimePeriod(start="2020-01-01", end="2020-01-02")],
             alias=None,
             json_schema_extra={
                 "units": None,
