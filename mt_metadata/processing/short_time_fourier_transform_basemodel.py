@@ -7,6 +7,7 @@ from pydantic import Field
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.processing.window_basemodel import Window
 
 
 # =====================================================
@@ -132,11 +133,25 @@ class ShortTimeFourierTransform(MetadataBase):
         ),
     ]
 
+    window: Annotated[
+        Window,
+        Field(
+            default_factory=Window,
+            description="Window settings",
+            examples=["Window()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
 
 # what is the point of this main function?
-def main():
-    stft = ShortTimeFourierTransform()
+# def main():
+#     stft = ShortTimeFourierTransform()
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

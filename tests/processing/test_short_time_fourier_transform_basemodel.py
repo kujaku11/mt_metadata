@@ -21,6 +21,7 @@ from mt_metadata.processing.short_time_fourier_transform_basemodel import (
     PrewhiteningTypeEnum,
     ShortTimeFourierTransform,
 )
+from mt_metadata.processing.window_basemodel import ClockZeroTypeEnum, TypeEnum, Window
 
 
 # =============================================================================
@@ -37,6 +38,13 @@ def default_stft():
 @pytest.fixture
 def custom_stft():
     """Fixture for custom STFT instance with specific parameters."""
+    custom_window = Window(
+        num_samples=256,
+        overlap=32,
+        type=TypeEnum.hamming,
+        clock_zero_type=ClockZeroTypeEnum.user_specified,
+        normalized=False,
+    )
     return ShortTimeFourierTransform(
         harmonic_indices=10,
         method=MethodEnum.wavelet,
@@ -45,6 +53,7 @@ def custom_stft():
         pre_fft_detrend_type=PreFftDetrendTypeEnum.other,
         prewhitening_type=PrewhiteningTypeEnum.other,
         recoloring=False,
+        window=custom_window,
     )
 
 
@@ -61,6 +70,7 @@ def stft_params():
             "pre_fft_detrend_type": PreFftDetrendTypeEnum.linear,
             "prewhitening_type": PrewhiteningTypeEnum.first_difference,
             "recoloring": True,
+            "window": Window(num_samples=512, overlap=64, type=TypeEnum.hann),
         },
         "alternative": {
             "harmonic_indices": 15,
@@ -70,6 +80,7 @@ def stft_params():
             "pre_fft_detrend_type": PreFftDetrendTypeEnum.null,
             "prewhitening_type": PrewhiteningTypeEnum.first_difference,
             "recoloring": False,
+            "window": Window(num_samples=128, overlap=16, type=TypeEnum.blackman),
         },
     }
 
@@ -91,6 +102,7 @@ class TestSTFTInitialization:
         assert default_stft.pre_fft_detrend_type == PreFftDetrendTypeEnum.linear
         assert default_stft.prewhitening_type == PrewhiteningTypeEnum.first_difference
         assert default_stft.recoloring is True
+        assert isinstance(default_stft.window, Window)
 
     def test_custom_initialization(self, custom_stft):
         """Test custom STFT initialization with all parameters."""
@@ -101,6 +113,11 @@ class TestSTFTInitialization:
         assert custom_stft.pre_fft_detrend_type == PreFftDetrendTypeEnum.other
         assert custom_stft.prewhitening_type == PrewhiteningTypeEnum.other
         assert custom_stft.recoloring is False
+        assert isinstance(custom_stft.window, Window)
+        assert custom_stft.window.num_samples == 256
+        assert custom_stft.window.overlap == 32
+        assert custom_stft.window.type == TypeEnum.hamming
+        assert custom_stft.window.normalized is False
 
     @pytest.mark.parametrize("param_set", ["minimal", "complete", "alternative"])
     def test_parametrized_initialization(self, stft_params, param_set):
@@ -137,6 +154,7 @@ class TestSTFTProperties:
         assert hasattr(custom_stft, "pre_fft_detrend_type")
         assert hasattr(custom_stft, "prewhitening_type")
         assert hasattr(custom_stft, "recoloring")
+        assert hasattr(custom_stft, "window")
 
     def test_property_modification(self, default_stft):
         """Test property modification."""
@@ -151,6 +169,12 @@ class TestSTFTProperties:
         # Test boolean modification
         default_stft.recoloring = False
         assert default_stft.recoloring is False
+
+        # Test window modification
+        new_window = Window(num_samples=1024, overlap=128, type=TypeEnum.hamming)
+        default_stft.window = new_window
+        assert default_stft.window == new_window
+        assert default_stft.window.num_samples == 1024
 
     def test_enum_property_validation(self, default_stft):
         """Test that enum properties validate correctly."""
@@ -213,6 +237,81 @@ class TestSTFTEnumerations:
         assert stft.prewhitening_type == enum_value
 
 
+class TestSTFTWindowIntegration:
+    """Test STFT window field integration and functionality."""
+
+    def test_default_window_creation(self):
+        """Test that default window is created properly."""
+        stft = ShortTimeFourierTransform()
+        assert isinstance(stft.window, Window)
+        # Test default window properties (check the defaults)
+        assert stft.window.type == TypeEnum.boxcar
+        assert stft.window.clock_zero_type == ClockZeroTypeEnum.ignore
+        assert stft.window.normalized is True
+
+    def test_custom_window_assignment(self):
+        """Test assigning custom window to STFT."""
+        custom_window = Window(
+            num_samples=1024, overlap=256, type=TypeEnum.hamming, normalized=False
+        )
+        stft = ShortTimeFourierTransform(window=custom_window)
+        assert stft.window == custom_window
+        assert stft.window.num_samples == 1024
+        assert stft.window.overlap == 256
+        assert stft.window.type == TypeEnum.hamming
+        assert stft.window.normalized is False
+
+    def test_window_type_variations(self):
+        """Test different window types."""
+        window_types = [
+            TypeEnum.hann,
+            TypeEnum.hamming,
+            TypeEnum.blackman,
+            TypeEnum.kaiser,
+        ]
+
+        for window_type in window_types:
+            window = Window(num_samples=512, overlap=64, type=window_type)
+            stft = ShortTimeFourierTransform(window=window)
+            assert stft.window.type == window_type
+
+    def test_window_modification_after_creation(self):
+        """Test modifying window after STFT creation."""
+        stft = ShortTimeFourierTransform()
+        original_window_type = stft.window.type
+
+        # Modify window properties
+        new_window = Window(
+            num_samples=2048, overlap=512, type=TypeEnum.hann, normalized=False
+        )
+        stft.window = new_window
+
+        assert stft.window.type != original_window_type
+        assert stft.window.num_samples == 2048
+        assert stft.window.overlap == 512
+
+    def test_window_serialization(self):
+        """Test window field in STFT serialization."""
+        custom_window = Window(num_samples=256, overlap=32, type=TypeEnum.hamming)
+        stft = ShortTimeFourierTransform(
+            harmonic_indices=10,
+            method=MethodEnum.fft,
+            min_num_stft_windows=4,
+            window=custom_window,
+        )
+
+        stft_dict = stft.model_dump()
+        assert "window" in stft_dict
+        assert isinstance(stft_dict["window"], dict)
+        assert stft_dict["window"]["num_samples"] == 256
+        assert stft_dict["window"]["type"] == "hamming"
+
+        # Test reconstruction from dict
+        reconstructed_stft = ShortTimeFourierTransform.model_validate(stft_dict)
+        assert reconstructed_stft.window.num_samples == 256
+        assert reconstructed_stft.window.type == TypeEnum.hamming
+
+
 class TestSTFTValidation:
     """Test STFT field validation and error handling."""
 
@@ -267,6 +366,20 @@ class TestSTFTValidation:
         """Test that invalid enum values raise ValidationError."""
         with pytest.raises(ValidationError):
             ShortTimeFourierTransform(**{field_name: invalid_value})
+
+    def test_window_field_validation(self):
+        """Test window field validation."""
+        # Valid Window instance should work
+        valid_window = Window(num_samples=512, overlap=64)
+        stft = ShortTimeFourierTransform(window=valid_window)
+        assert stft.window == valid_window
+
+        # Invalid window type should raise ValidationError
+        with pytest.raises(ValidationError):
+            ShortTimeFourierTransform(window="not_a_window")
+
+        with pytest.raises(ValidationError):
+            ShortTimeFourierTransform(window=123)
 
 
 class TestSTFTComparison:
@@ -388,6 +501,7 @@ class TestSTFTEdgeCases:
             "pre_fft_detrend_type",
             "prewhitening_type",
             "recoloring",
+            "window",
         }
 
         assert set(fields.keys()) == expected_fields
