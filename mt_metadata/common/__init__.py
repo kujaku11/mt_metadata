@@ -40,6 +40,7 @@ from .enumerations import (
     SymmetryEnum,
 )
 from .comment import Comment
+from .list_dict import ListDict
 from .range import MinMaxRange, StartEndRange
 from .declination import Declination
 from .geographic_location import GeographicLocation
@@ -71,6 +72,7 @@ __all__ = [
     "SignConventionEnum",
     "LicenseEnum",
     "Comment",
+    "ListDict",
     "MinMaxRange",
     "StartEndRange",
     "Declination",
