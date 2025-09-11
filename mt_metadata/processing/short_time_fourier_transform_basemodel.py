@@ -136,7 +136,7 @@ class ShortTimeFourierTransform(MetadataBase):
     window: Annotated[
         Window,
         Field(
-            default_factory=Window,
+            default_factory=Window,  # type: ignore
             description="Window settings",
             examples=["Window()"],
             alias=None,
