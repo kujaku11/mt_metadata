@@ -1,50 +1,109 @@
-# -*- coding: utf-8 -*-
-"""
-This module contains the metadata TimeSeriesDecimation class.
-
-Development Notes:
-    This is part of a refactoring that seeks to separate the FCDecimation and aurora DecimationLevel
-    from the time series decimation.
-
-    The previous version of this class was in processing/aurora/decimation.py and had attrs
-    ["level", "factor", "method", "sample_rate", "anti_alias_filter"],
-
-    TODO: Consider adding a parent_sample_rate attribute to this class
-
-Created on Thu Dec 26 12:00:00 2024
-
-@author: kkappler
-
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("time_series_decimation", SCHEMA_FN_PATHS)
-# =============================================================================
+from pydantic import Field, model_validator
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
-class TimeSeriesDecimation(Base):
-    """
-        The decimation class contains information about how to decimaate a time series as well
-         as attributes to describe it's place in the mth5 hierarchy.
-         Key pieces of information:
-        1. The decimation level, an integer that tells the sequential order in a decimation scheme.
-        2. The decimation factor.  This is normally an integer, but the decimation.json does allow for floating point values.
+# =====================================================
+class MethodEnum(StrEnumerationBase):
+    default = "default"
+    other = "other"
 
-        Development Notes:
-        -
-    """
-    __doc__ = write_lines(attr_dict)
 
-    def __init__(self, **kwargs):
+class TimeSeriesDecimation(MetadataBase):
+    level: Annotated[
+        int | None,
+        Field(
+            default=None,
+            description="Decimation level, must be a non-negative integer starting at 0",
+            examples=["0"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    factor: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Decimation factor between parent sample rate and decimated time series sample rate.",
+            examples=["4.0"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    # TODO: add this logic to __init__ and a test
-    # if self.level == 0:
-    #     self.anti_alias_filter = None
+    method: Annotated[
+        MethodEnum,
+        Field(
+            default="default",
+            description="Type of decimation",
+            examples=["default"],
+            alias=None,
+            json_schema_extra={
+                "units": "",
+                "required": True,
+            },
+        ),
+    ]
+
+    sample_rate: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Sample rate of the decimation level data (after decimation).",
+            examples=["256"],
+            alias=None,
+            json_schema_extra={
+                "units": "samples per second",
+                "required": True,
+            },
+        ),
+    ]
+
+    anti_alias_filter: Annotated[
+        str | None,
+        Field(
+            default="default",
+            description="Type of anti alias filter for decimation.",
+            examples=["default"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_level(cls, values):
+        """Check that level is a non-negative integer and set anti_alias_filter for level 0."""
+        # Handle both dict and model instances
+        if isinstance(values, dict):
+            level = values.get("level")
+        else:
+            level = getattr(values, "level", None)
+
+        # Only perform validation if level is an integer or None
+        if level is not None and isinstance(level, int) and level < 0:
+            raise ValueError("Decimation level must be a non-negative integer.")
+        elif level == 0:
+            # Set anti_alias_filter to None for level 0
+            if isinstance(values, dict):
+                values["anti_alias_filter"] = None
+            else:
+                values.anti_alias_filter = None
+
+        return values

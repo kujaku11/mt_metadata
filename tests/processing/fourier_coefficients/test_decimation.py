@@ -16,16 +16,13 @@ import numpy as np
 import pytest
 
 from mt_metadata.common import ListDict, TimePeriod
-from mt_metadata.processing.fourier_coefficients.decimation_basemodel import (
+from mt_metadata.processing import ShortTimeFourierTransform, TimeSeriesDecimation
+from mt_metadata.processing.fourier_coefficients.decimation import (
     Decimation,
     fc_decimations_creator,
     get_degenerate_fc_decimation,
 )
-from mt_metadata.processing.fourier_coefficients.fc_channel_basemodel import FCChannel
-from mt_metadata.processing.short_time_fourier_transform_basemodel import (
-    ShortTimeFourierTransform,
-)
-from mt_metadata.processing.time_series_decimation_basemodel import TimeSeriesDecimation
+from mt_metadata.processing.fourier_coefficients.fc_channel import FCChannel
 
 
 # Helper functions for creating valid test objects

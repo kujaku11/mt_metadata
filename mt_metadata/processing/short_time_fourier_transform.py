@@ -1,64 +1,157 @@
-"""
-This module contains the metadata ShortTimeFourierTransform (STFT) metadata class.
-
-Development Notes:
-    This is part of a refactoring of the FCDecimation and aurora DecimationLevel
-
-    Both of those classes are essentially used to represent Spectrograms,
-    and in the Aurora DecimationLevel case, there are also information about processing included.
-
-    This class pulls out the metadata that are associated with the application of the STFT.
-
-    "harmonic_indices"
-    "method"
-    "min_num_stft_windows"
-    "per_window_detrend_type"
-    "pre_fft_detrend_type"
-    "prewhitening_type"
-    "recoloring"
-
-
-Created on Sat Dec 28 18:39:00 2024
-
-@author: kkappler
-
-"""
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from mt_metadata.transfer_functions.processing.window import Window
-from mt_metadata.transfer_functions.processing.standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
-# =============================================================================
-attr_dict = get_schema("short_time_fourier_transform", SCHEMA_FN_PATHS)
-attr_dict.add_dict(Window()._attr_dict, "window")
+from pydantic import Field
 
-# =============================================================================
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.processing.window_basemodel import Window
 
 
-class ShortTimeFourierTransform(Base):
-    """
-        The ShortTimeFourierTransform (STFT) class contains information about how to apply the STFT
-        to the time series.
-
-    """
-    __doc__ = write_lines(attr_dict)
-
-    def __init__(self, **kwargs):
-        """
-            Constructor.
-            :param kwargs: TODO: add description
-        """
-        self.window = Window()
-        super().__init__(attr_dict=attr_dict, **kwargs)
+# =====================================================
+class MethodEnum(StrEnumerationBase):
+    fft = "fft"
+    wavelet = "wavelet"
+    other = "other"
 
 
-def main():
-    stft = ShortTimeFourierTransform()
+class PerWindowDetrendTypeEnum(StrEnumerationBase):
+    linear = "linear"
+    constant = "constant"
+    null = ""
 
 
-if __name__ == "__main__":
-    main()
+class PreFftDetrendTypeEnum(StrEnumerationBase):
+    linear = "linear"
+    other = "other"
+    null = ""
+
+
+class PrewhiteningTypeEnum(StrEnumerationBase):
+    first_difference = "first difference"
+    other = "other"
+
+
+class ShortTimeFourierTransform(MetadataBase):
+    harmonic_indices: Annotated[
+        int,
+        Field(
+            default=None,
+            description="List of harmonics indices kept, if all use -1",
+            examples=[[0, 4, 8]],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    method: Annotated[
+        MethodEnum,
+        Field(
+            default="fft",
+            description="Fourier transform method",
+            examples=["fft"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    min_num_stft_windows: Annotated[
+        int,
+        Field(
+            default=None,
+            description="How many FFT windows must be available for the time series to valid for STFT.",
+            examples=[4],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    per_window_detrend_type: Annotated[
+        PerWindowDetrendTypeEnum,
+        Field(
+            default="",
+            description="Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
+            examples=["linear"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    pre_fft_detrend_type: Annotated[
+        PreFftDetrendTypeEnum,
+        Field(
+            default="linear",
+            description="Pre FFT detrend method to be applied",
+            examples=["linear"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    prewhitening_type: Annotated[
+        PrewhiteningTypeEnum,
+        Field(
+            default="first difference",
+            description="Prewhitening method to be applied",
+            examples=["first difference"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    recoloring: Annotated[
+        bool,
+        Field(
+            default=True,
+            description="Whether the data are recolored [True] or not [False].",
+            examples=[True],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    window: Annotated[
+        Window,
+        Field(
+            default_factory=Window,  # type: ignore
+            description="Window settings",
+            examples=["Window()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+
+# what is the point of this main function?
+# def main():
+#     stft = ShortTimeFourierTransform()
+
+
+# if __name__ == "__main__":
+#     main()

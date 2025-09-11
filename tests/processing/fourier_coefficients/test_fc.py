@@ -17,13 +17,12 @@ Test organization:
 - Optimized for efficiency with minimal redundant object creation
 """
 
-
 import numpy as np
 import pytest
 
 from mt_metadata.common import ListDict, TimePeriod
-from mt_metadata.processing.fourier_coefficients.decimation_basemodel import Decimation
-from mt_metadata.processing.fourier_coefficients.fc_basemodel import FC, MethodEnum
+from mt_metadata.processing.fourier_coefficients.decimation import Decimation
+from mt_metadata.processing.fourier_coefficients.fc import FC, MethodEnum
 
 
 # =====================================================

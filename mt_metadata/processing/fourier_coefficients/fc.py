@@ -1,166 +1,208 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 25 15:20:59 2022
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
 from collections import OrderedDict
+from typing import Annotated
 
 import numpy as np
+from loguru import logger
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import TimePeriod
-from mt_metadata.transfer_functions.processing.fourier_coefficients import Decimation
-
-from .standards import SCHEMA_FN_PATHS
-
-
-# =============================================================================
-attr_dict = get_schema("fc", SCHEMA_FN_PATHS)
-attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
+from mt_metadata import NULL_VALUES
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import ListDict, TimePeriod
+from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.processing.fourier_coefficients.decimation import Decimation
 
 
-# =============================================================================
-class FC(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class MethodEnum(StrEnumerationBase):
+    fft = "fft"
+    wavelet = "wavelet"
+    other = "other"
 
-    def __init__(self, **kwargs):
-        self.time_period = TimePeriod()
-        self.levels = ListDict()
-        self._decimation_levels = []
-        self._channels_estimated = []
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
+class FC(MetadataBase):
+    decimation_levels: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="List of decimation levels",
+            examples=["[1, 2, 3]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __len__(self):
-        return len(self.levels)
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="ID given to the FC group",
+            examples=["aurora_01"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __add__(self, other):
-        if isinstance(other, FC):
-            self.levels.extend(other.levels)
-            self.update_time_period()
+    channels_estimated: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of channels estimated",
+            examples=[["ex", "hy"]],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-            return self
+    starting_sample_rate: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="Starting sample rate of the time series used to estimate FCs.",
+            examples=[60],
+            alias=None,
+            json_schema_extra={
+                "units": "samples per second",
+                "required": True,
+            },
+        ),
+    ]
+
+    method: Annotated[
+        MethodEnum,
+        Field(
+            default="fft",
+            description="Fourier transform method",
+            examples=["fft"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=TimePeriod,  # type: ignore
+            description="Time period of the FCs",
+            examples=[TimePeriod(start="2020-01-01", end="2020-01-02")],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    levels: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,  # type: ignore
+            description="ListDict of decimation levels and their parameters",
+            examples=["ListDict containing Decimation objects"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    @field_validator("channels_estimated", "decimation_levels", mode="before")
+    @classmethod
+    def validate_channels_estimated(
+        cls, value: list[str] | np.ndarray | str, info: ValidationInfo
+    ) -> list[str]:
+        if isinstance(value, np.ndarray):
+            value = value.tolist()
+
+        if value in NULL_VALUES:
+            return []
+        elif isinstance(value, (list, tuple)):
+            return value
+
+        elif isinstance(value, (str)):
+            value = value.split(",")
+            return value
+
         else:
-            msg = f"Can only merge ch objects, not {type(other)}"
-            self.logger.error(msg)
+            raise TypeError(
+                "'channels_recorded' must be set with a list not " f"{type(value)}."
+            )
+
+    @field_validator("levels", mode="before")
+    @classmethod
+    def validate_levels(cls, value, info: ValidationInfo):
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
+            msg = (
+                "input dl_list must be an iterable, should be a list or dict "
+                f"not {type(value)}"
+            )
+            logger.error(msg)
             raise TypeError(msg)
 
-    def update(self, other, match=[]):
-        """
-        Update attribute values from another like element, skipping None
+        fails = []
+        levels = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
 
-        :param other: DESCRIPTION
-        :type other: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-        if not isinstance(other, type(self)):
-            self.logger.warning("Cannot update %s with %s", type(self), type(other))
-        for k in match:
-            if self.get_attr_from_name(k) != other.get_attr_from_name(k):
-                msg = "%s is not equal %s != %s"
-                self.logger.error(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
-                )
-                raise ValueError(
-                    msg,
-                    k,
-                    self.get_attr_from_name(k),
-                    other.get_attr_from_name(k),
-                )
-        for k, v in other.to_dict(single=True).items():
-            if hasattr(v, "size"):
-                if v.size > 0:
-                    self.set_attr_from_name(k, v)
-            else:
-                if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-                    self.set_attr_from_name(k, v)
-
-        ## Need this because decimation_levels are set when setting decimation_levels_recorded
-        ## and it initiates an empty decimation_level, but we need to fill it with
-        ## the appropriate metadata.
-        for dl in other.levels:
-            self.add_decimation_level(dl)
-
-    @property
-    def decimation_levels(self):
-        """list of decimation levels"""
-        dl_list = []
-        for dl in self.levels:
-            dl_list.append(dl.decimation.level)
-        dl_list = sorted(set([cc for cc in dl_list if cc is not None]))
-        if self._decimation_levels == []:
-            return dl_list
-
-        elif dl_list == []:
-            return self._decimation_levels
-
-        elif len(self._decimation_levels) != dl_list:
-            return dl_list
-
-    @decimation_levels.setter
-    def decimation_levels(self, value):
-        if isinstance(value, np.ndarray):
-            value = value.tolist()
-
-        if value in [None, "None", "none", "NONE", "null"]:
-            return
         elif isinstance(value, (list, tuple)):
-            self._decimation_levels = value
+            value_list = value
 
-        elif isinstance(value, (str)):
-            value = value.split(",")
-            self._decimation_levels = value
+        for ii, decimation_level in enumerate(value_list):
+            try:
+                if isinstance(decimation_level, Decimation):
+                    dl = decimation_level
+                else:
+                    dl = Decimation()  # type: ignore
+                    if hasattr(decimation_level, "to_dict"):
+                        decimation_level = decimation_level.to_dict()
+                    dl.from_dict(decimation_level)
+                levels.append(dl)
+            except Exception as error:
+                msg = "Could not create decimation_level from dictionary: %s"
+                fails.append(msg % error)
+                logger.error(msg, error)
 
-        else:
-            raise TypeError(
-                "'channels_recorded' must be set with a list not " f"{type(value)}."
-            )
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
 
-    @property
-    def channels_estimated(self):
-        """list of decimation levels"""
-        dl_list = []
-        for dl in self.levels:
-            dl_list += dl.channels_estimated
-        dl_list = sorted(set([cc for cc in dl_list if cc is not None]))
-        if self._channels_estimated == []:
-            return dl_list
+        return levels
 
-        elif dl_list == []:
-            return self._channels_estimated
+    @model_validator(mode="after")
+    def synchronize_levels(self) -> "FC":
+        """
+        Ensure that decimation_levels and levels are synchronized.
+        - Creates Decimation objects for any levels in decimation_levels that don't exist in levels
+        - Adds level names to decimation_levels for any existing levels not in the list
+        """
+        # First, ensure all levels in decimation_levels have corresponding Decimation objects
+        for level_name in self.decimation_levels:
+            level_name_str = str(level_name)
+            if level_name_str not in self.levels.keys():
+                # Create a new Decimation object with the level name as id
+                new_decimation = Decimation(id=level_name_str)  # type: ignore
+                self.levels.append(new_decimation)
 
-        elif len(self._channels_estimated) != dl_list:
-            return dl_list
+        # Second, ensure all existing levels in the ListDict are in decimation_levels
+        for level_name in self.levels.keys():
+            if level_name not in self.decimation_levels:
+                self.decimation_levels.append(level_name)
 
-    @channels_estimated.setter
-    def channels_estimated(self, value):
-        if isinstance(value, np.ndarray):
-            value = value.tolist()
-
-        if value in [None, "None", "none", "NONE", "null"]:
-            return
-        elif isinstance(value, (list, tuple)):
-            self._channels_estimated = value
-
-        elif isinstance(value, (str)):
-            value = value.split(",")
-            self._channels_estimated = value
-
-        else:
-            raise TypeError(
-                "'channels_recorded' must be set with a list not " f"{type(value)}."
-            )
+        return self
 
     def has_decimation_level(self, level):
         """
@@ -203,23 +245,24 @@ class FC(Base):
         """
         Add a decimation_level to the list, check if one exists if it does overwrite it
 
-        :param decimation_level_obj: decimation_level object to add
-        :type decimation_level_obj: :class:`mt_metadata.transfer_functions.processing.fourier_coefficients.decimation_level`
+        :param fc_decimation: decimation level object to add
+        :type fc_decimation: :class:`mt_metadata.processing.fourier_coefficients.decimation_basemodel.Decimation`
 
         """
         if not isinstance(fc_decimation, (Decimation)):
             msg = f"Input must be metadata.decimation_level not {type(fc_decimation)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
-        if self.has_decimation_level(fc_decimation.decimation.level):
-            self.levels[fc_decimation.decimation.level].update(fc_decimation)
-            self.logger.debug(
-                f"ch {fc_decimation.decimation.level} already exists, updating metadata"
-            )
-
+        level_id = fc_decimation.id
+        if self.has_decimation_level(level_id):
+            self.levels[level_id].update(fc_decimation)
+            logger.debug(f"level {level_id} already exists, updating metadata")
         else:
             self.levels.append(fc_decimation)
+            # Also add to decimation_levels list if not present
+            if level_id not in self.decimation_levels:
+                self.decimation_levels.append(level_id)
 
         self.update_time_period()
 
@@ -234,54 +277,17 @@ class FC(Base):
 
         if self.has_decimation_level(decimation_level_id):
             self.levels.remove(decimation_level_id)
+            # Also remove from decimation_levels list
+            if decimation_level_id in self.decimation_levels:
+                self.decimation_levels.remove(decimation_level_id)
         else:
-            self.logger.warning(f"Could not find {decimation_level_id} to remove.")
+            logger.warning(f"Could not find {decimation_level_id} to remove.")
 
         self.update_time_period()
 
     @property
-    def levels(self):
-        """List of decimation_levels in the ch"""
-        return self._levels
-
-    @levels.setter
-    def levels(self, value):
-        """set the decimation_level list"""
-
-        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
-            msg = (
-                "input dl_list must be an iterable, should be a list or dict "
-                f"not {type(value)}"
-            )
-            self.logger.error(msg)
-            raise TypeError(msg)
-
-        fails = []
-        self._levels = ListDict()
-        if isinstance(value, (dict, ListDict, OrderedDict)):
-            value_list = value.values()
-
-        elif isinstance(value, (list, tuple)):
-            value_list = value
-
-        for ii, decimation_level in enumerate(value_list):
-            try:
-                dl = Decimation()
-                if hasattr(decimation_level, "to_dict"):
-                    decimation_level = decimation_level.to_dict()
-                dl.from_dict(decimation_level)
-                self._levels.append(dl)
-            except Exception as error:
-                msg = "Could not create decimation_level from dictionary: %s"
-                fails.append(msg % error)
-                self.logger.error(msg, error)
-
-        if len(fails) > 0:
-            raise TypeError("\n".join(fails))
-
-    @property
     def n_decimation_levels(self):
-        return self.__len__()
+        return len(self.levels)
 
     def update_time_period(self):
         """

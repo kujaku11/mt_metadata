@@ -1,47 +1,160 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Feb 17 14:15:20 2022
-
-    Updated 2025-01-02: kkappler, adding methods to generate taper values.  In future this class
-    can replace ApodizationWindow in aurora.
-
-@author: jpeacock
+Updated 2025-01-02: kkappler, adding methods to generate taper values.  In future this class
+   can replace ApodizationWindow in aurora.
 """
-# =============================================================================
+
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
-from .standards import SCHEMA_FN_PATHS
+# =====================================================
+from typing import Annotated
 
 import numpy as np
+import pandas as pd
 import scipy.signal as ssig
+from pydantic import AliasChoices, computed_field, Field, field_validator, PrivateAttr
 
-# =============================================================================
-attr_dict = get_schema("window", SCHEMA_FN_PATHS)
-# =============================================================================
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.common.mttime import MTime
 
 
-class Window(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class TypeEnum(StrEnumerationBase):
+    boxcar = "boxcar"
+    triang = "triang"
+    blackman = "blackman"
+    hamming = "hamming"
+    hann = "hann"
+    bartlett = "bartlett"
+    flattop = "flattop"
+    parzen = "parzen"
+    bohman = "bohman"
+    blackmanharris = "blackmanharris"
+    nuttall = "nuttall"
+    barthann = "barthann"
+    kaiser = "kaiser"
+    gaussian = "gaussian"
+    general_gaussian = "general_gaussian"
+    slepian = "slepian"
+    chebwin = "chebwin"
+    dpss = "dpss"
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        self.additional_args = kwargs.get("additional_args", {})
-        self._taper = None
 
+class ClockZeroTypeEnum(StrEnumerationBase):
+    user_specified = "user specified"
+    data_start = "data start"
+    ignore = "ignore"
+
+
+class Window(MetadataBase):
+    _taper: np.ndarray | None = PrivateAttr(None)
+    num_samples: Annotated[
+        int,
+        Field(
+            default=None,
+            description="Number of samples in a single window",
+            examples=["256"],
+            alias=None,
+            json_schema_extra={
+                "units": "samples",
+                "required": True,
+            },
+        ),
+    ]
+
+    overlap: Annotated[
+        int,
+        Field(
+            default=None,
+            description="Number of samples overlapped by adjacent windows",
+            examples=["32"],
+            alias=None,
+            json_schema_extra={
+                "units": "samples",
+                "required": True,
+            },
+        ),
+    ]
+
+    type: Annotated[
+        TypeEnum,
+        Field(
+            default="boxcar",
+            description="name of the window type",
+            examples=["hamming"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    clock_zero_type: Annotated[
+        ClockZeroTypeEnum,
+        Field(
+            default="ignore",
+            description="how the clock-zero is specified",
+            examples=["user specified"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    clock_zero: Annotated[
+        MTime | str | float | int | np.datetime64 | pd.Timestamp | None,
+        Field(
+            default_factory=lambda: MTime(time_stamp=None),
+            description="Start date and time of the first data window",
+            examples=["2020-02-01T09:23:45.453670+00:00"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    normalized: Annotated[
+        bool,
+        Field(
+            default=True,
+            description="True if the window shall be normalized so the sum of the coefficients is 1",
+            examples=[False],
+            validation_alias=AliasChoices("normalised", "normalized"),
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    additional_args: Annotated[
+        dict,
+        Field(
+            default_factory=dict,
+            description="Additional arguments for the window function",
+            examples=[{"param": "value"}],
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    @field_validator("clock_zero", mode="before")
+    @classmethod
+    def validate_clock_zero(
+        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
+    ):
+        return MTime(time_stamp=field_value)
+
+    @computed_field
     @property
-    def additional_args(self) -> dict:
-        return self._additional_args
-
-    @additional_args.setter
-    def additional_args(self, args):
-        if not isinstance(args, dict):
-            raise TypeError("additional_args must be a dictionary")
-        self._additional_args = args
-
-    @property
-    def num_samples_advance(self):
+    def num_samples_advance(self) -> int:
         return self.num_samples - self.overlap
 
     def fft_harmonics(self, sample_rate: float) -> np.ndarray:
@@ -51,8 +164,7 @@ class Window(Base):
         :return:
         """
         return get_fft_harmonics(
-            samples_per_window=self.num_samples,
-            sample_rate=sample_rate
+            samples_per_window=self.num_samples, sample_rate=sample_rate
         )
 
     def taper(self) -> np.ndarray:
@@ -81,11 +193,7 @@ class Window(Base):
         return self._taper
 
 
-
-def get_fft_harmonics(
-    samples_per_window: int,
-    sample_rate: float
-) -> np.ndarray:
+def get_fft_harmonics(samples_per_window: int, sample_rate: float) -> np.ndarray:
     """
     Works for odd and even number of points.
 

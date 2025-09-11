@@ -1,91 +1,211 @@
-# -*- coding: utf-8 -*-
-"""
-This module contains the Decimation Metadata class.  This class interacts with a decimation JSON.
-It contains the metadata to specify a transformation from time series to a Spectrogram, including
-cascadng decimation info.
-
-There are two main use cases for this class.  On the one hand, this can be used to specify a
-set of processing parameters to create an FCDecimation, which can then be stored in an MTH5 archive.
-On the other hand, this metadata gets stored along with Spectrograms in an MTH5 archive and can
-be used to access the parameters associated with the spectrograms creation.
-
-TODO: Consider renaming this class to FCDecmiation, to contrast with other Decimation objects,
-or FCDecimationLevel to make it
-Also see notes in mt_metadata issue 235.
-
-Created on Fri Feb 25 15:20:59 2022
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
 from collections import OrderedDict
-from typing import List, Optional
+from typing import Annotated, List, Optional
 
 import numpy as np
 from loguru import logger
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.timeseries import TimePeriod
-
-# from mt_metadata.transfer_functions.processing.aurora.decimation_level import DecimationLevel as AuroraDecimationLevel
-from mt_metadata.transfer_functions.processing.fourier_coefficients import (
-    Channel as FCChannel,
-)
-from mt_metadata.transfer_functions.processing.short_time_fourier_transform import (
-    ShortTimeFourierTransform,
-)
-from mt_metadata.transfer_functions.processing.time_series_decimation import (
-    TimeSeriesDecimation,
-)
-from mt_metadata.utils.list_dict import ListDict
-
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import ListDict, TimePeriod
+from mt_metadata.processing import ShortTimeFourierTransform, TimeSeriesDecimation
+from mt_metadata.processing.fourier_coefficients.fc_channel import FCChannel
 
 
-# =============================================================================
-attr_dict = get_schema("decimation", SCHEMA_FN_PATHS)
-attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
-attr_dict.add_dict(
-    ShortTimeFourierTransform()._attr_dict, "short_time_fourier_transform"
-)
-attr_dict.add_dict(TimeSeriesDecimation()._attr_dict, "time_series_decimation")
+# =====================================================
+class Decimation(MetadataBase):
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="Decimation level ID",
+            examples=["1"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    channels_estimated: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            description="list of channels",
+            examples=["[ex, hy]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-# =============================================================================
-class Decimation(Base):
-    """
-    TODO: the name of this class could be changed to something more appropriate.
-    TODO: consider adding an attr decimation to access TimeSeriesDecimation more briefly.
-    """
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=TimePeriod,  # type: ignore
+            description="Time period over which these FCs were estimated",
+            examples=["TimePeriod()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    __doc__ = write_lines(attr_dict)
+    channels: Annotated[
+        ListDict,
+        Field(
+            default_factory=ListDict,
+            description="List of channels",
+            examples=["[ex, hy]"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        """
-         Constructor.
+    time_series_decimation: Annotated[
+        TimeSeriesDecimation,
+        Field(
+            default_factory=TimeSeriesDecimation,  # type: ignore
+            description="Time series decimation settings",
+            examples=["TimeSeriesDecimation()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        :param kwargs: TODO: add doc here
-        """
-        self.time_period = TimePeriod()
-        self.channels = ListDict()
-        self.time_series_decimation = TimeSeriesDecimation()
-        self.short_time_fourier_transform = ShortTimeFourierTransform()
+    short_time_fourier_transform: Annotated[
+        ShortTimeFourierTransform,
+        Field(
+            default_factory=ShortTimeFourierTransform,  # type: ignore
+            description="Short time Fourier transform settings",
+            examples=["ShortTimeFourierTransform()"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-        super().__init__(attr_dict=attr_dict, **kwargs)
-
-        if self.short_time_fourier_transform.per_window_detrend_type:
-            msg = f"per_window_detrend_type was set to {self.short_time_fourier_transform.per_window_detrend_type}"
+    @field_validator("short_time_fourier_transform", mode="before")
+    @classmethod
+    def validate_short_time_fourier_transform(
+        cls, value: ShortTimeFourierTransform, info: ValidationInfo
+    ) -> ShortTimeFourierTransform:
+        if not isinstance(value, ShortTimeFourierTransform):
+            msg = f"Input must be metadata ShortTimeFourierTransform not {type(value)}"
+            raise TypeError(msg)
+        if value.per_window_detrend_type:
+            msg = f"per_window_detrend_type was set to {value.per_window_detrend_type}"
             msg += "however, this is not supported -- setting to empty string"
             logger.debug(msg)
-            self.short_time_fourier_transform.per_window_detrend_type = ""
+            value.per_window_detrend_type = ""
+        return value
 
-    def __len__(self) -> int:
-        return len(self.channels)
+    @field_validator("channels_estimated", mode="before")
+    @classmethod
+    def validate_channels_estimated(
+        cls, value: list[str], info: ValidationInfo
+    ) -> list[str]:
+        if not isinstance(value, list):
+            msg = f"Input must be a list of strings not {type(value)}"
+            raise TypeError(msg)
+        for item in value:
+            if not isinstance(item, str):
+                msg = f"All items in the list must be strings not {type(item)}"
+                raise TypeError(msg)
+        return value
 
-    def __add__(self, other):
+    @field_validator("channels", mode="before")
+    @classmethod
+    def validate_channels(cls, value: ListDict, info: ValidationInfo) -> ListDict:
+        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
+            msg = (
+                "input ch_list must be an iterable, should be a list or dict "
+                f"not {type(value)}"
+            )
+            logger.error(msg)
+            raise TypeError(msg)
+
+        fails = []
+        channels = ListDict()
+        if isinstance(value, (dict, ListDict, OrderedDict)):
+            value_list = value.values()
+
+        elif isinstance(value, (list, tuple)):
+            value_list = value
+
+        for ii, channel in enumerate(value_list):
+            try:
+                ch = FCChannel()
+                if hasattr(channel, "to_dict"):
+                    channel = channel.to_dict()
+                ch.from_dict(channel)
+                channels.append(ch)
+            except Exception as error:
+                msg = "Could not create channel from dictionary: %s"
+                fails.append(msg % error)
+                logger.error(msg, error)
+
+        if len(fails) > 0:
+            raise TypeError("\n".join(fails))
+
+        return channels
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_channels_consistency(cls, values):
+        """
+        Ensure that channels_estimated and channels are synchronized.
+
+        - If a channel name exists in channels_estimated but not in channels,
+          create a new FCChannel with that component name
+        - Ensure all channels in channels ListDict have their component names
+          in channels_estimated
+        """
+        channels_estimated = values.channels_estimated
+        channels = values.channels
+
+        # Get existing channel component names from the channels ListDict
+        existing_channel_names = set(channels.keys()) if channels.keys() else set()
+
+        # Get the set of estimated channel names
+        estimated_channel_names = (
+            set(channels_estimated) if channels_estimated else set()
+        )
+
+        # Find channels that are estimated but don't exist in channels ListDict
+        missing_channels = estimated_channel_names - existing_channel_names
+
+        # Create FCChannel objects for missing channels
+        for channel_name in missing_channels:
+            logger.info(f"Creating FCChannel for estimated channel: {channel_name}")
+            new_channel = FCChannel(component=channel_name)
+            channels.append(new_channel)
+
+        # Find channels in ListDict that aren't in channels_estimated and add them
+        extra_channels = existing_channel_names - estimated_channel_names
+        if extra_channels:
+            logger.info(f"Adding channels to channels_estimated: {extra_channels}")
+            # Add the extra channel names to channels_estimated
+            values.channels_estimated.extend(list(extra_channels))
+
+        return values
+
+    def add(self, other):
         """
 
         :param other:
@@ -97,7 +217,7 @@ class Decimation(Base):
             return self
         else:
             msg = f"Can only merge ch objects, not {type(other)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise TypeError(msg)
 
     # ----- Begin (Possibly Temporary) methods for integrating TimeSeriesDecimation, STFT Classes -----#
@@ -126,11 +246,11 @@ class Decimation(Base):
 
         """
         if not isinstance(other, type(self)):
-            self.logger.warning("Cannot update %s with %s", type(self), type(other))
+            logger.warning("Cannot update %s with %s", type(self), type(other))
         for k in match:
             if self.get_attr_from_name(k) != other.get_attr_from_name(k):
                 msg = "%s is not equal %s != %s"
-                self.logger.error(
+                logger.error(
                     msg,
                     k,
                     self.get_attr_from_name(k),
@@ -145,45 +265,16 @@ class Decimation(Base):
         for k, v in other.to_dict(single=True).items():
             if hasattr(v, "size"):
                 if v.size > 0:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
             else:
                 if v not in [None, 0.0, [], "", "1980-01-01T00:00:00+00:00"]:
-                    self.set_attr_from_name(k, v)
+                    self.update_attribute(k, v)
 
         ## Need this because channels are set when setting channels_recorded
         ## and it initiates an empty channel, but we need to fill it with
         ## the appropriate metadata.
         for ch in other.channels:
             self.add_channel(ch)
-
-    @property
-    def channels_estimated(self) -> list:
-        """channels for which fcs were estimated"""
-        return [
-            ch.component for ch in self.channels.values() if ch.component is not None
-        ]
-
-    @channels_estimated.setter
-    def channels_estimated(self, value) -> None:
-        """set channels esimated"""
-
-        if value is None:
-            self.logger.debug("Input channel name is None, skipping")
-            return
-        if not hasattr(value, "__iter__"):
-            value = [value]
-
-        for entry in value:
-            if isinstance(entry, str):
-                self.add_channel(FCChannel(component=entry))
-            elif entry is None:
-                continue
-            elif isinstance(entry, FCChannel):
-                self.add_channel(entry)
-            else:
-                msg = f"entry must be a string or type FCChannel not {type(entry)}"
-                self.logger.error(msg)
-                raise ValueError(msg)
 
     def has_channel(self, component: str) -> bool:
         """
@@ -207,7 +298,7 @@ class Decimation(Base):
         if self.has_channel(component):
             return self.channels_estimated.index(component)
 
-    def get_channel(self, component: str) -> FCChannel:
+    def get_channel(self, component: str) -> FCChannel | None:
         """
         Get a channel
 
@@ -231,12 +322,12 @@ class Decimation(Base):
         """
         if not isinstance(channel_obj, (FCChannel)):
             msg = f"Input must be metadata FCChannel not {type(channel_obj)}"
-            self.logger.error(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
         if self.has_channel(channel_obj.component):
             self.channels[channel_obj.component].update(channel_obj)
-            self.logger.debug(
+            logger.debug(
                 f"ch {channel_obj.component} already exists, updating metadata"
             )
 
@@ -245,9 +336,9 @@ class Decimation(Base):
 
         self.update_time_period()
 
-    def remove_channel(self, channel_id):
+    def remove_channel(self, channel_id: str) -> None:
         """
-        remove a ch from the survey
+        remove a channel from the survey
 
         :param component: channel component to look for
         :type component: string
@@ -256,54 +347,15 @@ class Decimation(Base):
 
         if self.has_channel(channel_id):
             self.channels.remove(channel_id)
+            self.channels_estimated.remove(channel_id)
         else:
-            self.logger.warning(f"Could not find {channel_id} to remove.")
+            logger.warning(f"Could not find {channel_id} to remove.")
 
         self.update_time_period()
 
     @property
-    def channels(self):
-        """List of channels in the ch"""
-        return self._channels
-
-    @channels.setter
-    def channels(self, value):
-        """set the channel list"""
-
-        if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
-            msg = (
-                "input ch_list must be an iterable, should be a list or dict "
-                f"not {type(value)}"
-            )
-            self.logger.error(msg)
-            raise TypeError(msg)
-
-        fails = []
-        self._channels = ListDict()
-        if isinstance(value, (dict, ListDict, OrderedDict)):
-            value_list = value.values()
-
-        elif isinstance(value, (list, tuple)):
-            value_list = value
-
-        for ii, channel in enumerate(value_list):
-            try:
-                ch = FCChannel()
-                if hasattr(channel, "to_dict"):
-                    channel = channel.to_dict()
-                ch.from_dict(channel)
-                self._channels.append(ch)
-            except Exception as error:
-                msg = "Could not create channel from dictionary: %s"
-                fails.append(msg % error)
-                self.logger.error(msg, error)
-
-        if len(fails) > 0:
-            raise TypeError("\n".join(fails))
-
-    @property
     def n_channels(self):
-        return self.__len__()
+        return len(self.channels)
 
     def update_time_period(self):
         """
@@ -345,7 +397,7 @@ class Decimation(Base):
                 f"{self.stft.min_num_stft_windows} stft windows of length "
                 f"{self.stft.window.num_samples} and overlap {self.stft.window.overlap}"
             )
-            self.logger.warning(msg)
+            logger.warning(msg)
             return False
         else:
             return True
