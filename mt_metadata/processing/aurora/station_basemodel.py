@@ -1,11 +1,14 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
+from typing import Annotated, Union
 
-from pydantic import Field
+import pandas as pd
+from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import TimePeriod
+from mt_metadata.processing.aurora.run_basemodel import Run
 
 
 # =====================================================
@@ -53,10 +56,9 @@ class Station(MetadataBase):
     ]
 
     runs: Annotated[
-        str,
+        list[Run],
         Field(
-            default="[]",
-            items={"type": "string"},
+            default_factory=list,
             description="List of runs to process",
             examples=["001"],
             alias=None,
@@ -66,3 +68,162 @@ class Station(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("runs", mode="before")
+    @classmethod
+    def validate_runs(cls, values: Union[list, str, Run, dict], info: ValidationInfo):
+        runs = []
+        if not isinstance(values, list):
+            values = [values]
+
+        for item in values:
+            if isinstance(item, str):
+                run = Run(id=item)
+            elif isinstance(item, Run):
+                run = item
+            elif isinstance(item, dict):
+                run = Run()
+                run.from_dict(item)
+
+            else:
+                raise TypeError(f"not sure what to do with type {type(item)}")
+
+            runs.append(run)
+
+        return runs
+
+    def get_run(self, run_id) -> Run | None:
+        """
+
+        :param run_id: DESCRIPTION
+        :type run_id: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        try:
+            return self.run_dict[run_id]
+        except KeyError:
+            return None
+
+    @computed_field
+    @property
+    def run_list(self) -> list[str]:
+        """list of run names"""
+
+        return [r.id for r in self.runs]
+
+    @computed_field
+    @property
+    def run_dict(self) -> dict[str, Run]:
+        """
+        need to have a dictionary, but it can't be an attribute cause that
+        gets confusing when reading in a json file
+
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+        return dict([(rr.id, rr) for rr in self.runs])
+
+    def to_dataset_dataframe(self) -> pd.DataFrame:
+        """
+        Create a dataset definition dataframe that can be used in the
+        processing
+
+        [
+            "station",
+            "run",
+            "start",
+            "end",
+            "mth5_path",
+            "sample_rate",
+            "input_channels",
+            "output_channels",
+            "remote",
+        ]
+
+        """
+
+        data_list = []
+
+        for run in self.runs:
+            for tp in run.time_periods:
+                entry = {
+                    "station_id": self.id,
+                    "run_id": run.id,
+                    "start": str(tp.start),  # Convert to string to avoid MTime issues
+                    "end": str(tp.end),  # Convert to string to avoid MTime issues
+                    "mth5_path": self.mth5_path,
+                    "sample_rate": run.sample_rate,
+                    "input_channel_names": run.input_channel_names,
+                    "output_channel_names": run.output_channel_names,
+                    "remote": self.remote,
+                    "channel_scale_factors": run.channel_scale_factors,
+                }
+                data_list.append(entry)
+
+        df = pd.DataFrame(data_list)
+        if len(df) > 0:
+            df["start"] = pd.to_datetime(df["start"])
+            df["end"] = pd.to_datetime(df["end"])
+
+        return df
+
+    def from_dataset_dataframe(self, df: pd.DataFrame):
+        """
+        set a data frame
+
+        [
+            "station",
+            "run",
+            "start",
+            "end",
+            "mth5_path",
+            "sample_rate",
+            "input_channels",
+            "output_channels",
+            "remote",
+        ]
+
+        :param df: DESCRIPTION
+        :type df: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
+        """
+
+        self.runs = []
+
+        # Handle empty DataFrame case
+        if df.empty:
+            return
+
+        self.id = df.station_id.unique()[0]
+        self.mth5_path = df.mth5_path.unique()[0]
+        self.remote = df.remote.unique()[0]
+
+        for entry in df.itertuples():
+            try:
+                r = self.run_dict[entry.run_id]
+                r.time_periods.append(
+                    TimePeriod(start=str(entry.start), end=str(entry.end))
+                )
+
+            except KeyError:
+                if hasattr(entry, "channel_scale_factors"):
+                    channel_scale_factors = entry.channel_scale_factors
+                else:
+                    channel_scale_factors = {}
+                r = Run(
+                    id=entry.run_id,
+                    sample_rate=entry.sample_rate,
+                    input_channels=entry.input_channel_names,
+                    output_channels=entry.output_channel_names,
+                    time_periods=[
+                        TimePeriod(start=str(entry.start), end=str(entry.end))
+                    ],
+                )
+                r.set_channel_scale_factors(channel_scale_factors)
+                self.runs.append(r)

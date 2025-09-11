@@ -165,3 +165,15 @@ class Run(MetadataBase):
         for i, channel in enumerate(self.output_channels):
             if channel.id in values.keys():
                 self.output_channels[i].scale_factor = values[channel.id]
+
+    @computed_field
+    @property
+    def input_channel_names(self) -> list[str]:
+        """list of channel names"""
+        return [ch.id for ch in self.input_channels]
+
+    @computed_field
+    @property
+    def output_channel_names(self) -> list[str]:
+        """list of channel names"""
+        return [ch.id for ch in self.output_channels]
