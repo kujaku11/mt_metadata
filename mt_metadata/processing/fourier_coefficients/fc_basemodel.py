@@ -245,8 +245,8 @@ class FC(MetadataBase):
         """
         Add a decimation_level to the list, check if one exists if it does overwrite it
 
-        :param decimation_level_obj: decimation_level object to add
-        :type decimation_level_obj: :class:`mt_metadata.transfer_functions.processing.fourier_coefficients.decimation_level`
+        :param fc_decimation: decimation level object to add
+        :type fc_decimation: :class:`mt_metadata.processing.fourier_coefficients.decimation_basemodel.Decimation`
 
         """
         if not isinstance(fc_decimation, (Decimation)):
@@ -254,14 +254,15 @@ class FC(MetadataBase):
             logger.error(msg)
             raise ValueError(msg)
 
-        if self.has_decimation_level(fc_decimation.decimation.level):
-            self.levels[fc_decimation.decimation.level].update(fc_decimation)
-            logger.debug(
-                f"ch {fc_decimation.decimation.level} already exists, updating metadata"
-            )
-
+        level_id = fc_decimation.id
+        if self.has_decimation_level(level_id):
+            self.levels[level_id].update(fc_decimation)
+            logger.debug(f"level {level_id} already exists, updating metadata")
         else:
             self.levels.append(fc_decimation)
+            # Also add to decimation_levels list if not present
+            if level_id not in self.decimation_levels:
+                self.decimation_levels.append(level_id)
 
         self.update_time_period()
 
