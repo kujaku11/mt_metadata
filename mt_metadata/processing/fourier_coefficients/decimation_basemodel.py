@@ -350,6 +350,7 @@ class Decimation(MetadataBase):
 
         if self.has_channel(channel_id):
             self.channels.remove(channel_id)
+            self.channels_estimated.remove(channel_id)
         else:
             logger.warning(f"Could not find {channel_id} to remove.")
 

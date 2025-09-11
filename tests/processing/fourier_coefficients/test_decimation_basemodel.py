@@ -12,7 +12,6 @@ This test suite covers:
 Uses fixtures and parametrization for optimal efficiency.
 """
 
-
 import numpy as np
 import pytest
 
@@ -75,7 +74,7 @@ class TestDecimationInitialization:
         assert isinstance(
             decimation.short_time_fourier_transform, ShortTimeFourierTransform
         )
-        assert len(decimation.channels) == 0
+        assert decimation.n_channels == 0
 
     def test_custom_initialization(self):
         """Test creating Decimation with custom values."""
@@ -90,7 +89,7 @@ class TestDecimationInitialization:
         assert decimation.id == "level_1"
         assert decimation.channels_estimated == ["ex", "hy"]
         assert decimation.time_period == time_period
-        assert len(decimation.channels) == 2  # Auto-created by validator
+        assert decimation.n_channels == 2  # Auto-created by validator
         assert "ex" in decimation.channels.keys()
         assert "hy" in decimation.channels.keys()
 
@@ -138,7 +137,7 @@ class TestDecimationValidation:
         }
 
         decimation = Decimation(channels=channel_dict)  # type: ignore
-        assert len(decimation.channels) == 2
+        assert decimation.n_channels == 2
         assert "ex" in decimation.channels.keys()
         assert "hy" in decimation.channels.keys()
 
@@ -148,7 +147,7 @@ class TestDecimationValidation:
         fc2 = create_fc_channel("hy")
 
         decimation = Decimation(channels=[fc1, fc2])  # type: ignore
-        assert len(decimation.channels) == 2
+        assert decimation.n_channels == 2
         assert "ex" in decimation.channels.keys()
         assert "hy" in decimation.channels.keys()
 
@@ -160,7 +159,7 @@ class TestChannelsEstimatedSynchronization:
         """Test that channels_estimated automatically creates FCChannel objects."""
         decimation = Decimation(channels_estimated=["ex", "hy", "hz"])  # type: ignore
 
-        assert len(decimation.channels) == 3
+        assert decimation.n_channels == 3
         assert set(decimation.channels.keys()) == {"ex", "hy", "hz"}
 
         # Verify each channel is properly created
@@ -191,7 +190,7 @@ class TestChannelsEstimatedSynchronization:
             channels=channels, channels_estimated=["ex", "hy", "hz"]
         )  # type: ignore
 
-        assert len(decimation.channels) == 3
+        assert decimation.n_channels == 3
         assert set(decimation.channels_estimated) == {"ex", "hy", "hz"}
         assert set(decimation.channels.keys()) == {"ex", "hy", "hz"}
 
@@ -241,12 +240,12 @@ class TestDecimationChannelManagement:
     def test_add_channel_new(self, sample_decimation):
         """Test adding a new channel - note: add_channel doesn't update channels_estimated."""
         new_channel = create_fc_channel("ez")
-        initial_count = len(sample_decimation.channels)
+        initial_count = sample_decimation.n_channels
 
         sample_decimation.add_channel(new_channel)
 
         # Channel is added to channels list
-        assert len(sample_decimation.channels) == initial_count + 1
+        assert sample_decimation.n_channels == initial_count + 1
         # But has_channel checks channels_estimated, so it returns False
         assert sample_decimation.has_channel("ez") is False
         # Channel can be retrieved directly from channels though
@@ -260,7 +259,7 @@ class TestDecimationChannelManagement:
         sample_decimation.add_channel(updated_channel)
 
         # Should not increase count
-        assert len(sample_decimation.channels) == 3
+        assert sample_decimation.n_channels == 3
         # Should update the frequency
         assert sample_decimation.get_channel("ex").frequency_max == 200.0
 
@@ -270,22 +269,20 @@ class TestDecimationChannelManagement:
             sample_decimation.add_channel("not_a_channel")
 
     def test_remove_channel(self, sample_decimation):
-        """Test removing a channel - only removes from channels list, not channels_estimated."""
-        initial_count = len(sample_decimation.channels)
+        """Test removing a channel - removes from both channels and channels_estimated."""
+        initial_count = sample_decimation.n_channels
 
-        # Verify channel exists in channels_estimated first
+        # Verify channel exists in both channels and channels_estimated first
         assert sample_decimation.has_channel("ex")
         assert "ex" in sample_decimation.channels.keys()
 
         sample_decimation.remove_channel("ex")
 
-        # Channel should be removed from channels list
-        assert len(sample_decimation.channels) == initial_count - 1
+        # Channel should be removed from both channels list and channels_estimated
+        assert sample_decimation.n_channels == initial_count - 1
         assert "ex" not in sample_decimation.channels.keys()
-        # But still be in channels_estimated (design limitation)
-        assert sample_decimation.has_channel(
-            "ex"
-        )  # Still True because channels_estimated not updated
+        # Should also be removed from channels_estimated
+        assert not sample_decimation.has_channel("ex")
 
     def test_n_channels_property(self, sample_decimation):
         """Test n_channels property."""
@@ -374,7 +371,7 @@ class TestDecimationOperations:
         result = decimation1.add(decimation2)
 
         assert result is decimation1  # Returns self
-        assert len(decimation1.channels) == 4  # Combined channels
+        assert decimation1.n_channels == 4  # Combined channels
 
     def test_add_invalid_type(self, decimation1):
         """Test adding invalid type raises error."""
@@ -391,7 +388,7 @@ class TestDecimationOperations:
         assert decimation1.id == "dec2"
 
         # Channels should be combined
-        assert len(decimation1.channels) >= 2
+        assert decimation1.n_channels >= 2
 
     def test_update_time_period(self, decimation1):
         """Test update_time_period method."""
@@ -424,13 +421,13 @@ class TestDecimationRepresentation:
         """Test basic properties access."""
         assert sample_decimation.id == "test_decimation"
         assert sample_decimation.channels_estimated == ["ex", "hy"]
-        assert len(sample_decimation.channels) == 2
+        assert sample_decimation.n_channels == 2
 
     def test_basic_access(self, sample_decimation):
         """Test basic access doesn't crash."""
         # Test basic property access
         assert sample_decimation.id == "test_decimation"
-        assert len(sample_decimation.channels) == 2
+        assert sample_decimation.n_channels == 2
 
     def test_dict_access(self, sample_decimation):
         """Test dictionary-style access to fields."""
@@ -447,14 +444,14 @@ class TestDecimationEdgeCases:
         decimation = Decimation(channels_estimated=[])  # type: ignore
 
         assert decimation.channels_estimated == []
-        assert len(decimation.channels) == 0
+        assert decimation.n_channels == 0
 
     def test_large_number_of_channels(self):
         """Test with large number of channels."""
         channel_names = [f"ch_{i:03d}" for i in range(100)]
         decimation = Decimation(channels_estimated=channel_names)  # type: ignore
 
-        assert len(decimation.channels) == 100
+        assert decimation.n_channels == 100
         assert len(decimation.channels_estimated) == 100
 
     def test_duplicate_channel_names(self):
@@ -463,14 +460,14 @@ class TestDecimationEdgeCases:
 
         # Should deduplicate automatically
         assert len(set(decimation.channels_estimated)) <= 3
-        assert len(decimation.channels) <= 3
+        assert decimation.n_channels <= 3
 
     def test_special_character_channel_names(self):
         """Test with special character channel names."""
         special_names = ["ch-1", "ch_2", "ch.3", "ch:4"]
         decimation = Decimation(channels_estimated=special_names)  # type: ignore
 
-        assert len(decimation.channels) == 4
+        assert decimation.n_channels == 4
         for name in special_names:
             assert decimation.has_channel(name)
 
@@ -525,7 +522,7 @@ class TestDecimationIntegration:
         )  # type: ignore
 
         # Verify synchronization worked
-        assert len(decimation.channels) == 3
+        assert decimation.n_channels == 3
         assert set(decimation.channels_estimated) == {"ex", "hy", "hz"}
         ex_channel = decimation.get_channel("ex")
         assert ex_channel is not None
@@ -539,7 +536,7 @@ class TestDecimationIntegration:
         decimation.update_time_period()
 
         # Verify final state - channel is in the channels list but not in channels_estimated
-        assert len(decimation.channels) == 4
+        assert decimation.n_channels == 4
         assert "ez" in decimation.channels.keys()
         # has_channel only checks channels_estimated, so this returns False
         assert decimation.has_channel("ez") is False
@@ -553,7 +550,7 @@ class TestDecimationIntegration:
         # Test basic properties
         assert original.id == "roundtrip_test"
         assert original.channels_estimated == ["ex", "hy"]
-        assert len(original.channels) == 2
+        assert original.n_channels == 2
 
         # Test that we can create a new instance with same parameters
         recreated = Decimation(
@@ -563,7 +560,7 @@ class TestDecimationIntegration:
         # Verify equivalence
         assert recreated.id == original.id
         assert recreated.channels_estimated == original.channels_estimated
-        assert len(recreated.channels) == len(original.channels)
+        assert recreated.n_channels == original.n_channels
 
     def test_complex_channel_management(self):
         """Test complex channel management scenarios."""
@@ -577,7 +574,7 @@ class TestDecimationIntegration:
             decimation.add_channel(channel)
 
         # Verify all channels exist in the channels list
-        assert len(decimation.channels) == 5
+        assert decimation.n_channels == 5
 
         # Test direct channel retrieval from channels (not using get_channel which might use has_channel)
         assert "ez" in decimation.channels.keys()
@@ -590,16 +587,16 @@ class TestDecimationIntegration:
         assert isinstance(hx_channel, FCChannel)
         assert hx_channel.frequency_max == 200.0
 
-        # Remove some channels (only removes from channels list, not channels_estimated)
+        # Remove some channels (now removes from both channels and channels_estimated)
         decimation.remove_channel("ex")
         decimation.remove_channel("hy")
 
-        assert len(decimation.channels) == 3  # Only ez, hx, hz remain in channels
+        assert decimation.n_channels == 3  # Only ez, hx, hz remain
         assert "ex" not in decimation.channels.keys()
         assert "hy" not in decimation.channels.keys()
-        # But has_channel still returns True because it checks channels_estimated
-        assert decimation.has_channel("ex")  # Still True due to design limitation
-        assert decimation.has_channel("hy")  # Still True due to design limitation
+        # Should also be removed from channels_estimated
+        assert not decimation.has_channel("ex")
+        assert not decimation.has_channel("hy")
 
 
 class TestDecimationPerformance:
@@ -615,7 +612,7 @@ class TestDecimationPerformance:
         decimation = Decimation(channels_estimated=channel_names)  # type: ignore
         creation_time = time.time() - start_time
 
-        assert len(decimation.channels) == 1000
+        assert decimation.n_channels == 1000
         assert creation_time < 5.0  # Should complete in reasonable time
 
     def test_channel_operations_performance(self):
