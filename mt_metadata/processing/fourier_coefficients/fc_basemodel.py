@@ -6,7 +6,7 @@ from typing import Annotated
 
 import numpy as np
 from loguru import logger
-from pydantic import Field, field_validator, ValidationInfo
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
 from mt_metadata import NULL_VALUES
 from mt_metadata.base import MetadataBase
@@ -112,22 +112,7 @@ class FC(MetadataBase):
         Field(
             default_factory=ListDict,  # type: ignore
             description="ListDict of decimation levels and their parameters",
-            examples=[
-                ListDict(
-                    [
-                        {
-                            "id": "1",
-                            "channels_estimated": '["ex", "ey", "hx", "hy"]',
-                            "sample_rate_decimation_level": 30,
-                            "sample_rate_window_step": 4,
-                            "units": "millivolts",
-                            "time_period": TimePeriod(
-                                start="2020-01-01", end="2020-01-02"
-                            ),
-                        }
-                    ]
-                )
-            ],
+            examples=["ListDict containing Decimation objects"],
             alias=None,
             json_schema_extra={
                 "units": None,
@@ -179,10 +164,13 @@ class FC(MetadataBase):
 
         for ii, decimation_level in enumerate(value_list):
             try:
-                dl = Decimation()
-                if hasattr(decimation_level, "to_dict"):
-                    decimation_level = decimation_level.to_dict()
-                dl.from_dict(decimation_level)
+                if isinstance(decimation_level, Decimation):
+                    dl = decimation_level
+                else:
+                    dl = Decimation()  # type: ignore
+                    if hasattr(decimation_level, "to_dict"):
+                        decimation_level = decimation_level.to_dict()
+                    dl.from_dict(decimation_level)
                 levels.append(dl)
             except Exception as error:
                 msg = "Could not create decimation_level from dictionary: %s"
@@ -193,6 +181,28 @@ class FC(MetadataBase):
             raise TypeError("\n".join(fails))
 
         return levels
+
+    @model_validator(mode="after")
+    def synchronize_levels(self) -> "FC":
+        """
+        Ensure that decimation_levels and levels are synchronized.
+        - Creates Decimation objects for any levels in decimation_levels that don't exist in levels
+        - Adds level names to decimation_levels for any existing levels not in the list
+        """
+        # First, ensure all levels in decimation_levels have corresponding Decimation objects
+        for level_name in self.decimation_levels:
+            level_name_str = str(level_name)
+            if level_name_str not in self.levels.keys():
+                # Create a new Decimation object with the level name as id
+                new_decimation = Decimation(id=level_name_str)  # type: ignore
+                self.levels.append(new_decimation)
+
+        # Second, ensure all existing levels in the ListDict are in decimation_levels
+        for level_name in self.levels.keys():
+            if level_name not in self.decimation_levels:
+                self.decimation_levels.append(level_name)
+
+        return self
 
     def has_decimation_level(self, level):
         """
@@ -266,6 +276,9 @@ class FC(MetadataBase):
 
         if self.has_decimation_level(decimation_level_id):
             self.levels.remove(decimation_level_id)
+            # Also remove from decimation_levels list
+            if decimation_level_id in self.decimation_levels:
+                self.decimation_levels.remove(decimation_level_id)
         else:
             logger.warning(f"Could not find {decimation_level_id} to remove.")
 
@@ -273,7 +286,7 @@ class FC(MetadataBase):
 
     @property
     def n_decimation_levels(self):
-        return self.__len__()
+        return len(self.levels)
 
     def update_time_period(self):
         """
