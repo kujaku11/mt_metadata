@@ -1,16 +1,16 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
+
 import numpy as np
 from numpy._typing import NDArray
+from pydantic import Field
 
+from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
     MonotonicWeightKernel,
 )
-from pydantic import Field
-from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================

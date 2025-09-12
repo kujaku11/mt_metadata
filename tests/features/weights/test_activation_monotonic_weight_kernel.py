@@ -14,12 +14,12 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 
-from mt_metadata.features.weights.activation_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
     ActivationMonotonicWeightKernel,
     ActivationStyleEnum,
     ThresholdEnum,
 )
-from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import StyleEnum
+from mt_metadata.features.weights.monotonic_weight_kernel import StyleEnum
 
 
 # =====================================================

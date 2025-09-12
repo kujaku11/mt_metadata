@@ -21,8 +21,8 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.features.weights.base_basemodel import Base, WeightTypeEnum
-from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.base import Base, WeightTypeEnum
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 
