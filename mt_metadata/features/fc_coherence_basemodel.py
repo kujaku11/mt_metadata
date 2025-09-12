@@ -4,8 +4,9 @@
 from enum import Enum
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
 # =====================================================
@@ -20,7 +21,7 @@ class QRadiusEnum(str, Enum):
     user_defined = "user defined"
 
 
-class FcCoherence(MetadataBase):
+class FCCoherence(MetadataBase):
     channel_1: Annotated[
         str,
         Field(

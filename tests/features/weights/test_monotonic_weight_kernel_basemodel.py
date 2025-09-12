@@ -11,6 +11,7 @@ used in MT metadata processing.
 import numpy as np
 import pytest
 
+from mt_metadata.features.weights.base_basemodel import Base, WeightTypeEnum
 from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
     MonotonicWeightKernel,
     StyleEnum,
@@ -70,6 +71,75 @@ def large_sample_values():
     return np.linspace(0, 1, 1000)
 
 
+# Class 1: Inheritance Tests
+class TestMonotonicWeightKernelInheritance:
+    """Test inheritance relationships and base class integration"""
+
+    def test_inheritance_from_base(self):
+        """Test that MonotonicWeightKernel inherits from Base"""
+        kernel = MonotonicWeightKernel()
+        assert isinstance(kernel, Base)
+        assert isinstance(kernel, MonotonicWeightKernel)
+
+    def test_method_resolution_order(self):
+        """Test method resolution order includes Base"""
+        mro = MonotonicWeightKernel.__mro__
+        base_classes = [cls.__name__ for cls in mro]
+        assert "Base" in base_classes
+        assert "MonotonicWeightKernel" in base_classes
+
+    def test_inherited_fields_from_base(self):
+        """Test that fields from Base are accessible"""
+        kernel = MonotonicWeightKernel()
+
+        # Test inherited fields exist
+        assert hasattr(kernel, "weight_type")
+        assert hasattr(kernel, "description")
+        assert hasattr(kernel, "active")
+
+        # Test default values from Base
+        assert kernel.weight_type == "monotonic"  # default from Base
+        assert kernel.description is None  # default from Base
+        assert kernel.active is None  # default from Base
+
+    def test_base_weight_type_enum_integration(self):
+        """Test that WeightTypeEnum from base works correctly"""
+        # Test that we can create a kernel with different weight types
+        kernel = MonotonicWeightKernel(weight_type="custom")
+        assert kernel.weight_type == "custom"
+
+        # Test that the enum values work
+        kernel = MonotonicWeightKernel(weight_type=WeightTypeEnum.learned)
+        assert kernel.weight_type == "learned"
+
+        # Test default value
+        kernel = MonotonicWeightKernel()
+        assert kernel.weight_type == WeightTypeEnum.monotonic
+
+    def test_inherited_evaluate_method(self):
+        """Test that evaluate method is properly inherited/overridden"""
+        kernel = MonotonicWeightKernel()
+
+        # Base class evaluate should raise NotImplementedError
+        # MonotonicWeightKernel should override this
+        # For now just test that method exists
+        assert hasattr(kernel, "evaluate")
+        assert callable(getattr(kernel, "evaluate"))
+
+    def test_base_class_integration(self):
+        """Test integration with base class functionality"""
+        kernel = MonotonicWeightKernel(
+            weight_type="monotonic",
+            description="Test kernel for inheritance",
+            active=True,
+        )
+
+        assert kernel.weight_type == "monotonic"
+        assert kernel.description == "Test kernel for inheritance"
+        assert kernel.active is True
+
+
+# Class 2: Enumeration Tests
 class TestEnumerations:
     """Test enumeration classes"""
 

@@ -1,14 +1,14 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
+
 import numpy as np
 from numpy._typing._array_like import NDArray
+from pydantic import computed_field, Field
 
-from mt_metadata.base import MetadataBase
-from pydantic import Field, computed_field
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.weights.base_basemodel import Base
 
 
 # =====================================================
@@ -22,7 +22,7 @@ class StyleEnum(StrEnumerationBase):
     activation = "activation"
 
 
-class MonotonicWeightKernel(MetadataBase):
+class MonotonicWeightKernel(Base):
     """
     MonotonicWeightKernel
 
