@@ -30,6 +30,12 @@ feature_classes = {
     "fc_coherence": FCCoherence,
 }
 
+weight_classes = {
+    "monotonic": MonotonicWeightKernel,
+    "taper": TaperMonotonicWeightKernel,
+    "activation": ActivationMonotonicWeightKernel,
+}
+
 
 # =====================================================
 class FeatureNameEnum(str, Enum):
@@ -80,7 +86,7 @@ class FeatureWeightSpec(MetadataBase):
     @classmethod
     def validate_feature(
         cls, value, info: ValidationInfo
-    ) -> Feature | Coherence | FCCoherence:
+    ) -> Feature | Coherence | FCCoherence | None:
         """Validate the feature field to ensure it matches the feature_name."""
         while (
             isinstance(value, dict)
@@ -105,6 +111,8 @@ class FeatureWeightSpec(MetadataBase):
         elif isinstance(value, (Feature, Coherence, FCCoherence)):
             logger.debug(f"Feature setter: set directly to {type(value)}")  # DEBUG
             return value
+        else:
+            return None
 
     @field_validator("weight_kernels", mode="before")
     @classmethod
@@ -123,17 +131,13 @@ class FeatureWeightSpec(MetadataBase):
             if isinstance(item, dict) and "weight_kernel" in item:
                 item = item["weight_kernel"]
             if isinstance(item, dict):
-                kernel_type = str(item.get("type"))
-                kernel_style = str(item.get("style", "linear"))
-                if "monotonic" in kernel_type or "monotonic" in kernel_style:
-                    kernel_cls = MonotonicWeightKernel
-                elif "half_window" in kernel_style or "taper" in kernel_style:
-                    kernel_cls = TaperMonotonicWeightKernel
-                elif "activation" in kernel_type or "activation" in kernel_style:
-                    kernel_cls = ActivationMonotonicWeightKernel
-                else:
-                    raise ValueError(f"Unknown kernel type: {kernel_type}")
-                kernels.append(kernel_cls(**item))
+                weight = str(item.get("weight_type", ""))
+                try:
+                    kernels.append(weight_classes[weight](**item))
+                except KeyError:
+                    msg = f"weight type {weight} not recognized -- skipping"
+                    logger.warning(msg)
+
             elif isinstance(
                 item,
                 (
