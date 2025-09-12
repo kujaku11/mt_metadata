@@ -59,12 +59,13 @@ it will also have ChannelWeightSpecs.
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 
 
 # =====================================================
@@ -91,10 +92,9 @@ class ChannelWeightSpec(MetadataBase):
     ]
 
     output_channels: Annotated[
-        str,
+        list[str],
         Field(
-            default="[]",
-            items={"type": "string"},
+            default_factory=list,
             description="list of tf ouput channels for which this weighting scheme will be applied",
             examples=["[ ex ey hz ]"],
             alias=None,
@@ -106,10 +106,9 @@ class ChannelWeightSpec(MetadataBase):
     ]
 
     feature_weight_specs: Annotated[
-        int,
+        list[FeatureWeightSpec],
         Field(
-            default=None,
-            items={"type": "integer"},
+            default_factory=list,
             description="List of feature weighting schemes to use for TF processing.",
             examples=["[]"],
             alias=None,
