@@ -1,16 +1,13 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
-import numpy as np
-from loguru import logger
-from numpy._typing import NDArray
+
+from pydantic import Field
 
 from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import (
     TaperMonotonicWeightKernel,
 )
-from pydantic import Field
 
 
 # =====================================================
@@ -33,6 +30,20 @@ class ThresholdWeightKernel(TaperMonotonicWeightKernel):
     **kwargs :
         Additional keyword arguments passed to MonotonicWeightKernel.
     """
+
+    threshold_type: Annotated[
+        str,
+        Field(
+            default="low cut",
+            description="Which side of a threshold should be downweighted.",
+            examples=["low cut"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
     # TODO: Uncomment if needed for testing or future use
     def _normalize(self, values):
