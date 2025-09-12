@@ -5,6 +5,7 @@ Tests the Station class for the Aurora MT processing module using fixtures
 and subtests for optimal efficiency.
 """
 
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -24,8 +25,14 @@ def station_id():
 
 @pytest.fixture
 def mth5_path():
-    """MTH5 path fixture"""
+    """MTH5 path fixture as string"""
     return "/path/to/data.mth5"
+
+
+@pytest.fixture
+def mth5_path_object():
+    """MTH5 path fixture as Path object"""
+    return Path("/path/to/data.mth5")
 
 
 @pytest.fixture
@@ -120,13 +127,28 @@ class TestStationInstantiation:
     """Test Station class instantiation and basic functionality"""
 
     def test_basic_station_creation(self, station_id, mth5_path, remote_boolean):
-        """Test basic station creation"""
+        """Test basic station creation with string path"""
         station = Station(
             id=station_id, mth5_path=mth5_path, remote=remote_boolean, runs=[]
         )
 
         assert station.id == station_id
-        assert station.mth5_path == mth5_path
+        assert station.mth5_path == Path(mth5_path)  # Should be converted to Path
+        assert isinstance(station.mth5_path, Path)
+        assert station.remote == remote_boolean
+        assert len(station.runs) == 0
+
+    def test_station_with_path_object(
+        self, station_id, mth5_path_object, remote_boolean
+    ):
+        """Test station creation with Path object"""
+        station = Station(
+            id=station_id, mth5_path=mth5_path_object, remote=remote_boolean, runs=[]
+        )
+
+        assert station.id == station_id
+        assert station.mth5_path == mth5_path_object
+        assert isinstance(station.mth5_path, Path)
         assert station.remote == remote_boolean
         assert len(station.runs) == 0
 
@@ -137,14 +159,16 @@ class TestStationInstantiation:
             id=station_id, mth5_path=path_str, remote=remote_boolean, runs=[]
         )
 
-        assert station.mth5_path == path_str
+        assert station.mth5_path == Path(path_str)  # Should be converted to Path
+        assert isinstance(station.mth5_path, Path)
 
     def test_station_defaults(self):
         """Test station with default values"""
         station = Station(id="TEST", mth5_path="", remote=False, runs=[])
 
         assert station.id == "TEST"
-        assert station.mth5_path == ""
+        assert station.mth5_path == Path("")  # Empty string converted to Path
+        assert isinstance(station.mth5_path, Path)
         assert station.remote is False
         assert len(station.runs) == 0
 
@@ -155,6 +179,7 @@ class TestStationInstantiation:
             id="123", mth5_path="", remote=False, runs=[]  # id as string works
         )
         assert station.id == "123"
+        assert isinstance(station.mth5_path, Path)  # Should be Path object
 
         # Test basic validation works
         assert isinstance(station.remote, bool)
@@ -165,6 +190,64 @@ class TestStationInstantiation:
         assert len(station_with_runs.runs) == 1
         assert isinstance(station_with_runs.runs[0], Run)
         assert station_with_runs.runs[0].id == "001"
+
+
+class TestStationPathValidation:
+    """Test mth5_path field validation specifically"""
+
+    def test_path_string_conversion(self):
+        """Test that string paths are converted to Path objects"""
+        test_cases = [
+            "/path/to/file.mth5",
+            "relative/path.mth5",
+            "file.mth5",
+            "",  # empty string
+            "C:\\Windows\\path\\file.mth5",  # Windows path
+        ]
+
+        for path_str in test_cases:
+            station = Station(id="TEST", mth5_path=path_str, remote=False, runs=[])
+            assert isinstance(station.mth5_path, Path)
+            assert station.mth5_path == Path(path_str)
+
+    def test_path_object_passthrough(self):
+        """Test that Path objects are passed through unchanged"""
+        test_paths = [
+            Path("/path/to/file.mth5"),
+            Path("relative/path.mth5"),
+            Path(""),
+            Path("C:/Windows/path/file.mth5"),
+        ]
+
+        for path_obj in test_paths:
+            station = Station(id="TEST", mth5_path=path_obj, remote=False, runs=[])
+            assert isinstance(station.mth5_path, Path)
+            assert station.mth5_path == path_obj
+
+    def test_path_validation_errors(self):
+        """Test validation errors for invalid path inputs"""
+        invalid_inputs = [
+            123,  # integer
+            [],  # list
+            {},  # dict
+            None,  # None type
+        ]
+
+        for invalid_input in invalid_inputs:
+            with pytest.raises(ValueError, match="could not convert .* to Path"):
+                Station(id="TEST", mth5_path=invalid_input, remote=False, runs=[])
+
+    def test_path_properties(self):
+        """Test that Path objects have expected properties"""
+        station = Station(
+            id="TEST", mth5_path="/path/to/file.mth5", remote=False, runs=[]
+        )
+
+        assert isinstance(station.mth5_path, Path)
+        assert station.mth5_path.name == "file.mth5"
+        assert station.mth5_path.suffix == ".mth5"
+        # Use as_posix() to get consistent forward slash format across platforms
+        assert station.mth5_path.as_posix() == "/path/to/file.mth5"
 
 
 class TestStationRunManagement:
@@ -436,7 +519,8 @@ class TestStationEdgeCases:
         """Test basic serialization properties"""
         # Test basic properties work without complex serialization
         assert station_with_runs.id == "STA001"
-        assert station_with_runs.mth5_path == "/path/to/data.mth5"
+        assert station_with_runs.mth5_path == Path("/path/to/data.mth5")  # Path object
+        assert isinstance(station_with_runs.mth5_path, Path)
         assert station_with_runs.remote == False
         assert len(station_with_runs.runs) == 1
 
@@ -458,7 +542,8 @@ class TestStationEdgeCases:
         station = Station(id="", mth5_path="", remote=False, runs=[])
 
         assert station.id == ""
-        assert station.mth5_path == ""
+        assert station.mth5_path == Path("")  # Empty string converted to Path
+        assert isinstance(station.mth5_path, Path)
         assert station.remote is False
         assert station.runs == []
 
@@ -516,15 +601,16 @@ class TestStationParametrized:
     @pytest.mark.parametrize(
         "path_input,expected",
         [
-            ("/path/to/file.mth5", "/path/to/file.mth5"),
-            ("", ""),
-            ("relative/path.mth5", "relative/path.mth5"),
+            ("/path/to/file.mth5", Path("/path/to/file.mth5")),
+            ("", Path("")),
+            ("relative/path.mth5", Path("relative/path.mth5")),
         ],
     )
     def test_mth5_path_values(self, path_input, expected):
-        """Test various mth5_path input values"""
+        """Test various mth5_path input values are converted to Path objects"""
         station = Station(id="TEST", mth5_path=path_input, remote=False, runs=[])
         assert station.mth5_path == expected
+        assert isinstance(station.mth5_path, Path)
 
     @pytest.mark.parametrize(
         "num_runs,expected_count",

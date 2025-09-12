@@ -1,6 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
+from pathlib import Path
 from typing import Annotated, Union
 
 import pandas as pd
@@ -28,7 +29,7 @@ class Station(MetadataBase):
     ]
 
     mth5_path: Annotated[
-        str,
+        str | Path,
         Field(
             default="",
             description="full path to MTH5 file where the station data is contained",
@@ -68,6 +69,14 @@ class Station(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("mth5_path", mode="before")
+    @classmethod
+    def validate_mth5_path(cls, value: str | Path, info: ValidationInfo) -> str | Path:
+        try:
+            return Path(value)
+        except Exception as e:
+            raise ValueError(f"could not convert {value} to Path") from e
 
     @field_validator("runs", mode="before")
     @classmethod
