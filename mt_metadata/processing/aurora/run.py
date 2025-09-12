@@ -7,6 +7,8 @@ Created on Thu Feb 17 14:15:20 2022
 @author: jpeacock
 
 """
+from typing import Union
+
 from mt_metadata.base import Base, get_schema
 
 # =============================================================================
@@ -16,12 +18,7 @@ from mt_metadata.base.helpers import write_lines
 from mt_metadata.timeseries import TimePeriod
 
 from .channel import Channel
-<<<<<<< HEAD:mt_metadata/processing/aurora/run.py
-from .standards import SCHEMA_FN_PATHS
 
-=======
-from typing import Union
->>>>>>> main:mt_metadata/transfer_functions/processing/aurora/run.py
 
 # =============================================================================
 attr_dict = get_schema("run", SCHEMA_FN_PATHS)
@@ -33,7 +30,7 @@ class Run(Base):
 
     def __init__(self, **kwargs):
         """
-            Constructor.
+        Constructor.
 
         """
         self._input = []
