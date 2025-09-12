@@ -12,10 +12,10 @@ from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import
 )
 from mt_metadata.processing.window import TypeEnum
 
-from .base import BaseWeightKernel
+from .base_basemodel import Base
 
 
-class TaperWeightKernel(BaseWeightKernel):
+class TaperWeightKernel(Base):
     """
     A composite weight kernel that multiplies a low-cut and a high-cut monotonic taper kernel.
 
