@@ -6,15 +6,17 @@ TODO: Factor or rename.  The decimation level class here has information about t
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated, List, Union
 
 import numpy as np
 import pandas as pd
-from pydantic import computed_field, Field
+from loguru import logger
+from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.features.weights import ChannelWeightSpecs
+from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
 from mt_metadata.processing.aurora.band_basemodel import Band
@@ -27,7 +29,7 @@ from mt_metadata.processing.fourier_coefficients.decimation import (
 
 
 # =====================================================
-class SaveFcsTypeEnum(str, Enum):
+class SaveFcsTypeEnum(StrEnumerationBase):
     h5 = "h5"
     csv = "csv"
 
@@ -133,7 +135,7 @@ class DecimationLevel(MetadataBase):
     decimation: Annotated[
         Decimation,
         Field(
-            default_factory=Decimation,
+            default_factory=Decimation,  # type: ignore
             description="Decimation settings",
             examples=["Decimation()"],
             alias=None,
@@ -147,7 +149,7 @@ class DecimationLevel(MetadataBase):
     estimator: Annotated[
         Estimator,
         Field(
-            default_factory=Estimator,
+            default_factory=Estimator,  # type: ignore
             description="Estimator settings",
             examples=["Estimator()"],
             alias=None,
@@ -161,7 +163,7 @@ class DecimationLevel(MetadataBase):
     regression: Annotated[
         Regression,
         Field(
-            default_factory=Regression,
+            default_factory=Regression,  # type: ignore
             description="Regression settings",
             examples=["Regression()"],
             alias=None,
@@ -185,6 +187,15 @@ class DecimationLevel(MetadataBase):
             },
         ),
     ]
+
+    @field_validator("channel_weight_specs", "bands", mode="before")
+    @classmethod
+    def validate_list_of_classes(cls, value, info: ValidationInfo):
+        values = validate_setter_input(value, info.field.annotation.__args__[0])
+        return [
+            cast_to_class_if_dict(obj, info.field.annotation.__args__[0])
+            for obj in values
+        ]
 
     def add_band(self, band: Union[Band, dict]) -> None:
         """
@@ -241,6 +252,11 @@ class DecimationLevel(MetadataBase):
         """
         Returns the delta_f in frequency domain df = 1 / (N * dt)
         Here dt is the sample interval after decimation
+
+        Returns
+        -------
+        frequency_sample_interval: float
+            The frequency sample interval after decimation.
         """
         return self.decimation.sample_rate / self.stft.window.num_samples
 
@@ -249,8 +265,10 @@ class DecimationLevel(MetadataBase):
     def band_edges(self) -> np.ndarray:
         """
         Returns the band edges as a numpy array
-        :return band_edges: 2D numpy array, one row per frequency band and two columns
-        :rtype band_edges: np.ndarray
+
+        Returns
+        -------
+        band_edges: 2D numpy array, one row per frequency band and two columns
         """
         bands_df = self.bands_dataframe
         band_edges = np.vstack(
@@ -280,8 +298,10 @@ class DecimationLevel(MetadataBase):
         """
         Gets the harmonics of the STFT.
 
-        :return freqs: The frequencies at which the stft will be available.
-        :rtype freqs: np.ndarray
+        Returns
+        -------
+        freqs: np.ndarray
+            The frequencies at which the stft will be available.
         """
         freqs = self.stft.window.fft_harmonics(self.decimation.sample_rate)
         return freqs
@@ -291,8 +311,11 @@ class DecimationLevel(MetadataBase):
         """
         Loops over all bands and returns a list of the harminic indices.
         TODO: Distinguish the bands which are a processing construction vs harmonic indices which are FFT info.
-        :return: list of fc indices (integers)
-        :rtype: List[int]
+
+        Returns
+        -------
+        return_list: list of integers
+            The indices of the harmonics that are needed for processing.
         """
         return_list = []
         for band in self.bands:
@@ -352,7 +375,7 @@ class DecimationLevel(MetadataBase):
                 f"required_channels for processing {required_channels} not available"
                 f"-- fc channels estimated are {fc_decimation.channels_estimated}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # anti_alias_filter: Check that the data were filtered the same way
@@ -362,7 +385,7 @@ class DecimationLevel(MetadataBase):
                 == self.decimation.anti_alias_filter
             )
         except AssertionError:
-            cond1 = self.time_series_decimation.anti_alias_filter == "default"
+            cond1 = self.decimation.anti_alias_filter == "default"
             cond2 = fc_decimation.time_series_decimation.anti_alias_filter is None
             if cond1 & cond2:
                 pass
@@ -385,7 +408,7 @@ class DecimationLevel(MetadataBase):
                 f"Sample rates do not agree: fc {fc_decimation.time_series_decimation.sample_rate} differs from "
                 f"processing config {self.decimation.sample_rate}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # transform method (fft, wavelet, etc.)
@@ -398,7 +421,7 @@ class DecimationLevel(MetadataBase):
                 "Transform methods do not agree: "
                 f"fc {fc_decimation.short_time_fourier_transform.method} != processing config {self.stft.method}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # prewhitening_type
@@ -409,7 +432,7 @@ class DecimationLevel(MetadataBase):
                 "prewhitening_type does not agree "
                 f"fc {fc_decimation.stft.prewhitening_type} != processing config {self.stft.prewhitening_type}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # recoloring
@@ -420,7 +443,7 @@ class DecimationLevel(MetadataBase):
                 "recoloring does not agree "
                 f"fc {fc_decimation.stft.recoloring} != processing config {self.stft.recoloring}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # pre_fft_detrend_type
@@ -434,7 +457,7 @@ class DecimationLevel(MetadataBase):
                 "pre_fft_detrend_type does not agree "
                 f"fc {fc_decimation.stft.pre_fft_detrend_type} != processing config {self.stft.pre_fft_detrend_type}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # min_num_stft_windows
@@ -448,7 +471,7 @@ class DecimationLevel(MetadataBase):
                 "min_num_stft_windows do not agree "
                 f"fc {fc_decimation.stft.min_num_stft_windows} != processing config {self.stft.min_num_stft_windows}"
             )
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         # window
@@ -458,7 +481,7 @@ class DecimationLevel(MetadataBase):
             msg = "window does not agree: "
             msg = f"{msg} FC Group: {fc_decimation.stft.window} "
             msg = f"{msg} Processing Config  {self.stft.window}"
-            self.logger.info(msg)
+            logger.info(msg)
             return False
 
         if -1 in fc_decimation.stft.harmonic_indices:
@@ -466,7 +489,7 @@ class DecimationLevel(MetadataBase):
             pass
         else:
             msg = "WIP: harmonic indices in AuroraDecimationlevel are derived from processing bands -- Not robustly tested to compare with FCDecimation"
-            self.logger.debug(msg)
+            logger.debug(msg)
             harmonic_indices_requested = self.harmonic_indices
             fcdec_group_set = set(fc_decimation.stft.harmonic_indices)
             processing_set = set(harmonic_indices_requested)
@@ -477,7 +500,7 @@ class DecimationLevel(MetadataBase):
                     f"Processing FC indices {processing_set} is not contained "
                     f"in FC indices {fcdec_group_set}"
                 )
-                self.logger.info(msg)
+                logger.info(msg)
                 return False
 
         # Getting here means no checks were failed. The FCDecimation supports the processing config
@@ -514,7 +537,7 @@ class DecimationLevel(MetadataBase):
 
         """
 
-        fc_dec_obj = FCDecimation()
+        fc_dec_obj = FCDecimation()  # type: ignore
         fc_dec_obj.time_series_decimation.anti_alias_filter = (
             self.decimation.anti_alias_filter
         )
