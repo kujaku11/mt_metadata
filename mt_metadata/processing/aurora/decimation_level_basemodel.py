@@ -1,3 +1,8 @@
+"""
+This module contains the DecimationLevel class.
+TODO: Factor or rename.  The decimation level class here has information about the entire processing.
+"""
+
 # =====================================================
 # Imports
 # =====================================================
@@ -9,16 +14,12 @@ import pandas as pd
 from pydantic import computed_field, Field
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.processing import ShortTimeFourierTransform as STFT
+from mt_metadata.processing import TimeSeriesDecimation as Decimation
 from mt_metadata.processing.aurora.band_basemodel import Band
 from mt_metadata.processing.aurora.estimator_basemodel import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression_basemodel import Regression
-from mt_metadata.processing.short_time_fourier_transform_basemodel import (
-    ShortTimeFourierTransform as STFT,
-)
-from mt_metadata.processing.time_series_decimation_basemodel import (
-    TimeSeriesDecimation as Decimation,
-)
 
 
 # =====================================================

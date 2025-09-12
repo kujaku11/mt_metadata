@@ -3,14 +3,15 @@
 # =====================================================
 from enum import Enum
 from typing import Annotated
+
 import numpy as np
 from loguru import logger
 from numpy._typing import NDArray
+from pydantic import Field
 
 from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
     MonotonicWeightKernel,
 )
-from pydantic import Field
 
 
 # =====================================================
@@ -56,9 +57,9 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     ]
 
     steepness: Annotated[
-        float | None,
+        float,  # the definition had default as None, can we set it to 1?
         Field(
-            default=None,
+            default=1.0,
             description="Controls the sharpness of the activation transition.",
             examples=["10"],
             alias=None,
