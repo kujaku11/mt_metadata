@@ -51,7 +51,7 @@ class Window(MetadataBase):
     num_samples: Annotated[
         int,
         Field(
-            default=None,
+            default=256,
             description="Number of samples in a single window",
             examples=["256"],
             alias=None,
@@ -65,7 +65,7 @@ class Window(MetadataBase):
     overlap: Annotated[
         int,
         Field(
-            default=None,
+            default=32,
             description="Number of samples overlapped by adjacent windows",
             examples=["32"],
             alias=None,

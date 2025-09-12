@@ -5,7 +5,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 

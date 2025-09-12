@@ -83,18 +83,16 @@ Development Note (2025-05-24):
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
-from typing import Annotated
+from typing import Annotated, Optional, Tuple
 
 import numpy as np
-from loguru import logger
-from typing import Optional, Tuple
 import scipy.signal as ssig
+from loguru import logger
+from pydantic import computed_field, Field, model_validator
 
-from mt_metadata.features.base_feature_basemodel import Feature
-from pydantic import Field, model_validator, computed_field
-from mt_metadata.processing.window_basemodel import Window
 from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.base_feature_basemodel import Feature
+from mt_metadata.processing.window import Window
 
 
 # =====================================================
@@ -177,7 +175,7 @@ class Coherence(Feature):
     window: Annotated[
         Window,
         Field(
-            default_factory=Window(type="hann", num_samples=256, overlap=128),
+            default_factory=Window,  # type: ignore
             description="The window function to apply to the data segments before fft.",
             examples=[{"type": "hamming", "num_samples": 256, "overlap": 128}],
             alias=None,

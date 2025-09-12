@@ -21,6 +21,9 @@ from mt_metadata.processing.aurora.band_basemodel import Band
 from mt_metadata.processing.aurora.estimator_basemodel import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression_basemodel import Regression
+from mt_metadata.processing.fourier_coefficients.decimation import (
+    Decimation as FCDecimation,
+)
 
 
 # =====================================================
@@ -169,10 +172,10 @@ class DecimationLevel(MetadataBase):
         ),
     ]
 
-    stft = Annotated[
+    stft: Annotated[
         STFT,
         Field(
-            default_factory=STFT,
+            default_factory=STFT,  # type: ignore
             description="Short-time Fourier transform settings",
             examples=["STFT()"],
             alias=None,

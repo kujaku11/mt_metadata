@@ -12,13 +12,11 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.features.base_feature_basemodel import Feature
 from mt_metadata.features.coherence_basemodel import Coherence
 from mt_metadata.features.fc_coherence_basemodel import FCCoherence
-from mt_metadata.features.weights.activation_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
     ActivationMonotonicWeightKernel,
 )
-from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
-    MonotonicWeightKernel,
-)
-from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 

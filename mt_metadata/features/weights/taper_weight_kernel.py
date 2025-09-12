@@ -7,12 +7,12 @@ from typing import Annotated, Tuple
 import numpy as np
 from pydantic import computed_field, Field
 
-from mt_metadata.features.weights.taper_monotonic_weight_kernel_basemodel import (
+from mt_metadata.features.weights.taper_monotonic_weight_kernel import (
     TaperMonotonicWeightKernel,
 )
 from mt_metadata.processing.window import TypeEnum
 
-from .base_basemodel import Base
+from .base import Base
 
 
 class TaperWeightKernel(Base):

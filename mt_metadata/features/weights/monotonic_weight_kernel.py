@@ -8,7 +8,7 @@ from numpy._typing._array_like import NDArray
 from pydantic import computed_field, Field
 
 from mt_metadata.common.enumerations import StrEnumerationBase
-from mt_metadata.features.weights.base_basemodel import Base
+from mt_metadata.features.weights.base import Base
 
 
 # =====================================================

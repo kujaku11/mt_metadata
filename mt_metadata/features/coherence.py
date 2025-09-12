@@ -87,19 +87,23 @@ Development Note (2025-05-24):
 
 """
 
-# =============================================================================
-# Imports
-# =============================================================================
-from loguru import logger
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema
-from mt_metadata.transfer_functions.processing.window import Window
-from mt_metadata.features.feature import Feature
-from .standards import SCHEMA_FN_PATHS
 from typing import Optional, Tuple
 
 import numpy as np
 import scipy.signal as ssig
+
+# =============================================================================
+# Imports
+# =============================================================================
+from loguru import logger
+
+from mt_metadata.base import get_schema
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.features.feature import Feature
+from mt_metadata.processing.window import Window
+
+from .standards import SCHEMA_FN_PATHS
+
 
 # =============================================================================
 attr_dict = get_schema("coherence", SCHEMA_FN_PATHS)
@@ -127,9 +131,11 @@ class Coherence(Feature):
         self._attr_dict = attr_dict
         self.name = "coherence"
         self.domain = "frequency"
-        self.description = "Simple coherence between two channels derived " \
-                           "directly from scipy.signal.coherence applied to " \
-                           "time domain data"
+        self.description = (
+            "Simple coherence between two channels derived "
+            "directly from scipy.signal.coherence applied to "
+            "time domain data"
+        )
         self.window = DEFAULT_SCIPY_WINDOW
 
     @property
@@ -145,9 +151,7 @@ class Coherence(Feature):
         return f"{self.ch1}, {self.ch2}"
 
     def validate_station_ids(
-        self,
-        local_station_id: str,
-        remote_station_id: Optional[str] = None
+        self, local_station_id: str, remote_station_id: Optional[str] = None
     ) -> None:
         """
         Make sure that ch1, ch2 are unambiguous.
@@ -183,16 +187,16 @@ class Coherence(Feature):
                 self.station2 = None
 
         if not self.station1:
-             if self.ch1[0].lower() != "r":
-                  self.station1 = local_station_id
-             else:
-                  self.station1 = remote_station_id
+            if self.ch1[0].lower() != "r":
+                self.station1 = local_station_id
+            else:
+                self.station1 = remote_station_id
 
         if not self.station2:
-             if self.ch2[0].lower() != "r":
-                  self.station2 = local_station_id
-             else:
-                  self.station2 = remote_station_id
+            if self.ch2[0].lower() != "r":
+                self.station2 = local_station_id
+            else:
+                self.station2 = remote_station_id
 
         # by this time, all stations should be set.  Confirm that we do not have a station that is None
         # TODO Consier returning False if exception encountered here.
@@ -207,22 +211,18 @@ class Coherence(Feature):
             msg = "station2 is not set -- perhaps it was set to a remote that does not exist?"
             logger.error(msg)
 
-    def compute(
-        self,
-        ts_1: np.ndarray,
-        ts_2: np.ndarray
-    ) -> Tuple[np.ndarray]:
+    def compute(self, ts_1: np.ndarray, ts_2: np.ndarray) -> Tuple[np.ndarray]:
         """
-            Calls scipy's coherence function.
-            TODO: Consider making this return an xarray indexed by frequency.
+        Calls scipy's coherence function.
+        TODO: Consider making this return an xarray indexed by frequency.
 
-            Parameters
-            ----------
-            ts_1
-            ts_2
+        Parameters
+        ----------
+        ts_1
+        ts_2
 
-            Returns
-            -------
+        Returns
+        -------
 
         """
         frequencies, coh_squared = ssig.coherence(
@@ -241,6 +241,7 @@ class StridingWindowCoherence(Coherence):
     Computes coherence for each sub-window (FFT window) across the time series.
     Returns a 2D array: (window index, frequency).
     """
+
     def __init__(self, subwindow=None, stride=None, **kwargs):
         """
         Parameters
@@ -284,7 +285,11 @@ class StridingWindowCoherence(Coherence):
         """
         n = len(ts_1)
         main_win_len = self.window.num_samples
-        main_stride = self.window.num_samples_advance if hasattr(self.window, 'num_samples_advance') else main_win_len
+        main_stride = (
+            self.window.num_samples_advance
+            if hasattr(self.window, "num_samples_advance")
+            else main_win_len
+        )
         results = []
         for start in range(0, n - main_win_len + 1, main_stride):
             end = start + main_win_len
@@ -300,4 +305,3 @@ class StridingWindowCoherence(Coherence):
             )
             results.append(coh)
         return f, np.array(results)
-

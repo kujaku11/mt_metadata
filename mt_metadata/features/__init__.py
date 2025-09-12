@@ -12,3 +12,17 @@
 #     "Feature",
 #     "FeatureDecimationChannel",
 # ]
+
+
+# from mt_metadata.features.coherence_basemodel import Coherence
+# from mt_metadata.features.coherence import StridingWindowCoherence
+# from mt_metadata.features.cross_powers import CrossPowers
+# from mt_metadata.features.feature_ts import FeatureTS
+# from mt_metadata.features.feature_fc import FeatureFC
+
+SUPPORTED_FEATURE_DICT = {}
+# SUPPORTED_FEATURE_DICT["coherence"] = Coherence
+# SUPPORTED_FEATURE_DICT["striding_window_coherence"] = StridingWindowCoherence
+# SUPPORTED_FEATURE_DICT["cross_powers"] = CrossPowers
+# SUPPORTED_FEATURE_DICT["feature_ts"] = FeatureTS
+# SUPPORTED_FEATURE_DICT["feature_fc"] = FeatureFC

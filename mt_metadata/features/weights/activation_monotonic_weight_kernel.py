@@ -9,9 +9,7 @@ from loguru import logger
 from numpy._typing import NDArray
 from pydantic import Field
 
-from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
-    MonotonicWeightKernel,
-)
+from mt_metadata.features.weights.monotonic_weight_kernel import MonotonicWeightKernel
 
 
 # =====================================================
