@@ -2,28 +2,31 @@
 """
 Stub for CrossPowers feature.
 """
+# ==============================================================================
+# Imports
+# ==============================================================================
+from typing import Annotated
 
-from mt_metadata.features.feature import Feature
+from pydantic import Field
 
+from mt_metadata.features.base_feature_basemodel import Feature
+
+
+# ==============================================================================
 class CrossPowers(Feature):
     """
     Stub feature class for cross powers.
     """
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.name = "cross_powers"
-        self.add_base_attribute(
-            "name",
-            "cross_powers",
-            {
-                "type": str,
+
+    name: Annotated[
+        str,
+        Field(
+            default="cross_powers",
+            description="Name of the feature",
+            json_schema_extra={
                 "required": True,
-                "style": "free form",
-                "description": "Name of the feature",
                 "units": None,
-                "options": [],
-                "alias": [],
-                "example": "cross_powers",
-                "default": "cross_powers",
+                "example": ["cross_powers"],
             },
-        )
+        ),
+    ]
