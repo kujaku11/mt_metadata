@@ -3,9 +3,10 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
 from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment, TimePeriod
 
 
 # =====================================================
@@ -42,9 +43,23 @@ class FeatureTsRun(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=lambda: Comment(),
+            default_factory=lambda: Comment(),  # type: ignore
             description="Any comments about the feature",
             examples=["estimated using hilburt transform."],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=lambda: TimePeriod(),  # type: ignore
+            description="Time period for the feature",
+            examples=["2020-01-01/2020-01-31"],
             alias=None,
             json_schema_extra={
                 "units": None,
