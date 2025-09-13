@@ -10,8 +10,8 @@ Created on Fri Mar 25 11:46:46 2022
 # =============================================================================
 import unittest
 
-from mt_metadata.timeseries import TimePeriod
-from mt_metadata.transfer_functions.processing.aurora import Run, Station
+from mt_metadata.common import TimePeriod
+from mt_metadata.processing.aurora import Run, Station
 
 
 # =============================================================================
@@ -44,21 +44,20 @@ class TestStationDataset(unittest.TestCase):
             self.assertListEqual(
                 df.columns.to_list(),
                 [
-                    "station",
-                    "run",
+                    "station_id",
+                    "run_id",
                     "start",
                     "end",
                     "mth5_path",
                     "sample_rate",
-                    "input_channels",
-                    "output_channels",
+                    "input_channel_names",
+                    "output_channel_names",
                     "remote",
                     "channel_scale_factors",
                 ],
             )
-
         with self.subTest("single station"):
-            self.assertTrue(len(df.station.unique()) == 1)
+            self.assertTrue(len(df.station_id.unique()) == 1)
 
     def test_from_dataframe(self):
         df = self.station.to_dataset_dataframe()

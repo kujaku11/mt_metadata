@@ -165,7 +165,7 @@ class TestStationsInstantiation:
 
         assert stations.local.id == "LOCAL001"
         assert stations.local.remote is False
-        assert stations.local.mth5_path == "/path/to/local.mth5"
+        assert stations.local.mth5_path.as_posix() == "/path/to/local.mth5"
 
     def test_stations_defaults(self, basic_stations):
         """Test default values"""

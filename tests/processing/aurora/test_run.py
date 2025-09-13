@@ -18,7 +18,6 @@ Test organization:
 - Optimized for efficiency with minimal redundant object creation
 """
 
-
 import pytest
 
 from mt_metadata.common import TimePeriod
