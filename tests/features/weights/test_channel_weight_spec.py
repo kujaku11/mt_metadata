@@ -20,7 +20,7 @@ from mt_metadata.features.weights.channel_weight_spec import (
     CombinationStyleEnum,
 )
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
-from mt_metadata.processing.aurora.band_basemodel import Band
+from mt_metadata.processing.aurora.band import Band
 
 
 # =====================================================

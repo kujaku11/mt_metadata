@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from .band_basemodel import Band
+from .band import Band
 
 
 class FrequencyBands:

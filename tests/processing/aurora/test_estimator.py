@@ -14,7 +14,7 @@ whilst optimizing for efficiency.
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.processing.aurora.estimator_basemodel import EngineEnum, Estimator
+from mt_metadata.processing.aurora.estimator import EngineEnum, Estimator
 
 
 # =============================================================================

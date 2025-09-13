@@ -12,10 +12,10 @@ import pandas as pd
 import pytest
 
 from mt_metadata.common import TimePeriod
-from mt_metadata.processing.aurora.channel_basemodel import Channel
-from mt_metadata.processing.aurora.run_basemodel import Run
-from mt_metadata.processing.aurora.station_basemodel import Station
-from mt_metadata.processing.aurora.stations_basemodel import Stations
+from mt_metadata.processing.aurora.channel import Channel
+from mt_metadata.processing.aurora.run import Run
+from mt_metadata.processing.aurora.station import Station
+from mt_metadata.processing.aurora.stations import Stations
 
 
 # Fixtures at module level for optimal efficiency

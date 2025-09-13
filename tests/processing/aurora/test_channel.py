@@ -13,7 +13,7 @@ Pytest test suite for Channel basemodel
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.processing.aurora.channel_basemodel import Channel
+from mt_metadata.processing.aurora.channel import Channel
 
 
 # =============================================================================

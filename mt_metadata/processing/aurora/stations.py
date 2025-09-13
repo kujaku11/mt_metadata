@@ -7,7 +7,7 @@ import pandas as pd
 from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.processing.aurora.station_basemodel import Station
+from mt_metadata.processing.aurora.station import Station
 
 
 # =====================================================

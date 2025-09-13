@@ -12,7 +12,7 @@ Pytest test suite for ChannelNomenclature basemodel
 
 import pytest
 
-from mt_metadata.processing.aurora.channel_nomenclature_basemodel import (
+from mt_metadata.processing.aurora.channel_nomenclature import (
     ChannelNomenclature,
     ExEnum,
     EyEnum,

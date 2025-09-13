@@ -7,7 +7,7 @@ from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import TimePeriod
-from mt_metadata.processing.aurora.channel_basemodel import Channel
+from mt_metadata.processing.aurora.channel import Channel
 
 
 # =====================================================

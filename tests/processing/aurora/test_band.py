@@ -14,11 +14,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from mt_metadata.processing.aurora.band_basemodel import (
-    Band,
-    CenterAveragingTypeEnum,
-    ClosedEnum,
-)
+from mt_metadata.processing.aurora.band import Band, CenterAveragingTypeEnum, ClosedEnum
 
 
 # =============================================================================

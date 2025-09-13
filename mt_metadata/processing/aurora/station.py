@@ -9,7 +9,7 @@ from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import TimePeriod
-from mt_metadata.processing.aurora.run_basemodel import Run
+from mt_metadata.processing.aurora.run import Run
 
 
 # =====================================================

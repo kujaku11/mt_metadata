@@ -14,7 +14,7 @@ whilst optimizing for efficiency.
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.processing.aurora.regression_basemodel import Regression
+from mt_metadata.processing.aurora.regression import Regression
 
 
 # =============================================================================

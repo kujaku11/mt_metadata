@@ -69,7 +69,7 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
 from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
-from mt_metadata.processing.aurora.band_basemodel import Band
+from mt_metadata.processing.aurora.band import Band
 
 
 # =====================================================
