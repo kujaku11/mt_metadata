@@ -6,7 +6,7 @@ TODO: Factor or rename.  The decimation level class here has information about t
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, List, Union
+from typing import Annotated, get_args, List, Union
 
 import numpy as np
 import pandas as pd
@@ -191,11 +191,18 @@ class DecimationLevel(MetadataBase):
     @field_validator("channel_weight_specs", "bands", mode="before")
     @classmethod
     def validate_list_of_classes(cls, value, info: ValidationInfo):
-        values = validate_setter_input(value, info.field.annotation.__args__[0])
-        return [
-            cast_to_class_if_dict(obj, info.field.annotation.__args__[0])
-            for obj in values
-        ]
+        # Get the field type dynamically from the model
+        field_name = info.field_name
+        if field_name is None:
+            raise ValueError("Field name is required for validation")
+
+        field_info = cls.model_fields[field_name]
+
+        # Extract the target class from List[TargetClass] annotation
+        target_class = get_args(field_info.annotation)[0]
+
+        values = validate_setter_input(value, target_class)
+        return [cast_to_class_if_dict(obj, target_class) for obj in values]
 
     def add_band(self, band: Union[Band, dict]) -> None:
         """
@@ -550,7 +557,8 @@ class DecimationLevel(MetadataBase):
         if ignore_harmonic_indices:
             pass
         else:
-            fc_dec_obj.stft.harmonic_indices = self.harmonic_indices()
+            # Now that harmonic_indices is list[int], this should work
+            fc_dec_obj.stft.harmonic_indices = self.harmonic_indices
         fc_dec_obj.id = f"{self.decimation.level}"
         fc_dec_obj.stft.method = self.stft.method
         fc_dec_obj.stft.pre_fft_detrend_type = self.stft.pre_fft_detrend_type

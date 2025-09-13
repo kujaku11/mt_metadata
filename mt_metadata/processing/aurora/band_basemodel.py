@@ -145,10 +145,17 @@ class Band(MetadataBase):
     @field_validator("name", mode="before")
     @classmethod
     def validate_name(cls, value: str, info: ValidationInfo) -> str:
-        if not isinstance(value, str):
-            raise TypeError(f"Expected string, got {type(value)}")
         if value in ["", None]:
-            return f"{info.data['center_frequency']:.6f}"
+            # Generate a default name using available data
+            if "frequency_min" in info.data and "frequency_max" in info.data:
+                center_freq = (
+                    info.data["frequency_min"] + info.data["frequency_max"]
+                ) / 2
+                return f"{center_freq:.6f}"
+            else:
+                return "unnamed_band"
+        elif not isinstance(value, str):
+            raise TypeError(f"Expected string, got {type(value)}")
         else:
             return value
 
@@ -212,9 +219,11 @@ class Band(MetadataBase):
         self.index_max = indices[-1]
 
     def to_interval(self):
-        return pd.Interval(
-            self.frequency_min, self.frequency_max, closed=self.closed.value
+        # Handle both string and enum values for closed
+        closed_value = (
+            self.closed.value if hasattr(self.closed, "value") else self.closed
         )
+        return pd.Interval(self.frequency_min, self.frequency_max, closed=closed_value)
 
     @property
     def harmonic_indices(self):

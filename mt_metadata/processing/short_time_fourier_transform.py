@@ -36,9 +36,9 @@ class PrewhiteningTypeEnum(StrEnumerationBase):
 
 class ShortTimeFourierTransform(MetadataBase):
     harmonic_indices: Annotated[
-        int,
+        list[int],
         Field(
-            default=None,
+            default_factory=list,
             description="List of harmonics indices kept, if all use -1",
             examples=[[0, 4, 8]],
             alias=None,
