@@ -6,6 +6,7 @@ from typing import Annotated
 from pydantic import Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common import TimePeriod
 from mt_metadata.common.units import get_unit_object
 
 
@@ -82,11 +83,25 @@ class FeatureDecimationChannel(MetadataBase):
     ]
 
     units: Annotated[
-        float,
+        str,
         Field(
-            default="counts",
+            default="count",
             description="Units of the channel",
-            examples=["millivolts"],
+            examples=["milliVolts"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=TimePeriod,
+            description="Time period of the channel",
+            examples=[{"start": "2020-01-01", "end": "2020-01-02"}],
             alias=None,
             json_schema_extra={
                 "units": None,
