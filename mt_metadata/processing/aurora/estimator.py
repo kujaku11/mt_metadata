@@ -1,26 +1,46 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 25 15:20:59 2022
-
-@author: jpeacock
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
-# =============================================================================
-attr_dict = get_schema("estimator", SCHEMA_FN_PATHS)
+# =====================================================
+class EngineEnum(StrEnumerationBase):
+    RME_RR = "RME_RR"
+    RME = "RME"
+    other = "other"
 
 
-# =============================================================================
-class Estimator(Base):
-    __doc__ = write_lines(attr_dict)
+class Estimator(MetadataBase):
+    engine: Annotated[
+        EngineEnum,
+        Field(
+            default="RME_RR",
+            description="The transfer function estimator engine",
+            examples=["RME_RR"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    estimate_per_channel: Annotated[
+        bool,
+        Field(
+            default=True,
+            description="Estimate per channel",
+            examples=["True"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]

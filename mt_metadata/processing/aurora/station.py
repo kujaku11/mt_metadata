@@ -1,41 +1,87 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 17 14:15:20 2022
-
-@author: jpeacock
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
+# =====================================================
+from pathlib import Path
+from typing import Annotated, Union
+
 import pandas as pd
+from pydantic import computed_field, Field, field_validator, ValidationInfo
 
-from mt_metadata.base import Base, get_schema
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.timeseries import TimePeriod
-
-from .run import Run
-from .standards import SCHEMA_FN_PATHS
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import TimePeriod
+from mt_metadata.processing.aurora.run_basemodel import Run
 
 
-# =============================================================================
-attr_dict = get_schema("station", SCHEMA_FN_PATHS)
+# =====================================================
+class Station(MetadataBase):
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="Station ID",
+            examples=["mt001"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
+    mth5_path: Annotated[
+        str | Path,
+        Field(
+            default="",
+            description="full path to MTH5 file where the station data is contained",
+            examples=["/home/mt/experiment_01.h5"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-# =============================================================================
-class Station(Base):
-    __doc__ = write_lines(attr_dict)
+    remote: Annotated[
+        bool,
+        Field(
+            default=False,
+            description="remote station (True) or local station (False)",
+            examples=["False"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
-        self._runs = []
+    runs: Annotated[
+        list[Run],
+        Field(
+            default_factory=list,
+            description="List of runs to process",
+            examples=["001"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    @property
-    def runs(self):
-        return self._runs
+    @field_validator("mth5_path", mode="before")
+    @classmethod
+    def validate_mth5_path(cls, value: str | Path, info: ValidationInfo) -> str | Path:
+        try:
+            return Path(value)
+        except Exception as e:
+            raise ValueError(f"could not convert {value} to Path") from e
 
-    @runs.setter
-    def runs(self, values):
-        self._runs = []
+    @field_validator("runs", mode="before")
+    @classmethod
+    def validate_runs(cls, values: Union[list, str, Run, dict], info: ValidationInfo):
+        runs = []
         if not isinstance(values, list):
             values = [values]
 
@@ -51,9 +97,11 @@ class Station(Base):
             else:
                 raise TypeError(f"not sure what to do with type {type(item)}")
 
-            self._runs.append(run)
+            runs.append(run)
 
-    def get_run(self, run_id):
+        return runs
+
+    def get_run(self, run_id) -> Run | None:
         """
 
         :param run_id: DESCRIPTION
@@ -66,16 +114,18 @@ class Station(Base):
         try:
             return self.run_dict[run_id]
         except KeyError:
-            raise KeyError(f"Could not find {run_id}")
+            return None
 
+    @computed_field
     @property
-    def run_list(self):
+    def run_list(self) -> list[str]:
         """list of run names"""
 
         return [r.id for r in self.runs]
 
+    @computed_field
     @property
-    def run_dict(self):
+    def run_dict(self) -> dict[str, Run]:
         """
         need to have a dictionary, but it can't be an attribute cause that
         gets confusing when reading in a json file
@@ -86,7 +136,7 @@ class Station(Base):
         """
         return dict([(rr.id, rr) for rr in self.runs])
 
-    def to_dataset_dataframe(self):
+    def to_dataset_dataframe(self) -> pd.DataFrame:
         """
         Create a dataset definition dataframe that can be used in the
         processing
@@ -110,26 +160,27 @@ class Station(Base):
         for run in self.runs:
             for tp in run.time_periods:
                 entry = {
-                    "station": self.id,
-                    "run": run.id,
-                    "start": tp.start,
-                    "end": tp.end,
+                    "station_id": self.id,
+                    "run_id": run.id,
+                    "start": str(tp.start),  # Convert to string to avoid MTime issues
+                    "end": str(tp.end),  # Convert to string to avoid MTime issues
                     "mth5_path": self.mth5_path,
                     "sample_rate": run.sample_rate,
-                    "input_channels": run.input_channel_names,
-                    "output_channels": run.output_channel_names,
+                    "input_channel_names": run.input_channel_names,
+                    "output_channel_names": run.output_channel_names,
                     "remote": self.remote,
                     "channel_scale_factors": run.channel_scale_factors,
                 }
                 data_list.append(entry)
 
         df = pd.DataFrame(data_list)
-        df.start = pd.to_datetime(df.start)
-        df.end = pd.to_datetime(df.end)
+        if len(df) > 0:
+            df["start"] = pd.to_datetime(df["start"])
+            df["end"] = pd.to_datetime(df["end"])
 
         return df
 
-    def from_dataset_dataframe(self, df):
+    def from_dataset_dataframe(self, df: pd.DataFrame):
         """
         set a data frame
 
@@ -154,15 +205,19 @@ class Station(Base):
 
         self.runs = []
 
-        self.id = df.station.unique()[0]
+        # Handle empty DataFrame case
+        if df.empty:
+            return
+
+        self.id = df.station_id.unique()[0]
         self.mth5_path = df.mth5_path.unique()[0]
         self.remote = df.remote.unique()[0]
 
         for entry in df.itertuples():
             try:
-                r = self.run_dict[entry.run]
+                r = self.run_dict[entry.run_id]
                 r.time_periods.append(
-                    TimePeriod(start=entry.start.isoformat(), end=entry.end.isoformat())
+                    TimePeriod(start=str(entry.start), end=str(entry.end))
                 )
 
             except KeyError:
@@ -171,14 +226,13 @@ class Station(Base):
                 else:
                     channel_scale_factors = {}
                 r = Run(
-                    id=entry.run,
+                    id=entry.run_id,
                     sample_rate=entry.sample_rate,
-                    input_channels=entry.input_channels,
-                    output_channels=entry.output_channels,
-                    channel_scale_factors=channel_scale_factors,
+                    input_channels=entry.input_channel_names,
+                    output_channels=entry.output_channel_names,
+                    time_periods=[
+                        TimePeriod(start=str(entry.start), end=str(entry.end))
+                    ],
                 )
-
-                r.time_periods.append(
-                    TimePeriod(start=entry.start.isoformat(), end=entry.end.isoformat())
-                )
+                r.set_channel_scale_factors(channel_scale_factors)
                 self.runs.append(r)

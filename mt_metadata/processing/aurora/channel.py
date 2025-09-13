@@ -1,26 +1,39 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 17 14:15:20 2022
-
-@author: jpeacock
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
+from mt_metadata.base import MetadataBase
 
 
-# =============================================================================
-class Channel(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Channel(MetadataBase):
+    id: Annotated[
+        str,
+        Field(
+            default="",
+            description="channel ID",
+            examples=["mt001"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    scale_factor: Annotated[
+        float,
+        Field(
+            default=1.0,
+            description="scale factor of the channel",
+            examples=["10.0"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]

@@ -1,85 +1,195 @@
-# -*- coding: utf-8 -*-
-"""
-
-@author: kkappler
-"""
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
-from mt_metadata.base import get_schema, Base
+# =====================================================
+from typing import Annotated
+
+from pydantic import computed_field, Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.transfer_functions import CHANNEL_MAPS
-from .standards import SCHEMA_FN_PATHS
-
-from typing import Dict, Literal
-# =============================================================================
-attr_dict = get_schema("channel_nomenclature", SCHEMA_FN_PATHS)
-
-# ====================== Nomenclature definitions for typehints and docstrings ============= #
-
-SupportedNomenclature = Literal[
-    "default",
-    "lemi12",
-    "lemi34",
-    "musgraves",
-    "nims",
-    "phoenix123",
-]
 
 
-# =============================================================================
+# =====================================================
+class ExEnum(StrEnumerationBase):
+    ex = "ex"
+    e1 = "e1"
+    e2 = "e2"
+    e3 = "e3"
+    e4 = "e4"
 
-class ChannelNomenclature(Base):
-    __doc__ = write_lines(attr_dict)
 
-    def __init__(self, keyword=None):
+class EyEnum(StrEnumerationBase):
+    ey = "ey"
+    e1 = "e1"
+    e2 = "e2"
+    e3 = "e3"
+    e4 = "e4"
 
-        super().__init__(attr_dict=attr_dict)
-        self._keyword = keyword
-        if self._keyword is not None:
-            self.update()
 
+class HxEnum(StrEnumerationBase):
+    bx = "bx"
+    hx = "hx"
+    h1 = "h1"
+    h2 = "h2"
+    h3 = "h3"
+
+
+class HyEnum(StrEnumerationBase):
+    by = "by"
+    hy = "hy"
+    h1 = "h1"
+    h2 = "h2"
+    h3 = "h3"
+
+
+class HzEnum(StrEnumerationBase):
+    bz = "bz"
+    hz = "hz"
+    h1 = "h1"
+    h2 = "h2"
+    h3 = "h3"
+
+
+class SupportedNomenclatureEnum(StrEnumerationBase):
+    default = "default"
+    lemi12 = "lemi12"
+    lemi34 = "lemi34"
+    musgraves = "musgraves"
+    phoenix123 = "phoenix123"
+
+
+class ChannelNomenclature(MetadataBase):
+    ex: Annotated[
+        ExEnum,
+        Field(
+            default="ex",
+            description="label for the X electric field channel, X is assumed to be North",
+            examples=["ex"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    ey: Annotated[
+        EyEnum,
+        Field(
+            default="ey",
+            description="label for the Y electric field channel, Y is assumed to be East",
+            examples=["ey"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    hx: Annotated[
+        HxEnum,
+        Field(
+            default="hx",
+            description="label for the X magnetic field channel, X is assumed to be North",
+            examples=["hx"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    hy: Annotated[
+        HyEnum,
+        Field(
+            default="hy",
+            description="label for the Y magnetic field channel, Y is assumed to be East",
+            examples=["hy"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    hz: Annotated[
+        HzEnum,
+        Field(
+            default="hz",
+            description="label for the Z magnetic field channel, Z is assumed to be vertical Down",
+            examples=["hz"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    keyword: Annotated[
+        SupportedNomenclatureEnum,
+        Field(
+            default="default",
+            description="Keyword for the channel nomenclature system",
+            examples=["default", "lemi12", "lemi34", "musgraves", "phoenix123"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": False,
+            },
+        ),
+    ]
+
+    @field_validator("keyword", mode="before")
+    @classmethod
+    def check_keyword(cls, value, info: ValidationInfo):
+        if value is None:
+            value = "default"
+        return value
+
+    @computed_field
     @property
-    def ex_ey(self):
+    def ex_ey(self) -> list[str]:
         return [self.ex, self.ey]
 
+    @computed_field
     @property
-    def hx_hy(self):
+    def hx_hy(self) -> list[str]:
         return [self.hx, self.hy]
 
+    @computed_field
     @property
-    def hx_hy_hz(self):
+    def hx_hy_hz(self) -> list[str]:
         return [self.hx, self.hy, self.hz]
 
+    @computed_field
     @property
-    def ex_ey_hz(self):
+    def ex_ey_hz(self) -> list[str]:
         return [self.ex, self.ey, self.hz]
 
+    @computed_field
     @property
-    def default_input_channels(self):
+    def default_input_channels(self) -> list[str]:
         return self.hx_hy
 
+    @computed_field
     @property
-    def default_output_channels(self):
+    def default_output_channels(self) -> list[str]:
         return self.ex_ey_hz
 
+    @computed_field
     @property
-    def default_reference_channels(self):
+    def default_reference_channels(self) -> list[str]:
         return self.hx_hy
 
-    @property
-    def keyword(self):
-        return self._keyword
-
-    @keyword.setter
-    def keyword(self, keyword):
-        self._keyword = keyword
-        self.update()
-
-    def get_channel_map(self) -> Dict[str,str]:
+    def get_channel_map(self) -> dict[str, str]:
         """
-            Based on self.keyword return the mapping between conventional channel names and
-            the custom channel names in the particular nomenclature.
+        Based on self.keyword return the mapping between conventional channel names and
+        the custom channel names in the particular nomenclature.
 
         """
         try:
@@ -88,22 +198,41 @@ class ChannelNomenclature(Base):
             msg = f"channel mt_system {self.keyword} unknown)"
             raise NotImplementedError(msg)
 
-
     def update(self) -> None:
         """
         Assign values to standard channel names "ex", "ey" etc based on channel_map dict
         """
         channel_map = self.get_channel_map()
-        self.ex = channel_map["ex"]
-        self.ey = channel_map["ey"]
-        self.hx = channel_map["hx"]
-        self.hy = channel_map["hy"]
-        self.hz = channel_map["hz"]
+        self.ex = channel_map["ex"]  # type: ignore
+        self.ey = channel_map["ey"]  # type: ignore
+        self.hx = channel_map["hx"]  # type: ignore
+        self.hy = channel_map["hy"]  # type: ignore
+        self.hz = channel_map["hz"]  # type: ignore
 
     def unpack(self) -> tuple:
         return self.ex, self.ey, self.hx, self.hy, self.hz
 
+    @computed_field
     @property
-    def channels(self):
+    def channels(self) -> list[str]:
         channels = list(self.get_channel_map().values())
         return channels
+
+    def __setattr__(self, name, value):
+        """Override setattr to automatically update channels when keyword changes."""
+        # Call parent setattr first
+        super().__setattr__(name, value)
+
+        # If keyword was changed and this is not during initial construction,
+        # update the channel mappings
+        if (
+            name == "keyword"
+            and hasattr(self, "_initialized")
+            and getattr(self, "_initialized", False)
+        ):
+            self.update()
+
+    def model_post_init(self, __context):
+        """Called after model initialization to set up auto-update and do initial update."""
+        self._initialized = True
+        self.update()

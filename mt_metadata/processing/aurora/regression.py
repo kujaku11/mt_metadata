@@ -1,26 +1,109 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 25 15:20:59 2022
-
-@author: jpeacock
-"""
-from mt_metadata.base import Base, get_schema
-
-# =============================================================================
+# =====================================================
 # Imports
-# =============================================================================
-from mt_metadata.base.helpers import write_lines
+# =====================================================
+from typing import Annotated
 
-from .standards import SCHEMA_FN_PATHS
+from pydantic import Field
 
-
-# =============================================================================
-attr_dict = get_schema("regression", SCHEMA_FN_PATHS)
+from mt_metadata.base import MetadataBase
 
 
-# =============================================================================
-class Regression(Base):
-    __doc__ = write_lines(attr_dict)
+# =====================================================
+class Regression(MetadataBase):
+    minimum_cycles: Annotated[
+        int,
+        Field(
+            default=1,
+            description="Minimum number of cycles in the regression",
+            examples=["10"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
 
-    def __init__(self, **kwargs):
-        super().__init__(attr_dict=attr_dict, **kwargs)
+    max_iterations: Annotated[
+        int,
+        Field(
+            default=10,
+            description="Max iterations of the regression",
+            examples=["10"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    max_redescending_iterations: Annotated[
+        int,
+        Field(
+            default=2,
+            description="Max redescending iterations of the regression",
+            examples=["2"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    r0: Annotated[
+        float,
+        Field(
+            default=1.5,
+            description="The number of standard deviations where the influence function changes from linear to quadratic",
+            examples=["1.4"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    u0: Annotated[
+        float,
+        Field(
+            default=2.8,
+            description="Control for redescending Huber regression weights.",
+            examples=["2.8"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    tolerance: Annotated[
+        float,
+        Field(
+            default=0.005,
+            description="Control for convergence of RME algorithm.  Lower means more iterations",
+            examples=["0.005"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
+
+    verbosity: Annotated[
+        int,
+        Field(
+            default=1,
+            description="Control for logging messages during regression -- Higher means more messages",
+            examples=["1"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
+            },
+        ),
+    ]
