@@ -24,35 +24,6 @@ class QRadiusEnum(StrEnumerationBase):
 
 
 class FCCoherence(Coherence, Feature):
-    # QUESTION: Is there a reason to have names of channel_1 when coherence has names ch1?
-    channel_1: Annotated[
-        str,
-        Field(
-            default="",
-            description="The first channel of two channels in the coherence calculation.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "example": ["ex"],
-            },
-        ),
-    ]
-
-    channel_2: Annotated[
-        str,
-        Field(
-            default="",
-            description="The second channel of two channels in the coherence calculation.",
-            examples=["hy"],
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-            },
-        ),
-    ]
-
     minimum_fcs: Annotated[
         int,
         Field(

@@ -225,3 +225,4 @@ History
 * Updated `get_now_utc` to return an `MTime` object.
 * Moved `listdict` to `mt_metadata.common.listdict` and added a `pop` method to it.
 * Moved `units` to `mt_metadata.common.units` and added a `Unit` object that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
+* In `features.CoherenceBaseModel` changed `station_1` and `station_2` to `station_1` and `station_2` to be more consistent with other objects.  The old attributes are still available for backwards compatibility, but will be deprecated in the future. Similar with channel, changed `ch1` and `ch2` to `channel_1` and `channel_2`.

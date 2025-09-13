@@ -72,11 +72,11 @@ class TestFCCoherenceInheritance:
         assert hasattr(fc, "comments")
 
         # From Coherence class
-        assert hasattr(fc, "ch1")
-        assert hasattr(fc, "ch2")
+        assert hasattr(fc, "channel_1")
+        assert hasattr(fc, "channel_2")
         assert hasattr(fc, "detrend")
-        assert hasattr(fc, "station1")
-        assert hasattr(fc, "station2")
+        assert hasattr(fc, "station_1")
+        assert hasattr(fc, "station_2")
         assert hasattr(fc, "window")
 
         # FCCoherence specific fields

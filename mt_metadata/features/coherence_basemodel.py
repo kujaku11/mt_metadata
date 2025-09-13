@@ -102,7 +102,7 @@ class DetrendEnum(StrEnumerationBase):
 
 
 class Coherence(Feature):
-    ch1: Annotated[
+    channel_1: Annotated[
         str,
         Field(
             default="",
@@ -116,7 +116,7 @@ class Coherence(Feature):
         ),
     ]
 
-    ch2: Annotated[
+    channel_2: Annotated[
         str,
         Field(
             default="",
@@ -144,7 +144,7 @@ class Coherence(Feature):
         ),
     ]
 
-    station1: Annotated[
+    station_1: Annotated[
         str | None,
         Field(
             default=None,
@@ -158,7 +158,7 @@ class Coherence(Feature):
         ),
     ]
 
-    station2: Annotated[
+    station_2: Annotated[
         str | None,
         Field(
             default=None,
@@ -175,7 +175,7 @@ class Coherence(Feature):
     window: Annotated[
         Window,
         Field(
-            default_factory=Window,  # type: ignore
+            default=Window(num_samples=256, overlap=128, type="hamming"),  # type: ignore
             description="The window function to apply to the data segments before fft.",
             examples=[{"type": "hamming", "num_samples": 256, "overlap": 128}],
             alias=None,
@@ -201,7 +201,7 @@ class Coherence(Feature):
     @computed_field
     @property
     def channel_pair_str(self) -> str:
-        return f"{self.ch1}, {self.ch2}"
+        return f"{self.channel_1}, {self.channel_2}"
 
     def validate_station_ids(
         self, local_station_id: str, remote_station_id: Optional[str] = None
@@ -239,29 +239,29 @@ class Coherence(Feature):
                 logger.warning(msg)
                 self.station2 = None
 
-        if not self.station1:
-            if self.ch1[0].lower() != "r":
-                self.station1 = local_station_id
+        if not self.station_1:
+            if self.channel_1[0].lower() != "r":
+                self.station_1 = local_station_id
             else:
                 self.station1 = remote_station_id
 
-        if not self.station2:
-            if self.ch2[0].lower() != "r":
-                self.station2 = local_station_id
+        if not self.station_2:
+            if self.channel_2[0].lower() != "r":
+                self.station_2 = local_station_id
             else:
-                self.station2 = remote_station_id
+                self.station_2 = remote_station_id
 
         # by this time, all stations should be set.  Confirm that we do not have a station that is None
-        # TODO Consier returning False if exception encountered here.
+        # TODO Consider returning False if exception encountered here.
         try:
-            assert self.station1 is not None
+            assert self.station_1 is not None
         except Exception as e:
-            msg = "station1 is not set -- perhaps it was set to a remote that does not exist?"
+            msg = "station_1 is not set -- perhaps it was set to a remote that does not exist?"
             logger.error(msg)
         try:
-            assert self.station2 is not None
+            assert self.station_2 is not None
         except Exception as e:
-            msg = "station2 is not set -- perhaps it was set to a remote that does not exist?"
+            msg = "station_2 is not set -- perhaps it was set to a remote that does not exist?"
             logger.error(msg)
 
     def compute(
