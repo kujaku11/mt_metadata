@@ -129,12 +129,28 @@ class FeatureWeightSpec(MetadataBase):
             if isinstance(item, dict) and "weight_kernel" in item:
                 item = item["weight_kernel"]
             if isinstance(item, dict):
-                weight = str(item.get("weight_type", ""))
-                try:
-                    kernels.append(weight_classes[weight](**item))
-                except KeyError:
-                    msg = f"weight type {weight} not recognized -- skipping"
-                    logger.warning(msg)
+                # Use the 'style' field to determine which kernel class to use
+                style = str(item.get("style", ""))
+                if style in weight_classes:
+                    try:
+                        kernels.append(weight_classes[style](**item))
+                    except Exception as e:
+                        msg = (
+                            f"Failed to create weight kernel with style '{style}': {e}"
+                        )
+                        logger.warning(msg)
+                else:
+                    # Fallback to weight_type for backward compatibility
+                    weight_type = str(item.get("weight_type", ""))
+                    if weight_type in weight_classes:
+                        try:
+                            kernels.append(weight_classes[weight_type](**item))
+                        except Exception as e:
+                            msg = f"Failed to create weight kernel with weight_type '{weight_type}': {e}"
+                            logger.warning(msg)
+                    else:
+                        msg = f"Neither style '{style}' nor weight_type '{weight_type}' recognized -- skipping"
+                        logger.warning(msg)
 
             elif isinstance(
                 item,

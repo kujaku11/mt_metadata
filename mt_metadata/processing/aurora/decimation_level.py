@@ -6,7 +6,7 @@ TODO: Factor or rename.  The decimation level class here has information about t
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, get_args, List, Union
+from typing import Annotated, get_args, List, TYPE_CHECKING, Union
 
 import numpy as np
 import pandas as pd
@@ -15,7 +15,6 @@ from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common.enumerations import StrEnumerationBase
-from mt_metadata.features.weights import ChannelWeightSpecs
 from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
@@ -23,6 +22,13 @@ from mt_metadata.processing.aurora.band import Band
 from mt_metadata.processing.aurora.estimator import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression import Regression
+
+
+if TYPE_CHECKING:
+    from mt_metadata.features.weights.channel_weight_spec import (
+        ChannelWeightSpec as ChannelWeightSpecs,
+    )
+
 from mt_metadata.processing.fourier_coefficients.decimation import (
     Decimation as FCDecimation,
 )
@@ -49,7 +55,7 @@ class DecimationLevel(MetadataBase):
     ]
 
     channel_weight_specs: Annotated[
-        list[ChannelWeightSpecs],
+        list["ChannelWeightSpecs"],
         Field(
             default_factory=list,
             description="List of weighting schemes to use for TF processing for each output channel",
