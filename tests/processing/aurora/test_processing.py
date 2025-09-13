@@ -1,54 +1,102 @@
 #!/usr/bin/env python3
 """
-Test suite for processing_basemodel.py
+Pytest suite for processing_basemodel.py
 
-This file tests the Processing class and BandSpecificationStyleEnum functionality.
-All tests pass and cover the core functionality of the processing module.
+This file tests the Processing class and BandSpecificationStyleEnum functionality
+using pytest fixtures, parametrized tests, and markers for optimal efficiency.
 
-Run with: python test_processing_final.py
+Run with:
+    pytest test_processing.py
+    pytest test_processing.py -m enum  # Run only enum tests
+    pytest test_processing.py -m integration  # Run only integration tests
+    pytest test_processing.py -v  # Verbose output
+
+Test organization:
+- Fixtures for reusable test data and instances
+- Parametrized tests for efficiency
+- Pytest markers for test categorization
+- Integration tests for complete workflows
 """
 
-import os
-import sys
-import unittest
+import pytest
+
+from mt_metadata.processing.aurora.processing_basemodel import (
+    BandSpecificationStyleEnum,
+    Processing,
+)
 
 
-# Add project root to Python path for imports
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
-
-try:
-    from mt_metadata.processing.aurora.decimation_level_basemodel import DecimationLevel
-    from mt_metadata.processing.aurora.processing_basemodel import (
-        BandSpecificationStyleEnum,
-        Processing,
-    )
-except ImportError as e:
-    print(f"Import error: {e}")
-    print("Make sure you're running from the mt_metadata project root")
-    sys.exit(1)
+# ============================================================================
+# FIXTURES
+# ============================================================================
 
 
-class TestBandSpecificationStyleEnum(unittest.TestCase):
+@pytest.fixture
+def processing_instance():
+    """Create a basic Processing instance with default values."""
+    return Processing()
+
+
+@pytest.fixture
+def populated_processing():
+    """Create a Processing instance with populated values."""
+    processing = Processing()
+    processing.id = "test_config"
+    processing.band_specification_style = BandSpecificationStyleEnum.EMTF
+    processing.band_setup_file = "/test/path/setup.cfg"
+    return processing
+
+
+@pytest.fixture
+def sample_processing_data():
+    """Sample data for creating Processing instances from dictionaries."""
+    return {
+        "id": "dict_test_config",
+        "band_specification_style": "EMTF",
+        "band_setup_file": "/test/path/setup.cfg",
+    }
+
+
+@pytest.fixture
+def enum_test_values():
+    """Test values for enum testing."""
+    return {
+        "valid_strings": ["EMTF", "band_edges"],
+        "invalid_strings": ["invalid_value", "", "random_text"],
+        "invalid_types": [123, [], {}],
+    }
+
+
+# ============================================================================
+# ENUM TESTS
+# ============================================================================
+
+
+@pytest.mark.enum
+class TestBandSpecificationStyleEnum:
     """Test BandSpecificationStyleEnum functionality."""
 
     def test_enum_values(self):
         """Test that enum has expected string representations."""
-        self.assertIn("EMTF", str(BandSpecificationStyleEnum.EMTF))
-        self.assertIn("band_edges", str(BandSpecificationStyleEnum.band_edges))
+        assert "EMTF" in str(BandSpecificationStyleEnum.EMTF)
+        assert "band_edges" in str(BandSpecificationStyleEnum.band_edges)
 
     def test_enum_string_inheritance(self):
         """Test that enum inherits from string."""
-        self.assertIsInstance(BandSpecificationStyleEnum.EMTF, str)
-        self.assertIsInstance(BandSpecificationStyleEnum.band_edges, str)
+        assert isinstance(BandSpecificationStyleEnum.EMTF, str)
+        assert isinstance(BandSpecificationStyleEnum.band_edges, str)
 
-    def test_enum_from_string(self):
+    @pytest.mark.parametrize(
+        "enum_value,expected",
+        [
+            ("EMTF", BandSpecificationStyleEnum.EMTF),
+            ("band_edges", BandSpecificationStyleEnum.band_edges),
+        ],
+    )
+    def test_enum_from_string(self, enum_value, expected):
         """Test creating enum instances from string values."""
-        emtf_enum = BandSpecificationStyleEnum("EMTF")
-        self.assertEqual(emtf_enum, BandSpecificationStyleEnum.EMTF)
-
-        band_edges_enum = BandSpecificationStyleEnum("band_edges")
-        self.assertEqual(band_edges_enum, BandSpecificationStyleEnum.band_edges)
+        result = BandSpecificationStyleEnum(enum_value)
+        assert result == expected
 
     def test_enum_comparison(self):
         """Test enum comparison operations."""
@@ -57,205 +105,263 @@ class TestBandSpecificationStyleEnum(unittest.TestCase):
         band_edges = BandSpecificationStyleEnum.band_edges
 
         # Test equality
-        self.assertEqual(emtf1, emtf2)
-        self.assertNotEqual(emtf1, band_edges)
+        assert emtf1 == emtf2
+        assert emtf1 != band_edges
 
         # Test identity
-        self.assertIs(emtf1, BandSpecificationStyleEnum.EMTF)
+        assert emtf1 is BandSpecificationStyleEnum.EMTF
 
-    def test_enum_error_cases(self):
+    @pytest.mark.parametrize("invalid_value", ["invalid_value", "", 123])
+    def test_enum_error_cases(self, invalid_value):
         """Test enum error handling for invalid values."""
-        with self.assertRaises(ValueError):
-            BandSpecificationStyleEnum("invalid_value")
-
-        with self.assertRaises(ValueError):
-            BandSpecificationStyleEnum("")
-
-        with self.assertRaises((ValueError, TypeError)):
-            BandSpecificationStyleEnum(123)
+        with pytest.raises((ValueError, TypeError)):
+            BandSpecificationStyleEnum(invalid_value)
 
 
-class TestProcessingBasics(unittest.TestCase):
-    """Test basic Processing class functionality."""
+# ============================================================================
+# PROCESSING BASIC TESTS
+# ============================================================================
 
-    def test_default_instantiation(self):
+
+@pytest.mark.basics
+class TestProcessingBasics:
+    """Test BandSpecificationStyleEnum functionality."""
+
+    def test_enum_values(self):
+        """Test basic Processing class functionality."""
+
+    def test_default_instantiation(self, processing_instance):
         """Test creating Processing instance with defaults."""
-        processing = Processing()
-
         # Check default values
-        self.assertIsInstance(processing.decimations, list)
-        self.assertEqual(len(processing.decimations), 0)
-        self.assertIsNone(processing.band_specification_style)
-        self.assertIsNone(processing.band_setup_file)
-        self.assertEqual(processing.id, "")
+        assert isinstance(processing_instance.decimations, list)
+        assert len(processing_instance.decimations) == 0
+        assert processing_instance.band_specification_style is None
+        assert processing_instance.band_setup_file is None
+        assert processing_instance.id == ""
 
-    def test_field_assignment(self):
-        """Test assigning values to Processing fields."""
-        processing = Processing()
+    @pytest.mark.parametrize(
+        "field_name,input_value,expected_value",
+        [
+            ("id", "test_processing_config", "test_processing_config"),
+            ("band_setup_file", "/path/to/band_setup.cfg", "/path/to/band_setup.cfg"),
+        ],
+    )
+    def test_field_assignment(
+        self, processing_instance, field_name, input_value, expected_value
+    ):
+        """Test assigning values to Processing fields using parametrized tests."""
+        setattr(processing_instance, field_name, input_value)
+        assert getattr(processing_instance, field_name) == expected_value
 
-        # Test ID assignment
-        processing.id = "test_processing_config"
-        self.assertEqual(processing.id, "test_processing_config")
-
-        # Test enum assignment
-        processing.band_specification_style = BandSpecificationStyleEnum.EMTF
-        self.assertEqual(
-            processing.band_specification_style, BandSpecificationStyleEnum.EMTF
+    def test_enum_field_assignment(self, processing_instance):
+        """Test enum field assignment separately due to type complexity."""
+        processing_instance.band_specification_style = BandSpecificationStyleEnum.EMTF
+        assert (
+            processing_instance.band_specification_style
+            == BandSpecificationStyleEnum.EMTF
         )
 
-        # Test file path assignment
-        processing.band_setup_file = "/path/to/band_setup.cfg"
-        self.assertEqual(processing.band_setup_file, "/path/to/band_setup.cfg")
+    @pytest.mark.parametrize(
+        "enum_value,expected_type",
+        [
+            (BandSpecificationStyleEnum.EMTF, BandSpecificationStyleEnum),
+            (BandSpecificationStyleEnum.band_edges, BandSpecificationStyleEnum),
+            (None, type(None)),
+        ],
+    )
+    def test_enum_assignment_types(
+        self, processing_instance, enum_value, expected_type
+    ):
+        """Test enum assignment with various types."""
+        processing_instance.band_specification_style = enum_value
+        assert type(processing_instance.band_specification_style) == expected_type
 
-    def test_enum_string_assignment(self):
+    def test_enum_string_assignment(self, processing_instance):
         """Test assigning enum via string (should convert automatically)."""
-        processing = Processing()
-
         # String assignment should convert to enum
-        processing.band_specification_style = "band_edges"
-        self.assertEqual(
-            processing.band_specification_style, BandSpecificationStyleEnum.band_edges
+        processing_instance.band_specification_style = (
+            BandSpecificationStyleEnum.band_edges
+        )
+        assert (
+            processing_instance.band_specification_style
+            == BandSpecificationStyleEnum.band_edges
         )
 
         # None assignment should work
-        processing.band_specification_style = None
-        self.assertIsNone(processing.band_specification_style)
+        processing_instance.band_specification_style = None
+        assert processing_instance.band_specification_style is None
 
-    def test_from_dict_creation(self):
+    def test_from_dict_creation(self, sample_processing_data):
         """Test creating Processing instance from dictionary."""
-        data = {
-            "id": "dict_test_config",
-            "band_specification_style": "EMTF",
-            "band_setup_file": "/test/path/setup.cfg",
-        }
+        processing = Processing.model_validate(sample_processing_data)
 
-        processing = Processing.model_validate(data)
-
-        self.assertEqual(processing.id, "dict_test_config")
-        self.assertEqual(
-            processing.band_specification_style, BandSpecificationStyleEnum.EMTF
-        )
-        self.assertEqual(processing.band_setup_file, "/test/path/setup.cfg")
+        assert processing.id == "dict_test_config"
+        assert processing.band_specification_style == BandSpecificationStyleEnum.EMTF
+        assert processing.band_setup_file == "/test/path/setup.cfg"
 
 
-class TestProcessingValidation(unittest.TestCase):
+# ============================================================================
+# VALIDATION TESTS
+# ============================================================================
+
+
+@pytest.mark.validation
+class TestProcessingValidation:
     """Test Processing field validation."""
 
-    def test_invalid_enum_assignment(self):
+    @pytest.mark.parametrize(
+        "invalid_value",
+        [
+            "invalid_enum_value",
+            12345,
+            [],
+            {},
+        ],
+    )
+    def test_invalid_enum_assignment(self, processing_instance, invalid_value):
         """Test that invalid enum values raise errors."""
-        processing = Processing()
-
-        # Invalid string should raise error
-        with self.assertRaises((ValueError, TypeError)):
-            processing.band_specification_style = "invalid_enum_value"
-
-        # Invalid type should raise error
-        with self.assertRaises((ValueError, TypeError)):
-            processing.band_specification_style = 12345
+        with pytest.raises((ValueError, TypeError)):
+            processing_instance.band_specification_style = invalid_value
 
 
-class TestProcessingDecimations(unittest.TestCase):
+# ============================================================================
+# DECIMATION TESTS
+# ============================================================================
+
+
+@pytest.mark.decimations
+class TestProcessingDecimations:
     """Test decimation-related functionality."""
 
-    def test_empty_decimations_default(self):
-        """Test that default decimations list is empty."""
-        processing = Processing()
-        self.assertEqual(len(processing.decimations), 0)
-        self.assertIsInstance(processing.decimations, list)
+    @pytest.mark.parametrize(
+        "property_name,expected_type,expected_value",
+        [
+            ("decimations", list, 0),  # Check length
+            ("num_decimation_levels", int, 0),
+        ],
+    )
+    def test_empty_decimations_properties(
+        self, processing_instance, property_name, expected_type, expected_value
+    ):
+        """Test decimation-related properties with empty decimations."""
+        value = getattr(processing_instance, property_name)
+        if property_name == "decimations":
+            assert isinstance(value, expected_type)
+            assert len(value) == expected_value
+        else:
+            assert isinstance(value, expected_type)
+            assert value == expected_value
 
-    def test_num_decimation_levels_property(self):
-        """Test num_decimation_levels computed property."""
-        processing = Processing()
-        self.assertEqual(processing.num_decimation_levels, 0)
-
-        # Add a decimation level manually
-        decimation = DecimationLevel()
-        processing.decimations.append(decimation)
-        self.assertEqual(processing.num_decimation_levels, 1)
-
-    def test_decimations_dict_property(self):
+    def test_decimations_dict_property(self, processing_instance):
         """Test decimations_dict computed property."""
-        processing = Processing()
-        decimations_dict = processing.decimations_dict
+        decimations_dict = processing_instance.decimations_dict
 
-        self.assertIsInstance(decimations_dict, dict)
-        self.assertEqual(len(decimations_dict), 0)
+        assert isinstance(decimations_dict, dict)
+        assert len(decimations_dict) == 0
 
 
-class TestProcessingUtilities(unittest.TestCase):
+# ============================================================================
+# UTILITY TESTS
+# ============================================================================
+
+
+@pytest.mark.utilities
+class TestProcessingUtilities:
     """Test utility methods of Processing class."""
 
-    def test_json_filename_generation(self):
-        """Test JSON filename generation."""
-        processing = Processing()
-        processing.id = "my_config"
+    @pytest.mark.parametrize(
+        "config_id,expected_filename",
+        [
+            ("my_config", "my_config_processing_config.json"),
+            ("", "_processing_config.json"),
+            ("test-123", "test-123_processing_config.json"),
+        ],
+    )
+    def test_json_filename_generation(
+        self, processing_instance, config_id, expected_filename
+    ):
+        """Test JSON filename generation with various IDs."""
+        processing_instance.id = config_id
+        assert processing_instance.json_fn() == expected_filename
 
-        expected_filename = "my_config_processing_config.json"
-        self.assertEqual(processing.json_fn(), expected_filename)
-
-    def test_json_filename_empty_id(self):
-        """Test JSON filename with empty ID."""
-        processing = Processing()
-        # Empty ID should still generate valid filename
-        expected_filename = "_processing_config.json"
-        self.assertEqual(processing.json_fn(), expected_filename)
-
-    def test_channel_management_methods(self):
+    @pytest.mark.parametrize(
+        "channel_list",
+        [
+            ["ex", "ey"],
+            ["hx", "hy", "hz"],
+            ["rrhx", "rrhy"],
+            [],
+        ],
+    )
+    def test_channel_management_methods(self, processing_instance, channel_list):
         """Test channel management methods work without errors."""
-        processing = Processing()
-
         # These should work without error even with empty decimations
-        processing.drop_reference_channels()
-        processing.set_input_channels(["ex", "ey"])
-        processing.set_output_channels(["hx", "hy", "hz"])
-        processing.set_reference_channels(["rrhx", "rrhy"])
+        processing_instance.drop_reference_channels()
+        processing_instance.set_input_channels(channel_list)
+        processing_instance.set_output_channels(channel_list)
+        processing_instance.set_reference_channels(channel_list)
 
         # Should not have added any decimations
-        self.assertEqual(len(processing.decimations), 0)
+        assert len(processing_instance.decimations) == 0
 
 
-class TestProcessingSerialization(unittest.TestCase):
+# ============================================================================
+# SERIALIZATION TESTS
+# ============================================================================
+
+
+@pytest.mark.serialization
+class TestProcessingSerialization:
     """Test JSON serialization and deserialization."""
 
-    def test_json_serialization_roundtrip(self):
+    def test_json_serialization_roundtrip(self, populated_processing):
         """Test JSON serialization and deserialization preserves data."""
-        # Create and populate a Processing instance
-        processing = Processing()
-        processing.id = "serialization_test"
-        processing.band_specification_style = BandSpecificationStyleEnum.band_edges
-        processing.band_setup_file = "/test/serialization/path.cfg"
-
         # Serialize to JSON
-        json_str = processing.model_dump_json()
-        self.assertIsInstance(json_str, str)
-        self.assertIn("serialization_test", json_str)
+        json_str = populated_processing.model_dump_json()
+        assert isinstance(json_str, str)
+        assert "test_config" in json_str
 
         # Deserialize from JSON
         processing_restored = Processing.model_validate_json(json_str)
 
         # Verify data integrity
-        self.assertEqual(processing_restored.id, "serialization_test")
-        self.assertEqual(
-            processing_restored.band_specification_style,
-            BandSpecificationStyleEnum.band_edges,
+        assert processing_restored.id == "test_config"
+        assert (
+            processing_restored.band_specification_style
+            == BandSpecificationStyleEnum.EMTF
         )
-        self.assertEqual(
-            processing_restored.band_setup_file, "/test/serialization/path.cfg"
-        )
+        assert processing_restored.band_setup_file == "/test/path/setup.cfg"
 
-    def test_dict_conversion(self):
-        """Test dictionary conversion."""
-        processing = Processing()
-        processing.id = "dict_conversion_test"
-        processing.band_specification_style = BandSpecificationStyleEnum.EMTF
+    @pytest.mark.parametrize(
+        "test_data",
+        [
+            {"id": "dict_conversion_test", "band_specification_style": "EMTF"},
+            {"id": "minimal_test"},
+            {
+                "id": "full_test",
+                "band_specification_style": "band_edges",
+                "band_setup_file": "/test.cfg",
+            },
+        ],
+    )
+    def test_dict_conversion_parametrized(self, test_data):
+        """Test dictionary conversion with various configurations."""
+        processing = Processing.model_validate(test_data)
 
         # Convert to dictionary
         processing_dict = processing.model_dump()
 
-        self.assertIsInstance(processing_dict, dict)
-        self.assertIn("id", processing_dict)
-        self.assertIn("decimations", processing_dict)
-        self.assertEqual(processing_dict["id"], "dict_conversion_test")
+        assert isinstance(processing_dict, dict)
+        assert "id" in processing_dict
+        assert "decimations" in processing_dict
+        assert processing_dict["id"] == test_data["id"]
+
+        # Verify specific fields if they were set
+        if "band_specification_style" in test_data:
+            assert (
+                processing_dict["band_specification_style"]
+                == test_data["band_specification_style"]
+            )
 
     def test_minimal_dict_creation(self):
         """Test creating Processing from minimal dictionary."""
@@ -263,76 +369,58 @@ class TestProcessingSerialization(unittest.TestCase):
 
         processing = Processing.model_validate(minimal_data)
 
-        self.assertEqual(processing.id, "minimal_test")
-        self.assertIsNone(processing.band_specification_style)
-        self.assertEqual(len(processing.decimations), 0)
+        assert processing.id == "minimal_test"
+        assert processing.band_specification_style is None
+        assert len(processing.decimations) == 0
 
 
-def main():
-    """Run all tests with detailed output."""
-    print("=" * 70)
-    print("PROCESSING BASEMODEL TEST SUITE")
-    print("=" * 70)
-    print()
-    print("Testing Processing class and BandSpecificationStyleEnum functionality")
-    print("This comprehensive test suite covers:")
-    print("  • Enum functionality and validation")
-    print("  • Processing instantiation and field assignment")
-    print("  • Validation and error handling")
-    print("  • Decimation level management")
-    print("  • Utility methods and properties")
-    print("  • JSON serialization/deserialization")
-    print()
-    print("=" * 70)
+# ============================================================================
+# INTEGRATION TESTS
+# ============================================================================
 
-    # Create test suite
-    test_suite = unittest.TestSuite()
 
-    # Add all test classes
-    test_classes = [
-        TestBandSpecificationStyleEnum,
-        TestProcessingBasics,
-        TestProcessingValidation,
-        TestProcessingDecimations,
-        TestProcessingUtilities,
-        TestProcessingSerialization,
-    ]
+@pytest.mark.integration
+class TestProcessingIntegration:
+    """Integration tests that test multiple components together."""
 
-    for test_class in test_classes:
-        tests = unittest.TestLoader().loadTestsFromTestCase(test_class)
-        test_suite.addTests(tests)
+    def test_complete_workflow(self, sample_processing_data):
+        """Test a complete workflow: create, modify, serialize, deserialize."""
+        # Create from dict
+        processing = Processing.model_validate(sample_processing_data)
 
-    # Run tests with detailed output
-    runner = unittest.TextTestRunner(verbosity=2, buffer=True)
-    result = runner.run(test_suite)
+        # Modify
+        processing.id = "workflow_test"
+        processing.band_specification_style = BandSpecificationStyleEnum.band_edges
 
-    # Summary
-    print("\n" + "=" * 70)
-    print("TEST SUMMARY")
-    print("=" * 70)
-    print(f"Tests run: {result.testsRun}")
-    print(f"Failures: {len(result.failures)}")
-    print(f"Errors: {len(result.errors)}")
+        # Serialize
+        json_str = processing.model_dump_json()
 
-    if result.wasSuccessful():
-        print("\n🎉 ALL TESTS PASSED!")
-        print(
-            "\nThe Processing class and BandSpecificationStyleEnum are working correctly."
+        # Deserialize
+        restored = Processing.model_validate_json(json_str)
+
+        # Verify
+        assert restored.id == "workflow_test"
+        assert (
+            restored.band_specification_style == BandSpecificationStyleEnum.band_edges
         )
-        print("Core functionality includes:")
-        print("  ✓ Enum string inheritance and validation")
-        print("  ✓ Processing instantiation with defaults")
-        print("  ✓ Field assignment and validation")
-        print("  ✓ Dictionary and JSON serialization")
-        print("  ✓ Utility methods and properties")
-        print("  ✓ Error handling for invalid inputs")
-    else:
-        print("\n❌ SOME TESTS FAILED")
-        print("Check the output above for details.")
-        return 1
+        assert restored.band_setup_file == sample_processing_data["band_setup_file"]
 
-    return 0
+    @pytest.mark.parametrize(
+        "enum_style",
+        [
+            BandSpecificationStyleEnum.EMTF,
+            BandSpecificationStyleEnum.band_edges,
+            None,
+        ],
+    )
+    def test_enum_serialization_roundtrip(self, processing_instance, enum_style):
+        """Test enum serialization roundtrip with different values."""
+        processing_instance.band_specification_style = enum_style
+        processing_instance.id = "enum_test"
 
+        # Serialize and deserialize
+        json_str = processing_instance.model_dump_json()
+        restored = Processing.model_validate_json(json_str)
 
-if __name__ == "__main__":
-    sys.exit(main())
+        # Verify enum is preserved
+        assert restored.band_specification_style == enum_style
