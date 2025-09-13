@@ -1,37 +1,40 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
+import numpy as np
+from pydantic import computed_field, Field, model_validator
 
-from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
+from mt_metadata.features.base_feature_basemodel import Feature
+from mt_metadata.features.coherence_basemodel import Coherence
 
 
 # =====================================================
-class BandDefinitionTypeEnum(str, Enum):
+class BandDefinitionTypeEnum(StrEnumerationBase):
     Q = "Q"
     fractional_bandwidth = "fractional bandwidth"
     user_defined = "user defined"
 
 
-class QRadiusEnum(str, Enum):
+class QRadiusEnum(StrEnumerationBase):
     constant_Q = "constant Q"
     user_defined = "user defined"
 
 
-class FCCoherence(MetadataBase):
+class FCCoherence(Coherence, Feature):
+    # QUESTION: Is there a reason to have names of channel_1 when coherence has names ch1?
     channel_1: Annotated[
         str,
         Field(
             default="",
             description="The first channel of two channels in the coherence calculation.",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "example": ["ex"],
             },
         ),
     ]
@@ -53,7 +56,7 @@ class FCCoherence(MetadataBase):
     minimum_fcs: Annotated[
         int,
         Field(
-            default=None,
+            default=2,
             description="The minimum number of Fourier coefficients needed to compute the feature.",
             examples=["2"],
             alias=None,
@@ -91,3 +94,48 @@ class FCCoherence(MetadataBase):
             },
         ),
     ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_defaults(cls, data: dict) -> dict:
+        data["name"] = "fc_coherence"
+        data["domain"] = "frequency"
+        data["description"] = (
+            "Magnitude-squared coherence computed from frequency-domain Fourier coefficients (FCs). "
+            "Cxy(f) = |Sxy(f)|^2 / (Sxx(f) * Syy(f)), where Sxy is the cross-power spectrum, "
+            "Sxx and Syy are auto-power spectra, all estimated by averaging over windows."
+        )
+        return data
+
+    @computed_field
+    @property
+    def channel_pair_str(self) -> str:
+        return f"{self.channel_1}, {self.channel_2}"
+
+    def compute(
+        self, fc1: np.ndarray, fc2: np.ndarray
+    ) -> tuple[np.ndarray | None, np.ndarray]:
+        """
+        Compute magnitude-squared coherence from FCs.
+
+        Parameters
+        ----------
+        fc1 : np.ndarray
+            Fourier coefficients for channel 1, shape (n_windows, n_freqs)
+        fc2 : np.ndarray
+            Fourier coefficients for channel 2, shape (n_windows, n_freqs)
+
+        Returns
+        -------
+        freqs : np.ndarray
+            Frequency axis (if available, else None)
+        coherence : np.ndarray
+            Magnitude-squared coherence, shape (n_freqs,)
+        """
+        # Cross-power and auto-powers
+        sxy = np.mean(fc1 * np.conj(fc2), axis=0)
+        sxx = np.mean(np.abs(fc1) ** 2, axis=0)
+        syy = np.mean(np.abs(fc2) ** 2, axis=0)
+        # Magnitude-squared coherence
+        coherence = np.abs(sxy) ** 2 / (sxx * syy)
+        return None, coherence

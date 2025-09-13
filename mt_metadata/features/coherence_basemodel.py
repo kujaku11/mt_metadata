@@ -188,10 +188,10 @@ class Coherence(Feature):
 
     @model_validator(mode="before")
     @classmethod
-    def set_defaults(cls, data):
-        data.name = "coherence"
-        data.domain = "frequency"
-        data.description = (
+    def set_defaults(cls, data: dict) -> dict:
+        data["name"] = "coherence"
+        data["domain"] = "frequency"
+        data["description"] = (
             "Simple coherence between two channels derived "
             "directly from scipy.signal.coherence applied to "
             "time domain data"
@@ -289,84 +289,3 @@ class Coherence(Feature):
             detrend=self.detrend,
         )
         return frequencies, coh_squared
-
-
-class StridingWindowCoherence(Coherence):
-    """
-    Computes coherence for each sub-window (FFT window) across the time series.
-    Returns a 2D array: (window index, frequency).
-    """
-
-    def __init__(self, subwindow=None, stride=None, **kwargs):
-        """
-        Parameters
-        ----------
-        subwindow : Window, optional
-            The window object used for the subwindow (the window used for the coherence calculation within each main window).
-            If not provided, a default Window is used.
-        stride : int, optional [DEPRECATED]
-            (Deprecated; use self.window.num_samples_advance instead.)
-            The stride (in samples) between the start of each main window (of length self.window.num_samples) as the main window
-            slides across the time series. If not provided, defaults to self.window.num_samples_advance.
-        kwargs : dict
-            Additional keyword arguments passed to the Coherence base class.
-        """
-        super().__init__(**kwargs)
-        self.name = "striding_window_coherence"
-        self.subwindow = subwindow if subwindow is not None else Window()
-        # Use window.num_samples_advance for main window stride
-        if stride is not None:
-            self._main_stride = int(stride)
-        else:
-            self._main_stride = self.window.num_samples_advance
-
-    subwindow: Annotated[
-        Window,
-        Field(
-            default_factory=Window,
-            description="The window used for the subwindow coherence calculation.",
-            examples=["hann", "hamming", "blackman"],
-            json_schema_extra={"units": None, "required": False},
-        ),
-    ]
-
-    def set_subwindow_from_window(self, fraction=0.2):
-        """
-        Set the subwindow as a fraction of the main window.
-        """
-        self.subwindow = Window()
-        self.subwindow.type = self.window.type
-        self.subwindow.num_samples = int(self.window.num_samples * fraction)
-        self.subwindow.overlap = int(self.subwindow.num_samples // 2)
-        # No need to update stride; main window stride is set by self.window.num_samples_advance
-
-    def compute(self, ts_1: np.ndarray, ts_2: np.ndarray):
-        """
-        For each main window (length self.window.num_samples, stride self.window.num_samples_advance),
-        compute coherence using the subwindow parameters (self.subwindow) within that main window.
-        Returns:
-            frequencies: 1D array of frequencies
-            coherences: 2D array (n_main_windows, n_frequencies)
-        """
-        n = len(ts_1)
-        main_win_len = self.window.num_samples
-        main_stride = (
-            self.window.num_samples_advance
-            if hasattr(self.window, "num_samples_advance")
-            else main_win_len
-        )
-        results = []
-        for start in range(0, n - main_win_len + 1, main_stride):
-            end = start + main_win_len
-            seg1 = ts_1[start:end]
-            seg2 = ts_2[start:end]
-            f, coh = ssig.coherence(
-                seg1,
-                seg2,
-                window=self.subwindow.type,
-                nperseg=self.subwindow.num_samples,
-                noverlap=self.subwindow.overlap,
-                detrend=self.detrend,
-            )
-            results.append(coh)
-        return f, np.array(results)
