@@ -3,13 +3,14 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
 from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment, TimePeriod
 
 
 # =====================================================
-class FeatureFcRun(MetadataBase):
+class FeatureFCRun(MetadataBase):
     id: Annotated[
         str,
         Field(
@@ -17,7 +18,7 @@ class FeatureFcRun(MetadataBase):
             description="Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001. Should be the same as the time series run ID.",
             examples=["001"],
             alias=None,
-            pattern="^[a-zA-Z0-9]*$",
+            pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
@@ -42,13 +43,27 @@ class FeatureFcRun(MetadataBase):
     comments: Annotated[
         Comment,
         Field(
-            default_factory=lambda: Comment(),
+            default_factory=lambda: Comment(),  # type: ignore
             description="Any comments about the feature",
             examples=["estimated using hilburt transform."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+            },
+        ),
+    ]
+
+    time_period: Annotated[
+        TimePeriod,
+        Field(
+            default_factory=lambda: TimePeriod(),  # type: ignore
+            description="The time period over which the feature was calculated.",
+            examples=["2020-01-01T00:00:00"],
+            alias=None,
+            json_schema_extra={
+                "units": None,
+                "required": True,
             },
         ),
     ]
