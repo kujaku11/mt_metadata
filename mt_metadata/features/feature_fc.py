@@ -9,6 +9,9 @@ from pydantic import model_validator
 from mt_metadata.features.base_feature_basemodel import Feature
 
 
+# =============================================================================
+
+
 class FeatureFC(Feature):
     """
     Stub feature class for feature_fc.

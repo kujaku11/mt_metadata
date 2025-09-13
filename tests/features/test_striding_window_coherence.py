@@ -17,10 +17,8 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.features.coherence_basemodel import Coherence
-from mt_metadata.features.striding_window_coherence_basemodel import (
-    StridingWindowCoherence,
-)
+from mt_metadata.features.coherence import Coherence
+from mt_metadata.features.striding_window_coherence import StridingWindowCoherence
 from mt_metadata.processing.window import TypeEnum, Window
 
 
@@ -284,7 +282,7 @@ class TestStridingWindowCoherenceComputation:
         signal1, signal2, fs = sample_time_series
 
         with patch(
-            "mt_metadata.features.striding_window_coherence_basemodel.ssig.coherence"
+            "mt_metadata.features.striding_window_coherence.ssig.coherence"
         ) as mock_coherence:
             # Mock scipy.signal.coherence to return predictable results
             mock_f = np.linspace(0, fs / 2, 129)
@@ -322,7 +320,7 @@ class TestStridingWindowCoherenceComputation:
             )
 
             with patch(
-                "mt_metadata.features.striding_window_coherence_basemodel.ssig.coherence"
+                "mt_metadata.features.striding_window_coherence.ssig.coherence"
             ) as mock_coherence:
                 mock_f = np.linspace(0, fs / 2, 65)
                 mock_coh = np.random.rand(65)
@@ -341,7 +339,7 @@ class TestStridingWindowCoherenceComputation:
         signal1, signal2, fs = sample_time_series
 
         with patch(
-            "mt_metadata.features.striding_window_coherence_basemodel.ssig.coherence"
+            "mt_metadata.features.striding_window_coherence.ssig.coherence"
         ) as mock_coherence:
             mock_f = np.linspace(0, fs / 2, 33)
             mock_coh = np.random.rand(33)
@@ -387,7 +385,7 @@ class TestStridingWindowCoherenceComputation:
         )
 
         with patch(
-            "mt_metadata.features.striding_window_coherence_basemodel.ssig.coherence"
+            "mt_metadata.features.striding_window_coherence.ssig.coherence"
         ) as mock_coherence:
             mock_f = np.linspace(0, fs / 2, 33)
             mock_coh = np.random.rand(33)
@@ -523,7 +521,7 @@ class TestStridingWindowCoherenceIntegration:
         )
 
         with patch(
-            "mt_metadata.features.striding_window_coherence_basemodel.ssig.coherence"
+            "mt_metadata.features.striding_window_coherence.ssig.coherence"
         ) as mock_coherence:
             mock_f = np.linspace(0, fs / 2, 33)
             mock_coh = np.random.rand(33)

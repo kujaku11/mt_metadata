@@ -1,5 +1,5 @@
 """
-Test module for base_feature_basemodel.py
+Test module for feature.py
 Comprehensive pytest suite using fixtures and subtests for efficiency.
 """
 
@@ -11,8 +11,8 @@ import xarray as xr
 from pydantic import ValidationError
 
 from mt_metadata.common import Comment
-from mt_metadata.features.base_feature_basemodel import DomainEnum, Feature
 from mt_metadata.features.cross_powers import CrossPowers
+from mt_metadata.features.feature import DomainEnum, Feature
 
 
 # ============================================================================
@@ -310,7 +310,7 @@ class TestFeatureFactory:
 
         # Patch the SUPPORTED_FEATURE_DICT directly in the module
         with patch(
-            "mt_metadata.features.base_feature_basemodel.SUPPORTED_FEATURE_DICT",
+            "mt_metadata.features.feature.SUPPORTED_FEATURE_DICT",
             {"test_feature": mock_feature_cls},
         ):
             result = Feature.from_feature_id(meta_dict)

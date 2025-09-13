@@ -1,21 +1,22 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
-from pydantic import Field
 import numpy as np
+from pydantic import Field
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common.enumerations import StrEnumerationBase
 
 
 # =====================================================
-class ThresholdEnum(str, Enum):
+class ThresholdEnum(StrEnumerationBase):
     low_cut = "low cut"
     high_cut = "high cut"
 
 
-class HalfWindowStyleEnum(str, Enum):
+class HalfWindowStyleEnum(StrEnumerationBase):
     hamming = "hamming"
     hann = "hann"
     rectangle = "rectangle"

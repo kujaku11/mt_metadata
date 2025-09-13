@@ -8,13 +8,13 @@ computation methods, and edge cases.
 import numpy as np
 import pytest
 
-from mt_metadata.features.base_feature_basemodel import Feature
-from mt_metadata.features.coherence_basemodel import Coherence
-from mt_metadata.features.fc_coherence_basemodel import (
+from mt_metadata.features.coherence import Coherence
+from mt_metadata.features.fc_coherence import (
     BandDefinitionTypeEnum,
     FCCoherence,
     QRadiusEnum,
 )
+from mt_metadata.features.feature import Feature
 
 
 class TestFCCoherenceInstantiation:

@@ -10,8 +10,8 @@ from unittest.mock import patch
 import numpy as np
 import pytest
 
-from mt_metadata.features.base_feature_basemodel import Feature
-from mt_metadata.features.coherence_basemodel import Coherence, DetrendEnum
+from mt_metadata.features.coherence import Coherence, DetrendEnum
+from mt_metadata.features.feature import Feature
 from mt_metadata.processing.window import Window
 
 
@@ -262,7 +262,7 @@ class TestCoherenceStationValidation:
             station_2="ANOTHER_INVALID",
         )
 
-        with patch("mt_metadata.features.coherence_basemodel.logger") as mock_logger:
+        with patch("mt_metadata.features.coherence.logger") as mock_logger:
             coh.validate_station_ids("LOCAL_STN")
 
             # Should log warnings and reset to None, then assign
@@ -305,7 +305,7 @@ class TestCoherenceComputation:
 
         return signal1, signal2
 
-    @patch("mt_metadata.features.coherence_basemodel.ssig.coherence")
+    @patch("mt_metadata.features.coherence.ssig.coherence")
     def test_compute_calls_scipy(self, mock_coherence, sample_time_series):
         """Test that compute method properly calls scipy.signal.coherence."""
         ts1, ts2 = sample_time_series

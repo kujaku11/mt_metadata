@@ -5,18 +5,15 @@ This test suite provides comprehensive coverage of the FeatureDecimationChannel 
 including initialization, field validation, units validation, time period functionality,
 and error handling. Tests are optimized for efficiency using fixtures and parametrization.
 
-Created for testing feature_decimation_channel_basemodel.py
+Created for testing feature_decimation_channel.py
 """
-
 
 import pytest
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import TimePeriod
 from mt_metadata.common.units import get_unit_object
-from mt_metadata.features.feature_decimation_channel_basemodel import (
-    FeatureDecimationChannel,
-)
+from mt_metadata.features.feature_decimation_channel import FeatureDecimationChannel
 
 
 # =====================================================

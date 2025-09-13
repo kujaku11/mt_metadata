@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Comprehensive test suite for feature_fc_run_basemodel.py
+Comprehensive test suite for feature_fc_run.py
 
 Tests for the FeatureFCRun class with fixtures and subtests optimized for efficiency.
 
@@ -19,7 +19,7 @@ from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment, TimePeriod
 
 # Import the class under test
-from mt_metadata.features.feature_fc_run_basemodel import FeatureFCRun
+from mt_metadata.features.feature_fc_run import FeatureFCRun
 
 
 # =====================================================

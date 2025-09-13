@@ -10,7 +10,7 @@ from pydantic import ValidationError
 
 from mt_metadata.common import TimePeriod
 from mt_metadata.common.comment import Comment
-from mt_metadata.features.feature_ts_run_basemodel import FeatureTSRun
+from mt_metadata.features.feature_ts_run import FeatureTSRun
 
 
 # Test fixtures for data generation
