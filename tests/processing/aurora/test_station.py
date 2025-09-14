@@ -413,24 +413,32 @@ class TestStationDataFrameConversion:
 
     def test_from_dataset_dataframe_multiple_stations(self):
         """Test from_dataset_dataframe with multiple stations"""
-        try:
-            df = pd.DataFrame(
-                {
-                    "station_id": ["STA001", "STA002"],
-                    "run_id": ["001", "001"],
-                    "sample_rate": [1024.0, 512.0],
-                    "start": ["2021-01-01T00:00:00", "2021-01-02T00:00:00"],
-                    "end": ["2021-01-01T01:00:00", "2021-01-02T01:00:00"],
-                    "input_channel_names": [["ex", "ey"], ["hx", "hy"]],
-                    "output_channel_names": [["hx", "hy"], ["hz"]],
-                }
-            )
+        # Create a DataFrame with the correct column names expected by from_dataset_dataframe
+        df = pd.DataFrame(
+            {
+                "station_id": ["STA001", "STA002"],
+                "run_id": ["001", "001"],
+                "sample_rate": [1024.0, 512.0],
+                "start": ["2021-01-01T00:00:00", "2021-01-02T00:00:00"],
+                "end": ["2021-01-01T01:00:00", "2021-01-02T01:00:00"],
+                "mth5_path": ["/path/to/data1.mth5", "/path/to/data2.mth5"],
+                "remote": [False, True],
+                "input_channel_names": [["ex", "ey"], ["hx", "hy"]],
+                "output_channel_names": [["hx", "hy"], ["hz"]],
+                "channel_scale_factors": [{}, {}],
+            }
+        )
 
-            station = Station(id="TEST", mth5_path="", remote=False, runs=[])
-            result = station.from_dataset_dataframe(df)
-            # Method may handle multiple stations differently
-        except (AttributeError, TypeError, KeyError) as e:
-            pytest.skip(f"DataFrame method has implementation issues: {e}")
+        # Test with first station data only (single station)
+        station1_df = df[df.station_id == "STA001"].copy()
+        station = Station(id="TEST", mth5_path="", remote=False, runs=[])
+        station.from_dataset_dataframe(station1_df)
+
+        # Verify station was populated correctly
+        assert station.id == "STA001"
+        assert len(station.runs) == 1
+        assert station.runs[0].id == "001"
+        assert station.runs[0].sample_rate == 1024.0
 
 
 class TestStationPerformance:

@@ -127,6 +127,7 @@ def sample_stations_dataframe():
             ["hx", "hy", "hz"],
             ["hx", "hy", "hz"],
         ],
+        "channel_scale_factors": [{}, {}, {}, {}],
     }
     return pd.DataFrame(data)
 
@@ -335,26 +336,21 @@ class TestStationsDataFrameConversion:
     def test_from_dataset_dataframe_empty(self, basic_stations):
         """Test reading from empty DataFrame"""
         empty_df = pd.DataFrame()
-
-        try:
-            basic_stations.from_dataset_dataframe(empty_df)
-        except Exception:
-            # May have implementation issues with empty DataFrames
-            pytest.skip("DataFrame conversion implementation issue")
+        basic_stations.from_dataset_dataframe(empty_df)
+        # Should handle empty DataFrame gracefully
+        assert len(basic_stations.remote) == 0
 
     def test_from_dataset_dataframe_with_data(
         self, basic_stations, sample_stations_dataframe
     ):
         """Test reading from DataFrame with data"""
-        try:
-            basic_stations.from_dataset_dataframe(sample_stations_dataframe)
-            # Verify local station was populated
-            assert basic_stations.local.id == "LOCAL001"
-            # Verify remote stations were added
-            assert len(basic_stations.remote) >= 1
-        except Exception:
-            # DataFrame operations may have implementation issues
-            pytest.skip("DataFrame conversion implementation issue")
+        basic_stations.from_dataset_dataframe(sample_stations_dataframe)
+        # Verify local station was populated
+        assert basic_stations.local.id == "LOCAL001"
+        # Verify remote stations were added
+        assert len(basic_stations.remote) == 2
+        assert basic_stations.remote[0].id in ["REMOTE001", "REMOTE002"]
+        assert basic_stations.remote[1].id in ["REMOTE001", "REMOTE002"]
 
 
 class TestStationsPerformance:
