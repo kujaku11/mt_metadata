@@ -326,10 +326,18 @@ class TestFeatureTSFactoryMethods:
             "domain": "frequency",
         }
 
-        # Mock the SUPPORTED_FEATURE_DICT to include feature_ts
-        with pytest.raises(KeyError):
-            # Should raise KeyError if feature_ts not in supported dict
-            FeatureTS.from_feature_id(meta_dict)
+        # Now feature_ts is in SUPPORTED_FEATURE_DICT, so it should work
+        result = FeatureTS.from_feature_id(meta_dict)
+
+        # Verify the factory method returns a FeatureTS instance
+        # Note: FeatureTS's set_defaults validator overrides name and description,
+        # but domain can be set from meta_dict
+        assert isinstance(result, FeatureTS)
+        assert result.name == "feature_ts"  # Always set by set_defaults validator
+        assert (
+            result.description == "A feature for storing time series information."
+        )  # Always set by set_defaults validator
+        assert result.domain == "frequency"  # Can be overridden by from_dict
 
     def test_from_feature_id_missing_id(self):
         """Test from_feature_id with missing feature_id."""

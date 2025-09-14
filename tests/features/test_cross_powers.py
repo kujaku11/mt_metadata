@@ -294,7 +294,10 @@ class TestFeatureFactory:
         with pytest.raises(KeyError, match="Unknown feature_id 'unknown_feature'"):
             Feature.from_feature_id(meta_dict)
 
-    @patch("mt_metadata.features.SUPPORTED_FEATURE_DICT", {"test_feature": MagicMock})
+    @patch(
+        "mt_metadata.features.registry.SUPPORTED_FEATURE_DICT",
+        {"test_feature": MagicMock},
+    )
     def test_from_feature_id_success(self):
         """Test successful from_feature_id with mocked supported features."""
         # Create a mock feature class
@@ -308,9 +311,9 @@ class TestFeatureFactory:
             "description": "A test feature",
         }
 
-        # Patch the SUPPORTED_FEATURE_DICT directly in the module
+        # Patch the SUPPORTED_FEATURE_DICT directly in the registry module
         with patch(
-            "mt_metadata.features.feature.SUPPORTED_FEATURE_DICT",
+            "mt_metadata.features.registry.SUPPORTED_FEATURE_DICT",
             {"test_feature": mock_feature_cls},
         ):
             result = Feature.from_feature_id(meta_dict)

@@ -10,7 +10,6 @@ from pydantic import Field, field_validator, PrivateAttr, ValidationInfo
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
 from mt_metadata.common.enumerations import StrEnumerationBase
-from mt_metadata.features import SUPPORTED_FEATURE_DICT
 
 
 # =====================================================
@@ -95,7 +94,7 @@ class Feature(MetadataBase):
         ),
     ]
 
-    _supported_features: dict[str, type] = PrivateAttr(SUPPORTED_FEATURE_DICT)
+    _supported_features: dict[str, type] = PrivateAttr(default_factory=dict)
 
     @field_validator("comments", mode="before")
     @classmethod
@@ -125,7 +124,12 @@ class Feature(MetadataBase):
         if "feature_id" not in meta_dict:
             raise KeyError("Feature metadata must include 'feature_id'.")
         feature_id = meta_dict["feature_id"]
+
+        # Import here to avoid circular dependencies
+        from mt_metadata.features.registry import SUPPORTED_FEATURE_DICT
+
         supported = SUPPORTED_FEATURE_DICT
+
         if feature_id not in supported:
             raise KeyError(
                 f"Unknown feature_id '{feature_id}'. Supported: {list(supported.keys())}"
