@@ -459,31 +459,114 @@ class TestDecimationLevelFrequencyBands:
 class TestDecimationLevelFCCompatibility:
     """Test FC decimation compatibility functionality."""
 
-    @pytest.mark.skip("Complex FC compatibility test - mocking too complex for now")
     def test_is_consistent_with_archived_fc_parameters_success(
         self, populated_decimation_level, mock_fc_decimation
     ):
         """Test successful FC parameter consistency check."""
-        # This test requires complex mocking of FC objects
-        # Skipping for now to focus on core functionality
+        dec_level = populated_decimation_level
 
-    @pytest.mark.skip("Complex FC compatibility test - mocking too complex for now")
+        # Configure the mock to match the populated decimation level
+        mock_fc_decimation.channels_estimated = dec_level.local_channels
+        mock_fc_decimation.time_series_decimation.anti_alias_filter = (
+            dec_level.decimation.anti_alias_filter
+        )
+        mock_fc_decimation.time_series_decimation.sample_rate = (
+            dec_level.decimation.sample_rate
+        )
+        mock_fc_decimation.short_time_fourier_transform.method = dec_level.stft.method
+        mock_fc_decimation.stft.prewhitening_type = dec_level.stft.prewhitening_type
+        mock_fc_decimation.stft.recoloring = dec_level.stft.recoloring
+        mock_fc_decimation.stft.pre_fft_detrend_type = (
+            dec_level.stft.pre_fft_detrend_type
+        )
+        mock_fc_decimation.stft.min_num_stft_windows = (
+            dec_level.stft.min_num_stft_windows
+        )
+        mock_fc_decimation.stft.window = dec_level.stft.window
+
+        # Test with local channels (remote=False)
+        result = dec_level.is_consistent_with_archived_fc_parameters(
+            mock_fc_decimation, remote=False
+        )
+        assert result is True
+
     def test_is_consistent_channels_mismatch(
         self, populated_decimation_level, mock_fc_decimation
     ):
         """Test FC consistency check with channel mismatch."""
+        dec_level = populated_decimation_level
 
-    @pytest.mark.skip("Complex FC compatibility test - mocking too complex for now")
+        # Configure the mock with mismatched channels
+        mock_fc_decimation.channels_estimated = [
+            "hx",
+            "hy",
+        ]  # Missing expected channels
+        mock_fc_decimation.time_series_decimation.anti_alias_filter = (
+            dec_level.decimation.anti_alias_filter
+        )
+        mock_fc_decimation.time_series_decimation.sample_rate = (
+            dec_level.decimation.sample_rate
+        )
+        mock_fc_decimation.short_time_fourier_transform.method = dec_level.stft.method
+
+        # Test should return False due to channel mismatch
+        result = dec_level.is_consistent_with_archived_fc_parameters(
+            mock_fc_decimation, remote=False
+        )
+        assert result is False
+
     def test_is_consistent_sample_rate_mismatch(
         self, populated_decimation_level, mock_fc_decimation
     ):
         """Test FC consistency check with sample rate mismatch."""
+        dec_level = populated_decimation_level
 
-    @pytest.mark.skip("Complex FC compatibility test - mocking too complex for now")
+        # Configure the mock with mismatched sample rate
+        mock_fc_decimation.channels_estimated = dec_level.local_channels
+        mock_fc_decimation.time_series_decimation.anti_alias_filter = (
+            dec_level.decimation.anti_alias_filter
+        )
+        mock_fc_decimation.time_series_decimation.sample_rate = (
+            512.0  # Different from expected 256.0
+        )
+        mock_fc_decimation.short_time_fourier_transform.method = dec_level.stft.method
+
+        # Test should return False due to sample rate mismatch
+        result = dec_level.is_consistent_with_archived_fc_parameters(
+            mock_fc_decimation, remote=False
+        )
+        assert result is False
+
     def test_is_consistent_with_remote_channels(
         self, populated_decimation_level, mock_fc_decimation
     ):
         """Test FC consistency check with remote=True."""
+        dec_level = populated_decimation_level
+
+        # Configure the mock for remote channels test
+        mock_fc_decimation.channels_estimated = dec_level.reference_channels
+        mock_fc_decimation.time_series_decimation.anti_alias_filter = (
+            dec_level.decimation.anti_alias_filter
+        )
+        mock_fc_decimation.time_series_decimation.sample_rate = (
+            dec_level.decimation.sample_rate
+        )
+        mock_fc_decimation.short_time_fourier_transform.method = dec_level.stft.method
+        mock_fc_decimation.stft.prewhitening_type = dec_level.stft.prewhitening_type
+        mock_fc_decimation.stft.recoloring = dec_level.stft.recoloring
+        mock_fc_decimation.stft.pre_fft_detrend_type = (
+            dec_level.stft.pre_fft_detrend_type
+        )
+        mock_fc_decimation.stft.min_num_stft_windows = (
+            dec_level.stft.min_num_stft_windows
+        )
+        mock_fc_decimation.stft.window = dec_level.stft.window
+
+        # Test with remote channels (remote=True)
+        result = dec_level.is_consistent_with_archived_fc_parameters(
+            mock_fc_decimation, remote=True
+        )
+        assert result is True
 
 
 # =============================================================================

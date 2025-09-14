@@ -440,8 +440,8 @@ class DecimationLevel(MetadataBase):
             else:
                 msg = (
                     "Antialias Filters Not Compatible -- need to add handling for "
-                    f"{msg} FCdec {fc_decimation.time_series_decimation.anti_alias_filter} and "
-                    f"{msg} processing config:{self.decimation.anti_alias_filter}"
+                    f"FCdec {fc_decimation.time_series_decimation.anti_alias_filter} and "
+                    f"processing config:{self.decimation.anti_alias_filter}"
                 )
                 raise NotImplementedError(msg)
 
