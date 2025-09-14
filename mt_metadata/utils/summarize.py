@@ -325,6 +325,7 @@ def summary_to_array(summary_dict):
             ("options", "U150"),
             ("alias", "U72"),
             ("example", "U72"),
+            ("default", "U72"),
         ]
     )
 
