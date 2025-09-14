@@ -3,8 +3,9 @@
 # =====================================================
 from typing import Annotated
 
+from pydantic import AliasChoices, Field
+
 from mt_metadata.base import MetadataBase
-from pydantic import Field, AliasChoices
 
 
 # =====================================================
@@ -25,10 +26,10 @@ class MinMaxRange(MetadataBase):
         Field(
             default=0.0,
             description="Minimum value of the range.",
-            examples="1.0",
-            type="number",
             validation_alias=AliasChoices("minimum", "min"),
             json_schema_extra={
+                "examples": "1.0",
+                "type": "number",
                 "units": None,
                 "required": True,
             },
@@ -39,10 +40,10 @@ class MinMaxRange(MetadataBase):
         Field(
             default=0.0,
             description="Maximum value of the range.",
-            examples="1.0",
-            type="number",
             validation_alias=AliasChoices("maximum", "max"),
             json_schema_extra={
+                "examples": "1.0",
+                "type": "number",
                 "units": None,
                 "required": True,
             },
@@ -67,10 +68,10 @@ class StartEndRange(MetadataBase):
         Field(
             default=0.0,
             description="Starting value.",
-            examples="1.0",
-            type="number",
             validation_alias=AliasChoices("start", "beginning"),
             json_schema_extra={
+                "examples": "1.0",
+                "type": "number",
                 "units": None,
                 "required": True,
             },
@@ -81,10 +82,10 @@ class StartEndRange(MetadataBase):
         Field(
             default=0.0,
             description="Ending value of the range.",
-            examples="1.0",
-            type="number",
             validation_alias=AliasChoices("end", "finish"),
             json_schema_extra={
+                "examples": "1.0",
+                "type": "number",
                 "units": None,
                 "required": True,
             },

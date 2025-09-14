@@ -15,12 +15,12 @@ import numpy as np
 import pytest
 import xarray as xr
 
+from mt_metadata.common.band import Band
 from mt_metadata.features.weights.channel_weight_spec import (
     ChannelWeightSpec,
     CombinationStyleEnum,
 )
 from mt_metadata.features.weights.feature_weight_spec import FeatureWeightSpec
-from mt_metadata.processing.aurora.band import Band
 
 
 # =====================================================

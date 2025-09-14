@@ -37,11 +37,11 @@ class Band(MetadataBase):
         Field(
             default=None,
             description="Decimation level for the band",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -51,11 +51,11 @@ class Band(MetadataBase):
         Field(
             default=None,
             description="maximum band index",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]
@@ -65,11 +65,11 @@ class Band(MetadataBase):
         Field(
             default=None,
             description="minimum band index",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]
@@ -79,11 +79,11 @@ class Band(MetadataBase):
         Field(
             default=0.0,
             description="maximum band frequency",
-            examples=["0.04296875"],
             alias=None,
             json_schema_extra={
                 "units": "Hertz",
                 "required": True,
+                "examples": ["0.04296875"],
             },
         ),
     ]
@@ -93,11 +93,11 @@ class Band(MetadataBase):
         Field(
             default=0.0,
             description="minimum band frequency",
-            examples=["0.03515625"],
             alias=None,
             json_schema_extra={
                 "units": "Hertz",
                 "required": True,
+                "examples": ["0.03515625"],
             },
         ),
     ]
@@ -107,11 +107,11 @@ class Band(MetadataBase):
         Field(
             default="geometric",
             description="type of average to apply when computing the band center",
-            examples=["geometric"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["geometric"],
             },
         ),
     ]
@@ -121,11 +121,11 @@ class Band(MetadataBase):
         Field(
             default="left",
             description="whether interval is open or closed",
-            examples=["left"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["left"],
             },
         ),
     ]
@@ -135,11 +135,11 @@ class Band(MetadataBase):
         Field(
             default=None,
             description="Name of the band",
-            examples=["0.039062"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0.039062"],
             },
         ),
     ]

@@ -16,11 +16,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="full url of the doi number",
-            examples=["http://doi.###"],
             validation_alias=AliasChoices("doi", "survey_doi"),
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["http://doi.###"],
             },
         ),
     ]
@@ -30,11 +30,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="author names",
-            examples=["M.Tee A. Roura"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["M.Tee A. Roura"],
             },
         ),
     ]
@@ -44,11 +44,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Full title of the citation",
-            examples=["Paper Title"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Paper Title"],
             },
         ),
     ]
@@ -58,12 +58,12 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Year of citation",
-            examples=["2020"],
             alias=None,
             pattern=r"^\d{4}(-\d{4})?$",  # Allows for ranges like "2020-2021"
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020"],
             },
         ),
     ]
@@ -73,11 +73,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Journal volume of the citation",
-            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["12"],
             },
         ),
     ]
@@ -87,11 +87,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Page numbers of the citation",
-            examples=["10-15"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["10-15"],
             },
         ),
     ]
@@ -101,11 +101,11 @@ class Citation(MetadataBase):
         Field(
             default=None,
             description="Journal title of citation",
-            examples=["Journal of Geophysical Research"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Journal of Geophysical Research"],
             },
         ),
     ]

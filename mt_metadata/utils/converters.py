@@ -488,8 +488,9 @@ def generate_pydantic_basemodel(json_schema_filename: Union[str, Path]) -> str:
                 continue
             elif attr_name in ["examples"]:
                 attr_value = [attr_value]
-                field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
-                # json_schema_extra["examples"] = repr(attr_value)
+                # newer versions of pydantic use examples in json_schema_extra
+                # field_parts.append(f"{TAB}{attr_name}={repr(attr_value)},")
+                json_schema_extra["examples"] = repr(attr_value)
             elif attr_name in ["units", "required"]:
                 json_schema_extra[attr_name] = attr_value
 

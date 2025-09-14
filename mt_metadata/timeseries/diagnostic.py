@@ -3,8 +3,9 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
 # =====================================================
@@ -14,10 +15,10 @@ class Diagnostic(MetadataBase):
         Field(
             default=None,
             description="Ending value of a diagnostic measurement.",
-            examples="10",
-            type="number",
             alias=None,
             json_schema_extra={
+                "examples": "10",
+                "type": "number",
                 "units": None,
                 "required": False,
             },
@@ -29,10 +30,10 @@ class Diagnostic(MetadataBase):
         Field(
             default=None,
             description="Starting value of a diagnostic measurement.",
-            examples="12.3",
-            type="number",
             alias=None,
             json_schema_extra={
+                "examples": "12.3",
+                "type": "number",
                 "units": None,
                 "required": False,
             },

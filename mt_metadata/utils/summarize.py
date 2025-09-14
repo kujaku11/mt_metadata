@@ -209,7 +209,17 @@ def _get_field_alias(field_info):
 
 def _get_field_example(field_info):
     """Extract example from Pydantic field"""
+    # First check the direct examples attribute (deprecated but still used)
     examples = getattr(field_info, "examples", None)
+
+    # If not found, check json_schema_extra for examples
+    if (
+        examples is None
+        and hasattr(field_info, "json_schema_extra")
+        and field_info.json_schema_extra
+    ):
+        examples = field_info.json_schema_extra.get("examples", None)
+
     if hasattr(examples, "__iter__") and not isinstance(examples, str):
         if examples and len(examples) > 0:
             return str(examples[0])
