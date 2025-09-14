@@ -329,7 +329,7 @@ class TestActivationMonotonicWeightKernelNormalization:
         )
 
         with patch(
-            "mt_metadata.features.weights.activation_monotonic_weight_kernel_basemodel.logger.warning"
+            "mt_metadata.features.weights.activation_monotonic_weight_kernel.logger.warning"
         ) as mock_warning:
             normalized = kernel._normalize(test_values_simple)
             expected = np.full_like(test_values_simple, 0.5)

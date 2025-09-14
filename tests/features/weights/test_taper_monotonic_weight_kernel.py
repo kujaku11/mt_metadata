@@ -492,7 +492,7 @@ class TestTaperMonotonicWeightKernelInheritance:
 
     def test_inherits_from_monotonic_weight_kernel(self):
         """Test TaperMonotonicWeightKernel inherits from MonotonicWeightKernel"""
-        from mt_metadata.features.weights.monotonic_weight_kernel_basemodel import (
+        from mt_metadata.features.weights.monotonic_weight_kernel import (
             MonotonicWeightKernel,
         )
 

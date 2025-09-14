@@ -86,9 +86,9 @@ class TestTypeEnum:
 
     def test_enum_membership(self):
         """Test enum membership checks."""
-        assert "hann" in TypeEnum
-        assert "hamming" in TypeEnum
-        assert "invalid_type" not in TypeEnum
+        assert "hann" in TypeEnum.__members__
+        assert "hamming" in TypeEnum.__members__
+        assert "invalid_type" not in TypeEnum.__members__
 
 
 # ===== Test Classes for TaperWeightKernel =====

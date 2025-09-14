@@ -165,15 +165,17 @@ class TestEnumerations:
 
     def test_threshold_enum_membership(self):
         """Test ThresholdEnum membership"""
-        assert "low cut" in ThresholdEnum
-        assert "high cut" in ThresholdEnum
-        assert "invalid" not in ThresholdEnum
+        members = [item.value for item in ThresholdEnum]
+        assert "low cut" in members
+        assert "high cut" in members
+        assert "invalid" not in members
 
     def test_style_enum_membership(self):
         """Test StyleEnum membership"""
-        assert "taper" in StyleEnum
-        assert "activation" in StyleEnum
-        assert "invalid" not in StyleEnum
+        members = [item.value for item in StyleEnum]
+        assert "taper" in members
+        assert "activation" in members
+        assert "invalid" not in members
 
 
 class TestMonotonicWeightKernelFixtures:

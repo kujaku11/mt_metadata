@@ -91,7 +91,7 @@ from loguru import logger
 from pydantic import computed_field, Field, model_validator
 
 from mt_metadata.common.enumerations import StrEnumerationBase
-from mt_metadata.features.base_feature_basemodel import Feature
+from mt_metadata.features.feature import Feature
 from mt_metadata.processing.window import Window
 
 

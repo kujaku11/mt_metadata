@@ -9,9 +9,9 @@ from loguru import logger
 from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
-from mt_metadata.features.base_feature_basemodel import Feature
-from mt_metadata.features.coherence_basemodel import Coherence
-from mt_metadata.features.fc_coherence_basemodel import FCCoherence
+from mt_metadata.features.coherence import Coherence
+from mt_metadata.features.fc_coherence import FCCoherence
+from mt_metadata.features.feature import Feature
 from mt_metadata.features.weights.activation_monotonic_weight_kernel import (
     ActivationMonotonicWeightKernel,
 )

@@ -9,7 +9,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from mt_metadata.features.base_feature_basemodel import Feature
+from mt_metadata.features.feature import Feature
 
 
 # ==============================================================================

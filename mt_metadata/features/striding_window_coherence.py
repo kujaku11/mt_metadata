@@ -7,7 +7,7 @@ import numpy as np
 import scipy.signal as ssig
 from pydantic import Field, model_validator
 
-from mt_metadata.features.coherence_basemodel import Coherence
+from mt_metadata.features.coherence import Coherence
 from mt_metadata.processing.window import Window
 
 
