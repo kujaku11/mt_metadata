@@ -1,7 +1,7 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated
+from typing import Annotated, Union
 
 from pydantic import Field
 
@@ -36,9 +36,9 @@ class PrewhiteningTypeEnum(StrEnumerationBase):
 
 class ShortTimeFourierTransform(MetadataBase):
     harmonic_indices: Annotated[
-        list[int],
+        Union[int, list[int], None],
         Field(
-            default_factory=list,
+            default=None,
             description="List of harmonics indices kept, if all use -1",
             examples=[[0, 4, 8]],
             alias=None,
