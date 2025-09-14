@@ -66,7 +66,7 @@ class ShortTimeFourierTransform(MetadataBase):
     min_num_stft_windows: Annotated[
         int,
         Field(
-            default=None,
+            default=0,
             description="How many FFT windows must be available for the time series to valid for STFT.",
             examples=[4],
             alias=None,

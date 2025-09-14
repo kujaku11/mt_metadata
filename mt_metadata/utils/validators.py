@@ -298,6 +298,9 @@ def validate_type(value):
         * float
         * int
         * bool
+        * list
+        * dict
+        * object
 
     :param value: required type
     :type value: [ type | string ]
@@ -318,16 +321,25 @@ def validate_type(value):
             return "string"
         elif "bool" in value.lower():
             return "boolean"
+        elif "list" in value.lower() or "array" in value.lower():
+            return "list"
+        elif "dict" in value.lower():
+            return "dict"
+        elif "object" in value.lower():
+            return "object"
         elif "h5py_reference" in value.lower():
             return value
 
         else:
-            msg = "'type' must be type [ int | float " + f"| str | bool ].  Not {value}"
+            msg = (
+                "'type' must be type [ int | float "
+                + f"| str | bool | list | dict | object ].  Not {value}"
+            )
             raise MTValidatorError(msg)
     else:
         msg = (
             "'type' must be type [ int | float "
-            + f"| str | bool ] or string.  Not {value}"
+            + f"| str | bool | list | dict | object ] or string.  Not {value}"
         )
         raise MTValidatorError(msg)
 
@@ -565,6 +577,9 @@ def validate_value_type(value, v_type, style=None):
             "integer": int,
             "float": float,
             "boolean": bool,
+            "list": list,
+            "dict": dict,
+            "object": object,
         }
         v_type = type_dict[validate_type(v_type)]
     else:
@@ -590,6 +605,8 @@ def validate_value_type(value, v_type, style=None):
         if isinstance(value, str):
             if v_type is int:
                 try:
+                    if value.lower() in ["none", "nan", ""]:
+                        return None
                     return int(value)
                 except ValueError:
                     raise MTSchemaError(msg, value, v_type, type(value))
