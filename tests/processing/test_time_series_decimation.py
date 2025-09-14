@@ -14,7 +14,7 @@ whilst optimizing for efficiency.
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.processing.time_series_decimation_basemodel import (
+from mt_metadata.processing.time_series_decimation import (
     MethodEnum,
     TimeSeriesDecimation,
 )

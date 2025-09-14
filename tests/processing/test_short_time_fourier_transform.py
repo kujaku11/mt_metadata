@@ -14,14 +14,14 @@ whilst optimizing for efficiency.
 import pytest
 from pydantic import ValidationError
 
-from mt_metadata.processing.short_time_fourier_transform_basemodel import (
+from mt_metadata.processing.short_time_fourier_transform import (
     MethodEnum,
     PerWindowDetrendTypeEnum,
     PreFftDetrendTypeEnum,
     PrewhiteningTypeEnum,
     ShortTimeFourierTransform,
 )
-from mt_metadata.processing.window_basemodel import ClockZeroTypeEnum, TypeEnum, Window
+from mt_metadata.processing.window import ClockZeroTypeEnum, TypeEnum, Window
 
 
 # =============================================================================

@@ -14,11 +14,16 @@ from loguru import logger
 from pydantic import computed_field, Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.band import Band
 from mt_metadata.common.enumerations import StrEnumerationBase
 from mt_metadata.helper_functions import cast_to_class_if_dict, validate_setter_input
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
-from mt_metadata.processing.aurora.band import Band
+
+
+if TYPE_CHECKING:
+    from mt_metadata.features.weights import ChannelWeightSpecs
+
 from mt_metadata.processing.aurora.estimator import Estimator
 from mt_metadata.processing.aurora.frequency_bands import FrequencyBands
 from mt_metadata.processing.aurora.regression import Regression
@@ -55,7 +60,7 @@ class DecimationLevel(MetadataBase):
     ]
 
     channel_weight_specs: Annotated[
-        list["ChannelWeightSpecs"],
+        List["ChannelWeightSpecs"],
         Field(
             default_factory=list,
             description="List of weighting schemes to use for TF processing for each output channel",
@@ -194,9 +199,39 @@ class DecimationLevel(MetadataBase):
         ),
     ]
 
-    @field_validator("channel_weight_specs", "bands", mode="before")
+    @field_validator("channel_weight_specs", mode="before")
     @classmethod
-    def validate_list_of_classes(cls, value, info: ValidationInfo):
+    def validate_channel_weight_specs(cls, value, info: ValidationInfo):
+        """
+        Validator for channel_weight_specs field.
+        """
+        # Import here to avoid circular imports
+        from mt_metadata.features.weights import ChannelWeightSpecs
+
+        # Handle singleton cases
+        if isinstance(value, (ChannelWeightSpecs, dict)):
+            value = [value]
+
+        if not isinstance(value, list):
+            raise TypeError(f"Not sure what to do with {type(value)}")
+
+        # Convert dicts to ChannelWeightSpecs objects
+        validated_specs = []
+        for item in value:
+            if isinstance(item, dict):
+                validated_specs.append(ChannelWeightSpecs(**item))
+            elif isinstance(item, ChannelWeightSpecs):
+                validated_specs.append(item)
+            else:
+                raise TypeError(
+                    f"List entry must be a ChannelWeightSpecs object or dict, not {type(item)}"
+                )
+
+        return validated_specs
+
+    @field_validator("bands", mode="before")
+    @classmethod
+    def validate_bands(cls, value, info: ValidationInfo):
         # Get the field type dynamically from the model
         field_name = info.field_name
         if field_name is None:

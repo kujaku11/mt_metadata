@@ -1,4 +1,6 @@
 """
+Band class for frequency band definitions.
+
 Development Notes:
     To add better overlap and intersection checking, consider using piso
     https://piso.readthedocs.io/en/latest/getting_started/index.html

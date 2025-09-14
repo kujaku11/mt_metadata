@@ -15,10 +15,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from mt_metadata.common.band import Band
 from mt_metadata.features.weights import ChannelWeightSpecs
 from mt_metadata.processing import ShortTimeFourierTransform as STFT
 from mt_metadata.processing import TimeSeriesDecimation as Decimation
-from mt_metadata.processing.aurora.band import Band
 from mt_metadata.processing.aurora.decimation_level import (
     _df_from_bands,
     DecimationLevel,

@@ -7,8 +7,8 @@ from loguru import logger
 from pydantic import computed_field, Field, field_validator
 
 from mt_metadata.base import MetadataBase
+from mt_metadata.common.band import Band
 from mt_metadata.common.enumerations import StrEnumerationBase
-from mt_metadata.processing.aurora.band import Band
 from mt_metadata.processing.aurora.channel_nomenclature import ChannelNomenclature
 from mt_metadata.processing.aurora.decimation_level import DecimationLevel
 from mt_metadata.processing.aurora.stations import Stations

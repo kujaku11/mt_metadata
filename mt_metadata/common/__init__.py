@@ -57,6 +57,7 @@ from .software import Software
 from .time_period import TimePeriod, TimePeriodDate
 from .provenance import Provenance
 from .location import BasicLocation, BasicLocationNoDatum, Location, StationLocation
+from .band import Band, CenterAveragingTypeEnum, ClosedEnum
 
 __all__ = [
     "DataTypeEnum",
@@ -95,6 +96,9 @@ __all__ = [
     "BasicLocation",
     "Location",
     "StationLocation",
+    "Band",
+    "CenterAveragingTypeEnum",
+    "ClosedEnum",
 ]
 
 # fmt: on

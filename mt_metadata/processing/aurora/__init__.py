@@ -1,4 +1,4 @@
-from .band import Band
+from mt_metadata.common.band import Band
 from .channel import Channel
 from .channel_nomenclature import ChannelNomenclature
 from .decimation_level import DecimationLevel
@@ -8,6 +8,15 @@ from .processing import Processing
 from .regression import Regression
 from .run import Run
 from .station import Station
+
+# Rebuild model to resolve forward references
+try:
+    from mt_metadata.features.weights import ChannelWeightSpecs
+
+    DecimationLevel.model_rebuild()
+except ImportError:
+    # If ChannelWeightSpecs is not available, just continue
+    pass
 from .stations import Stations
 
 __all__ = [

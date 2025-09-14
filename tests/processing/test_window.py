@@ -19,7 +19,7 @@ import pytest
 from pydantic import ValidationError
 
 from mt_metadata.common.mttime import MTime
-from mt_metadata.processing.window_basemodel import (
+from mt_metadata.processing.window import (
     ClockZeroTypeEnum,
     get_fft_harmonics,
     TypeEnum,

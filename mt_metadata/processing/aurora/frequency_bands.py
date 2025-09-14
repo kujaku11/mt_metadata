@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from .band import Band
+from mt_metadata.common.band import Band
 
 
 class FrequencyBands:
