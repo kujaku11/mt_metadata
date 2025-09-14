@@ -501,9 +501,6 @@ class TestChannelWeightSpecSerialization:
 class TestChannelWeightSpecJsonSchema:
     """Test ChannelWeightSpec JSON schema generation"""
 
-    @pytest.mark.skip(
-        reason="FeatureWeightSpec not compatible with JSON schema generation"
-    )
     def test_json_schema_generation(self):
         """Test JSON schema can be generated"""
         schema = ChannelWeightSpec.model_json_schema()
@@ -514,9 +511,6 @@ class TestChannelWeightSpecJsonSchema:
         assert "feature_weight_specs" in schema["properties"]
         assert "weights" in schema["properties"]
 
-    @pytest.mark.skip(
-        reason="FeatureWeightSpec not compatible with JSON schema generation"
-    )
     def test_json_schema_field_types(self):
         """Test JSON schema field type definitions"""
         schema = ChannelWeightSpec.model_json_schema()
