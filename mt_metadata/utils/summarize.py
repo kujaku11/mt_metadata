@@ -49,10 +49,15 @@ def extract_metadata_fields_from_pydantic(metadata_class):
     Extract field information from a Pydantic v2 MetadataBase class definition
     and convert it to a format compatible with BaseDict.
 
-    :param metadata_class: A MetadataBase class (not instance)
-    :type metadata_class: type
-    :return: Dictionary with field information compatible with BaseDict
-    :rtype: dict
+    Parameters
+    ----------
+    metadata_class : type
+        A MetadataBase class (not instance)
+
+    Returns
+    -------
+    dict
+        Dictionary with field information compatible with BaseDict
     """
     if not (
         isinstance(metadata_class, type) and issubclass(metadata_class, MetadataBase)
@@ -244,10 +249,15 @@ def collect_basemodel_objects(module: str) -> dict[type[MetadataBase], str]:
     """
     Collect all MetadataBase subclasses from a given module.
 
-    :param module: The module to inspect (e.g., 'mt_metadata.timeseries')
-    :type module: str
-    :return: Dictionary mapping class objects to their names
-    :rtype: dict[type[MetadataBase], str]
+    Parameters
+    ----------
+    module : str
+        The module to inspect (e.g., 'mt_metadata.timeseries')
+
+    Returns
+    -------
+    dict[type[MetadataBase], str]
+        Dictionary mapping class objects to their names
     """
     import importlib
     import inspect
@@ -265,8 +275,15 @@ def summarize_pydantic_standards(module: str = "timeseries") -> BaseDict:
     Summarize the standards for metadata using Pydantic v2 MetadataBase classes.
     Similar to summarize_timeseries_standards but works with the new Pydantic structure.
 
-    :return: BaseDict object containing summarized field information
-    :rtype: BaseDict
+    Parameters
+    ----------
+    module : str, optional
+        The module to inspect, by default "timeseries"
+
+    Returns
+    -------
+    BaseDict
+        BaseDict object containing summarized field information
     """
     metadata_classes = collect_basemodel_objects(module)
 
@@ -287,11 +304,15 @@ def summary_to_array(summary_dict):
     """
     Summarize all metadata from a summarized dictionary of standards
 
-    :param summary_dict: Dictionary of summarized standards
-    :type summary_dict: dict
-    :return: numpy structured array
-    :rtype: np.array
+    Parameters
+    ----------
+    summary_dict : dict
+        Dictionary of summarized standards
 
+    Returns
+    -------
+    np.array
+        numpy structured array
     """
     dtype = np.dtype(
         [
@@ -335,16 +356,19 @@ def summary_to_array(summary_dict):
 
 def summarize_standards(module="timeseries", csv_fn=None):
     """
-
     Summarize standards into a numpy array and write a csv if specified
 
-    :param metadata_type: [ timeseries | pydantic ], defaults to "timeseries"
-    :type metadata_type: string, optional
-    :param csv_fn: full path to write a csv file, defaults to None
-    :type csv_fn: string or Path, optional
-    :return: structured numpy array
-    :rtype: :class:`numpy.ndarray`
+    Parameters
+    ----------
+    module : str, optional
+        Module to summarize, by default "timeseries"
+    csv_fn : str or Path, optional
+        Full path to write a csv file, by default None
 
+    Returns
+    -------
+    numpy.ndarray
+        structured numpy array
     """
 
     summary_dict = summarize_pydantic_standards(module)

@@ -103,12 +103,17 @@ class Station(MetadataBase):
 
     def get_run(self, run_id) -> Run | None:
         """
+        Get a run by ID
 
-        :param run_id: DESCRIPTION
-        :type run_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        run_id : TYPE
+            DESCRIPTION
 
+        Returns
+        -------
+        Run | None
+            DESCRIPTION
         """
 
         try:
@@ -130,9 +135,10 @@ class Station(MetadataBase):
         need to have a dictionary, but it can't be an attribute cause that
         gets confusing when reading in a json file
 
-        :return: DESCRIPTION
-        :rtype: TYPE
-
+        Returns
+        -------
+        dict[str, Run]
+            DESCRIPTION
         """
         return dict([(rr.id, rr) for rr in self.runs])
 
@@ -196,11 +202,15 @@ class Station(MetadataBase):
             "remote",
         ]
 
-        :param df: DESCRIPTION
-        :type df: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DESCRIPTION
 
+        Returns
+        -------
+        TYPE
+            DESCRIPTION
         """
 
         self.runs = []

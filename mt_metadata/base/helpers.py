@@ -190,14 +190,19 @@ def wrap_description(description, column_width):
 
 def validate_c1(attr_dict, c1):
     """
+    Validate column 1 width based on attribute dictionary
 
-    :param attr_dict: DESCRIPTION
-    :type attr_dict: TYPE
-    :param c1: DESCRIPTION
-    :type c1: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    attr_dict : dict
+        DESCRIPTION
+    c1 : int
+        DESCRIPTION
 
+    Returns
+    -------
+    int
+        DESCRIPTION
     """
     try:
         max_c1 = max([len(key) for key in attr_dict.keys()])
@@ -215,17 +220,21 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     Takes the attribute dictionary from the json and parses it into a table
     Returns a string representation of this table.  This overwrites the doc.
 
-    :param attr_dict: attribute dictionary
-    :type attr_dict: dict
-    :param c1: cloumn 1 width, defaults to 45
-    :type c1: integer, optional
-    :param c2: column 2 width, defaults to 45
-    :type c2: integer, optional
-    :param c3: column 3 width, defaults to 15
-    :type c3: integer, optional
-    :return: doc string
-    :rtype: string
+    Parameters
+    ----------
+    attr_dict : dict
+        attribute dictionary
+    c1 : int, optional
+        column 1 width, by default 45
+    c2 : int, optional
+        column 2 width, by default 45
+    c3 : int, optional
+        column 3 width, by default 15
 
+    Returns
+    -------
+    str
+        doc string
     """
     c1 = validate_c1(attr_dict, c1)
 

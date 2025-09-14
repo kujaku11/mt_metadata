@@ -103,15 +103,17 @@ def validate_header(header, attribute=False):
         * 'style'
         * 'units'
 
-    :param header: list of header names
-    :type header: list
+    Parameters
+    ----------
+    header : list
+        list of header names
+    attribute : bool, optional
+        include attribute in test or not, by default False
 
-    :param attribute: include attribute in test or not
-    :type attribute: [ True | False ]
-
-    :return: validated header
-    :rtype: list
-
+    Returns
+    -------
+    list
+        validated header
     """
     if not isinstance(header, list):
         msg = "input header must be a list, not {type(header)}"
@@ -152,11 +154,15 @@ def validate_name(name):
     '/' will be replaced with '.'
     converted to all lower case
 
-    :param name: name name
-    :type name: string
-    :return: valid name name
-    :rtype: string
+    Parameters
+    ----------
+    name : str
+        name name
 
+    Returns
+    -------
+    str
+        valid name name
     """
     if not isinstance(name, str):
         msg = f"Attribute name must be a string, not {type(name)}"
@@ -233,11 +239,15 @@ def validate_attribute(name):
     '/' will be replaced with '.'
     converted to all lower case
 
-    :param name: name name
-    :type name: string
-    :return: valid name name
-    :rtype: string
+    Parameters
+    ----------
+    name : str
+        name name
 
+    Returns
+    -------
+    str
+        valid name name
     """
     if not isinstance(name, str):
         msg = f"Attribute name must be a string, not {type(name)}"
@@ -265,14 +275,17 @@ def validate_attribute(name):
 
 def validate_required(value):
     """
-
     Validate required, must be True or False
 
-    :param value: required value
-    :type value: [ string | bool ]
-    :return: validated required value
-    :rtype: boolean
+    Parameters
+    ----------
+    value : str or bool
+        required value
 
+    Returns
+    -------
+    bool
+        validated required value
     """
     if isinstance(value, bool):
         return value
@@ -292,7 +305,6 @@ def validate_required(value):
 
 def validate_type(value):
     """
-
     Validate required type. Must be:
         * str
         * float
@@ -302,11 +314,15 @@ def validate_type(value):
         * dict
         * object
 
-    :param value: required type
-    :type value: [ type | string ]
-    :return: validated type
-    :rtype: string
+    Parameters
+    ----------
+    value : type or str
+        required type
 
+    Returns
+    -------
+    str
+        validated type
     """
     if isinstance(value, type):
         value = "{0}".format(value).replace("<class", "").replace(">", "")
@@ -350,12 +366,15 @@ def validate_units(value):
 
     ..todo:: make a list of acceptable unit names
 
-    :param value: unit value to be validated
-    :type value: string
+    Parameters
+    ----------
+    value : str
+        unit value to be validated
 
-    :return: validated units
-    :rtype: string
-
+    Returns
+    -------
+    str
+        validated units
     """
     if value is None:
         return value
@@ -375,11 +394,15 @@ def validate_style(value):
 
     ..todo:: make list of accepted style formats
 
-    :param value: style to be validated
-    :type value: string
-    :return: validated style
-    :rtype: string
+    Parameters
+    ----------
+    value : str
+        style to be validated
 
+    Returns
+    -------
+    str
+        validated style
     """
     # if None then return the generic name style
     if value is None:
@@ -398,14 +421,17 @@ def validate_style(value):
 
 def validate_description(description):
     """
-
     make sure the description is a string
 
-    :param description: detailed description of an attribute
-    :type description: str
-    :return: validated string of description
-    :rtype: string
+    Parameters
+    ----------
+    description : str
+        detailed description of an attribute
 
+    Returns
+    -------
+    str
+        validated string of description
     """
     if not isinstance(description, str):
         msg = f"Description must be a string, not {type(description)}"
@@ -418,11 +444,15 @@ def validate_options(options):
     """
     turn options into a list of strings
 
-    :param options: DESCRIPTION
-    :type options: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    options : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
     if isinstance(options, str):
         options = options.replace("[", "").replace("]", "").strip().split("|")
@@ -446,11 +476,16 @@ def validate_options(options):
 def validate_alias(alias):
     """
     validate alias names
-    :param alias: DESCRIPTION
-    :type alias: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
 
+    Parameters
+    ----------
+    alias : TYPE
+        DESCRIPTION
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     if isinstance(alias, str):
@@ -474,12 +509,17 @@ def validate_alias(alias):
 
 def validate_example(example):
     """
+    Validate example values
 
-    :param example: DESCRIPTION
-    :type example: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    example : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
     if not isinstance(example, str):
         example = "{0}".format(example)
@@ -490,11 +530,15 @@ def validate_default(value_dict):
     """
     validate default value
 
-    :param default: DESCRIPTION
-    :type default: TYPE
-    :return: DESCRIPTION
-    :rtype: TYPE
+    Parameters
+    ----------
+    value_dict : TYPE
+        DESCRIPTION
 
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     if value_dict["required"]:
@@ -532,17 +576,21 @@ def validate_default(value_dict):
 
 def validate_value_type(value, v_type, style=None):
     """
-
-    :param value:
-    :type value:
-    :param v_type:
-    :type v_type:
-    :param style:
-    :type style:
-    :return:
-
     validate type from standards
 
+    Parameters
+    ----------
+    value : TYPE
+        DESCRIPTION
+    v_type : TYPE
+        DESCRIPTION
+    style : TYPE, optional
+        DESCRIPTION, by default None
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION
     """
 
     # if the value is a metadata type skip cause the individual components
