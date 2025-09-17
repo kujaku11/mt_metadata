@@ -1,4 +1,5 @@
 import pytest
+
 from mt_metadata.common import Copyright, LicenseEnum
 
 

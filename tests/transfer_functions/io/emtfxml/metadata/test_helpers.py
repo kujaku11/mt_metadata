@@ -781,11 +781,14 @@ class TestToXml:
         mock_cls.__class__.__name__ = "TestClass"
         mock_cls.simple_attr = "value"
 
-        with patch(
-            "mt_metadata.transfer_functions.io.emtfxml.metadata.helpers._get_attributes"
-        ) as mock_get_attrs, patch(
-            "mt_metadata.transfer_functions.io.emtfxml.metadata.helpers.element_to_string"
-        ) as mock_element_to_string:
+        with (
+            patch(
+                "mt_metadata.transfer_functions.io.emtfxml.metadata.helpers._get_attributes"
+            ) as mock_get_attrs,
+            patch(
+                "mt_metadata.transfer_functions.io.emtfxml.metadata.helpers.element_to_string"
+            ) as mock_element_to_string,
+        ):
             mock_get_attrs.return_value = ["simple_attr"]
             mock_element_to_string.return_value = (
                 "<TestClass><SimpleAttr>value</SimpleAttr></TestClass>"

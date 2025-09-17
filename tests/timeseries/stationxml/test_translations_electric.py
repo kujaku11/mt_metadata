@@ -15,13 +15,16 @@ Created on Fri Mar 26 08:15:49 2021
 # =============================================================================
 import pytest
 
+
 try:
-    from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
     from obspy.core import inventory
+
+    from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 except ImportError:
     pytest.skip(reason="obspy is not installed", allow_module_level=True)
 
 from mt_metadata import STATIONXML_ELECTRIC
+
 
 # =============================================================================
 # Fixtures

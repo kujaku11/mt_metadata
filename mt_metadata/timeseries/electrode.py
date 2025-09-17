@@ -3,10 +3,8 @@
 # =======================================================================
 # Imports
 # =======================================================================
-from typing import Annotated
 
-from mt_metadata.common import Location, Instrument
-from pydantic import Field
+from mt_metadata.common import Instrument, Location
 
 
 # =======================================================================

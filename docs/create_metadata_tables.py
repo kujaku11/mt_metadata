@@ -11,14 +11,16 @@ Created on Thu Jul 30 17:01:34 2020
 :license: MIT
 
 """
+import importlib
+import inspect
+
 # =============================================================================
 # Imports
 # =============================================================================
 from pathlib import Path
-import importlib
-import inspect
 
 from mt_metadata.base.helpers import write_block
+
 
 FN_PATH = Path(__file__).parent.joinpath("source")
 # =============================================================================
