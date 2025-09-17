@@ -783,7 +783,7 @@ class EMTFXML:
                 if "datalogger" in key:
                     key, value = self._parse_comments_data_logger(key, value)
                     try:
-                        self.field_notes.run_list[0].set_attr_from_name(key, value)
+                        self.field_notes.run_list[0].update_attribute(key, value)
                         key = None
                         value = None
                     except:
@@ -1405,7 +1405,7 @@ class EMTFXML:
                         if comment.count(":") >= 1:
                             key, value = comment.split(":", 1)
                             try:
-                                fn.set_attr_from_name(key.strip(), value.strip())
+                                fn.update_attribute(key.strip(), value.strip())
                             except:
                                 raise AttributeError(f"Cannot set attribute {key}.")
 
