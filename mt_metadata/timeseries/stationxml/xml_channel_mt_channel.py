@@ -488,12 +488,12 @@ class XMLChannelMTChannel(BaseTranslator):
                 for pos in ["latitude", "longitude", "elevation"]:
                     key = f"{direction}.{pos}"
                     value = getattr(xml_channel, pos)
-                    mt_channel.set_attr_from_name(key, value)
+                    mt_channel.update_attribute(key, value)
         else:
             for pos in ["latitude", "longitude", "elevation"]:
                 key = f"location.{pos}"
                 value = getattr(xml_channel, pos)
-                mt_channel.set_attr_from_name(key, value)
+                mt_channel.update_attribute(key, value)
 
         return mt_channel
 
