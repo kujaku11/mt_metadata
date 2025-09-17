@@ -13,8 +13,9 @@ Created on Thu Feb 18 12:49:13 2021
 # =============================================================================
 
 from mt_metadata import timeseries as metadata
-from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries.stationxml.utils import BaseTranslator
+
 
 try:
     from obspy.core import inventory

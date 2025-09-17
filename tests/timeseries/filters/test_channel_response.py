@@ -3,19 +3,19 @@
 Tests for the ChannelResponse filter class
 """
 
-import pytest
-import numpy as np
-
 from unittest.mock import patch
 
+import numpy as np
+import pytest
 
 from mt_metadata.timeseries.filters import (
+    ChannelResponse,
+    CoefficientFilter,
     FrequencyResponseTableFilter,
     PoleZeroFilter,
-    CoefficientFilter,
-    ChannelResponse,
     TimeDelayFilter,
 )
+
 
 try:
     from obspy.core.inventory.response import ResponseListResponseStage

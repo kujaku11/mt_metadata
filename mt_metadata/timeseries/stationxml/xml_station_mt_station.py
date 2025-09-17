@@ -9,15 +9,16 @@ Created on Thu Feb 18 12:49:13 2021
 :license: MIT
 
 """
+from mt_metadata import timeseries as metadata
+from mt_metadata.base.helpers import requires
+from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
+
 # =============================================================================
 # Imports
 # =============================================================================
 from mt_metadata.timeseries.stationxml.fdsn_tools import release_dict
-
-from mt_metadata import timeseries as metadata
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
-from mt_metadata.timeseries.stationxml import XMLEquipmentMTRun
-from mt_metadata.base.helpers import requires
+
 
 try:
     from obspy.core import inventory

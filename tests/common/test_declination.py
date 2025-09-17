@@ -1,6 +1,7 @@
 import pytest
-from mt_metadata.common.declination import Declination, GeomagneticModelEnum
+
 from mt_metadata.common import Comment
+from mt_metadata.common.declination import Declination, GeomagneticModelEnum
 
 
 def test_declination_default_values():

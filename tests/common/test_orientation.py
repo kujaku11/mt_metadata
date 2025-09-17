@@ -1,11 +1,12 @@
 import pytest
-from mt_metadata.common.orientation import Orientation
-from mt_metadata.common.enumerations import (
-    OrientationMethodEnum,
-    GeographicReferenceFrameEnum,
-    ChannelOrientationEnum,
-)
 from pydantic import ValidationError
+
+from mt_metadata.common.enumerations import (
+    ChannelOrientationEnum,
+    GeographicReferenceFrameEnum,
+    OrientationMethodEnum,
+)
+from mt_metadata.common.orientation import Orientation
 
 
 @pytest.fixture

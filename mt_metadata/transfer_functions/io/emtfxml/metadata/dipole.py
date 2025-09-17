@@ -135,13 +135,13 @@ class Dipole(MetadataBase):
         except AttributeError:
             logger.debug("Dipole has no manufacturer information")
         if self.length is not None:
-            et.SubElement(
-                root, "length", {"units": "meters"}
-            ).text = f"{self.length:.3f}"
+            et.SubElement(root, "length", {"units": "meters"}).text = (
+                f"{self.length:.3f}"
+            )
         if self.azimuth is not None:
-            et.SubElement(
-                root, "azimuth", {"units": "degrees"}
-            ).text = f"{self.azimuth:.3f}"
+            et.SubElement(root, "azimuth", {"units": "degrees"}).text = (
+                f"{self.azimuth:.3f}"
+            )
         for item in self.electrode:
             root.append(item.to_xml())
 

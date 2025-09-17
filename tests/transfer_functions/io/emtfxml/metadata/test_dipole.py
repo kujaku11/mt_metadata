@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-from mt_metadata.transfer_functions.io.emtfxml.metadata import Dipole, Electrode
 from mt_metadata.common.enumerations import ElectrodeLocationEnum
+from mt_metadata.transfer_functions.io.emtfxml.metadata import Dipole, Electrode
 
 
 # =============================================================================
