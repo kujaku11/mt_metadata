@@ -15,7 +15,12 @@ import pandas as pd
 import pytest
 from dateutil import parser as dtparser
 from dateutil import tz
-from obspy import UTCDateTime
+
+
+try:
+    from obspy import UTCDateTime
+except ImportError:
+    UTCDateTime = None
 
 from mt_metadata.common.mttime import (
     _check_timestamp,
@@ -211,6 +216,7 @@ def test_np_datetime64_ms(setup_data, subtests):
         assert pytest.approx(t.epoch_seconds, 0.0001) == setup_data["epoch_seconds"]
 
 
+@pytest.mark.skipif(UTCDateTime is None, reason="obspy not available")
 def test_obspy_utcdatetime(setup_data, subtests):
     t = MTime(time_stamp=UTCDateTime(setup_data["dt_true"]))
 
@@ -342,12 +348,14 @@ def test_too_small(subtests):
         assert t1.isoformat() == TMIN.isoformat()
 
 
+@pytest.mark.skipif(UTCDateTime is None, reason="obspy not available")
 def test_utc_too_large(subtests):
     t1 = MTime(time_stamp=UTCDateTime("3000-01-01"))
     with subtests.test("UTC too large date"):
         assert t1.isoformat() == TMAX.isoformat()
 
 
+@pytest.mark.skipif(UTCDateTime is None, reason="obspy not available")
 def test_utc_too_small(subtests):
     t1 = MTime(time_stamp=UTCDateTime("1400-01-01"))
     with subtests.test("UTC too small date"):
