@@ -15,11 +15,11 @@ class BirrpAngles(MetadataBase):
         Field(
             default=0.0,
             description="rotation angle for block x",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class BirrpAngles(MetadataBase):
         Field(
             default=0.0,
             description="rotation angle for block y",
-            examples=["90"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["90"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class BirrpAngles(MetadataBase):
         Field(
             default=0.0,
             description="rotation angle for block",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]

@@ -26,11 +26,11 @@ class Processing(MetadataBase):
         Field(
             default_factory=list,
             description="decimation levels",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -40,11 +40,11 @@ class Processing(MetadataBase):
         Field(
             default=None,
             description="describes how bands were sourced",
-            examples=["EMTF"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["EMTF"],
             },
         ),
     ]
@@ -54,11 +54,11 @@ class Processing(MetadataBase):
         Field(
             default=None,
             description="the band setup file used to define bands",
-            examples=["/home/user/bs_test.cfg"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["/home/user/bs_test.cfg"],
             },
         ),
     ]
@@ -68,11 +68,11 @@ class Processing(MetadataBase):
         Field(
             default="",
             description="Configuration ID",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -82,11 +82,11 @@ class Processing(MetadataBase):
         Field(
             default_factory=ChannelNomenclature,  # type: ignore
             description="Channel nomenclature",
-            examples=["EMTF"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["EMTF"],
             },
         ),
     ]
@@ -96,11 +96,11 @@ class Processing(MetadataBase):
         Field(
             default_factory=Stations,  # type: ignore
             description="Station information",
-            examples=["Station1", "Station2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Station1", "Station2"],
             },
         ),
     ]

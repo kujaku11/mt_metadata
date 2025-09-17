@@ -3,9 +3,10 @@
 # =====================================================
 from typing import Annotated
 
+from pydantic import AnyHttpUrl, EmailStr, Field, field_validator, ValidationInfo
+
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
-from pydantic import Field, ValidationInfo, field_validator, AnyHttpUrl, EmailStr
 
 
 # =====================================================
@@ -14,13 +15,13 @@ class FundingSource(MetadataBase):
         list[str] | str | None,
         Field(
             default=None,
-            items={"type": "string"},
             description="Persons name, should be full first and last name.",
-            examples="person name",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "person name",
+                "items": {"type": "string"},
             },
         ),
     ]
@@ -29,13 +30,13 @@ class FundingSource(MetadataBase):
         list[str] | str | None,
         Field(
             default=None,
-            items={"type": "string"},
             description="Organization full name",
-            examples="mt gurus",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "mt gurus",
+                "items": {"type": "string"},
             },
         ),
     ]
@@ -44,13 +45,13 @@ class FundingSource(MetadataBase):
         list[EmailStr] | EmailStr | None,
         Field(
             default=None,
-            items={"type": "string"},
             description="Email of the contact person",
-            examples="mt.guru@em.org",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "mt.guru@em.org",
+                "items": {"type": "string"},
             },
         ),
     ]
@@ -59,13 +60,13 @@ class FundingSource(MetadataBase):
         list[AnyHttpUrl] | AnyHttpUrl | None,
         Field(
             default=None,
-            items={"type": "string"},
             description="URL of the contact person",
-            examples="em.org",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "em.org",
+                "items": {"type": "string"},
             },
         ),
     ]
@@ -75,11 +76,11 @@ class FundingSource(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the person",
-            examples="expert digger",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "expert digger",
             },
         ),
     ]
@@ -88,13 +89,13 @@ class FundingSource(MetadataBase):
         list[str] | str | None,
         Field(
             default=None,
-            items={"type": "string"},
             description="Grant ID number or name",
-            examples="MT-01-2020",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "MT-01-2020",
+                "items": {"type": "string"},
             },
         ),
     ]

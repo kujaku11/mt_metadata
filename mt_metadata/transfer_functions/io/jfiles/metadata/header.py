@@ -17,11 +17,11 @@ class Header(BasicLocation):
         Field(
             default="",
             description="title of file",
-            examples=["BIRRP Version 5 basic mode output"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BIRRP Version 5 basic mode output"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class Header(BasicLocation):
         Field(
             default="",
             description="station name",
-            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt001"],
             },
         ),
     ]
@@ -45,11 +45,11 @@ class Header(BasicLocation):
         Field(
             default=0.0,
             description="rotation of full impedance tensor",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class Header(BasicLocation):
         Field(
             default_factory=BirrpParameters,  # type: ignore
             description="BIRRP parameters",
-            examples=["BirrpParameters(...)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BirrpParameters(...)"],
             },
         ),
     ]
@@ -73,11 +73,11 @@ class Header(BasicLocation):
         Field(
             default_factory=list,
             description="BIRRP data blocks",
-            examples=["BirrpBlock(...)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BirrpBlock(...)"],
             },
         ),
     ]
@@ -87,11 +87,11 @@ class Header(BasicLocation):
         Field(
             default_factory=list,
             description="BIRRP angles",
-            examples=["BirrpAngles(...)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BirrpAngles(...)"],
             },
         ),
     ]

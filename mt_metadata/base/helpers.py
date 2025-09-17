@@ -970,13 +970,28 @@ def object_to_array(value, dtype=float):
         return value.astype(dtype)
     elif isinstance(value, str):
         # Handle string input (e.g., from JSON)
+        import warnings
+
         try:
-            value = np.fromstring(value, sep=",", dtype=dtype)
-            if len(value) == 0:
-                logger.warning(
-                    "String input is empty or cannot parse properly, returning an empty array."
-                )
-            return value
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                value = np.fromstring(value, sep=",", dtype=dtype)
+
+                # Check for DeprecationWarning which indicates invalid string input
+                # This handles numpy version differences where older versions
+                # return empty array with warning instead of raising ValueError
+                if w and any(
+                    issubclass(warning.category, DeprecationWarning) for warning in w
+                ):
+                    # Treat DeprecationWarning as invalid input
+                    msg = f"input values must be a list, tuple, or np.ndarray, not {type(value).__name__} (invalid string format)"
+                    raise TypeError(msg)
+
+                if len(value) == 0:
+                    logger.warning(
+                        "String input is empty or cannot parse properly, returning an empty array."
+                    )
+                return value
         except ValueError:
             msg = (
                 f"input values must be a list, tuple, or np.ndarray, not {type(value)}"

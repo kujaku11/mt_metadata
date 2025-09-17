@@ -36,11 +36,11 @@ class ThresholdWeightKernel(TaperMonotonicWeightKernel):
         Field(
             default="low cut",
             description="Which side of a threshold should be downweighted.",
-            examples=["low cut"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["low cut"],
             },
         ),
     ]

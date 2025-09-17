@@ -39,12 +39,12 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Alpha numeric ID that will be unique for archiving.",
-            examples=["EMT20"],
             alias=None,
             pattern="^[a-zA-Z0-9_\- ]+$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["EMT20"],
             },
         ),
     ]
@@ -54,11 +54,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the survey.",
-            examples=["long survey"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["long survey"],
             },
         ),
     ]
@@ -68,11 +68,11 @@ class Survey(MetadataBase):
         Field(
             default="WGS 84",
             description="Datum of latitude and longitude coordinates. Should be a well-known datum, such as WGS84, and will be the reference datum for all locations.  This is important for the user, they need to make sure all coordinates in the survey and child items (i.e. stations, channels) are referenced to this datum.",
-            examples=["WGS 84"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["WGS 84"],
             },
         ),
     ]
@@ -82,11 +82,11 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Closest geographic reference to survey, usually a city but could be a landmark or some other common geographic reference point.",
-            examples=["Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Yukon"],
             },
         ),
     ]
@@ -96,11 +96,11 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Descriptive name of the survey.",
-            examples=["MT Characterization of Yukon Terrane"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["MT Characterization of Yukon Terrane"],
             },
         ),
     ]
@@ -110,11 +110,11 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Alpha numeric name for the project e.g USGS-GEOMAG.",
-            examples=["YUTOO"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["YUTOO"],
             },
         ),
     ]
@@ -124,11 +124,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of stations recorded in the survey.",
-            examples=["ListDict[Station(id=id)]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["ListDict[Station(id=id)]"],
             },
         ),
     ]
@@ -138,11 +138,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of filters for channel responses.",
-            examples=["ListDict[Filter()]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["ListDict[Filter()]"],
             },
         ),
     ]
@@ -152,11 +152,13 @@ class Survey(MetadataBase):
         Field(
             default="",
             description="Summary paragraph of survey including the purpose; difficulties; data quality; summary of outcomes if the data have been processed and modeled.",
-            examples=["long project of characterizing mineral resources in Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [
+                    "long project of characterizing mineral resources in Yukon"
+                ],
             },
         ),
     ]
@@ -166,11 +168,13 @@ class Survey(MetadataBase):
         Field(
             default_factory=TimePeriodDate,
             description="End date of the survey in UTC.",
-            examples=["TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [
+                    "TimePeriodDate(start_date='2000-01-01', end_date='2000-01-31')"
+                ],
             },
         ),
     ]
@@ -180,11 +184,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN web service information.",
-            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Fdsn()"],
             },
         ),
     ]
@@ -194,11 +198,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person or group that acquired the data.",
-            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Person()"],
             },
         ),
     ]
@@ -208,11 +212,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=FundingSource,
             description="Funding source for the survey.",
-            examples=["FundingSource()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["FundingSource()"],
             },
         ),
     ]
@@ -222,11 +226,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=Citation,
             description="Citation for the dataset.",
-            examples=["Citation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Citation()"],
             },
         ),
     ]
@@ -236,11 +240,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=Citation,
             description="Citation for the journal.",
-            examples=["Citation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Citation()"],
             },
         ),
     ]
@@ -250,11 +254,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=BasicLocationNoDatum,
             description="Northwest corner of the survey area.",
-            examples=["BasicLocationNoDatum()"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["BasicLocationNoDatum()"],
             },
         ),
     ]
@@ -264,11 +268,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=BasicLocationNoDatum,
             description="Southeast corner of the survey area.",
-            examples=["BasicLocationNoDatum()"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["BasicLocationNoDatum()"],
             },
         ),
     ]
@@ -278,11 +282,11 @@ class Survey(MetadataBase):
         Field(
             default=None,
             description="Country where the survey was conducted.",
-            examples=["Canada"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Canada"],
             },
         ),
     ]
@@ -292,11 +296,11 @@ class Survey(MetadataBase):
         Field(
             default=None,
             description="State or province where the survey was conducted.",
-            examples=["Yukon"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Yukon"],
             },
         ),
     ]
@@ -306,11 +310,11 @@ class Survey(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person or group that led the project.",
-            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Person()"],
             },
         ),
     ]
@@ -320,11 +324,11 @@ class Survey(MetadataBase):
         Field(
             default="CC-BY-4.0",
             description="Release license for the data.",
-            examples=["CC-BY-4.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["CC-BY-4.0"],
             },
         ),
     ]

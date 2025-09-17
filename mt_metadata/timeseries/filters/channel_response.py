@@ -53,11 +53,11 @@ class ChannelResponse(FilterBase):
         Field(
             default=0.0,
             description="Pass band frequency",
-            examples="100",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "100",
             },
         ),
     ]
@@ -73,11 +73,11 @@ class ChannelResponse(FilterBase):
         Field(
             default_factory=list,
             description="List of filters applied to the channel.",
-            examples="[PoleZeroFilter, CoefficientFilter]",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "[PoleZeroFilter, CoefficientFilter]",
             },
         ),
     ]
@@ -86,13 +86,13 @@ class ChannelResponse(FilterBase):
         np.ndarray | list[float],
         Field(
             default_factory=lambda: np.empty(0, dtype=float),
-            items={"type": "number"},
             description="The frequencies at which a calibration of the filter were performed.",
-            examples='"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"',
             alias=None,
             json_schema_extra={
                 "units": "hertz",
                 "required": True,
+                "items": {"type": "number"},
+                "examples": '"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"',
             },
         ),
     ]

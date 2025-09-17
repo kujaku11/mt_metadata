@@ -44,11 +44,11 @@ class MonotonicWeightKernel(Base):
         Field(
             default="low cut",
             description="Which side of a threshold should be downweighted.",
-            examples=["low cut"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["low cut"],
             },
         ),
     ]
@@ -58,11 +58,11 @@ class MonotonicWeightKernel(Base):
         Field(
             default="taper",
             description="Tapering/activation function to use between transition bounds.",
-            examples=["activation"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["activation"],
             },
         ),
     ]
@@ -72,11 +72,11 @@ class MonotonicWeightKernel(Base):
         Field(
             default=-1000000000.0,
             description="Start of the taper region (weight begins to change).",
-            examples=["-inf"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["-inf"],
             },
         ),
     ]
@@ -86,11 +86,11 @@ class MonotonicWeightKernel(Base):
         Field(
             default=1000000000.0,
             description="End of the taper region (weight finishes changing).",
-            examples=["+inf"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["+inf"],
             },
         ),
     ]

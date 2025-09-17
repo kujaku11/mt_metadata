@@ -31,11 +31,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=None,
             description="person, group, company, university that collected the data",
-            examples=["mt experts"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt experts"],
             },
         ),
     ]
@@ -45,11 +45,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Start date the time series data were collected",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01"],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="geographic",
             description="coordinate system the transfer function is currently in. Its preferred the transfer function be in a geographic coordinate system for archiving and sharing.",
-            examples=["geopgraphic"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["geopgraphic"],
             },
         ),
     ]
@@ -73,11 +73,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="",
             description="station ID.",
-            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt001"],
             },
         ),
     ]
@@ -87,11 +87,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="End date the time series data were collected",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020-01-01"],
             },
         ),
     ]
@@ -101,11 +101,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=1e32,
             description="null data values, usually a large number",
-            examples=["1E+32"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1E+32"],
             },
         ),
     ]
@@ -115,11 +115,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="",
             description="person, group, company, university that made the file",
-            examples=["mt experts"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt experts"],
             },
         ),
     ]
@@ -129,11 +129,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the file was made",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01"],
             },
         ),
     ]
@@ -143,11 +143,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date of the most recent update of the program used to make the file",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01"],
             },
         ),
     ]
@@ -157,11 +157,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="mt_metadata",
             description="Name of the program used to make the file.",
-            examples=["mt_metadata"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt_metadata"],
             },
         ),
     ]
@@ -171,11 +171,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="0.1.6",
             description="Version of the program used to make the file.",
-            examples=["0.1.6"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.1.6"],
             },
         ),
     ]
@@ -185,11 +185,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=None,
             description="Name of the project the data was collected for, usually a short description or acronym of the project name.",
-            examples=["iMUSH"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["iMUSH"],
             },
         ),
     ]
@@ -199,11 +199,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=None,
             description="Name of the prospect the data was collected for, usually a short description of the location",
-            examples=["Benton"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Benton"],
             },
         ),
     ]
@@ -213,11 +213,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=None,
             description="Usually a short description of the location",
-            examples=["Benton, CA"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Benton, CA"],
             },
         ),
     ]
@@ -227,11 +227,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default_factory=lambda: Declination(value=0.0),  # type: ignore
             description="Declination of the station in degrees",
-            examples=["Declination(10.0)"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["Declination(10.0)"],
             },
         ),
     ]
@@ -241,11 +241,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="SEG 1.0",
             description="EDI standards version SEG 1.0",
-            examples=["SEG 1.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["SEG 1.0"],
             },
         ),
     ]
@@ -255,11 +255,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default=None,
             description="Name of the survey",
-            examples=["CONUS"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["CONUS"],
             },
         ),
     ]
@@ -269,11 +269,11 @@ class Header(BasicLocation, GeographicLocation):
         Field(
             default="milliVolt per kilometer per nanoTesla",
             description="In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
-            examples=["milliVolt per kilometer per nanoTesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["milliVolt per kilometer per nanoTesla"],
             },
         ),
     ]

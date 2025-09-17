@@ -3,9 +3,10 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import StartEndRange, Comment
 from pydantic import Field, field_validator, ValidationInfo
+
+from mt_metadata.base import MetadataBase
+from mt_metadata.common import Comment, StartEndRange
 
 
 # =====================================================
@@ -15,12 +16,12 @@ class Battery(MetadataBase):
         Field(
             default=None,
             description="Description of battery type.",
-            examples="pb-acid gel cell",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "pb-acid gel cell",
+                "type": "string",
             },
         ),
     ] = None
@@ -30,12 +31,12 @@ class Battery(MetadataBase):
         Field(
             default=None,
             description="battery id",
-            examples="battery01",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "battery01",
+                "type": "string",
             },
         ),
     ] = None
@@ -45,12 +46,12 @@ class Battery(MetadataBase):
         Field(
             default=StartEndRange(),
             description="Range of voltages.",
-            examples="Range(minimum=0.0, maximum=1.0)",
-            type="object",
             alias=None,
             json_schema_extra={
                 "units": "volts",
                 "required": False,
+                "examples": "Range(minimum=0.0, maximum=1.0)",
+                "type": "object",
             },
         ),
     ]
@@ -60,11 +61,11 @@ class Battery(MetadataBase):
         Field(
             default_factory=Comment,
             description="Any comments about the channel.",
-            examples="ambient air temperature was chilly, ice on cables",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "ambient air temperature was chilly, ice on cables",
             },
         ),
     ]

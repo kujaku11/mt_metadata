@@ -17,11 +17,11 @@ class Citation(CommonCitation):
         Field(
             default=None,
             description="doi number of the survey",
-            examples=["###/###"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["###/###"],
             },
         ),
     ]

@@ -17,11 +17,11 @@ class Attachment(MetadataBase):
         Field(
             default="",
             description="file name of the attached file data",
-            examples=["example.zmm"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["example.zmm"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class Attachment(MetadataBase):
         Field(
             default="",
             description="description of the attached file",
-            examples=["The original used to produce the XML"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["The original used to produce the XML"],
             },
         ),
     ]

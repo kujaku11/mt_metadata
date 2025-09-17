@@ -53,11 +53,11 @@ class Window(MetadataBase):
         Field(
             default=256,
             description="Number of samples in a single window",
-            examples=["256"],
             alias=None,
             json_schema_extra={
                 "units": "samples",
                 "required": True,
+                "examples": ["256"],
             },
         ),
     ]
@@ -67,11 +67,11 @@ class Window(MetadataBase):
         Field(
             default=32,
             description="Number of samples overlapped by adjacent windows",
-            examples=["32"],
             alias=None,
             json_schema_extra={
                 "units": "samples",
                 "required": True,
+                "examples": ["32"],
             },
         ),
     ]
@@ -81,11 +81,11 @@ class Window(MetadataBase):
         Field(
             default="boxcar",
             description="name of the window type",
-            examples=["hamming"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hamming"],
             },
         ),
     ]
@@ -95,11 +95,11 @@ class Window(MetadataBase):
         Field(
             default="ignore",
             description="how the clock-zero is specified",
-            examples=["user specified"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["user specified"],
             },
         ),
     ]
@@ -109,11 +109,11 @@ class Window(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Start date and time of the first data window",
-            examples=["2020-02-01T09:23:45.453670+00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020-02-01T09:23:45.453670+00:00"],
             },
         ),
     ]
@@ -123,11 +123,11 @@ class Window(MetadataBase):
         Field(
             default=True,
             description="True if the window shall be normalized so the sum of the coefficients is 1",
-            examples=[False],
             validation_alias=AliasChoices("normalised", "normalized"),
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [False],
             },
         ),
     ]
@@ -137,10 +137,10 @@ class Window(MetadataBase):
         Field(
             default_factory=dict,
             description="Additional arguments for the window function",
-            examples=[{"param": "value"}],
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [{"param": "value"}],
             },
         ),
     ]

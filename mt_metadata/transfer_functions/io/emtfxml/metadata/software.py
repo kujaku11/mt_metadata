@@ -20,11 +20,11 @@ class ProcessingSoftware(Software):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the software was last modified",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020-01-01"],
             },
         ),
     ]

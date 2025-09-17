@@ -20,11 +20,11 @@ class StatisticalEstimates(MetadataBase):
         Field(
             default_factory=list,
             description="list of statistical estimates",
-            examples=["[var cov]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[var cov]"],
             },
         ),
     ]

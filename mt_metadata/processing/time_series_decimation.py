@@ -21,11 +21,11 @@ class TimeSeriesDecimation(MetadataBase):
         Field(
             default=None,
             description="Decimation level, must be a non-negative integer starting at 0",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -35,11 +35,11 @@ class TimeSeriesDecimation(MetadataBase):
         Field(
             default=1.0,
             description="Decimation factor between parent sample rate and decimated time series sample rate.",
-            examples=["4.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["4.0"],
             },
         ),
     ]
@@ -49,11 +49,11 @@ class TimeSeriesDecimation(MetadataBase):
         Field(
             default="default",
             description="Type of decimation",
-            examples=["default"],
             alias=None,
             json_schema_extra={
                 "units": "",
                 "required": True,
+                "examples": ["default"],
             },
         ),
     ]
@@ -63,11 +63,11 @@ class TimeSeriesDecimation(MetadataBase):
         Field(
             default=1.0,
             description="Sample rate of the decimation level data (after decimation).",
-            examples=["256"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": ["256"],
             },
         ),
     ]
@@ -77,11 +77,11 @@ class TimeSeriesDecimation(MetadataBase):
         Field(
             default="default",
             description="Type of anti alias filter for decimation.",
-            examples=["default"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["default"],
             },
         ),
     ]

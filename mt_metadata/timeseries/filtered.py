@@ -23,8 +23,11 @@ class AppliedFilter(MetadataBase):
         Field(
             default=None,
             description="Name of the filter.",
-            examples=["low pass"],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["low pass"],
+            },
         ),
     ]
 
@@ -33,8 +36,11 @@ class AppliedFilter(MetadataBase):
         Field(
             default=True,
             description="Whether the filter has been applied.",
-            examples=["True"],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["True"],
+            },
         ),
     ]
 
@@ -43,8 +49,11 @@ class AppliedFilter(MetadataBase):
         Field(
             default=None,
             description="Stage of the filter in the processing chain.",
-            examples=[1],
-            json_schema_extra={"units": None, "required": False},
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": [1],
+            },
         ),
     ]
 
@@ -53,11 +62,11 @@ class AppliedFilter(MetadataBase):
         Field(
             default_factory=lambda: Comment(),  # type: ignore
             description="Any comments on filters.",
-            examples=["low pass is not calibrated"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["low pass is not calibrated"],
             },
         ),
     ]

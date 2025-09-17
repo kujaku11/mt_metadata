@@ -15,11 +15,11 @@ class BirrpBlock(MetadataBase):
         Field(
             default="",
             description="File name of data block",
-            examples=["hx.dat"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx.dat"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class BirrpBlock(MetadataBase):
         Field(
             default=None,
             description="number of points to skip",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class BirrpBlock(MetadataBase):
         Field(
             default=None,
             description="number of points to read",
-            examples=["10000"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10000"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class BirrpBlock(MetadataBase):
         Field(
             default=0,
             description="number of components in file",
-            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["4"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class BirrpBlock(MetadataBase):
         Field(
             default_factory=list,
             description="index values to use",
-            examples=["[1, 2]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[1, 2]"],
             },
         ),
     ]

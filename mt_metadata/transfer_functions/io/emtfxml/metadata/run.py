@@ -24,11 +24,11 @@ class Run(MetadataBase):
         Field(
             default=None,
             description="Any field errors",
-            examples=["moose ate cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["moose ate cables"],
             },
         ),
     ]
@@ -38,11 +38,11 @@ class Run(MetadataBase):
         Field(
             default="",
             description="Run name",
-            examples=["mt001a"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt001a"],
             },
         ),
     ]
@@ -52,11 +52,11 @@ class Run(MetadataBase):
         Field(
             default=None,
             description="Sample rate of the run",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": False,
+                "examples": ["1"],
             },
         ),
     ]
@@ -66,11 +66,11 @@ class Run(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection started",
-            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01T12:00:00"],
             },
         ),
     ]
@@ -80,11 +80,11 @@ class Run(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection ended",
-            examples=["2020-05-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-05-01T12:00:00"],
             },
         ),
     ]
@@ -93,11 +93,11 @@ class Run(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Comments about the run",
-            examples=["Comment(text='This is a comment')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Comment(text='This is a comment')"],
             },
         ),
     ]
@@ -107,11 +107,11 @@ class Run(MetadataBase):
         Field(
             default_factory=Instrument,  # type: ignore
             description="Instrument used for the run",
-            examples=["Instrument(name='MT Sensor', type='magnetometer')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Instrument(name='MT Sensor', type='magnetometer')"],
             },
         ),
     ]
@@ -121,11 +121,11 @@ class Run(MetadataBase):
         Field(
             default_factory=list,
             description="List of magnetometers used in the run",
-            examples=["Magnetometer(name='Magnetometer 1', type='fluxgate')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Magnetometer(name='Magnetometer 1', type='fluxgate')"],
             },
         ),
     ]
@@ -134,11 +134,11 @@ class Run(MetadataBase):
         Field(
             default_factory=list,
             description="List of dipoles used in the run",
-            examples=["Dipole(name='Dipole 1', type='fluxgate')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Dipole(name='Dipole 1', type='fluxgate')"],
             },
         ),
     ]

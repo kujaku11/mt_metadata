@@ -28,11 +28,11 @@ class FeatureWeightingWindow(MetadataBase):
         Field(
             default="low cut",
             description="Specify which side of a threshold should downweighted.",
-            examples=["low cut"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["low cut"],
             },
         ),
     ]
@@ -42,11 +42,11 @@ class FeatureWeightingWindow(MetadataBase):
         Field(
             default="hann",
             description="What taper to use between the 0 (rejected) and 1 (accepted) values.",
-            examples=["hann"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hann"],
             },
         ),
     ]
@@ -56,11 +56,11 @@ class FeatureWeightingWindow(MetadataBase):
         Field(
             default=-np.inf,
             description="a refernece point for where the function begins to change from 0 to 1 or from 1 to zero",
-            examples=["0.3"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.3"],
             },
         ),
     ]
@@ -70,11 +70,11 @@ class FeatureWeightingWindow(MetadataBase):
         Field(
             default=np.inf,
             description="a refernece point for where the function finishes changing from 0 to 1 or from 1 to zero",
-            examples=["0.999"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.999"],
             },
         ),
     ]

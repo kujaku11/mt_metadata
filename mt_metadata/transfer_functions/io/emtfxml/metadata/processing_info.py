@@ -25,11 +25,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default="exp(+ i\omega t)",
             description="Sign convention of the processing software output",
-            examples=["exp(+ i\\omega t)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["exp(+ i\\omega t)"],
             },
         ),
     ]
@@ -39,11 +39,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default=None,
             description="Names of people who processed the data",
-            examples=["MT Guru"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["MT Guru"],
             },
         ),
     ]
@@ -53,11 +53,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date the data were processed",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020-01-01"],
             },
         ),
     ]
@@ -67,11 +67,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default=None,
             description="List of remote references",
-            examples=["mt001-mt002"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt001-mt002"],
             },
         ),
     ]
@@ -81,13 +81,13 @@ class ProcessingInfo(MetadataBase):
         Field(
             default_factory=lambda: ProcessingSoftware(),  # type: ignore
             description="Information about the processing software used",
-            examples=[
-                "ProcessingSoftware(name='MT Processing Software', version='1.0')"
-            ],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [
+                    "ProcessingSoftware(name='MT Processing Software', version='1.0')"
+                ],
             },
         ),
     ]
@@ -97,11 +97,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default_factory=RemoteInfo,  # type: ignore
             description="Information about remote data sources",
-            examples=["RemoteInfo(name='MT Remote')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["RemoteInfo(name='MT Remote')"],
             },
         ),
     ]
@@ -111,11 +111,11 @@ class ProcessingInfo(MetadataBase):
         Field(
             default_factory=RemoteRef,  # type: ignore
             description="List of remote references",
-            examples=[["MT001a", "MT001b"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [["MT001a", "MT001b"]],
             },
         ),
     ]

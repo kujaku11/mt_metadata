@@ -17,11 +17,11 @@ class Stations(MetadataBase):
         Field(
             default_factory=list,
             description="list of remote sites",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class Stations(MetadataBase):
         Field(
             default_factory=Station,  # type: ignore
             description="local site",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]

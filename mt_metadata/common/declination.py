@@ -18,11 +18,11 @@ class Declination(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="any comments on declination",
-            examples=["estimated from WMM 2016"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["estimated from WMM 2016"],
             },
         ),
     ]
@@ -32,10 +32,10 @@ class Declination(MetadataBase):
         Field(
             default="IGRF",
             description="geomagnetic reference model used to calculate declination",
-            examples=["WMM"],
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["WMM"],
             },
         ),
     ]
@@ -45,10 +45,10 @@ class Declination(MetadataBase):
         Field(
             default=None,
             description="Epoch for which declination was approximated in.",
-            examples=["2020"],
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020"],
             },
         ),
     ]
@@ -58,10 +58,10 @@ class Declination(MetadataBase):
         Field(
             default=0.0,
             description="declination angle relative to geographic north positive clockwise",
-            examples=["12.5"],
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["12.5"],
             },
         ),
     ]

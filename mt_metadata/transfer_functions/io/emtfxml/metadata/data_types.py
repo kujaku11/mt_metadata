@@ -20,11 +20,11 @@ class DataTypes(MetadataBase):
         Field(
             default_factory=list,
             description="list of data types",
-            examples=["[Z T]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[Z T]"],
             },
         ),
     ]

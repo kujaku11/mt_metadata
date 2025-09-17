@@ -27,11 +27,11 @@ class Feature(MetadataBase):
         Field(
             default="",
             description="Name of the feature.",
-            examples=["simple coherence"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["simple coherence"],
             },
         ),
     ]
@@ -41,13 +41,13 @@ class Feature(MetadataBase):
         Field(
             default="",
             description="A full description of what the feature estimates.",
-            examples=[
-                "Simple coherence measures the coherence between measured electric and magnetic fields."
-            ],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [
+                    "Simple coherence measures the coherence between measured electric and magnetic fields."
+                ],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class Feature(MetadataBase):
         Field(
             default="frequency",
             description="Temporal domain the feature is estimated in [ 'frequency' | 'time' ]",
-            examples=["frequency"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["frequency"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class Feature(MetadataBase):
         Field(
             default_factory=lambda: Comment(),  # type: ignore
             description="Any comments about the feature",
-            examples=["estimated using hilburt transform."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["estimated using hilburt transform."],
             },
         ),
     ]
@@ -85,11 +85,11 @@ class Feature(MetadataBase):
         Field(
             default=None,
             description="The data associated with the feature.",
-            examples=["path/to/datafile.nc"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["path/to/datafile.nc"],
             },
         ),
     ]

@@ -40,10 +40,10 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=list,
             description="List of bands",
-            examples=["[]"],
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[]"],
             },
         ),
     ]
@@ -53,11 +53,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=list,
             description="List of weighting schemes to use for TF processing for each output channel",
-            examples=["[]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[]"],
             },
         ),
     ]
@@ -67,11 +67,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=list,
             description="list of input channels (sources)",
-            examples=["hx, hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx, hy"],
             },
         ),
     ]
@@ -81,11 +81,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=list,
             description="list of output channels (responses)",
-            examples=["ex, ey, hz"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex, ey, hz"],
             },
         ),
     ]
@@ -95,11 +95,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=list,
             description="list of reference channels (remote sources)",
-            examples=["hx, hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx, hy"],
             },
         ),
     ]
@@ -109,11 +109,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default=False,
             description="Whether the Fourier coefficients are saved [True] or not [False].",
-            examples=[True],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [True],
             },
         ),
     ]
@@ -123,11 +123,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default=None,
             description="Format to use for fc storage",
-            examples=["h5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["h5"],
             },
         ),
     ]
@@ -137,11 +137,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=Decimation,  # type: ignore
             description="Decimation settings",
-            examples=["Decimation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Decimation()"],
             },
         ),
     ]
@@ -151,11 +151,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=Estimator,  # type: ignore
             description="Estimator settings",
-            examples=["Estimator()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Estimator()"],
             },
         ),
     ]
@@ -165,11 +165,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=Regression,  # type: ignore
             description="Regression settings",
-            examples=["Regression()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Regression()"],
             },
         ),
     ]
@@ -179,11 +179,11 @@ class DecimationLevel(MetadataBase):
         Field(
             default_factory=STFT,  # type: ignore
             description="Short-time Fourier transform settings",
-            examples=["STFT()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["STFT()"],
             },
         ),
     ]

@@ -2,7 +2,9 @@
 # Imports
 # =====================================================
 from typing import Annotated
+
 from pydantic import Field, PrivateAttr
+
 from mt_metadata.timeseries import Channel
 
 
@@ -21,12 +23,12 @@ class Auxiliary(Channel):
         Field(
             default="auxiliary",
             description="Data type for the channel, should be a descriptive word that a user can understand.",
-            examples="auxiliary",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "auxiliary",
+                "type": "string",
             },
         ),
     ]

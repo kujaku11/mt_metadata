@@ -23,11 +23,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="date and time the file was created",
-            examples=["2020-02-08T12:23:40.324600+00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-02-08T12:23:40.324600+00:00"],
             },
         ),
     ]
@@ -37,11 +37,11 @@ class Provenance(MetadataBase):
         Field(
             default="mt_metadata",
             description="name of the application that created the XML file",
-            examples=["EMTF File Conversion Utilities 4.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["EMTF File Conversion Utilities 4.0"],
             },
         ),
     ]
@@ -51,11 +51,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=Person,  # type: ignore
             description="Person or group responsible for creating the data",
-            examples=["Person(name='John Doe', email='john.doe@example.com')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Person(name='John Doe', email='john.doe@example.com')"],
             },
         ),
     ]
@@ -64,11 +64,13 @@ class Provenance(MetadataBase):
         Field(
             default_factory=Person,  # type: ignore
             description="Person or group responsible for submitting the data",
-            examples=["Person(name='Jane Smith', email='jane.smith@example.com')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [
+                    "Person(name='Jane Smith', email='jane.smith@example.com')"
+                ],
             },
         ),
     ]

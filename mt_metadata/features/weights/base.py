@@ -23,11 +23,11 @@ class Base(MetadataBase):
         Field(
             default="monotonic",
             description="Type of weighting kernel (e.g., monotonic, learned, spatial).",
-            examples=["monotonic"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["monotonic"],
             },
         ),
     ]
@@ -37,13 +37,13 @@ class Base(MetadataBase):
         Field(
             default=None,
             description="Human-readable description of what this kernel is for.",
-            examples=[
-                "This kernel smoothly transitions between 0 and 1 in a monotonic way"
-            ],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [
+                    "This kernel smoothly transitions between 0 and 1 in a monotonic way"
+                ],
             },
         ),
     ]
@@ -53,11 +53,11 @@ class Base(MetadataBase):
         Field(
             default=None,
             description="If false, this kernel will be skipped during weighting.",
-            examples=["false"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["false"],
             },
         ),
     ]

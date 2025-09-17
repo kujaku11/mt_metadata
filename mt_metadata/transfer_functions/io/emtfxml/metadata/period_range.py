@@ -18,11 +18,11 @@ class PeriodRange(MetadataBase):
         Field(
             default=0.0,
             description="minimum period",
-            examples=['"4.5E-5"'],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": ['"4.5E-5"'],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class PeriodRange(MetadataBase):
         Field(
             default=0.0,
             description="maxmimu period",
-            examples=['"4.5E5"'],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": ['"4.5E5"'],
             },
         ),
     ]

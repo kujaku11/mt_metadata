@@ -15,11 +15,11 @@ class Instrument(MetadataBase):
         Field(
             default="",
             description="Instrument ID number can be serial number or a designated ID.",
-            examples=["mt01"],
             validation_alias=AliasChoices("id", "serial"),
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt01"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Instrument(MetadataBase):
         Field(
             default="",
             description="Who manufactured the instrument.",
-            examples=["mt gurus"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt gurus"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class Instrument(MetadataBase):
         Field(
             default="",
             description="Description of the instrument type.",
-            examples=["broadband 32-bit"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["broadband 32-bit"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class Instrument(MetadataBase):
         Field(
             default=None,
             description="Model version of the instrument.",
-            examples=["falcon5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["falcon5"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class Instrument(MetadataBase):
         Field(
             default=None,
             description="Standard marketing name of the instrument.",
-            examples=["falcon5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["falcon5"],
             },
         ),
     ]

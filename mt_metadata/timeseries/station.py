@@ -35,11 +35,11 @@ class Station(MetadataBase):
         Field(
             default=ChannelLayoutEnum.X,
             description="How the station channels were laid out.",
-            examples=["X"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["X"],
             },
         ),
     ]
@@ -49,11 +49,11 @@ class Station(MetadataBase):
         Field(
             default_factory=list,
             description="List of components recorded by the station. Should be a summary of all channels recorded. Dropped channels will be recorded in Run metadata.",
-            examples=['"[ Ex, Ey, Hx, Hy, Hz, T]"'],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ['"[ Ex, Ey, Hx, Hy, Hz, T]"'],
             },
         ),
     ]
@@ -63,11 +63,11 @@ class Station(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Any comments on the station.",
-            examples=["cows chewed cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["cows chewed cables"],
             },
         ),
     ]
@@ -77,11 +77,11 @@ class Station(MetadataBase):
         Field(
             default="BBMT",
             description="Type of data recorded. If multiple types input as a comma separated list.",
-            examples=["BBMT"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BBMT"],
             },
         ),
     ]
@@ -91,11 +91,11 @@ class Station(MetadataBase):
         Field(
             default_factory=Fdsn,
             description="FDSN information for the station.",
-            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Fdsn()"],
             },
         ),
     ]
@@ -105,11 +105,11 @@ class Station(MetadataBase):
         Field(
             default="",
             description="Closest geographic name to the station, usually a city, but could be another common geographic location.",
-            examples=["Whitehorse, YK"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Whitehorse, YK"],
             },
         ),
     ]
@@ -119,12 +119,12 @@ class Station(MetadataBase):
         Field(
             default="",
             description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
-            examples=["MT001"],
             alias=None,
             pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["MT001"],
             },
         ),
     ]
@@ -134,11 +134,11 @@ class Station(MetadataBase):
         Field(
             default_factory=list,
             description="List of runs recorded by the station. Should be a summary of all runs recorded.",
-            examples=["[ mt001a, mt001b, mt001c ]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[ mt001a, mt001b, mt001c ]"],
             },
         ),
     ]
@@ -148,11 +148,11 @@ class Station(MetadataBase):
         Field(
             default_factory=StationLocation,  # type: ignore
             description="Location of the station.",
-            examples=["StationLocation(latitude=60.0, longitude=-135.0)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["StationLocation(latitude=60.0, longitude=-135.0)"],
             },
         ),
     ]
@@ -162,11 +162,11 @@ class Station(MetadataBase):
         Field(
             default_factory=Orientation,  # type: ignore
             description="Orientation of the station.",
-            examples=["Orientation(north=0, east=0, vertical=1)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Orientation(north=0, east=0, vertical=1)"],
             },
         ),
     ]
@@ -176,11 +176,11 @@ class Station(MetadataBase):
         Field(
             default_factory=AuthorPerson,  # type: ignore
             description="Group or person who acquired the data.",
-            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Person()"],
             },
         ),
     ]
@@ -190,11 +190,11 @@ class Station(MetadataBase):
         Field(
             default_factory=Provenance,  # type: ignore
             description="Provenance of the data.",
-            examples=["Provenance()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Provenance()"],
             },
         ),
     ]
@@ -204,11 +204,11 @@ class Station(MetadataBase):
         Field(
             default_factory=TimePeriod,  # type: ignore
             description="Time period of the data.",
-            examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             },
         ),
     ]
@@ -218,11 +218,11 @@ class Station(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of runs recorded by the station.",
-            examples=["[Run(id='mt001a'), Run(id='mt001b'), Run(id='mt001c')]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["[Run(id='mt001a'), Run(id='mt001b'), Run(id='mt001c')]"],
             },
         ),
     ]

@@ -15,11 +15,11 @@ class Value(MetadataBase):
         Field(
             default="",
             description="name of value estimate",
-            examples=["tx"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["tx"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Value(MetadataBase):
         Field(
             default="",
             description="output field component",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class Value(MetadataBase):
         Field(
             default="",
             description="input field component",
-            examples=["hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hy"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class Value(MetadataBase):
         Field(
             default="",
             description="value of the estimate",
-            examples=["10.1 + 11j"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10.1 + 11j"],
             },
         ),
     ]

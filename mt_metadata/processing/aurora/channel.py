@@ -15,11 +15,11 @@ class Channel(MetadataBase):
         Field(
             default="",
             description="channel ID",
-            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt001"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Channel(MetadataBase):
         Field(
             default=1.0,
             description="scale factor of the channel",
-            examples=["10.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10.0"],
             },
         ),
     ]

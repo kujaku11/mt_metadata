@@ -18,11 +18,11 @@ class Station(TSStation):
         Field(
             default=TransferFunction(),  # type: ignore
             description="Transfer function for the station",
-            examples=["TransferFunction()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["TransferFunction()"],
             },
         ),
     ]

@@ -15,11 +15,11 @@ class Rating(MetadataBase):
         Field(
             default=None,
             description="Author of who rated the data.",
-            examples="gradstudent ace",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "gradstudent ace",
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Rating(MetadataBase):
         Field(
             default=None,
             description="The method used to rate the data.",
-            examples="standard deviation",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "standard deviation",
             },
         ),
     ]
@@ -43,13 +43,13 @@ class Rating(MetadataBase):
         Field(
             default=None,
             description="A rating from 1-5 where 1 is bad and 5 is good and 0 if unrated.",
-            examples="4",
             ge=0,
             le=5,
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "4",
             },
         ),
     ]

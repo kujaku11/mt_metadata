@@ -21,11 +21,11 @@ class Tx(MetadataBase):
         Field(
             default="natural",
             description="Type of EM source",
-            examples=["natural"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["natural"],
             },
         ),
     ]

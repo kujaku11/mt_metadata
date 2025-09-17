@@ -19,11 +19,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default="",
             description="Name of the statistical estimate",
-            examples=["transfer function"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["transfer function"],
             },
         ),
     ]
@@ -33,11 +33,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default="complex",
             description="Type of number contained in the estimate",
-            examples=["real"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["real"],
             },
         ),
     ]
@@ -47,11 +47,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default="",
             description="Description of the statistical estimate",
-            examples=["this is an estimate"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["this is an estimate"],
             },
         ),
     ]
@@ -61,11 +61,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default=[],
             description="List of input channels (sources)",
-            examples=["hx, hy", ["hx", "hy"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx, hy", ["hx", "hy"]],
             },
         ),
     ]
@@ -75,11 +75,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default=[],
             description="List of output channels (response).",
-            examples=["hx, hy", ["hx", "hy"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx, hy", ["hx", "hy"]],
             },
         ),
     ]
@@ -89,11 +89,11 @@ class StatisticalEstimate(MetadataBase):
         Field(
             default="",
             description="Units of the estimate.",
-            examples=["millivolts per kilometer per nanotesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["millivolts per kilometer per nanotesla"],
             },
         ),
     ]

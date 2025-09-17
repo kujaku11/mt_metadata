@@ -25,11 +25,11 @@ class TimeDelayFilter(FilterBase):
         Field(
             default="time delay",
             description="Type of filter.  Must be 'fir'",
-            examples="time delay",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "time delay",
             },
         ),
     ]
@@ -38,11 +38,11 @@ class TimeDelayFilter(FilterBase):
         Field(
             default=0.0,
             description="The delay interval of the filter. This should be a single number.",
-            examples="-0.201",
             alias=None,
             json_schema_extra={
                 "units": "second",
                 "required": True,
+                "examples": "-0.201",
             },
         ),
     ]

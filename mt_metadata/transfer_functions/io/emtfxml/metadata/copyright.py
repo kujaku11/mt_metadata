@@ -21,13 +21,13 @@ class Copyright(MetadataBase):
         Field(
             default_factory=Citation,  # type: ignore
             description="The citation information for the data",
-            examples=[
-                "Citation(authors='Doe, J.', year='2023', title='Title of the paper', journal='Journal Name', volume='45', pages='123-145')"
-            ],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [
+                    "Citation(authors='Doe, J.', year='2023', title='Title of the paper', journal='Journal Name', volume='45', pages='123-145')"
+                ],
             },
         ),
     ]
@@ -36,11 +36,11 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="Any publications that use this data",
-            examples=["my paper"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["my paper"],
             },
         ),
     ]
@@ -50,11 +50,11 @@ class Copyright(MetadataBase):
         Field(
             default="Unrestricted Release",
             description="the release status of the data",
-            examples=["Unrestricted release"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Unrestricted release"],
             },
         ),
     ]
@@ -64,11 +64,11 @@ class Copyright(MetadataBase):
         Field(
             default="All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided this data set is cited as the reference. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, not IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only.",
             description="Any notes on conditions of use",
-            examples=["Cite data upon usage."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Cite data upon usage."],
             },
         ),
     ]
@@ -78,11 +78,11 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="any acknowledgments the transfer function should have.",
-            examples=["This project was funded by x."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["This project was funded by x."],
             },
         ),
     ]
@@ -92,11 +92,11 @@ class Copyright(MetadataBase):
         Field(
             default=None,
             description="any additional information about the data.",
-            examples=["This purpose of this project is ..."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["This purpose of this project is ..."],
             },
         ),
     ]

@@ -24,11 +24,11 @@ class GenericPerson(MetadataBase):
         Field(
             default=None,
             description="Organization full name",
-            examples=["mt gurus"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt gurus"],
             },
         ),
     ]
@@ -38,11 +38,11 @@ class GenericPerson(MetadataBase):
         Field(
             default=None,
             description="Email of the contact person",
-            examples=["mt.guru@em.org"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mt.guru@em.org"],
             },
         ),
     ]
@@ -52,11 +52,11 @@ class GenericPerson(MetadataBase):
         Field(
             default=None,
             description="URL of the contact person",
-            examples=["https://em.org"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["https://em.org"],
             },
         ),
     ]
@@ -66,11 +66,11 @@ class GenericPerson(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore[return-value]
             description="Any comments about the person",
-            examples=["expert digger"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["expert digger"],
             },
         ),
     ]
@@ -107,11 +107,11 @@ class Person(GenericPerson):
         Field(
             default="",
             description="Persons name, should be full first and last name.",
-            examples=["person name"],
             validation_alias=AliasChoices("name", "author"),
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["person name"],
             },
         ),
     ]
@@ -128,11 +128,11 @@ class AuthorPerson(GenericPerson):
         Field(
             default="",
             description="Persons name, should be full first and last name.",
-            examples=["person name"],
             validation_alias=AliasChoices("author", "name"),
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["person name"],
             },
         ),
     ]

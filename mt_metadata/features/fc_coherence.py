@@ -29,11 +29,11 @@ class FCCoherence(Coherence, Feature):
         Field(
             default=2,
             description="The minimum number of Fourier coefficients needed to compute the feature.",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class FCCoherence(Coherence, Feature):
         Field(
             default="Q",
             description="How the feature frequency bands are defined.",
-            examples=["user defined"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["user defined"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class FCCoherence(Coherence, Feature):
         Field(
             default="constant Q",
             description="How the feature frequency bands are defined.",
-            examples=["user defined"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["user defined"],
             },
         ),
     ]

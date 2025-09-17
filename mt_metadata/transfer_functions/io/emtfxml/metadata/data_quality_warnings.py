@@ -17,11 +17,11 @@ class DataQualityWarnings(MetadataBase):
         Field(
             default=None,
             description="Flag for data quality",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -30,11 +30,11 @@ class DataQualityWarnings(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Comments about the data quality warnings",
-            examples=["Data quality is good", "Some issues found"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Data quality is good", "Some issues found"],
             },
         ),
     ]

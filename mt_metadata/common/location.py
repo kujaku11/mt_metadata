@@ -25,11 +25,11 @@ class BasicLocationNoDatum(MetadataBase):
         Field(
             default=0.0,
             description="Latitude of the location.",
-            examples=["12.324"],
             validation_alias=AliasChoices("latitude", "lat"),
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["12.324"],
             },
         ),
     ]
@@ -39,11 +39,11 @@ class BasicLocationNoDatum(MetadataBase):
         Field(
             default=0.0,
             description="Longitude of the location.",
-            examples=["12.324"],
             validation_alias=AliasChoices("longitude", "lon", "long"),
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["12.324"],
             },
         ),
     ]
@@ -53,11 +53,11 @@ class BasicLocationNoDatum(MetadataBase):
         Field(
             default=0.0,
             description="Elevation of the location.",
-            examples=["1234.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["1234.0"],
             },
         ),
     ]
@@ -74,11 +74,11 @@ class BasicLocation(BasicLocationNoDatum):
         Field(
             default="WGS 84",
             description="Datum of the location values.  Usually a well known datum like WGS84.",
-            examples=["WGS 84"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["WGS 84"],
             },
         ),
     ]
@@ -88,11 +88,11 @@ class BasicLocation(BasicLocationNoDatum):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples=["10.0"],
             validation_alias=AliasChoices("x", "easting", "east"),
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -102,11 +102,11 @@ class BasicLocation(BasicLocationNoDatum):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples=["10.0"],
             validation_alias=AliasChoices("y", "north", "northing"),
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -116,11 +116,11 @@ class BasicLocation(BasicLocationNoDatum):
         Field(
             default=None,
             description="relative elevation to the center of the station",
-            examples=["10.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -150,11 +150,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in latitude estimation in degrees",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -164,11 +164,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in longitude estimation in degrees",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -178,11 +178,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in elevation estimation",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -192,11 +192,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples=["10.0"],
             validation_alias=AliasChoices("x2", "east", "easting"),
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -206,11 +206,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="relative distance to the center of the station",
-            examples=["10.0"],
             validation_alias=AliasChoices("y2", "north", "northing"),
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -220,11 +220,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="relative elevation to the center of the station",
-            examples=["10.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["10.0"],
             },
         ),
     ]
@@ -234,11 +234,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in longitude estimation in x-direction",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -248,11 +248,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in longitude estimation in y-direction",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -262,11 +262,11 @@ class Location(BasicLocation):
         Field(
             default=None,
             description="uncertainty in longitude estimation in z-direction",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -283,11 +283,11 @@ class StationLocation(Location):
         Field(
             default_factory=Declination,  # type: ignore
             description="Declination of the location.",
-            examples=["Declination(10.0)"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["Declination(10.0)"],
             },
         ),
     ]
@@ -297,11 +297,11 @@ class StationLocation(Location):
         Field(
             default_factory=GeographicLocation,  # type: ignore
             description="Geographic location of the station.",
-            examples=["GeographicLocation(latitude=12.34, longitude=56.78)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["GeographicLocation(latitude=12.34, longitude=56.78)"],
             },
         ),
     ]

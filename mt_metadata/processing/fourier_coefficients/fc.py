@@ -28,11 +28,11 @@ class FC(MetadataBase):
         Field(
             default_factory=list,
             description="List of decimation levels",
-            examples=["[1, 2, 3]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[1, 2, 3]"],
             },
         ),
     ]
@@ -42,11 +42,11 @@ class FC(MetadataBase):
         Field(
             default="",
             description="ID given to the FC group",
-            examples=["aurora_01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["aurora_01"],
             },
         ),
     ]
@@ -56,11 +56,11 @@ class FC(MetadataBase):
         Field(
             default_factory=list,
             description="list of channels estimated",
-            examples=[["ex", "hy"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["ex", "hy"]],
             },
         ),
     ]
@@ -70,11 +70,11 @@ class FC(MetadataBase):
         Field(
             default=1.0,
             description="Starting sample rate of the time series used to estimate FCs.",
-            examples=[60],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": [60],
             },
         ),
     ]
@@ -84,11 +84,11 @@ class FC(MetadataBase):
         Field(
             default="fft",
             description="Fourier transform method",
-            examples=["fft"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["fft"],
             },
         ),
     ]
@@ -98,11 +98,11 @@ class FC(MetadataBase):
         Field(
             default_factory=TimePeriod,  # type: ignore
             description="Time period of the FCs",
-            examples=[TimePeriod(start="2020-01-01", end="2020-01-02")],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [TimePeriod(start="2020-01-01", end="2020-01-02")],
             },
         ),
     ]
@@ -112,11 +112,11 @@ class FC(MetadataBase):
         Field(
             default_factory=ListDict,  # type: ignore
             description="ListDict of decimation levels and their parameters",
-            examples=["ListDict containing Decimation objects"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ListDict containing Decimation objects"],
             },
         ),
     ]

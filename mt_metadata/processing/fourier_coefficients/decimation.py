@@ -21,11 +21,11 @@ class Decimation(MetadataBase):
         Field(
             default="",
             description="Decimation level ID",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1"],
             },
         ),
     ]
@@ -35,11 +35,11 @@ class Decimation(MetadataBase):
         Field(
             default_factory=list,
             description="list of channels",
-            examples=["[ex, hy]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[ex, hy]"],
             },
         ),
     ]
@@ -49,11 +49,11 @@ class Decimation(MetadataBase):
         Field(
             default_factory=TimePeriod,  # type: ignore
             description="Time period over which these FCs were estimated",
-            examples=["TimePeriod()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["TimePeriod()"],
             },
         ),
     ]
@@ -63,11 +63,11 @@ class Decimation(MetadataBase):
         Field(
             default_factory=ListDict,
             description="List of channels",
-            examples=["[ex, hy]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[ex, hy]"],
             },
         ),
     ]
@@ -77,11 +77,11 @@ class Decimation(MetadataBase):
         Field(
             default_factory=TimeSeriesDecimation,  # type: ignore
             description="Time series decimation settings",
-            examples=["TimeSeriesDecimation()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["TimeSeriesDecimation()"],
             },
         ),
     ]
@@ -91,11 +91,11 @@ class Decimation(MetadataBase):
         Field(
             default_factory=ShortTimeFourierTransform,  # type: ignore
             description="Short time Fourier transform settings",
-            examples=["ShortTimeFourierTransform()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ShortTimeFourierTransform()"],
             },
         ),
     ]

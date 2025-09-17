@@ -34,11 +34,11 @@ class TaperMonotonicWeightKernel(MonotonicWeightKernel):
         Field(
             default="rectangle",
             description="Tapering/activation function to use between transition bounds.",
-            examples=["hann"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hann"],
             },
         ),
     ]

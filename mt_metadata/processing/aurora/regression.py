@@ -15,11 +15,11 @@ class Regression(MetadataBase):
         Field(
             default=1,
             description="Minimum number of cycles in the regression",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Regression(MetadataBase):
         Field(
             default=10,
             description="Max iterations of the regression",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class Regression(MetadataBase):
         Field(
             default=2,
             description="Max redescending iterations of the regression",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class Regression(MetadataBase):
         Field(
             default=1.5,
             description="The number of standard deviations where the influence function changes from linear to quadratic",
-            examples=["1.4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1.4"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class Regression(MetadataBase):
         Field(
             default=2.8,
             description="Control for redescending Huber regression weights.",
-            examples=["2.8"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2.8"],
             },
         ),
     ]
@@ -85,11 +85,11 @@ class Regression(MetadataBase):
         Field(
             default=0.005,
             description="Control for convergence of RME algorithm.  Lower means more iterations",
-            examples=["0.005"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.005"],
             },
         ),
     ]
@@ -99,11 +99,11 @@ class Regression(MetadataBase):
         Field(
             default=1,
             description="Control for logging messages during regression -- Higher means more messages",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1"],
             },
         ),
     ]

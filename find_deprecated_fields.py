@@ -5,7 +5,6 @@ and need to be migrated to json_schema_extra format.
 """
 
 import os
-import re
 
 
 def find_deprecated_field_usage(directory_path):
@@ -38,10 +37,16 @@ def find_deprecated_field_usage(directory_path):
 
                         # If we're in a Field definition, look for deprecated parameters
                         if in_field_definition:
+                            # Only flag deprecated parameters that are direct Field parameters
+                            # Not parameters inside nested function calls like default=Window(type="hamming")
+                            stripped_line = line.strip()
                             if (
-                                re.search(r"\bexamples\s*=", line)
-                                or re.search(r"\btype\s*=", line)
-                                or re.search(r"\bitems\s*=", line)
+                                stripped_line.startswith("examples=")
+                                or (
+                                    stripped_line.startswith("type=")
+                                    and not line.strip().startswith("default=")
+                                )
+                                or stripped_line.startswith("items=")
                             ):
                                 if field_start_line not in deprecated_lines:
                                     deprecated_lines.append(field_start_line)

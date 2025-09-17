@@ -47,11 +47,11 @@ class FeatureWeightSpec(MetadataBase):
         Field(
             default="",
             description="The name of the feature to evaluate (e.g., coherence, impedance_ratio).",
-            examples=["coherence"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["coherence"],
             },
         ),
     ]
@@ -61,8 +61,11 @@ class FeatureWeightSpec(MetadataBase):
         Field(
             default_factory=Feature,  # type: ignore
             description="The feature specification.",
-            examples=[{"type": "coherence"}],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [{"type": "coherence"}],
+            },
         ),
     ]
 
@@ -75,8 +78,11 @@ class FeatureWeightSpec(MetadataBase):
         Field(
             default_factory=list,
             description="List of weight kernel specification.",
-            examples=[{"type": "monotonic"}],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [{"type": "monotonic"}],
+            },
         ),
     ]
 
