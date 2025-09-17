@@ -984,9 +984,19 @@ def object_to_array(value, dtype=float):
                 if w and any(
                     issubclass(warning.category, DeprecationWarning) for warning in w
                 ):
-                    # Treat DeprecationWarning as invalid input
-                    msg = f"input values must be a list, tuple, or np.ndarray, not {type(original_value)}"
-                    raise TypeError(msg)
+                    # For complex numbers, try to parse as a single value first
+                    if dtype == complex and original_value.strip():
+                        try:
+                            # Try to parse as a single complex number (e.g., "(-0.000167+0j)")
+                            single_value = complex(original_value.strip())
+                            return np.array([single_value], dtype=dtype)
+                        except ValueError:
+                            pass  # Fall through to error handling
+
+                    # Only treat as invalid if it's a non-empty string that we can't parse
+                    if original_value.strip():
+                        msg = f"input values must be a list, tuple, or np.ndarray, not {type(original_value)}"
+                        raise TypeError(msg)
 
                 if len(value) == 0:
                     logger.warning(
