@@ -1249,18 +1249,75 @@ class EMTFXML:
 
                         if "dipole" in key:
                             try:
-                                index = int(key.split("_")[1].split(".")[0])
-                                key = key.split(".", 1)[1]
-                                if len(run.dipole) < (index + 1):
-                                    run.dipole.append(meta_classes["dipole"]())
-                                run.dipole[index].set_attr_from_name(key, value)
+                                # Handle different dipole key formats
+                                if "_" in key and "." in key:
+                                    # Format: dipole_0.name, dipole_1.length, etc.
+                                    index = int(key.split("_")[1].split(".")[0])
+                                    attr_key = key.split(".", 1)[1]
+                                    if len(run.dipole) < (index + 1):
+                                        run.dipole.append(meta_classes["dipole"]())
+                                    run.dipole[index].update_attribute(attr_key, value)
+                                elif key == "dipole" and isinstance(value, (list, str)):
+                                    # Handle complex dipole value formats
+                                    # This could be a list of dictionaries or serialized structure
+                                    dipole_list = value
+                                    if isinstance(value, str):
+                                        # Try to evaluate if it's a string representation of a structure
+                                        try:
+                                            import ast
+
+                                            dipole_list = ast.literal_eval(value)
+                                        except (ValueError, SyntaxError):
+                                            # If not evaluable, try to process as simple string
+                                            logger.debug(
+                                                f"Using dipole value as string: {value}"
+                                            )
+                                            dipole_list = [
+                                                {"dipole": {"name": str(value)}}
+                                            ]
+
+                                    # Process list of dipole dictionaries
+                                    if isinstance(dipole_list, list):
+                                        for idx, dipole_data in enumerate(dipole_list):
+                                            if (
+                                                isinstance(dipole_data, dict)
+                                                and "dipole" in dipole_data
+                                            ):
+                                                dipole_info = dipole_data["dipole"]
+                                                if len(run.dipole) < (idx + 1):
+                                                    run.dipole.append(
+                                                        meta_classes["dipole"]()
+                                                    )
+
+                                                # Set dipole attributes from the dictionary
+                                                for (
+                                                    attr_name,
+                                                    attr_value,
+                                                ) in dipole_info.items():
+                                                    try:
+                                                        run.dipole[
+                                                            idx
+                                                        ].update_attribute(
+                                                            attr_name, attr_value
+                                                        )
+                                                    except Exception as attr_error:
+                                                        logger.warning(
+                                                            f"Cannot set dipole attribute {attr_name}: {attr_error}"
+                                                        )
+                                    else:
+                                        logger.warning(
+                                            f"Dipole value is not a list: {type(dipole_list)}"
+                                        )
+                                else:
+                                    # Unknown dipole key format
+                                    logger.warning(f"Unknown dipole key format: {key}")
                             except (IndexError, ValueError) as error:
                                 logger.warning(
                                     f"Cannot parse dipole processing info attribute {param}: {error}"
                                 )
                             except Exception as error:
                                 logger.warning(
-                                    f"Cannot set processing info attribute {param}"
+                                    f"Cannot set processing info attribute {param}: {error}"
                                 )
                                 # logger.exception(error)
                         elif "magnetometer" in key:
