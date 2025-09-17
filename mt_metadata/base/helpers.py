@@ -975,6 +975,7 @@ def object_to_array(value, dtype=float):
         try:
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
+                original_value = value  # Keep reference to original input
                 value = np.fromstring(value, sep=",", dtype=dtype)
 
                 # Check for DeprecationWarning which indicates invalid string input
@@ -984,7 +985,7 @@ def object_to_array(value, dtype=float):
                     issubclass(warning.category, DeprecationWarning) for warning in w
                 ):
                     # Treat DeprecationWarning as invalid input
-                    msg = f"input values must be a list, tuple, or np.ndarray, not {type(value).__name__} (invalid string format)"
+                    msg = f"input values must be a list, tuple, or np.ndarray, not {type(original_value)}"
                     raise TypeError(msg)
 
                 if len(value) == 0:
