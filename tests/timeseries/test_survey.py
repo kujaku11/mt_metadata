@@ -534,11 +534,11 @@ def test_survey_update(survey_object, survey_dict, subtests):
     survey_object.from_dict(survey_dict)
 
     with subtests.test("update_attribute changes value"):
-        survey_object.set_attr_from_name("name", "New Survey Name")
+        survey_object.update_attribute("name", "New Survey Name")
         assert survey_object.name == "New Survey Name"
 
     with subtests.test("update_attribute works with nested attributes"):
-        survey_object.set_attr_from_name("project_lead.author", "New Lead Name")
+        survey_object.update_attribute("project_lead.author", "New Lead Name")
         assert survey_object.project_lead.author == "New Lead Name"
 
 

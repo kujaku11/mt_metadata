@@ -519,6 +519,7 @@ class TestMetadataBaseFieldManagement:
     def test_add_new_field(self, test_model):
         """Test add_new_field method"""
         new_field = FieldInfo(
+            annotation=str,
             default="new_default",
             description="New field description",
             json_schema_extra={"units": "meters"},

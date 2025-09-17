@@ -97,7 +97,7 @@ class TestSTFTInitialization:
         """Test default STFT initialization."""
         assert default_stft.harmonic_indices is None
         assert default_stft.method == MethodEnum.fft
-        assert default_stft.min_num_stft_windows is None
+        assert default_stft.min_num_stft_windows == 0
         assert default_stft.per_window_detrend_type == PerWindowDetrendTypeEnum.null
         assert default_stft.pre_fft_detrend_type == PreFftDetrendTypeEnum.linear
         assert default_stft.prewhitening_type == PrewhiteningTypeEnum.first_difference
@@ -462,7 +462,7 @@ class TestSTFTEdgeCases:
         # Don't explicitly pass None, just omit the parameters to get default None values
         stft = ShortTimeFourierTransform()
         assert stft.harmonic_indices is None
-        assert stft.min_num_stft_windows is None
+        assert stft.min_num_stft_windows == 0  # Default is 0
 
     def test_extreme_values(self):
         """Test STFT with extreme but valid values."""
