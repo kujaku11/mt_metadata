@@ -61,7 +61,7 @@ def test_software_last_updated_with_np_datetime64():
     """
     Test the Software model with last_updated as a numpy datetime64.
     """
-    software = Software(last_updated=np.datetime64("2023-05-01T12:00:00+00:00"))
+    software = Software(last_updated=np.datetime64("2023-05-01T12:00:00"))
 
     assert isinstance(software.last_updated, MTime)
     assert software.last_updated.isoformat() == "2023-05-01T12:00:00+00:00"

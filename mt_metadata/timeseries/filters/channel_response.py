@@ -415,6 +415,9 @@ class ChannelResponse(FilterBase):
                 "Returning 1.0"
             )
             return 1.0
+        if np.isnan(sensitivity):
+            logger.warning("Sensitivity is NaN, setting to 1.0")
+            sensitivity = 1.0
         return round(sensitivity, sig_figs - int(np.floor(np.log10(abs(sensitivity)))))
 
     def compute_total_gain(self, sig_figs=16):

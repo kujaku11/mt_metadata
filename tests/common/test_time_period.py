@@ -42,8 +42,8 @@ def test_time_period_with_np_datetime64():
     """
     Test the TimePeriod model with numpy datetime64 as input.
     """
-    start_time = np.datetime64("2020-02-01T09:23:45.453670+00:00")
-    end_time = np.datetime64("2020-02-04T16:23:45.453670+00:00")
+    start_time = np.datetime64("2020-02-01T09:23:45.453670")
+    end_time = np.datetime64("2020-02-04T16:23:45.453670")
     time_period = TimePeriod(start=start_time, end=end_time)
 
     assert time_period.start.isoformat() == "2020-02-01T09:23:45.453670+00:00"

@@ -52,7 +52,7 @@ def partial_provenance():
     scope="module",
     params=[
         1682942400.0,  # Epoch time
-        np.datetime64("2023-05-01T12:00:00+00:00"),  # numpy datetime64
+        np.datetime64("2023-05-01T12:00:00"),  # numpy datetime64 (UTC assumed)
         pd.Timestamp("2023-05-01T12:00:00+00:00"),  # pandas Timestamp
     ],
 )

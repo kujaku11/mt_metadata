@@ -304,4 +304,14 @@ class Band(MetadataBase):
     @computed_field
     @property
     def Q(self) -> float:
+        """
+        Quality factor (Q) of the band.
+
+        Returns
+        -------
+        float
+            Q factor. Returns infinity for zero-width bands.
+        """
+        if self.fractional_bandwidth == 0.0:
+            return float("inf")
         return 1.0 / self.fractional_bandwidth
