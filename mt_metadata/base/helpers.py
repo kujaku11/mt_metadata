@@ -969,40 +969,22 @@ def object_to_array(value, dtype=float):
     elif isinstance(value, np.ndarray):
         return value.astype(dtype)
     elif isinstance(value, str):
-        # Handle string input (e.g., from JSON)
-        import warnings
+        if value in ["", "none", "None"]:
+            return np.empty(0)
+
+        if "j" in value:
+            dtype = complex
+        else:
+            dtype = float
+
+        if "," in value:
+            separator = ","
+        else:
+            separator = " "  # Use space as default separator for whitespace
 
         try:
-            with warnings.catch_warnings(record=True) as w:
-                warnings.simplefilter("always")
-                original_value = value  # Keep reference to original input
-                value = np.fromstring(value, sep=",", dtype=dtype)
+            return np.fromstring(value, sep=separator, dtype=dtype)
 
-                # Check for DeprecationWarning which indicates invalid string input
-                # This handles numpy version differences where older versions
-                # return empty array with warning instead of raising ValueError
-                if w and any(
-                    issubclass(warning.category, DeprecationWarning) for warning in w
-                ):
-                    # For complex numbers, try to parse as a single value first
-                    if dtype == complex and original_value.strip():
-                        try:
-                            # Try to parse as a single complex number (e.g., "(-0.000167+0j)")
-                            single_value = complex(original_value.strip())
-                            return np.array([single_value], dtype=dtype)
-                        except ValueError:
-                            pass  # Fall through to error handling
-
-                    # Only treat as invalid if it's a non-empty string that we can't parse
-                    if original_value.strip():
-                        msg = f"input values must be a list, tuple, or np.ndarray, not {type(original_value)}"
-                        raise TypeError(msg)
-
-                if len(value) == 0:
-                    logger.warning(
-                        "String input is empty or cannot parse properly, returning an empty array."
-                    )
-                return value
         except ValueError:
             msg = (
                 f"input values must be a list, tuple, or np.ndarray, not {type(value)}"
