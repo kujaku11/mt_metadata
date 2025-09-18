@@ -30,6 +30,7 @@ pandas
 matplotlib
 xarray
 loguru
+pydantidc >= 2.0.0
 
 # Optional dependencies for testing
 obspy
