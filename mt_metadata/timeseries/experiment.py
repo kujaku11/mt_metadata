@@ -54,10 +54,10 @@ class Experiment(MetadataBase):
             default_factory=ListDict,
             description="List of surveys in the experiment",
             title="List of Surveys",
-            example=[{"id": "survey_1"}, {"id": "survey_2"}],
             json_schema_extra={
                 "required": False,
                 "units": None,
+                "examples": [{"id": "survey_1"}, {"id": "survey_2"}],
             },
         ),
     ]
@@ -453,7 +453,7 @@ class Experiment(MetadataBase):
         """
         if fn:
             experiment_element = et.parse(fn).getroot()
-        if element:
+        if element is not None:
             experiment_element = element
 
         # need to set the lists for each layer, otherwise you get duplicates.
