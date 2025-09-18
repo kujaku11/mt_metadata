@@ -1,17 +1,68 @@
-[project]
-name = "mt-metadata"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-authors = [
-    { name = "JP", email = "peacock.jared@gmail.com" }
-]
-requires-python = ">=3.11"
-dependencies = []
-
-[project.scripts]
-mt-metadata = "mt_metadata:main"
-
 [build-system]
-requires = ["uv_build>=0.8.4,<0.9.0"]
-build-backend = "uv_build"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mt_metadata"
+version = "0.4.0"
+description = "Metadata for magnetotelluric data"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "MIT license"}
+authors = [
+    {name = "Jared Peacock", email = "jpeacock@usgs.gov"}
+]
+keywords = ["mt_metadata"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable,
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "xarray",
+    "loguru",
+]
+
+[project.optional-dependencies]
+obspy = ["obspy"]
+test = ["pytest>=3"]
+
+[project.urls]
+Homepage = "https://github.com/kujaku11/mt_metadata"
+Repository = "https://github.com/kujaku11/mt_metadata"
+Documentation = "https://mt-metadata.readthedocs.io/"
+
+[tool.setuptools.packages.find]
+include = ["mt_metadata", "mt_metadata.*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = [
+    "data/mt_xml/*.xml",
+    "data/stationxml/*.xml",
+    "data/stationxml/readme", 
+    "data/transfer_functions/*.edi",
+    "data/transfer_functions/*.xml",
+    "data/transfer_functions/*.avg",
+    "data/transfer_functions/*.j",
+    "data/transfer_functions/*.zmm",
+    "data/transfer_functions/*.zss",
+    "data/transfer_functions/*.txt",
+    "data/licenses.json",
+]
+
+[tool.pytest.ini_options]
+collect_ignore = ["setup.py"]
+testpaths = ["tests"]
