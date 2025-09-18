@@ -33,6 +33,7 @@ dependencies = [
     "loguru",
     "pydantic[email] >= 2.0.0",
     "pyproj>=3.4.0",
+    "typing_extensions>=4.0.0",
 ]
 
 [project.optional-dependencies]

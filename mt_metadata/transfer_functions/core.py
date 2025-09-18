@@ -11,11 +11,12 @@ from copy import deepcopy
 
 # ==============================================================================
 from pathlib import Path
-from typing import Any, Literal, Self
+from typing import Any, Literal
 
 import numpy as np
 import xarray as xr
 from loguru import logger
+from typing_extensions import Self
 
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
