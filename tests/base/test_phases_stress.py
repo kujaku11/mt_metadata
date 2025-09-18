@@ -11,7 +11,7 @@ import numpy as np
 from mt_metadata.timeseries.filters import FrequencyResponseTableFilter
 
 
-def test_single_run(run_id):
+def test_single_run(run_id="test"):
     """Test phases validation in a single run"""
     try:
         fap = FrequencyResponseTableFilter(
