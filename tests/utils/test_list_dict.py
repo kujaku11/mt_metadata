@@ -41,7 +41,7 @@ class TestListDict(unittest.TestCase):
         self.assertEqual("Contents:\n------------\n\ta = 10", self.ld.__str__())
 
     def test_repr(self):
-        self.assertEqual("OrderedDict([('a', 10)])", self.ld.__repr__())
+        self.assertEqual("ListDict({'a': 10})", self.ld.__repr__())
 
     def test_items(self):
         self.assertTupleEqual((("a", 10),), tuple(self.ld.items()))
