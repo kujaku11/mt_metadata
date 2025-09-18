@@ -7,10 +7,14 @@ name = "mt_metadata"
 version = "0.4.0"
 description = "Metadata for magnetotelluric data"
 readme = {file = "README.md", content-type = "text/markdown"}
-license = {text = "MIT license"}
+license = {file = "LICENSE"}
 authors = [
     {name = "Jared Peacock", email = "jpeacock@usgs.gov"},
-    {name = "Karl Kappler", email = "kkappler@berkeley.edu"}
+    {name = "Anna Kelbert"},
+    {name = "Karl Kappler"},
+    {name = "Lindsey Heagy"},
+    {name = "Andy Frassetto"},
+    {name = "Tim Ronan"},
 ]
 keywords = ["mt_metadata"]
 classifiers = [
@@ -64,6 +68,8 @@ include-package-data = true
     "data/transfer_functions/*.zss",
     "data/transfer_functions/*.txt",
     "data/licenses.json",
+    "../HISTORY.rst",
+    "../AUTHORS.rst
 ]
 
 [tool.pytest.ini_options]
