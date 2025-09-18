@@ -133,7 +133,7 @@ class Coherence(Feature):
     detrend: Annotated[
         DetrendEnum,
         Field(
-            default="linear",
+            default=DetrendEnum.linear,
             description="How to detrend the data segments before fft.",
             alias=None,
             json_schema_extra={

@@ -55,7 +55,7 @@ class Feature(MetadataBase):
     domain: Annotated[
         DomainEnum,
         Field(
-            default="frequency",
+            default=DomainEnum.frequency,
             description="Temporal domain the feature is estimated in [ 'frequency' | 'time' ]",
             alias=None,
             json_schema_extra={

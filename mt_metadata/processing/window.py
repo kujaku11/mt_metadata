@@ -79,7 +79,7 @@ class Window(MetadataBase):
     type: Annotated[
         TypeEnum,
         Field(
-            default="boxcar",
+            default=TypeEnum.boxcar,
             description="name of the window type",
             alias=None,
             json_schema_extra={
@@ -93,7 +93,7 @@ class Window(MetadataBase):
     clock_zero_type: Annotated[
         ClockZeroTypeEnum,
         Field(
-            default="ignore",
+            default=ClockZeroTypeEnum.ignore,
             description="how the clock-zero is specified",
             alias=None,
             json_schema_extra={

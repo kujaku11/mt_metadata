@@ -29,7 +29,7 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     threshold: Annotated[
         ThresholdEnum,
         Field(
-            default="low cut",
+            default=ThresholdEnum.low_cut,
             description="Which side of a threshold should be downweighted.",
             alias=None,
             json_schema_extra={
@@ -43,7 +43,7 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     activation_style: Annotated[
         ActivationStyleEnum,
         Field(
-            default="sigmoid",
+            default=ActivationStyleEnum.sigmoid,
             description="Tapering/activation function to use between transition bounds.",
             alias=None,
             json_schema_extra={

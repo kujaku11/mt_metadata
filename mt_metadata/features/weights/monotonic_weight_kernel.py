@@ -42,7 +42,7 @@ class MonotonicWeightKernel(Base):
     threshold: Annotated[
         ThresholdEnum,
         Field(
-            default="low cut",
+            default=ThresholdEnum.low_cut,
             description="Which side of a threshold should be downweighted.",
             alias=None,
             json_schema_extra={
@@ -56,7 +56,7 @@ class MonotonicWeightKernel(Base):
     style: Annotated[
         StyleEnum,
         Field(
-            default="taper",
+            default=StyleEnum.taper,
             description="Tapering/activation function to use between transition bounds.",
             alias=None,
             json_schema_extra={

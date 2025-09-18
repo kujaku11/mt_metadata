@@ -107,6 +107,14 @@ class FCCoherence(Coherence, Feature):
         sxy = np.mean(fc1 * np.conj(fc2), axis=0)
         sxx = np.mean(np.abs(fc1) ** 2, axis=0)
         syy = np.mean(np.abs(fc2) ** 2, axis=0)
-        # Magnitude-squared coherence
-        coherence = np.abs(sxy) ** 2 / (sxx * syy)
+
+        # Magnitude-squared coherence with protection against division by zero
+        denominator = sxx * syy
+
+        # Use numpy error handling to suppress division warnings
+        with np.errstate(divide="ignore", invalid="ignore"):
+            coherence = np.abs(sxy) ** 2 / denominator
+
+        # Replace any infinite or NaN values with 0
+        coherence = np.where(np.isfinite(coherence), coherence, 0.0)
         return None, coherence

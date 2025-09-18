@@ -32,7 +32,7 @@ class TaperMonotonicWeightKernel(MonotonicWeightKernel):
     half_window_style: Annotated[
         HalfWindowStyleEnum,
         Field(
-            default="rectangle",
+            default=HalfWindowStyleEnum.rectangle,
             description="Tapering/activation function to use between transition bounds.",
             alias=None,
             json_schema_extra={
@@ -75,6 +75,16 @@ class TaperMonotonicWeightKernel(MonotonicWeightKernel):
         ub = float(self.transition_upper_bound)
         direction = self.threshold
         transition_range = ub - lb
+
+        # Handle edge case where transition range is zero (identical bounds)
+        if transition_range == 0:
+            if direction == "low cut":
+                return np.where(values >= lb, 1.0, 0.0)
+            elif direction == "high cut":
+                return np.where(values <= ub, 1.0, 0.0)
+            else:
+                raise ValueError(f"Unknown threshold direction: {direction}")
+
         if direction == "low cut":
             return np.clip((values - lb) / transition_range, 0, 1)
         elif direction == "high cut":

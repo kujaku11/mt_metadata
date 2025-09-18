@@ -21,7 +21,7 @@ class Base(MetadataBase):
     weight_type: Annotated[
         WeightTypeEnum,
         Field(
-            default="monotonic",
+            default=WeightTypeEnum.monotonic,
             description="Type of weighting kernel (e.g., monotonic, learned, spatial).",
             alias=None,
             json_schema_extra={
