@@ -69,7 +69,7 @@ include-package-data = true
     "data/transfer_functions/*.txt",
     "data/licenses.json",
     "../HISTORY.rst",
-    "../AUTHORS.rst
+    "../AUTHORS.rst",
 ]
 
 [tool.pytest.ini_options]
