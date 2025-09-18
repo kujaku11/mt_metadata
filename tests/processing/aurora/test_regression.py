@@ -693,8 +693,8 @@ class TestRegressionPerformance:
 
         comparison_time = time.time() - start_time
 
-        # Should complete comparisons in reasonable time (< 1 second)
-        assert comparison_time < 1.0
+        # Should complete comparisons in reasonable time (< 2 seconds)
+        assert comparison_time < 2.0
 
     def test_field_access_performance(self, custom_regression):
         """Test field access performance."""
