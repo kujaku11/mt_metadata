@@ -897,6 +897,122 @@ def validate_name(name, pattern=None):
     return name.replace(" ", "_")
 
 
+def has_numbers(text):
+    """
+    Check if a string contains any numeric characters.
+
+    Parameters
+    ----------
+    text : str
+        The string to check for numeric characters.
+
+    Returns
+    -------
+    bool
+        True if the string contains any digits (0-9), False otherwise.
+
+    Examples
+    --------
+    >>> has_numbers("abc123")
+    True
+    >>> has_numbers("hello")
+    False
+    >>> has_numbers("test1")
+    True
+    >>> has_numbers("")
+    False
+    """
+    if not isinstance(text, str):
+        return False
+    return any(char.isdigit() for char in text)
+
+
+def is_numeric_string(text):
+    """
+    Check if a string represents a valid number (int or float).
+
+    Parameters
+    ----------
+    text : str
+        The string to check if it represents a number.
+
+    Returns
+    -------
+    bool
+        True if the string can be converted to a number, False otherwise.
+
+    Examples
+    --------
+    >>> is_numeric_string("123")
+    True
+    >>> is_numeric_string("12.34")
+    True
+    >>> is_numeric_string("-45.6")
+    True
+    >>> is_numeric_string("1.23e-4")
+    True
+    >>> is_numeric_string("abc")
+    False
+    >>> is_numeric_string("12abc")
+    False
+    """
+    if not isinstance(text, str):
+        return False
+
+    # Handle empty string
+    if not text.strip():
+        return False
+
+    try:
+        float(text)
+        return True
+    except ValueError:
+        return False
+
+
+def extract_numbers(text):
+    """
+    Extract all numeric values from a string.
+
+    Parameters
+    ----------
+    text : str
+        The string to extract numbers from.
+
+    Returns
+    -------
+    list
+        List of float values found in the string.
+
+    Examples
+    --------
+    >>> extract_numbers("abc123def45.6")
+    [123.0, 45.6]
+    >>> extract_numbers("no numbers here")
+    []
+    >>> extract_numbers("1.5 and -2.3e4")
+    [1.5, -23000.0]
+    """
+    import re
+
+    if not isinstance(text, str):
+        return []
+
+    # Pattern to match integers, floats, and scientific notation
+    number_pattern = r"[-+]?(?:\d*\.?\d+(?:[eE][-+]?\d+)?)"
+
+    matches = re.findall(number_pattern, text)
+
+    numbers = []
+    for match in matches:
+        try:
+            numbers.append(float(match))
+        except ValueError:
+            continue
+
+    return numbers
+
+
 def requires(**requirements):
     """Decorate a function with optional dependencies.
 
@@ -972,10 +1088,16 @@ def object_to_array(value, dtype=float):
         if value in ["", "none", "None"]:
             return np.empty(0)
 
-        if "j" in value:
+        if not has_numbers(value) and not is_numeric_string(value):
+            msg = f"String input must be a single number or a list of numbers, not '{value}'"
+            raise TypeError(msg)
+
+        elif has_numbers(value) and not is_numeric_string(value):
+            value = extract_numbers(value)
+            return np.array(value, dtype=dtype)
+
+        if "j" in value and has_numbers(value):
             dtype = complex
-        else:
-            dtype = float
 
         if "," in value:
             separator = ","
