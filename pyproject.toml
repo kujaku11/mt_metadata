@@ -75,3 +75,23 @@ include-package-data = true
 [tool.pytest.ini_options]
 collect_ignore = ["setup.py"]
 testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+skip-string-normalization = false
+
+[tool.isort]
+profile = "black"
+skip = "__init__.py"
+force_alphabetical_sort_within_sections = true
+order_by_type = true
+lines_after_imports = 2
+known_first_party = ["mt_metadata"]
+
+[tool.autoflake]
+remove-all-unused-imports = true
+expand-star-imports = true
+ignore-init-module-imports = true
+in-place = true
