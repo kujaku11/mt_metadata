@@ -34,7 +34,20 @@ class ListDict:
         return "\n".join(lines)
 
     def __repr__(self):
-        return self._home.__repr__()
+        """
+        Return a string representation that is consistent across Python versions.
+        """
+        if not self._home:
+            return "ListDict({})"
+
+        # Create a consistent representation using standard dict format
+        items = []
+        for key, value in self._home.items():
+            # Use repr() for both key and value to handle proper quoting
+            items.append(f"{repr(key)}: {repr(value)}")
+
+        items_str = "{" + ", ".join(items) + "}"
+        return f"ListDict({items_str})"
 
     def __eq__(self, other):
         return self._home.__eq__(other._home)
