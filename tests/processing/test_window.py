@@ -108,8 +108,8 @@ class TestWindowInitialization:
 
     def test_default_initialization(self, default_window):
         """Test Window creation with default values."""
-        assert default_window.num_samples is 256
-        assert default_window.overlap is 32
+        assert default_window.num_samples == 256
+        assert default_window.overlap == 32
         assert default_window.type == TypeEnum.boxcar
         assert default_window.clock_zero_type == ClockZeroTypeEnum.ignore
         assert default_window.normalized is True
