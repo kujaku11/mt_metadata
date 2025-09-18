@@ -2216,7 +2216,10 @@ class TF:
 
         self.period = emtfxml_obj.data.period
         self.impedance = emtfxml_obj.data.z
-        self.impedance_error = np.sqrt(emtfxml_obj.data.z_var)
+        # Handle negative or invalid values in z_var before taking sqrt
+        z_var = emtfxml_obj.data.z_var
+        with np.errstate(invalid="ignore"):
+            self.impedance_error = np.sqrt(np.where(z_var >= 0, z_var, np.nan))
         self._transfer_function.inverse_signal_power.loc[
             dict(input=["hx", "hy"], output=["hx", "hy"])
         ] = emtfxml_obj.data.z_invsigcov

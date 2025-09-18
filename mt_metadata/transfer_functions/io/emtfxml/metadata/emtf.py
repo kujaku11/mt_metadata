@@ -59,7 +59,7 @@ class EMTF(MetadataBase):
     sub_type: Annotated[
         DataTypeEnum,
         Field(
-            default="MT_TF",
+            default=DataTypeEnum.MT_TF,
             description="subject data type",
             alias=None,
             json_schema_extra={

@@ -19,7 +19,7 @@ class Tx(MetadataBase):
     type: Annotated[
         TypeEnum,
         Field(
-            default="natural",
+            default=TypeEnum.natural,
             description="Type of EM source",
             alias=None,
             json_schema_extra={

@@ -23,7 +23,7 @@ class ProcessingInfo(MetadataBase):
     sign_convention: Annotated[
         SignConventionEnum,
         Field(
-            default="exp(+ i\omega t)",
+            default=r"exp(+ i\omega t)",
             description="Sign convention of the processing software output",
             alias=None,
             json_schema_extra={

@@ -16,7 +16,7 @@ class Auto(MetadataBase):
     phase_flip: Annotated[
         YesNoEnum,
         Field(
-            default="yes",
+            default=YesNoEnum.yes,
             description="Was phase automatically flipped in processing",
             alias=None,
             json_schema_extra={

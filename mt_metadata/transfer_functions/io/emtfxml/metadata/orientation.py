@@ -32,7 +32,7 @@ class Orientation(MetadataBase):
     layout: Annotated[
         ChannelOrientationEnum,
         Field(
-            default="orthogonal",
+            default=ChannelOrientationEnum.orthogonal,
             description="Orientation of channels relative to each other",
             alias=None,
             json_schema_extra={

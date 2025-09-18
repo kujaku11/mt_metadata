@@ -27,7 +27,7 @@ class Survey(MetadataBase):
     type: Annotated[
         DataTypeEnum,
         Field(
-            default="nsamt",
+            default=DataTypeEnum.NSAMT,
             description="Type of EM survey",
             alias=None,
             json_schema_extra={
@@ -41,7 +41,7 @@ class Survey(MetadataBase):
     array: Annotated[
         ArrayEnum,
         Field(
-            default="tensor",
+            default=ArrayEnum.tensor,
             description="Type of array",
             alias=None,
             json_schema_extra={
@@ -83,7 +83,7 @@ class Survey(MetadataBase):
     proj: Annotated[
         ProjEnum,
         Field(
-            default="UTM",
+            default=ProjEnum.UTM,
             description="Projection of the location coordinates",
             alias=None,
             json_schema_extra={
