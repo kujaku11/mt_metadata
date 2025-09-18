@@ -52,7 +52,7 @@ class ShortTimeFourierTransform(MetadataBase):
     method: Annotated[
         MethodEnum,
         Field(
-            default="fft",
+            default=MethodEnum.fft,
             description="Fourier transform method",
             alias=None,
             json_schema_extra={
@@ -80,7 +80,7 @@ class ShortTimeFourierTransform(MetadataBase):
     per_window_detrend_type: Annotated[
         PerWindowDetrendTypeEnum,
         Field(
-            default="",
+            default=PerWindowDetrendTypeEnum.null,
             description="Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
             alias=None,
             json_schema_extra={
@@ -94,7 +94,7 @@ class ShortTimeFourierTransform(MetadataBase):
     pre_fft_detrend_type: Annotated[
         PreFftDetrendTypeEnum,
         Field(
-            default="linear",
+            default=PreFftDetrendTypeEnum.linear,
             description="Pre FFT detrend method to be applied",
             alias=None,
             json_schema_extra={
@@ -108,7 +108,7 @@ class ShortTimeFourierTransform(MetadataBase):
     prewhitening_type: Annotated[
         PrewhiteningTypeEnum,
         Field(
-            default="first difference",
+            default=PrewhiteningTypeEnum.first_difference,
             description="Prewhitening method to be applied",
             alias=None,
             json_schema_extra={

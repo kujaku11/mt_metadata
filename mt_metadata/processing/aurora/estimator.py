@@ -20,7 +20,7 @@ class Estimator(MetadataBase):
     engine: Annotated[
         EngineEnum,
         Field(
-            default="RME_RR",
+            default=EngineEnum.RME_RR,
             description="The transfer function estimator engine",
             alias=None,
             json_schema_extra={

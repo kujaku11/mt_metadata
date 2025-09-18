@@ -105,7 +105,7 @@ class Band(MetadataBase):
     center_averaging_type: Annotated[
         CenterAveragingTypeEnum,
         Field(
-            default="geometric",
+            default=CenterAveragingTypeEnum.geometric,
             description="type of average to apply when computing the band center",
             alias=None,
             json_schema_extra={
@@ -119,7 +119,7 @@ class Band(MetadataBase):
     closed: Annotated[
         ClosedEnum,
         Field(
-            default="left",
+            default=ClosedEnum.left,
             description="whether interval is open or closed",
             alias=None,
             json_schema_extra={

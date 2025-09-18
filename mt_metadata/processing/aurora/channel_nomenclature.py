@@ -133,7 +133,7 @@ class ChannelNomenclature(MetadataBase):
     keyword: Annotated[
         SupportedNomenclatureEnum,
         Field(
-            default="default",
+            default=SupportedNomenclatureEnum.default,
             description="Keyword for the channel nomenclature system",
             alias=None,
             json_schema_extra={

@@ -82,7 +82,7 @@ class FC(MetadataBase):
     method: Annotated[
         MethodEnum,
         Field(
-            default="fft",
+            default=MethodEnum.fft,
             description="Fourier transform method",
             alias=None,
             json_schema_extra={

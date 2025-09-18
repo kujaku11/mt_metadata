@@ -47,7 +47,7 @@ class TimeSeriesDecimation(MetadataBase):
     method: Annotated[
         MethodEnum,
         Field(
-            default="default",
+            default=MethodEnum.default,
             description="Type of decimation",
             alias=None,
             json_schema_extra={
