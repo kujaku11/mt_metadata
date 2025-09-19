@@ -25,6 +25,8 @@ from xml.etree import cElementTree as et
 import numpy as np
 from loguru import logger
 from pydantic import BaseModel
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
 
 
 # from mt_metadata.utils.units import get_unit_object
@@ -182,6 +184,12 @@ def wrap_description(description, column_width):
     """
     split a description into separate lines
     """
+    if isinstance(description, list):
+        description = " ".join([str(d) for d in description])
+        description = description.strip()
+    elif not isinstance(description, str):
+        description = str(description)
+        description = description.strip()
     d_lines = textwrap.wrap(description, column_width)
     if len(d_lines) < 11:
         d_lines += [""] * (11 - len(d_lines))
@@ -342,13 +350,13 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     return "\n".join(lines)
 
 
-def write_block(key, attr_dict, c1=45, c2=45, c3=15):
+def write_block(key, field_info: FieldInfo, c1=45, c2=45, c3=15):
     """
 
     :param key: key to write from attr dict
     :type key: string
-    :param attr_dict: attribute dictionary
-    :type attr_dict: dict
+    :param field_info: field information dictionary
+    :type field_info: dict
     :param c1: column 1 width, defaults to 45
     :type c1: int, optional
     :param c2: column 2 width, defaults to 45
@@ -383,16 +391,29 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
         "",
         hline,
         line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
-        line.format(f"**{key}**", c1, "**Description**", c2, "**Example**", c3),
         mline,
     ]
 
-    d_lines = wrap_description(attr_dict["description"], c2)
-    e_lines = wrap_description(attr_dict["example"], c3)
+    t_lines = wrap_description(field_info.annotation, c1 - 10)
+    d_lines = wrap_description(field_info.description, c2)
+
+    # Safely get examples from json_schema_extra
+    examples = ""
+    if field_info.json_schema_extra and isinstance(field_info.json_schema_extra, dict):
+        examples = field_info.json_schema_extra.get("examples", "")
+    e_lines = wrap_description(examples, c3)
+
+    # Safely get required and units
+    required = "False"
+    units = ""
+    if field_info.json_schema_extra and isinstance(field_info.json_schema_extra, dict):
+        required = str(field_info.json_schema_extra.get("required", False))
+        units = str(field_info.json_schema_extra.get("units", ""))
+
     # line 1 is with the entry
     lines.append(
         line.format(
-            f"**Required**: {attr_dict['required']}",
+            f"**Required**: {required}",
             c1,
             d_lines[0],
             c2,
@@ -405,7 +426,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 3 required
     lines.append(
         line.format(
-            f"**Units**: {attr_dict['units']}",
+            f"**Units**: {units}",
             c1,
             d_lines[2],
             c2,
@@ -419,7 +440,7 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     # line 5 units
     lines.append(
         line.format(
-            f"**Type**: {attr_dict['type']}",
+            f"**Type**: {t_lines[0]}",
             c1,
             d_lines[4],
             c2,
@@ -429,62 +450,160 @@ def write_block(key, attr_dict, c1=45, c2=45, c3=15):
     )
 
     # line 6 blank
-    lines.append(line.format("", c1, d_lines[5], c2, e_lines[5], c3))
+    lines.append(line.format(t_lines[1], c1, d_lines[5], c2, e_lines[5], c3))
 
-    # line 7 type
+    # line 7 - continuation of type if needed
+    lines.append(line.format(t_lines[2], c1, d_lines[6], c2, e_lines[6], c3))
+
+    # Add additional lines if type annotation is very long (more than 2 lines)
+    if len(t_lines) > 3:
+        for i in range(3, min(len(t_lines), 6)):  # Add up to 3 more lines for type
+            desc_index = 7 + (i - 3)
+            example_index = 7 + (i - 3)
+            lines.append(
+                line.format(
+                    t_lines[i],
+                    c1,
+                    d_lines[desc_index] if desc_index < len(d_lines) else "",
+                    c2,
+                    e_lines[example_index] if example_index < len(e_lines) else "",
+                    c3,
+                )
+            )
+
+    # line 8+ blank (adjust based on how many type lines we added)
+    type_lines_used = min(len(t_lines), 6)
+    desc_start_index = 5 + type_lines_used - 3  # Adjust description index
+    example_start_index = 5 + type_lines_used - 3  # Adjust example index
+
     lines.append(
         line.format(
-            f"**Style**: {attr_dict['style']}",
+            "",
             c1,
-            d_lines[6],
+            d_lines[desc_start_index] if desc_start_index < len(d_lines) else "",
             c2,
-            e_lines[6],
+            e_lines[example_start_index] if example_start_index < len(e_lines) else "",
             c3,
         )
     )
 
-    # line 8 blank
-    lines.append(line.format("", c1, d_lines[7], c2, e_lines[7], c3))
+    # Handle default value - always convert to string
+    default_value = field_info.default
+    if default_value is PydanticUndefined:
+        if (
+            field_info.default_factory is not None
+            and field_info.default_factory is not PydanticUndefined
+        ):
+            try:
+                default_value = field_info.default_factory()
+                # If it's a complex object, just show the type name
+                if not isinstance(default_value, (str, int, float, bool, type(None))):
+                    default_value = type(default_value).__name__
+            except Exception:
+                default_value = "None"
+        else:
+            default_value = "None"
 
-    default = [attr_dict["default"]] + [""] * 5
-    if len(str(attr_dict["default"])) > c1 - 15:
-        default = [""] + wrap_description(attr_dict["default"], c1)
+    # Ensure default_value is always a string
+    default_value_str = str(default_value)
 
-    # line 9 type
+    # Handle special cases for display
+    if default_value_str == "":
+        default_value_str = '""'  # Show empty string explicitly
+    elif default_value_str == "None":
+        default_value_str = "None"  # Keep None as is
+
+    # Wrap default value if it's too long
+    if len(default_value_str) > c1 - 15:
+        default_lines = wrap_description(default_value_str, c1)
+        default = [""] + default_lines
+    else:
+        default = [default_value_str] + [""] * 10  # Ensure we have enough empty strings
+
+    # Ensure we have at least 11 items in default list
+    while len(default) < 11:
+        default.append("")
+
+    # Calculate the description and example line indices for the default section
+    # Account for the additional type lines we may have added
+    default_desc_start = 8 + max(
+        0, min(len(t_lines) - 3, 3)
+    )  # Start after type section
+    default_example_start = 8 + max(0, min(len(t_lines) - 3, 3))
+
+    # line N - Default value (where N depends on type length)
     lines.append(
         line.format(
             f"**Default**: {default[0]}",
             c1,
-            d_lines[8],
+            d_lines[default_desc_start] if default_desc_start < len(d_lines) else "",
             c2,
-            e_lines[8],
+            (
+                e_lines[default_example_start]
+                if default_example_start < len(e_lines)
+                else ""
+            ),
             c3,
         )
     )
 
-    # line 10 blank
-    lines.append(line.format(default[1], c1, d_lines[9], c2, e_lines[9], c3))
+    # line N+1 - continuation of default/description
+    lines.append(
+        line.format(
+            default[1],
+            c1,
+            (
+                d_lines[default_desc_start + 1]
+                if (default_desc_start + 1) < len(d_lines)
+                else ""
+            ),
+            c2,
+            (
+                e_lines[default_example_start + 1]
+                if (default_example_start + 1) < len(e_lines)
+                else ""
+            ),
+            c3,
+        )
+    )
 
-    # line 9 type
-    lines.append(line.format(default[2], c1, d_lines[10], c2, e_lines[10], c3))
+    # line N+2 - continuation of default/description
+    lines.append(
+        line.format(
+            default[2],
+            c1,
+            (
+                d_lines[default_desc_start + 2]
+                if (default_desc_start + 2) < len(d_lines)
+                else ""
+            ),
+            c2,
+            (
+                e_lines[default_example_start + 2]
+                if (default_example_start + 2) < len(e_lines)
+                else ""
+            ),
+            c3,
+        )
+    )
 
-    # line 10 blank
+    # Handle additional description lines if they exist
     if len(d_lines) > 11:
         lines.append(line.format(default[3], c1, d_lines[11], c2, "", c3))
         for index, d_line in enumerate(d_lines[12:], 4):
-            try:
+            if index < len(default):
                 lines.append(line.format(default[index], c1, d_line, c2, "", c3))
-            except IndexError:
+            else:
                 lines.append(line.format("", c1, d_line, c2, "", c3))
 
-    # long default value
-    if len(default) > 7:
-        lines.append(line.format(default[3], c1, "", c2, "", c3))
-        for index, d_line in enumerate(default[4:], 12):
-            try:
-                lines.append(line.format(d_line, c1, d_lines[index], c2, "", c3))
-            except IndexError:
-                lines.append(line.format(d_line, c1, "", c2, "", c3))
+    # Handle long default values that span multiple lines
+    if len(default) > 4:
+        start_index = 4
+        # Only add additional lines if we haven't already handled them above
+        if len(d_lines) <= 11:
+            for index, default_line in enumerate(default[start_index:], start_index):
+                if default_line.strip():  # Only add non-empty default lines
+                    lines.append(line.format(default_line, c1, "", c2, "", c3))
 
     lines.append(hline)
     lines.append("")

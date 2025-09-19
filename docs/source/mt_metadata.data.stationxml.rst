@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: mt_metadata.data.stationxml
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
