@@ -22,11 +22,14 @@ SiteLayout
        |                                              | estimation                                    | Magnetic(hy)]  |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.electric.Elect          |                                               |                |
+       | ric | mt_metadata.transfer_function          |                                               |                |
+       | s.io.emtfxml.metadata.magnetic.Magn          |                                               |                |
+       | etic | str]                                  |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -47,11 +50,14 @@ SiteLayout
        |                                              | estimation                                    | Electric(ey),  |
        | **Units**: None                              |                                               | Magnetic(hz)]  |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: list[mt_metadata.transfer_functions|                                               |                |
+       | .io.emtfxml.metadata.electric.Elect          |                                               |                |
+       | ric | mt_metadata.transfer_function          |                                               |                |
+       | s.io.emtfxml.metadata.magnetic.Magn          |                                               |                |
+       | etic | str]                                  |                                               |                |
        |                                              |                                               |                |
-       | **Style**: name list                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: []                              |                                               |                |
+       | **Default**: list                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

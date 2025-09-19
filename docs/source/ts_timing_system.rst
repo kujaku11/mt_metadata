@@ -6,8 +6,8 @@ TimingSystem
 ============
 
 
-:navy:`comments`
-~~~~~~~~~~~~~~~~
+:navy:`comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -16,15 +16,74 @@ TimingSystem
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **comments**                                 | **Description**                               | **Example**    |
+       | **comments.author**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Any comment on the timing system.             | GPS locked with|
-       |                                              |                                               | internal quartz|
-       | **Units**: None                              |                                               | clock          |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.time_stamp**                      | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`comments.value`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **comments.value**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -47,9 +106,12 @@ TimingSystem
        |                                              |                                               |                |
        | **Units**: seconds                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -72,9 +134,12 @@ TimingSystem
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: GPS                             |                                               |                |
        |                                              |                                               |                |
@@ -97,9 +162,12 @@ TimingSystem
        |                                              |                                               |                |
        | **Units**: seconds                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -118,13 +186,16 @@ TimingSystem
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **n_satellites**                             | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | Number of satellites used for timing.         | 6              |
+       | **Required**: :red:`True`                    | Number of satellites used for timing.         | 6              |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: integer                            |                                               |                |
+       | **Type**: int | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |

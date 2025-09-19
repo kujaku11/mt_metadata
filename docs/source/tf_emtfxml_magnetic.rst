@@ -22,11 +22,14 @@ Magnetic
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -47,9 +50,12 @@ Magnetic
        |                                              | north                                         |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -72,9 +78,12 @@ Magnetic
        |                                              | north direction                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -97,9 +106,12 @@ Magnetic
        |                                              | east direction                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -122,9 +134,12 @@ Magnetic
        |                                              | depth                                         |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |

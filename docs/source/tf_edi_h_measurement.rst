@@ -22,9 +22,12 @@ HMeasurement
        |                                              | location.channel_number.                      |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: float | str | None                 |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -47,11 +50,14 @@ HMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -72,9 +78,12 @@ HMeasurement
        |                                              | north direction                               |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -97,9 +106,12 @@ HMeasurement
        |                                              | east direction                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -122,9 +134,12 @@ HMeasurement
        |                                              | depth                                         |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -147,9 +162,12 @@ HMeasurement
        |                                              | coordinate system, clockwise positive.        |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -172,9 +190,12 @@ HMeasurement
        |                                              | horizontal = 0                                |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -197,11 +218,14 @@ HMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

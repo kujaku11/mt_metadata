@@ -1,0 +1,65 @@
+{
+    "title": "fdsn",
+    "type": "object",
+    "properties": {
+        "id": {
+            "default": null,
+            "description": "Given FDSN archive ID name.",
+            "title": "id",
+            "examples": "MT001",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "network": {
+            "default": null,
+            "description": "Given two character FDSN archive network code.",
+            "title": "network",
+            "examples": "EM",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "channel_code": {
+            "default": null,
+            "description": "Three character FDSN channel code. http://docs.fdsn.org/projects/source-identifiers/en/v1.0/channel-codes.html",
+            "title": "channel_code",
+            "examples": "LQN",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "pattern": "^[a-zA-Z0-9]*$"
+        },
+        "new_epoch": {
+            "default": null,
+            "description": "Boolean telling if a new epoch needs to be created or not.",
+            "title": "new_epoch",
+            "examples": "False",
+            "type": "boolean",
+            "alias": null,
+            "units": null
+        },
+        "alternate_code": {
+            "default": null,
+            "description": "Alternate Code",
+            "title": "alternate_code",
+            "examples": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "alternate_network_code": {
+            "default": null,
+            "description": "Alternate Network Code",
+            "title": "alternate_network_code",
+            "examples": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [],
+    "description": "fdsn"
+}

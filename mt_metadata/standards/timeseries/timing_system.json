@@ -1,0 +1,57 @@
+{
+    "title": "timing_system",
+    "type": "object",
+    "properties": {
+        "comments": {
+            "type": "string",
+            "default": null,
+            "description": "Any comment on the timing system.",
+            "title": "comments",
+            "examples": "GPS locked with internal quartz clock",
+            "alias": null,
+            "units": null
+        },
+        "drift": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Estimated drift of the timing system.",
+            "title": "drift",
+            "examples": "0.001",
+            "alias": null,
+            "units": "seconds"
+        },
+        "type": {
+            "type": "string",
+            "default": "GPS",
+            "description": "Type of timing system.",
+            "title": "type",
+            "examples": "GPS",
+            "alias": null,
+            "units": null
+        },
+        "uncertainty": {
+            "type": "float",
+            "default": 0.0,
+            "description": "Estimated uncertainty of the timing system.",
+            "title": "uncertainty",
+            "examples": "0.0002",
+            "alias": null,
+            "units": "seconds"
+        },
+        "n_satellites": {
+            "type": "int",
+            "default": null,
+            "description": "Number of satellites used for timing.",
+            "title": "n_satellites",
+            "examples": "6",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "drift",
+        "type",
+        "uncertainty"
+    ],
+    "description": "timing_system"
+}

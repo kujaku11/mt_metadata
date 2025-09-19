@@ -1,0 +1,29 @@
+{
+    "title": "time_period",
+    "type": "object",
+    "properties": {
+        "end": {
+            "default": "1980-01-01T00:00:00+00:00",
+            "description": "End date and time of collection in UTC.",
+            "title": "end",
+            "examples": "2020-02-04T16:23:45.453670+00:00",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "start": {
+            "default": "1980-01-01T00:00:00+00:00",
+            "description": "Start date and time of collection in UTC.",
+            "title": "start",
+            "examples": "2020-02-01T09:23:45.453670+00:00",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "end",
+        "start"
+    ],
+    "description": "time_period"
+}

@@ -22,11 +22,14 @@ PhaseSlope
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <enum 'SmoothEnum'>                |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: robust                          |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: SmoothEnum.null                 |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -47,11 +50,14 @@ PhaseSlope
        |                                              | algorithm                                     |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <enum 'YesNoEnum'>                 |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: no                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: YesNoEnum.no                    |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

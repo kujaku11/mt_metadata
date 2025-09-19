@@ -18,15 +18,18 @@ Electric
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **name**                                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | Name of the channel                           | hx             |
+       | **Required**: :red:`True`                    | Name of the channel                           | ex             |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -47,9 +50,12 @@ Electric
        |                                              | north                                         |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -72,9 +78,12 @@ Electric
        |                                              | point in north direction                      |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -97,9 +106,12 @@ Electric
        |                                              | point in north direction                      |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -122,9 +134,12 @@ Electric
        |                                              | point in east direction                       |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -147,9 +162,12 @@ Electric
        |                                              | point in east direction                       |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -172,9 +190,12 @@ Electric
        |                                              | point in depth                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -197,9 +218,12 @@ Electric
        |                                              | point in depth                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |

@@ -22,9 +22,12 @@ EMeasurement
        |                                              | location.channel_number.                      |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: float | None                       |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -47,11 +50,14 @@ EMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: controlled vocabulary             |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -72,9 +78,12 @@ EMeasurement
        |                                              | point in north direction                      |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -97,9 +106,12 @@ EMeasurement
        |                                              | point in north direction                      |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -122,9 +134,12 @@ EMeasurement
        |                                              | point in east direction                       |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -147,9 +162,12 @@ EMeasurement
        |                                              | point in east direction                       |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -172,9 +190,12 @@ EMeasurement
        |                                              | point in depth                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -197,9 +218,12 @@ EMeasurement
        |                                              | point in depth                                |                |
        | **Units**: meters                            |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -222,9 +246,12 @@ EMeasurement
        |                                              | coordinate system, clockwise positive.        |                |
        | **Units**: degrees                           |                                               |                |
        |                                              |                                               |                |
-       | **Type**: float                              |                                               |                |
+       | **Type**: <class 'float'>                    |                                               |                |
        |                                              |                                               |                |
-       | **Style**: number                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: 0.0                             |                                               |                |
        |                                              |                                               |                |
@@ -247,11 +274,14 @@ EMeasurement
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

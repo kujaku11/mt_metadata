@@ -18,15 +18,18 @@ Provenance
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **create_time**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | date and time the file was created            | 2020-02-08T12:2|
-       |                                              |                                               | 3:40.324600+00:|
-       | **Units**: None                              |                                               | 00             |
+       | **Required**: :red:`True`                    | date and time the file was created            | 2020-02-       |
+       |                                              |                                               | 08T12:23:40.324|
+       | **Units**: None                              |                                               | 600+00:00      |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: mt_metadata.common.mttime.MTime |  |                                               |                |
+       | str | float | int |                          |                                               |                |
+       | numpy.datetime64 | pandas._libs.tsl          |                                               |                |
+       | ibs.timestamps.Timestamp                     |                                               |                |
        |                                              |                                               |                |
-       | **Style**: date time                         |                                               |                |
        |                                              |                                               |                |
-       | **Default**: 1980-01-01T00:00:00+00:00       |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
@@ -47,17 +50,20 @@ Provenance
        |                                              | file                                          | Conversion     |
        | **Units**: None                              |                                               | Utilities 4.0  |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: <class 'str'>                      |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: mt_metadata                     |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`creator.name`
-~~~~~~~~~~~~~~~~~~~~
+:navy:`creator.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -66,15 +72,18 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **creator.name**                             | **Description**                               | **Example**    |
+       | **creator.organization**                     | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | author name                                   | person name    |
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -93,20 +102,23 @@ Provenance
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **creator.email**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | email of the contact person                   | mt.guru@em.org |
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`creator.org`
+:navy:`creator.url`
 ~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -116,23 +128,26 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **creator.org**                              | **Description**                               | **Example**    |
+       | **creator.url**                              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | organization name                             | mt gurus       |
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`creator.org_url`
-~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`creator.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -141,23 +156,26 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **creator.org_url**                          | **Description**                               | **Example**    |
+       | **creator.comments.author**                  | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :blue:`False`                  | URL of organization                           | https://www.mt_|
-       |                                              |                                               | gurus.org      |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`submitter.name`
-~~~~~~~~~~~~~~~~~~~~~~
+:navy:`creator.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -166,15 +184,102 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **submitter.name**                           | **Description**                               | **Example**    |
+       | **creator.comments.time_stamp**              | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | author name                                   | person name    |
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`creator.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **creator.comments.value**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`creator.name`
+~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **creator.name**                             | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`submitter.organization`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **submitter.organization**                   | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Organization full name                        | mt gurus       |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
@@ -193,20 +298,23 @@ Provenance
        +----------------------------------------------+-----------------------------------------------+----------------+
        | **submitter.email**                          | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | email of the contact person                   | mt.guru@em.org |
+       | **Required**: :red:`True`                    | Email of the contact person                   | mt.guru@em.org |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: pydantic.networks.EmailStr | None  |                                               |                |
        |                                              |                                               |                |
-       | **Style**: email                             |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`submitter.org`
+:navy:`submitter.url`
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
@@ -216,23 +324,26 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **submitter.org**                            | **Description**                               | **Example**    |
+       | **submitter.url**                            | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | organization name                             | mt gurus       |
+       | **Required**: :red:`True`                    | URL of the contact person                     | https://em.org |
        |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: pydantic.networks.AnyUrl | None |  |                                               |                |
+       | str                                          |                                               |                |
        |                                              |                                               |                |
-       | **Style**: free form                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+
 
-:navy:`submitter.org_url`
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:navy:`submitter.comments.author`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. container::
 
@@ -241,17 +352,104 @@ Provenance
        :widths: 45 45 15
 
        +----------------------------------------------+-----------------------------------------------+----------------+
-       | **submitter.org_url**                        | **Description**                               | **Example**    |
+       | **submitter.comments.author**                | **Description**                               | **Example**    |
        +==============================================+===============================================+================+
-       | **Required**: :red:`True`                    | URL of organization                           | https://www.mt_|
-       |                                              |                                               | gurus.org      |
+       | **Required**: :red:`True`                    | person who authored the comment               | J. Pedantic    |
+       |                                              |                                               |                |
        | **Units**: None                              |                                               |                |
        |                                              |                                               |                |
-       | **Type**: string                             |                                               |                |
+       | **Type**: str | None                         |                                               |                |
        |                                              |                                               |                |
-       | **Style**: url                               |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
        |                                              |                                               |                |
        | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`submitter.comments.time_stamp`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **submitter.comments.time_stamp**            | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Date and time of in UTC of when comment was   | 2020-02-       |
+       |                                              | made.                                         | 01T09:23:45.453|
+       | **Units**: None                              |                                               | 670+00:00      |
+       |                                              |                                               |                |
+       | **Type**: float | int | numpy.datetime64 | pa|                                               |                |
+       | ndas._libs.tslibs.timestamps.Timest          |                                               |                |
+       | amp | str |                                  |                                               |                |
+       | mt_metadata.common.mttime.MTime |            |                                               |                |
+       | None                                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: MTime                           |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`submitter.comments.value`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **submitter.comments.value**                 | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | comment string                                | failure at     |
+       |                                              |                                               | midnight.      |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | list | None                  |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: None                            |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       +----------------------------------------------+-----------------------------------------------+----------------+
+
+:navy:`submitter.name`
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. container::
+
+   .. table::
+       :class: tight-table
+       :widths: 45 45 15
+
+       +----------------------------------------------+-----------------------------------------------+----------------+
+       | **submitter.name**                           | **Description**                               | **Example**    |
+       +==============================================+===============================================+================+
+       | **Required**: :red:`True`                    | Persons name, should be full first and last   | person name    |
+       |                                              | name.                                         |                |
+       | **Units**: None                              |                                               |                |
+       |                                              |                                               |                |
+       | **Type**: str | None                         |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       |                                              |                                               |                |
+       | **Default**: ""                              |                                               |                |
        |                                              |                                               |                |
        |                                              |                                               |                |
        +----------------------------------------------+-----------------------------------------------+----------------+

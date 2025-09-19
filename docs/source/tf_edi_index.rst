@@ -13,4 +13,3 @@ EDI
     tf_edi_e_measurement
     tf_edi_h_measurement
     tf_edi_header
-    tf_edi_information

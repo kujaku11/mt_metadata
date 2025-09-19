@@ -1,0 +1,69 @@
+{
+    "title": "feature_decimation_channel",
+    "type": "object",
+    "properties": {
+        "name": {
+            "default": "",
+            "description": "Name of channel",
+            "title": "name",
+            "examples": "ex",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "frequency_max": {
+            "default": 0.0,
+            "description": "Highest frequency present in the sprectrogam data.",
+            "title": "frequency_max",
+            "examples": 77.0,
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "frequency_min": {
+            "default": 0.0,
+            "description": "Lowest frequency present in the sprectrogam data.",
+            "title": "frequency_min",
+            "examples": 99.0,
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "sample_rate_decimation_level": {
+            "default": 1.0,
+            "description": "Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
+            "title": "sample_rate_decimation_level",
+            "examples": 60,
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "sample_rate_window_step": {
+            "default": 1.0,
+            "description": "Sample rate of the windows.",
+            "title": "sample_rate_window_step",
+            "examples": 4,
+            "type": "number",
+            "alias": null,
+            "units": "samples per second"
+        },
+        "units": {
+            "default": "'counts'",
+            "description": "Units of the channel",
+            "title": "units",
+            "examples": "millivolts",
+            "type": "string",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "name",
+        "frequency_max",
+        "frequency_min",
+        "sample_rate_decimation_level",
+        "sample_rate_window_step",
+        "units"
+    ],
+    "description": "feature_decimation_channel"
+}

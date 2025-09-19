@@ -1,0 +1,65 @@
+{
+    "title": "birrp_block",
+    "type": "object",
+    "properties": {
+        "filnam": {
+            "default": "",
+            "description": "File name of data block",
+            "title": "filnam",
+            "examples": "hx.dat",
+            "type": "string",
+            "alias": null,
+            "units": null
+        },
+        "nskip": {
+            "default": null,
+            "description": "number of points to skip",
+            "title": "nskip",
+            "examples": "0",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "nread": {
+            "default": null,
+            "description": "number of points to read",
+            "title": "nread",
+            "examples": "10000",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "ncomp": {
+            "type": "integer",
+            "default": [],
+            "items": {
+                "type": "integer"
+            },
+            "description": "number of components in file",
+            "title": "ncomp",
+            "examples": "4",
+            "alias": null,
+            "units": null
+        },
+        "indices": {
+            "type": "integer",
+            "default": [],
+            "items": {
+                "type": "integer"
+            },
+            "description": "index values to use",
+            "title": "indices",
+            "examples": "[1, 2]",
+            "alias": null,
+            "units": null
+        }
+    },
+    "required": [
+        "filnam",
+        "nskip",
+        "nread",
+        "ncomp",
+        "indices"
+    ],
+    "description": "birrp_block"
+}

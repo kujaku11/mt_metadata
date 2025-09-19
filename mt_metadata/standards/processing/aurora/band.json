@@ -1,0 +1,88 @@
+{
+    "title": "band",
+    "type": "object",
+    "properties": {
+        "decimation_level": {
+            "default": null,
+            "description": "Decimation level for the band",
+            "title": "decimation_level",
+            "examples": "0",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "index_max": {
+            "default": null,
+            "description": "maximum band index",
+            "title": "index_max",
+            "examples": "10",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "index_min": {
+            "default": null,
+            "description": "minimum band index",
+            "title": "index_min",
+            "examples": "10",
+            "type": "integer",
+            "alias": null,
+            "units": null
+        },
+        "frequency_max": {
+            "default": 0.0,
+            "description": "maximum band frequency",
+            "title": "frequency_max",
+            "examples": "0.04296875",
+            "type": "number",
+            "alias": null,
+            "units": "Hertz"
+        },
+        "frequency_min": {
+            "default": 0.0,
+            "description": "minimum band frequency",
+            "title": "frequency_min",
+            "examples": "0.03515625",
+            "type": "number",
+            "alias": null,
+            "units": "Hertz"
+        },
+        "center_averaging_type": {
+            "default": "'geometric'",
+            "description": "type of average to apply when computing the band center",
+            "title": "center_averaging_type",
+            "examples": "geometric",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "arithmetic",
+                "geometric"
+            ]
+        },
+        "closed": {
+            "default": "'left'",
+            "description": "whether interval is open or closed",
+            "title": "closed",
+            "examples": "left",
+            "type": "string",
+            "alias": null,
+            "units": null,
+            "enum": [
+                "left",
+                "right",
+                "both"
+            ]
+        }
+    },
+    "required": [
+        "decimation_level",
+        "index_max",
+        "index_min",
+        "frequency_max",
+        "frequency_min",
+        "center_averaging_type",
+        "closed"
+    ],
+    "description": "band"
+}
