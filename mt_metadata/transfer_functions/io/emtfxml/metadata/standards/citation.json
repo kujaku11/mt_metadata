@@ -1,0 +1,90 @@
+{ 
+    "title": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Full title of the citation",
+        "options": [],
+        "alias": [],
+        "example": "Paper Title",
+		"default": null
+    },
+    "authors": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "author names",
+        "options": [],
+        "alias": [],
+        "example": "M.Tee A. Roura",
+		"default": null
+    },
+    "year": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "Year of citation",
+        "options": [],
+        "alias": [],
+        "example": "2020",
+		"default": null
+    },
+    "volume": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Journal volume of the citation",
+        "options": [],
+        "alias": [],
+        "example": "12",
+		"default": null
+    },
+    "pages": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Page numbers of the citation",
+        "options": [],
+        "alias": [],
+        "example": "10-15",
+		"default": null
+    },
+    "journal": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Journal title of citation",
+        "options": [],
+        "alias": [],
+        "example": "Journal of Geophysical Research",
+		"default": null
+    },
+    "doi": {
+        "type": "string",
+        "required": false,
+        "style": "url",
+        "units": null,
+        "description": "doi number of the citation",
+        "options": [],
+        "alias": [],
+        "example": "###/###",
+		"default": null
+    },
+	"survey_d_o_i": {
+        "type": "string",
+        "required": false,
+        "style": "url",
+        "units": null,
+        "description": "doi number of the survey",
+        "options": [],
+        "alias": [],
+        "example": "###/###",
+		"default": null
+    }
+}

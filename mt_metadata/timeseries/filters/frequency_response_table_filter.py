@@ -1,144 +1,159 @@
-# =====================================================
-# Imports
-# =====================================================
-from typing import Annotated
+# -*- coding: utf-8 -*-
+"""
+.. py:module:: frequency_response_table_filter
+    :synopsis: Deal with frequency look-up tables
 
+.. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
+.. codeauthor:: Karl Kappler
+
+"""
 import numpy as np
-from loguru import logger
-from pydantic import Field, field_validator, ValidationInfo
 from scipy.interpolate import interp1d
 
-from mt_metadata.base.helpers import object_to_array, requires
-from mt_metadata.timeseries.filters import FilterBase, get_base_obspy_mapping
-
+from mt_metadata.base.helpers import requires
 
 try:
     from obspy.core.inventory.response import (
-        ResponseListElement,
         ResponseListResponseStage,
+        ResponseListElement,
     )
 except ImportError:
     ResponseListResponseStage = ResponseListElement = None
 
+from mt_metadata.base import get_schema
+from mt_metadata.timeseries.filters.filter_base import FilterBase
+from mt_metadata.timeseries.filters.filter_base import get_base_obspy_mapping
+from mt_metadata.timeseries.filters.standards import SCHEMA_FN_PATHS
 
-# =====================================================
+
+# =============================================================================
+attr_dict = get_schema("filter_base", SCHEMA_FN_PATHS)
+attr_dict.add_dict(get_schema("frequency_response_table_filter", SCHEMA_FN_PATHS))
+
+# =============================================================================
 
 
 class FrequencyResponseTableFilter(FilterBase):
-    _filter_type: str = "fap"
-    type: Annotated[
-        str,
-        Field(
-            default="fap",
-            description="Type of filter.  Must be 'fap' or 'frequency amplitude table'",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["fap"],
-            },
-        ),
-    ]
-    frequencies: Annotated[
-        np.ndarray | list[float],
-        Field(
-            default_factory=lambda: np.empty(0, dtype=float),
-            description="The frequencies at which a calibration of the filter were performed.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": [
-                    '"[-0.0001., 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.001, ... 1, 2, 5, 10]"'
-                ],
-            },
-        ),
-    ]
+    """
+    Phases should be in radians.
 
-    amplitudes: Annotated[
-        np.ndarray | list[float],
-        Field(
-            default_factory=lambda: np.empty(0, dtype=float),
-            description="The amplitudes for each calibration frequency.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": [
-                    '"[1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0, 1.0, ... 1.0, 1.0, 1.0, 1.0]"'
-                ],
-            },
-        ),
-    ]
+    """
 
-    phases: Annotated[
-        np.ndarray | list[float],
-        Field(
-            default_factory=lambda: np.empty(0, dtype=float),
-            description="The phases for each calibration frequency.",
-            alias=None,
-            json_schema_extra={
-                "units": "radians",
-                "required": True,
-                "examples": [
-                    '"[-90, -90, -88, -80, -60, -30, 30, ... 50.0, 90.0, 90.0, 90.0]"'
-                ],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
+        super().__init__()
 
-    instrument_type: Annotated[
-        str,
-        Field(
-            default="",
-            description="The type of instrument the FAP table is associated with.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["fluxgate magnetometer"],
-            },
-        ),
-    ]
+        super(FilterBase, self).__init__(attr_dict=attr_dict, **kwargs)
+        self.type = "frequency response table"
 
     def make_obspy_mapping(self):
         mapping = get_base_obspy_mapping()
-        mapping["amplitudes"] = "amplitudes"
-        mapping["frequencies"] = "frequencies"
-        mapping["phases"] = "phases"
+        mapping["amplitudes"] = "_empirical_amplitudes"
+        mapping["frequencies"] = "_empirical_frequencies"
+        mapping["phases"] = "_empirical_phases"
         return mapping
 
-    @field_validator("frequencies", "amplitudes", mode="before")
-    @classmethod
-    def validate_input_arrays(cls, value, info: ValidationInfo) -> np.ndarray:
+    @property
+    def frequencies(self):
         """
-        Validate that the input is a list, tuple, or np.ndarray and convert to np.ndarray.
-        """
-        return object_to_array(value)
 
-    @field_validator("phases", mode="before")
-    @classmethod
-    def validate_phases(cls, value, info: ValidationInfo) -> np.ndarray:
-        """
-        Validate that the input is a list, tuple, or np.ndarray and convert to np.ndarray.
-        """
-        value = object_to_array(value)
-        if value.size > 0:
-            if value.max() > 1000 * np.pi / 2:
-                logger.warning(
-                    "self.phases appear to be in milli radians attempting to convert to radians"
-                )
-                return value / 1000
+        :return: calibration frequencies
+        :rtype: np.ndarray
 
-            elif np.abs(value).max() > 6 * np.pi:
-                logger.warning(
-                    "self.phases appear to be in degrees attempting to convert to radians"
-                )
-                return np.deg2rad(value)
+        """
+        return self._empirical_frequencies
 
-            else:
-                return value
-        return value
+    @frequencies.setter
+    def frequencies(self, value):
+        """
+        Set the frequencies, make sure the input is validated
+
+        Linear frequencies
+        :param value: Linear Frequencies
+        :type value: iterable
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_frequencies = np.array(value, dtype=float)
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+
+    @property
+    def amplitudes(self):
+        """
+
+        :return: calibrated amplitudes
+        :rtype: np.ndarray
+
+        """
+        return self._empirical_amplitudes
+
+    @amplitudes.setter
+    def amplitudes(self, value):
+        """
+        Set the amplitudes, make sure the input is validated
+        :param value: calibrated amplitudes
+        :type value: np.ndarray, list, tuple
+
+        """
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_amplitudes = np.array(value, dtype=float)
+
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
+
+    @property
+    def phases(self):
+        """
+        Should be in units of radians
+
+        :return: calibrated phases
+        :rtype: np.ndarray
+
+        """
+        return self._empirical_phases
+
+    @phases.setter
+    def phases(self, value):
+        """
+        Set the phases, make sure the input is validated
+
+        The units should be radians
+
+        :param value: calibrated phases
+        :type value: np.ndarray
+
+        """
+
+        if isinstance(value, (list, tuple, np.ndarray)):
+            self._empirical_phases = np.array(value, dtype=float)
+
+            if self._empirical_phases.size > 0:
+                if self._empirical_phases.mean() > 1000 * np.pi / 2:
+                    self.logger.warning(
+                        "Phases appear to be in milli radians attempting to convert to radians"
+                    )
+                    self._empirical_phases = self._empirical_phases / 1000
+
+                elif np.abs(self._empirical_phases).max() > 6 * np.pi:
+                    self.logger.warning(
+                        "Phases appear to be in degrees attempting to convert to radians"
+                    )
+                    self._empirical_phases = np.deg2rad(self._empirical_phases)
+
+        else:
+            msg = (
+                f"input values must be an list, tuple, or np.ndarray, not {type(value)}"
+            )
+            self.logger.error(msg)
+            raise TypeError(msg)
 
     @property
     def min_frequency(self):
@@ -148,11 +163,7 @@ class FrequencyResponseTableFilter(FilterBase):
         :rtype: float
 
         """
-        if self.frequencies is None:
-            return 0.0
-        elif self.frequencies.size == 0:
-            return 0.0
-        return float(self.frequencies.min())
+        return self._empirical_frequencies.min()
 
     @property
     def max_frequency(self):
@@ -162,11 +173,7 @@ class FrequencyResponseTableFilter(FilterBase):
         :rtype: float
 
         """
-        if self.frequencies is None:
-            return 0.0
-        elif self.frequencies.size == 0:
-            return 0.0
-        return float(self.frequencies.max())
+        return self._empirical_frequencies.max()
 
     @requires(obspy=(ResponseListResponseStage and ResponseListElement))
     def to_obspy(
@@ -189,7 +196,12 @@ class FrequencyResponseTableFilter(FilterBase):
 
         """
         response_elements = []
-        for f, a, p in zip(self.frequencies, self.amplitudes, self.phases):
+        # phase needs to be in degrees.
+        if np.abs(self.phases).max() < 2 * np.pi:
+            phases = np.rad2deg(self.phases)
+        else:
+            phases = self.phases
+        for f, a, p in zip(self.frequencies, self.amplitudes, phases):
             element = ResponseListElement(f, a, p)
             response_elements.append(element)
 
@@ -197,12 +209,12 @@ class FrequencyResponseTableFilter(FilterBase):
             stage_number,
             self.gain,
             normalization_frequency,
-            self.units_in_object.symbol,
-            self.units_out_object.symbol,
+            self.units_in,
+            self.units_out,
             name=self.name,
             description=self.get_filter_description(),
-            input_units_description=self.units_in_object.name,
-            output_units_description=self.units_out_object.name,
+            input_units_description=self._units_in_obj.name,
+            output_units_description=self._units_out_obj.name,
             response_list_elements=response_elements,
         )
 
@@ -220,26 +232,26 @@ class FrequencyResponseTableFilter(FilterBase):
         if np.min(frequencies) < self.min_frequency:
             # if there is a dc component skip it.
             if np.min(frequencies) != 0:
-                logger.warning(
+                self.logger.warning(
                     f"Extrapolating frequencies smaller ({np.min(frequencies)} Hz) "
                     f"than table frequencies ({self.min_frequency} Hz)."
                 )
         if np.max(frequencies) > self.max_frequency:
-            logger.warning(
+            self.logger.warning(
                 f"Extrapolating frequencies larger ({np.max(frequencies)} Hz) "
                 f"than table frequencies ({self.max_frequency} Hz)."
             )
 
         phase_response = interp1d(
             self.frequencies,
-            self.phases,
+            self._empirical_phases,
             kind=interpolation_method,
             fill_value="extrapolate",
         )
 
         amplitude_response = interp1d(
             self.frequencies,
-            self.amplitudes,
+            self._empirical_amplitudes,
             kind=interpolation_method,
             fill_value="extrapolate",
         )

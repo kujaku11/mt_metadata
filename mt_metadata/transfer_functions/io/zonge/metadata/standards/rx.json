@@ -1,0 +1,112 @@
+{
+	"gdp_stn": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Station name",
+        "options": [],
+        "alias": [],
+        "example": "24",
+		"default": null
+    },
+	"length": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Generic dipole length",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": 0
+    },
+	"h_p_r": {
+        "type": "float",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "Horizontal, pitch, roll of array",
+        "options": [],
+        "alias": [],
+        "example": "0, 0, 180",
+		"default": "0, 0, 180"
+    }	,
+	"cmp": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "processed component of impedance or tipper",
+        "options": ["zxx", "zyy", "zyx", "zxx", "txy", "tyx", "other"],
+        "alias": [],
+        "example": "zxx",
+		"default": ""
+    },
+    "center": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "center of the sounding location",
+        "options": [],
+        "alias": [],
+        "example": "335754.685:4263553.435:1650.2 m",
+		"default": ""
+    },
+    "x_y_z1": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "xyz of local station",
+        "options": [],
+        "alias": [],
+        "example": "335754.685:4263553.435:1650.2",
+		"default": ""
+    },
+    "x_y_z2": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "xyz of remote station",
+        "options": [],
+        "alias": [],
+        "example": "335754.685:4263553.435:1650.2",
+		"default": ""
+    },
+    "u_t_m1": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "UTM location of local station",
+        "options": [],
+        "alias": [],
+        "example": "335754.685:4263553.435:1650.2",
+		"default": ""
+    },
+    "a_space": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "spacing of lines",
+        "options": [],
+        "alias": [],
+        "example": "100 m",
+		"default": null
+    },
+    "s_space": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "spacing of stations along the line",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": null
+    }
+}

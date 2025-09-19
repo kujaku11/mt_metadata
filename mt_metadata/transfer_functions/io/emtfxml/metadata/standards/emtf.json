@@ -1,0 +1,61 @@
+{
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "description of what is in the file; default is magnetotelluric transfer functions",
+        "options": [],
+        "alias": [],
+        "example": "Magnetotelluric Transfer Functions",
+		"default": null
+    },
+    "product_id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "ID given as the archive ID of the station",
+        "options": [],
+        "alias": [],
+        "example": "USMTArray.NVS11.2020",
+		"default": null
+    },
+	"tags": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "tags that help describe the data",
+        "options": [],
+        "alias": [],
+        "example": "impedance, induction vectors",
+		"default": null
+    },
+    "sub_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "subject data type",
+        "options": [
+            "MT_TF",
+			"LPMT_TF",
+			"other"
+        ],
+        "alias": [],
+        "example": "MT_TF",
+		"default": "MT_TF"
+    },
+    "notes": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any notes applicable to the user on data present in the file",
+        "options": [],
+        "alias": [],
+        "example": "these are notes",
+		"default": null
+    }
+}

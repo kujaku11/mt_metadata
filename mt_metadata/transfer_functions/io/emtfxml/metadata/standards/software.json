@@ -1,0 +1,35 @@
+{
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the software used for processing",
+        "options": [],
+        "alias": [],
+        "example": "EMTF",
+		"default": null
+    },
+    "last_mod": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "Date the software was last modified",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01",
+		"default": null
+    },
+    "author": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Author of the software used for processing",
+        "options": [],
+        "alias": [],
+        "example": "MT Guru",
+		"default": null
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "end": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Ending value of a diagnostic measurement.",
+        "options": [],
+        "alias": [],
+        "example": "10",
+		"default": null
+    },
+    "start": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Starting value of a diagnostic measurement.",
+        "options": [],
+        "alias": [],
+        "example": "12.3",
+		"default": null
+    }
+}

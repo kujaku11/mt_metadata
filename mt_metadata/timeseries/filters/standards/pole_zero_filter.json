@@ -1,0 +1,35 @@
+{
+    "poles": {
+        "type": "string",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The complex-valued poles associated with the filter response.",
+        "options": [],
+        "alias": [],
+        "example": "\"[-1/4., -0.1+j*0.3, -0.1-j*0.3]\"",
+		"default": []
+    },
+    "zeros": {
+        "type": "string",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The complex-valued zeros associated with the filter response.",
+        "options": [],
+        "alias": [],
+        "example": "\"[0.0, ]\"",
+		"default": []
+    },
+    "normalization_factor": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "The scale factor to apply to the monic response.",
+        "options": [],
+        "alias": [],
+        "example": "\"[-1000.1]\"",
+		"default": 1.0
+    }
+}

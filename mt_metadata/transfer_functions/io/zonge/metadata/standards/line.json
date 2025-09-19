@@ -1,0 +1,24 @@
+{
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the line data collected on",
+        "options": [],
+        "alias": [],
+        "example": "0",
+    		"default": ""
+    },
+	"number": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Line number",
+        "options": [],
+        "alias": [],
+        "example": 0,
+    		"default": 0
+    }
+}

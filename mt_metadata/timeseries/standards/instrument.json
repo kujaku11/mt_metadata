@@ -1,0 +1,59 @@
+{
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Instrument ID number can be serial number or a designated ID.",
+        "options": [],
+        "alias": [
+            "serial"
+        ],
+        "example": "mt01",
+		"default": null
+    },
+    "manufacturer": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Who manufactured the instrument.",
+        "options": [],
+        "alias": [],
+        "example": "mt gurus",
+		"default": null
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Description of the instrument type.",
+        "options": [],
+        "alias": [],
+        "example": "broadband 32-bit",
+		"default": null
+    },
+    "model": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Model version of the instrument.",
+        "options": [],
+        "alias": [],
+        "example": "falcon5",
+		"default": null
+    },
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Standard marketing name of the instrument.",
+        "options": [],
+        "alias": [],
+        "example": "falcon5",
+		"default": null
+    }
+}

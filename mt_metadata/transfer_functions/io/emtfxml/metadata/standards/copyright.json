@@ -1,0 +1,64 @@
+{
+    "selected_publications": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any publications that use this data",
+        "options": [],
+        "alias": [],
+        "example": "my paper",
+		"default": ""
+    },
+    "release_status": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "the release status of the data",
+        "options": [
+            "Unrestricted release",
+            "Restricted release",
+            "Paper Citation Required",
+            "Academic Use Only",
+            "Conditions Apply",
+            "Data Citation Required"
+        ],
+        "alias": [],
+        "example": "Unrestricted release",
+		"default": "Unrestricted Release"
+    },
+    "conditions_of_use": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Any notes on conditions of use",
+        "options": [],
+        "alias": [],
+        "example": "Cite data upon usage.",
+		"default": "All data and metadata for this survey are available free of charge and may be copied freely, duplicated and further distributed provided this data set is cited as the reference. While the author(s) strive to provide data and metadata of best possible quality, neither the author(s) of this data set, not IRIS make any claims, promises, or guarantees about the accuracy, completeness, or adequacy of this information, and expressly disclaim liability for errors and omissions in the contents of this file. Guidelines about the quality or limitations of the data and metadata, as obtained from the author(s), are included for informational purposes only."
+    },
+	"acknowledgement": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any acknowledgments the transfer function should have.",
+        "options": [],
+        "alias": [],
+        "example": "This project was funded by x.",
+		"default": null
+    },
+	"additional_info": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any additional information about the data.",
+        "options": [],
+        "alias": [],
+        "example": "This purpose of this project is ...",
+		"default": null
+    }
+}

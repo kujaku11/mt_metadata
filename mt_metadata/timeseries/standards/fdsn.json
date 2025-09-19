@@ -1,0 +1,68 @@
+{
+    "id": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Given FDSN archive ID name.",
+        "options": [],
+        "alias": [],
+        "example": "MT001",
+		"default": null
+    },
+    "network": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Given two character FDSN archive network code.",
+        "options": [],
+        "alias": [],
+        "example": "EM",
+		"default": null
+    },
+    "channel_code": {
+        "type": "string",
+        "required": false,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Three character FDSN channel code. http://docs.fdsn.org/projects/source-identifiers/en/v1.0/channel-codes.html",
+        "options": [],
+        "alias": [],
+        "example": "LQN",
+		"default": null
+    },
+    "new_epoch": {
+        "type": "boolean",
+        "required": false,
+        "style": "name",
+        "units": null,
+        "description": "Boolean telling if a new epoch needs to be created or not.",
+        "options": [],
+        "alias": [],
+        "example": "False",
+		"default": null
+    },
+    "alternate_code": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Alternate Code",
+        "options": [],
+        "alias": [],
+        "example": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA",
+		"default": null
+    },
+    "alternate_network_code": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Alternate Network Code",
+        "options": [],
+        "alias": [],
+        "example": "_INT-NON_FDSN,.UNRESTRICTED,_US-ALL,_US-MT,_US-MT-TA",
+		"default": null
+    }
+}

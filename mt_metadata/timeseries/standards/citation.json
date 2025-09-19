@@ -1,0 +1,81 @@
+{
+    "doi": {
+        "type": "string",
+        "required": true,
+        "style": "url",
+        "units": null,
+        "description": "full url of the doi number",
+        "options": [],
+        "alias": [
+            "survey_doi"
+        ],
+        "example": "http://doi.###",
+		"default": null
+    },
+    "authors": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "author names",
+        "options": [],
+        "alias": [],
+        "example": "M.Tee A. Roura",
+		"default": null
+    },
+    "title": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Full title of the citation",
+        "options": [],
+        "alias": [],
+        "example": "Paper Title",
+		"default": null
+    },
+    "year": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "Year of citation",
+        "options": [],
+        "alias": [],
+        "example": "2020",
+		"default": null
+    },
+    "volume": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Journal volume of the citation",
+        "options": [],
+        "alias": [],
+        "example": "12",
+		"default": null
+    },
+    "pages": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Page numbers of the citation",
+        "options": [],
+        "alias": [],
+        "example": "10-15",
+		"default": null
+    },
+    "journal": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Journal title of citation",
+        "options": [],
+        "alias": [],
+        "example": "Journal of Geophysical Research",
+		"default": null
+    }
+}

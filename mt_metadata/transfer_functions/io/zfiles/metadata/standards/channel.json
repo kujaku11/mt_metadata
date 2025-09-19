@@ -1,0 +1,57 @@
+{
+    "number": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Channel number",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 0
+    },
+	"azimuth": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "channel azimuth",
+        "options": [],
+        "alias": [],
+        "example": "90",
+		"default": 0
+    },
+	"tilt": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "channel tilt relative to horizontal.",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0
+    },
+	"dl": {
+        "type": "str",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "station",
+        "options": [],
+        "alias": [],
+        "example": "mt001",
+		"default": null
+    },
+	"channel": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "channel name",
+        "options": ["ex", "ey", "hx", "hy", "hz"],
+        "alias": [],
+        "example": "hx",
+		"default": null
+    }	
+}

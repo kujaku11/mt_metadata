@@ -1,0 +1,13 @@
+{
+    "flag": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Flag for data quality",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": null
+    }
+}

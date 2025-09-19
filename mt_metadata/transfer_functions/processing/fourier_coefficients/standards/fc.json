@@ -1,0 +1,58 @@
+{
+    "decimation_levels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of decimation levels",
+        "options": [],
+        "alias": [],
+        "example": "[1, 2, 3]",
+		"default": null
+    },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "ID given to the FC group",
+        "options": [],
+        "alias": [],
+        "example": "aurora_01",
+		"default": null
+    },
+	"channels_estimated": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of channels estimated",
+        "options": [],
+        "alias": [],
+        "example": "[ex, hy]",
+		"default": null
+    },
+	"starting_sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Starting sample rate of the time series used to estimate FCs.",
+        "options": [],
+        "alias": [],
+        "example": 60,
+		"default": 1
+    },
+	"method": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Fourier transform method",
+        "options": ["fft", "wavelet", "other"],
+        "alias": [],
+        "example": "fft",
+		"default": "fft"
+    }
+	
+}

@@ -199,30 +199,3 @@ History
 * Fix EDI Tipper flip by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/228
 * Patches by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/227
 * Bump version: 0.3.7 → 0.3.8 by @kujaku11 in https://github.com/kujaku11/mt_metadata/pull/229 
-
-0.x.x ()
-----------------------
-
-* The underlying code has been refactored using Pydantic to improve performance and maintainability.
-* The metadata structure has been updated to better align with the latest standards and practices in geophysical data management.
-* The documentation has been improved to provide clearer guidance on usage and examples.
-* Tests have been update to `pytest`
-* `filtered` has been update to use a list of filters `AppliedFilter` objects and can include stage.
-* `Comments` is now an object with attributes including `value`, `author`, and `date`.
-* Moved many common class objects to folder called `common` to reduce redundancy.
-* In `timeseries.Run` use `add_channel` to add a channel if you `append`, `extend`, or `insert` a channel, then you must run `Run._update_channel` to update the metata.
-* `MetadataBase` no longer overrides `__deepcopy__` uses `model_copy(deep=True)` under the hood.
-* Cannot use len() on `Run`, `Station`, `Survey` objects, use `Run.n_channels`, `Station.n_runs`, `Survey.n_stations` instead.
-* Cannot use `__add__` in `BaseModel` objects, bad things happen, use Object method `merge(other)` instead.  
-* There are now a few `Location` objects including `BasicLocation`, `Location`, and `StationLocation`
-* moved `def get_base_obspy_mapping` to `timeseries.filters.helper_functions`
-* Units have been updated to be more compliant with SI standards.  All unit names must be singular for example volts must be `volt`. Unit validation returns the long name in lowercase. "mV/km" will be returned as "millivolt per kilometer".  There is also a `Unit` object in `mt_metadata.utils.units` that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
-* Filters type can only be a set value for the filter.  For example for an `FIRFilter` the type must be `FIR`.  The filter type is now a property of the filter object.  The filter type is not a property of the filter class.  This allows for more flexibility in the future.
-* Added ability to initiate a metadata object with a dictionary as in `Person(**kwargs)`.
-* Added `AuthorPerson` object to `mt_metadata.common` which is more in the style of the MT metadata.  You can still instantiate with `AuthorPerson(name="John Doe")` which will populate the `author` field.  However, you cannot get `name`, similarly with `Person(author="jon do")`.  
-* Changed `Filtered` to `Filters` which is a list of `AppliedFilter` objects.  The `AppliedFilter` object has attributes including `applied`, `comments`, `name`, and `stage`.  The `comments` attribute is an object with attributes including `value`, `author`, and `date`.  This allows for more flexibility in the future and better compliance with standards. It is backwards compatible with the old `Filtered` object, so you can still use it in the same way as before, but only using the `from_dict` method.
-* Added `MTime` object to `mt_metadata.common.mttime` which is a Pydantic Basemodel that can be used to access other representations of time, like ISO format, datetime, and pandas Timestamp.
-* Updated `get_now_utc` to return an `MTime` object.
-* Moved `listdict` to `mt_metadata.common.listdict` and added a `pop` method to it.
-* Moved `units` to `mt_metadata.common.units` and added a `Unit` object that is a Pydantic Basemodel that can be used to access other representations of a unit, like symbol and plot label.
-* In `features.CoherenceBaseModel` changed `station_1` and `station_2` to `station_1` and `station_2` to be more consistent with other objects.  The old attributes are still available for backwards compatibility, but will be deprecated in the future. Similar with channel, changed `ch1` and `ch2` to `channel_1` and `channel_2`.

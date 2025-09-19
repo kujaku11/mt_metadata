@@ -1,47 +1,34 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 23 21:30:36 2020
+
+:copyright: 
+    Jared Peacock (jpeacock@usgs.gov)
+
+:license: MIT
+
+"""
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
 from xml.etree import cElementTree as et
 
-from pydantic import Field
-
-from mt_metadata.base import MetadataBase
-from mt_metadata.common.enumerations import ChannelOrientationEnum
+from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
+# =============================================================================
+attr_dict = get_schema("orientation", SCHEMA_FN_PATHS)
+# =============================================================================
 
-# =====================================================
 
+class Orientation(Base):
+    __doc__ = write_lines(attr_dict)
 
-class Orientation(MetadataBase):
-    angle_to_geographic_north: Annotated[
-        float,
-        Field(
-            default=0.0,
-            description="Angle to geographic north of the station orientation",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": True,
-                "examples": [0],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
 
-    layout: Annotated[
-        ChannelOrientationEnum,
-        Field(
-            default=ChannelOrientationEnum.orthogonal,
-            description="Orientation of channels relative to each other",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["orthogonal"],
-            },
-        ),
-    ]
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):
         """
@@ -54,7 +41,9 @@ class Orientation(MetadataBase):
         """
         element_dict = {self._class_name: input_dict[self._class_name]}
         if isinstance(element_dict[self._class_name], str):
-            element_dict[self._class_name] = {"layout": element_dict[self._class_name]}
+            element_dict[self._class_name] = {
+                "layout": element_dict[self._class_name]
+            }
 
         self.from_dict(element_dict)
 
@@ -76,7 +65,9 @@ class Orientation(MetadataBase):
                 self.angle_to_geographic_north = 0.0
             root = et.Element(
                 self.__class__.__name__.capitalize(),
-                {"angle_to_geographic_north": f"{self.angle_to_geographic_north:.3f}"},
+                {
+                    "angle_to_geographic_north": f"{self.angle_to_geographic_north:.3f}"
+                },
             )
             root.text = self.layout
         else:
@@ -86,4 +77,4 @@ class Orientation(MetadataBase):
         if not string:
             return root
         else:
-            return helpers.element_to_string(root)
+            return element_to_string(root)

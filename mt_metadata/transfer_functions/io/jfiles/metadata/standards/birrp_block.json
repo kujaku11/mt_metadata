@@ -1,0 +1,57 @@
+{
+    "filnam": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "File name of data block",
+        "options": [],
+        "alias": [],
+        "example": "hx.dat",
+		"default": null
+    },
+	"nskip": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "number of points to skip",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": null
+    },
+	"nread": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "number of points to read",
+        "options": [],
+        "alias": [],
+        "example": "10000",
+		"default": null
+    },
+	"ncomp": {
+        "type": "integer",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "number of components in file",
+        "options": [],
+        "alias": [],
+        "example": "4",
+		"default": []
+    },
+	"indices": {
+        "type": "integer",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "index values to use",
+        "options": [],
+        "alias": [],
+        "example": "[1, 2]",
+		"default": null
+    }
+}

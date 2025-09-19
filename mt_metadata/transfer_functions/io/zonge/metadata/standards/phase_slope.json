@@ -1,0 +1,24 @@
+{
+    "smooth": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of smoothing for phase slope algorithm",
+        "options": ["robust", "normal", "None", "minimal"],
+        "alias": [],
+        "example": "robust",
+		"default": "None"
+    },
+	"to_z_mag": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Was hz used for smoothing for phase slope algorithm",
+        "options": ["no", "yes"],
+        "alias": [],
+        "example": "no",
+		"default": "no"
+    }	
+}

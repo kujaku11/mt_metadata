@@ -7,7 +7,7 @@
   <Network code="XX" startDate="2015-01-08T19:49:15+00:00" endDate="2016-06-01T23:59:59+00:00" restrictedStatus="open">
     <Description>Long-period and wideband EarthScope-style coverage of Florida</Description>
     <Identifier type="DOI">10.17611/DP/EMTF/USGS/GEOMAG/FL15</Identifier>
-    <Comment subject="mt.survey.acquired_by.author">
+    <Comment subject="mt.survey.acquired_by.name">
       <Value>Bedrosian, P. A.</Value>
     </Comment>
     <Comment subject="mt.survey.citation_journal.doi">
@@ -86,7 +86,7 @@
         <Name>Beachy Keen, FL, USA</Name>
       </Site>
       <Equipment resourceId="mt.run.id:a">
-        <Type>LP</Type>
+        <Type>BB, LP</Type>
         <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
         <Manufacturer>Barry Narod</Manufacturer>
         <Model>NIMS</Model>
@@ -95,7 +95,7 @@
         <RemovalDate>2015-12-31T23:59:59+00:00</RemovalDate>
       </Equipment>
       <Equipment resourceId="mt.run.id:b">
-        <Type>LP</Type>
+        <Type>BB, LP</Type>
         <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS</Description>
         <Manufacturer>Barry Narod</Manufacturer>
         <Model>NIMS</Model>

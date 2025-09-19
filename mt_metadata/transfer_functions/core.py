@@ -6,29 +6,38 @@
 .. moduleauthor:: Jared Peacock <jpeacock@usgs.gov>
 """
 
-from collections import OrderedDict
-from copy import deepcopy
-
 # ==============================================================================
 from pathlib import Path
-from typing import Any, Literal
+from copy import deepcopy
+from collections import OrderedDict
 
 import numpy as np
 import xarray as xr
+
 from loguru import logger
-from typing_extensions import Self
 
-from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
+from mt_metadata.timeseries import Survey as TSSurvey
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
+from mt_metadata.transfer_functions.io import (
+    EDI,
+    EMTFXML,
+    ZMM,
+    JFile,
+    ZongeMTAvg,
+)
+from mt_metadata.transfer_functions.io.zfiles.metadata import (
+    Channel as ZChannel,
+)
 from mt_metadata.base.helpers import validate_name
-from mt_metadata.common.list_dict import ListDict
-from mt_metadata.timeseries import Electric, Magnetic, Run
-from mt_metadata.timeseries import Station as TSStation
-from mt_metadata.timeseries import Survey
-from mt_metadata.transfer_functions.io import EDI, EMTFXML, JFile, ZMM, ZongeMTAvg
-from mt_metadata.transfer_functions.io.zfiles.metadata import Channel as ZChannel
-from mt_metadata.transfer_functions.tf import Station
-
-
+from mt_metadata.utils.list_dict import ListDict
+from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
+from typing import Optional
 # =============================================================================
 
 
@@ -48,7 +57,9 @@ class TF:
 
     """
 
-    def __init__(self, fn: str | Path | None = None, **kwargs):
+    def __init__(self, fn=None, **kwargs):
+        self.logger = logger
+
         # set metadata for the station
         self._survey_metadata = self._initialize_metadata()
         self.channel_nomenclature = DEFAULT_CHANNEL_NOMENCLATURE
@@ -88,7 +99,9 @@ class TF:
         tf_set = False
         try:
             period = kwargs.pop("period")
-            self._transfer_function = self._initialize_transfer_function(periods=period)
+            self._transfer_function = self._initialize_transfer_function(
+                periods=period
+            )
             tf_set = True
         except KeyError:
             try:
@@ -99,6 +112,7 @@ class TF:
                 tf_set = True
             except KeyError:
                 pass
+            pass
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -109,19 +123,23 @@ class TF:
         self.fn = fn
 
     @property
-    def inverse_channel_nomenclature(self) -> dict[str, str]:
+    def inverse_channel_nomenclature(self):
         if not self._inverse_channel_nomenclature:
             self._inverse_channel_nomenclature = {
                 v: k for k, v in self.channel_nomenclature.items()
             }
         return self._inverse_channel_nomenclature
 
-    def __str__(self) -> str:
+    def __str__(self):
         lines = [f"Station: {self.station}", "-" * 50]
         lines.append(f"\tSurvey:            {self.survey_metadata.id}")
         lines.append(f"\tProject:           {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:       {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date:     {self.station_metadata.time_period.start}")
+        lines.append(
+            f"\tAcquired by:       {self.station_metadata.acquired_by.author}"
+        )
+        lines.append(
+            f"\tAcquired date:     {self.station_metadata.time_period.start_date}"
+        )
         lines.append(f"\tLatitude:          {self.latitude:.3f}")
         lines.append(f"\tLongitude:         {self.longitude:.3f}")
         lines.append(f"\tElevation:         {self.elevation:.3f}")
@@ -151,7 +169,7 @@ class TF:
             lines.append(f"\t\tMax:   {1./self.period.min():.5E} Hz")
         return "\n".join(lines)
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         lines = []
         lines.append(f"survey='{self.survey}'")
         lines.append(f"station='{self.station}'")
@@ -161,46 +179,33 @@ class TF:
 
         return f"TF( {(', ').join(lines)} )"
 
-    def __eq__(self, other: object) -> bool:
-        """
-        Check if two TF objects are equal.
-
-        Parameters
-        ----------
-        other: object
-            Another object to compare with
-
-        Returns
-        -------
-        bool
-            True if equal, False otherwise
-        """
+    def __eq__(self, other, ignore_station_metadata_keys: Optional[list] = None):
         is_equal = True
         if not isinstance(other, TF):
-            logger.info(f"Comparing object is not TF, type {type(other)}")
+            self.logger.info(f"Comparing object is not TF, type {type(other)}")
             is_equal = False
-        if self.station_metadata != other.station_metadata:
-            logger.info("Station metadata is not equal")
+        if not self.station_metadata.__eq__(other.station_metadata, ignore_keys=ignore_station_metadata_keys):
+            self.logger.info("Station metadata is not equal")
             is_equal = False
         if self.survey_metadata != other.survey_metadata:
-            logger.info("Survey Metadata is not equal")
+            self.logger.info("Survey Metadata is not equal")
             is_equal = False
         if self.has_transfer_function() and other.has_transfer_function():
             if not self.transfer_function.equals(other.transfer_function):
-                logger.info("TF is not equal")
+                self.logger.info("TF is not equal")
                 is_equal = False
-        elif not self.has_transfer_function() and not other.has_transfer_function():
+        elif (
+            not self.has_transfer_function()
+            and not other.has_transfer_function()
+        ):
             pass
         else:
-            logger.info("TF is not equal")
+            self.logger.info("TF is not equal")
             is_equal = False
 
         return is_equal
 
-    def __ne__(self, other: object) -> bool:
-        return not self.__eq__(other)
-
-    def __deepcopy__(self, memo: dict[int, Any]) -> Self:
+    def __deepcopy__(self, memo):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
@@ -209,36 +214,18 @@ class TF:
                 continue
 
             setattr(result, k, deepcopy(v, memo))
+        result.logger = logger
         return result
 
-    def copy(self) -> Self:
-        """
-        Create a deep copy of the current object.
-
-        Returns
-        -------
-        Self
-            A deep copy of the current object.
-        """
+    def copy(self):
         return deepcopy(self)
 
     def _add_channels(
-        self, run_metadata: Run, default: list[str] = ["ex", "ey", "hx", "hy", "hz"]
-    ) -> Run:
+        self, run_metadata, default=["ex", "ey", "hx", "hy", "hz"]
+    ):
         """
-        Add channels to a run.
+        add channels to a run
 
-        Parameters
-        ----------
-        run_metadata: Run
-            The run metadata to add channels to.
-        default: list[str], optional
-            The default list of channels to add.
-
-        Returns
-        -------
-        Run
-            The updated run metadata.
         """
         for ch in [cc for cc in default if cc.startswith("e")]:
             run_metadata.add_channel(Electric(component=ch))
@@ -247,11 +234,14 @@ class TF:
 
         return run_metadata
 
-    def _initialize_metadata(self) -> Survey:
+    def _initialize_metadata(self):
         """
         Create a single `Survey` object to store all metadata
 
-        This will include all stations and runs.
+        :param channel_type: DESCRIPTION
+        :type channel_type: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
@@ -263,19 +253,9 @@ class TF:
 
         return survey_metadata
 
-    def _validate_run_metadata(self, run_metadata: Run) -> Run:
+    def _validate_run_metadata(self, run_metadata):
         """
-        Validate run metadata.
-
-        Parameters
-        ----------
-        run_metadata: Run
-            The run metadata to validate.
-
-        Returns
-        -------
-        Run
-            The validated run metadata.
+        validate run metadata
 
         """
 
@@ -285,99 +265,85 @@ class TF:
                     run_metadata = {"Run": run_metadata}
                 r_metadata = Run()
                 r_metadata.from_dict(run_metadata)
-                logger.debug("Loading from metadata dict")
+                self.logger.debug("Loading from metadata dict")
                 return r_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.run_metadata)} "
                     f"or dict, not {type(run_metadata)}"
                 )
-                logger.error(msg)
+                self.logger.error(msg)
                 raise TypeError(msg)
         return run_metadata
 
-    def _validate_station_metadata(self, station_metadata: Station) -> Station:
+    def _validate_station_metadata(self, station_metadata):
         """
-        Validate station metadata.
-
-        Parameters
-        ----------
-        station_metadata: Station
-            The station metadata to validate.
-
-        Returns
-        -------
-        Station
-            The validated station metadata.
-
+        validate station metadata
         """
 
         if not isinstance(station_metadata, Station):
             if isinstance(station_metadata, dict):
-                if "station" not in [cc.lower() for cc in station_metadata.keys()]:
+                if "station" not in [
+                    cc.lower() for cc in station_metadata.keys()
+                ]:
                     station_metadata = {"Station": station_metadata}
                 st_metadata = Station()
                 st_metadata.from_dict(station_metadata)
-                logger.debug("Loading from metadata dict")
+                self.logger.debug("Loading from metadata dict")
                 return st_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.station_metadata)}"
                     f" or dict, not {type(station_metadata)}"
                 )
-                logger.error(msg)
+                self.logger.error(msg)
                 raise TypeError(msg)
         return station_metadata
 
-    def _validate_survey_metadata(self, survey_metadata: Survey) -> Survey:
+    def _validate_survey_metadata(self, survey_metadata):
         """
-        Validate survey metadata.
-
-        Parameters
-        ----------
-        survey_metadata: Survey
-            The survey metadata to validate.
-
-        Returns
-        -------
-        Survey
-            The validated survey metadata.
+        validate station metadata
         """
 
         if not isinstance(survey_metadata, Survey):
-            if isinstance(survey_metadata, dict):
-                if "survey" not in [cc.lower() for cc in survey_metadata.keys()]:
+            if isinstance(survey_metadata, TSSurvey):
+                sm = Survey()
+                sm.from_dict(survey_metadata.to_dict())
+                sm.stations = survey_metadata.stations
+                survey_metadata = sm
+
+            elif isinstance(survey_metadata, dict):
+                if "survey" not in [
+                    cc.lower() for cc in survey_metadata.keys()
+                ]:
                     survey_metadata = {"Survey": survey_metadata}
                 sv_metadata = Survey()
                 sv_metadata.from_dict(survey_metadata)
-                logger.debug("Loading from metadata dict")
+                self.logger.debug("Loading from metadata dict")
                 return sv_metadata
             else:
                 msg = (
                     f"input metadata must be type {type(self.survey_metadata)}"
                     f" or dict, not {type(survey_metadata)}"
                 )
-                logger.error(msg)
+                self.logger.error(msg)
                 raise TypeError(msg)
         return survey_metadata
 
     ### Properties ------------------------------------------------------------
     @property
-    def survey_metadata(self) -> Survey:
+    def survey_metadata(self):
         """
-        Survey metadata.
+        survey metadata
         """
         return self._survey_metadata
 
     @survey_metadata.setter
-    def survey_metadata(self, survey_metadata: Survey) -> None:
+    def survey_metadata(self, survey_metadata):
         """
-        Set survey metadata.
 
-        Parameters
-        ----------
-        survey_metadata: Survey
-            The survey metadata object or dictionary to set.
+        :param survey_metadata: survey metadata object or dictionary
+        :type survey_metadata: :class:`mt_metadata.timeseries.Survey` or dict
 
         """
 
@@ -395,22 +361,17 @@ class TF:
             self._survey_metadata.update_time_period()
 
     @property
-    def station_metadata(self) -> Station:
+    def station_metadata(self):
         """
-        Station metadata from survey_metadata.stations[0]
+        station metadata
         """
 
         return self.survey_metadata.stations[0]
 
     @station_metadata.setter
-    def station_metadata(self, station_metadata: Station | None = None) -> None:
+    def station_metadata(self, station_metadata):
         """
-        Set station metadata from a valid input.
-
-        Parameters
-        ----------
-        station_metadata: Station | None
-            The station metadata object or dictionary to set.
+        set station metadata from a valid input
         """
 
         if station_metadata is not None:
@@ -434,22 +395,17 @@ class TF:
             self._survey_metadata.update_time_period()
 
     @property
-    def run_metadata(self) -> Run:
+    def run_metadata(self):
         """
-        Run metadata from survey_metadata.stations[0].runs[0]
+        station metadata
         """
 
         return self.survey_metadata.stations[0].runs[0]
 
     @run_metadata.setter
-    def run_metadata(self, run_metadata: Run | None = None) -> None:
+    def run_metadata(self, run_metadata):
         """
-        Set run metadata from a valid input.
-
-        Parameters
-        ----------
-        run_metadata: Run | None
-            The run metadata object or dictionary to set.
+        set run metadata from a valid input
         """
 
         # need to make sure the first index is the desired channel
@@ -464,12 +420,16 @@ class TF:
 
                 channels.append(self.station_metadata.runs[0].channels[key])
                 # add existing channels
-                channels.extend(self.run_metadata.channels, skip_keys=[key, "0"])
+                channels.extend(
+                    self.run_metadata.channels, skip_keys=[key, "0"]
+                )
             # add channels from input metadata
             channels.extend(run_metadata.channels)
 
             runs[0].channels = channels
-            runs.extend(self.station_metadata.runs, skip_keys=[run_metadata.id, "0"])
+            runs.extend(
+                self.station_metadata.runs, skip_keys=[run_metadata.id, "0"]
+            )
 
             self._survey_metadata.stations[0].runs = runs
 
@@ -559,24 +519,13 @@ class TF:
     # Properties
     # ==========================================================================
     @property
-    def channel_nomenclature(self) -> dict:
-        """Channel nomenclature dictionary keyed by channel names.
-
-        For example:
-
-        {'ex': 'ex', 'ey': 'ey', 'hx': 'hx', 'hy': 'hy', 'hz': 'hz'}
-        """
+    def channel_nomenclature(self):
         return self._channel_nomenclature
 
     @channel_nomenclature.setter
-    def channel_nomenclature(self, ch_dict: dict) -> None:
+    def channel_nomenclature(self, ch_dict):
         """
-        Set the channel nomenclature dictionary.
-
-        Parameters
-        ----------
-        ch_dict : dict
-            A dictionary containing channel names and their corresponding labels.
+        channel dictionary
         """
 
         if not isinstance(ch_dict, dict):
@@ -597,7 +546,7 @@ class TF:
         self.ex_ey_hz = [self.ex, self.ey, self.hz]
 
     @property
-    def _ch_input_dict(self) -> dict:
+    def _ch_input_dict(self):
         return {
             "impedance": self.hx_hy,
             "tipper": self.hx_hy,
@@ -613,7 +562,7 @@ class TF:
         }
 
     @property
-    def _ch_output_dict(self) -> dict:
+    def _ch_output_dict(self):
         return {
             "impedance": self.ex_ey,
             "tipper": [self.hz],
@@ -629,43 +578,37 @@ class TF:
         }
 
     @property
-    def index_zxx(self) -> dict:
+    def index_zxx(self):
         return {"input": self.hx, "output": self.ex}
 
     @property
-    def index_zxy(self) -> dict:
+    def index_zxy(self):
         return {"input": self.hy, "output": self.ex}
 
     @property
-    def index_zyx(self) -> dict:
+    def index_zyx(self):
         return {"input": self.hx, "output": self.ey}
 
     @property
-    def index_zyy(self) -> dict:
+    def index_zyy(self):
         return {"input": self.hy, "output": self.ey}
 
     @property
-    def index_tzx(self) -> dict:
+    def index_tzx(self):
         return {"input": self.hx, "output": self.hz}
 
     @property
-    def index_tzy(self) -> dict:
+    def index_tzy(self):
         return {"input": self.hy, "output": self.hz}
 
     @property
-    def fn(self) -> Path:
+    def fn(self):
         """reference to original data file"""
         return self._fn
 
     @fn.setter
-    def fn(self, value: Path | str | None) -> None:
-        """set file name
-
-        Parameters
-        ----------
-        value : Path | str | None
-            The file name to set.
-        """
+    def fn(self, value):
+        """set file name"""
         if value is None:
             self._fn = None
             return
@@ -673,12 +616,12 @@ class TF:
         self.save_dir = self._fn.parent
 
     @property
-    def latitude(self) -> float:
+    def latitude(self):
         """Latitude"""
         return self.station_metadata.location.latitude
 
     @latitude.setter
-    def latitude(self, latitude: float) -> None:
+    def latitude(self, latitude):
         """
         set latitude making sure the input is in decimal degrees
 
@@ -687,12 +630,12 @@ class TF:
         self.station_metadata.location.latitude = latitude
 
     @property
-    def longitude(self) -> float:
+    def longitude(self):
         """Longitude"""
         return self.station_metadata.location.longitude
 
     @longitude.setter
-    def longitude(self, longitude: float) -> None:
+    def longitude(self, longitude):
         """
         set longitude making sure the input is in decimal degrees
 
@@ -701,12 +644,12 @@ class TF:
         self.station_metadata.location.longitude = longitude
 
     @property
-    def elevation(self) -> float:
+    def elevation(self):
         """Elevation"""
         return self.station_metadata.location.elevation
 
     @elevation.setter
-    def elevation(self, elevation: float) -> None:
+    def elevation(self, elevation):
         """
         set elevation, should be input as meters
         """
@@ -714,14 +657,13 @@ class TF:
         self.station_metadata.location.elevation = elevation
 
     @property
-    def dataset(self) -> xr.Dataset:
+    def dataset(self):
         """
         This will return an xarray dataset with proper metadata
 
-        Returns
-        -------
-        xr.Dataset
-            The xarray dataset with metadata.
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
 
         for key, mkey in self._dataset_attr_dict.items():
@@ -731,18 +673,13 @@ class TF:
             self._transfer_function.attrs[key] = value
         return self._transfer_function
 
-    def _validate_input_ndarray(
-        self, ndarray: np.ndarray, atype: str = "impedance"
-    ) -> None:
+    def _validate_input_ndarray(self, ndarray, atype="impedance"):
         """
         Validate the input based on array type and component
-
-        Parameters
-        ----------
-        ndarray : np.ndarray
-            The input array to validate.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param atype: DESCRIPTION, defaults to "impedance"
+        :type atype: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         shape_dict = {
@@ -766,28 +703,26 @@ class TF:
                 f"{atype} must be have shape (n_periods, {shape[0]}, "
                 f"{shape[1]}), not {ndarray.shape}"
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
         if ndarray.shape[0] != self.period.size:
             msg = (
                 f"New {atype} shape {ndarray.shape} not same as old {shape}, "
                 "suggest creating a new instance."
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
 
-    def _validate_input_dataarray(
-        self, da: xr.DataArray, atype: str = "impedance"
-    ) -> xr.DataArray:
+    def _validate_input_dataarray(self, da, atype="impedance"):
         """
         Validate an input data array
 
-        Parameters
-        ----------
-        da : xr.DataArray
-            The input data array to validate.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param da: DESCRIPTION
+        :type da: TYPE
+        :param atype: DESCRIPTION, defaults to "impedance"
+        :type atype: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
@@ -797,7 +732,7 @@ class TF:
         # should test for shape
         if "period" not in da.coords.keys() or "input" not in da.coords.keys():
             msg = f"Coordinates must be period, output, input, not {list(da.coords.keys())}"
-            logger.error(
+            self.logger.error(
                 msg,
             )
             raise TFError(msg)
@@ -806,14 +741,14 @@ class TF:
                 f"Output dimensions must be {ch_out} not "
                 f"{da.coords['output'].data.tolist()}"
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
         if sorted(ch_in) != sorted(da.coords["input"].data.tolist()):
             msg = (
                 f"Input dimensions must be {ch_in} not "
                 f"{da.coords['input'].data.tolist()}"
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
         # need to reorder the data array to the expected coordinates
         da = da.reindex(output=ch_out, input=ch_in)
@@ -824,28 +759,29 @@ class TF:
             and not self.has_tipper()
             and not self.has_impedance()
         ):
-            self._transfer_function = self._initialize_transfer_function(da.period)
+            self._transfer_function = self._initialize_transfer_function(
+                da.period
+            )
             return da
         elif (
-            self._transfer_function.transfer_function.data.shape[0] == da.data.shape[0]
+            self._transfer_function.transfer_function.data.shape[0]
+            == da.data.shape[0]
         ):
             return da
         else:
             msg = "Reassigning with a different shape is dangerous.  Should re-initialize transfer_function or make a new instance of TF"
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
 
-    def _set_data_array(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None, atype: str
-    ) -> None:
+    def _set_data_array(self, value, atype):
         """
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :param atype: DESCRIPTION
+        :type atype: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if value is None:
@@ -885,18 +821,16 @@ class TF:
                 f"Data type {type(value)} not supported use a numpy "
                 "array or xarray.DataArray"
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
 
-    def has_transfer_function(self) -> bool:
+    def has_transfer_function(self):
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        Returns
-        -------
-        bool
-            True if the transfer function is not 0 and has components, False otherwise.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         outputs = self._transfer_function.transfer_function.coords[
@@ -917,13 +851,11 @@ class TF:
         return False
 
     @property
-    def transfer_function(self) -> xr.DataArray | None:
+    def transfer_function(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The transfer function data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_transfer_function():
@@ -938,28 +870,24 @@ class TF:
             return ds
 
     @transfer_function.setter
-    def transfer_function(self, value: xr.DataArray | np.ndarray | list | tuple | None):
+    def transfer_function(self, value):
         """
         Set the impedance from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._set_data_array(value, "tf")
 
     @property
-    def transfer_function_error(self) -> xr.DataArray | None:
+    def transfer_function_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The transfer function error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_transfer_function():
@@ -974,29 +902,24 @@ class TF:
             return ds
 
     @transfer_function_error.setter
-    def transfer_function_error(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def transfer_function_error(self, value):
         """
         Set the impedance from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         self._set_data_array(value, "tf_error")
 
     @property
-    def transfer_function_model_error(self) -> xr.DataArray | None:
+    def transfer_function_model_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The transfer function model error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_transfer_function():
@@ -1011,30 +934,25 @@ class TF:
             return ds
 
     @transfer_function_model_error.setter
-    def transfer_function_model_error(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def transfer_function_model_error(self, value):
         """
         Set the impedance from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
-        atype : str
-            The type of the array (e.g. "impedance", "tipper").
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         self._set_data_array(value, "tf_model_error")
 
-    def has_impedance(self) -> bool:
+    def has_impedance(self):
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        Returns
-        -------
-        bool
-            True if the transfer function has impedance components, False otherwise.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         outputs = self._transfer_function.transfer_function.coords[
@@ -1055,13 +973,12 @@ class TF:
         return False
 
     @property
-    def impedance(self) -> xr.DataArray | None:
+    def impedance(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The impedance data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         if self.has_impedance():
             z = self.dataset.transfer_function.loc[
@@ -1079,25 +996,24 @@ class TF:
             return z
 
     @impedance.setter
-    def impedance(self, value: xr.DataArray | np.ndarray | list | tuple | None):
+    def impedance(self, value):
         """
         Set the impedance from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         self._set_data_array(value, "impedance")
 
     @property
-    def impedance_error(self) -> xr.DataArray | None:
+    def impedance_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The impedance error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_impedance():
@@ -1117,25 +1033,24 @@ class TF:
             return z_err
 
     @impedance_error.setter
-    def impedance_error(self, value: xr.DataArray | np.ndarray | list | tuple | None):
+    def impedance_error(self, value):
         """
         Set the impedance from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         self._set_data_array(value, "impedance_error")
 
     @property
-    def impedance_model_error(self) -> xr.DataArray | None:
+    def impedance_model_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The impedance model error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_impedance():
@@ -1155,28 +1070,26 @@ class TF:
             return z_err
 
     @impedance_model_error.setter
-    def impedance_model_error(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def impedance_model_error(self, value):
         """
         Set the impedance model errors from values
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         self._set_data_array(value, "impedance_model_error")
 
-    def has_tipper(self) -> bool:
+    def has_tipper(self):
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        Returns
-        -------
-        bool
-            True if the transfer function has tipper components, False otherwise.
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
         outputs = self._transfer_function.transfer_function.coords[
             "output"
@@ -1198,13 +1111,11 @@ class TF:
         return False
 
     @property
-    def tipper(self) -> xr.DataArray | None:
+    def tipper(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The tipper data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_tipper():
@@ -1224,28 +1135,25 @@ class TF:
             return t
 
     @tipper.setter
-    def tipper(self, value: xr.DataArray | np.ndarray | list | tuple | None):
+    def tipper(self, value):
         """
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
-        """
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
+        """
         self._set_data_array(value, "tipper")
 
     @property
-    def tipper_error(self) -> xr.DataArray | None:
+    def tipper_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The tipper error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
-
         if self.has_tipper():
             t = self.dataset.transfer_function_error.loc[
                 dict(
@@ -1262,25 +1170,23 @@ class TF:
             return t
 
     @tipper_error.setter
-    def tipper_error(self, value: xr.DataArray | np.ndarray | list | tuple | None):
+    def tipper_error(self, value):
         """
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._set_data_array(value, "tipper_error")
 
     @property
-    def tipper_model_error(self) -> xr.DataArray | None:
+    def tipper_model_error(self):
         """
 
-        Returns
-        -------
-        xr.DataArray | None
-            The tipper model error data array or None if not set.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         if self.has_tipper():
@@ -1299,28 +1205,24 @@ class TF:
             return t
 
     @tipper_model_error.setter
-    def tipper_model_error(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def tipper_model_error(self, value):
         """
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._set_data_array(value, "tipper_model_error")
 
-    def has_inverse_signal_power(self) -> bool:
+    def has_inverse_signal_power(self):
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        Returns
-        -------
-        bool
-            True if the inverse signal power is set and not zero, False otherwise.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
@@ -1337,15 +1239,7 @@ class TF:
         return True
 
     @property
-    def inverse_signal_power(self) -> xr.DataArray | None:
-        """
-        Get the inverse signal power data array.
-
-        Returns
-        -------
-        xr.DataArray | None
-            The inverse signal power data array or None if not set.
-        """
+    def inverse_signal_power(self):
         if self.has_inverse_signal_power():
             ds = self.dataset.inverse_signal_power.loc[
                 dict(
@@ -1362,31 +1256,28 @@ class TF:
         return None
 
     @inverse_signal_power.setter
-    def inverse_signal_power(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def inverse_signal_power(self, value):
         """
         Set the inverse signal power
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._set_data_array(value, "isp")
         if self.has_residual_covariance():
             self._compute_error_from_covariance()
 
-    def has_residual_covariance(self) -> bool:
+    def has_residual_covariance(self):
         """
         Check to see if the transfer function is not 0 and has
         transfer function components
 
-        Returns
-        -------
-        bool
-            True if the residual covariance is set and not zero, False otherwise.
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
@@ -1403,15 +1294,7 @@ class TF:
         return True
 
     @property
-    def residual_covariance(self) -> xr.DataArray | None:
-        """
-        Get the residual covariance data array.
-
-        Returns
-        -------
-        xr.DataArray | None
-            The residual covariance data array or None if not set.
-        """
+    def residual_covariance(self):
         if self.has_residual_covariance():
             ds = self.dataset.residual_covariance.loc[
                 dict(
@@ -1428,29 +1311,30 @@ class TF:
         return None
 
     @residual_covariance.setter
-    def residual_covariance(
-        self, value: xr.DataArray | np.ndarray | list | tuple | None
-    ):
+    def residual_covariance(self, value):
         """
         Set the residual covariance
 
-        Parameters
-        ----------
-        value : xr.DataArray | np.ndarray | list | tuple | None
-            The data array to set.
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._set_data_array(value, "res")
         if self.has_inverse_signal_power():
             self._compute_error_from_covariance()
 
-    def _compute_impedance_error_from_covariance(self) -> None:
+    def _compute_impedance_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
 
         This will become important when writing edi files.
 
         Translated from code written by Ben Murphy.
+
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         sigma_e = self.residual_covariance.loc[
@@ -1463,19 +1347,27 @@ class TF:
         z_err = np.zeros((self.period.size, 2, 2), dtype=float)
         z_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ex], output=[self.ex])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
         z_err[:, 1, 0] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         z_err[:, 1, 1] = np.abs(
             sigma_e.loc[dict(input=[self.ey], output=[self.ey])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         z_err = np.sqrt(np.abs(z_err))
@@ -1484,7 +1376,7 @@ class TF:
             dict(input=self.hx_hy, output=self.ex_ey)
         ] = z_err
 
-    def _compute_tipper_error_from_covariance(self) -> None:
+    def _compute_tipper_error_from_covariance(self):
         """
         Compute transfer function errors from covariance matrices
 
@@ -1492,8 +1384,13 @@ class TF:
 
         Translated from code written by Ben Murphy.
 
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
-        sigma_e = self.residual_covariance.loc[dict(input=[self.hz], output=[self.hz])]
+        sigma_e = self.residual_covariance.loc[
+            dict(input=[self.hz], output=[self.hz])
+        ]
         sigma_s = self.inverse_signal_power.loc[
             dict(input=self.hx_hy, output=self.hx_hy)
         ]
@@ -1501,11 +1398,15 @@ class TF:
         t_err = np.zeros((self.period.size, 1, 2), dtype=float)
         t_err[:, 0, 0] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hx], output=[self.hx])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hx], output=[self.hx])
+            ].data.flatten()
         )
         t_err[:, 0, 1] = np.abs(
             sigma_e.loc[dict(input=[self.hz], output=[self.hz])].data.flatten()
-            * sigma_s.loc[dict(input=[self.hy], output=[self.hy])].data.flatten()
+            * sigma_s.loc[
+                dict(input=[self.hy], output=[self.hy])
+            ].data.flatten()
         )
 
         t_err = np.sqrt(np.abs(t_err))
@@ -1514,34 +1415,23 @@ class TF:
             dict(input=self.hx_hy, output=[self.hz])
         ] = t_err
 
-    def _compute_error_from_covariance(self) -> None:
+    def _compute_error_from_covariance(self):
         """
         convenience method to compute errors from covariance
+
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
         self._compute_impedance_error_from_covariance()
         self._compute_tipper_error_from_covariance()
 
     @property
-    def period(self) -> np.ndarray | None:
-        """Periods of the transfer function"""
+    def period(self):
         return self.dataset.period.data
 
     @period.setter
-    def period(self, value: np.ndarray | None):
-        """
-        Set the periods of the transfer function.
-
-        Parameters
-        ----------
-        value : np.ndarray | None
-            The new periods for the transfer function.
-
-        Raises
-        ------
-        TFError
-            If the new periods are not compatible with the existing ones.
-        """
+    def period(self, value):
         if self.period is not None:
             if len(self.period) == 1 and (self.period == np.array([1])).all():
                 self._transfer_function = self._initialize_transfer_function(
@@ -1553,32 +1443,33 @@ class TF:
                     f"old ones {self.period.size}, suggest creating a new "
                     "instance of TF."
                 )
-                logger.error(msg)
+                self.logger.error(msg)
                 raise TFError(msg)
             elif not (self.period == value).all():
                 self.dataset["period"] = value
         else:
-            self._transfer_function = self._initialize_transfer_function(periods=value)
+            self._transfer_function = self._initialize_transfer_function(
+                periods=value
+            )
         return
 
     @property
-    def frequency(self) -> np.ndarray | None:
+    def frequency(self):
         if self.period is not None:
             return 1.0 / self.period
         return None
 
     @frequency.setter
-    def frequency(self, value: np.ndarray | None):
-        if value is not None:
-            self.period = 1.0 / value
+    def frequency(self, value):
+        self.period = 1.0 / value
 
     @property
-    def station(self) -> str:
+    def station(self):
         """station name"""
         return self.station_metadata.id
 
     @station.setter
-    def station(self, station_name: str):
+    def station(self, station_name):
         """
         set station name
         """
@@ -1589,14 +1480,14 @@ class TF:
             self.station_metadata.runs.append(r)
 
     @property
-    def survey(self) -> str:
+    def survey(self):
         """
         Survey ID
         """
         return self.survey_metadata.id
 
     @survey.setter
-    def survey(self, survey_id: str):
+    def survey(self, survey_id):
         """
         set survey id
         """
@@ -1605,33 +1496,35 @@ class TF:
         self.survey_metadata.id = validate_name(survey_id)
 
     @property
-    def tf_id(self) -> str:
+    def tf_id(self):
         """transfer function id"""
         return self.station_metadata.transfer_function.id
 
     @tf_id.setter
-    def tf_id(self, value: str):
+    def tf_id(self, value):
         """set transfer function id"""
         self.station_metadata.transfer_function.id = validate_name(value)
 
-    def to_ts_station_metadata(self) -> TSStation:
+    def to_ts_station_metadata(self):
         """
         need a convinience function to translate to ts station metadata
         for MTH5
 
         """
 
-        ts_station_metadata = TSStation()  # type: ignore
+        from mt_metadata.timeseries import Station as TSStation
+
+        ts_station_metadata = TSStation()
         for key, value in self.station_metadata.to_dict(single=True).items():
             if "transfer_function" in key:
                 continue
             try:
-                ts_station_metadata.update_attribute(key, value)
+                ts_station_metadata.set_attr_from_name(key, value)
             except AttributeError:
-                logger.debug(f"Attribute {key} could not be set.")
+                self.logger.debug(f"Attribute {key} could not be set.")
         return ts_station_metadata
 
-    def from_ts_station_metadata(self, ts_station_metadata: TSStation):
+    def from_ts_station_metadata(self, ts_station_metadata):
         """
         need a convinience function to translate to ts station metadata
         for MTH5
@@ -1640,17 +1533,11 @@ class TF:
 
         for key, value in ts_station_metadata.to_dict(single=True).items():
             try:
-                self.station_metadata.update_attribute(key, value)
+                self.station_metadata.set_attr_from_name(key, value)
             except AttributeError:
                 continue
 
-    def merge(
-        self,
-        other: "TF",
-        period_min: float | None = None,
-        period_max: float | None = None,
-        inplace: bool = False,
-    ) -> "TF | None":
+    def merge(self, other, period_min=None, period_max=None, inplace=False):
         """
         metadata will be assumed to be from self.
 
@@ -1672,68 +1559,51 @@ class TF:
         [{"tf": tf_01, "period_min": .01, "period_max": 100},
          {"tf": tf_02, "period_min": 100.1, "period_max": 1000}]
 
-        Parameters
-        ----------
-        other: TF, list of dicts, list of TF objects, dict
-            other transfer functions to merge with
-        period_min: float
-            minimum period for the original TF
-        period_max: float
-            maximum period for the original TF
-        inplace: bool
-            whether to modify the original TF or return a new one
-
-        Returns
-        -------
-        TF | None
-            merged transfer function or None if inplace=True
-
+        :param other: other transfer functions to merge with
+        :type other: TF, list of dicts, list of TF objects, dict
+        :param period_min: minimum period for the original TF
+        :type period_min: float
+        :param period_max: maximum period for the original TF
+        :type period_max: float
+        :return: merged TF object with metadata equal to the original
+         (if inplace=False)
+        :rtype: TF
 
         """
 
-        def get_slice_dict(period_min: float, period_max: float) -> dict[str, slice]:
+        def get_slice_dict(period_min, period_max):
             """
             Get an the correct dictionary for slicing an xarray.
 
-            Parameters
-            ----------
-            period_min: float
-                minimum period
-            period_max: float
-                maximum period
-
-            Returns
-            -------
-            dict[str, slice]
-                variable to slice an xarray
+            :param period_min: minimum period
+            :type period_min: float
+            :param period_max: maximum period
+            :type period_max: float
+            :return: variable to slice an xarray
+            :rtype: dict
 
             """
             return {"period": slice(period_min, period_max)}
 
-        def sort_by_period(tf: xr.Dataset) -> xr.Dataset:
+        def sort_by_period(tf):
             """
             period needs to be monotonically increasing for slice to work.
             """
             return tf.sortby("period")
 
-        def is_tf(item: xr.Dataset) -> xr.Dataset:
+        def is_tf(item):
             """
             If the item is a transfer function return it sorted by period
 
-            Parameters
-            ----------
-            item: transfer function
-            type item: :class:`mt_metadata.transfer_function.core.TF`
-
-            Returns
-            -------
-            sorted by period transfer function
-            rtype: xarray.Dataset
+            :param item: transfer function
+            :type item: :class:`mt_metadata.transfer_function.core.TF`
+            :return: sorted by period transfer function
+            :rtype: xarray.Dataset
 
             """
             return sort_by_period(item._transfer_function)
 
-        def validate_dict(item: dict[str, Any]) -> dict[str, Any]:
+        def validate_dict(item):
             """
             Make sure input dictionary has proper keys.
 
@@ -1741,77 +1611,48 @@ class TF:
             - **period_min** minumum period (s)
             - **period_max** maximum period (s)
 
-            Parameters
-            ----------
-            item: dict
-                dictionary to slice a transfer function
-
-            Returns
-            -------
-            validated dictionary
-            rtype: dict
-
-            Raises
-            -------
-            KeyError
-                If keys are not what they should be
+            :param item: dictionary to slice a transfer function
+            :type item: dict
+            :raises KeyError: If keys are not what they should be
+            :return: validated dictionary
+            :rtype: dict
 
             """
             accepted_keys = sorted(["tf", "period_min", "period_max"])
 
             if accepted_keys != sorted(list(item.keys())):
                 msg = f"Input dictionary must have keys of {accepted_keys}"
-                logger.error(msg)
+                self.logger.error(msg)
                 raise KeyError(msg)
             return item
 
-        def is_dict(item: dict) -> xr.Dataset:
+        def is_dict(item):
             """
             If the item is a dictionary then be sure to sort the transfer
             function and then apply the slice.
 
-            Parameters
-            ----------
-            item: dict
-                dictionary with keys 'tf', 'period_min', 'period_max'
-
-            Returns
-            -------
-            sliced transfer function
-            rtype: xarray.Dataset
-
-            Raises
-            ------
-            KeyError
-                If keys are not what they should be
+            :param item: dictionary with keys 'tf', 'period_min', 'period_max'
+            :type item: dict
+            :return: sliced transfer function
+            :rtype: xarray.Dataset
 
             """
             item = validate_dict(item)
-            period_slice = get_slice_dict(item["period_min"], item["period_max"])
+            period_slice = get_slice_dict(
+                item["period_min"], item["period_max"]
+            )
             item["tf"]._transfer_function = sort_by_period(
                 item["tf"]._transfer_function
             )
             return get_slice(item["tf"], period_slice)
 
-        def get_slice(tf, period_slice: dict[str, slice]) -> xr.Dataset | None:
+        def get_slice(tf, period_slice):
             """
-            Get slice of a transfer function most of the time we can use .loc
+            get slice of a transfer function most of the time we can use .loc
             but sometimes a key error occurs if the period index is not
             monotonic (which is should be now after using .sortby('period')),
             but leaving in place just in case.  If .loc does not work, then
             we can use .where(conditions) to slice the transfer function.
-
-            Parameters
-            ----------
-            tf: xarray.Dataset
-                The transfer function to slice.
-            period_slice: dict[str, slice]
-                The slice to apply to the period dimension.
-
-            Returns
-            -------
-            xarray.Dataset
-                The sliced transfer function.
             """
             try:
                 return tf._transfer_function.loc[period_slice]
@@ -1822,8 +1663,14 @@ class TF:
                     and period_slice["period"].stop is not None
                 ):
                     return tf._transfer_function.where(
-                        (tf._transfer_function.period >= period_slice["period"].start)
-                        & (tf._transfer_function.period <= period_slice["period"].stop),
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        )
+                        & (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
                         drop=True,
                     )
                 elif (
@@ -1831,7 +1678,10 @@ class TF:
                     and period_slice["period"].stop is not None
                 ):
                     return tf._transfer_function.where(
-                        (tf._transfer_function.period <= period_slice["period"].stop),
+                        (
+                            tf._transfer_function.period
+                            <= period_slice["period"].stop
+                        ),
                         drop=True,
                     )
                 elif (
@@ -1839,7 +1689,10 @@ class TF:
                     and period_slice["period"].stop is None
                 ):
                     return tf._transfer_function.where(
-                        (tf._transfer_function.period >= period_slice["period"].start),
+                        (
+                            tf._transfer_function.period
+                            >= period_slice["period"].start
+                        ),
                         drop=True,
                     )
 
@@ -1855,7 +1708,7 @@ class TF:
                 tf_list.append(is_dict(item))
             else:
                 msg = f"Type {type(item)} not supported"
-                logger.error(msg)
+                self.logger.error(msg)
                 raise TypeError(msg)
 
         new_tf = xr.combine_by_coords(tf_list, combine_attrs="override")
@@ -1869,43 +1722,41 @@ class TF:
 
     def write(
         self,
-        fn: str | Path | None = None,
-        save_dir: str | Path | None = None,
-        fn_basename: str | None = None,
-        file_type: Literal["edi", "xml", "zmm", "avg", "j"] = "edi",
+        fn=None,
+        save_dir=None,
+        fn_basename=None,
+        file_type="edi",
         **kwargs,
     ):
         """
         Write an mt file, the supported file types are EDI and XML.
 
-        .. todo:: j-files
+        .. todo:: j-files and avg files
 
-        Parameters
-        ----------
-        fn: str | Path | None
-            Full path to file to save to.
-        save_dir: str | Path | None
-            Full path save directory.
-        fn_basename: str | None
-            Name of file with or without extension.
-        file_type: Literal["edi", "xml", "zmm", "avg", "j"]
-            Type of file to write.
+        :param fn: full path to file to save to
+        :type fn: :class:`pathlib.Path` or string
 
-        Optional Keyword Arguments
-        ---------------------------
-        longitude_format:  str
-            whether to write longitude as longitude or LONG.
-            options are 'longitude' or 'LONG', default 'longitude'
+        :param save_dir: full path save directory
+        :type save_dir: string
 
-        longitude_format:  string
-        latlon_format:  format of latitude and longitude in output edi,
-                       degrees minutes seconds ('dms') or decimal
-                       degrees ('dd')
+        :param fn_basename: name of file with or without extension
+        :type fn_basename: string
 
-        Returns
-        -------
-        str
-            Full path to the written file.
+        :param file_type: [ 'edi' | 'xml' | "zmm" ]
+        :type file_type: string
+
+        keyword arguments include
+
+        :param longitude_format:  whether to write longitude as longitude or LONG.
+                                  options are 'longitude' or 'LONG', default 'longitude'
+        :type longitude_format:  string
+        :param latlon_format:  format of latitude and longitude in output edi,
+                               degrees minutes seconds ('dms') or decimal
+                               degrees ('dd')
+        :type latlon_format:  string
+
+        :returns: full path to file
+        :rtype: string
 
         :Example: ::
 
@@ -1923,14 +1774,16 @@ class TF:
         if fn_basename is not None:
             fn_basename = Path(fn_basename)
             if fn_basename.suffix in ["", None]:
-                fn_basename = fn_basename.with_name(f"{fn_basename.name}.{file_type}")
+                fn_basename = fn_basename.with_name(
+                    f"{fn_basename.name}.{file_type}"
+                )
         if fn_basename is None:
             fn_basename = Path(f"{self.station}.{file_type}")
         if file_type is None:
             file_type = fn_basename.suffix.lower()[1:]
         if file_type not in self._read_write_dict.keys():
             msg = f"File type {file_type} not supported yet."
-            logger.error(msg)
+            self.logger.error(msg)
             raise TFError(msg)
         fn = self.save_dir.joinpath(fn_basename)
 
@@ -1941,18 +1794,12 @@ class TF:
         return obj
 
     def write_tf_file(self, **kwargs):
-        logger.error("'write_tf_file' has been deprecated use 'write()'")
+        self.logger.error("'write_tf_file' has been deprecated use 'write()'")
 
     def read_tf_file(self, **kwargs):
-        logger.error("'read_tf_file' has been deprecated use 'read()'")
+        self.logger.error("'read_tf_file' has been deprecated use 'read()'")
 
-    def read(
-        self,
-        fn: str | Path | None = None,
-        file_type: str | None = None,
-        get_elevation: bool = False,
-        **kwargs,
-    ):
+    def read(self, fn=None, file_type=None, get_elevation=False, **kwargs):
         """
 
         Read an TF response file.
@@ -1960,15 +1807,17 @@ class TF:
         .. note:: Currently only .edi, .xml, .j, .zmm/rr/ss, .avg
            files are supported
 
-        Parameters
-        ----------
-        fn: str | Path | None
-            Full path to input file.
-        file_type: str | None
-            Type of file to read. If None, automatically detects file type by
-            the extension. Options are [edi | j | xml | avg | zmm | zrr | zss | ...]
-        get_elevation: bool
-            Whether to get elevation from US National Map DEM
+
+
+        :param fn: full path to input file
+        :type fn: string
+
+        :param file_type: ['edi' | 'j' | 'xml' | 'avg' | 'zmm' | 'zrr' | 'zss' | ... ]
+                          if None, automatically detects file type by
+                          the extension.
+        :type file_type: string
+        :param get_elevation: Get elevation from US National Map DEM
+        :type get_elevation: bool
 
         :Example: ::
 
@@ -1993,7 +1842,7 @@ class TF:
         self.survey_metadata.update_bounding_box()
         self.survey_metadata.update_time_period()
 
-    def to_edi(self) -> EDI:
+    def to_edi(self):
         """
 
         Convert the TF object to a
@@ -2001,9 +1850,8 @@ class TF:
         attributes of an EDI object can be manipulated previous to writing
         to a file.
 
-        Returns
-        -------
-            EDI object
+        :return: EDI object
+        :rtype: :class:`mt_metadata.transfer_functions.io.edi.EDI`
 
         >>> from mt_metadata.transfer_functions import TF
         >>> from mt_metadata import TF_XML
@@ -2025,7 +1873,9 @@ class TF:
         edi_obj.frequency = 1.0 / self.period
 
         if isinstance(self._rotation_angle, (int, float)):
-            edi_obj.rotation_angle = np.repeat(self._rotation_angle, self.period.size)
+            edi_obj.rotation_angle = np.repeat(
+                self._rotation_angle, self.period.size
+            )
         else:
             edi_obj.rotation_angle = self._rotation_angle
 
@@ -2034,6 +1884,8 @@ class TF:
 
         # fill from station metadata
         edi_obj.station_metadata = self.station_metadata
+
+        edi_obj.Info.read_info(edi_obj.Info.write_info())
 
         # input data section
         edi_obj.Data.data_type = self.station_metadata.data_type
@@ -2051,32 +1903,26 @@ class TF:
                 )
         edi_obj.Data.read_data(edi_obj.Data.write_data())
 
-        edi_obj.Measurement.read_measurement(edi_obj.Measurement.write_measurement())
+        edi_obj.Measurement.read_measurement(
+            edi_obj.Measurement.write_measurement()
+        )
 
         return edi_obj
 
-    def from_edi(
-        self, edi_obj: str | Path | EDI, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_edi(self, edi_obj, get_elevation=False, **kwargs):
         """
         Read in an EDI file or a
-        :class:`mt_metadata.transfer_functions.io.edi.EDI` object
+        :class:`mt_metadata.transfer_functions.io.edi.EDI` ojbect
 
-        Parameters
-        ----------
-
-        edi_obj: str | Path | EDI
-           Path to EDI file or EDI object
-           If a path is provided, the file will be read from disk.
-           If an EDI object is provided, it will be used directly.
-        get_elevation: bool
-           Try to get elevation from US National Map,
-           defaults to False
-
-        Raises
-        ------
-        TypeError
-            If input is incorrect
+        :param edi_obj: path to edi file or EDI object
+        :type edi_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.edi.EDI`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Key word arguments for an EDI object
+        :type kwargs: dictionary
+        :raises TypeError: If input is incorrect
 
         """
 
@@ -2115,13 +1961,11 @@ class TF:
         for tf_key, edi_key in k_dict.items():
             setattr(self, tf_key, getattr(edi_obj, edi_key))
 
-    def to_emtfxml(self) -> EMTFXML:
+    def to_emtfxml(self):
         """
         Convert TF to a :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
         object.
 
-        Returns
-        -------
         :return: EMTFXML object
         :rtype: :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
 
@@ -2182,26 +2026,20 @@ class TF:
 
         emtf._get_data_types()
         emtf._get_statistical_estimates()
-        # Update site layout after data is set to populate channels correctly
-        emtf._update_site_layout()
 
         return emtf
 
-    def from_emtfxml(
-        self, emtfxml_obj: str | Path | EMTFXML, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_emtfxml(self, emtfxml_obj, get_elevation=False, **kwargs):
         """
 
-        Parameters
-        ----------
-        emtfxml_obj: str | Path | EMTFXML
-            The input object to convert from.
-        get_elevation: bool
-            Try to get elevation from US National Map, defaults to True.
-
-        Returns
-        -------
-        None
+        :param emtfxml_object: path to emtf xml file or EMTFXML object
+        :type emtfxml_object: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_function.io.emtfxml.EMTFXML`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for EMTFXML object
+        :type kwargs: dictionary
 
         """
 
@@ -2210,16 +2048,15 @@ class TF:
             emtfxml_obj = EMTFXML(**kwargs)
             emtfxml_obj.read(self._fn, get_elevation=get_elevation)
         if not isinstance(emtfxml_obj, EMTFXML):
-            raise TypeError(f"Input must be a EMTFXML object not {type(emtfxml_obj)}")
+            raise TypeError(
+                f"Input must be a EMTFXML object not {type(emtfxml_obj)}"
+            )
         self.survey_metadata = emtfxml_obj.survey_metadata
         self.station_metadata = self.survey_metadata.stations[0]
 
         self.period = emtfxml_obj.data.period
         self.impedance = emtfxml_obj.data.z
-        # Handle negative or invalid values in z_var before taking sqrt
-        z_var = emtfxml_obj.data.z_var
-        with np.errstate(invalid="ignore"):
-            self.impedance_error = np.sqrt(np.where(z_var >= 0, z_var, np.nan))
+        self.impedance_error = np.sqrt(emtfxml_obj.data.z_var)
         self._transfer_function.inverse_signal_power.loc[
             dict(input=["hx", "hy"], output=["hx", "hy"])
         ] = emtfxml_obj.data.z_invsigcov
@@ -2236,7 +2073,7 @@ class TF:
             dict(input=["hz"], output=["hz"])
         ] = emtfxml_obj.data.t_residcov
 
-    def to_jfile(self) -> None:
+    def to_jfile(self):
         """
 
         Translate TF object ot JFile object.
@@ -2248,23 +2085,19 @@ class TF:
 
         """
 
-        raise NotImplementedError("to_jfile not implemented yet.")
+        raise IOError("to_jfile not implemented yet.")
 
-    def from_jfile(
-        self, j_obj: str | Path | JFile, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_jfile(self, j_obj, get_elevation=False, **kwargs):
         """
 
-        Parameters
-        ----------
-        jfile_obj: str | Path | JFile
-            The input object to convert from.
-        get_elevation: bool
-            Try to get elevation from US National Map, defaults to True.
-
-        Returns
-        -------
-        None
+        :param jfile_obj: path ot .j file or JFile object
+        :type jfile_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.jfile.JFile`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for JFile object
+        :type kwargs: dictionary
 
         """
         if isinstance(j_obj, (str, Path)):
@@ -2288,17 +2121,16 @@ class TF:
         for tf_key, j_key in k_dict.items():
             setattr(self, tf_key, getattr(j_obj, j_key))
 
-    def make_zmm_run(self, zmm_obj: ZMM, number_dict: dict) -> Run:
+    def make_zmm_run(self, zmm_obj, number_dict):
         """
         Helper function to provide a run for a zmm object to aid writing z-file
 
         Parameters
         ----------
-        zmm_obj: ZMM
-            A ZMM that will be written to file, that needs a run associated.
-        number_dict: dict
-            Mapping between hexy keys and integers, needed for emtf z-files,
-            e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
+        :param zmm_obj: a ZMM that will be written to file, that needs a run associated
+        :type zmm_obj:  :class: `mt_metadata.transfer_functions.io.zfiles.zmm.ZMM`
+        :param number_dict: mapping between hexy keys and integers, needed for emtf
+        z-files, e.g. {"hx": 1, "hy": 2, "hz": 3, "ex": 4, "ey": 5}
         :type number_dict: dictionary
 
         :return: run
@@ -2318,7 +2150,7 @@ class TF:
                 run.add_channel(rc)
         return run
 
-    def to_zmm(self) -> ZMM:
+    def to_zmm(self):
         """
 
         Translate TF object to ZMM object.
@@ -2337,7 +2169,9 @@ class TF:
         """
         zmm_kwargs = {}
         zmm_kwargs["channel_nomenclature"] = self.channel_nomenclature
-        zmm_kwargs["inverse_channel_nomenclature"] = self.inverse_channel_nomenclature
+        zmm_kwargs["inverse_channel_nomenclature"] = (
+            self.inverse_channel_nomenclature
+        )
         if hasattr(self, "decimation_dict"):
             zmm_kwargs["decimation_dict"] = self.decimation_dict
         zmm_obj = ZMM(**zmm_kwargs)
@@ -2380,25 +2214,23 @@ class TF:
                     c.number = number_dict[c.channel]
                     setattr(zmm_obj, c.channel, c)
                 except KeyError:
-                    logger.debug(f"Could not find channel {c.channel}")
+                    self.logger.debug(f"Could not find channel {c.channel}")
         zmm_obj.survey_metadata.update(self.survey_metadata)
         zmm_obj.num_freq = self.period.size
 
         return zmm_obj
 
-    def from_zmm(
-        self, zmm_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_zmm(self, zmm_obj, get_elevation=False, **kwargs):
         """
 
-        Parameters
-        ----------
-        zmm_obj: str | Path | ZMM
-            Path to .zmm file or ZMM object
-        get_elevation: bool
-            Try to get elevation from US National Map, defaults to True
-        kwargs: dict
-            Keyword arguments for ZMM object
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
@@ -2438,7 +2270,7 @@ class TF:
         self._compute_error_from_covariance()
         self._rotation_angle = -1 * zmm_obj.declination
 
-    def to_zrr(self) -> ZMM:
+    def to_zrr(self):
         """
 
         Translate TF object to ZMM object.
@@ -2457,24 +2289,23 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zrr(
-        self, zrr_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_zrr(self, zrr_obj, get_elevation=False, **kwargs):
         """
-        Parameters
-        ----------
-        zmm_obj: str | Path | ZMM
-            Path to .zmm file or ZMM object
-        get_elevation: bool
-            Try to get elevation from US National Map, defaults to True
-        kwargs: dict
-            Keyword arguments for ZMM object
+
+        :param zmm_obj: path ot .zmm file or ZMM object
+        :type zmm_obj: str, :calss:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
         self.from_zmm(zrr_obj, get_elevation=get_elevation, **kwargs)
 
-    def to_zss(self) -> ZMM:
+    def to_zss(self):
         """
 
         Translate TF object to ZMM object.
@@ -2493,22 +2324,23 @@ class TF:
         """
         return self.to_zmm()
 
-    def from_zss(
-        self, zss_obj: str | Path | ZMM, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_zss(self, zss_obj, get_elevation=False, **kwargs):
         """
-        Parameters
-        ----------
-        zss_obj: str | Path | ZMM
-            Path to .zss file or ZMM object
-        get_elevation: bool
-            Try to get elevation from US National Map, defaults to True
+
+        :param zmm_obj: path to .zmm file or ZMM object
+        :type zmm_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zfiles.ZMM`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZMM object
+        :type kwargs: dictionary
 
         """
 
         self.from_zmm(zss_obj, get_elevation=get_elevation, **kwargs)
 
-    def to_avg(self) -> ZongeMTAvg:
+    def to_avg(self):
         """
 
         Translate TF object to ZongeMTAvg object.
@@ -2521,27 +2353,19 @@ class TF:
 
         """
 
-        avg_obj = ZongeMTAvg()
-        avg_obj.frequency = self.frequency
-        avg_obj.z = self.impedance
-        avg_obj.z_err = self.impedance_error
-        avg_obj.t = self.tipper
-        avg_obj.t_err = self.tipper_error
+        raise AttributeError("to_avg does not exist yet.")
 
-        logger.warning("Metadata is not properly set for a AVG file yet.")
-        return avg_obj
-
-    def from_avg(
-        self, avg_obj: str | Path | ZongeMTAvg, get_elevation: bool = False, **kwargs
-    ) -> None:
+    def from_avg(self, avg_obj, get_elevation=False, **kwargs):
         """
 
-        Parameters
-        ----------
-        avg_obj: str | Path | ZongeMTAvg
-            Path to .avg file or ZongeMTAvg object
-        get_elevation: bool
-            Try to get elevation from US National Map,   defaults to True
+        :param avg_obj: path to .avg file or ZongeMTAvg object
+        :type avg_obj: str, :class:`pathlib.Path`,
+         :class:`mt_metadata.transfer_functions.io.zonge.ZongeMTAvg`
+        :param get_elevation: Try to get elevation from US National Map,
+         defaults to True
+        :type get_elevation: bool
+        :param kwargs: Keyword arguments for ZongeMTAvg object
+        :type kwargs: dictionary
 
         """
         if isinstance(avg_obj, (str, Path)):

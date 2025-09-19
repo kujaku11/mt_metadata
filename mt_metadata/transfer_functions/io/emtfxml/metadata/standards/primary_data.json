@@ -1,0 +1,13 @@
+{
+    "filename": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "file name of the figure file that displays the data",
+        "options": [],
+        "alias": [],
+        "example": "example.png", 
+		"default": null
+    }
+}

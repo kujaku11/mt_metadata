@@ -1,0 +1,222 @@
+{
+    "acqby": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "person, group, company, university that collected the data",
+        "options": [],
+        "alias": [],
+        "example": "mt experts",
+		"default": null
+    },
+	"acqdate": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "Start date the time series data were collected",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01",
+		"default": "1980-01-01"
+    },
+	"coordinate_system": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "coordinate system the transfer function is currently in. Its preferred the transfer function be in a geographic coordinate system for archiving and sharing.",
+        "options": ["geographic", "geomagnetic", "station" ],
+        "alias": [],
+        "example": "geopgraphic",
+		"default": "geographic"
+    },
+	"country": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Country name where data were collected.",
+        "options": [],
+        "alias": [],
+        "example": "USA",
+		"default": null
+    },
+	"county": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "County name where data were collected.",
+        "options": [],
+        "alias": [],
+        "example": "Douglas",
+		"default": null
+    },
+    "dataid": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "station ID.",
+        "options": [],
+        "alias": [],
+        "example": "mt001",
+		"default": null
+    },
+	"enddate": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "End date the time series data were collected",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01",
+		"default": "1980-01-01"
+    },
+	"empty": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "null data values, usually a large number",
+        "options": [],
+        "alias": [],
+        "example": "1E+32",
+		"default": 1E32
+    },
+	"fileby": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "person, group, company, university that made the file",
+        "options": [],
+        "alias": [],
+        "example": "mt experts",
+		"default": null
+    },
+	"filedate": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "Date the file was made",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01",
+		"default": null
+    },
+	"progdate": {
+        "type": "string",
+        "required": true,
+        "style": "date",
+        "units": null,
+        "description": "Date of the most recent update of the program used to make the file",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01",
+		"default": null
+    },
+	"progname": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the program used to make the file.",
+        "options": [],
+        "alias": [],
+        "example": "mt_metadata",
+		"default": "mt_metadata"
+    },
+	"progvers": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Version of the program used to make the file.",
+        "options": [],
+        "alias": [],
+        "example": "0.1.6",
+		"default": "0.1.6"
+    },
+	"project": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the project the data was collected for, usually a short description or acronym of the project name.",
+        "options": [],
+        "alias": [],
+        "example": "iMUSH",
+		"default": null
+    },
+	"prospect": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the prospect the data was collected for, usually a short description of the location",
+        "options": [],
+        "alias": [],
+        "example": "Benton",
+		"default": null
+    },
+	"loc": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Usually a short description of the location",
+        "options": [],
+        "alias": [],
+        "example": "Benton, CA",
+		"default": null
+	},
+	"state": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "State where the data were collected.",
+        "options": [],
+        "alias": [],
+        "example": "CA",
+		"default": null
+    },
+	"stdvers": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "EDI standards version SEG 1.0",
+        "options": ["SEG 1.0", "1.0", "SEG_1.0", "SEG 1.01", "SEG_1.01"],
+        "alias": [],
+        "example": "SEG 1.0",
+		"default": "SEG 1.0"
+    },
+	"survey": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the survey",
+        "options": [],
+        "alias": [],
+        "example": "CONUS",
+		"default": null
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "In the EDI standards this is the elevation units, in newer versions this should be units of the transfer function.",
+        "options": [],
+        "alias": [],
+        "example": "millivolts_per_kilometer_per_nanotesla",
+		"default": "millivolts_per_kilometer_per_nanotesla"
+    }
+}

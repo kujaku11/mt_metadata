@@ -1,0 +1,70 @@
+{
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "instrument ID number can be serial number or a designated ID",
+        "options": [],
+        "alias": [
+            "serial"
+        ],
+        "example": "mt01", 
+		"default": null
+    },
+    "manufacturer": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "who manufactured the instrument",
+        "options": [],
+        "alias": [],
+        "example": "mt gurus", 
+		"default": null
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "instrument type",
+        "options": [],
+        "alias": [],
+        "example": "broadband 32-bit", 
+		"default": null
+    },
+    "model": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "model version of the instrument",
+        "options": [],
+        "alias": [],
+        "example": "falcon5", 
+		"default": null
+    },
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the model of the instrument",
+        "options": [],
+        "alias": [],
+        "example": "falcon5", 
+		"default": null
+    },
+    "settings": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any settings for the instrument",
+        "options": [],
+        "alias": [],
+        "example": "notch filter applied", 
+		"default": null
+    }
+}

@@ -1,25 +1,28 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+
+Created on Wed Dec  8 11:00:57 2021
+
+:author: Jared Peacock
+
+:license: MIT
+
+"""
+
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 
-from pydantic import Field
+# =============================================================================
+attr_dict = get_schema("stn", SCHEMA_FN_PATHS)
+# =============================================================================
 
-from mt_metadata.base import MetadataBase
 
+class STN(Base):
+    __doc__ = write_lines(attr_dict)
 
-# =====================================================
-class STN(MetadataBase):
-    name: Annotated[
-        str,
-        Field(
-            default="",
-            description="name of the station",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["1"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
+        super().__init__(attr_dict=attr_dict, **kwargs)

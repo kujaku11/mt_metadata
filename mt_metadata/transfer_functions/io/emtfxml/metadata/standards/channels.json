@@ -1,0 +1,24 @@
+{
+    "ref": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "reference to the site name",
+        "options": [],
+        "alias": [],
+        "example": "site",
+		"default": null
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "units of the distance coordinates",
+        "options": [],
+        "alias": [],
+        "example": "site",
+		"default": null
+    }
+}

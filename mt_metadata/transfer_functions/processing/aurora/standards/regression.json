@@ -1,0 +1,80 @@
+{
+    "minimum_cycles": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Minimum number of cycles in the regression",
+        "options": [],
+        "alias": [],
+        "example": "10",
+		"default": 10
+    },
+    "max_iterations": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Max iterations of the regression",
+        "options": [],
+        "alias": [],
+        "example": "10",
+		"default": 10
+    },
+	"max_redescending_iterations": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Max redescending iterations of the regression",
+        "options": [],
+        "alias": [],
+        "example": "2",
+		"default": 2
+    },
+    "r0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "The number of standard deviations where the influence function changes from linear to quadratic",
+        "options": [],
+        "alias": [],
+        "example": "1.4",
+		"default": 1.5
+    },
+	"u0": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for redescending Huber regression weights.",
+        "options": [],
+        "alias": [],
+        "example": "2.8",
+		"default": 2.8
+    },
+	"tolerance": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for convergence of RME algorithm.  Lower means more iterations",
+        "options": [],
+        "alias": [],
+        "example": "0.005",
+		"default": 0.005
+    },
+	"verbosity": {
+        "type": "int",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Control for logging messages during regression -- Higher means more messages",
+        "options": [0, 1, 2],
+        "alias": [],
+        "example": "1",
+		"default": 0
+
+    }
+}

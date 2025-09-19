@@ -2,13 +2,10 @@
 Idea here is to add logic to interrogate stage filters received from StationXML
 
 """
-
 # =============================================================================
 # Imports
 # =============================================================================
 import numpy as np
-
-
 try:
     import obspy
 except ImportError:
@@ -19,10 +16,9 @@ from mt_metadata.timeseries.filters import (
     CoefficientFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
-    PoleZeroFilter,
     TimeDelayFilter,
+    PoleZeroFilter,
 )
-
 
 # =============================================================================
 
@@ -145,7 +141,9 @@ def create_filter_from_stage(stage):
 
         return create_pole_zero_filter_from_stage(stage)
 
-    elif isinstance(stage, obspy.core.inventory.response.CoefficientsTypeResponseStage):
+    elif isinstance(
+        stage, obspy.core.inventory.response.CoefficientsTypeResponseStage
+    ):
         is_a_delay_filter = check_if_coefficient_filter_is_delay_only(stage)
         if is_a_delay_filter:
             obspy_filter = create_time_delay_filter_from_stage(stage)
@@ -168,7 +166,9 @@ def create_filter_from_stage(stage):
         obspy_filter = create_fir_filter_from_stage(stage)
         return obspy_filter
 
-    elif isinstance(stage, obspy.core.inventory.response.ResponseListResponseStage):
+    elif isinstance(
+        stage, obspy.core.inventory.response.ResponseListResponseStage
+    ):
         obspy_filter = create_frequency_response_table_filter_from_stage(stage)
         return obspy_filter
 

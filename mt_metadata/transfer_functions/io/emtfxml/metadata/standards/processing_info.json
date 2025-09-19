@@ -1,0 +1,50 @@
+{
+    "sign_convention": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Sign convention of the processing software output",
+        "options": [
+            "exp(+ i\\omega t)",
+            "exp(- i\\omega t)",
+			"other"
+        ],
+        "alias": [],
+        "example": "exp(+ i\\omega t)", 
+		"default": "exp(+ i\\omega t)"
+    },
+    "processed_by": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Names of people who processed the data",
+        "options": [],
+        "alias": [],
+        "example": "MT Guru", 
+		"default": null
+    },
+    "process_date": {
+        "type": "string",
+        "required": false,
+        "style": "date",
+        "units": null,
+        "description": "Date the data were processed",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01", 
+		"default": null
+    },
+    "processing_tag": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "List of remote references",
+        "options": [],
+        "alias": [],
+        "example": "mt001-mt002", 
+		"default": null
+    }
+}

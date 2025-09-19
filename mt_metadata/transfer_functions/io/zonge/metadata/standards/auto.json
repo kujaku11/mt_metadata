@@ -1,0 +1,13 @@
+{
+    "phase_flip": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Was phase automatically flipped in processing",
+        "options": ["yes", "no"],
+        "alias": [],
+        "example": "yes",
+		"default": "yes"
+    }
+}

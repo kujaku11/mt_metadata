@@ -9,23 +9,23 @@ Created on Thu Oct  7 16:31:55 2021
 # Imports
 # =============================================================================
 from pathlib import Path
+import pandas as pd
 from xml.etree import cElementTree as et
 
-import pandas as pd
-
 from mt_metadata.timeseries import (
-    Electric,
     Experiment,
-    Magnetic,
-    Run,
-    Station,
     Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
 )
+
 from mt_metadata.timeseries.filters import (
-    CoefficientFilter,
-    FIRFilter,
     PoleZeroFilter,
+    CoefficientFilter,
     TimeDelayFilter,
+    FIRFilter,
 )
 from mt_metadata.timeseries.stationxml import XMLInventoryMTExperiment
 

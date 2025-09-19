@@ -1,162 +1,113 @@
 """
-Test to instantiate some filters based on StationXML inputs.
+
+When about to make commits, try ~/software/irismt/mt_metadata/tests/pytest test*
+
+2021-02-14
+Test to instantite some filters based in StationXML inputs.
 
 Notes:
-    1. We process Network level XML and iterate through it to get stations, channels and stages.
-       Obspy's Inventory() chunks the StationXML stages up nicely, and we can use isinstance()
-       to verify we're getting expected objects.
+    1. In this example I have we are receiving a Network level XML and we need to iterate
+    through it to get the stations, channels and stages.   In general we will need a
+    methods that work with these XMLs and iterate through them.
 
-    2. Our filter classes can wrap the stage objects provided by obspy.
+    It looks like obspy's Inventory() chunks the StationXML stages up nicely.
+    Moreover we can use instance checks (eg isinstance() as way to confirm we are
+    getting what we think we are getting,
 
-    3. Potential obspy contributions: Consider contributing fap table readers for StationXML to obspy.
+    2. It looks like stage.__dict__ is pretty comprehensive, but I dont like how it passes
+    poles as _poles and zeros as _zeros.
+    Actually, here's the thing, our filter class looks like it could just wrap the stage
+
+    3. Obspy contributions?  Do we want to contribute fap table readers for StationXML to obspy?
+
+
+ToDo:
+-test ZerosPolesGainContinuous vs ZerosPolesGainDiscrete
+(in one case we add a 'dt' as a kwarg)
+
+20210216:
+1. Revisit base class
+2. continue on implementation
+3. Set a call With Anna
+
+
 """
-
+import unittest
 import pytest
-
-
 try:
     from obspy.core import inventory
-
     from mt_metadata.timeseries.filters.obspy_stages import create_filter_from_stage
 except ImportError:
     pytest.skip("obspy is not installed.", allow_module_level=True)
 
-from mt_metadata import STATIONXML_MAGNETIC
 from mt_metadata.timeseries.filters import (
     ChannelResponse,
-    CoefficientFilter,
     PoleZeroFilter,
+    CoefficientFilter,
     TimeDelayFilter,
 )
+from mt_metadata import STATIONXML_MAGNETIC
 
 
-@pytest.fixture
-def obspy_inventory():
-    """Create an obspy inventory from the magnetic StationXML."""
-    return inventory.read_inventory(STATIONXML_MAGNETIC.as_posix())
+class TestFilterMagnetic(unittest.TestCase):
+    """
+    Test filter translation from :class:`obspy.inventory.Network
+    """
 
-
-@pytest.fixture
-def stages(obspy_inventory):
-    """Get the response stages from the inventory."""
-    return obspy_inventory.networks[0].stations[0].channels[0].response.response_stages
-
-
-@pytest.fixture
-def instrument_sensitivity(obspy_inventory):
-    """Get the instrument sensitivity from the inventory."""
-    return (
-        obspy_inventory.networks[0]
-        .stations[0]
-        .channels[0]
-        .response.instrument_sensitivity
-    )
-
-
-@pytest.fixture
-def channel_response(stages):
-    """Create a ChannelResponse object from the stages."""
-    filters_list = [create_filter_from_stage(s) for s in stages]
-    return ChannelResponse(filters_list=filters_list)
-
-
-def test_inventory_type(obspy_inventory, subtests):
-    """Test that the inventory is of the correct type."""
-    with subtests.test("inventory is Inventory instance"):
-        assert isinstance(obspy_inventory, inventory.Inventory)
-
-
-def test_instrument_sensitivity(channel_response, instrument_sensitivity, subtests):
-    """Test the computed instrument sensitivity matches the expected value."""
-    with subtests.test("computed sensitivity matches expected"):
-        computed_sensitivity = channel_response.compute_instrument_sensitivity(
-            instrument_sensitivity.frequency
+    def setUp(self):
+        self.inventory = inventory.read_inventory(STATIONXML_MAGNETIC.as_posix())
+        self.stages = (
+            self.inventory.networks[0].stations[0].channels[0].response.response_stages
         )
-        assert (
-            pytest.approx(computed_sensitivity, abs=1) == instrument_sensitivity.value
+        self.instrument_sensitivity = (
+            self.inventory.networks[0]
+            .stations[0]
+            .channels[0]
+            .response.instrument_sensitivity
         )
 
+    def test_inventory_type(self):
+        self.assertIsInstance(self.inventory, inventory.Inventory)
 
-def test_stage_01(stages, subtests):
-    """Test the first stage (3-pole Butterworth low-pass filter)."""
-    f1 = create_filter_from_stage(stages[0])
+    def test_instrument_sensitivity(self):
+        filters_list = [create_filter_from_stage(s) for s in self.stages]
+        cr = ChannelResponse(filters_list=filters_list)
 
-    with subtests.test("filter type"):
-        assert isinstance(f1, PoleZeroFilter)
+        self.assertAlmostEqual(
+            cr.compute_instrument_sensitivity(self.instrument_sensitivity.frequency),
+            self.instrument_sensitivity.value,
+            0,
+        )
 
-    with subtests.test("filter name"):
-        assert f1.name == "magnetic field 3 pole Butterworth low-pass"
+    def test_stage_01(self):
+        f1 = create_filter_from_stage(self.stages[0])
+        self.assertIsInstance(f1, PoleZeroFilter)
+        self.assertEqual(f1.name, "magnetic field 3 pole Butterworth low-pass".lower())
+        self.assertEqual(f1.type, "zpk")
+        self.assertEqual(f1.units_in, "nT")
+        self.assertEqual(f1.units_out, "V")
+        self.assertEqual(f1.n_poles, 3)
+        self.assertEqual(f1.n_zeros, 0)
+        self.assertAlmostEqual(f1.normalization_factor, 1984.31, 2)
+        self.assertListEqual(
+            list(f1.poles),
+            [(-6.283185 + 10.882477j), (-6.283185 - 10.882477j), (-12.566371 + 0j)],
+        )
 
-    with subtests.test("filter type property"):
-        assert f1.type == "zpk"
+    def test_stage_02(self):
+        f2 = create_filter_from_stage(self.stages[1])
+        self.assertIsInstance(f2, CoefficientFilter)
+        self.assertEqual(f2.name, "magnatometer A to D".lower())
+        self.assertEqual(f2.type, "coefficient")
+        self.assertEqual(f2.gain, 100)
+        self.assertEqual(f2.units_in, "V")
+        self.assertEqual(f2.units_out, "count")
 
-    with subtests.test("units in"):
-        assert f1.units_in == "nanoTesla"
-
-    with subtests.test("units out"):
-        assert f1.units_out == "Volt"
-
-    with subtests.test("number of poles"):
-        assert f1.n_poles == 3
-
-    with subtests.test("number of zeros"):
-        assert f1.n_zeros == 0
-
-    with subtests.test("normalization factor"):
-        assert pytest.approx(f1.normalization_factor, abs=0.01) == 1984.31
-
-    with subtests.test("poles value"):
-        expected_poles = [
-            (-6.283185 + 10.882477j),
-            (-6.283185 - 10.882477j),
-            (-12.566371 + 0j),
-        ]
-        for i, (pole, expected) in enumerate(zip(f1.poles, expected_poles)):
-            with subtests.test(f"pole {i} value"):
-                assert pole == pytest.approx(expected)
-
-
-def test_stage_02(stages, subtests):
-    """Test the second stage (V to counts conversion)."""
-    f2 = create_filter_from_stage(stages[1])
-
-    with subtests.test("filter type"):
-        assert isinstance(f2, CoefficientFilter)
-
-    with subtests.test("filter name"):
-        assert f2.name == "magnatometer A to D"
-
-    with subtests.test("filter type property"):
-        assert f2.type == "coefficient"
-
-    with subtests.test("gain value"):
-        assert f2.gain == 100
-
-    with subtests.test("units in"):
-        assert f2.units_in == "Volt"
-
-    with subtests.test("units out"):
-        assert f2.units_out == "digital counts"
-
-
-def test_stage_03(stages, subtests):
-    """Test the third stage (time delay filter)."""
-    f3 = create_filter_from_stage(stages[2])
-
-    with subtests.test("filter type"):
-        assert isinstance(f3, TimeDelayFilter)
-
-    with subtests.test("filter name"):
-        assert f3.name == "Hz time offset"
-
-    with subtests.test("filter type property"):
-        assert f3.type == "time delay"
-
-    with subtests.test("delay value"):
-        assert f3.delay == 0.2455
-
-    with subtests.test("units in"):
-        assert f3.units_in == "digital counts"
-
-    with subtests.test("units out"):
-        assert f3.units_out == "digital counts"
+    def test_stage_03(self):
+        f2 = create_filter_from_stage(self.stages[2])
+        self.assertIsInstance(f2, TimeDelayFilter)
+        self.assertEqual(f2.name, "Hz time offset".lower())
+        self.assertEqual(f2.type, "time delay")
+        self.assertEqual(f2.delay, 0.2455)
+        self.assertEqual(f2.units_in, "count")
+        self.assertEqual(f2.units_out, "count")

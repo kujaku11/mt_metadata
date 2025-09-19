@@ -3,73 +3,62 @@
 Containers for the full metadata tree
 
 Experiment --> Survey --> Station --> Run --> Channel
-
-Each level has a list attribute
-
+                   
+Each level has a list attribute 
+    
 Created on Mon Feb  8 21:25:40 2021
 
-:copyright:
+:copyright: 
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
-import json
-
 # =============================================================================
 # Imports
 # =============================================================================
 from collections import OrderedDict
 from pathlib import Path
-from typing import Annotated
 from xml.etree import cElementTree as et
-
+import json
 from loguru import logger
-from pydantic import computed_field, Field, field_validator
-
-from mt_metadata.base import helpers, MetadataBase
-from mt_metadata.common.list_dict import ListDict
 
 from . import Auxiliary, Electric, Magnetic, Run, Station, Survey
 from .filters import (
+    PoleZeroFilter,
     CoefficientFilter,
+    TimeDelayFilter,
     FIRFilter,
     FrequencyResponseTableFilter,
-    PoleZeroFilter,
-    TimeDelayFilter,
 )
-
+from mt_metadata.base import Base, helpers
+from mt_metadata.utils.list_dict import ListDict
 
 # =============================================================================
 
 
-class Experiment(MetadataBase):
+class Experiment(Base):
     """
     Top level of the metadata
     """
 
-    surveys: Annotated[
-        ListDict | list | dict | OrderedDict,
-        Field(
-            default_factory=ListDict,
-            description="List of surveys in the experiment",
-            title="List of Surveys",
-            json_schema_extra={
-                "required": False,
-                "units": None,
-                "examples": [{"id": "survey_1"}, {"id": "survey_2"}],
-            },
-        ),
-    ]
+    def __init__(self, surveys=[]):
 
-    def __str__(self) -> str:
+        super().__init__()
+
+        self.logger = logger
+        self.surveys = surveys
+
+    def __str__(self):
         lines = ["Experiment Contents", "-" * 20]
         if len(self.surveys) > 0:
             lines.append(f"Number of Surveys: {len(self.surveys)}")
             for survey in self.surveys:
                 lines.append(f"  Survey ID: {survey.id}")
-                lines.append(f"  Number of Stations: {survey.n_stations}")
-                lines.append(f"  Number of Filters: {len(survey.filters.keys())}")
+                lines.append(f"  Number of Stations: {len(survey)}")
+                lines.append(
+                    f"  Number of Filters: {len(survey.filters.keys())}"
+                )
                 lines.append(f"  {'-' * 20}")
                 for f_key, f_object in survey.filters.items():
                     lines.append(f"    Filter Name: {f_key}")
@@ -77,11 +66,11 @@ class Experiment(MetadataBase):
                     lines.append(f"    {'-' * 20}")
                 for station in survey.stations:
                     lines.append(f"    Station ID: {station.id}")
-                    lines.append(f"    Number of Runs: {station.n_runs}")
+                    lines.append(f"    Number of Runs: {len(station)}")
                     lines.append(f"    {'-' * 20}")
                     for run in station.runs:
                         lines.append(f"      Run ID: {run.id}")
-                        lines.append(f"      Number of Channels: {run.n_channels}")
+                        lines.append(f"      Number of Channels: {len(run)}")
                         lines.append(
                             "      Recorded Channels: "
                             + ", ".join(run.channels_recorded_all)
@@ -93,36 +82,38 @@ class Experiment(MetadataBase):
 
         return "\n".join(lines)
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return self.__str__()
 
-    def __eq__(self, other) -> bool:
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+    def __eq__(self, other):
+        return (
+            isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__
+        )
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other):
         return not self.__eq__(other)
 
-    def merge(self, other: "Experiment") -> "Experiment":
-        """
-        Merge two Experiment objects
-        """
+    def __add__(self, other):
         if isinstance(other, Experiment):
             self.surveys.extend(other.surveys)
 
             return self
         else:
             msg = f"Can only merge Experiment objects, not {type(other)}"
-            logger.error(msg)
+            self.logger.error(msg)
             raise TypeError(msg)
 
-    @computed_field
-    @property
-    def n_surveys(self) -> int:
+    def __len__(self):
         return len(self.surveys)
 
-    @field_validator("surveys", mode="before")
-    @classmethod
-    def validate_surveys(cls, value) -> ListDict:
+    @property
+    def surveys(self):
+        """Return survey list"""
+        return self._surveys
+
+    @surveys.setter
+    def surveys(self, value):
         """set the survey list"""
 
         if not isinstance(value, (list, tuple, dict, ListDict, OrderedDict)):
@@ -130,11 +121,11 @@ class Experiment(MetadataBase):
                 "input station_list must be an iterable, should be a list or dict "
                 f"not {type(value)}"
             )
-            logger.error(msg)
+            self.logger.error(msg)
             raise TypeError(msg)
 
         fails = []
-        surveys = ListDict()
+        self._surveys = ListDict()
         if isinstance(value, (dict, ListDict, OrderedDict)):
             value_list = value.values()
 
@@ -142,26 +133,26 @@ class Experiment(MetadataBase):
             value_list = value
 
         for ii, survey in enumerate(value_list):
+
             if isinstance(survey, (dict, OrderedDict)):
                 s = Survey()
                 s.from_dict(survey)
-                surveys.append(s)
+                self._stations.append(s)
             elif not isinstance(survey, Survey):
                 msg = f"Item {ii} is not type(Survey); type={type(survey)}"
                 fails.append(msg)
-                logger.error(msg)
+                self.logger.error(msg)
             else:
-                surveys.append(survey)
+                self._surveys.append(survey)
         if len(fails) > 0:
             raise TypeError("\n".join(fails))
-        return surveys
 
     @property
-    def survey_names(self) -> list[str]:
+    def survey_names(self):
         """Return names of surveys in experiment"""
         return self.surveys.keys()
 
-    def has_survey(self, survey_id: str) -> bool:
+    def has_survey(self, survey_id):
         """
         Has survey id
 
@@ -175,7 +166,7 @@ class Experiment(MetadataBase):
             return True
         return False
 
-    def survey_index(self, survey_id: str) -> int | None:
+    def survey_index(self, survey_id):
         """
         Get survey index
 
@@ -190,7 +181,7 @@ class Experiment(MetadataBase):
             return self.survey_names.index(survey_id)
         return None
 
-    def add_survey(self, survey_obj: "Survey") -> None:
+    def add_survey(self, survey_obj):
         """
         Add a survey, if has the same name update that object.
 
@@ -208,11 +199,13 @@ class Experiment(MetadataBase):
 
         if self.has_survey(survey_obj.id):
             self.surveys[survey_obj.id].update(survey_obj)
-            logger.debug(f"survey {survey_obj.id} already exists, updating metadata")
+            self.logger.debug(
+                f"survey {survey_obj.id} already exists, updating metadata"
+            )
         else:
             self.surveys.append(survey_obj)
 
-    def get_survey(self, survey_id: str) -> "Survey":
+    def get_survey(self, survey_id):
         """
         Get a survey from the survey id
 
@@ -226,28 +219,10 @@ class Experiment(MetadataBase):
         if self.has_survey(survey_id):
             return self.surveys[survey_id]
         else:
-            logger.warning(f"Could not find survey {survey_id}")
+            self.logger.warning(f"Could not find survey {survey_id}")
             return None
 
-    def remove_survey(self, survey_id: str, update: bool = True) -> None:
-        """
-        Remove a survey from the experiment
-
-        :param survey_id: DESCRIPTION
-        :type survey_id: TYPE
-        :return: DESCRIPTION
-        :rtype: TYPE
-
-        """
-
-        if self.has_survey(survey_id):
-            self.surveys.remove(survey_id)
-            logger.debug(f"Removed survey {survey_id} from experiment")
-
-        else:
-            logger.warning(f"Could not find survey {survey_id} to remove")
-
-    def to_dict(self, nested: bool = False, required: bool = True) -> dict:
+    def to_dict(self, nested=False, required=True):
         """
         create a dictionary for the experiment object.
 
@@ -285,7 +260,7 @@ class Experiment(MetadataBase):
 
         return ex_dict
 
-    def from_dict(self, ex_dict: dict | OrderedDict, skip_none: bool = True) -> None:
+    def from_dict(self, ex_dict, skip_none=True):
         """
         fill from an input dictionary
 
@@ -298,7 +273,7 @@ class Experiment(MetadataBase):
 
         if not isinstance(ex_dict, dict):
             msg = f"experiemnt input must be a dictionary not {type(ex_dict)}"
-            logger.debug(msg)
+            self.logger.debug(msg)
             raise TypeError(msg)
         if "experiment" not in ex_dict.keys():
             return
@@ -308,13 +283,7 @@ class Experiment(MetadataBase):
             survey_object.from_dict(survey_dict, skip_none=skip_none)
             self.add_survey(survey_object)
 
-    def to_json(
-        self,
-        fn: str | Path = None,
-        nested: bool = False,
-        indent: str = " " * 4,
-        required: bool = True,
-    ) -> str | None:
+    def to_json(self, fn=None, nested=False, indent=" " * 4, required=True):
         """
         Write a json string from a given object, taking into account other
         class objects contained within the given object.
@@ -340,7 +309,7 @@ class Experiment(MetadataBase):
                 indent=indent,
             )
 
-    def from_json(self, json_str: str, skip_none: bool = True) -> None:
+    def from_json(self, json_str, skip_none=True):
         """
         read in a json string and update attributes of an object
 
@@ -363,13 +332,11 @@ class Experiment(MetadataBase):
                     json_dict = json.load(fid)
         elif not isinstance(json_str, (str, Path)):
             msg = "Input must be valid JSON string not %"
-            logger.error(msg, type(json_str))
+            self.logger.error(msg, type(json_str))
             raise TypeError(msg % type(json_str))
         self.from_dict(json_dict, skip_none=skip_none)
 
-    def to_xml(
-        self, fn: str | Path = None, required: bool = True, sort: bool = True
-    ) -> et.Element:
+    def to_xml(self, fn=None, required=True, sort=True):
         """
         Write XML version of the experiment
 
@@ -409,18 +376,30 @@ class Experiment(MetadataBase):
                                 and channel.positive.longitude == 0
                                 and channel.positive.elevation == 0
                             ):
-                                channel.positive.latitude = station.location.latitude
-                                channel.positive.longitude = station.location.longitude
-                                channel.positive.elevation = station.location.elevation
+                                channel.positive.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.positive.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.positive.elevation = (
+                                    station.location.elevation
+                                )
                         else:
                             if (
                                 channel.location.latitude == 0
                                 and channel.location.longitude == 0
                                 and channel.location.elevation == 0
                             ):
-                                channel.location.latitude = station.location.latitude
-                                channel.location.longitude = station.location.longitude
-                                channel.location.elevation = station.location.elevation
+                                channel.location.latitude = (
+                                    station.location.latitude
+                                )
+                                channel.location.longitude = (
+                                    station.location.longitude
+                                )
+                                channel.location.elevation = (
+                                    station.location.elevation
+                                )
 
                         run_element.append(channel.to_xml(required=required))
                     station_element.append(run_element)
@@ -432,13 +411,7 @@ class Experiment(MetadataBase):
                 fid.write(helpers.element_to_string(experiment_element))
         return experiment_element
 
-    def from_xml(
-        self,
-        fn: str | Path = None,
-        element: et.Element | None = None,
-        sort: bool = True,
-        skip_none: bool = True,
-    ) -> None:
+    def from_xml(self, fn=None, element=None, sort=True, skip_none=True):
         """
 
         :param fn: DESCRIPTION, defaults to None
@@ -453,7 +426,7 @@ class Experiment(MetadataBase):
         """
         if fn:
             experiment_element = et.parse(fn).getroot()
-        if element is not None:
+        if element:
             experiment_element = element
 
         # need to set the lists for each layer, otherwise you get duplicates.
@@ -485,7 +458,7 @@ class Experiment(MetadataBase):
                                 channel.from_dict(ch_dict, skip_none=skip_none)
                                 run_obj.add_channel(channel)
                         except KeyError:
-                            logger.debug(f"Could not find channel {ch}")
+                            self.logger.debug(f"Could not find channel {ch}")
                     run_obj.from_dict(run_dict, skip_none=skip_none)
                     station_obj.add_run(run_obj)
                 survey_obj.add_station(station_obj)
@@ -494,7 +467,7 @@ class Experiment(MetadataBase):
             if sort:
                 self.sort()
 
-    def _pop_dictionary(self, in_dict: dict, element: str) -> list:
+    def _pop_dictionary(self, in_dict, element):
         """
         Pop off a key from an input dictionary, make sure output is a list
 
@@ -513,7 +486,7 @@ class Experiment(MetadataBase):
 
         return elements
 
-    def to_pickle(self, fn: str | Path = None) -> None:
+    def to_pickle(self, fn):
         """
         Write a pickle version of the experiment
 
@@ -523,8 +496,9 @@ class Experiment(MetadataBase):
         :rtype: TYPE
 
         """
+        pass
 
-    def from_pickle(self, fn: str | Path = None) -> None:
+    def from_pickle(self, fn):
         """
         Read pickle version of experiment
 
@@ -534,18 +508,19 @@ class Experiment(MetadataBase):
         :rtype: TYPE
 
         """
+        pass
 
-    # def validate_experiment(self):
-    #     """
-    #     Validate experiment is legal
+    def validate_experiment(self):
+        """
+        Validate experiment is legal
 
-    #     :return: DESCRIPTION
-    #     :rtype: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-    #     """
-    #     pass
+        """
+        pass
 
-    def _read_filter_dict(self, filters_dict: dict | None) -> ListDict:
+    def _read_filter_dict(self, filters_dict):
         """
         Read in filter element an put it in the correct object
 
@@ -607,7 +582,7 @@ class Experiment(MetadataBase):
 
         return return_dict
 
-    def sort(self, inplace: bool = True) -> "Experiment":
+    def sort(self, inplace=True):
         """
         sort surveys, stations, runs, channels alphabetically/numerically
 

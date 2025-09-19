@@ -1,0 +1,24 @@
+{
+    "min": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "minimum period",
+        "options": [],
+        "alias": [],
+        "example": "\"4.5E-5\"", 
+		"default": 0
+    },
+	"max": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "maxmimu period",
+        "options": [],
+        "alias": [],
+        "example": "\"4.5E5\"", 
+		"default": 0
+    }
+}

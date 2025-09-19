@@ -1,88 +1,84 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 23 21:30:36 2020
+
+:copyright: 
+    Jared Peacock (jpeacock@usgs.gov)
+
+:license: MIT
+
+"""
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
 from xml.etree import cElementTree as et
 
-from loguru import logger
-from pydantic import Field, field_validator
+from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from .estimate import Estimate
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.base.helpers import element_to_string
+# =============================================================================
+attr_dict = get_schema("statistical_estimates", SCHEMA_FN_PATHS)
+# =============================================================================
 
-from . import Estimate
 
+class StatisticalEstimates(Base):
+    __doc__ = write_lines(attr_dict)
 
-# =====================================================
-class StatisticalEstimates(MetadataBase):
-    estimates_list: Annotated[
-        list[Estimate | dict] | dict,
-        Field(
-            default_factory=list,
-            description="list of statistical estimates",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["[var cov]"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
 
-    @field_validator("estimates_list", mode="before")
-    @classmethod
-    def validate_estimates_list(cls, value: list) -> list[Estimate]:
+        self._estimates_list = []
+        super().__init__(attr_dict=attr_dict, **kwargs)
+
+    @property
+    def estimates_list(self):
+        return self._estimates_list
+
+    @estimates_list.setter
+    def estimates_list(self, value):
         if not isinstance(value, list):
             value = [value]
-        estimates_list = []
+        self._estimates_list = []
         for item in value:
-            est = Estimate()  # type: ignore
-            if isinstance(item, dict):
-                est.from_dict(item)
-            elif isinstance(item, Estimate):
-                est = item
-            else:
-                est.name = item
-            estimates_list.append(est)
-        return estimates_list
+            est = Estimate()
+            est.from_dict(item)
+            self._estimates_list.append(est)
 
-    def read_dict(self, input_dict: dict) -> None:
+    def read_dict(self, input_dict):
         """
         Read in statistical estimate descriptions
 
-        :param input_dict: input dictionary containing statistical estimates
-        :type input_dict: dict
-        :return: None
-        :rtype: None
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
         try:
-            self.estimates_list = input_dict["statistical_estimates"]["estimate"]
+            self.estimates_list = input_dict["statistical_estimates"][
+                "estimate"
+            ]
         except KeyError:
-            logger.warning("Could not statistical estimates")
+            self.logger.warning("Could not statistical estimates")
 
-    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+    def to_xml(self, string=False, required=True):
         """
-        Convert the StatisticalEstimates instance to XML format.
 
-        Parameters
-        ----------
-        string : bool, optional
-            If True, return the XML as a string, by default False
-        required : bool, optional
-            If True, include required fields in the XML, by default True
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-        Returns
-        -------
-        str | et.Element
-            The XML representation of the instance
         """
 
         root = et.Element(self.__class__.__name__)
 
         for estimate in self.estimates_list:
-            root.append(estimate.to_xml(required=required))  # type: ignore
+            root.append(estimate.to_xml(required=required))
 
         if string:
             return element_to_string(root)

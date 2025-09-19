@@ -1,511 +1,260 @@
 # -*- coding: utf-8 -*-
 """
-Comprehensive pytest suite for EMTFXML write functionality testing.
-
 Created on Fri Mar 10 08:52:43 2023
+
 @author: jpeacock
-
-Converted to pytest suite for enhanced testing with fixtures and parametrization.
-Tests the translation from EMTF XML object to MT object and back to EMTF XML object.
-
-Test Structure:
-- TestEMTFXMLWriteBasics: Basic property and metadata tests (6 tests)
-- TestEMTFXMLWriteComponents: Component comparison tests (9 tests)
-- TestEMTFXMLWriteDataArrays: Numerical data array comparisons (8 tests)
-- TestEMTFXMLWriteXMLSerialization: XML serialization tests (9 tests)
-- TestEMTFXMLWriteEstimates: Statistical estimates validation (2 tests)
-- TestEMTFXMLWriteIntegration: Integration and roundtrip tests (3 tests)
-
-Total: 37 tests covering EMTFXML write functionality and roundtrip validation
 """
-
-
-import numpy as np
 
 # =============================================================================
 # Imports
 # =============================================================================
-import pytest
+import unittest
 
+import numpy as np
 from mt_metadata import TF_XML
-from mt_metadata.transfer_functions.core import TF
+from mt_metadata.transfer_functions import TF
 from mt_metadata.transfer_functions.io.emtfxml import EMTFXML
 
-
 # =============================================================================
-# Fixtures
-# =============================================================================
-@pytest.fixture(scope="module")
-def original_emtfxml():
-    """Load original EMTFXML object from file."""
-    return EMTFXML(TF_XML)
 
 
-@pytest.fixture(scope="module")
-def tf_roundtrip(original_emtfxml):
-    """Create TF object and convert back to EMTFXML for comparison."""
-    tf = TF(fn=TF_XML)
-    tf.read()
-    return tf.to_emtfxml()
+class TestWriteEMTFXML(unittest.TestCase):
+    """
+    Compare the translation from an EMTF XML object to and MT object and back
+    to an EMTF XML object.
+    """
 
+    @classmethod
+    def setUpClass(self):
+        self.tf = TF(fn=TF_XML)
+        self.tf.read()
+        self.x1 = self.tf.to_emtfxml()
+        self.maxDiff = None
 
-@pytest.fixture(scope="module")
-def tf_object():
-    """Load TF object for testing."""
-    tf = TF(fn=TF_XML)
-    tf.read()
-    return tf
+        self.x0 = EMTFXML(TF_XML)
 
+    def test_description(self):
+        self.assertEqual(self.x0.description, self.x1.description)
 
-# =============================================================================
-# Test Classes
-# =============================================================================
-class TestEMTFXMLWriteBasics:
-    """Test basic properties and metadata comparison between original and roundtrip EMTFXML objects."""
+    def test_product_id(self):
+        self.assertEqual(self.x0.product_id, self.x1.product_id)
 
-    def test_description(self, original_emtfxml, tf_roundtrip):
-        """Test description property preservation through roundtrip."""
-        assert original_emtfxml.description == tf_roundtrip.description
+    def test_sub_type(self):
+        self.assertEqual(self.x0.sub_type, self.x1.sub_type)
 
-    def test_product_id(self, original_emtfxml, tf_roundtrip):
-        """Test product_id property preservation through roundtrip."""
-        assert original_emtfxml.product_id == tf_roundtrip.product_id
+    def test_notes(self):
+        self.assertEqual(self.x0.notes, self.x1.notes)
 
-    def test_sub_type(self, original_emtfxml, tf_roundtrip):
-        """Test sub_type property preservation through roundtrip."""
-        assert original_emtfxml.sub_type == tf_roundtrip.sub_type
-
-    def test_notes(self, original_emtfxml, tf_roundtrip):
-        """Test notes property preservation through roundtrip."""
-        assert original_emtfxml.notes == tf_roundtrip.notes
-
-    def test_tags_content(self, original_emtfxml, tf_roundtrip):
-        """Test tags content preservation through roundtrip."""
-        original_tags = [v.strip() for v in original_emtfxml.tags.split(",")]
-        roundtrip_tags = [v.strip() for v in tf_roundtrip.tags.split(",")]
-        assert original_tags == roundtrip_tags
-
-    def test_tags_format(self, original_emtfxml, tf_roundtrip):
-        """Test tags format consistency."""
-        assert isinstance(original_emtfxml.tags, str)
-        assert isinstance(tf_roundtrip.tags, str)
-        assert len(original_emtfxml.tags.strip()) > 0
-        assert len(tf_roundtrip.tags.strip()) > 0
-
-
-class TestEMTFXMLWriteComponents:
-    """Test component-level comparisons and XML serialization."""
-
-    def test_external_url_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test external_url object equality."""
-        assert original_emtfxml.external_url == tf_roundtrip.external_url
-
-    def test_external_url_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test external_url XML serialization consistency."""
-        original_xml = original_emtfxml.external_url.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.external_url.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    def test_primary_data_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test primary_data object equality."""
-        assert original_emtfxml.primary_data == tf_roundtrip.primary_data
-
-    def test_primary_data_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test primary_data XML serialization consistency."""
-        original_xml = original_emtfxml.primary_data.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.primary_data.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    def test_attachment_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test attachment object equality."""
-        assert original_emtfxml.attachment == tf_roundtrip.attachment
-
-    def test_attachment_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test attachment XML serialization consistency."""
-        original_xml = original_emtfxml.attachment.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.attachment.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    def test_copyright_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test copyright object equality."""
-        assert original_emtfxml.copyright == tf_roundtrip.copyright
-
-    def test_copyright_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test copyright XML serialization consistency."""
-        original_xml = original_emtfxml.copyright.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.copyright.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    def test_site_comprehensive(self, original_emtfxml, tf_roundtrip):
-        """Test comprehensive site data and XML serialization."""
-        # Test attribute equality
-        original_dict = original_emtfxml.site.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.site.to_dict(single=True)
-        assert original_dict == roundtrip_dict
-
-        # Test XML serialization
-        original_xml = original_emtfxml.site.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.site.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-
-class TestEMTFXMLWriteDataArrays:
-    """Test numerical data array comparisons."""
-
-    def test_impedance_data(self, original_emtfxml, tf_roundtrip):
-        """Test impedance (Z) data array consistency."""
-        original_z = original_emtfxml.data.z
-        roundtrip_z = tf_roundtrip.data.z
-
-        if original_z is not None and roundtrip_z is not None:
-            assert np.allclose(original_z, roundtrip_z)
-        else:
-            assert original_z is None and roundtrip_z is None
-
-    def test_impedance_variance(self, original_emtfxml, tf_roundtrip):
-        """Test impedance variance data consistency."""
-        original_var = original_emtfxml.data.z_var
-        roundtrip_var = tf_roundtrip.data.z_var
-
-        if original_var is not None and roundtrip_var is not None:
-            assert np.allclose(original_var, roundtrip_var)
-        else:
-            assert original_var is None and roundtrip_var is None
-
-    def test_impedance_inverse_signal_covariance(self, original_emtfxml, tf_roundtrip):
-        """Test impedance inverse signal covariance data consistency."""
-        original_cov = original_emtfxml.data.z_invsigcov
-        roundtrip_cov = tf_roundtrip.data.z_invsigcov
-
-        if original_cov is not None and roundtrip_cov is not None:
-            assert np.allclose(original_cov, roundtrip_cov)
-        else:
-            assert original_cov is None and roundtrip_cov is None
-
-    def test_impedance_residual_covariance(self, original_emtfxml, tf_roundtrip):
-        """Test impedance residual covariance data consistency."""
-        original_res = original_emtfxml.data.z_residcov
-        roundtrip_res = tf_roundtrip.data.z_residcov
-
-        if original_res is not None and roundtrip_res is not None:
-            assert np.allclose(original_res, roundtrip_res)
-        else:
-            assert original_res is None and roundtrip_res is None
-
-    def test_tipper_data(self, original_emtfxml, tf_roundtrip):
-        """Test tipper (T) data array consistency."""
-        original_t = original_emtfxml.data.t
-        roundtrip_t = tf_roundtrip.data.t
-
-        if original_t is not None and roundtrip_t is not None:
-            assert np.allclose(original_t, roundtrip_t)
-        else:
-            assert original_t is None and roundtrip_t is None
-
-    def test_tipper_variance(self, original_emtfxml, tf_roundtrip):
-        """Test tipper variance data consistency."""
-        original_var = original_emtfxml.data.t_var
-        roundtrip_var = tf_roundtrip.data.t_var
-
-        if original_var is not None and roundtrip_var is not None:
-            assert np.allclose(original_var, roundtrip_var)
-        else:
-            assert original_var is None and roundtrip_var is None
-
-    def test_tipper_inverse_signal_covariance(self, original_emtfxml, tf_roundtrip):
-        """Test tipper inverse signal covariance data consistency."""
-        original_cov = original_emtfxml.data.t_invsigcov
-        roundtrip_cov = tf_roundtrip.data.t_invsigcov
-
-        if original_cov is not None and roundtrip_cov is not None:
-            assert np.allclose(original_cov, roundtrip_cov)
-        else:
-            assert original_cov is None and roundtrip_cov is None
-
-    def test_tipper_residual_covariance(self, original_emtfxml, tf_roundtrip):
-        """Test tipper residual covariance data consistency."""
-        original_res = original_emtfxml.data.t_residcov
-        roundtrip_res = tf_roundtrip.data.t_residcov
-
-        if original_res is not None and roundtrip_res is not None:
-            assert np.allclose(original_res, roundtrip_res)
-        else:
-            assert original_res is None and roundtrip_res is None
-
-
-class TestEMTFXMLWriteXMLSerialization:
-    """Test XML serialization for complex components."""
-
-    def test_field_notes_attribute_comparison(self, original_emtfxml, tf_roundtrip):
-        """Test field_notes attribute dictionary comparison."""
-        original_dict = original_emtfxml.field_notes.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.field_notes.to_dict(single=True)
-        assert original_dict == roundtrip_dict
-
-    def test_field_notes_xml_differences(self, original_emtfxml, tf_roundtrip):
-        """Test that field_notes XML serialization has expected differences due to rounding."""
-        original_xml = original_emtfxml.field_notes.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.field_notes.to_xml(string=True)
-        # Note: These are expected to be different due to rounding
-        assert original_xml != roundtrip_xml
-
-    def test_data_types_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test data_types attribute consistency."""
-        original_dict = original_emtfxml.data_types.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.data_types.to_dict(single=True)
-        assert original_dict == roundtrip_dict
-
-    def test_data_types_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test data_types XML serialization consistency."""
-        original_xml = original_emtfxml.data_types.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.data_types.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    def test_site_layout_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test site_layout attribute consistency with normalized channel names and core structure."""
-        original_dict = original_emtfxml.site_layout.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.site_layout.to_dict(single=True)
-
-        # Normalize channel names and focus on core structure for comparison
-        def normalize_channels_for_comparison(site_dict):
-            normalized = site_dict.copy()
-            for channel_type in ["input_channels", "output_channels"]:
-                if channel_type in normalized:
-                    for channel_group in normalized[channel_type]:
-                        for field_type in ["magnetic", "electric"]:
-                            if field_type in channel_group:
-                                # Normalize channel name to lowercase
-                                channel_group[field_type]["name"] = channel_group[
-                                    field_type
-                                ]["name"].lower()
-            return normalized
-
-        # Test that the channels exist with correct names and types
-        original_normalized = normalize_channels_for_comparison(original_dict)
-        roundtrip_normalized = normalize_channels_for_comparison(roundtrip_dict)
-
-        # Extract channel names for comparison
-        def get_channel_names(site_dict):
-            input_names = []
-            output_names = []
-            for channel_group in site_dict.get("input_channels", []):
-                for field_type in ["magnetic", "electric"]:
-                    if field_type in channel_group:
-                        input_names.append(channel_group[field_type]["name"])
-            for channel_group in site_dict.get("output_channels", []):
-                for field_type in ["magnetic", "electric"]:
-                    if field_type in channel_group:
-                        output_names.append(channel_group[field_type]["name"])
-            return sorted(input_names), sorted(output_names)
-
-        orig_input, orig_output = get_channel_names(original_normalized)
-        rt_input, rt_output = get_channel_names(roundtrip_normalized)
-
-        # Test that channel names match (ignoring order and detailed properties)
-        assert (
-            orig_input == rt_input
-        ), f"Input channel names differ: {orig_input} != {rt_input}"
-        assert (
-            orig_output == rt_output
-        ), f"Output channel names differ: {orig_output} != {rt_output}"
-
-    def test_site_layout_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test site_layout XML serialization has proper structure and channel names."""
-        original_xml = original_emtfxml.site_layout.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.site_layout.to_xml(string=True)
-
-        # Test that both XMLs contain the expected channel types
-        import re
-
-        # Extract channel names from XML
-        def extract_channel_names(xml_string):
-            # Find all Magnetic and Electric channel names
-            magnetic_names = re.findall(r'<Magnetic[^>]*name="([^"]*)"', xml_string)
-            electric_names = re.findall(r'<Electric[^>]*name="([^"]*)"', xml_string)
-            return sorted([name.lower() for name in magnetic_names]), sorted(
-                [name.lower() for name in electric_names]
-            )
-
-        orig_mag, orig_elec = extract_channel_names(original_xml)
-        rt_mag, rt_elec = extract_channel_names(roundtrip_xml)
-
-        # Test that channel names are preserved (case-insensitive)
-        assert (
-            orig_mag == rt_mag
-        ), f"Magnetic channel names differ: {orig_mag} != {rt_mag}"
-        assert (
-            orig_elec == rt_elec
-        ), f"Electric channel names differ: {orig_elec} != {rt_elec}"
-
-        # Test that both XMLs have proper structure
-        assert "InputChannels" in original_xml and "InputChannels" in roundtrip_xml
-        assert "OutputChannels" in original_xml and "OutputChannels" in roundtrip_xml
-
-    def test_period_range_attribute(self, original_emtfxml, tf_roundtrip):
-        """Test period_range attribute consistency."""
-        original_dict = original_emtfxml.period_range.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.period_range.to_dict(single=True)
-        assert original_dict == roundtrip_dict
-
-    def test_period_range_xml_serialization(self, original_emtfxml, tf_roundtrip):
-        """Test period_range XML serialization consistency."""
-        original_xml = original_emtfxml.period_range.to_xml(string=True)
-        roundtrip_xml = tf_roundtrip.period_range.to_xml(string=True)
-        assert original_xml == roundtrip_xml
-
-    @pytest.mark.parametrize("line_type", ["ProcessingTag", "other_lines"])
-    def test_processing_info_xml_lines(self, original_emtfxml, tf_roundtrip, line_type):
-        """Test processing info XML line-by-line comparison."""
-        original_lines = original_emtfxml.processing_info.to_xml(string=True).split(
-            "\n"
+    def test_tags(self):
+        self.assertListEqual(
+            [v.strip() for v in self.x0.tags.split(",")],
+            [v.strip() for v in self.x1.tags.split(",")],
         )
-        roundtrip_lines = tf_roundtrip.processing_info.to_xml(string=True).split("\n")
 
-        for original_line, roundtrip_line in zip(original_lines, roundtrip_lines):
-            if line_type == "ProcessingTag" and "ProcessingTag" in original_line:
-                # ProcessingTag is expected to be different
-                assert original_line != roundtrip_line
-            elif line_type == "other_lines" and "ProcessingTag" not in original_line:
-                # Other lines should be the same
-                assert original_line == roundtrip_line
+    def test_external_url(self):
+        with self.subTest("attribute"):
+            self.assertEqual(self.x0.external_url, self.x1.external_url)
 
-
-class TestEMTFXMLWriteEstimates:
-    """Test statistical estimates validation."""
-
-    def test_statistical_estimates_membership(self, original_emtfxml, tf_roundtrip):
-        """Test that all roundtrip estimates are present in original estimates."""
-        for roundtrip_estimate in tf_roundtrip.statistical_estimates.estimates_list:
-            assert (
-                roundtrip_estimate
-                in original_emtfxml.statistical_estimates.estimates_list
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.external_url.to_xml(string=True),
+                self.x1.external_url.to_xml(string=True),
             )
 
-    def test_statistical_estimates_xml_consistency(
-        self, original_emtfxml, tf_roundtrip
-    ):
-        """Test XML serialization consistency for matching estimates by name."""
-        # Create dictionaries of estimates keyed by name for easier comparison
-        original_estimates = {
-            est.name: est
-            for est in original_emtfxml.statistical_estimates.estimates_list
-        }
-        roundtrip_estimates = {
-            est.name: est for est in tf_roundtrip.statistical_estimates.estimates_list
-        }
+    def test_primary_data(self):
+        with self.subTest("attribute"):
+            self.assertEqual(self.x0.primary_data, self.x1.primary_data)
 
-        # Compare estimates with the same name
-        for name in original_estimates:
-            if name in roundtrip_estimates:
-                original_xml = original_estimates[name].to_xml(string=True)
-                roundtrip_xml = roundtrip_estimates[name].to_xml(string=True)
-                assert (
-                    original_xml == roundtrip_xml
-                ), f"XML mismatch for estimate {name}"
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.primary_data.to_xml(string=True),
+                self.x1.primary_data.to_xml(string=True),
+            )
 
+    def test_attachment(self):
+        with self.subTest("attribute"):
+            self.assertEqual(self.x0.attachment, self.x1.attachment)
 
-class TestEMTFXMLWriteIntegration:
-    """Test integration scenarios and comprehensive validation."""
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.attachment.to_xml(string=True),
+                self.x1.attachment.to_xml(string=True),
+            )
 
-    def test_provenance_filtered_comparison(self, original_emtfxml, tf_roundtrip):
-        """Test provenance comparison excluding time-sensitive fields."""
-        original_dict = original_emtfxml.provenance.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.provenance.to_dict(single=True)
+    def test_provenance(self):
+        d0 = self.x0.provenance.to_dict(single=True)
+        d1 = self.x1.provenance.to_dict(single=True)
 
-        # Remove time-sensitive fields that change during processing
         for key in ["create_time", "creating_application"]:
-            original_dict.pop(key, None)
-            roundtrip_dict.pop(key, None)
+            d0.pop(key)
+            d1.pop(key)
 
-        assert original_dict == roundtrip_dict
+        self.assertDictEqual(d0, d1)
 
-    def test_processing_info_comprehensive_comparison(
-        self, original_emtfxml, tf_roundtrip
-    ):
-        """Test comprehensive processing info comparison with tag exceptions."""
-        original_dict = original_emtfxml.processing_info.to_dict(single=True)
-        roundtrip_dict = tf_roundtrip.processing_info.to_dict(single=True)
+    def test_copyright(self):
+        with self.subTest("attribute"):
+            self.assertEqual(self.x0.copyright, self.x1.copyright)
 
-        for key, original_value in original_dict.items():
-            roundtrip_value = roundtrip_dict[key]
-            if "tag" in key:
-                # Processing tags are expected to be different
-                assert original_value != roundtrip_value
-            else:
-                # All other values should match
-                assert original_value == roundtrip_value
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.copyright.to_xml(string=True),
+                self.x1.copyright.to_xml(string=True),
+            )
 
-    def test_complete_roundtrip_integrity(
-        self, tf_object, original_emtfxml, tf_roundtrip
-    ):
-        """Test overall roundtrip integrity and key properties preservation."""
-        # Verify that the TF object can successfully create an EMTFXML object
-        assert tf_roundtrip is not None
-        assert isinstance(tf_roundtrip, EMTFXML)
+    def test_site(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.site.to_dict(single=True),
+                self.x1.site.to_dict(single=True),
+            )
 
-        # Verify critical properties are preserved
-        assert original_emtfxml.description == tf_roundtrip.description
-        assert original_emtfxml.product_id == tf_roundtrip.product_id
-        assert original_emtfxml.sub_type == tf_roundtrip.sub_type
+        with self.subTest("to_xml"):
+            self.assertEqual(
+                self.x0.site.to_xml(string=True),
+                self.x1.site.to_xml(string=True),
+            )
 
-        # Verify numerical data integrity
-        if original_emtfxml.data.z is not None and tf_roundtrip.data.z is not None:
-            assert np.allclose(original_emtfxml.data.z, tf_roundtrip.data.z)
-        if original_emtfxml.data.t is not None and tf_roundtrip.data.t is not None:
-            assert np.allclose(original_emtfxml.data.t, tf_roundtrip.data.t)
+    def test_field_notes(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.field_notes.to_dict(single=True),
+                self.x1.field_notes.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertNotEqual(
+                self.x0.field_notes.to_xml(string=True),
+                self.x1.field_notes.to_xml(string=True),
+            )
+
+    def test_processing_info(self):
+        d0 = self.x0.processing_info.to_dict(single=True)
+        d1 = self.x1.processing_info.to_dict(single=True)
+
+        for key, value_0 in d0.items():
+            value_1 = d1[key]
+            with self.subTest(f"{key}"):
+                if "tag" in key:
+                    self.assertNotEqual(value_0, value_1)
+                else:
+                    self.assertEqual(value_0, value_1)
+
+    def test_processing_info_to_xml(self):
+        x0 = self.x0.processing_info.to_xml(string=True).split("\n")
+        x1 = self.x1.processing_info.to_xml(string=True).split("\n")
+
+        for line_0, line_1 in zip(x0, x1):
+            with self.subTest(line_0):
+                if "ProcessingTag" in line_0:
+                    self.assertNotEqual(line_0, line_1)
+                else:
+                    self.assertEqual(line_0, line_1)
+
+    def test_statistical_estimates(self):
+        for estimate_01 in self.x0.statistical_estimates.estimates_list:
+            for estimate_02 in self.x1.statistical_estimates.estimates_list:
+                with self.subTest(estimate_02):
+                    self.assertIn(
+                        estimate_02,
+                        self.x0.statistical_estimates.estimates_list,
+                    )
+                if estimate_01 == estimate_02:
+                    with self.subTest(f"{estimate_02}.to_xml"):
+                        self.assertMultiLineEqual(
+                            estimate_01.to_xml(string=True),
+                            estimate_02.to_xml(string=True),
+                        )
+
+    def test_data_types(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.data_types.to_dict(single=True),
+                self.x1.data_types.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.data_types.to_xml(string=True),
+                self.x1.data_types.to_xml(string=True),
+            )
+
+    def test_site_layout(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.site_layout.to_dict(single=True),
+                self.x1.site_layout.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.site_layout.to_xml(string=True),
+                self.x1.site_layout.to_xml(string=True),
+            )
+
+    def test_data_z(self):
+        self.assertTrue(np.all(np.isclose(self.x0.data.z, self.x1.data.z)))
+
+    def test_data_z_var(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.z_var, self.x1.data.z_var))
+        )
+
+    def test_data_z_invsigcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.z_invsigcov, self.x1.data.z_invsigcov)
+            )
+        )
+
+    def test_data_z_residcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.z_residcov, self.x1.data.z_residcov)
+            )
+        )
+
+    def test_data_t(self):
+        self.assertTrue(np.all(np.isclose(self.x0.data.t, self.x1.data.t)))
+
+    def test_data_t_var(self):
+        self.assertTrue(
+            np.all(np.isclose(self.x0.data.t_var, self.x1.data.t_var))
+        )
+
+    def test_data_t_invsigcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.t_invsigcov, self.x1.data.t_invsigcov)
+            )
+        )
+
+    def test_data_t_residcov(self):
+        self.assertTrue(
+            np.all(
+                np.isclose(self.x0.data.t_residcov, self.x1.data.t_residcov)
+            )
+        )
+
+    def test_period_range(self):
+        with self.subTest("attribute"):
+            self.assertDictEqual(
+                self.x0.period_range.to_dict(single=True),
+                self.x1.period_range.to_dict(single=True),
+            )
+
+        # The rounding is not the same
+        with self.subTest("to_xml"):
+            self.assertMultiLineEqual(
+                self.x0.period_range.to_xml(string=True),
+                self.x1.period_range.to_xml(string=True),
+            )
 
 
 # =============================================================================
-# Performance and Edge Case Tests
+# Run
 # =============================================================================
-class TestEMTFXMLWriteEdgeCases:
-    """Test edge cases and performance scenarios."""
-
-    def test_data_array_shapes(self, original_emtfxml, tf_roundtrip):
-        """Test that data arrays maintain correct shapes through roundtrip."""
-        # Test impedance shapes
-        original_z = original_emtfxml.data.z
-        roundtrip_z = tf_roundtrip.data.z
-        if original_z is not None and roundtrip_z is not None:
-            assert original_z.shape == roundtrip_z.shape
-
-        original_z_var = original_emtfxml.data.z_var
-        roundtrip_z_var = tf_roundtrip.data.z_var
-        if original_z_var is not None and roundtrip_z_var is not None:
-            assert original_z_var.shape == roundtrip_z_var.shape
-
-        # Test tipper shapes
-        original_t = original_emtfxml.data.t
-        roundtrip_t = tf_roundtrip.data.t
-        if original_t is not None and roundtrip_t is not None:
-            assert original_t.shape == roundtrip_t.shape
-
-        original_t_var = original_emtfxml.data.t_var
-        roundtrip_t_var = tf_roundtrip.data.t_var
-        if original_t_var is not None and roundtrip_t_var is not None:
-            assert original_t_var.shape == roundtrip_t_var.shape
-
-    def test_data_types_consistency(self, original_emtfxml, tf_roundtrip):
-        """Test that data types are preserved through roundtrip."""
-        original_z = original_emtfxml.data.z
-        roundtrip_z = tf_roundtrip.data.z
-        if original_z is not None and roundtrip_z is not None:
-            assert type(original_z) == type(roundtrip_z)
-
-        original_t = original_emtfxml.data.t
-        roundtrip_t = tf_roundtrip.data.t
-        if original_t is not None and roundtrip_t is not None:
-            assert type(original_t) == type(roundtrip_t)
-
-    def test_non_null_critical_fields(self, original_emtfxml, tf_roundtrip):
-        """Test that critical fields are not null after roundtrip."""
-        critical_fields = ["description", "product_id", "sub_type"]
-
-        for field in critical_fields:
-            original_value = getattr(original_emtfxml, field)
-            roundtrip_value = getattr(tf_roundtrip, field)
-
-            assert original_value is not None
-            assert roundtrip_value is not None
-            assert len(str(original_value).strip()) > 0
-            assert len(str(roundtrip_value).strip()) > 0
+if __name__ == "__main__":
+    unittest.main()

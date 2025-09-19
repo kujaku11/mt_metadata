@@ -39,7 +39,6 @@ def get_allowed_channel_names(standard_names):
 ALLOWED_INPUT_CHANNELS = get_allowed_channel_names(STANDARD_INPUT_CHANNELS)
 ALLOWED_OUTPUT_CHANNELS = get_allowed_channel_names(STANDARD_OUTPUT_CHANNELS)
 
-# from .core import TF
+from .core import TF
 
-
-# __all__ = ["TF"]
+__all__ = ["TF"]

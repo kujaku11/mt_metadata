@@ -1,1 +1,1 @@
-"""Unit test package for mt_metadata.timeseries.stationxml module."""
+"""Unit test package for mth5."""

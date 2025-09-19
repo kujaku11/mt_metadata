@@ -1,0 +1,24 @@
+{
+    "input_channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of input channels for transfer function estimation",
+        "options": [],
+        "alias": [],
+        "example": "[Magnetic(hx), Magnetic(hy)]",
+		"default": []
+    },
+	"output_channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of output channels for transfer function estimation",
+        "options": [],
+        "alias": [],
+        "example": "[Electric(ex), Electric(ey), Magnetic(hz)]",
+		"default": []
+    }
+}

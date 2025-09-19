@@ -1,0 +1,35 @@
+{
+    "title": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "title of file",
+        "options": [],
+        "alias": [],
+        "example": "BIRRP Version 5 basic mode output",
+		"default": null
+    },
+	"station": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "station name",
+        "options": [],
+        "alias": [],
+        "example": "mt001",
+		"default": null
+    },
+	"azimuth": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "rotation of full impedance tensor",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0
+    }
+}

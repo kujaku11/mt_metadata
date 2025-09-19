@@ -1,0 +1,58 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the channel",
+        "options": [],
+        "alias": [],
+        "example": "hx", 
+		"default": null
+    },
+	"orientation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "orientation angle relative to geographic north",
+        "options": [],
+        "alias": [],
+        "example": "11.9", 
+		"default": 0
+    },
+	"x": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in north direction",
+        "options": [],
+        "alias": [],
+        "example": "100.0", 
+		"default": 0
+    },
+	"y": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in east direction",
+        "options": [],
+        "alias": [],
+        "example": "100.0", 
+		"default": 0
+    },
+	"z": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in depth",
+        "options": [],
+        "alias": [],
+        "example": "100.0", 
+		"default": 0
+    }
+	
+}

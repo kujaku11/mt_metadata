@@ -1,0 +1,57 @@
+{
+    "manfacturer": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the manufacturer of the instrument",
+        "options": [],
+        "alias": [],
+        "example": "MT Gurus",
+		"default": null
+    },
+    "length": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "Dipole length",
+        "options": [],
+        "alias": [],
+        "example": "10",
+		"default": null
+    },
+    "azimuth": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Azimuth of the dipole relative to coordinate system",
+        "options": [],
+        "alias": [],
+        "example": "90",
+		"default": null
+    },
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the dipole",
+        "options": [],
+        "alias": [],
+        "example": "ex",
+		"default": null
+    },
+	"type": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "type of dipole",
+        "options": [],
+        "alias": [],
+        "example": "wire",
+		"default": null
+    }
+}

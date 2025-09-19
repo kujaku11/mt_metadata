@@ -1,0 +1,104 @@
+{
+    "channel_layout": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "How the station channels were laid out.",
+        "options": [
+            "L",
+            "X",
+            "other"
+        ],
+        "alias": [],
+        "example": "x",
+		"default": "L"
+    },
+    "channels_recorded": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of components recorded by the station. Should be a summary of all channels recorded. Dropped channels will be recorded in Run metadata.",
+        "options": [
+            "Ex",
+            "Ey",
+            "Hx",
+            "Hy",
+            "Hz",
+            "T",
+            "Battery",
+            "other"
+        ],
+        "alias": [],
+        "example": "\"[ Ex, Ey, Hx, Hy, Hz, T]\"",
+		"default": []
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any comments on the station.",
+        "options": [],
+        "alias": [],
+        "example": "5 runs",
+		"default": null
+    },
+    "data_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of data recorded. If multiple types input as a comma separated list.",
+        "options": [
+            "RMT",
+            "AMT",
+            "BBMT",
+            "LPMT",
+            "ULPMT",
+            "other"
+        ],
+        "alias": [],
+        "example": "BBMT",
+		"default": "BBMT"
+    },
+    "geographic_name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Closest geographic name to the station, usually a city, but could be another common geographic location.",
+        "options": [],
+        "alias": [],
+        "example": "\"Whitehorse, YK\"",
+		"default": null
+    },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
+        "options": [],
+        "alias": [],
+        "example": "MT001",
+		"default": null
+    },
+    "run_list": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of runs recorded by the station. Should be a summary of all runs recorded.",
+        "options": [
+            "a",
+            "b",
+            "c",
+            "other"
+        ],
+        "alias": [],
+        "example": "\"[ mt001a, mt001b, mt001c ]\"",
+		"default": []
+    }
+}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 .. py:module:: JFile
-    :synopsis: Deal with J-Files of the format propsed by Alan Jones
+    :synopsis: Deal with J-Files of the format propsed by Alan Jones 
 
 .. codeauthor:: Jared Peacock <jpeacock@usgs.gov>
 
@@ -9,16 +9,19 @@
 
 # ==============================================================================
 from pathlib import Path
-
 import numpy as np
 from loguru import logger
 
-from mt_metadata.common.mttime import MTime
-from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
-from mt_metadata.transfer_functions.io.tools import get_nm_elev
-from mt_metadata.transfer_functions.tf import Station
-
+from mt_metadata.transfer_functions.tf import (
+    Survey,
+    Station,
+    Run,
+    Electric,
+    Magnetic,
+)
+from mt_metadata.utils.mttime import MTime
 from .metadata import Header
+from mt_metadata.transfer_functions.io.tools import get_nm_elev
 
 
 # ==============================================================================
@@ -29,7 +32,8 @@ class JFile:
     be able to read and write a j-file
     """
 
-    def __init__(self, fn: str | Path | None = None, **kwargs):
+    def __init__(self, fn=None, **kwargs):
+        self.logger = logger
         self.header = Header()
 
         self._jfn = None
@@ -51,11 +55,21 @@ class JFile:
         lines = [f"Station: {self.header.station}", "-" * 50]
         lines.append(f"\tSurvey:        {self.survey_metadata.id}")
         lines.append(f"\tProject:       {self.survey_metadata.project}")
-        lines.append(f"\tAcquired by:   {self.station_metadata.acquired_by.author}")
-        lines.append(f"\tAcquired date: {self.station_metadata.time_period.start}")
-        lines.append(f"\tLatitude:      {self.station_metadata.location.latitude:.3f}")
-        lines.append(f"\tLongitude:     {self.station_metadata.location.longitude:.3f}")
-        lines.append(f"\tElevation:     {self.station_metadata.location.elevation:.3f}")
+        lines.append(
+            f"\tAcquired by:   {self.station_metadata.acquired_by.author}"
+        )
+        lines.append(
+            f"\tAcquired date: {self.station_metadata.time_period.start_date}"
+        )
+        lines.append(
+            f"\tLatitude:      {self.station_metadata.location.latitude:.3f}"
+        )
+        lines.append(
+            f"\tLongitude:     {self.station_metadata.location.longitude:.3f}"
+        )
+        lines.append(
+            f"\tElevation:     {self.station_metadata.location.elevation:.3f}"
+        )
         if self.z is not None:
             if (self.z == 0).all():
                 lines.append("\tImpedance:     False")
@@ -97,19 +111,14 @@ class JFile:
         return self._jfn
 
     @fn.setter
-    def fn(self, value: str | Path | None) -> None:
+    def fn(self, value):
         """
-        set the j-file name
+        set file name
+        :param value: DESCRIPTION
+        :type value: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-        Parameters
-        ----------
-        value : str | Path | None
-            The j-file name to set.
-
-        Raises
-        ------
-        ValueError
-            If the file is not found or cannot be opened.
         """
         if value is None:
             return
@@ -118,26 +127,25 @@ class JFile:
             self._jfn = value
         else:
             msg = f"Input file must be a *.j file not {value.suffix}"
-            logger.error(msg)
+            self.logger.error(msg)
             raise ValueError(msg)
 
     @property
-    def periods(self) -> None | np.typing.NDArray[np.float64]:
-        if self.frequency is not None:
-            return 1.0 / self.frequency
+    def periods(self):
+        return 1.0 / self.frequency
 
-    def _validate_j_file(self) -> list[str]:
+    def _validate_j_file(self):
         """
         change the lat, lon, elev lines to something machine readable,
         if they are not.
         """
-        if self.fn is not None:
-            if not self.fn.exists():
-                msg = f"Could not find {self.fn}, check path"
-                logger.error(msg)
-                raise NameError(msg)
 
-        with open(str(self.fn), "r", errors="replace") as fid:
+        if not self.fn.exists():
+            msg = f"Could not find {self.fn}, check path"
+            self.logger.error(msg)
+            raise NameError(msg)
+
+        with open(self.fn, "r", errors="replace") as fid:
             j_lines = fid.readlines()
 
         for variable in ["lat", "lon", "elev"]:
@@ -148,36 +156,18 @@ class JFile:
                         value = float(line.split("=")[1].strip())
                     except ValueError:
                         value = 0.0
-                        logger.debug(f"Changed {name[1:]} to 0.0")
+                        self.logger.debug(f"Changed {name[1:]} to 0.0")
                     j_lines[ii] = "{0} = {1}\n".format(name, value)
                     break
 
         return j_lines
 
-    def read(self, fn: str | Path | None = None, get_elevation=False):
+    def read(self, fn=None, get_elevation=False):
         """
         Read data from a j file
 
-        parameters
-        ----------
-        fn : str | Path | None
-            full path to j-file to read, defaults to None
-
-        get_elevation : bool, optional
-            if True, will try to get elevation from the NM elevation service,
-            defaults to False
-
-        Raises
-        ------
-        ValueError
-            If the file is not found or cannot be opened.
-        NameError
-            If the file is not a valid j-file.
-
-        Returns
-        -------
-        None
-            Reads the data into the instance variables.
+        :param fn: full path to j-file to read, defaults to None
+        :type fn: string or pathlib.Path, optional
 
         """
         # read data
@@ -192,7 +182,7 @@ class JFile:
         if fn is not None:
             self.fn = fn
 
-        logger.debug(f"Reading {self.fn}")
+        self.logger.debug(f"Reading {self.fn}")
 
         j_line_list = self._validate_j_file()
 
@@ -200,7 +190,9 @@ class JFile:
         self.header.read_metadata(j_line_list)
 
         data_lines = [
-            j_line for j_line in j_line_list if not ">" in j_line and not "#" in j_line
+            j_line
+            for j_line in j_line_list
+            if not ">" in j_line and not "#" in j_line
         ][:]
 
         self.header.station = data_lines[0].strip()
@@ -213,21 +205,15 @@ class JFile:
         # make empty dictionary that have keys as the component
         z_dict = dict([(z_key, {}) for z_key in list(z_index_dict.keys())])
         t_dict = dict([(t_key, {}) for t_key in list(t_index_dict.keys())])
-
-        # initialize d_key to avoid NameError
-        d_key = None
-
         for d_line in data_lines[1:]:
             # check to see if we are at the beginning of a component block, if so
             # set the dictionary key to that value
-            line_parts = d_line.strip().split()
-            if line_parts and (
-                line_parts[0].lower().startswith("z")
-                or line_parts[0].lower().startswith("t")
-            ):
-                d_key = line_parts[0].lower()
+            if "z" in d_line.lower():
+                d_key = d_line.strip().split()[0].lower()
             # if we are at the number of periods line, skip it
-            elif len(d_line.strip().split()) == 1 and "r" not in d_line.lower():
+            elif (
+                len(d_line.strip().split()) == 1 and "r" not in d_line.lower()
+            ):
                 continue
             elif "r" in d_line.lower():
                 break
@@ -250,17 +236,17 @@ class JFile:
                         # need to check for masked points represented by
                         # birrp as -999, apparently
                         if d_value == -999 or np.isnan(d_value):
-                            d_value_list[d_index] = "0.0"
+                            d_value_list[d_index] = 0.0
                         else:
-                            d_value_list[d_index] = str(d_value)
+                            d_value_list[d_index] = d_value
                     except ValueError:
-                        d_value_list[d_index] = "0.0"
+                        d_value_list[d_index] = 0.0
 
                 # put the numbers in the correct dictionary as:
                 # key = period, value = [real, imaginary, error]
-                if d_key is not None and d_key in list(z_index_dict.keys()):
+                if d_key in list(z_index_dict.keys()):
                     z_dict[d_key][d_value_list[0]] = d_value_list[1:4]
-                elif d_key is not None and d_key in list(t_index_dict.keys()):
+                elif d_key in list(t_index_dict.keys()):
                     t_dict[d_key][d_value_list[0]] = d_value_list[1:4]
 
         # --> now we need to get the set of periods for all components
@@ -272,7 +258,7 @@ class JFile:
                 all_periods.append(f_key)
 
         if len(list(t_dict["tzx"].keys())) == 0:
-            logger.debug(f"Could not find any Tipper data in {self.fn}")
+            self.logger.debug(f"Could not find any Tipper data in {self.fn}")
             find_tipper = False
 
         else:
@@ -281,7 +267,7 @@ class JFile:
                     all_periods.append(f_key)
             find_tipper = True
 
-        all_periods = np.array(sorted(list(set(all_periods))), dtype=float)
+        all_periods = np.array(sorted(list(set(all_periods))))
         all_periods = all_periods[np.nonzero(all_periods)]
         num_per = len(all_periods)
 
@@ -293,31 +279,33 @@ class JFile:
         self.t_err = np.zeros((num_per, 1, 2), dtype=float)
 
         for p_index, per in enumerate(all_periods):
-            # Convert float period back to string for dictionary lookup
-            per_key = str(per)
             for z_key in sorted(z_index_dict.keys()):
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    self.z[p_index, kk, ll] = float(
-                        z_dict[z_key][per_key][0]
-                    ) + 1j * float(z_dict[z_key][per_key][1])
-                    self.z_err[p_index, kk, ll] = float(z_dict[z_key][per_key][2])
+                    z_value = (
+                        z_dict[z_key][per][0] + 1j * z_dict[z_key][per][1]
+                    )
+                    self.z[p_index, kk, ll] = z_value
+                    self.z_err[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
-                    logger.debug(f"No value found for period {per:.4g}")
-                    logger.debug(f"For component {z_key}")
+                    self.logger.debug(f"No value found for period {per:.4g}")
+                    self.logger.debug(f"For component {z_key}")
             if find_tipper is True:
                 for t_key in sorted(t_index_dict.keys()):
                     kk = t_index_dict[t_key][0]
                     ll = t_index_dict[t_key][1]
                     try:
-                        self.t[p_index, kk, ll] = float(
-                            t_dict[t_key][per_key][0]
-                        ) + 1j * float(t_dict[t_key][per_key][1])
-                        self.t_err[p_index, kk, ll] = float(t_dict[t_key][per_key][2])
+                        t_value = (
+                            t_dict[t_key][per][0] + 1j * t_dict[t_key][per][1]
+                        )
+                        self.t[p_index, kk, ll] = t_value
+                        self.t_err[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
-                        logger.debug(f"No value found for period {per:.4g}")
-                        logger.debug(f"For component {t_key}")
+                        self.logger.debug(
+                            f"No value found for period {per:.4g}"
+                        )
+                        self.logger.debug(f"For component {t_key}")
 
         # put the results into mtpy objects
         self.frequency = 1.0 / all_periods
@@ -365,14 +353,17 @@ class JFile:
         sm.provenance.software.name = "BIRRP"
         sm.provenance.software.version = "5"
         sm.transfer_function.id = self.header.station
-        if self.fn is not None:
-            sm.transfer_function.processed_date = MTime(
-                time_stamp=self.fn.stat().st_ctime
-            ).isoformat()
+        sm.transfer_function.processed_date = MTime(
+            self.fn.stat().st_ctime
+        ).iso_str
         sm.transfer_function.runs_processed = sm.run_list
         # add birrp parameters
-        for key, value in self.header.birrp_parameters.to_dict(single=True).items():
-            sm.transfer_function.processing_parameters.append(f"{key} = {value}")
+        for key, value in self.header.birrp_parameters.to_dict(
+            single=True
+        ).items():
+            sm.transfer_function.processing_parameters.append(
+                f"{key} = {value}"
+            )
 
         return sm
 

@@ -1,71 +1,42 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 23 21:30:36 2020
+
+:copyright: 
+    Jared Peacock (jpeacock@usgs.gov)
+
+:license: MIT
+
+"""
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
 from xml.etree import cElementTree as et
+from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 
-from pydantic import Field, field_validator, ValidationInfo
-
-import mt_metadata.transfer_functions.io.emtfxml.metadata.helpers as helpers
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment
-from mt_metadata.common.enumerations import ElectrodeLocationEnum
-
-
-# =====================================================
+# =============================================================================
+attr_dict = get_schema("electrode", SCHEMA_FN_PATHS)
+# =============================================================================
 
 
-class Electrode(MetadataBase):
-    location: Annotated[
-        ElectrodeLocationEnum,
-        Field(
-            default="",
-            description="Direction of electrode",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["N", "S", "E", "W"],
-            },
-        ),
-    ]
+class Electrode(Base):
+    __doc__ = write_lines(attr_dict)
 
-    number: Annotated[
-        str,
-        Field(
-            default="0",
-            description="Electrode ID number",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["1a"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
 
-    comments: Annotated[
-        Comment,
-        Field(
-            default_factory=lambda: Comment(),  # type: ignore[return-value]
-            description="comments on the electrode",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["Ag-AgCl porous pot"],
-            },
-        ),
-    ]
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
-    @field_validator("comments", mode="before")
-    @classmethod
-    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
-        if isinstance(value, str):
-            return Comment(value=value)  # type: ignore[return-value]
-        return value
+    @property
+    def comments(self):
+        return self.value
 
-    def to_xml(self, string: bool = False, required: bool = False) -> str | et.Element:
+    @comments.setter
+    def comments(self, value):
+        self.value = value
+
+    def to_xml(self, string=False, required=False):
         """ """
 
         root = et.Element(
@@ -73,10 +44,8 @@ class Electrode(MetadataBase):
             {"location": self.location.upper(), "number": self.number},
         )
 
-        # this might break in the future when to_dict is updated to return a dict
-        # instead of a string, but for now it works.
-        root.text = self.comments.as_string()
+        root.text = self.comments
 
         if string:
-            return helpers.element_to_string(root)
+            return element_to_string(root)
         return root
