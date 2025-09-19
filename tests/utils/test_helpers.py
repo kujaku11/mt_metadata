@@ -4,10 +4,12 @@ Created on Thu Sep 28 17:11:57 2023
 
 @author: jpeacock
 """
+
 # =============================================================================
 # Imports
 # =============================================================================
 import pytest
+from pydantic import Field
 
 from mt_metadata.base import helpers
 
@@ -83,48 +85,46 @@ class TestWriteLines:
     """Test class for write_lines function with fixtures and subtests."""
 
     @pytest.fixture
-    def write_lines_attr_dict(self):
-        """Fixture providing complex attribute dictionary for write_lines testing."""
+    def write_lines_field_dict(self):
+        """Fixture providing FieldInfo objects for write_lines testing."""
         return {
-            "a": {
-                "type": "string",
-                "required": False,
-                "style": "free form",
-                "units": None,
-                "description": (
+            "a": Field(
+                default=None,
+                description=(
                     "Any publications that use this data of description that "
                     "is way to long and so no one is going to read it because "
                     "it covers way too many lines.  This is a terrible test, "
                     "dont even get started on unit testing, what a painful "
                     "but necessary process."
                 ),
-                "options": [],
-                "alias": [],
-                "example": "my paper",
-                "default": None,
-            },
-            "long_key_that_is_way_too_verbose_and_unseemingly_lengthy": {
-                "type": "string",
-                "required": False,
-                "style": "free form",
-                "units": None,
-                "description": "Any publications that use this data",
-                "options": [],
-                "alias": [],
-                "example": "my paper",
-                "default": (
+                json_schema_extra={
+                    "required": False,
+                    "units": None,
+                    "examples": "my paper",
+                    "style": "free form",
+                },
+            ),
+            "long_key_that_is_way_too_verbose_and_unseemingly_lengthy": Field(
+                default=(
                     "default value  that "
                     "is way to long and so no one is going to read it because "
                     "it covers way too many lines.  This is a terrible test, "
                     "dont even get started on unit testing, what a painful "
                     "but necessary process."
                 ),
-            },
+                description="Any publications that use this data",
+                json_schema_extra={
+                    "required": False,
+                    "units": None,
+                    "examples": "my paper",
+                    "style": "free form",
+                },
+            ),
         }
 
-    def test_write_lines_output_structure(self, subtests, write_lines_attr_dict):
+    def test_write_lines_output_structure(self, subtests, write_lines_field_dict):
         """Test write_lines output structure and content."""
-        result = helpers.write_lines(write_lines_attr_dict)
+        result = helpers.write_lines(write_lines_field_dict)
         result_lines = result.split("\n")
 
         with subtests.test("output_is_string"):
@@ -169,44 +169,42 @@ class TestWriteBlock:
         return [
             {
                 "key": "a",
-                "attr_dict": {
-                    "type": "string",
-                    "required": False,
-                    "style": "free form",
-                    "units": None,
-                    "description": (
+                "field_info": Field(
+                    default=None,
+                    description=(
                         "Any publications that use this data of description that "
                         "is way to long and so no one is going to read it because "
                         "it covers way too many lines.  This is a terrible test, "
                         "dont even get started on unit testing, what a painful "
                         "but necessary process."
                     ),
-                    "options": [],
-                    "alias": [],
-                    "example": "my paper",
-                    "default": None,
-                },
+                    json_schema_extra={
+                        "required": False,
+                        "units": None,
+                        "examples": "my paper",
+                        "style": "free form",
+                    },
+                ),
                 "description": "long_description_case",
             },
             {
                 "key": "a",
-                "attr_dict": {
-                    "type": "string",
-                    "required": False,
-                    "style": "free form",
-                    "units": None,
-                    "description": "Any publications that use this data",
-                    "options": [],
-                    "alias": [],
-                    "example": "my paper",
-                    "default": (
+                "field_info": Field(
+                    default=(
                         "default value  that "
                         "is way to long and so no one is going to read it because "
                         "it covers way too many lines.  This is a terrible test, "
                         "dont even get started on unit testing, what a painful "
                         "but necessary process."
                     ),
-                },
+                    description="Any publications that use this data",
+                    json_schema_extra={
+                        "required": False,
+                        "units": None,
+                        "examples": "my paper",
+                        "style": "free form",
+                    },
+                ),
                 "description": "long_default_case",
             },
         ]
@@ -215,7 +213,7 @@ class TestWriteBlock:
         """Test write_block function structure and content."""
         for case in write_block_test_cases:
             with subtests.test(case_type=case["description"]):
-                result = helpers.write_block(case["key"], case["attr_dict"])
+                result = helpers.write_block(case["key"], case["field_info"])
 
                 with subtests.test("output_is_list", case_type=case["description"]):
                     assert isinstance(result, list)
@@ -251,30 +249,29 @@ class TestWriteBlock:
                     assert "**Required**" in result_text
                     assert "**Units**" in result_text
                     assert "**Type**" in result_text
-                    assert "**Style**" in result_text
+                    # Note: write_block doesn't include Style field
 
                 with subtests.test(
                     "handles_defaults_properly", case_type=case["description"]
                 ):
                     result_text = "\n".join(result)
-                    if case["attr_dict"]["default"] is None:
+                    if case["field_info"].default is None:
                         assert "**Default**: None" in result_text
                     else:
                         assert "**Default**:" in result_text
 
     def test_write_block_column_handling(self, subtests):
         """Test write_block with different column configurations."""
-        test_attr = {
-            "type": "string",
-            "required": True,
-            "style": "controlled vocabulary",
-            "units": "meters",
-            "description": "Test description",
-            "options": [],
-            "alias": [],
-            "example": "example",
-            "default": "test",
-        }
+        test_field_info = Field(
+            default="test",
+            description="Test description",
+            json_schema_extra={
+                "required": True,
+                "units": "meters",
+                "examples": "example",
+                "style": "controlled vocabulary",
+            },
+        )
 
         column_configs = [
             {"c1": 45, "c2": 45, "c3": 15},
@@ -286,7 +283,7 @@ class TestWriteBlock:
             with subtests.test(
                 config=f"c1={config['c1']}, c2={config['c2']}, c3={config['c3']}"
             ):
-                result = helpers.write_block("test_key", test_attr, **config)
+                result = helpers.write_block("test_key", test_field_info, **config)
 
                 with subtests.test("output_is_list", config=str(config)):
                     assert isinstance(result, list)

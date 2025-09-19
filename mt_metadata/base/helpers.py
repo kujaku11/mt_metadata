@@ -223,15 +223,15 @@ def validate_c1(attr_dict, c1):
     return c1
 
 
-def write_lines(attr_dict, c1=45, c2=45, c3=15):
+def write_lines(field_dict, c1=45, c2=45, c3=15):
     """
-    Takes the attribute dictionary from the json and parses it into a table
+    Takes a dictionary of field names to FieldInfo objects and parses it into a table
     Returns a string representation of this table.  This overwrites the doc.
 
     Parameters
     ----------
-    attr_dict : dict
-        attribute dictionary
+    field_dict : dict
+        dictionary mapping field names to FieldInfo objects
     c1 : int, optional
         column 1 width, by default 45
     c2 : int, optional
@@ -244,7 +244,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
     str
         doc string
     """
-    c1 = validate_c1(attr_dict, c1)
+    c1 = validate_c1(field_dict, c1)
 
     line = "       | {0:<{1}}| {2:<{3}} | {4:<{5}}|"
     hline = "       +{0}+{1}+{2}+".format(
@@ -260,11 +260,46 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         mline,
     ]
 
-    for key, entry in attr_dict.items():
-        if isinstance(entry, logging.Logger):
+    for key, field_info in field_dict.items():
+        if isinstance(field_info, logging.Logger):
             continue
-        d_lines = wrap_description(entry["description"], c2)
-        e_lines = wrap_description(entry["example"], c3)
+
+        # Extract description from FieldInfo
+        description = field_info.description or ""
+        d_lines = wrap_description(description, c2)
+
+        # Extract examples from json_schema_extra
+        examples = ""
+        if field_info.json_schema_extra and isinstance(
+            field_info.json_schema_extra, dict
+        ):
+            examples = field_info.json_schema_extra.get("examples", "")
+        e_lines = wrap_description(examples, c3)
+
+        # Get required status
+        required = "False"
+        if field_info.json_schema_extra and isinstance(
+            field_info.json_schema_extra, dict
+        ):
+            required = str(field_info.json_schema_extra.get("required", False))
+
+        # Get units
+        units = ""
+        if field_info.json_schema_extra and isinstance(
+            field_info.json_schema_extra, dict
+        ):
+            units = str(field_info.json_schema_extra.get("units", ""))
+
+        # Get type from annotation
+        field_type = str(field_info.annotation) if field_info.annotation else "string"
+
+        # Get style
+        style = "free form"
+        if field_info.json_schema_extra and isinstance(
+            field_info.json_schema_extra, dict
+        ):
+            style = field_info.json_schema_extra.get("style", "free form")
+
         # line 1 is with the entry
         lines.append(line.format(f"**{key}**", c1, d_lines[0], c2, e_lines[0], c3))
         # line 2 skip an entry in the
@@ -272,7 +307,7 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         # line 3 required
         lines.append(
             line.format(
-                f"Required: {entry['required']}",
+                f"Required: {required}",
                 c1,
                 d_lines[2],
                 c2,
@@ -284,32 +319,55 @@ def write_lines(attr_dict, c1=45, c2=45, c3=15):
         lines.append(line.format("", c1, d_lines[3], c2, e_lines[3], c3))
 
         # line 5 units
-        lines.append(
-            line.format(f"Units: {entry['units']}", c1, d_lines[4], c2, e_lines[4], c3)
-        )
+        lines.append(line.format(f"Units: {units}", c1, d_lines[4], c2, e_lines[4], c3))
 
         # line 6 blank
         lines.append(line.format("", c1, d_lines[5], c2, e_lines[5], c3))
 
         # line 7 type
         lines.append(
-            line.format(f"Type: {entry['type']}", c1, d_lines[6], c2, e_lines[6], c3)
+            line.format(f"Type: {field_type}", c1, d_lines[6], c2, e_lines[6], c3)
         )
 
         # line 8 blank
         lines.append(line.format("", c1, d_lines[7], c2, e_lines[7], c3))
 
-        # line 9 type
-        lines.append(
-            line.format(f"Style: {entry['style']}", c1, d_lines[8], c2, e_lines[8], c3)
-        )
+        # line 9 style
+        lines.append(line.format(f"Style: {style}", c1, d_lines[8], c2, e_lines[8], c3))
 
         # line 10 blank
         lines.append(line.format("", c1, d_lines[9], c2, e_lines[9], c3))
 
-        default = [entry["default"]] + [""] * 5
-        if len(str(entry["default"])) > c1 - 15:
-            default = [""] + wrap_description(entry["default"], c1)
+        # Handle default value - similar to write_block
+        default_value = field_info.default
+        if default_value is PydanticUndefined:
+            if (
+                field_info.default_factory is not None
+                and field_info.default_factory is not PydanticUndefined
+            ):
+                try:
+                    # Some default factories may require arguments, handle both cases
+                    if callable(field_info.default_factory):
+                        try:
+                            default_value = field_info.default_factory()
+                        except TypeError:
+                            # If it needs arguments, we can't call it
+                            default_value = f"<{field_info.default_factory.__name__}>"
+                    else:
+                        default_value = field_info.default_factory
+                    # If it's a complex object, just show the type name
+                    if not isinstance(
+                        default_value, (str, int, float, bool, type(None))
+                    ):
+                        default_value = type(default_value).__name__
+                except Exception:
+                    default_value = None
+            else:
+                default_value = None
+
+        default = [str(default_value)] + [""] * 5
+        if len(str(default_value)) > c1 - 15:
+            default = [""] + wrap_description(str(default_value), c1)
 
         # line 9 type
         lines.append(
@@ -495,7 +553,15 @@ def write_block(key, field_info: FieldInfo, c1=45, c2=45, c3=15):
             and field_info.default_factory is not PydanticUndefined
         ):
             try:
-                default_value = field_info.default_factory()
+                # Some default factories may require arguments, handle both cases
+                if callable(field_info.default_factory):
+                    try:
+                        default_value = field_info.default_factory()
+                    except TypeError:
+                        # If it needs arguments, we can't call it
+                        default_value = f"<{field_info.default_factory.__name__}>"
+                else:
+                    default_value = field_info.default_factory
                 # If it's a complex object, just show the type name
                 if not isinstance(default_value, (str, int, float, bool, type(None))):
                     default_value = type(default_value).__name__
