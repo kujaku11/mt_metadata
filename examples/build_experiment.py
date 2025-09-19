@@ -2,7 +2,7 @@
 """
 Created on Wed Feb 10 12:47:21 2021
 
-:copyright:
+:copyright: 
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -12,13 +12,12 @@ Created on Wed Feb 10 12:47:21 2021
 from mt_metadata.timeseries import (
     Auxiliary,
     Electric,
-    Experiment,
     Magnetic,
     Run,
     Station,
     Survey,
+    Experiment,
 )
-
 
 experiment = Experiment()
 

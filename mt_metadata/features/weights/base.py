@@ -1,66 +1,29 @@
-# =====================================================
-# Imports
-# =====================================================
-from typing import Annotated
+"""
+    The base class for a weighting kernel.
 
-from pydantic import Field
+"""
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common.enumerations import StrEnumerationBase
-
-
-# =====================================================
-class WeightTypeEnum(StrEnumerationBase):
-    monotonic = "monotonic"
-    learned = "learned"
-    spatial = "spatial"
-    custom = "custom"
+# attr_dict = get_schema("base", SCHEMA_FN_PATHS)
 
 
-class Base(MetadataBase):
-    weight_type: Annotated[
-        WeightTypeEnum,
-        Field(
-            default=WeightTypeEnum.monotonic,
-            description="Type of weighting kernel (e.g., monotonic, learned, spatial).",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["monotonic"],
-            },
-        ),
-    ]
+class BaseWeightKernel(Base):
+    """
+    BaseWeightKernel
 
-    description: Annotated[
-        str | None,
-        Field(
-            default=None,
-            description="Human-readable description of what this kernel is for.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": [
-                    "This kernel smoothly transitions between 0 and 1 in a monotonic way"
-                ],
-            },
-        ),
-    ]
+    A base class for defining a weighting kernel that can be applied to a feature
+    to determine its contribution to a final weight value.
 
-    active: Annotated[
-        bool | None,
-        Field(
-            default=None,
-            description="If false, this kernel will be skipped during weighting.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["false"],
-            },
-        ),
-    ]
+    This class is not intended to be used directly but to be subclassed by
+    specific kernel types (e.g., MonotonicWeightKernel, CompositeWeightKernel).
+    """
+    # __doc__ = write_lines(attr_dict)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        #self.from_dict(kwargs)
 
     def evaluate(self, values):
         """
@@ -77,3 +40,5 @@ class Base(MetadataBase):
             The resulting weight(s).
         """
         raise NotImplementedError("BaseWeightKernel cannot be evaluated directly.")
+
+

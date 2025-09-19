@@ -1,0 +1,68 @@
+{
+    "component": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of channel",
+        "options": [],
+        "alias": [],
+        "example": "ex",
+		"default": null
+    },
+    "frequency_max": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Highest frequency present in the sprectrogam data.",
+        "options": [],
+        "alias": [],
+        "example": 77.0,
+		"default": 0.0
+    },
+    "frequency_min": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Lowest frequency present in the sprectrogam data.",
+        "options": [],
+        "alias": [],
+        "example": 99.0,
+		"default": 0.0
+    },
+	"sample_rate_decimation_level": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
+        "options": [],
+        "alias": [],
+        "example": 60,
+		"default": 1
+    },
+	"sample_rate_window_step": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of the windows.",
+        "options": [],
+        "alias": [],
+        "example": 4,
+		"default": 1
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Units of the channel",
+        "options": [],
+        "alias": [],
+        "example": "millivolts",
+		"default": "counts"
+    }
+}

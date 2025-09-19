@@ -1,0 +1,61 @@
+{
+    "coefficients": {
+        "type": "float",
+        "required": true,
+        "style": "number list",
+        "units": null,
+        "description": "The FIR coefficients associated with the filter stage response.",
+        "options": [],
+        "alias": [],
+        "example": "\"[0.25, 0.5, 0.25]\"",
+		"default": []
+    },
+
+    "decimation_factor": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Downsample factor.",
+        "options": [],
+        "alias": [],
+        "example": "16",
+		"default": "1"
+    },
+
+    "decimation_input_sample_rate": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Sample rate of FIR taps.",
+        "options": [],
+        "alias": [],
+        "example": "2000.0",
+		"default": null
+    },
+
+    "gain_frequency": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "hertz",
+        "description": "Frequency of the reference gain, usually in passband.",
+        "options": [],
+        "alias": [],
+        "example": "0.0",
+		"default": 0.0
+    },
+
+    "symmetry": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Symmetry of FIR coefficients",
+        "options": ["NONE", "ODD", "EVEN"],
+        "alias": [],
+        "example": "NONE",
+		"default": "NONE"
+    }
+}

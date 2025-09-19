@@ -1,0 +1,197 @@
+{
+    "latitude": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "latitude of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "lat"
+        ],
+        "example": "23.134",
+		"default": 0.0
+    },
+    "longitude": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "longitude of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "lon",
+            "long"
+        ],
+        "example": "14.23",
+		"default": 0.0
+    },
+    "elevation": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "elevation of location in datum specified at survey level",
+        "options": [],
+        "alias": [
+            "elev"
+        ],
+        "example": "123.4",
+		"default": 0.0
+    },
+    "latitude_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "uncertainty in latitude estimation in degrees",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "longitude_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "uncertainty in longitude estimation in degrees",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "elevation_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "uncertainty in elevation estimation",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+	"datum": {
+        "type": "string",
+        "required": false,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Datum of the location values.  Usually a well known datum like WGS84.",
+        "options": ["WGS84", "NAD83", "other"],
+        "alias": [],
+        "example": "WGS84",
+		"default": "WGS84"
+    },
+    "x": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "x2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "east",
+            "easting"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "y": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "y2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative distance to the center of the station",
+        "options": [],
+        "alias": [
+            "north",
+            "northing"
+        ],
+        "example": "10.0",
+		"default": null
+    },
+    "z": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0",
+		"default": null
+    },
+	"z2": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "relative elevation to the center of the station",
+        "options": [],
+        "alias": [],
+        "example": "10.0",
+		"default": null
+    },
+    "x_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "uncertainty in longitude estimation in x-direction",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "y_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "uncertainty in longitude estimation in y-direction",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    },
+    "z_uncertainty": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "uncertainty in longitude estimation in z-direction",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": 0.0
+    }
+}

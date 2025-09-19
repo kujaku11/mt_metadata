@@ -1,10 +1,8 @@
 from loguru import logger
-
-from mt_metadata.timeseries.filters import (
-    CoefficientFilter,
+from mt_metadata.timeseries.filters.coefficient_filter import CoefficientFilter
+from mt_metadata.timeseries.filters.frequency_response_table_filter import (
     FrequencyResponseTableFilter,
 )
-
 
 def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwargs):
     """
@@ -18,7 +16,7 @@ def make_coefficient_filter(gain=1.0, name="generic coefficient filter", **kwarg
         one of "digital counts", "millivolts", etc.
         A complete list of units can be found in mt_metadata/mt_metadata/util/units.py
         and is accessible as a table via:
-        from mt_metadata.common.units import UNITS_DF
+        from mt_metadata.utils.units import UNITS_DF
 
     Returns
     -------
@@ -60,7 +58,7 @@ def make_frequency_response_table_filter(file_path, case="bf4"):
         fap_filter.frequencies = df["Frequency [Hz]"].values
         fap_filter.amplitudes = df["Amplitude [V/nT]"].values
         fap_filter.phases = np.deg2rad(df["Phase [degrees]"].values)
-        fap_filter.units_in = "volt"
+        fap_filter.units_in = "volts"
         fap_filter.units_out = "nanotesla"
         fap_filter.gain = 1.0
         fap_filter.name = "bf4"
@@ -81,8 +79,8 @@ def make_volt_per_meter_to_millivolt_per_km_converter():
     """
     coeff_filter = make_coefficient_filter(
         gain=1e-6,
-        units_in="millivolt per kilometer",
-        units_out="volt per meter",
+        units_in="millivolts per kilometer",
+        units_out="volts per meter",
         name="MT to SI electric field conversion",
     )
     return coeff_filter
@@ -103,6 +101,7 @@ def make_tesla_to_nanotesla_converter():
         name="MT to SI magnetic field conversion",
     )
     return coeff_filter
+
 
 
 def decimation_info_is_degenerate(obspy_stage):

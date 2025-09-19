@@ -1,0 +1,101 @@
+{
+    "maxchan": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "maximum number of channels",
+        "options": [],
+        "alias": [],
+        "example": "16",
+		"default": 999
+    },
+	"maxrun": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "maximum number of runs",
+        "options": [],
+        "alias": [],
+        "example": "999",
+		"default": 999
+    },
+	"maxmeas": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "maximum number of measurements",
+        "options": [],
+        "alias": [],
+        "example": "999",
+		"default": 999
+    },
+	"reftype": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Type of offset from reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "cart",
+		"default": 0.0
+    },
+	"refloc": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Description of location reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "here",
+		"default": 0.0
+    },
+	"reflat": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Latitude of reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
+	"reflon": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Longitude reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
+	"refelev": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "meters",
+        "description": "Elevation reference center point.",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0.0
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "In the EDI standards this is the elevation units.",
+        "options": [],
+        "alias": [],
+        "example": "m",
+		"default": "m"
+		}
+}

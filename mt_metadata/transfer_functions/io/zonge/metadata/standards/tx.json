@@ -1,0 +1,13 @@
+{
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of EM source",
+        "options": ["natural", "controlled source"],
+        "alias": [],
+        "example": "natural",
+		"default": "natural"
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "location": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Direction of electrode",
+        "options": [
+            "N",
+            "S",
+            "E",
+            "W",
+            "other"
+        ],
+        "alias": [],
+        "example": "N",
+		"default": null
+    },
+    "number": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Electrode ID number",
+        "options": [],
+        "alias": [],
+        "example": "1a",
+		"default": "0"
+    },
+	"comments": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "comments on the electrode",
+        "options": [],
+        "alias": [],
+        "example": "Ag-AgCl porous pot",
+		"default": null
+    }
+}

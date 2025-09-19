@@ -1,0 +1,123 @@
+{
+    "nfreq": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Number of frequencies",
+        "options": [],
+        "alias": [],
+        "example": "16",
+		"default": null
+    },
+	"sectid": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "ID of the station that the data is from. This is important if you have more than one station per file.",
+        "options": [],
+        "alias": [],
+        "example": "mt001",
+		"default": null
+    },
+	"nchan": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Number of channels in the transfer function",
+        "options": [],
+        "alias": [],
+        "example": "7",
+		"default": 0
+    },
+	"maxblocks": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Maximum number of data blocks",
+        "options": [],
+        "alias": [],
+        "example": "999",
+		"default": 999
+    },
+	"ex": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for EX",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 0
+    },
+	"ey": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for EY",
+        "options": [],
+        "alias": [],
+        "example": "2",
+		"default": 0
+    },
+	"hx": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for HX",
+        "options": [],
+        "alias": [],
+        "example": "3",
+		"default": 0
+    },
+	"hy": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for HY",
+        "options": [],
+        "alias": [],
+        "example": "4",
+		"default": 0
+    },
+	"hz": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for HZ",
+        "options": [],
+        "alias": [],
+        "example": "5",
+		"default": 0
+    },
+	"rrhx": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for RRHX",
+        "options": [],
+        "alias": [],
+        "example": "6",
+		"default": 0
+    },
+	"rrhy": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Measurement ID for RRHY",
+        "options": [],
+        "alias": [],
+        "example": "7",
+		"default": 0
+    }
+}

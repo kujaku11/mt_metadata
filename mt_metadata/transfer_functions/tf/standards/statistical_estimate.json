@@ -1,0 +1,72 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "transfer function",
+		"default": null
+    },
+    "data_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of number contained in the estimate",
+        "options": [
+            "real",
+            "complex",
+			"other"
+        ],
+        "alias": [],
+        "example": "real",
+		   "default": "complex"
+	},
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Description of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "this is an estimate",
+		"default": null
+    },
+    "input_channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of input channels (sources)",
+        "options": [],
+        "alias": [],
+        "example": "[hx, hy]",
+		   "default": null
+    },
+    "output_channels": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of output channels (response).",
+        "options": [],
+        "alias": [],
+        "example": ["ex", "ey", "hz"],
+		"default": null
+    },
+	"units": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Units of the estimate.",
+        "options": [],
+        "alias": [],
+        "example": "millivolts per kilometer per nanotesla",
+		"default": null
+    }
+}

@@ -1,0 +1,91 @@
+{
+    "id": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Channel number, could be location.channel_number.",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 0.0
+    },
+	"chtype": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "channel type, should start with an 'h' or 'b'",
+        "options": ["hx", "hy", "hz", "other"],
+        "alias": [],
+        "example": "hx",
+		"default": null
+    },
+	"x": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in north direction",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
+	"y": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in east direction",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
+	"z": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "meters",
+        "description": "location of sensor relative center point in depth",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
+	"azm": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "orientation of the sensor relative to coordinate system, clockwise positive.",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
+	"dip": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "orientation of the sensor relative to horizontal = 0",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": 0.0
+    },
+	"acqchan": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "description of acquired channel",
+        "options": [],
+        "alias": [],
+        "example": "100.0",
+		"default": null
+    }
+	
+}

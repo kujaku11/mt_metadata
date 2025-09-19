@@ -1,0 +1,113 @@
+{
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "transfer function id",
+        "options": [        ],
+        "alias": [],
+        "example": "mt01_256",
+        "default": null
+    },
+    "sign_convention": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "sign of the transfer function estimates",
+        "options": [
+            "+",
+            "-",
+            "other"
+        ],
+        "alias": [],
+        "example": "+",
+		"default": "+"
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "units of the impedance tensor estimates",
+        "options": [
+            "millivolts_per_kilometer_per_nanotesla",
+            "ohms",
+            "other"
+        ],
+        "alias": [],
+        "example": "millivolts_per_kilometer_per_nanotesla",
+		"default": null
+    },
+    "runs_processed": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of runs used in the processing",
+        "options": [],
+        "alias": [],
+        "example": "[ MT001a MT001c]",
+		"default":[]
+    },
+    "remote_references": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of remote references",
+        "options": [],
+        "alias": [],
+        "example": "[ MT002b MT002c ]",
+		"default": []
+    },
+    "processed_date": {
+        "type": "string",
+        "required": true,
+        "style": "date time",
+        "units": null,
+        "description": "date the data were processed",
+        "options": [],
+        "alias": [],
+        "example": "2020-01-01T12:00:00",
+		"default": null
+    },
+    "processing_parameters": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of processing parameters with structure name = value",
+        "options": [],
+        "alias": [],
+        "example": "[nfft=4096, n_windows=16]",
+		"default": []
+    },
+    "processing_type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Type of processing",
+        "options": [],
+        "alias": [],
+        "example": "robust remote reference",
+		"default": null
+    },
+	"coordinate_system": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
+        "options": [
+			"geographic",
+			"geomagnetic",
+			"other"
+		],
+        "alias": [],
+        "example": "geographic",
+		"default": "geopgraphic"
+    }
+}

@@ -1,76 +1,29 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 31 13:39:39 2025
+
+@author: jpeacock
+"""
+
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 
-from pydantic import Field, field_validator, ValidationInfo
+from mt_metadata.timeseries import TimePeriod
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common import Comment, TimePeriod
+# =============================================================================
+attr_dict = get_schema("feature_ts_run", SCHEMA_FN_PATHS)
+attr_dict.add_dict(TimePeriod()._attr_dict, "time_period")
 
 
-# =====================================================
-class FeatureTSRun(MetadataBase):
-    id: Annotated[
-        str,
-        Field(
-            default="",
-            description="Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001. Should be the same as the time series run ID.",
-            alias=None,
-            pattern="^[a-zA-Z0-9_]*$",
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["001"],
-            },
-        ),
-    ]
+# =============================================================================
+class FeatureTSRun(Base):
+    __doc__ = write_lines(attr_dict)
 
-    sample_rate: Annotated[
-        float,
-        Field(
-            default=0.0,
-            description="Digital sample rate for the run",
-            alias=None,
-            json_schema_extra={
-                "units": "samples per second",
-                "required": True,
-                "examples": ["100"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
 
-    comments: Annotated[
-        Comment,
-        Field(
-            default_factory=lambda: Comment(),  # type: ignore
-            description="Any comments about the feature",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["estimated using hilburt transform."],
-            },
-        ),
-    ]
-
-    time_period: Annotated[
-        TimePeriod,
-        Field(
-            default_factory=lambda: TimePeriod(),  # type: ignore
-            description="Time period for the feature",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["2020-01-01/2020-01-31"],
-            },
-        ),
-    ]
-
-    @field_validator("comments", mode="before")
-    @classmethod
-    def validate_comments(cls, value, info: ValidationInfo) -> Comment:
-        if isinstance(value, str):
-            return Comment(value=value)
-        return value
+        self.time_period = TimePeriod()
+        super().__init__(attr_dict=attr_dict, **kwargs)

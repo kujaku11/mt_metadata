@@ -1,0 +1,13 @@
+{
+    "normalization_frequency": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Pass band frequency",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": null
+    }
+}

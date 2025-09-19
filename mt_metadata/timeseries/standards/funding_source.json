@@ -1,0 +1,68 @@
+{
+    "name": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Persons name, should be full first and last name.",
+        "options": [],
+        "alias": [],
+        "example": "person name",
+		"default": null
+    },
+    "organization": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Organization full name",
+        "options": [],
+        "alias": [],
+        "example": "mt gurus",
+		"default": null
+    },
+    "email": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Email of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "mt.guru@em.org",
+		"default": null
+    },
+    "url": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "URL of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "em.org",
+		"default": null
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any comments about the person",
+        "options": [],
+        "alias": [],
+        "example": "expert digger",
+		"default": null
+    },
+    "grant_id": {
+        "type": "string",
+        "required": false,
+        "style": "name list",
+        "units": null,
+        "description": "Grant ID number or name",
+        "options": [],
+        "alias": [],
+        "example": "MT-01-2020",
+		"default": null
+    }
+}

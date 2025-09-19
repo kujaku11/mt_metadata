@@ -1,25 +1,29 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec  4 17:25:11 2021
+
+@author: jpeacock
+"""
+
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
-
-from loguru import logger
-from pydantic import computed_field, Field, field_validator, PrivateAttr, ValidationInfo
-
-from mt_metadata.base import MetadataBase
-from mt_metadata.common.units import get_unit_object
-from mt_metadata.timeseries import Auxiliary, Electric, Magnetic  # noqa: F401
+# =============================================================================
+from mt_metadata.base.helpers import write_lines
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from mt_metadata.transfer_functions.tf import Location
 from mt_metadata.transfer_functions.io.tools import _validate_str_with_equals
-from mt_metadata.utils.location_helpers import (
-    convert_position_float2str,
-    validate_position,
-)
+from . import HMeasurement, EMeasurement
 
-from . import EMeasurement, HMeasurement
+# =============================================================================
+attr_dict = get_schema("define_measurement", SCHEMA_FN_PATHS)
+# =============================================================================
 
 
-# =====================================================
-class DefineMeasurement(MetadataBase):
+# ==============================================================================
+#  Define measurement class
+# ==============================================================================
+class DefineMeasurement(Base):
     """
     DefineMeasurement class holds information about the measurement.  This
     includes how each channel was setup.  The main block contains information
@@ -88,150 +92,19 @@ class DefineMeasurement(MetadataBase):
 
     """
 
-    maxchan: Annotated[
-        int,
-        Field(
-            default=999,
-            description="maximum number of channels",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["16"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
+        self.measurement_list = None
+        self._location = Location()
+        self.maxmeas = 7
+        self.maxrun = 999
+        self.refelev = 0
+        self.reflat = 0
+        self.reflon = 0
+        self.reftype = "cartesian"
+        self.units = "m"
+        self.refloc = None
 
-    maxrun: Annotated[
-        int,
-        Field(
-            default=999,
-            description="maximum number of runs",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["999"],
-            },
-        ),
-    ]
-
-    maxmeas: Annotated[
-        int,
-        Field(
-            default=7,
-            description="maximum number of measurements",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["999"],
-            },
-        ),
-    ]
-
-    reftype: Annotated[
-        str | None,
-        Field(
-            default="cartesian",
-            description="Type of offset from reference center point.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["cartesian", "cart"],
-            },
-        ),
-    ]
-
-    refloc: Annotated[
-        str | None,
-        Field(
-            default=None,
-            description="Description of location reference center point.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["here"],
-            },
-        ),
-    ]
-
-    reflat: Annotated[
-        float,
-        Field(
-            default=0,
-            description="Latitude of reference center point.",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": False,
-                "examples": ["0"],
-            },
-        ),
-    ]
-
-    reflon: Annotated[
-        float,
-        Field(
-            default=0,
-            description="Longitude reference center point.",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": False,
-                "examples": ["0"],
-            },
-        ),
-    ]
-
-    refelev: Annotated[
-        float,
-        Field(
-            default=0,
-            description="Elevation reference center point.",
-            alias=None,
-            json_schema_extra={
-                "units": "meters",
-                "required": False,
-                "examples": ["0"],
-            },
-        ),
-    ]
-
-    units: Annotated[
-        str | None,
-        Field(
-            default="m",
-            description="In the EDI standards this is the elevation units.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["m"],
-            },
-        ),
-    ]
-
-    measurements: Annotated[
-        dict[str, EMeasurement | HMeasurement],
-        Field(
-            default_factory=dict,
-            description="Dictionary of measurements with keys as channel types "
-            "(e.g., 'hx', 'hy', 'ex', 'ey', etc.) and values as "
-            "EMeasurement or HMeasurement objects.",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["{'hx': EMeasurement(...), 'hy': HMeasurement(...)}"],
-            },
-        ),
-    ]
-
-    _define_meas_keys: list[str] = PrivateAttr(
-        default=[
+        self._define_meas_keys = [
             "maxchan",
             "maxrun",
             "maxmeas",
@@ -242,31 +115,16 @@ class DefineMeasurement(MetadataBase):
             "reftype",
             "units",
         ]
-    )
 
-    @field_validator("units", mode="before")
-    @classmethod
-    def validate_units(cls, value: str) -> str:
-        if value in [None, ""]:
-            return ""
-        if value.lower() in ["m", "meters"]:
-            value = "m"
-        try:
-            unit_object = get_unit_object(value)
-            return unit_object.name
-        except ValueError as error:
-            raise KeyError(error)
-        except KeyError as error:
-            raise KeyError(error)
-
-    @field_validator("reflat", "reflon", mode="before")
-    @classmethod
-    def validate_position(cls, value, info: ValidationInfo):
-        if "lat" in info.field_name:
-            position_type = "latitude"
-        elif "lon" in info.field_name:
-            position_type = "longitude"
-        return validate_position(value, position_type)
+        super().__init__(attr_dict=attr_dict, **kwargs)
+        if self.reftype is None:
+            self.reftype = "cartesian"
+        if self.units is None:
+            self.units = "m"
+        if self.maxmeas == 0:
+            self.maxmeas = 7
+        if self.maxrun == 0:
+            self.maxrun = 999
 
     def __str__(self):
         return "".join(self.write_measurement())
@@ -274,32 +132,58 @@ class DefineMeasurement(MetadataBase):
     def __repr__(self):
         return self.__str__()
 
-    @computed_field
     @property
-    def channel_ids(self) -> dict[str, str]:
+    def reflat(self):
+        return self._location.latitude
+
+    @reflat.setter
+    def reflat(self, value):
+        self._location.latitude = value
+
+    @property
+    def reflon(self):
+        return self._location.longitude
+
+    @reflon.setter
+    def reflon(self, value):
+        self._location.longitude = value
+
+    @property
+    def reflong(self):
+        return self._location.longitude
+
+    @reflong.setter
+    def reflong(self, value):
+        self._location.longitude = value
+
+    @property
+    def refelev(self):
+        return self._location.elevation
+
+    @refelev.setter
+    def refelev(self, value):
+        self._location.elevation = value
+
+    @property
+    def channel_ids(self):
         ch_ids = {}
         for comp in ["ex", "ey", "hx", "hy", "hz", "rrhx", "rrhy"]:
             try:
-                m = self.measurements[comp]
+                m = getattr(self, f"meas_{comp}")
                 # if there are remote references that are the same as the
                 # h channels skip them.
                 ch_ids[m.chtype] = m.id
-            except KeyError:
+            except AttributeError:
                 continue
 
         return ch_ids
 
-    def get_measurement_lists(self, edi_lines: list[str]) -> None:
+    def get_measurement_lists(self, edi_lines):
         """
         get measurement list including measurement setup
-
-        Attributes
-        ----------
-        edi_lines : str
-            lines from the edi file to parse
         """
 
-        self._measurement_list = []
+        self.measurement_list = []
         meas_find = False
         count = 0
 
@@ -318,9 +202,9 @@ class DefineMeasurement(MetadataBase):
                             ll_list = ll.split("=")
                             key = ll_list[0].lower()
                             value = ll_list[1]
-                            self._measurement_list[-1][key] = value
+                            self.measurement_list[-1][key] = value
                     else:
-                        self._measurement_list.append(line.strip())
+                        self.measurement_list.append(line.strip())
 
             # look for the >XMEAS parts
             elif ">" in line and meas_find:
@@ -335,11 +219,11 @@ class DefineMeasurement(MetadataBase):
                         key = ll_list[0].lower()
                         value = ll_list[1]
                         m_dict[key] = value
-                    self._measurement_list.append(m_dict)
+                    self.measurement_list.append(m_dict)
                 else:
                     return
 
-    def read_measurement(self, edi_lines: list[str]) -> None:
+    def read_measurement(self, edi_lines):
         """
         read the define measurment section of the edi file
 
@@ -348,7 +232,6 @@ class DefineMeasurement(MetadataBase):
             - maxchan
             - maxmeas
             - maxrun
-            - refloc
             - refelev
             - reflat
             - reflon
@@ -366,7 +249,7 @@ class DefineMeasurement(MetadataBase):
         """
         self.get_measurement_lists(edi_lines)
 
-        for line in self._measurement_list:
+        for line in self.measurement_list:
             if isinstance(line, str):
                 line_list = line.split("=")
                 key = line_list[0].lower()
@@ -402,71 +285,29 @@ class DefineMeasurement(MetadataBase):
 
             elif isinstance(line, dict):
                 ch_type = line["chtype"].lower()
-                key = f"{ch_type}"
+                key = f"meas_{ch_type}"
                 if ch_type.find("h") >= 0:
                     value = HMeasurement(**line)
                 elif ch_type.find("e") >= 0:
                     value = EMeasurement(**line)
                     if value.azm == 0:
                         value.azm = value.azimuth
-                if key in self.measurements.keys():
-                    existing_ch = self.measurements[key]
+                if hasattr(self, key):
+                    existing_ch = getattr(self, key)
                     existing_line = existing_ch.write_meas_line()
                     value_line = value.write_meas_line()
                     if existing_line != value_line:
                         value.chtype = f"rr{ch_type}".upper()
-                        key = f"rr{ch_type}"
+                        key = f"meas_rr{ch_type}"
                     else:
                         continue
-                self.measurements[key] = value
-
-    def _sort_measurements(self) -> list[str]:
-        """
-        Sort the measurements by channel type and return a list of sorted keys.
-        This is used to ensure that the measurements are written in a consistent order.
-        """
-        # need to write the >XMEAS type, but sort by channel number
-        m_key_list = []
-        count = 1.0
-        for key, meas in self.measurements.items():
-            value = meas.id
-            if value == 0.0:
-                value = count
-                count += 1
-            m_key_list.append((key, value))
-
-        return sorted(m_key_list, key=lambda x: x[1])
+                setattr(self, key, value)
 
     def write_measurement(
-        self,
-        longitude_format: str = "LON",
-        latlon_format: str = "degrees",
-    ) -> list[str]:
+        self, measurement_list=None, longitude_format="LON", latlon_format="dd"
+    ):
         """
-        write_measurement writes the define measurement section of the edi file.
-
-        Parameters
-        ----------
-        longitude_format : str, optional
-            longitude format [ "LONG" | "LON" ] , by default "LON"
-        latlon_format : str, optional
-            position format [ "dd" | " degrees" ], by default "degrees" for decimal degrees
-            If you want to write the position in degrees, use " degrees" for the
-            latlon_format.  This will write the position in the format of
-            HH:MM:SS.ss for the latitude and longitude.  If you want to write
-            the position in decimal degrees, use "dd" for the latlon_format.
-
-        Returns
-        -------
-        list[str]
-            list of lines for the define measurement section or an empty list if no
-            measurements are defined.
-
-        Raises
-        ------
-        ValueError
-            If a value cannot be converted to a float or if the longitude format is not
-            recognized.
+        write the define measurement block as a list of strings
         """
 
         measurement_lines = ["\n>=DEFINEMEAS\n"]
@@ -476,7 +317,7 @@ class DefineMeasurement(MetadataBase):
                 if latlon_format.lower() == "dd":
                     value = f"{float(value):.6f}"
                 else:
-                    value = convert_position_float2str(value)
+                    value = self._location._convert_position_float2str(value)
             elif key == "refelev":
                 value = value
             if key.upper() == "REFLON":
@@ -487,16 +328,41 @@ class DefineMeasurement(MetadataBase):
         measurement_lines.append("\n")
 
         # need to write the >XMEAS type, but sort by channel number
-        m_key_list = self._sort_measurements()
+        m_key_list = []
+        count = 1.0
+        for kk in list(self.__dict__.keys()):
+            if kk.find("meas_") == 0:
+                key = kk.strip()
+                value = self.__dict__[kk].id
+                if value is None:
+                    value = count
+                    count += 1
+                elif isinstance(value, str):
+                    try:
+                        value = float(value)
+
+                    except TypeError:
+                        self.logger.warning(
+                            f"{key}.id cannot be converted to float"
+                        )
+                        value = count
+                        count += 1
+                elif isinstance(value, (float, int)):
+                    value = float(value)
+
+                else:
+                    raise ValueError(f"Could not convert {key}.id to float")
+
+                m_key_list.append((key, value))
 
         if len(m_key_list) == 0:
-            logger.warning("No XMEAS information.")
+            self.logger.warning("No XMEAS information.")
         else:
             # need to sort the dictionary by chanel id
             for meas in sorted(m_key_list, key=lambda x: x[1]):
                 x_key = meas[0]
-                m_obj = self.measurements[x_key]
-                if m_obj.id == 0.0:
+                m_obj = getattr(self, x_key)
+                if m_obj.id is None:
                     m_obj.id = meas[1]
                 if m_obj.acqchan == "0":
                     m_obj.acqchan = meas[1]
@@ -505,16 +371,28 @@ class DefineMeasurement(MetadataBase):
 
         return measurement_lines
 
-    def from_metadata(self, channel: Electric | Magnetic | Auxiliary) -> None:
+    def get_measurement_dict(self):
         """
+        get a dictionary for the xmeas parts
+        """
+        meas_dict = {}
+        for key in list(self.__dict__.keys()):
+            if key.find("meas_") == 0:
+                meas_attr = getattr(self, key)
+                meas_key = meas_attr.chtype
+                meas_dict[meas_key] = meas_attr
 
-        from_metadata converts a channel object into a measurement object
-        and sets the attributes for the measurement object.
+        return meas_dict
 
-        Parameters
-        ----------
-        channel : Electric | Magnetic | Auxiliary
-            The channel object to convert into a measurement object.
+    def from_metadata(self, channel):
+        """
+        create a measurement class from metadata
+
+        :param channel: DESCRIPTION
+        :type channel: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
+
         """
 
         if channel.component is None:
@@ -535,7 +413,7 @@ class DefineMeasurement(MetadataBase):
                 "translated_azimuth",
             ]:
                 if channel.get_attr_from_name(attr) is None:
-                    channel.update_attribute(attr, 0)
+                    channel.set_attr_from_name(attr, 0)
             meas = EMeasurement(
                 **{
                     "x": channel.negative.x,
@@ -548,12 +426,13 @@ class DefineMeasurement(MetadataBase):
                     "acqchan": channel.channel_number,
                 }
             )
-            self.measurements[channel.component.lower()] = meas
+
+            setattr(self, f"meas_{channel.component.lower()}", meas)
 
         elif "h" in channel.component:
             for attr in ["location.x", "location.y", "location.z"]:
                 if channel.get_attr_from_name(attr) is None:
-                    channel.update_attribute(attr, 0)
+                    channel.set_attr_from_name(attr, 0)
             meas = HMeasurement(
                 **{
                     "x": channel.location.x,
@@ -565,11 +444,10 @@ class DefineMeasurement(MetadataBase):
                     "dip": channel.measurement_tilt,
                 }
             )
-            self.measurements[channel.component.lower()] = meas
+            setattr(self, f"meas_{channel.component.lower()}", meas)
 
-    @computed_field(return_type=list[str])
     @property
-    def channels_recorded(self) -> list[str]:
+    def channels_recorded(self):
         """Get the channels recorded"""
 
-        return [cc.lower() for cc in self.measurements.keys()]
+        return [cc.lower() for cc in self.get_measurement_dict().keys()]

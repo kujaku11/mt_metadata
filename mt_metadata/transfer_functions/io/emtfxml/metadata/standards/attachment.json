@@ -1,0 +1,24 @@
+{
+    "filename": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "file name of the attached file data",
+        "options": [],
+        "alias": [],
+        "example": "example.zmm",
+		"default": null
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "description of the attached file",
+        "options": [],
+        "alias": [],
+        "example": "The original used to produce the XML",
+		"default": null
+    }
+}

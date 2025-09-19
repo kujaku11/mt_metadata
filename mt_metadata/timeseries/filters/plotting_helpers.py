@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
 from matplotlib.gridspec import GridSpec
 
 
@@ -110,7 +111,7 @@ def plot_response(
         phase_max.append(response_phase.max())
 
         # plot amplitude
-        l1 = ax_amp.plot(
+        (l1,) = ax_amp.plot(
             frequencies,
             response_amplitude,
             linewidth=1.5,

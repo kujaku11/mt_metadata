@@ -1,0 +1,139 @@
+{
+    "channel_number": {
+        "type": "integer",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "Channel number on the data logger.",
+        "options": [],
+        "alias": [],
+        "example": "1",
+		"default": 0
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any comments about the channel.",
+        "options": [],
+        "alias": [],
+        "example": "ambient air temperature was chilly, ice on cables",
+		"default": null
+    },
+    "component": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Name of the component measured, can be uppercase and/or lowercase.  For now electric channels should start with an 'e' and magnetic channels start with an 'h', followed by the component. If there are multiples of the same channel the name could include an integer.  {type}{component}{number} --> Ex01.",
+        "options": [
+            "Ex",
+            "Ey",
+            "Hx",
+            "Hy",
+            "Hz",
+            "T",
+            "Battery",
+            "other"
+        ],
+        "alias": [],
+        "example": "T",
+		"default": null
+    },
+    "measurement_azimuth": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "Azimuth of channel in measurement coordinate system spcified in station.orientation.reference_frame.  Default reference from is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
+        "options": [],
+        "alias": [
+            "azimuth"
+        ],
+        "example": "0",
+		"default": 0.0
+    },
+    "measurement_tilt": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "degrees",
+        "description": "Tilt of channel in measurement coordinate system spcified in station.orientation.reference_frame.  Default reference from is a geographic right-handed coordinate system with north=0, east=90, vertical=+ downward.",
+        "options": [],
+        "alias": [
+            "dip"
+        ],
+        "example": "0",
+		"default": 0.0
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Digital sample rate",
+        "options": [],
+        "alias": [
+            "sampling_rate"
+        ],
+        "example": "8",
+		"default": 0.0
+    },
+    "translated_azimuth": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Azimuth of channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data in geomagnetic coordinates and then translated them to geographic coordinates you would set measurement_azimuth=0, translated_azimuth=-12.5 for a declination angle of N12.5E.",
+        "options": [],
+        "alias": [
+            "azimuth"
+        ],
+        "example": "0"
+		,
+		"default": null
+    },
+    "translated_tilt": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": "degrees",
+        "description": "Tilt of channel in translated coordinate system, this should only be used for derived product.  For instance if you collected your data in a tripod you would set measurement_tilt=45, translated_tilt=0 for a vertical component.",
+        "options": [],
+        "alias": [
+            "dip"
+        ],
+        "example": "0",
+		"default": null
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Data type for the channel, should be a descriptive word that a user can understand.",
+        "options": [],
+        "alias": [],
+        "example": "temperature",
+		"default": "auxiliary"
+    },
+    "units": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Units of the data, should be in SI units and represented as the full name of the unit all lowercase.  If a complex unit use 'per' and '-'.",
+        "options": [
+            "metric",
+            "celsius",
+            "meters",
+            "degrees",
+            "kilograms",
+            "other"
+        ],
+        "alias": [],
+        "example": "celsius",
+		"default": null
+    }
+}

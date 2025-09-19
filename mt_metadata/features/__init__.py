@@ -11,8 +11,4 @@ __all__ = [
     "FeatureFCRun",
     "Feature",
     "FeatureDecimationChannel",
-    "SUPPORTED_FEATURE_DICT",
 ]
-
-# Import the supported feature dictionary from the registry to avoid circular imports
-from mt_metadata.features.registry import SUPPORTED_FEATURE_DICT

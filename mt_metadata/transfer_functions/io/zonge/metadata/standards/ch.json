@@ -1,0 +1,90 @@
+{
+	"a_d_card_s_n": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "serial number of ad card for local and remote stations",
+        "options": [],
+        "alias": [],
+        "example": "6545BAC6,BE380864",
+		"default": null
+    },
+	"gdp_box": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Box number for local and remote stations",
+        "options": [],
+        "alias": [],
+        "example": "18,15",
+		"default": 0
+    },
+	"stn": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "station number of local and remote",
+        "options": [],
+        "alias": [],
+        "example": "1,2",
+		"default": null
+    }	,
+	"number": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "channel number for local and coil number of remote",
+        "options": [],
+        "alias": [],
+        "example": "1, 2284",
+		"default": null
+    },
+    "cmp": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "component of local and remote stations",
+        "options": [],
+        "alias": [],
+        "example": "ex,hy",
+		"default": ""
+    },
+    "c_res": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "contact resistance for local and remote sensors",
+        "options": [],
+        "alias": [],
+        "example": "0,0",
+		"default": ""
+    },
+    "azimuth": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "azimuth for local and remote sensors",
+        "options": [],
+        "alias": [],
+        "example": "12.1,12.1",
+		"default": null
+    },
+    "incl": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Inclination ",
+        "options": [],
+        "alias": [],
+        "example": "335754.685:4263553.435:1650.2",
+		"default": ""
+    }
+}

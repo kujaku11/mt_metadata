@@ -1,0 +1,13 @@
+{
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "description of what is in the file; default is magnetotelluric transfer functions",
+        "options": [],
+        "alias": [],
+        "example": "Magnetotelluric Transfer Functions",
+		"default": null
+    }
+}

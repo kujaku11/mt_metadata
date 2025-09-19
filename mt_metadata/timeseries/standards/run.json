@@ -1,0 +1,86 @@
+{
+    "channels_recorded_auxiliary": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of auxiliary channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "[T]",
+		"default": []
+    },
+    "channels_recorded_electric": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of electric channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "\"[Ex , Ey]\"",
+		"default": []
+    },
+    "channels_recorded_magnetic": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "List of magnetic channels recorded",
+        "options": [],
+        "alias": [],
+        "example": "\"[Hx , Hy , Hz]\"",
+		"default": []
+    },
+    "comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "Any comments on the run.",
+        "options": [],
+        "alias": [],
+        "example": "cows chewed cables",
+		"default": null
+    },
+    "data_type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of data recorded for this run.",
+        "options": [
+            "RMT",
+            "AMT",
+            "BBMT",
+            "LPMT",
+            "ULPMT",
+            "other"
+        ],
+        "alias": [],
+        "example": "BBMT",
+		"default": "BBMT"
+    },
+    "id": {
+        "type": "string",
+        "required": true,
+        "style": "alpha numeric",
+        "units": null,
+        "description": "Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001.",
+        "options": [],
+        "alias": [],
+        "example": "sr100_001",
+		"default": null
+    },
+    "sample_rate": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "samples per second",
+        "description": "Digital sample rate for the run",
+        "options": [],
+        "alias": [],
+        "example": "100",
+		"default": 0.0
+    }
+}

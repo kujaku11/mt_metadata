@@ -1,0 +1,13 @@
+{
+    "data_types_list": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of data types",
+        "options": [],
+        "alias": [],
+        "example": "[Z T]",
+		"default": []
+    }
+}

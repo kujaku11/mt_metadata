@@ -1,0 +1,14 @@
+{
+    "delay": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": "second",
+        "description": "The delay interval of the filter. This should be a single number.",
+        "options": [],
+        "alias": [],
+        "example": "-0.201",
+		"default": 0.0
+    }
+
+}

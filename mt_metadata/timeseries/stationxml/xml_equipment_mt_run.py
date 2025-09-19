@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 18 12:49:13 2021
 
-:copyright:
+:copyright: 
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
@@ -13,19 +13,13 @@ Created on Thu Feb 18 12:49:13 2021
 # =============================================================================
 
 from mt_metadata import timeseries as metadata
-from mt_metadata.base.helpers import requires
 from mt_metadata.timeseries.stationxml.utils import BaseTranslator
 
-
-try:
-    from obspy.core import inventory
-except ImportError:
-    inventory = None
+from obspy.core import inventory
 
 # =============================================================================
 
 
-@requires(obspy=inventory)
 class XMLEquipmentMTRun(BaseTranslator):
     """
     translate back and forth between StationXML Station and MT Station
@@ -59,12 +53,12 @@ class XMLEquipmentMTRun(BaseTranslator):
             "data_logger.firmware.author",
             "data_logger.firmware.name",
             "data_logger.firmware.version",
-            "data_logger.power_source.comments.value",
+            "data_logger.power_source.comments",
             "data_logger.power_source.id",
             "data_logger.power_source.type",
             "data_logger.power_source.voltage.end",
             "data_logger.power_source.voltage.start",
-            "data_logger.timing_system.comments.value",
+            "data_logger.timing_system.comments",
             "data_logger.timing_system.drift",
             "data_logger.timing_system.type",
             "data_logger.timing_system.uncertainty",
@@ -93,7 +87,7 @@ class XMLEquipmentMTRun(BaseTranslator):
             elif xml_key in ["resource_id"]:
                 mt_run.id = value.split(":")[1]
             else:
-                mt_run.update_attribute(mt_key, value)
+                mt_run.set_attr_from_name(mt_key, value)
 
         return mt_run
 
@@ -114,8 +108,6 @@ class XMLEquipmentMTRun(BaseTranslator):
                 value = self._make_description(mt_run)
             elif mt_key == "id":
                 value = f"mt.run.id:{mt_run.id}"
-            elif "date" in xml_key:
-                value = mt_run.get_attr_from_name(mt_key).time_stamp
             else:
                 value = mt_run.get_attr_from_name(mt_key)
             setattr(equipment, xml_key, value)
@@ -137,7 +129,7 @@ class XMLEquipmentMTRun(BaseTranslator):
             d_key, d_value = d_str.split(":")
             d_value = d_value.strip()
             if not d_value in ["", "None", "null"]:
-                run_obj.update_attribute(
+                run_obj.set_attr_from_name(
                     f"data_logger.{d_key.strip()}", d_value.strip()
                 )
 

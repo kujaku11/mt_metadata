@@ -2,13 +2,12 @@
 """
 Created on Thu Dec 24 11:59:18 2020
 
-:copyright:
+:copyright: 
     Jared Peacock (jpeacock@usgs.gov)
 
 :license: MIT
 
 """
-
 
 # =============================================================================
 # Exceptions

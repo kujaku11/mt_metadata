@@ -1,0 +1,46 @@
+{	
+	"name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "name of value estimate",
+        "options": [],
+        "alias": [],
+        "example": "tx",
+		"default": null
+    },
+    "output": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "output field component",
+        "options": [],
+        "alias": [],
+        "example": "ex",
+		"default": null
+    },
+	"input": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "input field component",
+        "options": [],
+        "alias": [],
+        "example": "hy",
+		"default": null
+    },
+	"value": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "value of the estimate",
+        "options": [],
+        "alias": [],
+        "example": "10.1 + 11j",
+		"default": null
+    }
+}

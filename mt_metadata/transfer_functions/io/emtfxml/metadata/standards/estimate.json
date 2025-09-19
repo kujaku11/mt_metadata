@@ -1,0 +1,76 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Name of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "var",
+		"default": null
+    },
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of number contained in the estimate",
+        "options": [
+            "real",
+            "complex"
+        ],
+        "alias": [],
+        "example": "real",
+		"default": null
+    },
+    "description": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "Description of the statistical estimate",
+        "options": [],
+        "alias": [],
+        "example": "this is an estimate",
+		"default": null
+    },
+    "external_url": {
+        "type": "string",
+        "required": true,
+        "style": "url",
+        "units": null,
+        "description": "Full path to external link that has additional information",
+        "options": [],
+        "alias": [],
+        "example": "http://www.iris.edu/dms/products/emtf/variance.html",
+		"default": null
+    },
+    "intention": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "The intension of the statistical estimate",
+        "options": [
+            "error estimate",
+            "signal coherence",
+            "signal power estimate",
+            "primary data type"
+        ],
+        "alias": [],
+        "example": "error estimate",
+		"default": null
+    },
+    "tag": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "A useful tag for the estimate",
+        "options": [],
+        "alias": [],
+        "example": "tipper",
+		"default": null
+    }
+}

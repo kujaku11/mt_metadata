@@ -1,0 +1,57 @@
+{
+    "warnings": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any warnings about the data that should be noted",
+        "options": [],
+        "alias": [],
+        "example": "periodic pipeline noise",
+		"default": null
+    },
+    "good_from_period": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Data are good for periods larger than this number",
+        "options": [],
+        "alias": [],
+        "example": "0.01",
+		"default": null
+    },
+    "good_to_period": {
+        "type": "float",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Data are good for periods smaller than this number",
+        "options": [],
+        "alias": [],
+        "example": "1000",
+		"default": null
+    },
+    "flag": {
+        "type": "integer",
+        "required": false,
+        "style": "number",
+        "units": null,
+        "description": "Flag for data quality",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": null
+    },
+	"comments": {
+        "type": "string",
+        "required": false,
+        "style": "free form",
+        "units": null,
+        "description": "any comments about the data quality",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": null
+    }
+}

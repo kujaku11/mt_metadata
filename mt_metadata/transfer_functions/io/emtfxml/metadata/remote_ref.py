@@ -1,31 +1,31 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Sep  6 12:04:35 2021
+
+@author: jpeacock
+"""
+
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
 from xml.etree import cElementTree as et
 
-from pydantic import Field
-
-from mt_metadata.base import MetadataBase
-from mt_metadata.base.helpers import element_to_string
+from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
+# =============================================================================
+attr_dict = get_schema("remote_ref", SCHEMA_FN_PATHS)
+# =============================================================================
 
-# =====================================================
-class RemoteRef(MetadataBase):
-    type: Annotated[
-        str,
-        Field(
-            default="",
-            description="type of remote referencing",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["robust multi-station remote referencing"],
-            },
-        ),
-    ]
+
+class RemoteRef(Base):
+    __doc__ = write_lines(attr_dict)
+
+    def __init__(self, **kwargs):
+
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
     def read_dict(self, input_dict):
         """
@@ -38,21 +38,16 @@ class RemoteRef(MetadataBase):
         """
         helpers._read_element(self, input_dict, "remote_ref")
 
-    def to_xml(self, string: bool = False, required: bool = True) -> str | et.Element:
+    def to_xml(self, string=False, required=True):
         """
-        Convert the RemoteRef object to XML format.
 
-        Parameters
-        ----------
-        string : bool, optional
-            Whether to return the XML as a string (default is False).
-        required : bool, optional
-            Whether to include required fields (default is True).
+        :param string: DESCRIPTION, defaults to False
+        :type string: TYPE, optional
+        :param required: DESCRIPTION, defaults to True
+        :type required: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
 
-        Returns
-        -------
-        str | et.Element
-            The XML representation of the RemoteRef object.
         """
 
         if self.type is None:

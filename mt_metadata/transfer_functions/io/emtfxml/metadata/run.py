@@ -1,171 +1,70 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 23 21:30:36 2020
+
+:copyright: 
+    Jared Peacock (jpeacock@usgs.gov)
+
+:license: MIT
+
+"""
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
-
-import numpy as np
-import pandas as pd
-from loguru import logger
-from pydantic import Field, field_validator
-
-from mt_metadata.base import MetadataBase
-from mt_metadata.base.helpers import element_to_string
-from mt_metadata.common import Comment
-from mt_metadata.common.mttime import MTime
+# =============================================================================
+from mt_metadata.base.helpers import write_lines, element_to_string
+from mt_metadata.base import get_schema, Base
+from .standards import SCHEMA_FN_PATHS
+from . import Dipole, Magnetometer, Comment, Instrument
+from mt_metadata.utils.mttime import MTime
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers
 
-from . import Dipole, Instrument, Magnetometer
+# =============================================================================
+attr_dict = get_schema("run", SCHEMA_FN_PATHS)
+attr_dict.add_dict(Instrument()._attr_dict, "instrument")
+attr_dict.add_dict(get_schema("comment", SCHEMA_FN_PATHS), "comments")
 
+# =============================================================================
+class Run(Base):
+    __doc__ = write_lines(attr_dict)
 
-# =====================================================
-class Run(MetadataBase):
-    errors: Annotated[
-        str | None,
-        Field(
-            default=None,
-            description="Any field errors",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["moose ate cables"],
-            },
-        ),
-    ]
+    def __init__(self, **kwargs):
+        self.errors = None
+        self.run = None
+        self._start_dt = MTime()
+        self._end_dt = MTime()
+        self.instrument = Instrument()
+        self.magnetometer = [Magnetometer()]
+        self.dipole = [Dipole()]
+        self.sampling_rate = None
+        self.comments = Comment()
 
-    run: Annotated[
-        str,
-        Field(
-            default="",
-            description="Run name",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["mt001a"],
-            },
-        ),
-    ]
+        super().__init__(attr_dict=attr_dict, **kwargs)
 
-    sampling_rate: Annotated[
-        float | None,
-        Field(
-            default=None,
-            description="Sample rate of the run",
-            alias=None,
-            json_schema_extra={
-                "units": "samples per second",
-                "required": False,
-                "examples": ["1"],
-            },
-        ),
-    ]
+    @property
+    def start(self):
+        return self._start_dt.iso_str
 
-    start: Annotated[
-        MTime | str | float | int | np.datetime64 | pd.Timestamp,
-        Field(
-            default_factory=lambda: MTime(time_stamp=None),
-            description="Date time when the data collection started",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["2020-01-01T12:00:00"],
-            },
-        ),
-    ]
+    @start.setter
+    def start(self, value):
+        self._start_dt.parse(value)
 
-    end: Annotated[
-        MTime | str | float | int | np.datetime64 | pd.Timestamp,
-        Field(
-            default_factory=lambda: MTime(time_stamp=None),
-            description="Date time when the data collection ended",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["2020-05-01T12:00:00"],
-            },
-        ),
-    ]
-    comments: Annotated[
-        Comment | str | None,
-        Field(
-            default_factory=Comment,  # type: ignore
-            description="Comments about the run",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["Comment(text='This is a comment')"],
-            },
-        ),
-    ]
+    @property
+    def end(self):
+        return self._end_dt.iso_str
 
-    instrument: Annotated[
-        Instrument,
-        Field(
-            default_factory=Instrument,  # type: ignore
-            description="Instrument used for the run",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["Instrument(name='MT Sensor', type='magnetometer')"],
-            },
-        ),
-    ]
+    @end.setter
+    def end(self, value):
+        self._end_dt.parse(value)
 
-    magnetometer: Annotated[
-        list[Magnetometer],
-        Field(
-            default_factory=list,
-            description="List of magnetometers used in the run",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["Magnetometer(name='Magnetometer 1', type='fluxgate')"],
-            },
-        ),
-    ]
-    dipole: Annotated[
-        list[Dipole],
-        Field(
-            default_factory=list,
-            description="List of dipoles used in the run",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": False,
-                "examples": ["Dipole(name='Dipole 1', type='fluxgate')"],
-            },
-        ),
-    ]
-
-    @field_validator("start", "end", mode="before")
-    @classmethod
-    def validate_start(
-        cls, field_value: MTime | float | int | np.datetime64 | pd.Timestamp | str
-    ):
-        return MTime(time_stamp=field_value)
-
-    @field_validator("comments", mode="before")
-    @classmethod
-    def validate_comments(cls, field_value: Comment | str | None):
-        if isinstance(field_value, str):
-            return Comment(value=field_value)
-        return field_value
-
-    def read_dict(self, input_dict: dict) -> None:
+    def read_dict(self, input_dict):
         """
         Field notes are odd so have a special reader to do it piece by
         painstaking piece.
 
-        :param input_dict: input dictionary containing run data
-        :type input_dict: dict
-        :return: None
-        :rtype: None
+        :param input_dict: DESCRIPTION
+        :type input_dict: TYPE
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         """
 
@@ -176,11 +75,13 @@ class Run(MetadataBase):
         self.end = input_dict["end"]
         try:
             if isinstance(input_dict["comments"], list):
-                self.comments.from_dict({"comments": input_dict["comments"][0]})
+                self.comments.from_dict(
+                    {"comments": input_dict["comments"][0]}
+                )
             else:
                 self.comments.from_dict({"comments": input_dict["comments"]})
         except KeyError:
-            logger.debug("run has no comments")
+            self.logger.debug("run has no comments")
         self.errors = input_dict["errors"]
 
         try:
@@ -196,7 +97,7 @@ class Run(MetadataBase):
                 m.from_dict({"magnetometer": input_dict["magnetometer"]})
                 self.magnetometer.append(m)
         except KeyError:
-            logger.debug("run has no magnetotmeter information")
+            self.logger.debug("run has no magnetotmeter information")
 
         try:
             if isinstance(input_dict["dipole"], list):
@@ -210,7 +111,7 @@ class Run(MetadataBase):
                 m.from_dict({"dipole": input_dict["dipole"]})
                 self.dipole.append(m)
         except KeyError:
-            logger.debug("run has no dipole information")
+            self.logger.debug("run has no dipole information")
 
     def to_xml(self, string=False, required=True):
         """

@@ -1,0 +1,35 @@
+{
+    "theta1": {
+        "type": "float",
+        "required": true,
+        "style": "free form",
+        "units": "degrees",
+        "description": "rotation angle for block x",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0
+    },
+	"theta2": {
+        "type": "float",
+        "required": true,
+        "style": "free form",
+        "units": "degrees",
+        "description": "rotation angle for block y",
+        "options": [],
+        "alias": [],
+        "example": "90",
+		"default": 0
+    },
+	"phi": {
+        "type": "float",
+        "required": true,
+        "style": "free form",
+        "units": "degrees",
+        "description": "rotation angle for block",
+        "options": [],
+        "alias": [],
+        "example": "0",
+		"default": 0
+    }
+}

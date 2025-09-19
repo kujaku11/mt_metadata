@@ -1,0 +1,46 @@
+{
+    "lat": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "latitude",
+        "options": [],
+        "alias": [],
+        "example": "10.3",
+		"default": 0.0
+    },
+	"lon": {
+        "type": "float",
+        "required": true,
+        "style": "number",
+        "units": null,
+        "description": "longitude",
+        "options": [],
+        "alias": [],
+        "example": "10.3",
+		"default": 0.0
+    }	,
+    "datum": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Datum of the location",
+        "options": ["WGS84", "NAD27", "other"],
+        "alias": [],
+        "example": "WGS84",
+    		"default": "WGS84"
+    },
+    "u_t_m_zone": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "UTM zone of location",
+        "options": [],
+        "alias": [],
+        "example": "12",
+    		"default": null
+    }
+}

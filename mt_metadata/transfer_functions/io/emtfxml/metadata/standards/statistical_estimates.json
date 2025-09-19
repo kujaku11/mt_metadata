@@ -1,0 +1,13 @@
+{
+    "estimates_list": {
+        "type": "string",
+        "required": true,
+        "style": "name list",
+        "units": null,
+        "description": "list of statistical estimates",
+        "options": [],
+        "alias": [],
+        "example": "[var cov]",
+		"default": []
+    }
+}

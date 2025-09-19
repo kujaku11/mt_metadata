@@ -1,0 +1,57 @@
+{
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of EM survey",
+        "options": ["nsamt", "csamt", "mt"],
+        "alias": [],
+        "example": "nsamt",
+    		"default": "nsamt"
+    },
+	"array": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Type of array",
+        "options": ["tensor"],
+        "alias": [],
+        "example": "tensor",
+    		"default": "tensor"
+    },
+    "datum": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Datum of the location",
+        "options": ["WGS84", "NAD27", "other"],
+        "alias": [],
+        "example": "WGS84",
+    		"default": "WGS84"
+    },
+    "u_t_m_zone": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "UTM zone of location",
+        "options": [],
+        "alias": [],
+        "example": "12",
+    		"default": ""
+    },
+    "proj": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Projection of the location coordinates",
+        "options": ["UTM", "other"],
+        "alias": [],
+        "example": "UTM",
+    		"default": "UTM"
+    }
+}

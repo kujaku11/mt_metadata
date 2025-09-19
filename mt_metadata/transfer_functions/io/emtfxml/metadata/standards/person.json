@@ -1,0 +1,50 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "author name",
+        "options": [],
+        "alias": [
+            "author"
+        ],
+        "example": "person name", 
+		"default": null
+    },
+    "email": {
+        "type": "string",
+        "required": true,
+        "style": "email",
+        "units": null,
+        "description": "email of the contact person",
+        "options": [],
+        "alias": [],
+        "example": "mt.guru@em.org", 
+		"default": null
+    },
+    "org": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "organization name",
+        "options": [],
+        "alias": [
+            "organization"
+        ],
+        "example": "mt gurus", 
+		"default": null
+    },
+    "org_url": {
+        "type": "string",
+        "required": false,
+        "style": "url",
+        "units": null,
+        "description": "URL of organization",
+        "options": [],
+        "alias": [],
+        "example": "https://www.mt_gurus.org", 
+		"default": null
+    }
+}

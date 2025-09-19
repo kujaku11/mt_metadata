@@ -1,0 +1,13 @@
+{
+	"use": {
+        "type": "string",
+        "required": true,
+        "style": "controlled vocabulary",
+        "units": null,
+        "description": "Was D+ used to smooth the response",
+        "options": ["no", "yes"],
+        "alias": [],
+        "example": "no",
+		"default": "no"
+    }	
+}

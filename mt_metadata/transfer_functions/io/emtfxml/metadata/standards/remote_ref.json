@@ -1,0 +1,13 @@
+{
+    "type": {
+        "type": "string",
+        "required": true,
+        "style": "free form",
+        "units": null,
+        "description": "type of remote referencing",
+        "options": [],
+        "alias": [],
+        "example": "robust multi-station remote referencing",
+		"default": null
+    }
+}

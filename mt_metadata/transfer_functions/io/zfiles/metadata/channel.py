@@ -1,113 +1,43 @@
-# =====================================================
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec  4 18:52:52 2021
+
+@author: jpeacock
+"""
+# =============================================================================
 # Imports
-# =====================================================
-from typing import Annotated
+# =============================================================================
 
-from pydantic import Field
+from mt_metadata.base import get_schema, Base
+from mt_metadata.base.helpers import write_lines
+from .standards import SCHEMA_FN_PATHS
 
-from mt_metadata.base import MetadataBase
-from mt_metadata.common.enumerations import ChannelEnum
+# =============================================================================
+attr_dict = get_schema("channel", SCHEMA_FN_PATHS)
 
+# ==============================================================================
+# data section
+# ==============================================================================
+class Channel(Base):
+    __doc__ = write_lines(attr_dict)
 
-# =====================================================
+    def __init__(self, channel_dict=None):
+        self.number = 1
+        self.azimuth = 0
+        self.tilt = 0
+        self.dl = 0
+        self.channel = None
 
+        super().__init__(attr_dict=attr_dict)
 
-class Channel(MetadataBase):
-    number: Annotated[
-        int | None,
-        Field(
-            default=None,
-            description="Channel number",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["1"],
-            },
-        ),
-    ]
-
-    azimuth: Annotated[
-        float,
-        Field(
-            default=0.0,
-            description="channel azimuth",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": True,
-                "examples": ["90"],
-            },
-        ),
-    ]
-
-    tilt: Annotated[
-        float,
-        Field(
-            default=0.0,
-            description="channel tilt relative to horizontal.",
-            alias=None,
-            json_schema_extra={
-                "units": "degrees",
-                "required": True,
-                "examples": ["100.0"],
-            },
-        ),
-    ]
-
-    dl: Annotated[
-        float | str,
-        Field(
-            default=0.0,
-            description="dipole length in meters",
-            alias=None,
-            json_schema_extra={
-                "units": "meters",
-                "required": True,
-                "examples": ["0.0"],
-            },
-        ),
-    ]
-
-    channel: Annotated[
-        ChannelEnum,
-        Field(
-            default="",
-            description="channel name",
-            alias=None,
-            json_schema_extra={
-                "units": None,
-                "required": True,
-                "examples": ["hx"],
-            },
-        ),
-    ]
-
-    @property
-    def channel_string(self) -> str:
-        """Return the channel name as a string for indexing purposes."""
-        if hasattr(self.channel, "value"):
-            return self.channel.value
-        return str(self.channel)
+        if channel_dict is not None:
+            self.from_dict(channel_dict)
 
     def __str__(self):
         lines = ["Channel Metadata:"]
         for key in ["channel", "number", "dl", "azimuth", "tilt"]:
             try:
-                value = getattr(self, key)
-                # Special formatting for different field types
-                if key == "channel" and hasattr(value, "value"):
-                    # For enums, use the string value
-                    if value.value == "":
-                        display_value = "None"
-                    else:
-                        display_value = value.value
-                elif key == "number" and value is None:
-                    # Skip None number field completely
-                    continue
-                else:
-                    display_value = value
-                lines.append(f"\t{key.capitalize()}: {display_value:<12}")
+                lines.append(f"\t{key.capitalize()}: {getattr(self, key):<12}")
             except TypeError:
                 pass
         return "\n".join(lines)
