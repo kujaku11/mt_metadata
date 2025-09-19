@@ -23,12 +23,12 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Name of the project",
-            examples=["USMTArray"],
             alias=None,
             pattern="^[a-zA-Z0-9-_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["USMTArray"],
             },
         ),
     ]
@@ -38,11 +38,11 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Name of the survey",
-            examples=["MT 2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["MT 2020"],
             },
         ),
     ]
@@ -52,11 +52,11 @@ class Site(MetadataBase):
         Field(
             default=None,
             description="Year data collected",
-            examples=["2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020"],
             },
         ),
     ]
@@ -66,11 +66,11 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Country where data was collected",
-            examples=["USA"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["USA"],
             },
         ),
     ]
@@ -80,12 +80,12 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Station ID name.  This should be an alpha numeric name that is typically 5-6 characters long.  Commonly the project name in 2 or 3 letters and the station number.",
-            examples=["MT001"],
             alias=None,
             pattern="^[a-zA-Z0-9]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["MT001"],
             },
         ),
     ]
@@ -95,11 +95,11 @@ class Site(MetadataBase):
         Field(
             default="",
             description="closest geographic name to the station",
-            examples=['"Whitehorse, YK"'],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ['"Whitehorse, YK"'],
             },
         ),
     ]
@@ -109,11 +109,11 @@ class Site(MetadataBase):
         Field(
             default="",
             description="Person or group who collected the data",
-            examples=["MT Group"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["MT Group"],
             },
         ),
     ]
@@ -123,11 +123,11 @@ class Site(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection started",
-            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01T12:00:00"],
             },
         ),
     ]
@@ -137,11 +137,11 @@ class Site(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date time when the data collection ended",
-            examples=["2020-05-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-05-01T12:00:00"],
             },
         ),
     ]
@@ -151,11 +151,11 @@ class Site(MetadataBase):
         Field(
             default_factory=list,
             description="list of runs recorded by the station. Should be a summary of all runs recorded",
-            examples=['"[ mt001a, mt001b, mt001c ]"'],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ['"[ mt001a, mt001b, mt001c ]"'],
             },
         ),
     ]
@@ -165,11 +165,11 @@ class Site(MetadataBase):
         Field(
             default_factory=DataQualityNotes,  # type: ignore
             description="Notes on the data quality",
-            examples=["Data quality is good"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Data quality is good"],
             },
         ),
     ]
@@ -179,11 +179,11 @@ class Site(MetadataBase):
         Field(
             default_factory=DataQualityWarnings,  # type: ignore
             description="Warnings about the data quality",
-            examples=["Data quality is questionable"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Data quality is questionable"],
             },
         ),
     ]
@@ -192,13 +192,13 @@ class Site(MetadataBase):
         Field(
             default_factory=Orientation,  # type: ignore
             description="Orientation of the site",
-            examples=[
-                "Orientation('layout=orthogonal, angle_to_geographic_north=0.0')"
-            ],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [
+                    "Orientation('layout=orthogonal, angle_to_geographic_north=0.0')"
+                ],
             },
         ),
     ]
@@ -208,11 +208,11 @@ class Site(MetadataBase):
         Field(
             default_factory=BasicLocationNoDatum,  # type: ignore
             description="Location of the site",
-            examples=["BasicLocation('latitude=60.0, longitude=-135.0')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["BasicLocation('latitude=60.0, longitude=-135.0')"],
             },
         ),
     ]
@@ -222,11 +222,11 @@ class Site(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Comments about the site",
-            examples=["Comment('This is a comment about the site')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Comment('This is a comment about the site')"],
             },
         ),
     ]

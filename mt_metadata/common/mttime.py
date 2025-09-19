@@ -33,6 +33,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    model_serializer,
     PrivateAttr,
     ValidationInfo,
 )
@@ -381,7 +382,6 @@ class MTime(BaseModel):
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
-        json_encoders={pd.Timestamp: lambda v: v.isoformat()},
     )
 
     gps_time: Annotated[
@@ -389,10 +389,10 @@ class MTime(BaseModel):
         Field(
             description="Defines if the time give in GPS time [True] or UTC [False]",
             default=False,
-            examples=[True, False],
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [True, False],
             },
         ),
     ] = False
@@ -447,6 +447,25 @@ class MTime(BaseModel):
         """
         # Check if the time_stamp is a string and parse it
         return parse(field_value, gps_time=validation_info.data["gps_time"])
+
+    @model_serializer
+    def _serialize_model(self):
+        """
+        Custom serializer to handle pandas.Timestamp serialization.
+
+        Returns
+        -------
+        dict
+            Serialized model with Timestamp as ISO format string.
+        """
+        return {
+            "time_stamp": (
+                self.time_stamp.isoformat()
+                if isinstance(self.time_stamp, pd.Timestamp)
+                else self.time_stamp
+            ),
+            "gps_time": self.gps_time,
+        }
 
     def __str__(self) -> str:
         """

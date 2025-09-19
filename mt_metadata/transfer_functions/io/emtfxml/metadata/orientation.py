@@ -20,11 +20,11 @@ class Orientation(MetadataBase):
         Field(
             default=0.0,
             description="Angle to geographic north of the station orientation",
-            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": [0],
             },
         ),
     ]
@@ -32,13 +32,13 @@ class Orientation(MetadataBase):
     layout: Annotated[
         ChannelOrientationEnum,
         Field(
-            default="orthogonal",
+            default=ChannelOrientationEnum.orthogonal,
             description="Orientation of channels relative to each other",
-            examples=["orthogonal"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["orthogonal"],
             },
         ),
     ]

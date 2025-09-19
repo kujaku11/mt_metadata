@@ -22,24 +22,24 @@ from mt_metadata.utils.exceptions import MTSchemaError
 
 
 # Test models for testing
-class TestNestedModel(MetadataBase):
+class NestedModel(MetadataBase):
     """Test model with nested attributes"""
 
     value: str = Field(default="test", description="Test value")
     number: int = Field(default=42, description="Test number")
 
 
-class TestModel(MetadataBase):
+class SampleModel(MetadataBase):
     """Test model for comprehensive testing"""
 
     simple_attr: str = Field(default="simple", description="Simple attribute")
     number_attr: int = Field(default=10, description="Number attribute")
     float_attr: float = Field(default=3.14, description="Float attribute")
     bool_attr: bool = Field(default=True, description="Boolean attribute")
-    nested_model: TestNestedModel = Field(default_factory=TestNestedModel)
+    nested_model: NestedModel = Field(default_factory=NestedModel)
 
 
-class TestRequiredModel(MetadataBase):
+class RequiredFieldModel(MetadataBase):
     """Test model with required fields"""
 
     required_field: str = Field(
@@ -63,22 +63,22 @@ def dot_notation_model():
 
 @pytest.fixture
 def test_model():
-    """Basic TestModel instance"""
-    return TestModel()
+    """Basic SampleModel instance"""
+    return SampleModel()
 
 
 @pytest.fixture
 def test_model_with_data():
-    """TestModel with some test data"""
-    return TestModel(
+    """SampleModel with some test data"""
+    return SampleModel(
         simple_attr="test_value", number_attr=100, float_attr=2.71, bool_attr=False
     )
 
 
 @pytest.fixture
 def required_model():
-    """TestRequiredModel instance"""
-    return TestRequiredModel()
+    """RequiredFieldModel instance"""
+    return RequiredFieldModel()
 
 
 @pytest.fixture
@@ -232,7 +232,7 @@ class TestMetadataBaseInstantiation:
 
     def test_class_name_property(self, test_model):
         """Test _class_name computed property"""
-        assert test_model._class_name == "test_model"
+        assert test_model._class_name == "sample_model"
 
     def test_string_representation(self, test_model):
         """Test __str__ method"""
@@ -264,14 +264,14 @@ class TestMetadataBaseEquality:
 
     def test_equality_same_data(self):
         """Test equality with same data"""
-        model1 = TestModel(simple_attr="test", number_attr=42)
-        model2 = TestModel(simple_attr="test", number_attr=42)
+        model1 = SampleModel(simple_attr="test", number_attr=42)
+        model2 = SampleModel(simple_attr="test", number_attr=42)
         assert model1 == model2
 
     def test_equality_different_data(self):
         """Test inequality with different data"""
-        model1 = TestModel(simple_attr="test1", number_attr=42)
-        model2 = TestModel(simple_attr="test2", number_attr=42)
+        model1 = SampleModel(simple_attr="test1", number_attr=42)
+        model2 = SampleModel(simple_attr="test2", number_attr=42)
         assert model1 != model2
 
     def test_equality_with_dict(self, test_model, sample_dict):
@@ -289,7 +289,7 @@ class TestMetadataBaseEquality:
 
     def test_inequality_method(self, test_model):
         """Test __ne__ method"""
-        model2 = TestModel(simple_attr="different")
+        model2 = SampleModel(simple_attr="different")
         assert test_model != model2
 
     def test_equality_with_numpy_arrays(self):
@@ -320,8 +320,8 @@ class TestMetadataBaseEquality:
 
     def test_equality_with_close_float_values(self):
         """Test equality with close float values"""
-        model1 = TestModel(float_attr=3.14159)
-        model2 = TestModel(float_attr=3.14159001)  # Very close value
+        model1 = SampleModel(float_attr=3.14159)
+        model2 = SampleModel(float_attr=3.14159001)  # Very close value
         # Should use np.isclose for float comparison
         result = model1 == model2
         assert isinstance(result, bool)
@@ -356,7 +356,7 @@ class TestMetadataBaseLoading:
 
     def test_load_from_metadata_base(self, test_model):
         """Test loading from another MetadataBase instance"""
-        other_model = TestModel(simple_attr="other_value", number_attr=500)
+        other_model = SampleModel(simple_attr="other_value", number_attr=500)
         test_model.load(other_model)
         assert test_model.simple_attr == "other_value"
         assert test_model.number_attr == 500
@@ -378,15 +378,15 @@ class TestMetadataBaseUpdate:
 
     def test_update_basic(self, test_model):
         """Test basic update functionality"""
-        other_model = TestModel(simple_attr="updated", number_attr=999)
+        other_model = SampleModel(simple_attr="updated", number_attr=999)
         test_model.update(other_model)
         assert test_model.simple_attr == "updated"
         assert test_model.number_attr == 999
 
     def test_update_with_match_constraint(self):
         """Test update with match constraint"""
-        model1 = TestModel(simple_attr="same", number_attr=100)
-        model2 = TestModel(simple_attr="same", number_attr=200)
+        model1 = SampleModel(simple_attr="same", number_attr=100)
+        model2 = SampleModel(simple_attr="same", number_attr=200)
 
         # Should work when match field is the same
         model1.update(model2, match=["simple_attr"])
@@ -394,8 +394,8 @@ class TestMetadataBaseUpdate:
 
     def test_update_with_match_constraint_fails(self):
         """Test update with match constraint that fails"""
-        model1 = TestModel(simple_attr="different1", number_attr=100)
-        model2 = TestModel(simple_attr="different2", number_attr=200)
+        model1 = SampleModel(simple_attr="different1", number_attr=100)
+        model2 = SampleModel(simple_attr="different2", number_attr=200)
 
         # Should raise ValueError when match field differs
         with pytest.raises(ValueError, match="is not equal"):
@@ -404,7 +404,7 @@ class TestMetadataBaseUpdate:
     def test_update_skips_none_values(self, test_model):
         """Test update skips None and default values"""
         # Create model with different values to test update behavior
-        other_model = TestModel(simple_attr="different", number_attr=999)
+        other_model = SampleModel(simple_attr="different", number_attr=999)
         original_simple = test_model.simple_attr
 
         # Test that update works with valid values
@@ -414,7 +414,7 @@ class TestMetadataBaseUpdate:
 
     def test_update_wrong_type_logs_warning(self, test_model):
         """Test update with wrong type logs warning"""
-        different_model = TestRequiredModel()
+        different_model = RequiredFieldModel()
 
         with unittest.mock.patch(
             "mt_metadata.base.metadata.logger.warning"
@@ -540,8 +540,8 @@ class TestMetadataBaseDictConversion:
         """Test basic to_dict functionality"""
         result = test_model_with_data.to_dict()
         assert isinstance(result, dict)
-        assert "test_model" in result
-        assert "simple_attr" in result["test_model"]
+        assert "sample_model" in result
+        assert "simple_attr" in result["sample_model"]
 
     def test_to_dict_single(self, test_model_with_data):
         """Test to_dict with single=True"""
@@ -565,14 +565,14 @@ class TestMetadataBaseDictConversion:
         result = required_model.to_dict(required=True)
         assert isinstance(result, dict)
         # Should contain required field
-        model_dict = result.get("test_required_model", result)
+        model_dict = result.get("required_field_model", result)
         assert "required_field" in model_dict
 
     def test_to_dict_all_fields(self, required_model):
         """Test to_dict with required=False"""
         result = required_model.to_dict(required=False)
         assert isinstance(result, dict)
-        model_dict = result.get("test_required_model", result)
+        model_dict = result.get("required_field_model", result)
         assert "required_field" in model_dict
         assert "optional_field" in model_dict
 
@@ -724,7 +724,7 @@ class TestMetadataBaseEdgeCases:
     def test_roundtrip_dict_conversion(self, test_model_with_data):
         """Test roundtrip dictionary conversion"""
         original_dict = test_model_with_data.to_dict(single=True)
-        new_model = TestModel()
+        new_model = SampleModel()
         new_model.from_dict(original_dict)
 
         assert new_model.simple_attr == test_model_with_data.simple_attr
@@ -733,7 +733,7 @@ class TestMetadataBaseEdgeCases:
     def test_roundtrip_json_conversion(self, test_model_with_data):
         """Test roundtrip JSON conversion"""
         json_str = test_model_with_data.to_json()
-        new_model = TestModel()
+        new_model = SampleModel()
         new_model.from_json(json_str)
 
         assert new_model.simple_attr == test_model_with_data.simple_attr
@@ -742,7 +742,7 @@ class TestMetadataBaseEdgeCases:
     def test_roundtrip_series_conversion(self, test_model_with_data):
         """Test roundtrip pandas Series conversion"""
         series = test_model_with_data.to_series()
-        new_model = TestModel()
+        new_model = SampleModel()
         new_model.from_series(series)
 
         assert new_model.simple_attr == test_model_with_data.simple_attr

@@ -30,11 +30,11 @@ class FIRFilter(FilterBase):
         Field(
             default="fir",
             description="Type of filter.  Must be 'fir'",
-            examples="fir",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "fir",
             },
         ),
     ]
@@ -42,13 +42,13 @@ class FIRFilter(FilterBase):
         np.ndarray | list[float],
         Field(
             default_factory=lambda: np.empty(0),
-            items={"type": "number"},
             description="The FIR coefficients associated with the filter stage response.",
-            examples='"[0.25, 0.5, 0.25]"',
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "items": {"type": "number"},
+                "examples": '"[0.25, 0.5, 0.25]"',
             },
         ),
     ]
@@ -58,11 +58,11 @@ class FIRFilter(FilterBase):
         Field(
             default=1.0,
             description="Downsample factor.",
-            examples="16",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "16",
             },
         ),
     ]
@@ -72,11 +72,11 @@ class FIRFilter(FilterBase):
         Field(
             default=1.0,
             description="Sample rate of FIR taps.",
-            examples="2000",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "2000",
             },
         ),
     ]
@@ -91,11 +91,11 @@ class FIRFilter(FilterBase):
         Field(
             default=0.0,
             description="Frequency of the reference gain, usually in passband.",
-            examples="0.0",
             alias=None,
             json_schema_extra={
                 "units": "hertz",
                 "required": True,
+                "examples": "0.0",
             },
         ),
     ]
@@ -105,11 +105,11 @@ class FIRFilter(FilterBase):
         Field(
             default="NONE",
             description="Symmetry of FIR coefficients",
-            examples="NONE",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "NONE",
             },
         ),
     ]

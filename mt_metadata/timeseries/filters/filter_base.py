@@ -56,11 +56,11 @@ class FilterBase(MetadataBase):
         Field(
             default="",
             description="Name of filter applied or to be applied. If more than one filter input as a comma separated list.",
-            examples='"lowpass_magnetic"',
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": '"lowpass_magnetic"',
             },
         ),
     ]
@@ -70,11 +70,11 @@ class FilterBase(MetadataBase):
         Field(
             default_factory=lambda: Comment(),
             description="Any comments about the filter.",
-            examples="ambient air temperature",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "ambient air temperature",
             },
         ),
     ]
@@ -84,11 +84,11 @@ class FilterBase(MetadataBase):
         Field(
             default="base",
             description="Type of filter, must be one of the available filters.",
-            examples="fap_table",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "fap_table",
             },
         ),
     ]
@@ -98,11 +98,11 @@ class FilterBase(MetadataBase):
         Field(
             default="",
             description="Name of the input units to the filter. Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
-            examples="count",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "count",
             },
         ),
     ]
@@ -112,11 +112,11 @@ class FilterBase(MetadataBase):
         Field(
             default="",
             description="Name of the output units.  Should be all lowercase and separated with an underscore, use 'per' if units are divided and '-' if units are multiplied.",
-            examples="millivolt",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "millivolt",
             },
         ),
     ]
@@ -126,11 +126,11 @@ class FilterBase(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date of filter calibration in ISO format of YYY-MM-DD.",
-            examples="2020-01-01",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "2020-01-01",
             },
         ),
     ]
@@ -140,12 +140,12 @@ class FilterBase(MetadataBase):
         Field(
             default=1.0,
             description="scalar gain of the filter across all frequencies, producted with any frequency depenendent terms",
-            examples="1.0",
             alias=None,
             gt=0.0,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "1.0",
             },
         ),
     ]
@@ -155,12 +155,12 @@ class FilterBase(MetadataBase):
         Field(
             default=0,
             description="Sequence number of the filter in the processing chain.",
-            examples=1,
             alias=None,
             ge=0,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": 1,
             },
         ),
     ]

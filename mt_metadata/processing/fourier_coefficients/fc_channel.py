@@ -17,11 +17,11 @@ class FCChannel(MetadataBase):
         Field(
             default="",
             description="Name of channel",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class FCChannel(MetadataBase):
         Field(
             default=0.0,
             description="Highest frequency present in the sprectrogam data.",
-            examples=[77.0],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": [77.0],
             },
         ),
     ]
@@ -45,11 +45,11 @@ class FCChannel(MetadataBase):
         Field(
             default=0.0,
             description="Lowest frequency present in the sprectrogam data.",
-            examples=[99.0],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": [99.0],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class FCChannel(MetadataBase):
         Field(
             default=1.0,
             description="Sample rate of the time series that was Fourier transformed to generate the FC decimation level.",
-            examples=[60],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": [60],
             },
         ),
     ]
@@ -73,11 +73,11 @@ class FCChannel(MetadataBase):
         Field(
             default=1.0,
             description="Sample rate of the windows.",
-            examples=[4],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": [4],
             },
         ),
     ]
@@ -87,11 +87,11 @@ class FCChannel(MetadataBase):
         Field(
             default="counts",
             description="Units of the channel",
-            examples=["millivolts"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["millivolts"],
             },
         ),
     ]
@@ -101,11 +101,11 @@ class FCChannel(MetadataBase):
         Field(
             default_factory=TimePeriod,  # type: ignore
             description="Time period of the channel",
-            examples=[TimePeriod(start="2020-01-01", end="2020-01-02")],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [TimePeriod(start="2020-01-01", end="2020-01-02")],
             },
         ),
     ]

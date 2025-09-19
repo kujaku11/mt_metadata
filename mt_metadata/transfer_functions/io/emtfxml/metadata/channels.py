@@ -16,11 +16,11 @@ class Channels(MetadataBase):
         Field(
             default="",
             description="reference to the site name",
-            examples=["site"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["site"],
             },
         ),
     ]
@@ -30,11 +30,11 @@ class Channels(MetadataBase):
         Field(
             default="",
             description="units of the distance coordinates",
-            examples=["site"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["site"],
             },
         ),
     ]
@@ -44,11 +44,11 @@ class Channels(MetadataBase):
         Field(
             default_factory=list,
             description="list of input channel names (sources)",
-            examples=[["Hx", "Hy"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["Hx", "Hy"]],
             },
         ),
     ]
@@ -58,11 +58,11 @@ class Channels(MetadataBase):
         Field(
             default_factory=list,
             description="list of output channel names (responses)",
-            examples=[["Ex", "Ey", "Hz"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["Ex", "Ey", "Hz"]],
             },
         ),
     ]

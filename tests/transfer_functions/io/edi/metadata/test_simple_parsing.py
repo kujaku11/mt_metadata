@@ -49,11 +49,14 @@ def test_empower_parsing():
 
         print(f"Components found: {sorted(components_found)}")
 
-        return len(info.info_dict) > 10  # Basic success check
+        # Basic success check
+        assert (
+            len(info.info_dict) > 10
+        ), f"Expected more than 10 info items, got {len(info.info_dict)}"
 
     except Exception as e:
         print(f"Error during parsing: {e}")
-        return False
+        assert False, f"Parsing failed with error: {e}"
 
 
 if __name__ == "__main__":

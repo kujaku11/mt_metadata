@@ -19,12 +19,12 @@ class Provenance(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Date and time the file was created.",
-            examples="2020-02-08T12:23:40.324600+00:00",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "2020-02-08T12:23:40.324600+00:00",
+                "type": "string",
             },
         ),
     ]
@@ -34,12 +34,12 @@ class Provenance(MetadataBase):
         Field(
             default_factory=Comment,
             description="Any comments on provenance of the data.",
-            examples="all good",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "all good",
+                "type": "string",
             },
         ),
     ]
@@ -49,12 +49,12 @@ class Provenance(MetadataBase):
         Field(
             default=None,
             description="A history of changes made to the data.",
-            examples="2020-02-10T14:24:45+00:00 updated metadata",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "2020-02-10T14:24:45+00:00 updated metadata",
+                "type": "string",
             },
         ),
     ]
@@ -64,11 +64,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person who created the data.",
-            examples="Person(name=J. Pedantic, email=jped@mt.com)",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "Person(name=J. Pedantic, email=jped@mt.com)",
             },
         ),
     ]
@@ -78,11 +78,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=AuthorPerson,
             description="Person who submitted the data.",
-            examples="Person(name=submitter_name, email=submitter@email)",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "Person(name=submitter_name, email=submitter@email)",
             },
         ),
     ]
@@ -92,11 +92,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=Person,
             description="Archive from which the data was downloaded from.",
-            examples="Person(name=archive_name, url=https://archive.url)",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "Person(name=archive_name, url=https://archive.url)",
             },
         ),
     ]
@@ -106,11 +106,11 @@ class Provenance(MetadataBase):
         Field(
             default_factory=Software,
             description="Software used to create the data.",
-            examples="Software(name=mt_metadata, version=0.1)",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "Software(name=mt_metadata, version=0.1)",
             },
         ),
     ]

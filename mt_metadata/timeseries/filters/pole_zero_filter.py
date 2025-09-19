@@ -25,11 +25,11 @@ class PoleZeroFilter(FilterBase):
         Field(
             default="zpk",
             description="Type of filter.  Must be 'zpk'",
-            examples="zpk",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "zpk",
             },
         ),
     ]
@@ -38,11 +38,11 @@ class PoleZeroFilter(FilterBase):
         Field(
             default_factory=lambda: np.empty(0, dtype=complex),
             description="The complex-valued poles associated with the filter response.",
-            examples='"[-1/4., -0.1+j*0.3, -0.1-j*0.3]"',
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": '"[-1/4., -0.1+j*0.3, -0.1-j*0.3]"',
             },
         ),
     ]
@@ -52,11 +52,11 @@ class PoleZeroFilter(FilterBase):
         Field(
             default_factory=lambda: np.empty(0, dtype=complex),
             description="The complex-valued zeros associated with the filter response.",
-            examples='"[0.0, ]"',
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": '"[0.0, ]"',
             },
         ),
     ]
@@ -66,11 +66,11 @@ class PoleZeroFilter(FilterBase):
         Field(
             default=1.0,
             description="The scale factor to apply to the monic response.",
-            examples='"[-1000.1]"',
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": '"[-1000.1]"',
             },
         ),
     ]

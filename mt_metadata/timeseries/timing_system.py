@@ -1,11 +1,12 @@
 # =====================================================
 # Imports
 # =====================================================
-from typing import Annotated, Any
+from typing import Annotated
+
+from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
 from mt_metadata.common import Comment
-from pydantic import Field, field_validator, ValidationInfo
 
 
 # =====================================================
@@ -15,11 +16,11 @@ class TimingSystem(MetadataBase):
         Field(
             default_factory=Comment,
             description="Any comment on the timing system.",
-            examples="GPS locked with internal quartz clock",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "GPS locked with internal quartz clock",
             },
         ),
     ]
@@ -29,11 +30,11 @@ class TimingSystem(MetadataBase):
         Field(
             default=0.0,
             description="Estimated drift of the timing system.",
-            examples="0.001",
             alias=None,
             json_schema_extra={
                 "units": "seconds",
                 "required": True,
+                "examples": "0.001",
             },
         ),
     ]
@@ -43,11 +44,11 @@ class TimingSystem(MetadataBase):
         Field(
             default="GPS",
             description="Type of timing system.",
-            examples="GPS",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "GPS",
             },
         ),
     ]
@@ -57,11 +58,11 @@ class TimingSystem(MetadataBase):
         Field(
             default=0.0,
             description="Estimated uncertainty of the timing system.",
-            examples="0.0002",
             alias=None,
             json_schema_extra={
                 "units": "seconds",
                 "required": True,
+                "examples": "0.0002",
             },
         ),
     ]
@@ -71,11 +72,11 @@ class TimingSystem(MetadataBase):
         Field(
             default=None,
             description="Number of satellites used for timing.",
-            examples="6",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "6",
             },
         ),
     ]

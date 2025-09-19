@@ -16,11 +16,11 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="any warnings about the data that should be noted",
-            examples=["periodic pipeline noise"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["periodic pipeline noise"],
             },
         ),
     ]
@@ -30,11 +30,11 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods larger than this number",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -44,11 +44,11 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods smaller than this number",
-            examples=["1000"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1000"],
             },
         ),
     ]
@@ -58,11 +58,11 @@ class DataQuality(MetadataBase):
         Field(
             default=None,
             description="Flag for data quality",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -72,11 +72,11 @@ class DataQuality(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="any comments about the data quality",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -86,11 +86,11 @@ class DataQuality(MetadataBase):
         Field(
             default_factory=Rating,  # type: ignore
             description="rating of the data quality",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]

@@ -387,6 +387,7 @@ def test_phases_validation(fap_filter_basic, subtests):
         fap_filter_basic.phases = [0, 1000 * np.pi / 2, 2000 * np.pi / 2]
         assert np.allclose(fap_filter_basic.phases, [0, np.pi / 2, np.pi])
 
+    # skip for now.  But should look further into why this fails.
     with subtests.test("Invalid string phases"):
         with pytest.raises(TypeError):
             fap_filter_basic.phases = "invalid"

@@ -25,11 +25,11 @@ class RemoteInfo(MetadataBase):
         Field(
             default_factory=Site,  # type: ignore
             description="Site information",
-            examples=["Site(name='Test Site', location='Test Location')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Site(name='Test Site', location='Test Location')"],
             },
         ),
     ]
@@ -38,11 +38,11 @@ class RemoteInfo(MetadataBase):
         Field(
             default_factory=FieldNotes,  # type: ignore
             description="Field notes information",
-            examples=["FieldNotes(...)"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["FieldNotes(...)"],
             },
         ),
     ]

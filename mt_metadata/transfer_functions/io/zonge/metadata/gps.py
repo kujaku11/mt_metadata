@@ -19,11 +19,11 @@ class GPS(MetadataBase):
         Field(
             default=0.0,
             description="latitude",
-            examples=["10.3"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10.3"],
             },
         ),
     ]
@@ -33,11 +33,11 @@ class GPS(MetadataBase):
         Field(
             default=0.0,
             description="longitude",
-            examples=["10.3"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["10.3"],
             },
         ),
     ]
@@ -47,11 +47,11 @@ class GPS(MetadataBase):
         Field(
             default="WGS84",
             description="Datum of the location",
-            examples=["WGS84"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["WGS84"],
             },
         ),
     ]
@@ -61,11 +61,11 @@ class GPS(MetadataBase):
         Field(
             default=0,
             description="UTM zone of location",
-            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["12"],
             },
         ),
     ]

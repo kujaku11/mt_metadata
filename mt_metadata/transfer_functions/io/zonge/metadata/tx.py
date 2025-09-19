@@ -19,13 +19,13 @@ class Tx(MetadataBase):
     type: Annotated[
         TypeEnum,
         Field(
-            default="natural",
+            default=TypeEnum.natural,
             description="Type of EM source",
-            examples=["natural"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["natural"],
             },
         ),
     ]

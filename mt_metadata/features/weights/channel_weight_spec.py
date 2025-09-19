@@ -86,11 +86,11 @@ class ChannelWeightSpec(MetadataBase):
         Field(
             default="multiplication",
             description="How to combine multiple feature weights.",
-            examples=["multiplication"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["multiplication"],
             },
         ),
     ]
@@ -100,11 +100,11 @@ class ChannelWeightSpec(MetadataBase):
         Field(
             default_factory=list,
             description="list of tf ouput channels for which this weighting scheme will be applied",
-            examples=["[ ex ey hz ]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[ ex ey hz ]"],
             },
         ),
     ]
@@ -114,11 +114,11 @@ class ChannelWeightSpec(MetadataBase):
         Field(
             default_factory=list,
             description="List of feature weighting schemes to use for TF processing.",
-            examples=["[]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[]"],
             },
         ),
     ]
@@ -128,10 +128,10 @@ class ChannelWeightSpec(MetadataBase):
         Field(
             default=None,
             description="Weights computed for this channel weight spec. Should be set after evaluation.",
-            examples=["null"],
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]

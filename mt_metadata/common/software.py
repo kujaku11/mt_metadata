@@ -18,11 +18,11 @@ class Software(MetadataBase):
         Field(
             default="",
             description="Author of the software",
-            examples=["Neo"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Neo"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class Software(MetadataBase):
         Field(
             default="",
             description="Software version",
-            examples=["12.01a"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["12.01a"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class Software(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="Most recent date the software was updated.  Prefer to use version, but this works for non-versioned software.",
-            examples=["2020-01-01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["2020-01-01"],
             },
         ),
     ] = None
@@ -60,11 +60,11 @@ class Software(MetadataBase):
         Field(
             default="",
             description="Software name",
-            examples=["mtrules"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mtrules"],
             },
         ),
     ]

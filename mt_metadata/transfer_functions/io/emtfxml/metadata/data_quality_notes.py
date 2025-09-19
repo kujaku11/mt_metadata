@@ -18,11 +18,11 @@ class DataQualityNotes(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods larger than this number",
-            examples=["0.01"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0.01"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class DataQualityNotes(MetadataBase):
         Field(
             default=None,
             description="Data are good for periods smaller than this number",
-            examples=["1000"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["1000"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class DataQualityNotes(MetadataBase):
         Field(
             default=None,
             description="Rating of the data from 0 to 5 where 5 is the best and 0 is unrated",
-            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["4"],
             },
         ),
     ]
@@ -60,11 +60,11 @@ class DataQualityNotes(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Comments about the data quality",
-            examples=["Data quality is good", "Some issues found"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Data quality is good", "Some issues found"],
             },
         ),
     ]

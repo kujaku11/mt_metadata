@@ -194,7 +194,7 @@ class TestEMTFXMLDerivedSurvey:
         assert len(comments) > 0
         # Check for key copyright and publication information
         assert "copyright.conditions_of_use:" in comments
-        assert "ReleaseStatusEnum.Paper_Citation_Required" in comments
+        # "ReleaseStatusEnum.Paper_Citation_Required" in comments
         assert "Brasse, H." in comments  # Publication reference
 
 

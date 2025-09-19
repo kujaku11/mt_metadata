@@ -57,11 +57,11 @@ class DataSection(MetadataBase):
         Field(
             default=0,
             description="Number of frequencies",
-            examples=[16, 1],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [16, 1],
             },
         ),  # type: ignore
     ]
@@ -71,11 +71,11 @@ class DataSection(MetadataBase):
         Field(
             default="",
             description="ID of the station that the data is from. This is important if you have more than one station per file.",
-            examples=["mt001"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt001"],
             },
         ),
     ]
@@ -85,11 +85,11 @@ class DataSection(MetadataBase):
         Field(
             default=0,
             description="Number of channels in the transfer function",
-            examples=[7],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [7],
             },
         ),
     ]
@@ -99,11 +99,11 @@ class DataSection(MetadataBase):
         Field(
             default=999,
             description="Maximum number of data blocks",
-            examples=[999],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [999],
             },
         ),
     ]
@@ -113,11 +113,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for EX",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1"],
             },
         ),
     ]
@@ -127,11 +127,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for EY",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -141,11 +141,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HX",
-            examples=["3"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["3"],
             },
         ),
     ]
@@ -155,11 +155,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HY",
-            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["4"],
             },
         ),
     ]
@@ -169,11 +169,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for HZ",
-            examples=["5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["5"],
             },
         ),
     ]
@@ -183,11 +183,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for RRHX",
-            examples=["6"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["6"],
             },
         ),
     ]
@@ -197,11 +197,11 @@ class DataSection(MetadataBase):
         Field(
             default=None,
             description="Measurement ID for RRHY",
-            examples=["7"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["7"],
             },
         ),
     ]

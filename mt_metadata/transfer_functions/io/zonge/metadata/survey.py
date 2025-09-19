@@ -27,13 +27,13 @@ class Survey(MetadataBase):
     type: Annotated[
         DataTypeEnum,
         Field(
-            default="nsamt",
+            default=DataTypeEnum.NSAMT,
             description="Type of EM survey",
-            examples=["nsamt"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["nsamt"],
             },
         ),
     ]
@@ -41,13 +41,13 @@ class Survey(MetadataBase):
     array: Annotated[
         ArrayEnum,
         Field(
-            default="tensor",
+            default=ArrayEnum.tensor,
             description="Type of array",
-            examples=["tensor"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["tensor"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class Survey(MetadataBase):
         Field(
             default="WGS84",
             description="Datum of the location",
-            examples=["WGS84"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["WGS84"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class Survey(MetadataBase):
         Field(
             default=0,
             description="UTM zone of location",
-            examples=["12"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["12"],
             },
         ),
     ]
@@ -83,13 +83,13 @@ class Survey(MetadataBase):
     proj: Annotated[
         ProjEnum,
         Field(
-            default="UTM",
+            default=ProjEnum.UTM,
             description="Projection of the location coordinates",
-            examples=["UTM"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["UTM"],
             },
         ),
     ]

@@ -65,11 +65,11 @@ class ChannelNomenclature(MetadataBase):
         Field(
             default="ex",
             description="label for the X electric field channel, X is assumed to be North",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex"],
             },
         ),
     ]
@@ -79,11 +79,11 @@ class ChannelNomenclature(MetadataBase):
         Field(
             default="ey",
             description="label for the Y electric field channel, Y is assumed to be East",
-            examples=["ey"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ey"],
             },
         ),
     ]
@@ -93,11 +93,11 @@ class ChannelNomenclature(MetadataBase):
         Field(
             default="hx",
             description="label for the X magnetic field channel, X is assumed to be North",
-            examples=["hx"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx"],
             },
         ),
     ]
@@ -107,11 +107,11 @@ class ChannelNomenclature(MetadataBase):
         Field(
             default="hy",
             description="label for the Y magnetic field channel, Y is assumed to be East",
-            examples=["hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hy"],
             },
         ),
     ]
@@ -121,11 +121,11 @@ class ChannelNomenclature(MetadataBase):
         Field(
             default="hz",
             description="label for the Z magnetic field channel, Z is assumed to be vertical Down",
-            examples=["hz"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hz"],
             },
         ),
     ]
@@ -133,13 +133,13 @@ class ChannelNomenclature(MetadataBase):
     keyword: Annotated[
         SupportedNomenclatureEnum,
         Field(
-            default="default",
+            default=SupportedNomenclatureEnum.default,
             description="Keyword for the channel nomenclature system",
-            examples=["default", "lemi12", "lemi34", "musgraves", "phoenix123"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["default", "lemi12", "lemi34", "musgraves", "phoenix123"],
             },
         ),
     ]

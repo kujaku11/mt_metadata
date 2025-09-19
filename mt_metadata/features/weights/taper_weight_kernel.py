@@ -35,16 +35,22 @@ class TaperWeightKernel(Base):
         Tuple[float, float],
         Field(
             description="Low cut transition bounds",
-            examples=[(0.1, 0.5)],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [[0.1, 0.5]],
+            },
         ),
     ]
     high_cut: Annotated[
         Tuple[float, float],
         Field(
             description="High cut transition bounds",
-            examples=[(0.5, 1.0)],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": [[0.5, 1.0]],
+            },
         ),
     ]
 
@@ -52,8 +58,11 @@ class TaperWeightKernel(Base):
         TypeEnum,
         Field(
             description="Taper style",
-            examples=["hann", "hamming", "blackman"],
-            json_schema_extra={"units": None, "required": True},
+            json_schema_extra={
+                "units": None,
+                "required": True,
+                "examples": ["hann", "hamming", "blackman"],
+            },
         ),
     ]
 

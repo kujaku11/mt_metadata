@@ -11,11 +11,12 @@ from copy import deepcopy
 
 # ==============================================================================
 from pathlib import Path
-from typing import Any, Literal, Self
+from typing import Any, Literal
 
 import numpy as np
 import xarray as xr
 from loguru import logger
+from typing_extensions import Self
 
 from mt_metadata import DEFAULT_CHANNEL_NOMENCLATURE
 from mt_metadata.base.helpers import validate_name
@@ -2215,7 +2216,10 @@ class TF:
 
         self.period = emtfxml_obj.data.period
         self.impedance = emtfxml_obj.data.z
-        self.impedance_error = np.sqrt(emtfxml_obj.data.z_var)
+        # Handle negative or invalid values in z_var before taking sqrt
+        z_var = emtfxml_obj.data.z_var
+        with np.errstate(invalid="ignore"):
+            self.impedance_error = np.sqrt(np.where(z_var >= 0, z_var, np.nan))
         self._transfer_function.inverse_signal_power.loc[
             dict(input=["hx", "hy"], output=["hx", "hy"])
         ] = emtfxml_obj.data.z_invsigcov

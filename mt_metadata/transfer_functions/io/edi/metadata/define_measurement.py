@@ -93,11 +93,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=999,
             description="maximum number of channels",
-            examples=["16"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["16"],
             },
         ),
     ]
@@ -107,11 +107,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=999,
             description="maximum number of runs",
-            examples=["999"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["999"],
             },
         ),
     ]
@@ -121,11 +121,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=7,
             description="maximum number of measurements",
-            examples=["999"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["999"],
             },
         ),
     ]
@@ -135,11 +135,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default="cartesian",
             description="Type of offset from reference center point.",
-            examples=["cartesian", "cart"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["cartesian", "cart"],
             },
         ),
     ]
@@ -149,11 +149,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=None,
             description="Description of location reference center point.",
-            examples=["here"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["here"],
             },
         ),
     ]
@@ -163,11 +163,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=0,
             description="Latitude of reference center point.",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -177,11 +177,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=0,
             description="Longitude reference center point.",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -191,11 +191,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default=0,
             description="Elevation reference center point.",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -205,11 +205,11 @@ class DefineMeasurement(MetadataBase):
         Field(
             default="m",
             description="In the EDI standards this is the elevation units.",
-            examples=["m"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["m"],
             },
         ),
     ]
@@ -221,11 +221,11 @@ class DefineMeasurement(MetadataBase):
             description="Dictionary of measurements with keys as channel types "
             "(e.g., 'hx', 'hy', 'ex', 'ey', etc.) and values as "
             "EMeasurement or HMeasurement objects.",
-            examples=["{'hx': EMeasurement(...), 'hy': HMeasurement(...)}"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["{'hx': EMeasurement(...), 'hy': HMeasurement(...)}"],
             },
         ),
     ]

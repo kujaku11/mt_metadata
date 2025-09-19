@@ -27,7 +27,7 @@ class TestSurveyDefault:
     def test_default_initialization(self, default_survey, subtests):
         """Test that Survey initializes with correct default values."""
         with subtests.test("default type value"):
-            assert default_survey.type == "nsamt"
+            assert default_survey.type == DataTypeEnum.NSAMT
 
         with subtests.test("default array value"):
             assert default_survey.array == ArrayEnum.tensor
@@ -84,7 +84,7 @@ class TestSurveyDefault:
         """Test that all fields behave as required with defaults."""
         with subtests.test("all fields are required but have defaults"):
             survey = Survey()  # type: ignore
-            assert survey.type == "nsamt"
+            assert survey.type == DataTypeEnum.NSAMT
             assert survey.array == ArrayEnum.tensor
             assert survey.datum == "WGS84"
             assert survey.u_t_m_zone == 0
@@ -180,7 +180,7 @@ class TestSurveyCustomValues:
         with subtests.test("custom utm zone only"):
             survey = Survey(u_t_m_zone=13)  # type: ignore
             assert survey.u_t_m_zone == 13
-            assert survey.type == "nsamt"  # default
+            assert survey.type == DataTypeEnum.NSAMT  # default
 
 
 class TestSurveyValidation:
@@ -326,7 +326,7 @@ class TestSurveySerialization:
                 assert field in dump
 
         with subtests.test("default values"):
-            assert dump["type"] == "nsamt"
+            assert dump["type"] == "NSAMT"
             assert dump["array"] == "tensor"
             assert dump["datum"] == "WGS84"
             assert dump["u_t_m_zone"] == 0
@@ -452,10 +452,8 @@ class TestSurveyModification:
 
         with subtests.test("reset type to default"):
             survey.type = "nsamt"  # type: ignore
-            # Type might be stored as enum or string
-            assert survey.type == "nsamt" or (
-                hasattr(survey.type, "value") and survey.type.value == "NSAMT"
-            )
+            # Type is stored as enum
+            assert survey.type == DataTypeEnum.NSAMT
 
         with subtests.test("reset u_t_m_zone to default"):
             survey.u_t_m_zone = 0  # type: ignore
@@ -574,7 +572,7 @@ class TestSurveyEdgeCases:
         """Test initialization with empty keyword arguments."""
         with subtests.test("empty kwargs"):
             survey = Survey(**{})  # type: ignore
-            assert survey.type == "nsamt"
+            assert survey.type == DataTypeEnum.NSAMT
             assert survey.u_t_m_zone == 0
 
     def test_unknown_field_handling(self, subtests):
@@ -811,8 +809,8 @@ class TestSurveyIntegration:
     def test_data_pipeline_scenarios(self, subtests):
         """Test scenarios that might occur in data processing pipelines."""
         pipeline_scenarios = [
-            ("default initialization", {}, "nsamt", 0),
-            ("string to int coercion", {"u_t_m_zone": "15"}, "nsamt", 15),
+            ("default initialization", {}, "NSAMT", 0),
+            ("string to int coercion", {"u_t_m_zone": "15"}, "NSAMT", 15),
             ("enum string conversion", {"type": "MT"}, "MT", 0),
         ]
 
@@ -860,7 +858,7 @@ class TestSurveyIntegration:
             survey = Survey()  # type: ignore
 
             # Start with defaults
-            assert survey.type == "nsamt"
+            assert survey.type == DataTypeEnum.NSAMT
             assert survey.u_t_m_zone == 0
 
             # Update to new values

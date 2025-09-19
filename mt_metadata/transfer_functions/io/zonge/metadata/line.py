@@ -15,11 +15,11 @@ class Line(MetadataBase):
         Field(
             default=None,
             description="Name of the line data collected on",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["0"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Line(MetadataBase):
         Field(
             default=None,
             description="Line number",
-            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [0],
             },
         ),
     ]

@@ -18,11 +18,11 @@ class GDP(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None).date,
             description="start date of the measurement",
-            examples=["01/01/2020"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["01/01/2020"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class GDP(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="start time of the measurement",
-            examples=["12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["12:00:00"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class GDP(MetadataBase):
         Field(
             default=None,
             description="Type of GPD",
-            examples=["zen"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["zen"],
             },
         ),
     ]
@@ -60,11 +60,11 @@ class GDP(MetadataBase):
         Field(
             default=None,
             description="version of hadware in the GDP",
-            examples=[0],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": [0],
             },
         ),
     ]

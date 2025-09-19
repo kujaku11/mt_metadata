@@ -17,11 +17,11 @@ class Electric(MetadataBase):
         Field(
             default="",
             description="Name of the channel",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="orientation angle relative to geographic north",
-            examples=["11.9"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["11.9"],
             },
         ),
     ]
@@ -45,11 +45,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of negative sensor relative center point in north direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of positive sensor relative center point in north direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -73,11 +73,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of negative sensor relative center point in east direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -87,11 +87,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of positive sensor relative center point in east direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -101,11 +101,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of negative sensor relative center point in depth",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -115,11 +115,11 @@ class Electric(MetadataBase):
         Field(
             default=0.0,
             description="location of positive sensor relative center point in depth",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]

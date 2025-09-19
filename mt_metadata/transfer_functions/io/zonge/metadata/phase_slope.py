@@ -22,13 +22,13 @@ class PhaseSlope(MetadataBase):
     smooth: Annotated[
         SmoothEnum,
         Field(
-            default="None",
+            default=SmoothEnum.null,
             description="Type of smoothing for phase slope algorithm",
-            examples=["robust"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["robust"],
             },
         ),
     ]
@@ -36,13 +36,13 @@ class PhaseSlope(MetadataBase):
     to_z_mag: Annotated[
         YesNoEnum,
         Field(
-            default="no",
+            default=YesNoEnum.no,
             description="Was hz used for smoothing for phase slope algorithm",
-            examples=["no"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["no"],
             },
         ),
     ]

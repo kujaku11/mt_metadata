@@ -18,11 +18,11 @@ class Header(MetadataBase):
         Field(
             default=None,
             description="Station name",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Survey,
             description="Survey metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Tx,
             description="Transmitter metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -60,11 +60,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Rx,
             description="Receiver metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -74,11 +74,11 @@ class Header(MetadataBase):
         Field(
             default_factory=MTEdit,
             description="MTEdit metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -88,11 +88,11 @@ class Header(MetadataBase):
         Field(
             default_factory=MTFT24,
             description="MTFT24 metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -102,11 +102,11 @@ class Header(MetadataBase):
         Field(
             default_factory=GPS,
             description="GPS metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -116,11 +116,11 @@ class Header(MetadataBase):
         Field(
             default_factory=GDP,
             description="GDP metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -130,11 +130,11 @@ class Header(MetadataBase):
         Field(
             default_factory=CH,
             description="CH metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -144,11 +144,11 @@ class Header(MetadataBase):
         Field(
             default_factory=STN,
             description="STN metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -158,11 +158,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Line,
             description="Line metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -172,11 +172,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Unit,
             description="Unit metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -186,11 +186,11 @@ class Header(MetadataBase):
         Field(
             default_factory=Job,
             description="Job metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]
@@ -200,11 +200,11 @@ class Header(MetadataBase):
         Field(
             default=0.0,
             description="Elevation metadata",
-            examples=["null"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["null"],
             },
         ),
     ]

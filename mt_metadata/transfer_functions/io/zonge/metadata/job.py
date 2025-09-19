@@ -15,11 +15,11 @@ class Job(MetadataBase):
         Field(
             default=None,
             description="name of the job",
-            examples=["yellowstone"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["yellowstone"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class Job(MetadataBase):
         Field(
             default=None,
             description="who the job is for",
-            examples=["NSF"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["NSF"],
             },
         ),
     ]

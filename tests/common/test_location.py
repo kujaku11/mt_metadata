@@ -352,7 +352,7 @@ def test_station_location_custom_values(subtests):
         longitude=-122.42,
         elevation=15.0,
         datum="NAD83",
-        **{"declination": {"value": 15.5, "epoch": 2020}}
+        **{"declination": {"value": 15.5, "epoch": 2020}},
     )
 
     with subtests.test("latitude is set correctly"):

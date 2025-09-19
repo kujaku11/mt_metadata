@@ -40,11 +40,11 @@ class ShortTimeFourierTransform(MetadataBase):
         Field(
             default=None,
             description="List of harmonics indices kept, if all use -1",
-            examples=[[0, 4, 8]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [[0, 4, 8]],
             },
         ),
     ]
@@ -52,13 +52,13 @@ class ShortTimeFourierTransform(MetadataBase):
     method: Annotated[
         MethodEnum,
         Field(
-            default="fft",
+            default=MethodEnum.fft,
             description="Fourier transform method",
-            examples=["fft"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["fft"],
             },
         ),
     ]
@@ -68,11 +68,11 @@ class ShortTimeFourierTransform(MetadataBase):
         Field(
             default=0,
             description="How many FFT windows must be available for the time series to valid for STFT.",
-            examples=[4],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [4],
             },
         ),
     ]
@@ -80,13 +80,13 @@ class ShortTimeFourierTransform(MetadataBase):
     per_window_detrend_type: Annotated[
         PerWindowDetrendTypeEnum,
         Field(
-            default="",
+            default=PerWindowDetrendTypeEnum.null,
             description="Additional detrending applied per window.  Not available for standard scipy spectrogram -- placholder for ARMA prewhitening.",
-            examples=["linear"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["linear"],
             },
         ),
     ]
@@ -94,13 +94,13 @@ class ShortTimeFourierTransform(MetadataBase):
     pre_fft_detrend_type: Annotated[
         PreFftDetrendTypeEnum,
         Field(
-            default="linear",
+            default=PreFftDetrendTypeEnum.linear,
             description="Pre FFT detrend method to be applied",
-            examples=["linear"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["linear"],
             },
         ),
     ]
@@ -108,13 +108,13 @@ class ShortTimeFourierTransform(MetadataBase):
     prewhitening_type: Annotated[
         PrewhiteningTypeEnum,
         Field(
-            default="first difference",
+            default=PrewhiteningTypeEnum.first_difference,
             description="Prewhitening method to be applied",
-            examples=["first difference"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["first difference"],
             },
         ),
     ]
@@ -124,11 +124,11 @@ class ShortTimeFourierTransform(MetadataBase):
         Field(
             default=True,
             description="Whether the data are recolored [True] or not [False].",
-            examples=[True],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [True],
             },
         ),
     ]
@@ -138,11 +138,11 @@ class ShortTimeFourierTransform(MetadataBase):
         Field(
             default_factory=Window,  # type: ignore
             description="Window settings",
-            examples=["Window()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Window()"],
             },
         ),
     ]

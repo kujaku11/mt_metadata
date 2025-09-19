@@ -107,11 +107,11 @@ class Coherence(Feature):
         Field(
             default="",
             description="The first channel of two channels in the coherence calculation.",
-            examples=["ex"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["ex"],
             },
         ),
     ]
@@ -121,11 +121,11 @@ class Coherence(Feature):
         Field(
             default="",
             description="The second channel of two channels in the coherence calculation.",
-            examples=["hy"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hy"],
             },
         ),
     ]
@@ -133,13 +133,13 @@ class Coherence(Feature):
     detrend: Annotated[
         DetrendEnum,
         Field(
-            default="linear",
+            default=DetrendEnum.linear,
             description="How to detrend the data segments before fft.",
-            examples=["constant"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["constant"],
             },
         ),
     ]
@@ -149,11 +149,11 @@ class Coherence(Feature):
         Field(
             default=None,
             description="The station associated with the first channel in the coherence calculation.",
-            examples=["PKD"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["PKD"],
             },
         ),
     ]
@@ -163,11 +163,11 @@ class Coherence(Feature):
         Field(
             default=None,
             description="The station associated with the second channel in the coherence calculation.",
-            examples=["SAO"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["SAO"],
             },
         ),
     ]
@@ -177,11 +177,11 @@ class Coherence(Feature):
         Field(
             default=Window(num_samples=256, overlap=128, type="hamming"),  # type: ignore
             description="The window function to apply to the data segments before fft.",
-            examples=[{"type": "hamming", "num_samples": 256, "overlap": 128}],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [{"type": "hamming", "num_samples": 256, "overlap": 128}],
             },
         ),
     ]

@@ -15,11 +15,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="Number of output channels",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -29,11 +29,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="Number of input channels",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -43,11 +43,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="Number of reference channels",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -57,11 +57,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="total bandwidth of window",
-            examples=["2.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2.0"],
             },
         ),
     ]
@@ -71,11 +71,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="sampling spacing, if negative sample rate.",
-            examples=["1.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1.0"],
             },
         ),
     ]
@@ -85,11 +85,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="length of time window.",
-            examples=["8192"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["8192"],
             },
         ),
     ]
@@ -99,11 +99,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="number by which the segment length is divided by to get next window.",
-            examples=["2.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2.0"],
             },
         ),
     ]
@@ -113,11 +113,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="maximum number of sections",
-            examples=["2.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2.0"],
             },
         ),
     ]
@@ -127,11 +127,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="index of first frequency",
-            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["4"],
             },
         ),
     ]
@@ -141,11 +141,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="increment value of next frequency",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -155,11 +155,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="total number of frequencies to process.",
-            examples=["4"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["4"],
             },
         ),
     ]
@@ -169,11 +169,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="small leverage point minimum",
-            examples=["0.00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.00"],
             },
         ),
     ]
@@ -183,11 +183,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="bounded influence value",
-            examples=["-999"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["-999"],
             },
         ),
     ]
@@ -197,11 +197,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="large leverage point minimu",
-            examples=["0.99"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.99"],
             },
         ),
     ]
@@ -211,11 +211,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="coherencey threshold for electric channels",
-            examples=["0.35"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.35"],
             },
         ),
     ]
@@ -225,11 +225,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="Use threshold for hz channels",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -239,11 +239,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=0.0,
             description="coherencey threshold for hz channels",
-            examples=["0.35"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0.35"],
             },
         ),
     ]
@@ -253,11 +253,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="number of data segments used",
-            examples=["2"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2"],
             },
         ),
     ]
@@ -267,11 +267,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="order of auto-regressive prewhitening filter.",
-            examples=["5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["5"],
             },
         ),
     ]
@@ -281,11 +281,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="input data file mode",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -295,11 +295,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="input time mode",
-            examples=["0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["0"],
             },
         ),
     ]
@@ -309,11 +309,11 @@ class BirrpParameters(MetadataBase):
         Field(
             default=None,
             description="number of components",
-            examples=["5"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["5"],
             },
         ),
     ]

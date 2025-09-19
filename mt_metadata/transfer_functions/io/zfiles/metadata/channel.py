@@ -18,11 +18,11 @@ class Channel(MetadataBase):
         Field(
             default=None,
             description="Channel number",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class Channel(MetadataBase):
         Field(
             default=0.0,
             description="channel azimuth",
-            examples=["90"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["90"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class Channel(MetadataBase):
         Field(
             default=0.0,
             description="channel tilt relative to horizontal.",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -60,11 +60,11 @@ class Channel(MetadataBase):
         Field(
             default=0.0,
             description="dipole length in meters",
-            examples=["0.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["0.0"],
             },
         ),
     ]
@@ -74,11 +74,11 @@ class Channel(MetadataBase):
         Field(
             default="",
             description="channel name",
-            examples=["hx"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx"],
             },
         ),
     ]

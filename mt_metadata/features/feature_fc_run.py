@@ -16,12 +16,12 @@ class FeatureFCRun(MetadataBase):
         Field(
             default="",
             description="Suggested Run ID should be sample rate followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or sr{sample_rate}_001. Should be the same as the time series run ID.",
-            examples=["001"],
             alias=None,
             pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["001"],
             },
         ),
     ]
@@ -31,11 +31,11 @@ class FeatureFCRun(MetadataBase):
         Field(
             default=0.0,
             description="Digital sample rate for the run",
-            examples=["100"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": ["100"],
             },
         ),
     ]
@@ -45,11 +45,11 @@ class FeatureFCRun(MetadataBase):
         Field(
             default_factory=lambda: Comment(),  # type: ignore
             description="Any comments about the feature",
-            examples=["estimated using hilburt transform."],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["estimated using hilburt transform."],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class FeatureFCRun(MetadataBase):
         Field(
             default_factory=lambda: TimePeriod(),  # type: ignore
             description="The time period over which the feature was calculated.",
-            examples=["2020-01-01T00:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01T00:00:00"],
             },
         ),
     ]

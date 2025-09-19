@@ -18,11 +18,11 @@ class Unit(MetadataBase):
         Field(
             default="m",
             description="Type of smoothing for phase slope algorithm",
-            examples=["m"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["m"],
             },
         ),
     ]
@@ -32,11 +32,11 @@ class Unit(MetadataBase):
         Field(
             default="mV/km",
             description="Units for the electric field",
-            examples=["mV/km"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["mV/km"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class Unit(MetadataBase):
         Field(
             default="nT",
             description="Units for the magnetic field",
-            examples=["nT"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["nT"],
             },
         ),
     ]

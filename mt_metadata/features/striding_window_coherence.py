@@ -25,8 +25,11 @@ class StridingWindowCoherence(Coherence):
         Field(
             default_factory=Window,  # type: ignore
             description="The window used for the subwindow coherence calculation.",
-            examples=["hann", "hamming", "blackman"],
-            json_schema_extra={"units": None, "required": False},
+            json_schema_extra={
+                "units": None,
+                "required": False,
+                "examples": ["hann", "hamming", "blackman"],
+            },
         ),
     ]
 

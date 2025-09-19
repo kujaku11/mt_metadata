@@ -1,6 +1,7 @@
 import pytest
-from mt_metadata.common import GeographicLocation
 from pydantic import ValidationError
+
+from mt_metadata.common import GeographicLocation
 
 
 def test_geographic_location_default_values(subtests):

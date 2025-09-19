@@ -1,6 +1,7 @@
 import pytest
-from mt_metadata.common.data_quality import DataQuality
+
 from mt_metadata.common import Comment, Rating
+from mt_metadata.common.data_quality import DataQuality
 
 
 def test_data_quality_default_values():

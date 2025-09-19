@@ -17,11 +17,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="Channel number, could be location.channel_number.",
-            examples=["1"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["1"],
             },
         ),
     ]
@@ -31,12 +31,12 @@ class HMeasurement(MetadataBase):
         Field(
             default="",
             description="channel type, should start with an 'h' or 'b'",
-            examples=["hx"],
             alias=None,
             pattern=r"^(RR|rr|[hHbB])[a-zA-Z0-9_]+$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["hx"],
             },
         ),
     ]
@@ -46,11 +46,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in north direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -60,11 +60,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in east direction",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -74,11 +74,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="location of sensor relative center point in depth",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "meters",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -88,11 +88,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="orientation of the sensor relative to coordinate system, clockwise positive.",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -102,11 +102,11 @@ class HMeasurement(MetadataBase):
         Field(
             default=0.0,
             description="orientation of the sensor relative to horizontal = 0",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": "degrees",
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]
@@ -116,11 +116,11 @@ class HMeasurement(MetadataBase):
         Field(
             default="",
             description="description of acquired channel",
-            examples=["100.0"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["100.0"],
             },
         ),
     ]

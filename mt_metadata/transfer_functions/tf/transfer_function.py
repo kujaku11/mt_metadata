@@ -28,11 +28,11 @@ class TransferFunction(MetadataBase):
         Field(
             default="",
             description="transfer function id",
-            examples=["mt01_256"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["mt01_256"],
             },
         ),
     ]
@@ -42,11 +42,11 @@ class TransferFunction(MetadataBase):
         Field(
             default="+",
             description="sign of the transfer function estimates",
-            examples=["+"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["+"],
             },
         ),
     ]
@@ -56,11 +56,11 @@ class TransferFunction(MetadataBase):
         Field(
             default="milliVolt per kilometer per nanoTesla",
             description="units of the impedance tensor estimates",
-            examples=["milliVolt per kilometer per nanoTesla"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["milliVolt per kilometer per nanoTesla"],
             },
         ),
     ]
@@ -70,11 +70,11 @@ class TransferFunction(MetadataBase):
         Field(
             default=list,
             description="list of runs used in the processing",
-            examples=[["MT001a", "MT001c"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["MT001a", "MT001c"]],
             },
         ),
     ]
@@ -84,11 +84,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=list,
             description="list of remote references",
-            examples=[["MT002b", "MT002c"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["MT002b", "MT002c"]],
             },
         ),
     ]
@@ -98,11 +98,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp=None),
             description="date the data were processed",
-            examples=["2020-01-01T12:00:00"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["2020-01-01T12:00:00"],
             },
         ),
     ]
@@ -112,11 +112,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=list,
             description="list of processing parameters with structure name = value",
-            examples=[["nfft=4096", "n_windows=16"]],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": [["nfft=4096", "n_windows=16"]],
             },
         ),
     ]
@@ -126,11 +126,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=AuthorPerson,  # type: ignore
             description="person who processed the data",
-            examples=["Person(name='John Doe', email='john.doe@example.com')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Person(name='John Doe', email='john.doe@example.com')"],
             },
         ),
     ]
@@ -140,11 +140,11 @@ class TransferFunction(MetadataBase):
         Field(
             default="",
             description="Type of processing",
-            examples=["robust remote reference"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["robust remote reference"],
             },
         ),
     ]
@@ -154,11 +154,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=Software,  # type: ignore
             description="software used to process the data",
-            examples=["Software(name='Aurora', version='1.0.0')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["Software(name='Aurora', version='1.0.0')"],
             },
         ),
     ]
@@ -168,11 +168,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=DataQuality,  # type: ignore
             description="data quality information",
-            examples=["DataQuality()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["DataQuality()"],
             },
         ),
     ]
@@ -182,11 +182,11 @@ class TransferFunction(MetadataBase):
         Field(
             default="geographic",
             description="coordinate system that the transfer function is in.  It is strongly recommended that the transfer functions be rotated to align with geographic coordinates with geographic north as 0 and east as 90.",
-            examples=["geographic"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["geographic"],
             },
         ),
     ]
@@ -199,11 +199,11 @@ class TransferFunction(MetadataBase):
         Field(
             default=None,
             description="processing configuration",
-            examples=["aurora.processing"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["aurora.processing"],
             },
         ),
     ]

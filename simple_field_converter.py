@@ -44,85 +44,146 @@ def migrate_field_block(
 ) -> Tuple[List[str], int]:
     """
     Migrate a single Field block by moving deprecated parameters into json_schema_extra.
-    Returns (updated_lines, changes_count).
+    This version handles complex multiline structures more robustly.
     """
     changes = 0
     field_lines = lines[start : end + 1]
 
-    # Find deprecated parameters
-    examples_line = None
-    type_line = None
-    items_line = None
+    # Find json_schema_extra boundaries first
     json_schema_start = None
     json_schema_end = None
 
     for i, line in enumerate(field_lines):
-        stripped = line.strip()
-        if stripped.startswith("examples="):
-            examples_line = i
-        elif stripped.startswith("type="):
-            type_line = i
-        elif stripped.startswith("items="):
-            items_line = i
-        elif "json_schema_extra=" in line:
+        if "json_schema_extra=" in line:
             json_schema_start = i
-            # Find the end of the json_schema_extra block
+            # Find the end of the json_schema_extra block by tracking braces
             brace_count = line.count("{") - line.count("}")
             j = i + 1
             while j < len(field_lines) and brace_count > 0:
                 brace_count += field_lines[j].count("{") - field_lines[j].count("}")
                 j += 1
             json_schema_end = j - 1
+            break
 
     # If no json_schema_extra found, we can't migrate
     if json_schema_start is None:
         return lines[start : end + 1], 0
 
-    # Extract parameter values
-    examples_value = None
-    type_value = None
-    items_value = None
+    # Find deprecated parameters using a more robust approach
+    deprecated_params = {}
+    i = 0
+    while i < len(field_lines):
+        line = field_lines[i].strip()
 
-    if examples_line is not None:
-        examples_match = re.search(
-            r"examples\s*=\s*(.+?)(?:,\s*)?$", field_lines[examples_line]
-        )
-        if examples_match:
-            examples_value = examples_match.group(1).rstrip(",")
-            changes += 1
+        # Check for deprecated parameter starts
+        param_match = None
+        param_name = None
 
-    if type_line is not None:
-        type_match = re.search(r"type\s*=\s*(.+?)(?:,\s*)?$", field_lines[type_line])
-        if type_match:
-            type_value = type_match.group(1).rstrip(",")
-            changes += 1
+        if re.match(r"\s*(examples|type|items)\s*=", field_lines[i]):
+            if "examples=" in field_lines[i]:
+                param_name = "examples"
+            elif (
+                "type=" in field_lines[i] and "json_schema_extra" not in field_lines[i]
+            ):
+                param_name = "type"
+            elif (
+                "items=" in field_lines[i] and "json_schema_extra" not in field_lines[i]
+            ):
+                param_name = "items"
 
-    if items_line is not None:
-        items_match = re.search(r"items\s*=\s*(.+?)(?:,\s*)?$", field_lines[items_line])
-        if items_match:
-            items_value = items_match.group(1).rstrip(",")
-            changes += 1
+        if param_name:
+            # Extract the parameter value, handling multiline cases
+            param_lines = [i]
+            param_value = ""
+
+            # Get the part after the equals sign
+            line_content = field_lines[i]
+            equals_pos = line_content.find(f"{param_name}=")
+            if equals_pos != -1:
+                after_equals = line_content[equals_pos + len(param_name) + 1 :].strip()
+                param_value = after_equals
+
+                # Handle multiline values (lists, dicts, etc.)
+                if (
+                    after_equals.endswith("[")
+                    or after_equals.endswith("{")
+                    or not after_equals.endswith(",")
+                ):
+                    # This might be a multiline value
+                    bracket_count = after_equals.count("[") - after_equals.count("]")
+                    brace_count = after_equals.count("{") - after_equals.count("}")
+                    paren_count = after_equals.count("(") - after_equals.count(")")
+
+                    j = i + 1
+                    while j < len(field_lines) and (
+                        bracket_count > 0
+                        or brace_count > 0
+                        or paren_count > 0
+                        or not param_value.rstrip().endswith(",")
+                    ):
+                        param_lines.append(j)
+                        next_line = field_lines[j]
+                        param_value += next_line
+
+                        bracket_count += next_line.count("[") - next_line.count("]")
+                        brace_count += next_line.count("{") - next_line.count("}")
+                        paren_count += next_line.count("(") - next_line.count(")")
+
+                        # Break if we hit another parameter or the end of the field
+                        if (
+                            bracket_count <= 0
+                            and brace_count <= 0
+                            and paren_count <= 0
+                            and (
+                                param_value.rstrip().endswith(",")
+                                or param_value.rstrip().endswith("}")
+                            )
+                        ):
+                            break
+
+                        j += 1
+                        if j >= len(field_lines):
+                            break
+
+                # Clean up the parameter value
+                param_value = param_value.rstrip().rstrip(",").strip()
+
+                deprecated_params[param_name] = {
+                    "value": param_value,
+                    "lines": param_lines,
+                }
+                changes += 1
+
+                # Skip the lines we just processed
+                i = max(param_lines) + 1
+                continue
+
+        i += 1
 
     if changes == 0:
         return lines[start : end + 1], 0
 
     # Build new field block
+    lines_to_remove = set()
+    for param_info in deprecated_params.values():
+        lines_to_remove.update(param_info["lines"])
+
     new_field_lines = []
 
-    # Add lines before deprecated parameters
+    # Copy lines, skipping the deprecated parameter lines
     for i, line in enumerate(field_lines):
-        if i in [examples_line, type_line, items_line]:
-            continue  # Skip deprecated parameter lines
+        if i in lines_to_remove:
+            continue
 
+        # Insert new parameters into json_schema_extra before closing brace
         if i == json_schema_end:
-            # Insert new parameters before closing brace
             indent = "                "  # Match typical indentation
-            if examples_value:
-                new_field_lines.append(f'{indent}"examples": {examples_value},\n')
-            if type_value:
-                new_field_lines.append(f'{indent}"type": {type_value},\n')
-            if items_value:
-                new_field_lines.append(f'{indent}"items": {items_value},\n')
+
+            # Add each deprecated parameter to json_schema_extra
+            for param_name, param_info in deprecated_params.items():
+                new_field_lines.append(
+                    f'{indent}"{param_name}": {param_info["value"]},\n'
+                )
 
         new_field_lines.append(line)
 

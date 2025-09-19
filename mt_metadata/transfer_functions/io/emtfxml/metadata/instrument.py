@@ -29,11 +29,11 @@ class Instrument(CommonInstrument):
         Field(
             default=None,
             description="Settings for the instrument, such as configuration or calibration details.",
-            examples=["calibration settings", "configuration details"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["calibration settings", "configuration details"],
             },
         ),
     ] = None

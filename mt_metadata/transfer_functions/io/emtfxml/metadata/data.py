@@ -60,11 +60,11 @@ class TransferFunction(MetadataBase):
         Field(
             default_factory=lambda: np.empty((0,), dtype=np.float64),
             description="periods for estimates",
-            examples=["0.01", "0.1", "1.0"],
             alias=None,
             json_schema_extra={
                 "units": "second",
                 "required": True,
+                "examples": ["0.01", "0.1", "1.0"],
             },
         ),
     ]

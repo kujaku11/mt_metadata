@@ -16,13 +16,13 @@ class DPlus(MetadataBase):
     use: Annotated[
         YesNoEnum,
         Field(
-            default="no",
+            default=YesNoEnum.no,
             description="Was D+ used to smooth the response",
-            examples=["no"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["no"],
             },
         ),
     ]

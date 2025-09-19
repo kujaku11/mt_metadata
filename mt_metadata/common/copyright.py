@@ -1,8 +1,8 @@
 # =====================================================
 # Imports
 # =====================================================
-from enum import Enum
 from typing import Annotated
+
 from pydantic import Field, field_validator, ValidationInfo
 
 from mt_metadata.base import MetadataBase
@@ -18,12 +18,12 @@ class Copyright(MetadataBase):
         Field(
             default="CC BY 4.0",
             description="How the data can be used. The options are based on https://github.com/spdx/license-list-data",
-            examples="CC BY",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "CC BY",
+                "type": "string",
             },
         ),
     ]

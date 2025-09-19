@@ -22,6 +22,7 @@ from loguru import logger
 from mt_metadata import NULL_VALUES
 from mt_metadata.base import helpers
 from mt_metadata.common import Instrument
+from mt_metadata.common.enumerations import DataTypeEnum
 from mt_metadata.timeseries import Electric, Magnetic, Run, Survey
 from mt_metadata.transfer_functions.io.emtfxml.metadata import helpers as emtf_helpers
 from mt_metadata.transfer_functions.io.tools import get_nm_elev
@@ -1166,7 +1167,7 @@ class EMTFXML:
         if sm.data_type is not None:
             self.sub_type = f"{sm.data_type.upper()}_TF"
         else:
-            self.sub_type = "MT_TF"
+            self.sub_type = DataTypeEnum.MT_TF
         self.site.name = sm.geographic_name
         self.site.id = sm.id
         self.product_id = sm.fdsn.id

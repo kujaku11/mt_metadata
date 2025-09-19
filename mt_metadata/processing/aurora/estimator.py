@@ -20,13 +20,13 @@ class Estimator(MetadataBase):
     engine: Annotated[
         EngineEnum,
         Field(
-            default="RME_RR",
+            default=EngineEnum.RME_RR,
             description="The transfer function estimator engine",
-            examples=["RME_RR"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["RME_RR"],
             },
         ),
     ]
@@ -36,11 +36,11 @@ class Estimator(MetadataBase):
         Field(
             default=True,
             description="Estimate per channel",
-            examples=["True"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["True"],
             },
         ),
     ]

@@ -37,11 +37,11 @@ class Run(MetadataBase):
         Field(
             default_factory=list,
             description="List of auxiliary channels recorded",
-            examples=["[T]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[T]"],
             },
         ),
     ]
@@ -51,11 +51,11 @@ class Run(MetadataBase):
         Field(
             default_factory=list,
             description="List of electric channels recorded",
-            examples=["[Ex , Ey]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[Ex , Ey]"],
             },
         ),
     ]
@@ -65,11 +65,11 @@ class Run(MetadataBase):
         Field(
             default_factory=list,
             description="List of magnetic channels recorded",
-            examples=["[Hx , Hy , Hz]"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["[Hx , Hy , Hz]"],
             },
         ),
     ]
@@ -88,11 +88,11 @@ class Run(MetadataBase):
         Field(
             default_factory=Comment,  # type: ignore
             description="Any comments on the run.",
-            examples=["cows chewed cables"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["cows chewed cables"],
             },
         ),
     ]
@@ -102,11 +102,11 @@ class Run(MetadataBase):
         Field(
             default=DataTypeEnum.BBMT,
             description="Type of data recorded for this run.",
-            examples=["BBMT"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["BBMT"],
             },
         ),
     ]
@@ -116,12 +116,12 @@ class Run(MetadataBase):
         Field(
             default="",
             description="Run ID should be station name followed by a number or character.  Characters should only be used if the run number is small, if the run number is high consider using digits with zeros.  For example if you have 100 runs the run ID could be 001 or {station}001.",
-            examples=["001"],
             alias=None,
             pattern="^[a-zA-Z0-9_]*$",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["001"],
             },
         ),
     ]
@@ -131,11 +131,11 @@ class Run(MetadataBase):
         Field(
             default=0.0,
             description="Digital sample rate for the run",
-            examples=["100"],
             alias=None,
             json_schema_extra={
                 "units": "samples per second",
                 "required": True,
+                "examples": ["100"],
             },
         ),
     ]
@@ -145,11 +145,11 @@ class Run(MetadataBase):
         Field(
             default_factory=AuthorPerson,  # type: ignore
             description="Information about the group that collected the data.",
-            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Person()"],
             },
         ),
     ]
@@ -159,11 +159,11 @@ class Run(MetadataBase):
         Field(
             default_factory=AuthorPerson,  # type: ignore
             description="Information about the group that collected the metadata.",
-            examples=["Person()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Person()"],
             },
         ),
     ]
@@ -173,11 +173,11 @@ class Run(MetadataBase):
         Field(
             default_factory=Provenance,  # type: ignore
             description="Provenance information about the run.",
-            examples=["Provenance()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Provenance()"],
             },
         ),
     ]
@@ -187,11 +187,11 @@ class Run(MetadataBase):
         Field(
             default_factory=TimePeriod,  # type: ignore
             description="Time period for the run.",
-            examples=["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["TimePeriod(start='2020-01-01', end='2020-12-31')"],
             },
         ),
     ]
@@ -201,11 +201,11 @@ class Run(MetadataBase):
         Field(
             default_factory=DataLogger,  # type: ignore
             description="Data Logger information used to collect the run.",
-            examples=["DataLogger()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["DataLogger()"],
             },
         ),
     ]
@@ -215,11 +215,11 @@ class Run(MetadataBase):
         Field(
             default_factory=Fdsn,  # type: ignore
             description="FDSN information for the run.",
-            examples=["Fdsn()"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["Fdsn()"],
             },
         ),
     ]
@@ -229,12 +229,12 @@ class Run(MetadataBase):
         Field(
             default_factory=ListDict,
             description="ListDict of channel objects collected in this run.",
-            examples=["ListDict(Electric(), Magnetic(), Auxiliary())"],
             alias=None,
             exclude=True,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["ListDict(Electric(), Magnetic(), Auxiliary())"],
             },
         ),
     ]

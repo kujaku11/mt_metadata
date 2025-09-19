@@ -29,13 +29,13 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     threshold: Annotated[
         ThresholdEnum,
         Field(
-            default="low cut",
+            default=ThresholdEnum.low_cut,
             description="Which side of a threshold should be downweighted.",
-            examples=["low cut"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["low cut"],
             },
         ),
     ]
@@ -43,13 +43,13 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
     activation_style: Annotated[
         ActivationStyleEnum,
         Field(
-            default="sigmoid",
+            default=ActivationStyleEnum.sigmoid,
             description="Tapering/activation function to use between transition bounds.",
-            examples=["tanh"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": ["tanh"],
             },
         ),
     ]
@@ -59,11 +59,11 @@ class ActivationMonotonicWeightKernel(MonotonicWeightKernel):
         Field(
             default=1.0,
             description="Controls the sharpness of the activation transition.",
-            examples=["10"],
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": ["10"],
             },
         ),
     ]

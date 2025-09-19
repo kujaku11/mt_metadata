@@ -105,7 +105,7 @@ class Band(MetadataBase):
     center_averaging_type: Annotated[
         CenterAveragingTypeEnum,
         Field(
-            default="geometric",
+            default=CenterAveragingTypeEnum.geometric,
             description="type of average to apply when computing the band center",
             alias=None,
             json_schema_extra={
@@ -119,7 +119,7 @@ class Band(MetadataBase):
     closed: Annotated[
         ClosedEnum,
         Field(
-            default="left",
+            default=ClosedEnum.left,
             description="whether interval is open or closed",
             alias=None,
             json_schema_extra={
@@ -304,4 +304,14 @@ class Band(MetadataBase):
     @computed_field
     @property
     def Q(self) -> float:
+        """
+        Quality factor (Q) of the band.
+
+        Returns
+        -------
+        float
+            Q factor. Returns infinity for zero-width bands.
+        """
+        if self.fractional_bandwidth == 0.0:
+            return float("inf")
         return 1.0 / self.fractional_bandwidth

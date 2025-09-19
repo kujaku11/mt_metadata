@@ -22,12 +22,12 @@ class TimePeriod(MetadataBase):
         Field(
             default_factory=lambda: MTime(time_stamp="1980-01-01T00:00:00+00:00"),
             description="End date and time of collection in UTC.",
-            examples="2020-02-04T16:23:45.453670+00:00",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "2020-02-04T16:23:45.453670+00:00",
+                "type": "string",
             },
         ),
     ]
@@ -37,12 +37,12 @@ class TimePeriod(MetadataBase):
         Field(
             default_factory=lambda: MTime(),
             description="Start date and time of collection in UTC.",
-            examples="2020-02-01T09:23:45.453670+00:00",
             alias=None,
-            type="string",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "2020-02-01T09:23:45.453670+00:00",
+                "type": "string",
             },
         ),
     ]
@@ -78,12 +78,12 @@ class TimePeriodDate(MetadataBase):
         Field(
             default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="End date and time of collection in UTC.",
-            examples="2020-02-04",
-            type="string",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "2020-02-04",
+                "type": "string",
             },
         ),
     ]
@@ -93,12 +93,12 @@ class TimePeriodDate(MetadataBase):
         Field(
             default_factory=lambda: MDate(time_stamp="1980-01-01"),
             description="Start date and time of collection in UTC.",
-            examples="2020-02-01",
             alias=None,
-            type="string",
             json_schema_extra={
                 "units": None,
                 "required": True,
+                "examples": "2020-02-01",
+                "type": "string",
             },
         ),
     ]

@@ -3,8 +3,9 @@
 # =====================================================
 from typing import Annotated
 
-from mt_metadata.base import MetadataBase
 from pydantic import Field
+
+from mt_metadata.base import MetadataBase
 
 
 # =====================================================
@@ -14,11 +15,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="Country of the geographic location, should be spelled out in full. Can be a list of countries.",
-            examples="United States of America",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "United States of America",
             },
         ),
     ]
@@ -28,11 +29,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="State or province of the geographic location, should be spelled out in full. Can be a list of states or provinces.",
-            examples="[Colorado, Utah]",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "[Colorado, Utah]",
             },
         ),
     ]
@@ -42,11 +43,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="County of the geographic location, should be spelled out in full. Can be a list of counties.",
-            examples="[Douglass, Fayet]",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "[Douglass, Fayet]",
             },
         ),
     ]
@@ -56,11 +57,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="Township or city name or code.",
-            examples="090",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "090",
             },
         ),
     ]
@@ -70,11 +71,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="Section name or code.",
-            examples="012",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "012",
             },
         ),
     ]
@@ -84,11 +85,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="Quarter section code.",
-            examples="400",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "400",
             },
         ),
     ]
@@ -98,11 +99,11 @@ class GeographicLocation(MetadataBase):
         Field(
             default=None,
             description="Land parcel ID.",
-            examples="46b29a",
             alias=None,
             json_schema_extra={
                 "units": None,
                 "required": False,
+                "examples": "46b29a",
             },
         ),
     ]
